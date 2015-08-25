@@ -2101,6 +2101,17 @@ namespace SIMD
                 return a;
             }
 
+            // sqr (VEC) -> VEC
+            template<typename VEC_TYPE>
+            inline VEC_TYPE sqr(VEC_TYPE const & a) {
+                UME_EMULATION_WARNING();
+                VEC_TYPE retval;
+                for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+                    retval.insert(i, a[i] * a[i]);
+                }
+                return retval;
+            }
+
             // sqrt (VEC) -> VEC
             template<typename VEC_TYPE>
             inline VEC_TYPE sqrt(VEC_TYPE const & a) {
@@ -3651,6 +3662,9 @@ namespace SIMD
         // ********************************************************************
 
         // SQR
+        inline DERIVED_VEC_TYPE sqr () {
+            return EMULATED_FUNCTIONS::MATH::sqr<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this));
+        }
         // MSQR
         // SQRA
         // MSQRA

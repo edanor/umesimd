@@ -35,10 +35,6 @@ int main()
 {
     test_UMESimd(false);
     std::cout << std::endl;
-    //test_UMESimdPerformance(false);
-    //std::cout << std::endl;
-    SIMD8_32u vec0;
-    vec0.assign(vec0);
     std::cout << "Total tests failed: " << g_totalFailed << "/" << g_totalTests << std::endl;
     return 0;
 }

@@ -267,6 +267,7 @@ namespace SIMD
         typedef bool      MASK_BASE_TYPE;
     };
 
+    // 256b vectors
     template<>
     struct SIMDVecScalarEmu_u_traits<uint8_t, 32>{
         typedef int8_t   SCALAR_INT_TYPE;
@@ -287,6 +288,56 @@ namespace SIMD
     
     template<>
     struct SIMDVecScalarEmu_u_traits<uint64_t, 4>{
+        typedef int64_t   SCALAR_INT_TYPE;
+        typedef bool      MASK_BASE_TYPE;
+    };
+
+    // 512b vectors
+    template<>
+    struct SIMDVecScalarEmu_u_traits<uint8_t, 64>{
+        typedef int8_t    SCALAR_INT_TYPE;
+        typedef bool      MASK_BASE_TYPE;
+    };
+
+    template<>
+    struct SIMDVecScalarEmu_u_traits<uint16_t, 32>{
+        typedef int16_t   SCALAR_INT_TYPE;
+        typedef bool      MASK_BASE_TYPE;
+    };
+
+    template<>
+    struct SIMDVecScalarEmu_u_traits<uint32_t, 16>{
+        typedef int32_t   SCALAR_INT_TYPE;
+        typedef bool      MASK_BASE_TYPE;
+    };
+
+    template<>
+    struct SIMDVecScalarEmu_u_traits<uint64_t, 8> {
+        typedef int64_t   SCALAR_INT_TYPE;
+        typedef bool      MASK_BASE_TYPE;
+    };
+    
+    // 1024b vectors
+    template<>
+    struct SIMDVecScalarEmu_u_traits<uint8_t, 128> {
+        typedef int8_t    SCALAR_INT_TYPE;
+        typedef bool      MASK_BASE_TYPE;
+    };
+
+    template<>
+    struct SIMDVecScalarEmu_u_traits<uint16_t, 64> {
+        typedef int16_t   SCALAR_INT_TYPE;
+        typedef bool      MASK_BASE_TYPE;
+    };
+
+    template<>
+    struct SIMDVecScalarEmu_u_traits<uint32_t, 32> {
+        typedef int32_t   SCALAR_INT_TYPE;
+        typedef bool      MASK_BASE_TYPE;
+    };
+
+    template<>
+    struct SIMDVecScalarEmu_u_traits<uint64_t, 16> {
         typedef int64_t   SCALAR_INT_TYPE;
         typedef bool      MASK_BASE_TYPE;
     };
@@ -437,6 +488,7 @@ namespace SIMD
         typedef bool     MASK_BASE_TYPE;
     };
 
+    // 256b vectors
     template<>
     struct SIMDVecScalarEmu_i_traits<int8_t, 32>{
         typedef SIMDVecScalarEmu_u<uint8_t, 32> VEC_UINT;
@@ -464,6 +516,64 @@ namespace SIMD
         typedef uint64_t SCALAR_UINT_TYPE;
         typedef bool     MASK_BASE_TYPE;
     };
+
+    // 512b vectors
+    template<>
+    struct SIMDVecScalarEmu_i_traits<int8_t, 64>{
+        typedef SIMDVecScalarEmu_u<uint8_t, 64> VEC_UINT;
+        typedef uint8_t SCALAR_UINT_TYPE;
+        typedef bool    MASK_BASE_TYPE;
+    };
+    
+    template<>
+    struct SIMDVecScalarEmu_i_traits<int16_t, 32>{
+        typedef SIMDVecScalarEmu_u<uint16_t, 32> VEC_UINT;
+        typedef uint16_t SCALAR_UINT_TYPE;
+        typedef bool    MASK_BASE_TYPE;
+    };
+    
+    template<>
+    struct SIMDVecScalarEmu_i_traits<int32_t, 16>{
+        typedef SIMDVecScalarEmu_u<uint32_t, 16> VEC_UINT;
+        typedef uint32_t SCALAR_UINT_TYPE;
+        typedef bool    MASK_BASE_TYPE;
+    };
+    
+    template<>
+    struct SIMDVecScalarEmu_i_traits<int64_t, 8>{
+        typedef SIMDVecScalarEmu_u<uint32_t, 8> VEC_UINT;
+        typedef uint32_t SCALAR_UINT_TYPE;
+        typedef bool    MASK_BASE_TYPE;
+    };  
+
+    // 1024b vectors
+    template<>
+    struct SIMDVecScalarEmu_i_traits<int8_t, 128>{
+        typedef SIMDVecScalarEmu_u<uint8_t, 128> VEC_UINT;
+        typedef uint8_t SCALAR_UINT_TYPE;
+        typedef bool    MASK_BASE_TYPE;
+    };
+    
+    template<>
+    struct SIMDVecScalarEmu_i_traits<int16_t, 64>{
+        typedef SIMDVecScalarEmu_u<uint16_t, 64> VEC_UINT;
+        typedef uint16_t SCALAR_UINT_TYPE;
+        typedef bool    MASK_BASE_TYPE;
+    };
+    
+    template<>
+    struct SIMDVecScalarEmu_i_traits<int32_t, 32>{
+        typedef SIMDVecScalarEmu_u<uint32_t, 32> VEC_UINT;
+        typedef uint32_t SCALAR_UINT_TYPE;
+        typedef bool    MASK_BASE_TYPE;
+    };
+    
+    template<>
+    struct SIMDVecScalarEmu_i_traits<int64_t, 16>{
+        typedef SIMDVecScalarEmu_u<uint64_t, 16> VEC_UINT;
+        typedef uint64_t SCALAR_UINT_TYPE;
+        typedef bool    MASK_BASE_TYPE;
+    };  
 
     template<typename SCALAR_INT_TYPE, uint32_t VEC_LEN>
     class SIMDVecScalarEmu_i final : public SIMDVecSignedInterface< SIMDVecScalarEmu_i<SCALAR_INT_TYPE, VEC_LEN>, 
@@ -561,6 +671,16 @@ namespace SIMD
         // type definitions are compiled correctly
     };
     
+    // 64b vectors
+    template<>
+    struct SIMDVecScalarEmu_f_traits<float, 2> {
+        typedef SIMDVecScalarEmu_u<uint32_t, 2> VEC_UINT_TYPE;
+        typedef SIMDVecScalarEmu_i<int32_t, 2>  VEC_INT_TYPE;
+        typedef SIMDVecScalarEmuMask<bool, 2>   MASK_TYPE;
+        typedef int32_t                         SCALAR_INT_TYPE;
+        typedef uint32_t                        SCALAR_UINT_TYPE;
+    };
+
     // 128b vectors
     template<>
     struct SIMDVecScalarEmu_f_traits<float, 4>{
@@ -618,7 +738,25 @@ namespace SIMD
         typedef uint64_t                         SCALAR_UINT_TYPE;
     };
     
+    // 1024b vectors
+    template<>
+    struct SIMDVecScalarEmu_f_traits<float, 32>{
+        typedef SIMDVecScalarEmu_u<uint32_t, 32> VEC_UINT_TYPE;
+        typedef SIMDVecScalarEmu_i<int32_t, 32>  VEC_INT_TYPE;
+        typedef SIMDVecScalarEmuMask<bool, 32>   MASK_TYPE;
+        typedef int32_t                          SCALAR_INT_TYPE;
+        typedef uint32_t                         SCALAR_UINT_TYPE;
+    };
 
+    template<>
+    struct SIMDVecScalarEmu_f_traits<double, 16>{
+        typedef SIMDVecScalarEmu_u<uint64_t, 16> VEC_UINT_TYPE;
+        typedef SIMDVecScalarEmu_i<int64_t, 16>  VEC_INT_TYPE;
+        typedef SIMDVecScalarEmuMask<bool, 16>   MASK_TYPE;
+        typedef int64_t                          SCALAR_INT_TYPE;
+        typedef uint64_t                         SCALAR_UINT_TYPE;
+    };
+    
     template<typename SCALAR_FLOAT_TYPE, uint32_t VEC_LEN>
     class SIMDVecScalarEmu_f final : public SIMDVecFloatInterface< SIMDVecScalarEmu_f<SCALAR_FLOAT_TYPE, VEC_LEN>, 
                                                  typename SIMDVecScalarEmu_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::VEC_UINT_TYPE,
@@ -696,23 +834,10 @@ namespace SIMD
     typedef SIMDVecScalarEmuMask<bool, 64>    SIMDMask64;
     typedef SIMDVecScalarEmuMask<bool, 128>   SIMDMask128;     
 
-    // 8b uint vectors
-    typedef SIMDVecScalarEmu_u<uint8_t,  1>     SIMD1_8u;  // A special register that converts directly to uint8_t
-    
-    // 16b uint vectors
-    typedef SIMDVecScalarEmu_u<uint8_t,  2>     SIMD2_8u;
-    typedef SIMDVecScalarEmu_u<uint16_t, 2>     SIMD1_16u; // A special register that converts directly to uint16_t
-    
-    // 32b uint vectors
-    typedef SIMDVecScalarEmu_u<uint8_t,  4>     SIMD4_8u;
-    typedef SIMDVecScalarEmu_u<uint16_t, 2>     SIMD2_16u;
-    typedef SIMDVecScalarEmu_u<uint32_t, 1>     SIMD1_32u; // A special register that converts directly to uint32_t
-    
     // 64b uint vectors
     typedef SIMDVecScalarEmu_u<uint8_t,  8>     SIMD8_8u;
     typedef SIMDVecScalarEmu_u<uint16_t, 4>     SIMD4_16u;
     typedef SIMDVecScalarEmu_u<uint32_t, 2>     SIMD2_32u; 
-    typedef SIMDVecScalarEmu_u<uint64_t, 1>     SIMD1_64u; // A special register that converts directly to uint64_t
     
     // 128b uint vectors
     typedef SIMDVecScalarEmu_u<uint8_t,  16>    SIMD16_8u;
@@ -729,33 +854,19 @@ namespace SIMD
     // 512b uint vectors
     typedef SIMDVecScalarEmu_u<uint8_t,  64>    SIMD64_8u;
     typedef SIMDVecScalarEmu_u<uint16_t, 32>    SIMD32_16u;
-    typedef SIMDVecScalarEmu_u<uint32_t, 16>    SIMD16_u32;
-    typedef SIMDVecScalarEmu_u<uint64_t, 8>     SIMD8_u64;
+    typedef SIMDVecScalarEmu_u<uint32_t, 16>    SIMD16_32u;
+    typedef SIMDVecScalarEmu_u<uint64_t, 8>     SIMD8_64u;
 
     // 1024 uint vectors
     typedef SIMDVecScalarEmu_u<uint8_t,  128>   SIMD128_8u;
     typedef SIMDVecScalarEmu_u<uint16_t, 64>    SIMD64_16u;
-    typedef SIMDVecScalarEmu_u<uint32_t, 32>    SIMD32_u32;
-    typedef SIMDVecScalarEmu_u<uint64_t, 16>    SIMD16_u64;
+    typedef SIMDVecScalarEmu_u<uint32_t, 32>    SIMD32_32u;
+    typedef SIMDVecScalarEmu_u<uint64_t, 16>    SIMD16_64u;
     
-    // 8b int vectors
-    typedef SIMDVecScalarEmu_i<int8_t,   1>     SIMD1_8i;  // A special register that converts directly to int8_t
-    
-    // 16b int vectors
-    typedef SIMDVecScalarEmu_i<int8_t,   2>     SIMD2_8i;
-    typedef SIMDVecScalarEmu_i<int16_t,  2>     SIMD1_16i; // A special register that converts directly to int16_t
-
-    // 32b int vectors
-    typedef SIMDVecScalarEmu_i<int8_t,   4>     SIMD4_8i;
-    typedef SIMDVecScalarEmu_i<int16_t,  2>     SIMD2_16i;
-    typedef SIMDVecScalarEmu_i<int32_t,  1>     SIMD1_32i; // A special register that converts directly to int32_t
-    typedef SIMDVecScalarEmu_f<float,    1>     SIMD1_32f; // A special register that converts directly to float32
-
     // 64b int vectors
     typedef SIMDVecScalarEmu_i<int8_t,   8>     SIMD8_8i; 
     typedef SIMDVecScalarEmu_i<int16_t,  4>     SIMD4_16i;
     typedef SIMDVecScalarEmu_i<int32_t,  2>     SIMD2_32i;
-    typedef SIMDVecScalarEmu_i<int64_t,  1>     SIMD1_64i; // A special register that converts directly to int64_t
 
     // 128b int vectors
     typedef SIMDVecScalarEmu_i<int8_t,   16>    SIMD16_8i; 
@@ -763,8 +874,6 @@ namespace SIMD
     typedef SIMDVecScalarEmu_i<int32_t,  4>     SIMD4_32i;
     typedef SIMDVecScalarEmu_i<int64_t,  2>     SIMD2_64i;
 
-    typedef SIMDVecScalarEmu_f<float,  4>     SIMD4_32f;
-    typedef SIMDVecScalarEmu_f<double, 2>     SIMD2_64f;
 
     // 256b int vectors
     typedef SIMDVecScalarEmu_i<int8_t,   32>    SIMD32_8i;
@@ -772,17 +881,38 @@ namespace SIMD
     typedef SIMDVecScalarEmu_i<int32_t,  8>     SIMD8_32i;
     typedef SIMDVecScalarEmu_i<int64_t,  4>     SIMD4_64i;
     
-    typedef SIMDVecScalarEmu_f<float,  8>     SIMD8_32f;
-    typedef SIMDVecScalarEmu_f<double, 4>     SIMD4_64f;
-    
     // 512b int vectors
     typedef SIMDVecScalarEmu_i<int8_t,   64>    SIMD64_8i;
     typedef SIMDVecScalarEmu_i<int16_t,  32>    SIMD32_16i;
-    typedef SIMDVecScalarEmu_i<int32_t,  16>    SIMD16_i32;
-    typedef SIMDVecScalarEmu_i<int64_t,  8>     SIMD8_i64;
+    typedef SIMDVecScalarEmu_i<int32_t,  16>    SIMD16_32i;
+    typedef SIMDVecScalarEmu_i<int64_t,  8>     SIMD8_64i;
 
-    typedef SIMDVecScalarEmu_f<float,  16>    SIMD16_32f;
-    typedef SIMDVecScalarEmu_f<double, 8>     SIMD8_64f;
+    // 1024 int vectors
+    typedef SIMDVecScalarEmu_i<int8_t, 128>     SIMD128_8i;
+    typedef SIMDVecScalarEmu_i<int16_t, 64>     SIMD64_16i;
+    typedef SIMDVecScalarEmu_i<int32_t, 32>     SIMD32_32i;
+    typedef SIMDVecScalarEmu_i<int64_t, 16>     SIMD16_64i;
+
+    // 64b float vectors
+    typedef SIMDVecScalarEmu_f<float,  2>       SIMD2_32f;
+    
+    // 128b float vectors
+    typedef SIMDVecScalarEmu_f<float,  4>       SIMD4_32f;
+    typedef SIMDVecScalarEmu_f<double, 2>       SIMD2_64f;
+    
+    // 256b float vectors
+    typedef SIMDVecScalarEmu_f<float,  8>       SIMD8_32f;
+    typedef SIMDVecScalarEmu_f<double, 4>       SIMD4_64f;
+
+    // 512b float vectors
+    typedef SIMDVecScalarEmu_f<float,  16>      SIMD16_32f;
+    typedef SIMDVecScalarEmu_f<double, 8>       SIMD8_64f;
+
+    // 1024b float vectors
+    typedef SIMDVecScalarEmu_f<float,  32>      SIMD32_32f;
+    typedef SIMDVecScalarEmu_f<double, 16>      SIMD16_64f;
+
+
 #endif
 
 } // SIMD
