@@ -24,8 +24,8 @@
 //
 //
 //  This piece of code was developed as part of ICE-DIP project at CERN.
-//  ‚ÄúICE-DIP is a European Industrial Doctorate project funded by the European Community‚Äôs 
-//  7th Framework programme Marie Curie Actions under grant PITN-GA-2012-316596‚Äù.
+//  ìICE-DIP is a European Industrial Doctorate project funded by the European Communityís 
+//  7th Framework programme Marie Curie Actions under grant PITN-GA-2012-316596î.
 //
 
 #ifndef UME_UNIT_TEST_SIMD_128B_H_

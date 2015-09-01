@@ -28,8 +28,8 @@
 //  7th Framework programme Marie Curie Actions under grant PITN-GA-2012-316596”.
 //
 
-#ifndef UME_SIMD_PLUGIN_NATIVE_AVX2_H_
-#define UME_SIMD_PLUGIN_NATIVE_AVX2_H_
+#ifndef UME_SIMD_PLUGIN_NATIVE_AVX2
+#define UME_SIMD_PLUGIN_NATIVE_AVX2
 
 
 #include <type_traits>
@@ -43,7 +43,6 @@ namespace UME
 {
 namespace SIMD
 {   
-
     // forward declarations of simd types classes;
     template<typename SCALAR_TYPE, uint32_t VEC_LEN>       class SIMDVecAVX2Mask;
     template<typename SCALAR_UINT_TYPE, uint32_t VEC_LEN>  class SIMDVecAVX2_u;
@@ -241,7 +240,6 @@ namespace SIMD
         friend class SIMDVecAVX2_i<int32_t, 8>;
         friend class SIMDVecAVX2_f<float, 8>;
         friend class SIMDVecAVX2_f<double, 8>;
-
     private:
         __m256i mMask;
 
@@ -361,7 +359,6 @@ namespace SIMD
         typedef SIMDMask2 MASK_TYPE;
     };
 
-    // 256b vectors
     template<>
     struct SIMDVecAVX2_u_traits<uint8_t, 32>{
         typedef int8_t   SCALAR_INT_TYPE;
@@ -386,56 +383,6 @@ namespace SIMD
         typedef SIMDMask4 MASK_TYPE;
     };
     
-    // 512b vectors
-    template<>
-    struct SIMDVecAVX2_u_traits<uint8_t, 64>{
-        typedef int8_t   SCALAR_INT_TYPE;
-        typedef SIMDMask64 MASK_TYPE;
-    };
-    
-    template<>
-    struct SIMDVecAVX2_u_traits<uint16_t, 32>{
-        typedef int16_t   SCALAR_INT_TYPE;
-        typedef SIMDMask32 MASK_TYPE;
-    };
-
-    template<>
-    struct SIMDVecAVX2_u_traits<uint32_t, 16>{
-        typedef int32_t   SCALAR_INT_TYPE;
-        typedef SIMDMask16 MASK_TYPE;
-    };
-    
-    template<>
-    struct SIMDVecAVX2_u_traits<uint64_t, 8>{
-        typedef int64_t   SCALAR_INT_TYPE;
-        typedef SIMDMask8 MASK_TYPE;
-    };
-    
-    // 1024b vectors
-    template<>
-    struct SIMDVecAVX2_u_traits<uint8_t, 128>{
-        typedef int8_t   SCALAR_INT_TYPE;
-        typedef SIMDMask128 MASK_TYPE;
-    };
-    
-    template<>
-    struct SIMDVecAVX2_u_traits<uint16_t, 64>{
-        typedef int16_t   SCALAR_INT_TYPE;
-        typedef SIMDMask64 MASK_TYPE;
-    };
-
-    template<>
-    struct SIMDVecAVX2_u_traits<uint32_t, 32>{
-        typedef int32_t   SCALAR_INT_TYPE;
-        typedef SIMDMask32 MASK_TYPE;
-    };
-    
-    template<>
-    struct SIMDVecAVX2_u_traits<uint64_t, 16>{
-        typedef int64_t   SCALAR_INT_TYPE;
-        typedef SIMDMask16 MASK_TYPE;
-    };
-
     template<typename SCALAR_UINT_TYPE, uint32_t VEC_LEN>
     class SIMDVecAVX2_u final : public SIMDVecUnsignedInterface< 
         SIMDVecAVX2_u<SCALAR_UINT_TYPE, VEC_LEN>, // DERIVED_VEC_TYPE
@@ -581,79 +528,254 @@ namespace SIMD
 
         // ADDS
         inline SIMDVecAVX2_u add (uint32_t b) {
+            __m128i b_vec = _mm_set1_epi32(b);
+            __m128i a_low = _mm256_extractf128_si256 (mVec, 0);
+            __m128i a_high = _mm256_extractf128_si256 (mVec, 1);
+            __m128i r_low = _mm_add_epi32(a_low, b_vec);
+            __m128i r_high = _mm_add_epi32(a_high, b_vec);
+            mVec = _mm256_insertf128_si256(mVec, r_low, 0);
+            mVec = _mm256_insertf128_si256(mVec, r_high, 1);
             return *this;            
         }
         // ADDVA
         inline SIMDVecAVX2_u adda (SIMDVecAVX2_u const & b) {
+            __m128i a_low = _mm256_extractf128_si256 (mVec, 0);
+            __m128i a_high = _mm256_extractf128_si256 (mVec, 1);
+            __m128i b_low = _mm256_extractf128_si256 (b.mVec, 0);
+            __m128i b_high = _mm256_extractf128_si256 (b.mVec, 1);
+            __m128i r_low = _mm_add_epi32(a_low, b_low);
+            __m128i r_high = _mm_add_epi32(a_high, b_high);
+            mVec = _mm256_insertf128_si256(mVec, r_low, 0);
+            mVec = _mm256_insertf128_si256(mVec, r_high, 1);
             return *this;            
         }
         // MADDVA
         inline SIMDVecAVX2_u & adda (SIMDMask8 const & mask, SIMDVecAVX2_u const & b) {
+            __m128i a_low = _mm256_extractf128_si256 (mVec, 0);
+            __m128i a_high = _mm256_extractf128_si256 (mVec, 1);
+            __m128i b_low = _mm256_extractf128_si256 (b.mVec, 0);
+            __m128i b_high = _mm256_extractf128_si256 (b.mVec, 1);
+            __m128i r_low = _mm_add_epi32(a_low, b_low);
+            __m128i r_high = _mm_add_epi32(a_high, b_high);
+            __m128i m_low = _mm256_extractf128_si256 (mask.mMask, 0);
+            __m128i m_high = _mm256_extractf128_si256 (mask.mMask, 1);
+            r_low = _mm_blendv_epi8(a_low, r_low, m_low);
+            r_high = _mm_blendv_epi8(a_high, r_high, m_high);
+            mVec = _mm256_insertf128_si256(mVec, r_low, 0);
+            mVec = _mm256_insertf128_si256(mVec, r_high, 1);
             return *this;            
         }
         // ADDSA 
         inline SIMDVecAVX2_u & adda (uint32_t b) {
+            __m128i a_low = _mm256_extractf128_si256 (mVec, 0);
+            __m128i a_high = _mm256_extractf128_si256 (mVec, 1);
+            __m128i b_vec = _mm_set1_epi32(b);
+            __m128i r_low = _mm_add_epi32(a_low, b_vec);
+            __m128i r_high = _mm_add_epi32(a_high, b_vec);
+            mVec = _mm256_insertf128_si256(mVec, r_low, 0);
+            mVec = _mm256_insertf128_si256(mVec, r_high, 1);
             return *this;
         }
         // MADDSA
         inline SIMDVecAVX2_u & adda (SIMDMask8 const & mask, uint32_t b) {
+            __m128i b_vec = _mm_set1_epi32(b);
+            __m128i a_low = _mm256_extractf128_si256 (mVec, 0);
+            __m128i a_high = _mm256_extractf128_si256 (mVec, 1);
+            __m128i r_low = _mm_add_epi32(a_low, b_vec);
+            __m128i r_high = _mm_add_epi32(a_high, b_vec);
+            __m128i m_low = _mm256_extractf128_si256 (mask.mMask, 0);
+            __m128i m_high = _mm256_extractf128_si256 (mask.mMask, 1);
+            r_low = _mm_blendv_epi8(a_low, r_low, m_low);
+            r_high = _mm_blendv_epi8(a_high, r_high, m_high);
+            mVec = _mm256_insertf128_si256(mVec, r_low, 0);
+            mVec = _mm256_insertf128_si256(mVec, r_high, 1);
             return *this;            
         }
         // MULV
         inline SIMDVecAVX2_u mul (SIMDVecAVX2_u const & b) {
-            return SIMDVecAVX2_u();
+            __m128i a_low = _mm256_extractf128_si256 (mVec, 0);
+            __m128i a_high = _mm256_extractf128_si256 (mVec, 1);
+            __m128i b_low = _mm256_extractf128_si256 (b.mVec, 0);
+            __m128i b_high = _mm256_extractf128_si256 (b.mVec, 1);
+            __m128i r_low = _mm_mullo_epi32(a_low, b_low);
+            __m128i r_high = _mm_mullo_epi32(a_high, b_high);
+            __m256i ret = _mm256_setzero_si256();
+            ret = _mm256_insertf128_si256(ret, r_low, 0);
+            ret = _mm256_insertf128_si256(ret, r_high, 1);
+            return SIMDVecAVX2_u(ret);
         }
         // MMULV
         inline SIMDVecAVX2_u mul (SIMDMask8 const & mask, SIMDVecAVX2_u const & b) {
-            return SIMDVecAVX2_u();
+            __m128i a_low = _mm256_extractf128_si256 (mVec, 0);
+            __m128i a_high = _mm256_extractf128_si256 (mVec, 1);
+            __m128i b_low = _mm256_extractf128_si256 (b.mVec, 0);
+            __m128i b_high = _mm256_extractf128_si256 (b.mVec, 1);
+            __m128i r_low = _mm_mullo_epi32(a_low, b_low);
+            __m128i r_high = _mm_mullo_epi32(a_high, b_high);
+            __m128i m_low = _mm256_extractf128_si256 (mask.mMask, 0);            
+            __m128i m_high = _mm256_extractf128_si256 (mask.mMask, 1);            
+            r_low = _mm_blendv_epi8(a_low, r_low, m_low);
+            r_high = _mm_blendv_epi8(a_high, r_high, m_high);
+            __m256i ret = _mm256_setzero_si256();
+            ret = _mm256_insertf128_si256(ret, r_low, 0);
+            ret = _mm256_insertf128_si256(ret, r_high, 1);
+            return SIMDVecAVX2_u(ret);
         }
         // MULS
         inline SIMDVecAVX2_u mul (uint32_t b) {
-            return SIMDVecAVX2_u();
+            __m128i a_low = _mm256_extractf128_si256 (mVec, 0);
+            __m128i a_high = _mm256_extractf128_si256 (mVec, 1);
+            __m128i b_vec = _mm_set1_epi32(b);
+            __m128i r_low = _mm_mullo_epi32(a_low, b_vec);
+            __m128i r_high = _mm_mullo_epi32(a_high, b_vec);
+            __m256i ret = _mm256_setzero_si256();
+            ret = _mm256_insertf128_si256(ret, r_low, 0);
+            ret = _mm256_insertf128_si256(ret, r_high, 1);
+            return SIMDVecAVX2_u(ret);
         }
         // MMULS
         inline SIMDVecAVX2_u mul (SIMDMask8 const & mask, uint32_t b) {
-            return SIMDVecAVX2_u();
+            __m128i a_low = _mm256_extractf128_si256 (mVec, 0);
+            __m128i a_high = _mm256_extractf128_si256 (mVec, 1);
+            __m128i b_vec = _mm_set1_epi32(b);
+            __m128i r_low = _mm_mullo_epi32(a_low, b_vec);
+            __m128i r_high = _mm_mullo_epi32(a_high, b_vec);
+            __m128i m_low = _mm256_extractf128_si256 (mask.mMask, 0);            
+            __m128i m_high = _mm256_extractf128_si256 (mask.mMask, 1);       
+            r_low = _mm_blendv_epi8(a_low, r_low, m_low);
+            r_high = _mm_blendv_epi8(a_high, r_high, m_high);
+            __m256i ret = _mm256_setzero_si256();
+            ret = _mm256_insertf128_si256(ret, r_low, 0);
+            ret = _mm256_insertf128_si256(ret, r_high, 1);
+            return SIMDVecAVX2_u(ret);
         }
         // CMPEQV
         inline SIMDMask8 cmpeq (SIMDVecAVX2_u const & b) {
-            return SIMDMask8();
+            __m128i a_low = _mm256_extractf128_si256 (mVec, 0);
+            __m128i a_high = _mm256_extractf128_si256 (mVec, 1);
+            __m128i b_low = _mm256_extractf128_si256 (b.mVec, 0);
+            __m128i b_high = _mm256_extractf128_si256 (b.mVec, 1);
+            
+            __m128i r_low = _mm_cmpeq_epi32(a_low, b_low);
+            __m128i r_high = _mm_cmpeq_epi32(a_high, b_high);
+
+            __m256i ret = _mm256_setzero_si256();
+            ret = _mm256_insertf128_si256 (ret, r_low, 0);
+            ret = _mm256_insertf128_si256 (ret, r_high, 1);
+            return SIMDMask8(ret);
         }
         // MCMPEQ
         inline SIMDMask8 cmpeq (uint32_t b) {
-            return SIMDMask8();
+            __m128i b_vec = _mm_set1_epi32(b);
+            __m128i a_low = _mm256_extractf128_si256 (mVec, 0);
+            __m128i a_high = _mm256_extractf128_si256 (mVec, 1);
+
+            __m128i r_low = _mm_cmpeq_epi32(a_low, b_vec);
+            __m128i r_high = _mm_cmpeq_epi32(a_high, b_vec);
+
+            __m256i ret = _mm256_setzero_si256();
+            ret = _mm256_insertf128_si256 (ret, r_low, 0);
+            ret = _mm256_insertf128_si256 (ret, r_high, 1);
+            return SIMDMask8(ret);
         }
 
         // GATHERS
         SIMDVecAVX2_u & gather ( uint32_t* baseAddr, uint64_t* indices) {
+            UME_PERFORMANCE_UNOPTIMAL_WARNING();
+            alignas(32) uint32_t raw[8] = { baseAddr[indices[0]], baseAddr[indices[1]], baseAddr[indices[2]], baseAddr[indices[3]],
+                                            baseAddr[indices[4]], baseAddr[indices[5]], baseAddr[indices[6]], baseAddr[indices[7]]};
+            mVec = _mm256_load_si256((__m256i*)raw);
             return *this;
         }   
         // MGATHERS
         SIMDVecAVX2_u & gather (SIMDMask8 const & mask, uint32_t* baseAddr, uint64_t* indices) {
+            UME_PERFORMANCE_UNOPTIMAL_WARNING();
+            alignas(32) uint32_t raw[8] = { baseAddr[indices[0]], baseAddr[indices[1]], baseAddr[indices[2]], baseAddr[indices[3]],
+                                            baseAddr[indices[4]], baseAddr[indices[5]], baseAddr[indices[6]], baseAddr[indices[7]]};
+            __m128i a_low  = _mm256_extractf128_si256 (mVec, 0);
+            __m128i a_high = _mm256_extractf128_si256 (mVec, 1);
+            __m128i b_low = _mm_load_si128((__m128i*)&raw[0]);
+            __m128i b_high = _mm_load_si128((__m128i*)&raw[4]);
+            __m128i m_low = _mm256_extractf128_si256 (mask.mMask, 0);
+            __m128i m_high = _mm256_extractf128_si256 (mask.mMask, 1);
+            __m128i r_low = _mm_blendv_epi8(a_low, b_low, m_low);
+            __m128i r_high = _mm_blendv_epi8(a_high, b_high, m_high);
+            mVec = _mm256_insertf128_si256(mVec, r_low, 0);
+            mVec = _mm256_insertf128_si256(mVec, r_high, 1);
             return *this;
         }
         // GATHERV
         SIMDVecAVX2_u & gather (uint32_t* baseAddr, SIMDVecAVX2_u const & indices) {
+            UME_PERFORMANCE_UNOPTIMAL_WARNING();
+            alignas(32) uint32_t rawInd[8];
+            alignas(32) uint32_t raw[8]; 
+            
+            _mm256_store_si256((__m256i*) rawInd, indices.mVec);
+            for(int i = 0; i < 8; i++) { raw[i] = baseAddr[rawInd[i]]; }
+            mVec = _mm256_load_si256((__m256i*)raw);
             return *this;
         }
         // MGATHERV
         SIMDVecAVX2_u & gather (SIMDMask8 const & mask, uint32_t* baseAddr, SIMDVecAVX2_u const & indices) {
+            UME_PERFORMANCE_UNOPTIMAL_WARNING();
+            alignas(32) uint32_t rawInd[8];
+            alignas(32) uint32_t raw[8]; 
+            
+            _mm256_store_si256((__m256i*) rawInd, indices.mVec);
+            for(int i = 0; i < 8; i++) { raw[i] = baseAddr[rawInd[i]]; }
+            __m128i a_low  = _mm256_extractf128_si256 (mVec, 0);
+            __m128i a_high = _mm256_extractf128_si256 (mVec, 1);
+            __m128i b_low = _mm_load_si128((__m128i*)&raw[0]);
+            __m128i b_high = _mm_load_si128((__m128i*)&raw[4]);
+            __m128i m_low = _mm256_extractf128_si256 (mask.mMask, 0);
+            __m128i m_high = _mm256_extractf128_si256 (mask.mMask, 1);
+            __m128i r_low = _mm_blendv_epi8(a_low, b_low, m_low);
+            __m128i r_high = _mm_blendv_epi8(a_high, b_high, m_high);
+            mVec = _mm256_insertf128_si256(mVec, r_low, 0);
+            mVec = _mm256_insertf128_si256(mVec, r_high, 1);
             return *this;
         }
         // SCATTERS
         uint32_t* scatter (uint32_t* baseAddr, uint64_t* indices) {
+            UME_PERFORMANCE_UNOPTIMAL_WARNING();
+            alignas(32) uint32_t raw[8];
+            _mm256_store_si256((__m256i*) raw, mVec);
+            for(int i = 0; i < 8; i++) { baseAddr[indices[i]] = raw[i]; };
             return baseAddr;
         }
         // MSCATTERS
         uint32_t* scatter (SIMDMask8 const & mask, uint32_t* baseAddr, uint64_t* indices) {
+            UME_PERFORMANCE_UNOPTIMAL_WARNING();
+            alignas(32) uint32_t raw[8];
+            alignas(32) uint32_t rawMask[8];
+            _mm256_store_si256((__m256i*) raw, mVec);
+            _mm256_store_si256((__m256i*) rawMask, mask.mMask);
+            for(int i = 0; i < 8; i++) { if(rawMask[i] == SIMDMask8::TRUE()) baseAddr[indices[i]] = raw[i]; };
             return baseAddr;
         }
         // SCATTERV
         uint32_t* scatter (uint32_t* baseAddr, SIMDVecAVX2_u const & indices) {
+            UME_PERFORMANCE_UNOPTIMAL_WARNING();
+            alignas(32) uint32_t raw[8];
+            alignas(32) uint32_t rawIndices[8];
+            _mm256_store_si256((__m256i*) raw, mVec);
+            _mm256_store_si256((__m256i*) rawIndices, indices.mVec);
+            for(int i = 0; i < 8; i++) { baseAddr[rawIndices[i]] = raw[i]; };
             return baseAddr;
         }
         // MSCATTERV
         uint32_t* scatter (SIMDMask8 const & mask, uint32_t* baseAddr, SIMDVecAVX2_u const & indices) {
+            UME_PERFORMANCE_UNOPTIMAL_WARNING();
+            alignas(32) uint32_t raw[8];
+            alignas(32) uint32_t rawIndices[8];
+            alignas(32) uint32_t rawMask[8];
+            _mm256_store_si256((__m256i*) raw, mVec);
+            _mm256_store_si256((__m256i*) rawIndices, indices.mVec);
+            _mm256_store_si256((__m256i*) rawMask, mask.mMask);
+            for(int i = 0; i < 8; i++) { 
+                if(rawMask[i] == SIMDMask8::TRUE())
+                    baseAddr[rawIndices[i]] = raw[i]; 
+            };
             return baseAddr;
         }
         
@@ -720,7 +842,6 @@ namespace SIMD
         typedef SIMDMask2 MASK_TYPE;
     };
 
-    //256b vectors
     template<>
     struct SIMDVecAVX2_i_traits<int8_t, 32>{
         typedef SIMDVecAVX2_u<uint8_t, 32> VEC_UINT;
@@ -749,71 +870,13 @@ namespace SIMD
         typedef SIMDMask4 MASK_TYPE;
     };
 
-    // 512b vectors
-    template<>
-    struct SIMDVecAVX2_i_traits<int8_t, 64>{
-        typedef SIMDVecAVX2_u<uint8_t, 64> VEC_UINT;
-        typedef uint8_t SCALAR_UINT_TYPE;
-        typedef SIMDMask64 MASK_TYPE;
-    };
-    
-    template<>
-    struct SIMDVecAVX2_i_traits<int16_t, 32>{
-        typedef SIMDVecAVX2_u<uint16_t, 32> VEC_UINT;
-        typedef uint16_t SCALAR_UINT_TYPE;
-        typedef SIMDMask32 MASK_TYPE;
-    };
-    
-    template<>
-    struct SIMDVecAVX2_i_traits<int32_t, 16>{
-        typedef SIMDVecAVX2_u<uint32_t, 16> VEC_UINT;
-        typedef uint32_t SCALAR_UINT_TYPE;
-        typedef SIMDMask16 MASK_TYPE;
-    };
-
-    template<>
-    struct SIMDVecAVX2_i_traits<int64_t, 8>{
-        typedef SIMDVecAVX2_u<uint64_t, 8> VEC_UINT;
-        typedef uint64_t SCALAR_UINT_TYPE;
-        typedef SIMDMask8 MASK_TYPE;
-    };
-
-    // 1024b vectors
-    template<>
-    struct SIMDVecAVX2_i_traits<int8_t, 128>{
-        typedef SIMDVecAVX2_u<uint8_t, 128> VEC_UINT;
-        typedef uint8_t SCALAR_UINT_TYPE;
-        typedef SIMDMask128 MASK_TYPE;
-    };
-    
-    template<>
-    struct SIMDVecAVX2_i_traits<int16_t, 64>{
-        typedef SIMDVecAVX2_u<uint16_t, 64> VEC_UINT;
-        typedef uint16_t SCALAR_UINT_TYPE;
-        typedef SIMDMask64 MASK_TYPE;
-    };
-    
-    template<>
-    struct SIMDVecAVX2_i_traits<int32_t, 32>{
-        typedef SIMDVecAVX2_u<uint32_t, 32> VEC_UINT;
-        typedef uint32_t SCALAR_UINT_TYPE;
-        typedef SIMDMask32 MASK_TYPE;
-    };
-
-    template<>
-    struct SIMDVecAVX2_i_traits<int64_t, 16>{
-        typedef SIMDVecAVX2_u<uint64_t, 16> VEC_UINT;
-        typedef uint64_t SCALAR_UINT_TYPE;
-        typedef SIMDMask16 MASK_TYPE;
-    };
-
     template<typename SCALAR_INT_TYPE, uint32_t VEC_LEN>
     class SIMDVecAVX2_i final : public SIMDVecSignedInterface< SIMDVecAVX2_i<SCALAR_INT_TYPE, VEC_LEN>, 
-        typename SIMDVecAVX2_i_traits<SCALAR_INT_TYPE, VEC_LEN>::VEC_UINT,
-        SCALAR_INT_TYPE, 
-        VEC_LEN,
-        typename SIMDVecAVX2_i_traits<SCALAR_INT_TYPE, VEC_LEN>::SCALAR_UINT_TYPE,
-        typename SIMDVecAVX2_i_traits<SCALAR_INT_TYPE, VEC_LEN>::MASK_TYPE>
+                                                 typename SIMDVecAVX2_i_traits<SCALAR_INT_TYPE, VEC_LEN>::VEC_UINT,
+                                                 SCALAR_INT_TYPE, 
+                                                 VEC_LEN,
+                                                 typename SIMDVecAVX2_i_traits<SCALAR_INT_TYPE, VEC_LEN>::SCALAR_UINT_TYPE,
+                                                 typename SIMDVecAVX2_i_traits<SCALAR_INT_TYPE, VEC_LEN>::MASK_TYPE>
     {
     public:
         typedef SIMDVecEmuRegister<SCALAR_INT_TYPE, VEC_LEN>                            VEC_EMU_REG;
@@ -889,11 +952,11 @@ namespace SIMD
 
     template<>
     class SIMDVecAVX2_i<int32_t, 8>: public SIMDVecSignedInterface< SIMDVecAVX2_i<int32_t, 8>, 
-        SIMDVecAVX2_u<uint32_t, 8>,
-        int32_t, 
-        8,
-        uint32_t,
-        SIMDMask8>
+                                                 SIMDVecAVX2_u<uint32_t, 8>,
+                                                 int32_t, 
+                                                 8,
+                                                 uint32_t,
+                                                 SIMDMask8>
     {
         friend class SIMDVecAVX2_u<uint32_t, 8>;
         friend class SIMDVecAVX2_f<float, 8>;
@@ -945,11 +1008,26 @@ namespace SIMD
 
         // ABS
         SIMDVecAVX2_i abs () {
-            return SIMDVecAVX2_i();
+            __m128i a_low  = _mm256_extractf128_si256(mVec, 0);
+            __m128i a_high = _mm256_extractf128_si256(mVec, 1);
+            __m256i ret = _mm256_setzero_si256();
+            ret = _mm256_insertf128_si256(ret, _mm_abs_epi32(a_low), 0);
+            ret = _mm256_insertf128_si256(ret, _mm_abs_epi32(a_high), 1);
+            return SIMDVecAVX2_i(ret);
         }
         // MABS
         SIMDVecAVX2_i abs (SIMDMask8 const & mask) {
-            return SIMDVecAVX2_i();
+            __m128i a_low  = _mm256_extractf128_si256(mVec, 0);
+            __m128i a_high = _mm256_extractf128_si256(mVec, 1);
+            __m128i m_low  = _mm256_extractf128_si256(mask.mMask, 0);
+            __m128i m_high = _mm256_extractf128_si256(mask.mMask, 1);
+            
+            __m128i r_low = _mm_blendv_epi8(a_low, _mm_abs_epi32(a_low), m_low);
+            __m128i r_high = _mm_blendv_epi8(a_high, _mm_abs_epi32(a_high), m_high);
+            __m256i ret = _mm256_setzero_si256();
+            ret = _mm256_insertf128_si256(ret, r_low, 0);
+            ret = _mm256_insertf128_si256(ret, r_high, 1);
+            return SIMDVecAVX2_i(ret);
         }
     };
 
@@ -971,17 +1049,6 @@ namespace SIMD
         // type definitions are compiled correctly
     };
     
-    // 64b vectors
-    template<>
-    struct SIMDVecAVX2_f_traits<float, 2>{
-        typedef SIMDVecAVX2_u<uint32_t, 2>  VEC_UINT_TYPE;
-        typedef SIMDVecAVX2_i<int32_t, 2>  VEC_INT_TYPE;
-        typedef int32_t                   SCALAR_INT_TYPE;
-        typedef uint32_t                  SCALAR_UINT_TYPE;
-        typedef float*                    SCALAR_TYPE_PTR;
-        typedef SIMDMask4                 MASK_TYPE;
-    };
-
     // 128b vectors
     template<>
     struct SIMDVecAVX2_f_traits<float, 4>{
@@ -1037,43 +1104,22 @@ namespace SIMD
     
     template<>
     struct SIMDVecAVX2_f_traits<double, 8>{
-        typedef SIMDVecAVX2_u<uint64_t, 8> VEC_UINT_TYPE;
+        typedef SIMDVecAVX2_u<uint64_t, 8>  VEC_UINT_TYPE;
         typedef SIMDVecAVX2_i<int64_t, 8>  VEC_INT_TYPE;
-        typedef int64_t                    SCALAR_INT_TYPE;
-        typedef uint64_t                   SCALAR_UINT_TYPE;
-        typedef double*                    SCALAR_TYPE_PTR;
-        typedef SIMDMask8                  MASK_TYPE;
-    };
-
-    // 1024b vectors
-    template<>
-    struct SIMDVecAVX2_f_traits<float, 32>{
-        typedef SIMDVecAVX2_u<uint64_t, 32> VEC_UINT_TYPE;
-        typedef SIMDVecAVX2_i<int32_t, 32>  VEC_INT_TYPE;
-        typedef int32_t                     SCALAR_INT_TYPE;
-        typedef uint32_t                    SCALAR_UINT_TYPE;
-        typedef float*                      SCALAR_TYPE_PTR;
-        typedef SIMDMask32                  MASK_TYPE;
-    };
-    
-    template<>
-    struct SIMDVecAVX2_f_traits<double, 16>{
-        typedef SIMDVecAVX2_u<uint64_t, 16> VEC_UINT_TYPE;
-        typedef SIMDVecAVX2_i<int64_t, 16>  VEC_INT_TYPE;
-        typedef int64_t                     SCALAR_INT_TYPE;
-        typedef uint64_t                    SCALAR_UINT_TYPE;
-        typedef double*                     SCALAR_TYPE_PTR;
-        typedef SIMDMask16                  MASK_TYPE;
+        typedef int64_t                   SCALAR_INT_TYPE;
+        typedef uint64_t                  SCALAR_UINT_TYPE;
+        typedef double*                   SCALAR_TYPE_PTR;
+        typedef SIMDMask8                 MASK_TYPE;
     };
 
     template<typename SCALAR_FLOAT_TYPE, uint32_t VEC_LEN>
     class SIMDVecAVX2_f final : public SIMDVecFloatInterface< SIMDVecAVX2_f<SCALAR_FLOAT_TYPE, VEC_LEN>, 
-        typename SIMDVecAVX2_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::VEC_UINT_TYPE,
-        typename SIMDVecAVX2_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::VEC_INT_TYPE,
-        SCALAR_FLOAT_TYPE, 
-        VEC_LEN,
-        typename SIMDVecAVX2_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::SCALAR_UINT_TYPE,
-        typename SIMDVecAVX2_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::MASK_TYPE>
+                                                 typename SIMDVecAVX2_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::VEC_UINT_TYPE,
+                                                 typename SIMDVecAVX2_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::VEC_INT_TYPE,
+                                                 SCALAR_FLOAT_TYPE, 
+                                                 VEC_LEN,
+                                                 typename SIMDVecAVX2_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::SCALAR_UINT_TYPE,
+                                                 typename SIMDVecAVX2_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::MASK_TYPE>
     {
     public:
         typedef SIMDVecEmuRegister<SCALAR_FLOAT_TYPE, VEC_LEN>                            VEC_EMU_REG;
@@ -1141,12 +1187,12 @@ namespace SIMD
 
     template<>
     class SIMDVecAVX2_f<float, 8> : public SIMDVecFloatInterface< SIMDVecAVX2_f<float, 8>, 
-        SIMDVecAVX2_u<uint32_t, 8>,
-        SIMDVecAVX2_i<int32_t, 8>,
-        float, 
-        8,
-        uint32_t,
-        SIMDMask8>
+                                                 SIMDVecAVX2_u<uint32_t, 8>,
+                                                 SIMDVecAVX2_i<int32_t, 8>,
+                                                 float, 
+                                                 8,
+                                                 uint32_t,
+                                                 SIMDMask8>
     {
     private:
         __m256 mVec;
@@ -1168,35 +1214,14 @@ namespace SIMD
             mVec = _mm256_setr_ps(f0, f1, f2, f3, f4, f5, f6, f7);
         }
 
-        // EXTRACT
-        inline float extract (uint32_t index) const {
-            UME_PERFORMANCE_UNOPTIMAL_WARNING();
-            alignas(32) float raw[8];
-            _mm256_store_ps(raw, mVec);
-            return raw[index];
-        }
-
-        // EXTRACT
-        inline float operator[] (uint32_t index) const {
-            UME_PERFORMANCE_UNOPTIMAL_WARNING();
-            return extract(index);
-        }
-                
-        // INSERT
-        inline SIMDVecAVX2_f & insert (uint32_t index, float value) {
-            UME_PERFORMANCE_UNOPTIMAL_WARNING();
-            alignas(32) float raw[8];
-            _mm256_store_ps(raw, mVec);
-            raw[index] = value;
-            mVec = _mm256_load_ps(raw);
-            return *this;
-        }
-        
     };
 
     // 16b uint vectors
     typedef SIMDVecAVX2_u<uint8_t,  2>   SIMD2_8u;
 
+    // 32b uint vectors
+    typedef SIMDVecAVX2_u<uint8_t,  4>   SIMD4_8u;
+    typedef SIMDVecAVX2_u<uint16_t, 2>   SIMD2_16u;
 
     // 64b uint vectors
     typedef SIMDVecAVX2_u<uint8_t,  8>   SIMD8_8u;
@@ -1218,15 +1243,16 @@ namespace SIMD
     // 512b uint vectors
     typedef SIMDVecAVX2_u<uint8_t,  64>  SIMD64_8u;
     typedef SIMDVecAVX2_u<uint16_t, 32>  SIMD32_16u;
-    typedef SIMDVecAVX2_u<uint32_t, 16>  SIMD16_32u;
-    typedef SIMDVecAVX2_u<uint64_t, 8>   SIMD8_64u;
+    typedef SIMDVecAVX2_u<uint32_t, 16>  SIMD16_u32;
+    typedef SIMDVecAVX2_u<uint64_t, 8>   SIMD8_u64;
     
-    // 1024b uint vectors
-    typedef SIMDVecAVX2_u<uint8_t, 128>  SIMD128_8u;
-    typedef SIMDVecAVX2_u<uint16_t, 64>  SIMD64_16u;
-    typedef SIMDVecAVX2_u<uint32_t, 32>  SIMD32_32u;
-    typedef SIMDVecAVX2_u<uint64_t, 16>  SIMD16_64u;
-
+    // 16b int vectors
+    typedef SIMDVecAVX2_i<int8_t,   2>   SIMD2_8i;
+    
+    // 32b int vectors
+    typedef SIMDVecAVX2_i<int8_t,   4>   SIMD4_8i;
+    typedef SIMDVecAVX2_i<int16_t,  2>   SIMD2_16i;
+    
     // 64b int vectors
     typedef SIMDVecAVX2_i<int8_t,   8>   SIMD8_8i; 
     typedef SIMDVecAVX2_i<int16_t,  4>   SIMD4_16i;
@@ -1238,43 +1264,28 @@ namespace SIMD
     typedef SIMDVecAVX2_i<int32_t,  4>   SIMD4_32i;
     typedef SIMDVecAVX2_i<int64_t,  2>   SIMD2_64i;
 
+    typedef SIMDVecAVX2_f<float,  4>     SIMD4_32f;
+    typedef SIMDVecAVX2_f<double, 2>     SIMD2_64f;
+
     // 256b int vectors
     typedef SIMDVecAVX2_i<int8_t,   32>  SIMD32_8i;
     typedef SIMDVecAVX2_i<int16_t,  16>  SIMD16_16i;
     typedef SIMDVecAVX2_i<int32_t,  8>   SIMD8_32i;
     typedef SIMDVecAVX2_i<int64_t,  4>   SIMD4_64i;
-
+    
+    typedef SIMDVecAVX2_f<float,  8>     SIMD8_32f;
+    typedef SIMDVecAVX2_f<double, 4>     SIMD4_64f;
+    
     // 512b int vectors
     typedef SIMDVecAVX2_i<int8_t,   64>  SIMD64_8i;
     typedef SIMDVecAVX2_i<int16_t,  32>  SIMD32_16i;
-    typedef SIMDVecAVX2_i<int32_t,  16>  SIMD16_32i;
-    typedef SIMDVecAVX2_i<int64_t,  8>   SIMD8_64i;
+    typedef SIMDVecAVX2_i<int32_t,  16>  SIMD16_i32;
+    typedef SIMDVecAVX2_i<int64_t,  8>   SIMD8_i64;
 
-    // 1024b int vectors
-    typedef SIMDVecAVX2_i<int8_t, 128>   SIMD128_8i;
-    typedef SIMDVecAVX2_i<int16_t, 64>   SIMD64_16i;
-    typedef SIMDVecAVX2_i<int32_t, 32>   SIMD32_32i;
-    typedef SIMDVecAVX2_i<int64_t, 16>   SIMD16_64i;
-
-    // 64b float vectors
-    typedef SIMDVecAVX2_f<float, 2>      SIMD2_32f;
-
-    // 128b float vectors
-    typedef SIMDVecAVX2_f<float,  4>     SIMD4_32f;
-    typedef SIMDVecAVX2_f<double, 2>     SIMD2_64f;
-
-    // 256b float vectors
-    typedef SIMDVecAVX2_f<float,  8>     SIMD8_32f;
-    typedef SIMDVecAVX2_f<double, 4>     SIMD4_64f;
-
-    // 512b float vectors
     typedef SIMDVecAVX2_f<float,  16>    SIMD16_32f;
     typedef SIMDVecAVX2_f<double, 8>     SIMD8_64f;
-    
-    // 1024b float vectors
-    typedef SIMDVecAVX2_f<float,  32>    SIMD32_32f;
-    typedef SIMDVecAVX2_f<double, 16>    SIMD16_64f;
+
 } // SIMD
 } // UME
 
-#endif // UME_SIMD_PLUGIN_NATIVE_AVX2_H_
+#endif // UME_SIMD_PLUGIN_NATIVE_AVX2

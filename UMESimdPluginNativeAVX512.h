@@ -1,11 +1,40 @@
-#ifndef UME_SIMD_PLUGIN_NATIVE_AVX512
-#define UME_SIMD_PLUGIN_NATIVE_AVX512
+// The MIT License (MIT)
+//
+// Copyright (c) 2015 CERN
+//
+// Author: Przemyslaw Karpinski
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+//
+//
+//  This piece of code was developed as part of ICE-DIP project at CERN.
+//  “ICE-DIP is a European Industrial Doctorate project funded by the European Community’s 
+//  7th Framework programme Marie Curie Actions under grant PITN-GA-2012-316596”.
+//
+
+#ifndef UME_SIMD_PLUGIN_NATIVE_AVX512_H_
+#define UME_SIMD_PLUGIN_NATIVE_AVX512_H_
 
 
 #include <type_traits>
 
 #include "UMESimdInterface.h"
-
 #include "UMESimdPluginScalarEmulation.h"
 
 #include <immintrin.h>
@@ -409,8 +438,8 @@ namespace SIMD
     class SIMDVecAVX512_u final : public SIMDVecUnsignedInterface< 
         SIMDVecAVX512_u<SCALAR_UINT_TYPE, VEC_LEN>, // DERIVED_VEC_TYPE
         SIMDVecAVX512_u<SCALAR_UINT_TYPE, VEC_LEN>, // DERIVED_VEC_UINT_TYPE
-        SCALAR_UINT_TYPE,                        // SCALAR_TYPE
-        SCALAR_UINT_TYPE,                        // SCALAR_UINT_TYPE
+        SCALAR_UINT_TYPE,                           // SCALAR_TYPE
+        SCALAR_UINT_TYPE,                           // SCALAR_UINT_TYPE
         VEC_LEN,
         typename SIMDVecAVX512_u_traits<SCALAR_UINT_TYPE, VEC_LEN>::MASK_TYPE>
     {
@@ -952,12 +981,13 @@ namespace SIMD
     };
 
     template<typename SCALAR_INT_TYPE, uint32_t VEC_LEN>
-    class SIMDVecAVX512_i final : public SIMDVecSignedInterface< SIMDVecAVX512_i<SCALAR_INT_TYPE, VEC_LEN>, 
-                                                 typename SIMDVecAVX512_i_traits<SCALAR_INT_TYPE, VEC_LEN>::VEC_UINT,
-                                                 SCALAR_INT_TYPE, 
-                                                 VEC_LEN,
-                                                 typename SIMDVecAVX512_i_traits<SCALAR_INT_TYPE, VEC_LEN>::SCALAR_UINT_TYPE,
-                                                 typename SIMDVecAVX512_i_traits<SCALAR_INT_TYPE, VEC_LEN>::MASK_TYPE>
+    class SIMDVecAVX512_i final : public SIMDVecSignedInterface<
+        SIMDVecAVX512_i<SCALAR_INT_TYPE, VEC_LEN>, 
+        typename SIMDVecAVX512_i_traits<SCALAR_INT_TYPE, VEC_LEN>::VEC_UINT,
+        SCALAR_INT_TYPE, 
+        VEC_LEN,
+        typename SIMDVecAVX512_i_traits<SCALAR_INT_TYPE, VEC_LEN>::SCALAR_UINT_TYPE,
+        typename SIMDVecAVX512_i_traits<SCALAR_INT_TYPE, VEC_LEN>::MASK_TYPE>
     {
     public:
         typedef SIMDVecEmuRegister<SCALAR_INT_TYPE, VEC_LEN>                            VEC_EMU_REG;
@@ -1032,12 +1062,13 @@ namespace SIMD
     // ********************************************************************************************
 
     template<>
-    class SIMDVecAVX512_i<int32_t, 8>: public SIMDVecSignedInterface< SIMDVecAVX512_i<int32_t, 8>, 
-                                                 SIMDVecAVX512_u<uint32_t, 8>,
-                                                 int32_t, 
-                                                 8,
-                                                 uint32_t,
-                                                 SIMDMask8>
+    class SIMDVecAVX512_i<int32_t, 8>: public SIMDVecSignedInterface<
+        SIMDVecAVX512_i<int32_t, 8>, 
+        SIMDVecAVX512_u<uint32_t, 8>,
+        int32_t, 
+        8,
+        uint32_t,
+        SIMDMask8>
     {
         friend class SIMDVecAVX512_u<uint32_t, 8>;
         friend class SIMDVecAVX512_f<float, 8>;
@@ -1227,13 +1258,14 @@ namespace SIMD
 
 
     template<typename SCALAR_FLOAT_TYPE, uint32_t VEC_LEN>
-    class SIMDVecAVX512_f final : public SIMDVecFloatInterface< SIMDVecAVX512_f<SCALAR_FLOAT_TYPE, VEC_LEN>, 
-                                                 typename SIMDVecAVX512_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::VEC_UINT_TYPE,
-                                                 typename SIMDVecAVX512_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::VEC_INT_TYPE,
-                                                 SCALAR_FLOAT_TYPE, 
-                                                 VEC_LEN,
-                                                 typename SIMDVecAVX512_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::SCALAR_UINT_TYPE,
-                                                 typename SIMDVecAVX512_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::MASK_TYPE>
+    class SIMDVecAVX512_f final : public SIMDVecFloatInterface<
+        SIMDVecAVX512_f<SCALAR_FLOAT_TYPE, VEC_LEN>, 
+        typename SIMDVecAVX512_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::VEC_UINT_TYPE,
+        typename SIMDVecAVX512_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::VEC_INT_TYPE,
+        SCALAR_FLOAT_TYPE, 
+        VEC_LEN,
+        typename SIMDVecAVX512_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::SCALAR_UINT_TYPE,
+        typename SIMDVecAVX512_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::MASK_TYPE>
     {
     public:
         typedef SIMDVecEmuRegister<SCALAR_FLOAT_TYPE, VEC_LEN>                            VEC_EMU_REG;
@@ -1300,13 +1332,14 @@ namespace SIMD
     // ********************************************************************************************
 
     template<>
-    class SIMDVecAVX512_f<float, 8> : public SIMDVecFloatInterface< SIMDVecAVX512_f<float, 8>, 
-                                                 SIMDVecAVX512_u<uint32_t, 8>,
-                                                 SIMDVecAVX512_i<int32_t, 8>,
-                                                 float, 
-                                                 8,
-                                                 uint32_t,
-                                                 SIMDMask8>
+    class SIMDVecAVX512_f<float, 8> : public SIMDVecFloatInterface<
+        SIMDVecAVX512_f<float, 8>, 
+        SIMDVecAVX512_u<uint32_t, 8>,
+        SIMDVecAVX512_i<int32_t, 8>,
+        float, 
+        8,
+        uint32_t,
+        SIMDMask8>
     {
     private:
         __m256 mVec;
@@ -1425,4 +1458,4 @@ namespace SIMD
 } // SIMD
 } // UME
 
-#endif // UME_SIMD_PLUGIN_NATIVE_AVX512
+#endif // UME_SIMD_PLUGIN_NATIVE_AVX512_H_

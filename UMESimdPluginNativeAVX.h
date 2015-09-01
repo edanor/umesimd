@@ -24,12 +24,12 @@
 //
 //
 //  This piece of code was developed as part of ICE-DIP project at CERN.
-//  ‚ÄúICE-DIP is a European Industrial Doctorate project funded by the European Community‚Äôs 
-//  7th Framework programme Marie Curie Actions under grant PITN-GA-2012-316596‚Äù.
+//  ìICE-DIP is a European Industrial Doctorate project funded by the European Communityís 
+//  7th Framework programme Marie Curie Actions under grant PITN-GA-2012-316596î.
 //
 
-#ifndef UME_SIMD_PLUGIN_NATIVE_AVX_H_
-#define UME_SIMD_PLUGIN_NATIVE_AVX_H_
+#ifndef UME_SIMD_PLUGIN_NATIVE_AVX
+#define UME_SIMD_PLUGIN_NATIVE_AVX
 
 
 #include <type_traits>
@@ -983,11 +983,11 @@ namespace SIMD
 
     template<typename SCALAR_INT_TYPE, uint32_t VEC_LEN>
     class SIMDVecAVX_i final : public SIMDVecSignedInterface< SIMDVecAVX_i<SCALAR_INT_TYPE, VEC_LEN>, 
-        typename SIMDVecAVX_i_traits<SCALAR_INT_TYPE, VEC_LEN>::VEC_UINT,
-        SCALAR_INT_TYPE, 
-        VEC_LEN,
-        typename SIMDVecAVX_i_traits<SCALAR_INT_TYPE, VEC_LEN>::SCALAR_UINT_TYPE,
-        typename SIMDVecAVX_i_traits<SCALAR_INT_TYPE, VEC_LEN>::MASK_TYPE>
+                                                 typename SIMDVecAVX_i_traits<SCALAR_INT_TYPE, VEC_LEN>::VEC_UINT,
+                                                 SCALAR_INT_TYPE, 
+                                                 VEC_LEN,
+                                                 typename SIMDVecAVX_i_traits<SCALAR_INT_TYPE, VEC_LEN>::SCALAR_UINT_TYPE,
+                                                 typename SIMDVecAVX_i_traits<SCALAR_INT_TYPE, VEC_LEN>::MASK_TYPE>
     {
     public:
         typedef SIMDVecEmuRegister<SCALAR_INT_TYPE, VEC_LEN>                            VEC_EMU_REG;
@@ -1063,11 +1063,11 @@ namespace SIMD
 
     template<>
     class SIMDVecAVX_i<int32_t, 8>: public SIMDVecSignedInterface< SIMDVecAVX_i<int32_t, 8>, 
-        SIMDVecAVX_u<uint32_t, 8>,
-        int32_t, 
-        8,
-        uint32_t,
-        SIMDMask8>
+                                                 SIMDVecAVX_u<uint32_t, 8>,
+                                                 int32_t, 
+                                                 8,
+                                                 uint32_t,
+                                                 SIMDMask8>
     {
         friend class SIMDVecAVX_u<uint32_t, 8>;
         friend class SIMDVecAVX_f<float, 8>;
@@ -1257,12 +1257,12 @@ namespace SIMD
 
     template<typename SCALAR_FLOAT_TYPE, uint32_t VEC_LEN>
     class SIMDVecAVX_f final : public SIMDVecFloatInterface< SIMDVecAVX_f<SCALAR_FLOAT_TYPE, VEC_LEN>, 
-        typename SIMDVecAVX_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::VEC_UINT_TYPE,
-        typename SIMDVecAVX_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::VEC_INT_TYPE,
-        SCALAR_FLOAT_TYPE, 
-        VEC_LEN,
-        typename SIMDVecAVX_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::SCALAR_UINT_TYPE,
-        typename SIMDVecAVX_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::MASK_TYPE>
+                                                 typename SIMDVecAVX_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::VEC_UINT_TYPE,
+                                                 typename SIMDVecAVX_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::VEC_INT_TYPE,
+                                                 SCALAR_FLOAT_TYPE, 
+                                                 VEC_LEN,
+                                                 typename SIMDVecAVX_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::SCALAR_UINT_TYPE,
+                                                 typename SIMDVecAVX_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::MASK_TYPE>
     {
     public:
         typedef SIMDVecEmuRegister<SCALAR_FLOAT_TYPE, VEC_LEN>                            VEC_EMU_REG;
@@ -1330,12 +1330,12 @@ namespace SIMD
 
     template<>
     class SIMDVecAVX_f<float, 8> : public SIMDVecFloatInterface< SIMDVecAVX_f<float, 8>, 
-        SIMDVecAVX_u<uint32_t, 8>,
-        SIMDVecAVX_i<int32_t, 8>,
-        float, 
-        8,
-        uint32_t,
-        SIMDMask8>
+                                                 SIMDVecAVX_u<uint32_t, 8>,
+                                                 SIMDVecAVX_i<int32_t, 8>,
+                                                 float, 
+                                                 8,
+                                                 uint32_t,
+                                                 SIMDMask8>
     {
     private:
         __m256 mVec;
@@ -1493,10 +1493,10 @@ namespace SIMD
     typedef SIMDVecAVX_u<uint64_t, 8>   SIMD8_64u;
     
     // 1024b uint vectors
-    typedef SIMDVecAVX_u<uint8_t, 128>  SIMD128_8u;
-    typedef SIMDVecAVX_u<uint16_t, 64>  SIMD64_16u;
-    typedef SIMDVecAVX_u<uint32_t, 32>  SIMD32_32u;
-    typedef SIMDVecAVX_u<uint64_t, 16>  SIMD16_64u;
+    typedef SIMDVecAVX_u<uint8_t, 128>   SIMD128_8u;
+    typedef SIMDVecAVX_u<uint16_t, 64>   SIMD64_16u;
+    typedef SIMDVecAVX_u<uint32_t, 32>   SIMD32_32u;
+    typedef SIMDVecAVX_u<uint64_t, 16>   SIMD16_64u;
 
     // 64b int vectors
     typedef SIMDVecAVX_i<int8_t,   8>   SIMD8_8i; 
@@ -1549,4 +1549,4 @@ namespace SIMD
 } // SIMD
 } // UME
 
-#endif // UME_SIMD_PLUGIN_NATIVE_AVX_H_
+#endif // UME_SIMD_PLUGIN_NATIVE_AVX
