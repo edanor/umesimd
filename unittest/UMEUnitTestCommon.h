@@ -53,14 +53,14 @@ char *g_test_header_ptr = NULL;
     g_totalTests++; \
     g_testMaxId++; \
     if(!(cond)){\
-            if(g_supressMessages == false) std::cout << "FAIL " << g_test_header_ptr << " Id: " << g_testMaxId << " - " << (msg) << "\n"; \
-            g_totalFailed++; \
-            g_failCount++; \
-            g_allSuccess = false; \
+        if(g_supressMessages == false) std::cout << "FAIL " << g_test_header_ptr << " Id: " << g_testMaxId << " - " << (msg) << std::endl; \
+        g_totalFailed++; \
+        g_failCount++; \
+        g_allSuccess = false; \
     } \
     else \
     { \
-    if(g_supressMessages == false) std::cout << "OK   " << g_test_header_ptr << " Id: " << g_testMaxId << " - " << (msg) << "\n";  \
+        if(g_supressMessages == false) std::cout << "OK   " << g_test_header_ptr << " Id: " << g_testMaxId << " - " << (msg) << std::endl;  \
     }
 
 #define PRINT_MESSAGE(msg) if(g_supressMessages == false) std::cout << g_test_header_ptr <<  msg << std::endl;
