@@ -1,4 +1,4 @@
-// The MIT License (MIT)
+ï»¿// The MIT License (MIT)
 //
 // Copyright (c) 2015 CERN
 //
@@ -24,12 +24,12 @@
 //
 //
 //  This piece of code was developed as part of ICE-DIP project at CERN.
-//  “ICE-DIP is a European Industrial Doctorate project funded by the European Community’s 
-//  7th Framework programme Marie Curie Actions under grant PITN-GA-2012-316596”.
+//  "ICE-DIP is a European Industrial Doctorate project funded by the European Community's 
+//  7th Framework programme Marie Curie Actions under grant PITN-GA-2012-316596".
 //
 
-#ifndef UME_SIMD_PLUGIN_NATIVE_AVX
-#define UME_SIMD_PLUGIN_NATIVE_AVX
+#ifndef UME_SIMD_PLUGIN_NATIVE_AVX_H_
+#define UME_SIMD_PLUGIN_NATIVE_AVX_H_
 
 
 #include <type_traits>
