@@ -225,6 +225,76 @@ namespace SIMD
     // MASK VECTOR SPECIALIZATION
     // ********************************************************************************************
     template<>
+    class SIMDVecAVXMask<uint32_t, 4> : public SIMDMaskBaseInterface< 
+        SIMDVecAVXMask<uint32_t, 4>,
+        uint32_t,
+        4>
+    {   
+        static const uint32_t TRUE() { return 0xFFFFFFFF; };
+        static const uint32_t FALSE() { return 0x00000000; };
+
+        // This function returns internal representation of boolean value based on bool input
+        static inline uint32_t toMaskBool(bool m) { if (m == true) return TRUE(); else return FALSE(); }
+        // This function returns a boolean value based on internal representation
+        static inline bool toBool(uint32_t m) { if( (m & 0x80000000) != 0) return true; else return false; }
+
+        friend class SIMDVecAVX_u<uint32_t, 4>;
+        friend class SIMDVecAVX_i<int32_t, 4>;
+        friend class SIMDVecAVX_f<float, 4>;
+        friend class SIMDVecAVX_f<double, 4>;
+    private:
+        __m128i mMask;
+
+        SIMDVecAVXMask(__m128i const & x) { mMask = x; };
+    public:
+        SIMDVecAVXMask() {
+            mMask = _mm_set1_epi32(FALSE());
+        }
+
+        // Regardless of the mask representation, the interface should only allow initialization using 
+        // standard bool or using equivalent mask
+        SIMDVecAVXMask( bool m ) {
+            mMask = _mm_set1_epi32(toMaskBool(m));
+        }
+        
+        SIMDVecAVXMask( bool m0, bool m1, bool m2, bool m3 ) {
+            mMask = _mm_setr_epi32(toMaskBool(m0), toMaskBool(m1), 
+                                   toMaskBool(m2), toMaskBool(m3));
+        }
+        
+        SIMDVecAVXMask(SIMDVecAVXMask const & mask) {
+            this->mMask = mask.mMask;
+        }
+
+        inline bool extract(uint32_t index) const {
+            UME_PERFORMANCE_UNOPTIMAL_WARNING() 
+            alignas(32) uint32_t raw[8];
+            _mm_store_si128((__m128i*)raw, mMask);
+            return raw[index] == TRUE();
+        }
+        
+        // A non-modifying element-wise access operator
+        inline bool operator[] (uint32_t index) const { 
+            return extract(index);
+        }
+
+        // Element-wise modification operator
+        inline void insert(uint32_t index, bool x) {
+            UME_PERFORMANCE_UNOPTIMAL_WARNING() 
+            alignas(32) static uint32_t raw[8] = { 0, 0, 0, 0, 0, 0, 0, 0};
+            _mm_store_si128((__m128i*)raw, mMask);
+            raw[index] = toMaskBool(x);
+            mMask = _mm_load_si128((__m128i*)raw);
+        }
+
+        inline SIMDVecAVXMask<uint32_t, 4> & operator= (SIMDVecAVXMask<uint32_t, 4> const & x) {
+            //mMask = x.mMask;
+            mMask = _mm_load_si128(&x.mMask);
+            return *this;
+        }
+    };
+
+    template<>
     class SIMDVecAVXMask<uint32_t, 8> : public SIMDMaskBaseInterface< 
         SIMDVecAVXMask<uint32_t, 8>,
         uint32_t,
@@ -265,7 +335,6 @@ namespace SIMD
         }
         
         SIMDVecAVXMask(SIMDVecAVXMask const & mask) {
-            UME_EMULATION_WARNING();
             this->mMask = mask.mMask;
         }
 
@@ -300,7 +369,7 @@ namespace SIMD
     // Mask vectors. Mask vectors with bool base type will resolve into scalar emulation.
     typedef SIMDVecAVXMask<bool, 1>     SIMDMask1;
     typedef SIMDVecAVXMask<bool, 2>     SIMDMask2;
-    typedef SIMDVecAVXMask<bool, 4>     SIMDMask4;
+    typedef SIMDVecAVXMask<uint32_t, 4> SIMDMask4;
     typedef SIMDVecAVXMask<uint32_t, 8> SIMDMask8;
     typedef SIMDVecAVXMask<bool, 16>    SIMDMask16;
     typedef SIMDVecAVXMask<bool, 32>    SIMDMask32;
@@ -1331,6 +1400,127 @@ namespace SIMD
     // ********************************************************************************************
     // FLOATING POINT VECTOR specializations
     // ********************************************************************************************
+    
+    template<>
+    class SIMDVecAVX_f<float, 4> : public SIMDVecFloatInterface<
+        SIMDVecAVX_f<float, 4>, 
+        SIMDVecAVX_u<uint32_t, 4>,
+        SIMDVecAVX_i<int32_t, 4>,
+        float, 
+        4,
+        uint32_t,
+        SIMDMask4>
+    {
+    private:
+        __m128 mVec;
+
+        inline SIMDVecAVX_f(__m128 const & x) {
+            this->mVec = x; // TODO: should this be replaced with mov?
+        }
+
+    public:
+        inline SIMDVecAVX_f() {}
+
+        inline explicit SIMDVecAVX_f(float f) {
+            mVec = _mm_set1_ps(f);
+        }
+
+        inline SIMDVecAVX_f(float f0, float f1, float f2, float f3) {
+            mVec = _mm_setr_ps(f0, f1, f2, f3);
+        }
+
+        // EXTRACT
+        inline float extract (uint32_t index) const {
+            UME_PERFORMANCE_UNOPTIMAL_WARNING();
+            alignas(32) float raw[8];
+            _mm_store_ps(raw, mVec);
+            return raw[index];
+        }
+
+        // EXTRACT
+        inline float operator[] (uint32_t index) const {
+            UME_PERFORMANCE_UNOPTIMAL_WARNING();
+            return extract(index);
+        }
+                
+        // INSERT
+        inline SIMDVecAVX_f & insert (uint32_t index, float value) {
+            UME_PERFORMANCE_UNOPTIMAL_WARNING();
+            alignas(32) float raw[8];
+            _mm_store_ps(raw, mVec);
+            raw[index] = value;
+            mVec = _mm_load_ps(raw);
+            return *this;
+        }
+        
+        // ****************************************************************************************
+        // Overloading Interface functions starts here!
+        // ****************************************************************************************
+
+        // LOADA
+        inline SIMDVecAVX_f & loada (float const * p) {
+            mVec = _mm_load_ps(p); 
+            return *this;
+        }
+
+        // MLOADA
+        inline SIMDVecAVX_f & loada (SIMDMask4 const & mask, float const * p) {
+            __m128 t0 = _mm_load_ps(p);
+            mVec = _mm_blendv_ps(mVec, t0, _mm_castsi128_ps(mask.mMask));
+            return *this;
+        }
+
+        // STOREA
+        inline float* storea(float* p) {
+            _mm_store_ps(p, mVec);
+            return p;
+        }
+
+        // STOREA
+        inline float* storea(SIMDMask4 const & mask, float* p) {
+            _mm_maskstore_ps(p, mask.mMask, mVec);
+            return p;
+        }
+
+        // ADDV
+        inline SIMDVecAVX_f add (SIMDVecAVX_f const & b) {
+            __m128 t0 = _mm_add_ps(this->mVec, b.mVec);
+            return SIMDVecAVX_f(t0);
+        }
+        // MADDV
+        inline SIMDVecAVX_f add (SIMDMask4 const & mask, SIMDVecAVX_f const & b) {
+            __m128 t0 = _mm_add_ps(this->mVec, b.mVec);
+            return SIMDVecAVX_f(_mm_blendv_ps(mVec, t0, _mm_castsi128_ps(mask.mMask)));
+        }
+        // ADDS
+        inline SIMDVecAVX_f add (float b) {
+            return SIMDVecAVX_f(_mm_add_ps(this->mVec, _mm_set1_ps(b)));
+        }
+        // MADDS
+        inline SIMDVecAVX_f add (SIMDMask4 const & mask, float b) {
+            __m128 t0 = _mm_add_ps(this->mVec, _mm_set1_ps(b));
+            return SIMDVecAVX_f(_mm_blendv_ps(mVec, t0, _mm_castsi128_ps(mask.mMask)));
+        }
+        // ADDVA
+        inline SIMDVecAVX_f & adda (SIMDVecAVX_f const & b) {
+            mVec = _mm_add_ps(this->mVec, b.mVec);
+            return *this;
+        }
+        // ADDSA
+        inline SIMDVecAVX_f & adda (float b) {
+            mVec = _mm_add_ps(this->mVec, _mm_set1_ps(b));
+            return *this;
+        }
+        // MULV
+        inline SIMDVecAVX_f mul (SIMDVecAVX_f const & b) {
+            return SIMDVecAVX_f(_mm_mul_ps(this->mVec, b.mVec));
+        }
+        // MULS
+        inline SIMDVecAVX_f mul (float b) {
+            return SIMDVecAVX_f(_mm_mul_ps(this->mVec, _mm_set1_ps(b)));
+        }
+
+    };
 
     template<>
     class SIMDVecAVX_f<float, 8> : public SIMDVecFloatInterface<
@@ -1350,9 +1540,7 @@ namespace SIMD
         }
 
     public:
-        inline SIMDVecAVX_f() {
-            mVec = _mm256_set1_ps(0.0f);
-        }
+        inline SIMDVecAVX_f() {}
 
         inline explicit SIMDVecAVX_f(float f) {
             mVec = _mm256_set1_ps(f);
@@ -1395,22 +1583,26 @@ namespace SIMD
             mVec = _mm256_load_ps(p); 
             return *this;
         }
+
         // MLOADA
         inline SIMDVecAVX_f & loada (SIMDMask8 const & mask, float const * p) {
             __m256 t0 = _mm256_load_ps(p);
             mVec = _mm256_blendv_ps(mVec, t0, _mm256_castsi256_ps(mask.mMask));
             return *this;
         }
+
         // STOREA
         inline float* storea(float* p) {
             _mm256_store_ps(p, mVec);
             return p;
         }
+
         // STOREA
         inline float* storea(SIMDMask8 const & mask, float* p) {
             _mm256_maskstore_ps(p, mask.mMask, mVec);
             return p;
         }
+
         // ADDV
         inline SIMDVecAVX_f add (SIMDVecAVX_f const & b) {
             __m256 t0 = _mm256_add_ps(this->mVec, b.mVec);
@@ -1550,7 +1742,6 @@ namespace SIMD
     // 1024b float vectors
     typedef SIMDVecAVX_f<float,  32>    SIMD32_32f;
     typedef SIMDVecAVX_f<double, 16>    SIMD16_64f;
-
 } // SIMD
 } // UME
 

@@ -33,6 +33,7 @@
 
 #include <cstring>
 #include <cstdlib>
+#include <stdlib.h>
 
 #if defined (_MSC_VER)
 //#define UME_ALIGN(alignment) __declspec(align(alignment))
@@ -49,6 +50,12 @@
 #define UME_ALIGN(alignment) __attribute__ ((aligned(alignment)))
 #elif defined (__ICC) || defined(__INTEL_COMPILER)
 #endif
+/*
+void * aligned_alloc(size_t alignment, size_t size) {
+    void* ptr = malloc(size);
+    return std::align(alignment, size, ptr, size);    
+}
+*/
 
 #define ALIGNED_TYPE(type, alignment) typedef type UME_ALIGN(alignment)
 

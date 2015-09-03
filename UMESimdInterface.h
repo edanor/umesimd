@@ -36,6 +36,7 @@
 
 #include "UMEBasicTypes.h"
 
+
 #if defined (_MSC_VER)
 // WORKAROUND: Visual studio 2012 does not provide implementation for c++ 11 std::trunc, but VS2013 already has it.
 #if _MSC_VER < 1800
@@ -50,6 +51,9 @@ namespace std
     inline bool       isfinite( float f) { return _finite((double)f) != 0 ? true : false; }
     inline bool       isfinite( double f) { return _finite(f) != 0 ? true : false; }
 }
+
+#define constexpr 
+
 #endif
 #endif
 
@@ -2811,9 +2815,9 @@ namespace SIMD
     public:
     
         // TODO: can be marked as constexpr?
-        static uint32_t length() { return VEC_LEN; };
+        constexpr static uint32_t length() { return VEC_LEN; };
 
-        static int alignment() { return VEC_LEN*sizeof(SCALAR_TYPE); };
+        constexpr static uint32_t alignment() { return VEC_LEN*sizeof(SCALAR_TYPE); };
         
         inline SCALAR_TYPE extract(uint32_t index)
         {

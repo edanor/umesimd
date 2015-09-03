@@ -1346,14 +1346,12 @@ namespace SIMD
     private:
         __m256 mVec;
 
-        inline SIMDVecAVX2_f(__m256 & x) {
+        inline SIMDVecAVX2_f(__m256 const & x) {
             this->mVec = x;
         }
 
     public:
-        inline SIMDVecAVX2_f() {
-            mVec = _mm256_set1_ps(0.0f);
-        }
+        inline SIMDVecAVX2_f() {}
 
         inline explicit SIMDVecAVX2_f(float f) {
             mVec = _mm256_set1_ps(f);
@@ -1363,11 +1361,119 @@ namespace SIMD
             mVec = _mm256_setr_ps(f0, f1, f2, f3, f4, f5, f6, f7);
         }
 
-        float operator[] (uint32_t index) const {
-            return 0.0f;
+        // EXTRACT
+        inline float extract (uint32_t index) const {
+            UME_PERFORMANCE_UNOPTIMAL_WARNING();
+            alignas(32) float raw[8];
+            _mm256_store_ps(raw, mVec);
+            return raw[index];
         }
-        inline SIMDVecAVX2_f & insert(uint32_t index, float value) {
+
+        // EXTRACT
+        inline float operator[] (uint32_t index) const {
+            UME_PERFORMANCE_UNOPTIMAL_WARNING();
+            return extract(index);
+        }
+                
+        // INSERT
+        inline SIMDVecAVX2_f & insert (uint32_t index, float value) {
+            UME_PERFORMANCE_UNOPTIMAL_WARNING();
+            alignas(32) float raw[8];
+            _mm256_store_ps(raw, mVec);
+            raw[index] = value;
+            mVec = _mm256_load_ps(raw);
             return *this;
+        }
+        
+        // ****************************************************************************************
+        // Overloading Interface functions starts here!
+        // ****************************************************************************************
+
+        // LOADA
+        inline SIMDVecAVX2_f & loada (float const * p) {
+            mVec = _mm256_load_ps(p); 
+            return *this;
+        }
+
+        // MLOADA
+        inline SIMDVecAVX2_f & loada (SIMDMask8 const & mask, float const * p) {
+            __m256 t0 = _mm256_load_ps(p);
+            mVec = _mm256_blendv_ps(mVec, t0, _mm256_castsi256_ps(mask.mMask));
+            return *this;
+        }
+
+        // STOREA
+        inline float* storea(float* p) {
+            _mm256_store_ps(p, mVec);
+            return p;
+        }
+
+        // STOREA
+        inline float* storea(SIMDMask8 const & mask, float* p) {
+            _mm256_maskstore_ps(p, mask.mMask, mVec);
+            return p;
+        }
+
+        // ADDV
+        inline SIMDVecAVX2_f add (SIMDVecAVX2_f const & b) {
+            __m256 t0 = _mm256_add_ps(this->mVec, b.mVec);
+            return SIMDVecAVX2_f(t0);
+        }
+        // MADDV
+        inline SIMDVecAVX2_f add (SIMDMask8 const & mask, SIMDVecAVX2_f const & b) {
+            __m256 t0 = _mm256_add_ps(this->mVec, b.mVec);
+            return SIMDVecAVX2_f(_mm256_blendv_ps(mVec, t0, _mm256_castsi256_ps(mask.mMask)));
+        }
+        // ADDS
+        inline SIMDVecAVX2_f add (float b) {
+            return SIMDVecAVX2_f(_mm256_add_ps(this->mVec, _mm256_set1_ps(b)));
+        }
+        // MADDS
+        inline SIMDVecAVX2_f add (SIMDMask8 const & mask, float b) {
+            __m256 t0 = _mm256_add_ps(this->mVec, _mm256_set1_ps(b));
+            return SIMDVecAVX2_f(_mm256_blendv_ps(mVec, t0, _mm256_castsi256_ps(mask.mMask)));
+        }
+        // ADDVA
+        inline SIMDVecAVX2_f & adda (SIMDVecAVX2_f const & b) {
+            mVec = _mm256_add_ps(this->mVec, b.mVec);
+            return *this;
+        }
+        // ADDSA
+        inline SIMDVecAVX2_f & adda (float b) {
+            mVec = _mm256_add_ps(this->mVec, _mm256_set1_ps(b));
+            return *this;
+        }
+        // MULV
+        inline SIMDVecAVX2_f mul (SIMDVecAVX2_f const & b) {
+            return SIMDVecAVX2_f(_mm256_mul_ps(this->mVec, b.mVec));
+        }
+        // MULS
+        inline SIMDVecAVX2_f mul (float b) {
+            return SIMDVecAVX2_f(_mm256_mul_ps(this->mVec, _mm256_set1_ps(b)));
+        }
+        // RCP
+        inline SIMDVecAVX2_f rcp () {
+            return SIMDVecAVX2_f(_mm256_rcp_ps(this->mVec));
+        }
+        // ABS
+        inline SIMDVecAVX2_f abs () {
+            return _mm256_setzero_ps();
+        }
+
+        // SQRT
+        SIMDVecAVX2_f sqrt () {
+            return SIMDVecAVX2_f(_mm256_sqrt_ps(mVec));
+        }
+        // MSQRT
+        SIMDVecAVX2_f sqrt (SIMDMask8 const & mask) {
+            __m256 mask_ps = _mm256_castsi256_ps(mask.mMask);
+            __m256 ret = _mm256_sqrt_ps(mVec);
+            return SIMDVecAVX2_f(_mm256_blendv_ps(mVec, ret, mask_ps));
+        }
+        // TRUNC
+        SIMDVecAVX2_i<int32_t, 8> trunc () {
+            __m256i t0 = _mm256_cvttps_epi32(mVec);
+            return SIMDVecAVX2_i<int32_t, 8>(t0);
         }
     };
 
