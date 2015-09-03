@@ -104,9 +104,10 @@ namespace SIMD
     //                for the compiler to implicitly cast it to integer. To forbid this casting operations from
     //                happening the default type has to be wrapped into a class. 
     template<typename MASK_BASE_TYPE, uint32_t VEC_LEN>
-    class SIMDVecAVX2Mask final : public SIMDMaskBaseInterface< SIMDVecAVX2Mask<MASK_BASE_TYPE, VEC_LEN>,
-                                                               MASK_BASE_TYPE,
-                                                               VEC_LEN>
+    class SIMDVecAVX2Mask final : public SIMDMaskBaseInterface<
+        SIMDVecAVX2Mask<MASK_BASE_TYPE, VEC_LEN>,
+        MASK_BASE_TYPE,
+        VEC_LEN>
     {   
         typedef ScalarTypeWrapper<MASK_BASE_TYPE> MASK_SCALAR_TYPE; // Wrapp-up MASK_BASE_TYPE (int, float, bool) with a class
         typedef SIMDVecAVX2Mask_traits<MASK_BASE_TYPE, VEC_LEN> MASK_TRAITS;
@@ -224,9 +225,9 @@ namespace SIMD
     // ********************************************************************************************
     template<>
     class SIMDVecAVX2Mask<uint32_t, 8> : public SIMDMaskBaseInterface< 
-                                                               SIMDVecAVX2Mask<uint32_t, 8>,
-                                                               uint32_t,
-                                                               8>
+        SIMDVecAVX2Mask<uint32_t, 8>,
+        uint32_t,
+        8>
     {   
         static const uint32_t TRUE() { return 0xFFFFFFFF; };
         static const uint32_t FALSE() { return 0x00000000; };
@@ -359,6 +360,7 @@ namespace SIMD
         typedef SIMDMask2 MASK_TYPE;
     };
 
+    // 256b vectors
     template<>
     struct SIMDVecAVX2_u_traits<uint8_t, 32>{
         typedef int8_t   SCALAR_INT_TYPE;
@@ -367,7 +369,7 @@ namespace SIMD
     
     template<>
     struct SIMDVecAVX2_u_traits<uint16_t, 16>{
-        typedef int16_t   SCALAR_INT_TYPE;
+        typedef int16_t    SCALAR_INT_TYPE;
         typedef SIMDMask16 MASK_TYPE;
     };
 
@@ -383,6 +385,57 @@ namespace SIMD
         typedef SIMDMask4 MASK_TYPE;
     };
     
+    // 512b vectors
+    template<>
+    struct SIMDVecAVX2_u_traits<uint8_t, 64>{
+        typedef int8_t   SCALAR_INT_TYPE;
+        typedef SIMDMask64 MASK_TYPE;
+    };
+    
+    template<>
+    struct SIMDVecAVX2_u_traits<uint16_t, 32>{
+        typedef int16_t    SCALAR_INT_TYPE;
+        typedef SIMDMask32 MASK_TYPE;
+    };
+
+    template<>
+    struct SIMDVecAVX2_u_traits<uint32_t, 16>{
+        typedef int32_t   SCALAR_INT_TYPE;
+        typedef SIMDMask16 MASK_TYPE;
+    };
+    
+    template<>
+    struct SIMDVecAVX2_u_traits<uint64_t, 8>{
+        typedef int64_t   SCALAR_INT_TYPE;
+        typedef SIMDMask8 MASK_TYPE;
+    };
+    
+    // 1024b vectors
+    template<>
+    struct SIMDVecAVX2_u_traits<uint8_t, 128>{
+        typedef int8_t   SCALAR_INT_TYPE;
+        typedef SIMDMask128 MASK_TYPE;
+    };
+    
+    template<>
+    struct SIMDVecAVX2_u_traits<uint16_t, 64>{
+        typedef int16_t    SCALAR_INT_TYPE;
+        typedef SIMDMask64 MASK_TYPE;
+    };
+
+    template<>
+    struct SIMDVecAVX2_u_traits<uint32_t, 32>{
+        typedef int32_t   SCALAR_INT_TYPE;
+        typedef SIMDMask32 MASK_TYPE;
+    };
+    
+    template<>
+    struct SIMDVecAVX2_u_traits<uint64_t, 16>{
+        typedef int64_t   SCALAR_INT_TYPE;
+        typedef SIMDMask16 MASK_TYPE;
+    };
+
+
     template<typename SCALAR_UINT_TYPE, uint32_t VEC_LEN>
     class SIMDVecAVX2_u final : public SIMDVecUnsignedInterface< 
         SIMDVecAVX2_u<SCALAR_UINT_TYPE, VEC_LEN>, // DERIVED_VEC_TYPE
@@ -842,6 +895,7 @@ namespace SIMD
         typedef SIMDMask2 MASK_TYPE;
     };
 
+    // 256b vectors
     template<>
     struct SIMDVecAVX2_i_traits<int8_t, 32>{
         typedef SIMDVecAVX2_u<uint8_t, 32> VEC_UINT;
@@ -869,14 +923,74 @@ namespace SIMD
         typedef uint64_t SCALAR_UINT_TYPE;
         typedef SIMDMask4 MASK_TYPE;
     };
+    
+    // 512b vectors
+    template<>
+    struct SIMDVecAVX2_i_traits<int8_t, 64>{
+        typedef SIMDVecAVX2_u<uint8_t, 64> VEC_UINT;
+        typedef uint8_t SCALAR_UINT_TYPE;
+        typedef SIMDMask64 MASK_TYPE;
+    };
+    
+    template<>
+    struct SIMDVecAVX2_i_traits<int16_t, 32>{
+        typedef SIMDVecAVX2_u<uint16_t, 32> VEC_UINT;
+        typedef uint16_t SCALAR_UINT_TYPE;
+        typedef SIMDMask32 MASK_TYPE;
+    };
+    
+    template<>
+    struct SIMDVecAVX2_i_traits<int32_t, 16>{
+        typedef SIMDVecAVX2_u<uint32_t, 16> VEC_UINT;
+        typedef uint32_t SCALAR_UINT_TYPE;
+        typedef SIMDMask16 MASK_TYPE;
+    };
+
+    template<>
+    struct SIMDVecAVX2_i_traits<int64_t, 8>{
+        typedef SIMDVecAVX2_u<uint64_t, 8> VEC_UINT;
+        typedef uint64_t SCALAR_UINT_TYPE;
+        typedef SIMDMask8 MASK_TYPE;
+    };
+    
+    // 1024b vectors
+    template<>
+    struct SIMDVecAVX2_i_traits<int8_t, 128>{
+        typedef SIMDVecAVX2_u<uint8_t, 128> VEC_UINT;
+        typedef uint8_t SCALAR_UINT_TYPE;
+        typedef SIMDMask128 MASK_TYPE;
+    };
+    
+    template<>
+    struct SIMDVecAVX2_i_traits<int16_t, 64>{
+        typedef SIMDVecAVX2_u<uint16_t, 64> VEC_UINT;
+        typedef uint16_t SCALAR_UINT_TYPE;
+        typedef SIMDMask64 MASK_TYPE;
+    };
+    
+    template<>
+    struct SIMDVecAVX2_i_traits<int32_t, 32>{
+        typedef SIMDVecAVX2_u<uint32_t, 32> VEC_UINT;
+        typedef uint32_t SCALAR_UINT_TYPE;
+        typedef SIMDMask32 MASK_TYPE;
+    };
+
+    template<>
+    struct SIMDVecAVX2_i_traits<int64_t, 16>{
+        typedef SIMDVecAVX2_u<uint64_t, 16> VEC_UINT;
+        typedef uint64_t SCALAR_UINT_TYPE;
+        typedef SIMDMask16 MASK_TYPE;
+    };
+
 
     template<typename SCALAR_INT_TYPE, uint32_t VEC_LEN>
-    class SIMDVecAVX2_i final : public SIMDVecSignedInterface< SIMDVecAVX2_i<SCALAR_INT_TYPE, VEC_LEN>, 
-                                                 typename SIMDVecAVX2_i_traits<SCALAR_INT_TYPE, VEC_LEN>::VEC_UINT,
-                                                 SCALAR_INT_TYPE, 
-                                                 VEC_LEN,
-                                                 typename SIMDVecAVX2_i_traits<SCALAR_INT_TYPE, VEC_LEN>::SCALAR_UINT_TYPE,
-                                                 typename SIMDVecAVX2_i_traits<SCALAR_INT_TYPE, VEC_LEN>::MASK_TYPE>
+    class SIMDVecAVX2_i final : public SIMDVecSignedInterface<
+        SIMDVecAVX2_i<SCALAR_INT_TYPE, VEC_LEN>, 
+        typename SIMDVecAVX2_i_traits<SCALAR_INT_TYPE, VEC_LEN>::VEC_UINT,
+        SCALAR_INT_TYPE, 
+        VEC_LEN,
+        typename SIMDVecAVX2_i_traits<SCALAR_INT_TYPE, VEC_LEN>::SCALAR_UINT_TYPE,
+        typename SIMDVecAVX2_i_traits<SCALAR_INT_TYPE, VEC_LEN>::MASK_TYPE>
     {
     public:
         typedef SIMDVecEmuRegister<SCALAR_INT_TYPE, VEC_LEN>                            VEC_EMU_REG;
@@ -951,12 +1065,13 @@ namespace SIMD
     // ********************************************************************************************
 
     template<>
-    class SIMDVecAVX2_i<int32_t, 8>: public SIMDVecSignedInterface< SIMDVecAVX2_i<int32_t, 8>, 
-                                                 SIMDVecAVX2_u<uint32_t, 8>,
-                                                 int32_t, 
-                                                 8,
-                                                 uint32_t,
-                                                 SIMDMask8>
+    class SIMDVecAVX2_i<int32_t, 8>: public SIMDVecSignedInterface<
+        SIMDVecAVX2_i<int32_t, 8>, 
+        SIMDVecAVX2_u<uint32_t, 8>,
+        int32_t, 
+        8,
+        uint32_t,
+        SIMDMask8>
     {
         friend class SIMDVecAVX2_u<uint32_t, 8>;
         friend class SIMDVecAVX2_f<float, 8>;
@@ -1048,78 +1163,111 @@ namespace SIMD
         // Generic trait class not containing type definition so that only correct explicit
         // type definitions are compiled correctly
     };
+
+    // 64b vectors
+    template<>
+    struct SIMDVecAVX2_f_traits<float, 2>{
+        typedef SIMDVecAVX2_u<uint32_t, 2> VEC_UINT_TYPE;
+        typedef SIMDVecAVX2_i<int32_t, 2>  VEC_INT_TYPE;
+        typedef int32_t                    SCALAR_INT_TYPE;
+        typedef uint32_t                   SCALAR_UINT_TYPE;
+        typedef float*                     SCALAR_TYPE_PTR;
+        typedef SIMDMask4                  MASK_TYPE;
+    };
     
     // 128b vectors
     template<>
     struct SIMDVecAVX2_f_traits<float, 4>{
-        typedef SIMDVecAVX2_u<uint64_t, 8>  VEC_UINT_TYPE;
+        typedef SIMDVecAVX2_u<uint32_t, 4> VEC_UINT_TYPE;
         typedef SIMDVecAVX2_i<int32_t, 4>  VEC_INT_TYPE;
-        typedef int32_t                   SCALAR_INT_TYPE;
-        typedef uint32_t                  SCALAR_UINT_TYPE;
-        typedef float*                    SCALAR_TYPE_PTR;
-        typedef SIMDMask4                 MASK_TYPE;
+        typedef int32_t                    SCALAR_INT_TYPE;
+        typedef uint32_t                   SCALAR_UINT_TYPE;
+        typedef float*                     SCALAR_TYPE_PTR;
+        typedef SIMDMask4                  MASK_TYPE;
     };
 
     template<>
     struct SIMDVecAVX2_f_traits<double, 2>{
-        typedef SIMDVecAVX2_u<uint64_t, 8>  VEC_UINT_TYPE;
+        typedef SIMDVecAVX2_u<uint64_t, 2> VEC_UINT_TYPE;
         typedef SIMDVecAVX2_i<int64_t, 2>  VEC_INT_TYPE;
-        typedef int64_t                   SCALAR_INT_TYPE;
-        typedef uint64_t                  SCALAR_UINT_TYPE;
-        typedef double*                   SCALAR_TYPE_PTR;
-        typedef SIMDMask2                 MASK_TYPE;
+        typedef int64_t                    SCALAR_INT_TYPE;
+        typedef uint64_t                   SCALAR_UINT_TYPE;
+        typedef double*                    SCALAR_TYPE_PTR;
+        typedef SIMDMask2                  MASK_TYPE;
     };
 
     // 256b vectors
     template<>
     struct SIMDVecAVX2_f_traits<float, 8>{
-        typedef SIMDVecAVX2_u<uint64_t, 8>  VEC_UINT_TYPE;
+        typedef SIMDVecAVX2_u<uint64_t, 8> VEC_UINT_TYPE;
         typedef SIMDVecAVX2_i<int32_t, 8>  VEC_INT_TYPE;
-        typedef int32_t                   SCALAR_INT_TYPE;
-        typedef uint32_t                  SCALAR_UINT_TYPE;
-        typedef float*                    SCALAR_TYPE_PTR;
-        typedef SIMDMask8                 MASK_TYPE;
+        typedef int32_t                    SCALAR_INT_TYPE;
+        typedef uint32_t                   SCALAR_UINT_TYPE;
+        typedef float*                     SCALAR_TYPE_PTR;
+        typedef SIMDMask8                  MASK_TYPE;
     };
 
     template<>
     struct SIMDVecAVX2_f_traits<double, 4>{
-        typedef SIMDVecAVX2_u<uint64_t, 8>  VEC_UINT_TYPE;
+        typedef SIMDVecAVX2_u<uint64_t, 4> VEC_UINT_TYPE;
         typedef SIMDVecAVX2_i<int64_t, 4>  VEC_INT_TYPE;
-        typedef int64_t                   SCALAR_INT_TYPE;
-        typedef uint64_t                  SCALAR_UINT_TYPE;
-        typedef double*                   SCALAR_TYPE_PTR;
-        typedef SIMDMask4                 MASK_TYPE;
+        typedef int64_t                    SCALAR_INT_TYPE;
+        typedef uint64_t                   SCALAR_UINT_TYPE;
+        typedef double*                    SCALAR_TYPE_PTR;
+        typedef SIMDMask4                  MASK_TYPE;
     };
     
     // 512b vectors
     template<>
-    struct SIMDVecAVX2_f_traits<float, 16>{
-        typedef SIMDVecAVX2_u<uint64_t, 8>  VEC_UINT_TYPE;
-        typedef SIMDVecAVX2_i<int32_t, 16> VEC_INT_TYPE;
-        typedef int32_t                   SCALAR_INT_TYPE;
-        typedef uint32_t                  SCALAR_UINT_TYPE;
-        typedef float*                    SCALAR_TYPE_PTR;
-        typedef SIMDMask16                MASK_TYPE;
+    struct SIMDVecAVX2_f_traits<float,  16>{
+        typedef SIMDVecAVX2_u<uint32_t, 16> VEC_UINT_TYPE;
+        typedef SIMDVecAVX2_i<int32_t,  16> VEC_INT_TYPE;
+        typedef int32_t                    SCALAR_INT_TYPE;
+        typedef uint32_t                   SCALAR_UINT_TYPE;
+        typedef float*                     SCALAR_TYPE_PTR;
+        typedef SIMDMask16                 MASK_TYPE;
     };
     
     template<>
     struct SIMDVecAVX2_f_traits<double, 8>{
-        typedef SIMDVecAVX2_u<uint64_t, 8>  VEC_UINT_TYPE;
+        typedef SIMDVecAVX2_u<uint64_t, 8> VEC_UINT_TYPE;
         typedef SIMDVecAVX2_i<int64_t, 8>  VEC_INT_TYPE;
-        typedef int64_t                   SCALAR_INT_TYPE;
-        typedef uint64_t                  SCALAR_UINT_TYPE;
-        typedef double*                   SCALAR_TYPE_PTR;
-        typedef SIMDMask8                 MASK_TYPE;
+        typedef int64_t                    SCALAR_INT_TYPE;
+        typedef uint64_t                   SCALAR_UINT_TYPE;
+        typedef double*                    SCALAR_TYPE_PTR;
+        typedef SIMDMask8                  MASK_TYPE;
+    };
+    
+    // 1024b vectors
+    template<>
+    struct SIMDVecAVX2_f_traits<float,  32>{
+        typedef SIMDVecAVX2_u<uint32_t, 32> VEC_UINT_TYPE;
+        typedef SIMDVecAVX2_i<int32_t,  32> VEC_INT_TYPE;
+        typedef int32_t                    SCALAR_INT_TYPE;
+        typedef uint32_t                   SCALAR_UINT_TYPE;
+        typedef float*                     SCALAR_TYPE_PTR;
+        typedef SIMDMask32                 MASK_TYPE;
+    };
+    
+    template<>
+    struct SIMDVecAVX2_f_traits<double, 16>{
+        typedef SIMDVecAVX2_u<uint64_t, 16> VEC_UINT_TYPE;
+        typedef SIMDVecAVX2_i<int64_t, 16>  VEC_INT_TYPE;
+        typedef int64_t                    SCALAR_INT_TYPE;
+        typedef uint64_t                   SCALAR_UINT_TYPE;
+        typedef double*                    SCALAR_TYPE_PTR;
+        typedef SIMDMask16                  MASK_TYPE;
     };
 
     template<typename SCALAR_FLOAT_TYPE, uint32_t VEC_LEN>
-    class SIMDVecAVX2_f final : public SIMDVecFloatInterface< SIMDVecAVX2_f<SCALAR_FLOAT_TYPE, VEC_LEN>, 
-                                                 typename SIMDVecAVX2_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::VEC_UINT_TYPE,
-                                                 typename SIMDVecAVX2_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::VEC_INT_TYPE,
-                                                 SCALAR_FLOAT_TYPE, 
-                                                 VEC_LEN,
-                                                 typename SIMDVecAVX2_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::SCALAR_UINT_TYPE,
-                                                 typename SIMDVecAVX2_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::MASK_TYPE>
+    class SIMDVecAVX2_f final : public SIMDVecFloatInterface< 
+        SIMDVecAVX2_f<SCALAR_FLOAT_TYPE, VEC_LEN>, 
+        typename SIMDVecAVX2_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::VEC_UINT_TYPE,
+        typename SIMDVecAVX2_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::VEC_INT_TYPE,
+        SCALAR_FLOAT_TYPE, 
+        VEC_LEN,
+        typename SIMDVecAVX2_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::SCALAR_UINT_TYPE,
+        typename SIMDVecAVX2_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::MASK_TYPE>
     {
     public:
         typedef SIMDVecEmuRegister<SCALAR_FLOAT_TYPE, VEC_LEN>                            VEC_EMU_REG;
@@ -1186,13 +1334,14 @@ namespace SIMD
     // ********************************************************************************************
 
     template<>
-    class SIMDVecAVX2_f<float, 8> : public SIMDVecFloatInterface< SIMDVecAVX2_f<float, 8>, 
-                                                 SIMDVecAVX2_u<uint32_t, 8>,
-                                                 SIMDVecAVX2_i<int32_t, 8>,
-                                                 float, 
-                                                 8,
-                                                 uint32_t,
-                                                 SIMDMask8>
+    class SIMDVecAVX2_f<float, 8> : public SIMDVecFloatInterface<
+        SIMDVecAVX2_f<float, 8>, 
+        SIMDVecAVX2_u<uint32_t, 8>,
+        SIMDVecAVX2_i<int32_t, 8>,
+        float, 
+        8,
+        uint32_t,
+        SIMDMask8>
     {
     private:
         __m256 mVec;
@@ -1214,14 +1363,13 @@ namespace SIMD
             mVec = _mm256_setr_ps(f0, f1, f2, f3, f4, f5, f6, f7);
         }
 
+        float operator[] (uint32_t index) const {
+            return 0.0f;
+        }
+        inline SIMDVecAVX2_f & insert(uint32_t index, float value) {
+            return *this;
+        }
     };
-
-    // 16b uint vectors
-    typedef SIMDVecAVX2_u<uint8_t,  2>   SIMD2_8u;
-
-    // 32b uint vectors
-    typedef SIMDVecAVX2_u<uint8_t,  4>   SIMD4_8u;
-    typedef SIMDVecAVX2_u<uint16_t, 2>   SIMD2_16u;
 
     // 64b uint vectors
     typedef SIMDVecAVX2_u<uint8_t,  8>   SIMD8_8u;
@@ -1243,16 +1391,15 @@ namespace SIMD
     // 512b uint vectors
     typedef SIMDVecAVX2_u<uint8_t,  64>  SIMD64_8u;
     typedef SIMDVecAVX2_u<uint16_t, 32>  SIMD32_16u;
-    typedef SIMDVecAVX2_u<uint32_t, 16>  SIMD16_u32;
-    typedef SIMDVecAVX2_u<uint64_t, 8>   SIMD8_u64;
-    
-    // 16b int vectors
-    typedef SIMDVecAVX2_i<int8_t,   2>   SIMD2_8i;
-    
-    // 32b int vectors
-    typedef SIMDVecAVX2_i<int8_t,   4>   SIMD4_8i;
-    typedef SIMDVecAVX2_i<int16_t,  2>   SIMD2_16i;
-    
+    typedef SIMDVecAVX2_u<uint32_t, 16>  SIMD16_32u;
+    typedef SIMDVecAVX2_u<uint64_t, 8>   SIMD8_64u;
+   
+    // 1024b uint vectors
+    typedef SIMDVecAVX2_u<uint8_t,  128>  SIMD128_8u;
+    typedef SIMDVecAVX2_u<uint16_t,  64>  SIMD64_16u;
+    typedef SIMDVecAVX2_u<uint32_t,  32>  SIMD32_32u;
+    typedef SIMDVecAVX2_u<uint64_t,  16>  SIMD16_64u;
+
     // 64b int vectors
     typedef SIMDVecAVX2_i<int8_t,   8>   SIMD8_8i; 
     typedef SIMDVecAVX2_i<int16_t,  4>   SIMD4_16i;
@@ -1264,27 +1411,42 @@ namespace SIMD
     typedef SIMDVecAVX2_i<int32_t,  4>   SIMD4_32i;
     typedef SIMDVecAVX2_i<int64_t,  2>   SIMD2_64i;
 
-    typedef SIMDVecAVX2_f<float,  4>     SIMD4_32f;
-    typedef SIMDVecAVX2_f<double, 2>     SIMD2_64f;
-
     // 256b int vectors
     typedef SIMDVecAVX2_i<int8_t,   32>  SIMD32_8i;
     typedef SIMDVecAVX2_i<int16_t,  16>  SIMD16_16i;
     typedef SIMDVecAVX2_i<int32_t,  8>   SIMD8_32i;
     typedef SIMDVecAVX2_i<int64_t,  4>   SIMD4_64i;
     
-    typedef SIMDVecAVX2_f<float,  8>     SIMD8_32f;
-    typedef SIMDVecAVX2_f<double, 4>     SIMD4_64f;
-    
     // 512b int vectors
     typedef SIMDVecAVX2_i<int8_t,   64>  SIMD64_8i;
     typedef SIMDVecAVX2_i<int16_t,  32>  SIMD32_16i;
-    typedef SIMDVecAVX2_i<int32_t,  16>  SIMD16_i32;
-    typedef SIMDVecAVX2_i<int64_t,  8>   SIMD8_i64;
+    typedef SIMDVecAVX2_i<int32_t,  16>  SIMD16_32i;
+    typedef SIMDVecAVX2_i<int64_t,  8>   SIMD8_64i;
+    
+    // 1024b int vectors
+    typedef SIMDVecAVX2_i<int8_t,  128>  SIMD128_8i;
+    typedef SIMDVecAVX2_i<int16_t,  64>  SIMD64_16i;
+    typedef SIMDVecAVX2_i<int32_t,  32>  SIMD32_32i;
+    typedef SIMDVecAVX2_i<int64_t,  16>  SIMD16_64i;
 
+    // 64b float vectors
+    typedef SIMDVecAVX2_f<float, 2>      SIMD2_32f;
+
+    // 128b float vectors
+    typedef SIMDVecAVX2_f<float,  4>     SIMD4_32f;
+    typedef SIMDVecAVX2_f<double, 2>     SIMD2_64f;
+
+    // 256b float vectors
+    typedef SIMDVecAVX2_f<float,  8>     SIMD8_32f;
+    typedef SIMDVecAVX2_f<double, 4>     SIMD4_64f;
+
+    // 512b float vectors
     typedef SIMDVecAVX2_f<float,  16>    SIMD16_32f;
     typedef SIMDVecAVX2_f<double, 8>     SIMD8_64f;
-
+    
+    // 1024b float vectors
+    typedef SIMDVecAVX2_f<float,  32>    SIMD32_32f;
+    typedef SIMDVecAVX2_f<double, 16>    SIMD16_64f;
 } // SIMD
 } // UME
 
