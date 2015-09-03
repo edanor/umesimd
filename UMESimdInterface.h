@@ -946,8 +946,8 @@ namespace SIMD
                   else topBit = false;
                   
                   shifted <<= 1;        
-                  if(topBit == true)        shifted |= SCALAR_TYPE(1);
-                  else if (topBit == false) shifted &= ~(SCALAR_TYPE(1)); 
+                  if(topBit == true) shifted |= SCALAR_TYPE(1);
+                  else               shifted &= ~(SCALAR_TYPE(1)); 
                 }
                 retval.insert(i, shifted); 
             }
@@ -974,8 +974,8 @@ namespace SIMD
                       else topBit = false;
                       
                       shifted <<= 1;        
-                      if(topBit == true)        shifted |= SCALAR_TYPE(1);
-                      else if (topBit == false) shifted &= ~(SCALAR_TYPE(1)); 
+                      if(topBit == true) shifted |= SCALAR_TYPE(1);
+                      else               shifted &= ~(SCALAR_TYPE(1)); 
                     }
                     retval.insert(i, shifted);
                 } 
@@ -1004,8 +1004,8 @@ namespace SIMD
                   else topBit = false;
                   
                   shifted <<= 1;        
-                  if(topBit == true)        shifted |= SCALAR_TYPE(1);
-                  else if (topBit == false) shifted &= ~(SCALAR_TYPE(1)); 
+                  if(topBit == true) shifted |= SCALAR_TYPE(1);
+                  else               shifted &= ~(SCALAR_TYPE(1)); 
                 }
                 retval.insert(i, shifted); 
             }
@@ -1031,8 +1031,8 @@ namespace SIMD
                       else topBit = false;
                       
                       shifted <<= 1;        
-                      if(topBit == true)        shifted |= SCALAR_TYPE(1);
-                      else if (topBit == false) shifted &= ~(SCALAR_TYPE(1)); 
+                      if(topBit == true) shifted |= SCALAR_TYPE(1);
+                      else               shifted &= ~(SCALAR_TYPE(1)); 
                     }
                     retval.insert(i, shifted);
                 }
@@ -1062,8 +1062,8 @@ namespace SIMD
                   else topBit = false;
                   
                   shifted <<= 1;        
-                  if(topBit == true)        shifted |= SCALAR_TYPE(1);
-                  else if (topBit == false) shifted &= ~(SCALAR_TYPE(1)); 
+                  if(topBit == true) shifted |= SCALAR_TYPE(1);
+                  else               shifted &= ~(SCALAR_TYPE(1)); 
                 }
                 a.insert(i, shifted); 
             }
@@ -1090,8 +1090,8 @@ namespace SIMD
                       else topBit = false;
                       
                       shifted <<= 1;        
-                      if(topBit == true)        shifted |= SCALAR_TYPE(1);
-                      else if (topBit == false) shifted &= ~(SCALAR_TYPE(1)); 
+                      if(topBit == true) shifted |= SCALAR_TYPE(1);
+                      else               shifted &= ~(SCALAR_TYPE(1)); 
                     }
                     a.insert(i, shifted);
                 } 
@@ -1117,8 +1117,8 @@ namespace SIMD
                   else topBit = false;
                   
                   shifted <<= 1;        
-                  if(topBit == true)        shifted |= SCALAR_TYPE(0x1);
-                  else if (topBit == false) shifted &= ~(SCALAR_TYPE(1)); 
+                  if(topBit == true)  shifted |= SCALAR_TYPE(0x1);
+                  else                shifted &= ~(SCALAR_TYPE(1)); 
                 }
                 a.insert(i, shifted); 
             }
@@ -1145,8 +1145,8 @@ namespace SIMD
                     else topBit = false;
                     
                     shifted <<= 1;        
-                    if(topBit == true)        shifted |= SCALAR_TYPE(0x1);
-                    else if (topBit == false) shifted &= ~(SCALAR_TYPE(1)); 
+                    if(topBit == true)  shifted |= SCALAR_TYPE(0x1);
+                    else                shifted &= ~(SCALAR_TYPE(1)); 
                   }
                   a.insert(i, shifted);
                 } 
@@ -1155,85 +1155,219 @@ namespace SIMD
         }
     
         // RORV
-        template<typename VEC_TYPE, typename UINT_VEC_TYPE>
+        template<typename VEC_TYPE, typename SCALAR_TYPE, typename UINT_VEC_TYPE>
         inline VEC_TYPE rotateBitsRight(VEC_TYPE const & a, UINT_VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
+            uint32_t bitLength = 8*sizeof(SCALAR_TYPE);
+            SCALAR_TYPE topBitMask = SCALAR_TYPE(1) << (bitLength - 1);
+            bool bottomBit;
+            SCALAR_TYPE shifted;
+
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
-                // TODO:
+                shifted = a[i];
+                // shift one bit at a time. This simplifies type dependency checks.
+                for(uint32_t j = 0; j < b[i]; j++) {
+                    if( (shifted & 1) != 0) bottomBit = true;
+                    else bottomBit = false;
+
+                    shifted >>= 1;
+                    if(bottomBit == true) shifted |= topBitMask;
+                    else                  shifted &= ~topBitMask;
+                }
+                retval.insert(i, shifted);
             }
             return retval;
         }
 
         // MRORV
-        template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename MASK_TYPE>
+        template<typename VEC_TYPE, typename SCALAR_TYPE, typename UINT_VEC_TYPE, typename MASK_TYPE>
         inline VEC_TYPE rotateBitsRight(MASK_TYPE const & mask, VEC_TYPE const & a, UINT_VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
+            uint32_t bitLength = 8*sizeof(SCALAR_TYPE);
+            SCALAR_TYPE topBitMask = SCALAR_TYPE(1) << (bitLength - 1);
+            bool bottomBit;
+            SCALAR_TYPE shifted;
+
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
-                // TODO:
+                shifted = a[i];
+                if(mask[i] == true)
+                {
+                    // shift one bit at a time. This simplifies type dependency checks.
+                    for(uint32_t j = 0; j < b[i]; j++) {
+                        if( (shifted & 1) != 0) bottomBit = true;
+                        else bottomBit = false;
+
+                        shifted >>= 1;
+                        if(bottomBit == true) shifted |= topBitMask;
+                        else                  shifted &= ~topBitMask;
+                    }
+                }
+                retval.insert(i, shifted);
             }
             return retval;
         }
         
         // RORS
-        template<typename VEC_TYPE, typename SCALAR_UINT_TYPE>
+        template<typename VEC_TYPE, typename SCALAR_TYPE, typename SCALAR_UINT_TYPE>
         inline VEC_TYPE rotateBitsRightScalar(VEC_TYPE const & a, SCALAR_UINT_TYPE b) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
+            uint32_t bitLength = 8*sizeof(SCALAR_TYPE);
+            SCALAR_TYPE topBitMask = SCALAR_TYPE(1) << (bitLength - 1);
+            bool bottomBit;
+            SCALAR_TYPE shifted;
+
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
-                // TODO:
+                shifted = a[i];
+                // shift one bit at a time. This simplifies type dependency checks.
+                for(uint32_t j = 0; j < b; j++) {
+                    if( (shifted & 1) != 0) bottomBit = true;
+                    else bottomBit = false;
+
+                    shifted >>= 1;
+                    if(bottomBit == true) shifted |= topBitMask;
+                    else                  shifted &= ~topBitMask;
+                }
+                retval.insert(i, shifted);
             }
             return retval;
         }
         
         // MRORS
-        template<typename VEC_TYPE, typename SCALAR_UINT_TYPE, typename MASK_TYPE>
+        template<typename VEC_TYPE, typename SCALAR_TYPE, typename SCALAR_UINT_TYPE, typename MASK_TYPE>
         inline VEC_TYPE rotateBitsRightScalar(MASK_TYPE const & mask, VEC_TYPE const & a, SCALAR_UINT_TYPE b) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
+            uint32_t bitLength = 8*sizeof(SCALAR_TYPE);
+            SCALAR_TYPE topBitMask = SCALAR_TYPE(1) << (bitLength - 1);
+            bool bottomBit;
+            SCALAR_TYPE shifted;
+
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
-                // TODO:
+                shifted = a[i];
+                if(mask[i] == true)
+                {
+                    // shift one bit at a time. This simplifies type dependency checks.
+                    for(uint32_t j = 0; j < b; j++) {
+                        if( (shifted & 1) != 0) bottomBit = true;
+                        else bottomBit = false;
+
+                        shifted >>= 1;
+                        if(bottomBit == true) shifted |= topBitMask;
+                        else                  shifted &= ~topBitMask;
+                    }
+                }
+                retval.insert(i, shifted);
             }
             return retval;
         }
 
         // RORVA
-        template<typename VEC_TYPE, typename UINT_VEC_TYPE >
+        template<typename VEC_TYPE, typename SCALAR_TYPE, typename UINT_VEC_TYPE >
         inline VEC_TYPE & rotateBitsRightAssign(VEC_TYPE & a, UINT_VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
+            uint32_t bitLength = 8*sizeof(SCALAR_TYPE);
+            SCALAR_TYPE topBitMask = SCALAR_TYPE(1) << (bitLength - 1);
+            bool bottomBit;
+            SCALAR_TYPE shifted;
+
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
-                // TODO:
+                shifted = a[i];
+                // shift one bit at a time. This simplifies type dependency checks.
+                for(uint32_t j = 0; j < b[i]; j++) {
+                    if( (shifted & 1) != 0) bottomBit = true;
+                    else bottomBit = false;
+
+                    shifted >>= 1;
+                    if(bottomBit == true) shifted |= topBitMask;
+                    else                  shifted &= ~topBitMask;
+                }
+                a.insert(i, shifted);
             }
             return a;
         }
 
         // MRORVA
-        template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename MASK_TYPE>
+        template<typename VEC_TYPE, typename SCALAR_TYPE, typename UINT_VEC_TYPE, typename MASK_TYPE>
         inline VEC_TYPE & rotateBitsRightAssign(MASK_TYPE const & mask, VEC_TYPE & a, UINT_VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
+            uint32_t bitLength = 8*sizeof(SCALAR_TYPE);
+            SCALAR_TYPE topBitMask = SCALAR_TYPE(1) << (bitLength - 1);
+            bool bottomBit;
+            SCALAR_TYPE shifted;
+
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
-                // TODO:
+                shifted = a[i];
+                if(mask[i] == true)
+                {
+                    // shift one bit at a time. This simplifies type dependency checks.
+                    for(uint32_t j = 0; j < b[i]; j++) {
+                        if( (shifted & 1) != 0) bottomBit = true;
+                        else bottomBit = false;
+
+                        shifted >>= 1;
+                        if(bottomBit == true) shifted |= topBitMask;
+                        else                  shifted &= ~topBitMask;
+                    }
+                    a.insert(i, shifted);
+                }
             }
             return a;
         }
 
         // RORSA
-        template<typename VEC_TYPE, typename SCALAR_UINT_TYPE> 
+        template<typename VEC_TYPE, typename SCALAR_TYPE, typename SCALAR_UINT_TYPE> 
         inline VEC_TYPE & rotateBitsRightAssignScalar(VEC_TYPE &  a, SCALAR_UINT_TYPE const & b) {
             UME_EMULATION_WARNING();
+            uint32_t bitLength = 8*sizeof(SCALAR_TYPE);
+            SCALAR_TYPE topBitMask = SCALAR_TYPE(1) << (bitLength - 1);
+            bool bottomBit;
+            SCALAR_TYPE shifted;
+
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
-                // TODO:
+                shifted = a[i];
+                // shift one bit at a time. This simplifies type dependency checks.
+                for(uint32_t j = 0; j < b; j++) {
+                    if( (shifted & 1) != 0) bottomBit = true;
+                    else bottomBit = false;
+
+                    shifted >>= 1;
+                    if(bottomBit == true) shifted |= topBitMask;
+                    else                  shifted &= ~topBitMask;
+                }
+                a.insert(i, shifted);
             }
+            return a;
         }
 
         // MRORSA
-        template<typename VEC_TYPE, typename SCALAR_UINT_TYPE, typename MASK_TYPE> 
+        template<typename VEC_TYPE, typename SCALAR_TYPE, typename SCALAR_UINT_TYPE, typename MASK_TYPE> 
         inline VEC_TYPE & rotateBitsRightAssignScalar(MASK_TYPE const & mask, VEC_TYPE &  a, SCALAR_UINT_TYPE const & b) {
             UME_EMULATION_WARNING();
+            uint32_t bitLength = 8*sizeof(SCALAR_TYPE);
+            SCALAR_TYPE topBitMask = SCALAR_TYPE(1) << (bitLength - 1);
+            bool bottomBit;
+            SCALAR_TYPE shifted;
+
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
-                // TODO:
+                shifted = a[i];
+                if(mask[i] == true)
+                {
+                    // shift one bit at a time. This simplifies type dependency checks.
+                    for(uint32_t j = 0; j < b; j++) {
+                        if( (shifted & 1) != 0) bottomBit = true;
+                        else bottomBit = false;
+
+                        shifted >>= 1;
+                        if(bottomBit == true) shifted |= topBitMask;
+                        else                  shifted &= ~topBitMask;
+                    }
+                    a.insert(i, shifted);
+                }
             }
+            return a;
         }
 
         // CMPEQV
@@ -3550,42 +3684,42 @@ namespace SIMD
         
         // RORV
         inline DERIVED_VEC_TYPE ror (DERIVED_VEC_UINT_TYPE const & b) {
-            return EMULATED_FUNCTIONS::rotateBitsRight<DERIVED_VEC_TYPE, DERIVED_VEC_UINT_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this), b);
+            return EMULATED_FUNCTIONS::rotateBitsRight<DERIVED_VEC_TYPE, SCALAR_TYPE, DERIVED_VEC_UINT_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
         // MRORV
         inline DERIVED_VEC_TYPE ror (MASK_TYPE const & mask, DERIVED_VEC_UINT_TYPE const & b) {
-            return EMULATED_FUNCTIONS::rotateBitsRight<DERIVED_VEC_TYPE, DERIVED_VEC_UINT_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
+            return EMULATED_FUNCTIONS::rotateBitsRight<DERIVED_VEC_TYPE, SCALAR_TYPE, DERIVED_VEC_UINT_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
         // RORS
         inline DERIVED_VEC_TYPE ror (SCALAR_UINT_TYPE b) {
-            return EMULATED_FUNCTIONS::rotateBitsRightScalar<DERIVED_VEC_TYPE, SCALAR_UINT_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this), b);
+            return EMULATED_FUNCTIONS::rotateBitsRightScalar<DERIVED_VEC_TYPE, SCALAR_TYPE, SCALAR_UINT_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
         // MRORS
         inline DERIVED_VEC_TYPE ror (MASK_TYPE const & mask, SCALAR_UINT_TYPE b) {
-            return EMULATED_FUNCTIONS::rotateBitsRightScalar<DERIVED_VEC_TYPE, SCALAR_UINT_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
+            return EMULATED_FUNCTIONS::rotateBitsRightScalar<DERIVED_VEC_TYPE, SCALAR_TYPE, SCALAR_UINT_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
         // RORVA
         inline DERIVED_VEC_TYPE rora (DERIVED_VEC_UINT_TYPE const & b) {
-            return EMULATED_FUNCTIONS::rotateBitsRightAssign<DERIVED_VEC_TYPE, DERIVED_VEC_UINT_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this), b);
+            return EMULATED_FUNCTIONS::rotateBitsRightAssign<DERIVED_VEC_TYPE, SCALAR_TYPE, DERIVED_VEC_UINT_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
 
         // MRORVA
         inline DERIVED_VEC_TYPE rora (MASK_TYPE const & mask, DERIVED_VEC_UINT_TYPE const & b) {
-            return EMULATED_FUNCTIONS::rotateBitsRightAssign<DERIVED_VEC_TYPE, DERIVED_VEC_UINT_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this), b);
+            return EMULATED_FUNCTIONS::rotateBitsRightAssign<DERIVED_VEC_TYPE, SCALAR_TYPE, DERIVED_VEC_UINT_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
 
         // RORSA
         inline DERIVED_VEC_TYPE rora (SCALAR_UINT_TYPE b) {
-            return EMULATED_FUNCTIONS::rotateBitsRightAssignScalar<DERIVED_VEC_TYPE, SCALAR_UINT_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this), b);
+            return EMULATED_FUNCTIONS::rotateBitsRightAssignScalar<DERIVED_VEC_TYPE, SCALAR_TYPE, SCALAR_UINT_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
 
         // MRORSA
         inline DERIVED_VEC_TYPE rora (MASK_TYPE const & mask, SCALAR_UINT_TYPE b) {
-            return EMULATED_FUNCTIONS::rotateBitsRightAssignScalar<DERIVED_VEC_TYPE, SCALAR_UINT_TYPE, MASK_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this), b);
+            return EMULATED_FUNCTIONS::rotateBitsRightAssignScalar<DERIVED_VEC_TYPE, SCALAR_TYPE, SCALAR_UINT_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
 
     };

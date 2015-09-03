@@ -542,8 +542,8 @@ namespace SIMD
     
     template<>
     struct SIMDVecScalarEmu_i_traits<int64_t, 8>{
-        typedef SIMDVecScalarEmu_u<uint32_t, 8> VEC_UINT;
-        typedef uint32_t SCALAR_UINT_TYPE;
+        typedef SIMDVecScalarEmu_u<uint64_t, 8> VEC_UINT;
+        typedef uint64_t SCALAR_UINT_TYPE;
         typedef bool    MASK_BASE_TYPE;
     };  
 

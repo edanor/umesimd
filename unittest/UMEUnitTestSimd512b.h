@@ -218,6 +218,133 @@ int test_UME_SIMD8_64i(bool supressMessages) {
         CHECK_CONDITION(true, "ZERO-CONSTR");
     }
 
+    {
+        SIMD8_64i vec0(14);
+        SIMD8_64u vec1(1, 2, 5, 9, 12, 13, 24, 62);
+        SIMD8_64i vec2;
+        vec2 = vec0.ror(vec1);
+        
+        CHECK_CONDITION(vec2[0] == 7 && 
+                        vec2[1] == -9223372036854775805 &&
+                        vec2[2] == 8070450532247928832 &&
+                        vec2[3] == 504403158265495552 &&
+                        vec2[4] == 63050394783186944 &&
+                        vec2[5] == 31525197391593472 &&
+                        vec2[6] == 15393162788864 &&
+                        vec2[7] == 56, "RORV");
+    }
+
+    {
+        SIMD8_64i vec0(14);
+        SIMD8_64u vec1(1, 2, 5, 9, 12, 13, 24, 62);
+        SIMD8_64i vec2;
+        SIMDMask8 mask(true, false, false, true, true, true, false, true);
+        vec2 = vec0.ror(mask, vec1);
+        
+        CHECK_CONDITION(vec2[0] == 7 && 
+                        vec2[1] == 14 &&
+                        vec2[2] == 14 &&
+                        vec2[3] == 504403158265495552 &&
+                        vec2[4] == 63050394783186944 &&
+                        vec2[5] == 31525197391593472 &&
+                        vec2[6] == 14 &&
+                        vec2[7] == 56, "MRORV");
+    }
+
+    {
+        SIMD8_64i vec0(1, 2, 5, 9, 12, 13, 24, 62);
+        uint64_t val1 = 14;
+        SIMD8_64i vec2;
+        vec2 = vec0.ror(val1);
+        
+        CHECK_CONDITION(vec2[0] == 1125899906842624 && 
+                        vec2[1] == 2251799813685248 &&
+                        vec2[2] == 5629499534213120 &&
+                        vec2[3] == 10133099161583616 &&
+                        vec2[4] == 13510798882111488 &&
+                        vec2[5] == 14636698788954112 &&
+                        vec2[6] == 27021597764222976 &&
+                        vec2[7] == 69805794224242688, "RORS");
+    }
+    
+    {
+        SIMD8_64i vec0(1, 2, 5, 9, 12, 13, 24, 62);
+        uint64_t val1 = 14;
+        SIMD8_64i vec2;
+        SIMDMask8 mask(true, false, false, true, true, true, false, true);
+        vec2 = vec0.ror(mask, val1);
+        
+        CHECK_CONDITION(vec2[0] == 1125899906842624 && 
+                        vec2[1] == 2 &&
+                        vec2[2] == 5 &&
+                        vec2[3] == 10133099161583616 &&
+                        vec2[4] == 13510798882111488 &&
+                        vec2[5] == 14636698788954112 &&
+                        vec2[6] == 24 &&
+                        vec2[7] == 69805794224242688, "MRORS");
+    }
+    
+    {
+        SIMD8_64i vec0(14);
+        SIMD8_64u vec1(1, 2, 5, 9, 12, 13, 24, 62);
+        vec0.rora(vec1);
+        
+        CHECK_CONDITION(vec0[0] == 7 && 
+                        vec0[1] == -9223372036854775805 &&
+                        vec0[2] == 8070450532247928832 &&
+                        vec0[3] == 504403158265495552 &&
+                        vec0[4] == 63050394783186944 &&
+                        vec0[5] == 31525197391593472 &&
+                        vec0[6] == 15393162788864 &&
+                        vec0[7] == 56, "RORVA");
+    }
+
+    {
+        SIMD8_64i vec0(14);
+        SIMD8_64u vec1(1, 2, 5, 9, 12, 13, 24, 62);
+        SIMDMask8 mask(true, false, false, true, true, true, false, true);
+        vec0.rora(mask, vec1);
+        
+        CHECK_CONDITION(vec0[0] == 7 && 
+                        vec0[1] == 14 &&
+                        vec0[2] == 14 &&
+                        vec0[3] == 504403158265495552 &&
+                        vec0[4] == 63050394783186944 &&
+                        vec0[5] == 31525197391593472 &&
+                        vec0[6] == 14 &&
+                        vec0[7] == 56, "MRORV");
+    }
+
+    {
+        SIMD8_64i vec0(1, 2, 5, 9, 12, 13, 24, 62);
+        uint64_t val1 = 14;
+        vec0.rora(val1);
+        
+        CHECK_CONDITION(vec0[0] == 1125899906842624 && 
+                        vec0[1] == 2251799813685248 &&
+                        vec0[2] == 5629499534213120 &&
+                        vec0[3] == 10133099161583616 &&
+                        vec0[4] == 13510798882111488 &&
+                        vec0[5] == 14636698788954112 &&
+                        vec0[6] == 27021597764222976 &&
+                        vec0[7] == 69805794224242688, "RORSA");
+    }
+    
+    {
+        SIMD8_64i vec0(1, 2, 5, 9, 12, 13, 24, 62);
+        uint64_t val1 = 14;
+        SIMDMask8 mask(true, false, false, true, true, true, false, true);
+        vec0.rora(mask, val1);
+        
+        CHECK_CONDITION(vec0[0] == 1125899906842624 && 
+                        vec0[1] == 2 &&
+                        vec0[2] == 5 &&
+                        vec0[3] == 10133099161583616 &&
+                        vec0[4] == 13510798882111488 &&
+                        vec0[5] == 14636698788954112 &&
+                        vec0[6] == 24 &&
+                        vec0[7] == 69805794224242688, "MRORSA");
+    }
     return g_failCount;
 }
 
