@@ -1,4 +1,4 @@
-﻿// The MIT License (MIT)
+// The MIT License (MIT)
 //
 // Copyright (c) 2015 CERN
 //
@@ -478,7 +478,7 @@ namespace SIMD
 
         inline uint32_t extract (uint32_t index) const {
             UME_PERFORMANCE_UNOPTIMAL_WARNING(); // This routine can be optimized
-            alignas(32) uint32_t raw[8];
+            alignas(64) uint32_t raw[16];
             _mm512_store_epi32(raw, mVec);
             return raw[index];
         }            
@@ -491,197 +491,12 @@ namespace SIMD
         // insert[] (scalar)
         inline SIMDVecKNC_u & insert(uint32_t index, uint32_t value) {
             UME_PERFORMANCE_UNOPTIMAL_WARNING();
-            alignas(32) uint32_t raw[8];
+            alignas(64) uint32_t raw[16];
             _mm512_store_epi32 (raw, mVec);
             raw[index] = value;
             _mm512_load_epi32(raw);
             return *this;
-        }
-        // assign (VEC) -> VEC        // assign (MASK, VEC) -> VEC
-        // assign (VEC, scalar) -> VEC
-        // assign (MASK, scalar) -> VEC
-        // load (addr) -> VEC
-        // load (MASK, addr) -> VEC
-        // loadAligned (addrAligned) -> VEC
-        // loadAligned (MASK, addrAligned) -> VEC
-        // store (addr) -> scalar*
-        // store (MASK, addr) -> scalar*
-        // storeAligned (addrAligned) -> scalar*
-        // storeAligned(MASK, addrAligned) -> scalar*
-        // add (VEC) -> VEC
-        // add (MASK, VEC) -> VEC
-        // add (scalar) -> VEC
-        // add (MASK, scalar) -> VEC
-        // addAssign (VEC) -> VEC
-        // addAssign (MASK, VEC) -> VEC
-        // addAssign (scalar) -> VEC
-        // addAssign (MASK, scalar) -> VEC
-        // postfixIncrement () -> VEC
-        // postfixIncrement (MASK) -> VEC
-        // prefixIncrement () -> VEC
-        // prefixIncrement (MASK) -> VEC
-        // sub (VEC) -> VEC
-        // sub(MASK, VEC) -> VEC
-        // sub(scalar) -> VEC
-        // sub(MASK, scalar) -> VEC
-        // unaryMinus() -> VEC
-        // unaryMinus(MASK) -> VEC
-        // subAssign(VEC) -> VEC
-        // subAssign (MASK, VEC) -> VEC
-        // subAssign (scalar) -> VEC
-        // subAssign(MASK, scalar) -> VEC
-        // postfixDecrement() -> VEC
-        // postfixDecrement (MASK) -> VEC
-        // prefixDecrement() -> VEC
-        // postfixDecrement (MASK, VEC) -> VEC
-        // mult(VEC) -> VEC
-        // mult(MASK, VEC) -> VEC
-        // mult(scalar) -> VEC
-        // mult(MASK, scalar) -> VEC
-        // multAssign(VEC) -> VEC
-        // multAssign (MASK, VEC) -> VEC
-        // multAssign(scalar) -> VEC
-        // div(VEC) -> VEC
-        // div (MASK, VEC) -> VEC
-        // div(scalar) -> VEC
-        // div (MASK, scalar) -> VEC
-        // divAssign (VEC, VEC) -> VEC
-        // divAssign (MASK, VEC, VEC) -> VEC
-        // divAssign (VEC, scalar) -> VEC
-        // divAssign (MASK, VEC, scalar) -> VEC
-        // reciprocal() -> VEC (implied nominator)
-        // reciprocal(scalar) -> VEC
-        // reciprocalAssign(scalar) -> VEC
-        // isEqual (VEC) -> MASK
-        // isEqual (scalar) -> MASK
-        // isNotEqual (VEC) -> MASK
-        // isNotEqual (scalar) -> MASK
-        // isGreater (VEC) -> MASK
-        // isGreater (scalar) -> MASK
-        // isLesser (VEC) -> MASK
-        // isLesser (scalar) -> MASK
-        // isGreaterEqual (VEC) -> MASK
-        // isGreaterEqual (scalar) -> MASK
-        // isLesserEqual (VEC) -> MASK
-        // isLesserEqual (scalar) -> MASK
-        // binaryAnd(VEC) -> VEC
-        // binaryAnd (MASK, VEC) -> VEC
-        // binaryAnd (scalar) -> VEC
-        // binaryAnd (MASK, scalar) -> VEC
-        // binaryAndAssign (VEC) -> VEC
-        // binaryAndAssign (MASK, VEC) -> VEC
-        // binaryAndAssign (scalar) -> VEC
-        // binaryAndAssign (MASK, scalar) -> VEC
-        // binaryOr (VEC) -> VEC
-        // binaryOr (MASK, VEC) -> VEC
-        // binaryOr (scalar) -> VEC
-        // binaryOr (MASK, scalar) -> VEC
-        // binaryOrAssign (VEC) -> VEC
-        // binaryOrAssign (MASK, VEC) -> VEC
-        // binaryOrAssign (scalar) -> VEC
-        // binaryOrAssign (MASK, scalar) -> VEC
-        // binaryXor (VEC) -> VEC
-        // binaryXor (MASK, VEC) -> VEC
-        // binaryXor (scalar) -> VEC
-        // binaryXor (MASK, scalar) -> VEC
-        // binaryXorAssign (VEC) -> VEC
-        // binaryXorAssign (MASK, VEC) -> VEC
-        // binaryXorAssign (scalar) -> VEC
-        // binaryXorAssign (MASK, scalar) -> VEC
-        // binaryNot (VEC) -> VEC
-        // binaryNot (MASK, VEC) -> VEC
-        // binaryNotAssign () -> VEC
-        // binaryNotAssign (MASK) -> VEC
-        // blend(MASK, VEC) -> VEC
-        // blend(MASK, scalar) -> VEC
-        // blendAssign(MASK, VEC) -> VEC
-        // blendAssign(MASK, scalar) -> VEC
-        // reduceAdd () -> VEC
-        // reduceAdd (MASK) -> scalar
-        // reduceMult () -> scalar
-        // reduceMult (MASK) -> scalar
-        // reduceMult (scalar) -> scalar
-        // reduceMult (MASK, scalar) -> scalar
-        // reduceBinaryOr () -> scalar
-        // reduceBinaryOr (MASK) -> scalar
-        // reduceBinaryOr (scalar) -> scalar
-        // reduceBinaryOr (MASK, scalar) -> scalar
-        // reduceBinaryAnd () -> scalar
-        // reduceBinaryAnd (MASK) -> scalar
-        // reduceBinaryAnd (scalar) -> scalar
-        // reduceBinaryAnd (MASK, scalar) -> scalar
-        // gather (scalar_uint*, uint64_t*) -> VEC     
-        // gather (MASK, scalar_uint*, uint64_t*) -> VEC
-        // gather (scalar_uint*, VEC) -> VEC
-        // gather (MASK, SCALAR_UINT_TYPE*, VEC) -> VEC
-        // scatter (scalar_uint*, uint64_t*) -> scalar *
-        // scatter (MASK, scalar_uint*, uint64_t*) -> scalar *
-        // scatter (scalar_uint*, VEC_UINT) -> scalar *
-        // scatter (MASK, scalar_uint*, VEC_UINT) -> scalar *
-        // shiftBitsLeft (VEC_UINT, VEC_UINT) -> VEC
-        // shiftBitsLeft (MASK, VEC_UINT, VEC_UINT) -> VEC
-        // shiftBitsLeft (VEC_UINT, scalar_uint) -> VEC
-        // shiftBitsLeft (MASK, VEC_UINT, scalar_uint) -> VEC
-        // shiftBitsLeftAssign (VEC_UINT, VEC_UINT) -> VEC
-        // shiftBitsLeftAssign (MASK, VEC_UINT, VEC_UINT) -> VEC
-        // shiftBitsLeftAssign (VEC_UINT, scalar_uint) -> VEC
-        // shiftBitsLeftAssign (MASK, VEC_UINT, scalar_uint) -> VEC
-        // shiftBitsRight (VEC_UINT, VEC_UINT) -> VEC
-        // shiftBitsRight (MASK, VEC_UINT, VEC_UINT) -> VEC
-        // shiftBitsRight (VEC_UINT, scalar_uint) -> VEC
-        // shiftBitsRight (MASK, VEC_UINT, scalar_uint) -> VEC
-        // shiftBitsRightAssign (VEC_UINT, VEC_UINT) -> VEC
-        // shiftBitsRightAssign (MASK, VEC_UINT, VEC_UINT) -> VEC
-        // shiftBitsRightAssign (VEC_UINT, scalar_uint) -> VEC
-        // shiftBitsRightAssign (MASK, VEC_UINT, scalar_uint) -> VEC
-        // *****************************************************************************
-        // rotateBitsLeft (UINT_VEC) -> VEC
-        // rotateBitsLeft(MASK, VEC_UINT) -> VEC
-        // rotateBitsLeftScalar(scalar_uint) -> VEC
-        // rotateBitsLeftScalar(MASK, scalar_uint) -> 
-        // rotateBitsLeft(scalar, VEC_UINT) -> VEC
-        // rotateBitsLeft(MASK, scalar, VEC_UINT) -> VEC
-        // rotateBitsLeftAssign(VEC_UINT) -> VEC
-        // rotateBitsLeftAssign(MASK, VEC_UINT) -> VEC
-        // rotateBitsLeftAssign(scalar_uint) -> VEC
-        // rotateBitsLeftAssign(MASK, scalar_uint) -> VEC
-
-
-        // ******************************************************************
-        // * Additional math functions
-        // ******************************************************************
-
-        // max (VEC) -> VEC
-        // max (MASK, VEC) -> VEC
-        // max (scalar) -> VEC
-        // max (MASK, scalar) -> VEC
-        // maxReduce () -> VEC
-        // maxReduce (MASK) -> VEC
-        // maxReduce (scalar) -> VEC
-        // maxReduce (MASK, scalar) -> VEC
-        // min (VEC) -> VEC
-        // min (MASK, VEC) -> VEC
-        // min (scalar) -> VEC
-        // min (MASK, scalar) -> VEC
-        // abs () -> VEC
-        // abs (MASK) -> VEC
-        // absAssign () -> VEC
-        // absAssign (MASK) -> VEC  
-
-        // truncToInt () -> VEC_INT
-        //inline DERIVED_VEC_INT_TYPE truncToInt() 
-        // truncToInt (MASK) -> VEC_INT
-        // sqrt () -> VEC
-        // inline DERIVED_VEC_TYPE sqrt()
-        // sqrt (MASK) -> VEC
-        // sin () -> VEC
-        // inline DERIVED_VEC_TYPE sin()
-        // sin (MASK) -> VEC
-        // inline DERIVED_VEC_TYPE sin(MASK_TYPE const & mask) 
-        // cos () -> VEC
-        // inline DERIVED_VEC_TYPE cos() 
-        // cos (MASK) -> VEC
-        // inline DERIVED_VEC_TYPE cos(MASK_TYPE const & mask)
+        }        
         
         inline  operator SIMDVecKNC_i<int32_t, 16> const ();
     };
@@ -951,7 +766,7 @@ namespace SIMD
 
         inline int32_t extract(uint32_t index) const {
             UME_PERFORMANCE_UNOPTIMAL_WARNING();
-            alignas(32) int32_t raw[8];
+            alignas(64) int32_t raw[16];
             _mm512_store_si512(raw, mVec);
             return raw[index];
         }
@@ -964,7 +779,7 @@ namespace SIMD
         // insert[] (scalar)
         inline SIMDVecKNC_i & insert(uint32_t index, int32_t value) {
             UME_PERFORMANCE_UNOPTIMAL_WARNING()
-            alignas(32) int32_t raw[16];
+            alignas(64) int32_t raw[16];
             _mm512_store_si512(raw, mVec);
             raw[index] = value;
             mVec = _mm512_load_si512(raw);
@@ -1375,7 +1190,7 @@ namespace SIMD
 
         inline float extract (uint32_t index) const {
             UME_PERFORMANCE_UNOPTIMAL_WARNING();
-            alignas(32) float raw[8];
+            alignas(64) float raw[16];
             _mm512_store_ps(raw, mVec);
             return raw[index];
         }
@@ -1390,7 +1205,7 @@ namespace SIMD
         // insert[] (scalar)
         inline SIMDVecKNC_f & insert(uint32_t index, float value) {
             UME_PERFORMANCE_UNOPTIMAL_WARNING();
-            alignas(32) float raw[8];
+            alignas(64) float raw[16];
             //_mm512_store_ps(raw, mVec);
             raw[index] = value;
             //mVec = _mm512_load_ps(raw);
