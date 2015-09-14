@@ -2487,20 +2487,143 @@ namespace SIMD
             }
             
             // FLOOR
+            template<typename VEC_TYPE>
+            inline VEC_TYPE floor(VEC_TYPE const & a) {
+                UME_EMULATION_WARNING();
+                VEC_TYPE retval;
+                for(uint32_t i = 0; i < VEC_TYPE::length();i++) {
+                    retval.insert(i, std::floor(a[i]));
+                }
+                return retval;
+            }
+
             // MFLOOR
+            template<typename VEC_TYPE, typename MASK_TYPE>
+            inline VEC_TYPE floor(MASK_TYPE const & mask, VEC_TYPE const & a) {
+                UME_EMULATION_WARNING();
+                VEC_TYPE retval;
+                for(uint32_t i = 0; i < VEC_TYPE::length();i++) {
+                    if(mask[i] == true) retval.insert(i, std::floor(a[i]));
+                    else retval.insert(i, a[i]);
+                }
+                return retval;
+            }
             
             // CEIL
+            template<typename VEC_TYPE>
+            inline VEC_TYPE ceil(VEC_TYPE const & a) {
+                UME_EMULATION_WARNING();
+                VEC_TYPE retval;
+                for(uint32_t i = 0; i < VEC_TYPE::length();i++) {
+                    retval.insert(i, std::ceil(a[i]));
+                }
+                return retval;
+            }
+
             // MCEIL
+            template<typename VEC_TYPE, typename MASK_TYPE>
+            inline VEC_TYPE ceil(MASK_TYPE const & mask, VEC_TYPE const & a) {
+                UME_EMULATION_WARNING();
+                VEC_TYPE retval;
+                for(uint32_t i = 0; i < VEC_TYPE::length();i++) {
+                    if(mask[i] == true) retval.insert(i, std::ceil(a[i]));
+                    else retval.insert(i, a[i]);
+                }
+                return retval;
+            }
             
             // FMULADDV
+            template<typename VEC_TYPE>
+            inline VEC_TYPE fmuladd(VEC_TYPE const & a, VEC_TYPE const & b, VEC_TYPE const & c) {
+                UME_EMULATION_WARNING();
+                VEC_TYPE retval;
+                for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+                    retval.insert(i, (a[i]*b[i]) + c[i]);
+                }
+                return retval;
+            }
+
             // MFMULADDV
-            // FADDMULV
-            // MFADDMULV
-            // FMULSUBV
-            // MFMULSUBV
-            // FSUBMULV
-            // MFSUBMULV
+            template<typename VEC_TYPE, typename MASK_TYPE>
+            inline VEC_TYPE fmuladd(MASK_TYPE const & mask, VEC_TYPE const & a, VEC_TYPE const & b, VEC_TYPE const & c) {
+                UME_EMULATION_WARNING();
+                VEC_TYPE retval;
+                for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+                    if(mask[i] == true) retval.insert(i, (a[i]*b[i]) + c[i]);
+                    else retval.insert(i, a[i]);
+                }
+                return retval;
+            }
             
+            // FADDMULV
+            template<typename VEC_TYPE>
+            inline VEC_TYPE faddmul(VEC_TYPE const & a, VEC_TYPE const & b, VEC_TYPE const & c) {
+                UME_EMULATION_WARNING();
+                VEC_TYPE retval;
+                for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+                    retval.insert(i, (a[i] + b[i]) * c[i]);
+                }
+                return retval;
+            }
+
+            // MFADDMULV
+            template<typename VEC_TYPE, typename MASK_TYPE>
+            inline VEC_TYPE faddmul(MASK_TYPE const & mask, VEC_TYPE const & a, VEC_TYPE const & b, VEC_TYPE const & c) {
+                UME_EMULATION_WARNING();
+                VEC_TYPE retval;
+                for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+                    if(mask[i] == true) retval.insert(i, (a[i] + b[i]) * c[i]);
+                    else retval.insert(i, a[i]);
+                }
+                return retval;
+            }
+
+            // FMULSUBV
+            template<typename VEC_TYPE>
+            inline VEC_TYPE fmulsub(VEC_TYPE const & a, VEC_TYPE const & b, VEC_TYPE const & c) {
+                UME_EMULATION_WARNING();
+                VEC_TYPE retval;
+                for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+                    retval.insert(i, (a[i]*b[i]) - c[i]);
+                }
+                return retval;
+            }
+
+            // MFMULSUBV
+            template<typename VEC_TYPE, typename MASK_TYPE>
+            inline VEC_TYPE fmulsub(MASK_TYPE const & mask, VEC_TYPE const & a, VEC_TYPE const & b, VEC_TYPE const & c) {
+                UME_EMULATION_WARNING();
+                VEC_TYPE retval;
+                for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+                    if(mask[i] == true) retval.insert(i, (a[i]*b[i]) - c[i]);
+                    else retval.insert(i, a[i]);
+                }
+                return retval;
+            }
+
+            // FSUBMULV
+            template<typename VEC_TYPE>
+            inline VEC_TYPE fsubmul(VEC_TYPE const & a, VEC_TYPE const & b, VEC_TYPE const & c) {
+                UME_EMULATION_WARNING();
+                VEC_TYPE retval;
+                for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+                    retval.insert(i, (a[i] - b[i]) * c[i]);
+                }
+                return retval;
+            }
+
+            // MFSUBMULV
+            template<typename VEC_TYPE, typename MASK_TYPE>
+            inline VEC_TYPE fsubmul(MASK_TYPE const & mask, VEC_TYPE const & a, VEC_TYPE const & b, VEC_TYPE const & c) {
+                UME_EMULATION_WARNING();
+                VEC_TYPE retval;
+                for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+                    if(mask[i] == true) retval.insert(i, (a[i] - b[i]) * c[i]);
+                    else retval.insert(i, a[i]);
+                }
+                return retval;
+            }
+
             // ISFIN
             // ISINF
             // ISAN
@@ -2508,7 +2631,7 @@ namespace SIMD
             // ISSUB
             // ISZERO
             // ISZEROSUB
-            
+
             // SIN
             template<typename VEC_TYPE>
             inline VEC_TYPE sin (VEC_TYPE const & a) {
@@ -2554,9 +2677,50 @@ namespace SIMD
             }
 
             // TAN
+            template<typename VEC_TYPE>
+            inline VEC_TYPE tan (VEC_TYPE const & a) {
+                UME_EMULATION_WARNING();
+                VEC_TYPE retval;
+                for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+                    retval.insert(i, std::tan(a[i]));
+                }
+                return retval;
+            }
+
             // MTAN
+            template<typename VEC_TYPE, typename MASK_TYPE>
+            inline VEC_TYPE tan (MASK_TYPE const & mask, VEC_TYPE const & a) {
+                UME_EMULATION_WARNING();
+                VEC_TYPE retval;
+                for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+                    if(mask[i] == true) retval.insert(i, std::tan(a[i]));
+                    else retval.insert(i, a[i]);
+                }
+                return retval;
+            }
+
             // CTAN
+            template<typename VEC_TYPE>
+            inline VEC_TYPE ctan (VEC_TYPE const & a) {
+                UME_EMULATION_WARNING();
+                VEC_TYPE retval;
+                for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+                    retval.insert(i, decltype(retval[0])(1.0)/std::tan(a[i]));
+                }
+                return retval;
+            }
+
             // MCTAN
+            template<typename VEC_TYPE, typename MASK_TYPE>
+            inline VEC_TYPE ctan (MASK_TYPE const & mask, VEC_TYPE const & a) {
+                UME_EMULATION_WARNING();
+                VEC_TYPE retval;
+                for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+                    if(mask[i] == true) retval.insert(i, decltype(retval[0])(1.0)/std::tan(a[i]));
+                    else retval.insert(i, a[i]);
+                }
+                return retval;
+            }
         } // UME::SIMD::EMULATED_FUNCTIONS::MATH
 
     } // namespace UME::SIMD::EMULATED_FUNCTIONS
@@ -4027,9 +4191,24 @@ namespace SIMD
         }
 
         // FLOOR
+        inline DERIVED_VEC_TYPE floor () {
+            return EMULATED_FUNCTIONS::MATH::floor<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this));
+        }
+
         // MFLOOR
+        inline DERIVED_VEC_TYPE floor (MASK_TYPE const & mask) {
+            return EMULATED_FUNCTIONS::MATH::floor<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this));
+        }
+
         // CEIL
+        inline DERIVED_VEC_TYPE ceil () {
+            return EMULATED_FUNCTIONS::MATH::ceil<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this));
+        }
+
         // MCEIL
+        inline DERIVED_VEC_TYPE ceil (MASK_TYPE const & mask) {
+            return EMULATED_FUNCTIONS::MATH::ceil<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this));
+        }
 
         // ISFIN
         // ISINF
@@ -4060,9 +4239,24 @@ namespace SIMD
         }
 
         // TAN
+        inline DERIVED_VEC_TYPE tan () {
+            return EMULATED_FUNCTIONS::MATH::tan<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this));
+        }
+
         // MTAN
+        inline DERIVED_VEC_TYPE tan (MASK_TYPE const & mask) {
+            return EMULATED_FUNCTIONS::MATH::tan<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this));
+        }
+
         // CTAN
+        inline DERIVED_VEC_TYPE ctan () {
+            return EMULATED_FUNCTIONS::MATH::ctan<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this));
+        }
+
         // MCTAN
+        inline DERIVED_VEC_TYPE ctan (MASK_TYPE const & mask) {
+            return EMULATED_FUNCTIONS::MATH::ctan<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this));
+        }
     };
 
 } // namespace UME::SIMD

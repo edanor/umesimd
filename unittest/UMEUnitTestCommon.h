@@ -65,4 +65,11 @@ char *g_test_header_ptr = NULL;
 
 #define PRINT_MESSAGE(msg) if(g_supressMessages == false) std::cout << g_test_header_ptr <<  msg << std::endl;
 
+// This PI value is used over all unit tests. Defining it here makes it is 
+// possible to use different values in real codes.
+#define UME_PI_D 3.1415926535897932384626433832795028841971693993751058209749445923078164062
+#define UME_2PI_D (2.0*UME_PI_D)
+#define UME_PI_F float(UME_PI_D)
+#define UME_2PI_F (2.0f*UME_PI_F)
+
 #endif

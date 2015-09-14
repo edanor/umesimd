@@ -1859,6 +1859,122 @@ int test_UME_SIMD4_32f(bool supressMessages)
         CHECK_CONDITION(vec2[0] == 3 && vec2[3] == 3, "TRUNC");
     }
 
+    {   
+        SIMD4_32f vec0(3.14f);
+        SIMD4_32f vec1;
+        vec1 = vec0.floor();
+        CHECK_CONDITION(vec1[0] > 2.99f && vec1[0] < 3.01f && vec1[3] > 2.99f && vec1[3] < 3.01f, "FLOOR");
+    }
+
+    {   
+        SIMD4_32f vec0(3.14f);
+        SIMD4_32f vec1;
+        SIMDMask4 mask(true, true, false, false);
+        vec1 = vec0.floor(mask);
+        CHECK_CONDITION(vec1[0] > 2.99f && vec1[0] < 3.01f && vec1[3] > 3.13f && vec1[3] < 3.15f, "MFLOOR");
+    }
+    
+    {   
+        SIMD4_32f vec0(3.14f);
+        SIMD4_32f vec1;
+        vec1 = vec0.ceil();
+        CHECK_CONDITION(vec1[0] > 3.99f && vec1[0] < 4.01f && vec1[3] > 3.99f && vec1[3] < 4.01f, "CEIL");
+    }
+    
+    {   
+        SIMD4_32f vec0(3.14f);
+        SIMD4_32f vec1;
+        SIMDMask4 mask(true, true, false, false);
+        vec1 = vec0.ceil(mask);
+        CHECK_CONDITION(vec1[0] > 3.99f && vec1[0] < 4.01f && vec1[3] > 3.13f && vec1[3] < 3.15f, "MCEIL");
+    }
+
+    {   
+        SIMD4_32f vec0(2.14f, -12.34f, 9.23f, -256.3f);
+        SIMD4_32f vec1;
+        vec1 = vec0.sin();
+        CHECK_CONDITION( vec1[0] > 0.842f && vec1[0] < 0.843f  &&
+                         vec1[1] > 0.224f && vec1[1] < 0.225f  &&
+                         vec1[2] > 0.193f && vec1[2] < 0.194f  &&
+                         vec1[3] > 0.966f && vec1[3] < 0.967f, "SIN");
+    }   
+
+    {   
+        SIMD4_32f vec0(2.14f, -12.34f, 9.23f, -256.3f);
+        SIMD4_32f vec1;
+        SIMDMask4 mask(true, true, false, false);
+        vec1 = vec0.sin(mask);
+        CHECK_CONDITION( vec1[0] > 0.842f  && vec1[0] < 0.843f  &&
+                         vec1[1] > 0.224f  && vec1[1] < 0.225f  &&
+                         vec1[2] > 9.22f   && vec1[2] < 9.24f   &&
+                         vec1[3] > -256.4f && vec1[3] < -256.2f, "MSIN");
+
+    }   
+    
+    {
+        SIMD4_32f vec0(2.14f, -12.34f, 9.23f, -256.3f);
+        SIMD4_32f vec1;
+        vec1 = vec0.cos();
+        CHECK_CONDITION( vec1[0] > -0.539f && vec1[0] < -0.538f  &&
+                         vec1[1] > 0.974f  && vec1[1] < 0.975f   &&
+                         vec1[2] > -0.982f && vec1[2] < -0.981f  &&
+                         vec1[3] > 0.257f  && vec1[3] < 0.258f, "COS");
+    }
+
+    {
+        SIMD4_32f vec0(2.14f, -12.34f, 9.23f, -256.3f);
+        SIMD4_32f vec1;
+        SIMDMask4 mask(true, true, false, false);
+        vec1 = vec0.cos(mask);
+        CHECK_CONDITION( vec1[0] > -0.539f && vec1[0] < -0.538f  &&
+                         vec1[1] > 0.974f  && vec1[1] < 0.975f   &&
+                         vec1[2] > 9.22f   && vec1[2] < 9.24f    &&
+                         vec1[3] > -256.4f && vec1[3] < -256.2f, "MCOS");
+    }
+    
+    {
+        SIMD4_32f vec0(2.14f, -12.34f, 9.23f, -256.3f);
+        SIMD4_32f vec1;
+        vec1 = vec0.tan();
+        CHECK_CONDITION( vec1[0] > -1.563f && vec1[0] < -1.562f  &&
+                         vec1[1] > 0.230f  && vec1[1] < 0.231f   &&
+                         vec1[2] > -0.198f && vec1[2] < -0.197f  &&
+                         vec1[3] > 3.756f  && vec1[3] < 3.757f, "TAN");
+    }
+
+    {
+        SIMD4_32f vec0(2.14f, -12.34f, 9.23f, -256.3f);
+        SIMD4_32f vec1;
+        SIMDMask4 mask(true, true, false, false);
+        vec1 = vec0.tan(mask);
+        CHECK_CONDITION( vec1[0] > -1.563f && vec1[0] < -1.562f  &&
+                         vec1[1] > 0.230f  && vec1[1] < 0.231f   &&
+                         vec1[2] > 9.22f   && vec1[2] < 9.24f    &&
+                         vec1[3] > -256.4f && vec1[3] < -256.2f, "MTAN");
+    }
+    
+    
+    {
+        SIMD4_32f vec0(2.14f, -12.34f, 9.23f, -256.3f);
+        SIMD4_32f vec1;
+        vec1 = vec0.ctan();
+        CHECK_CONDITION( vec1[0] > -0.640f && vec1[0] < -0.639f  &&
+                         vec1[1] > 4.341f  && vec1[1] < 4.342f   &&
+                         vec1[2] > -5.069f && vec1[2] < -5.068f  &&
+                         vec1[3] > 0.266f  && vec1[3] < 0.267f, "CTAN");
+    }
+
+    {
+        SIMD4_32f vec0(2.14f, -12.34f, 9.23f, -256.3f);
+        SIMD4_32f vec1;
+        SIMDMask4 mask(true, true, false, false);
+        vec1 = vec0.ctan(mask);
+        CHECK_CONDITION( vec1[0] > -0.640f && vec1[0] < -0.639f  &&
+                         vec1[1] > 4.341f  && vec1[1] < 4.342f   &&
+                         vec1[2] > 9.22f   && vec1[2] < 9.24f    &&
+                         vec1[3] > -256.4f && vec1[3] < -256.2f, "MCTAN");
+    }
+
     return g_failCount;
 }
 
