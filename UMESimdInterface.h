@@ -51,12 +51,12 @@ namespace std
     float round(float d) { return static_cast<float>(static_cast<int>(d + 0.5f)); }
     double round(double d) { return static_cast<double>(static_cast<long>(d + 0.5)); }
     //double      trunc( Integral arg );
-    inline bool       nan( float f ) { return _isnan((double)f) != 0 ? true : false; }
-    inline bool       nan( double d ) { return _isnan(d) != 0 ? true : false; }
+    inline bool       isnan( float f ) { return _isnan((double)f) != 0 ? true : false; }
+    inline bool       isnan( double d ) { return _isnan(d) != 0 ? true : false; }
     inline bool       isfinite( float f ) { return _finite((double)f) != 0 ? true : false; }
     inline bool       isfinite( double d ) { return _finite(d) != 0 ? true : false; }
-    inline bool       isinf( float f ) { return !isfinite(f) && !nan(f); }
-    inline bool       isinf( double d) { return !isfinite(d) && !nan(d); }
+    inline bool       isinf( float f ) { return !isfinite(f) && !isnan(f); }
+    inline bool       isinf( double d) { return !isfinite(d) && !isnan(d); }
     inline bool       isnormal( float f) {
         uint32_t temp0 = *reinterpret_cast<uint32_t*>(&f);
         uint32_t temp1 = temp0 << 1; // remove sign bit
@@ -64,7 +64,7 @@ namespace std
         uint32_t exponent = temp1 & temp2;    // retrieve exponent
         uint32_t mantisse = temp1 & (~temp2); // retrieve mantisse
         bool issubnormal = (exponent == 0) && (mantisse != 0);
-        return (f != 0.0f) && (!issubnormal) && (isfinite(f)) && (!std::nan(f));
+        return (f != 0.0f) && (!issubnormal) && (isfinite(f)) && (!std::isnan(f));
     }
     inline bool       isnormal( double d) {
         uint64_t temp0 = *reinterpret_cast<uint64_t*>(&d);
@@ -73,7 +73,7 @@ namespace std
         uint64_t exponent = temp1 & temp2;    // retrieve exponent
         uint64_t mantisse = temp1 & (~temp2); // retrive mantisse
         bool issubnormal = (exponent == 0) && (mantisse != 0);
-        return (d != 0.0) && (!issubnormal) && (!std::nan(d));
+        return (d != 0.0) && (!issubnormal) && (!std::isnan(d));
     }
 }
 
@@ -2718,7 +2718,7 @@ namespace SIMD
                 UME_EMULATION_WARNING();
                 MASK_TYPE retval;
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
-                    retval.insert(i, !std::nan(a[i]));
+                    retval.insert(i, !std::isnan(a[i]));
                 }
                 return retval;
             }
@@ -2729,7 +2729,7 @@ namespace SIMD
                 UME_EMULATION_WARNING();
                 MASK_TYPE retval;
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
-                    retval.insert(i, std::nan(a[i]));
+                    retval.insert(i, std::isnan(a[i]));
                 }
                 return retval;
             }
@@ -2754,7 +2754,7 @@ namespace SIMD
                     bool isZero = (a[i] == (decltype(a[0])(0.0)));
                     bool isNormal = std::isnormal(a[i]);
                     bool isFinite = std::isfinite(a[i]);
-                    bool isNan = std::nan(a[i]);
+                    bool isNan = std::isnan(a[i]);
                     bool isSubnormal = !isNan && isFinite && !isZero && !isNormal;
                     retval.insert(i, isSubnormal);
                 }
@@ -2767,7 +2767,7 @@ namespace SIMD
                 UME_EMULATION_WARNING();
                 MASK_TYPE retval;
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
-                    retval.insert(i, (a[i] == (decltype(a[0])0.0)));
+                    retval.insert(i, (a[i] == (decltype(a[0])(0.0))));
                 }
                 return retval;
             }
@@ -2781,7 +2781,7 @@ namespace SIMD
                     bool isZero = (a[i] == (decltype(a[0])(0.0)));
                     bool isNormal = std::isnormal(a[i]);
                     bool isFinite = std::isfinite(a[i]);
-                    bool isNan = std::nan(a[i]);
+                    bool isNan = std::isnan(a[i]);
                     bool isSubnormal = !isNan && isFinite && !isZero && !isNormal;
                     retval.insert(i, isSubnormal || isZero);
                 }
