@@ -40,16 +40,41 @@
 #if defined (_MSC_VER)
 // WORKAROUND: Visual studio 2012 does not provide implementation for c++ 11 std::trunc, but VS2013 already has it.
 #if _MSC_VER < 1800
+
 namespace std
 {
+    #include <math.h>
+
     inline float       trunc( float f ) { return (f>0) ? floor(f) : ceil(f); }
     inline double      trunc( double d ) { return (d>0) ? floor(d) : ceil(d); }
     inline long double trunc( long double ld ) { return (ld>0) ? floor(ld) : ceil(ld); }
     float round(float d) { return static_cast<float>(static_cast<int>(d + 0.5f)); }
     double round(double d) { return static_cast<double>(static_cast<long>(d + 0.5)); }
     //double      trunc( Integral arg );
-    inline bool       isfinite( float f) { return _finite((double)f) != 0 ? true : false; }
-    inline bool       isfinite( double f) { return _finite(f) != 0 ? true : false; }
+    inline bool       nan( float f ) { return _isnan((double)f) != 0 ? true : false; }
+    inline bool       nan( double d ) { return _isnan(d) != 0 ? true : false; }
+    inline bool       isfinite( float f ) { return _finite((double)f) != 0 ? true : false; }
+    inline bool       isfinite( double d ) { return _finite(d) != 0 ? true : false; }
+    inline bool       isinf( float f ) { return !isfinite(f) && !nan(f); }
+    inline bool       isinf( double d) { return !isfinite(d) && !nan(d); }
+    inline bool       isnormal( float f) {
+        uint32_t temp0 = *reinterpret_cast<uint32_t*>(&f);
+        uint32_t temp1 = temp0 << 1; // remove sign bit
+        uint32_t temp2 = 0xFF000000; 
+        uint32_t exponent = temp1 & temp2;    // retrieve exponent
+        uint32_t mantisse = temp1 & (~temp2); // retrieve mantisse
+        bool issubnormal = (exponent == 0) && (mantisse != 0);
+        return (f != 0.0f) && (!issubnormal) && (isfinite(f)) && (!std::nan(f));
+    }
+    inline bool       isnormal( double d) {
+        uint64_t temp0 = *reinterpret_cast<uint64_t*>(&d);
+        uint64_t temp1 = temp0 << 1; // remove sign bit
+        uint64_t temp2 = 0xFFE0000000000000ll;
+        uint64_t exponent = temp1 & temp2;    // retrieve exponent
+        uint64_t mantisse = temp1 & (~temp2); // retrive mantisse
+        bool issubnormal = (exponent == 0) && (mantisse != 0);
+        return (d != 0.0) && (!issubnormal) && (!std::nan(d));
+    }
 }
 
 #define constexpr 
@@ -2666,12 +2691,102 @@ namespace SIMD
             }
 
             // ISFIN
+            template<typename VEC_TYPE, typename MASK_TYPE>
+            inline MASK_TYPE isfin(VEC_TYPE const & a) {
+                UME_EMULATION_WARNING();
+                MASK_TYPE retval;
+                for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+                    retval.insert(i, std::isfinite(a[i]));
+                }
+                return retval;
+            }
+
             // ISINF
+            template<typename VEC_TYPE, typename MASK_TYPE>
+            inline MASK_TYPE isinf(VEC_TYPE const & a) {
+                UME_EMULATION_WARNING();
+                MASK_TYPE retval;
+                for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+                    retval.insert(i, std::isinf(a[i]));
+                }
+                return retval;
+            }
+
             // ISAN
+            template<typename VEC_TYPE, typename MASK_TYPE>
+            inline MASK_TYPE isan(VEC_TYPE const & a) {
+                UME_EMULATION_WARNING();
+                MASK_TYPE retval;
+                for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+                    retval.insert(i, !std::nan(a[i]));
+                }
+                return retval;
+            }
+
             // ISNAN
+            template<typename VEC_TYPE, typename MASK_TYPE>
+            inline MASK_TYPE isnan(VEC_TYPE const & a) {
+                UME_EMULATION_WARNING();
+                MASK_TYPE retval;
+                for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+                    retval.insert(i, std::nan(a[i]));
+                }
+                return retval;
+            }
+
+            // ISNORM
+            template<typename VEC_TYPE, typename MASK_TYPE>
+            inline MASK_TYPE isnorm(VEC_TYPE const & a) {
+                UME_EMULATION_WARNING();
+                MASK_TYPE retval;
+                for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+                    retval.insert(i, std::isnormal(a[i]));
+                }
+                return retval;
+            }
+
             // ISSUB
+            template<typename VEC_TYPE, typename MASK_TYPE>
+            inline MASK_TYPE issub(VEC_TYPE const & a) {
+                UME_EMULATION_WARNING();
+                MASK_TYPE retval;
+                for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+                    bool isZero = (a[i] == (decltype(a[0])(0.0)));
+                    bool isNormal = std::isnormal(a[i]);
+                    bool isFinite = std::isfinite(a[i]);
+                    bool isNan = std::nan(a[i]);
+                    bool isSubnormal = !isNan && isFinite && !isZero && !isNormal;
+                    retval.insert(i, isSubnormal);
+                }
+                return retval;
+            }
+
             // ISZERO
+            template<typename VEC_TYPE, typename MASK_TYPE>
+            inline MASK_TYPE iszero(VEC_TYPE const & a) {
+                UME_EMULATION_WARNING();
+                MASK_TYPE retval;
+                for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+                    retval.insert(i, (a[i] == (decltype(a[0])0.0)));
+                }
+                return retval;
+            }
+
             // ISZEROSUB
+            template<typename VEC_TYPE, typename MASK_TYPE>
+            inline MASK_TYPE iszerosub(VEC_TYPE const & a) {
+                UME_EMULATION_WARNING();
+                MASK_TYPE retval;
+                for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+                    bool isZero = (a[i] == (decltype(a[0])(0.0)));
+                    bool isNormal = std::isnormal(a[i]);
+                    bool isFinite = std::isfinite(a[i]);
+                    bool isNan = std::nan(a[i]);
+                    bool isSubnormal = !isNan && isFinite && !isZero && !isNormal;
+                    retval.insert(i, isSubnormal || isZero);
+                }
+                return retval;
+            }
 
             // SIN
             template<typename VEC_TYPE>
@@ -4267,12 +4382,44 @@ namespace SIMD
         }
 
         // ISFIN
+        inline MASK_TYPE isfin () {
+            return EMULATED_FUNCTIONS::MATH::isfin<DERIVED_VEC_TYPE, MASK_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this));
+        }
+
         // ISINF
+        inline MASK_TYPE isinf () {
+            return EMULATED_FUNCTIONS::MATH::isinf<DERIVED_VEC_TYPE, MASK_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this));
+        }
+
         // ISAN
+        inline MASK_TYPE isan () {
+            return EMULATED_FUNCTIONS::MATH::isan<DERIVED_VEC_TYPE, MASK_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this));
+        }
+
         // ISNAN
+        inline MASK_TYPE isnan () {
+            return EMULATED_FUNCTIONS::MATH::isnan<DERIVED_VEC_TYPE, MASK_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this));
+        }
+
+        // ISNORM
+        inline MASK_TYPE isnorm() {
+            return EMULATED_FUNCTIONS::MATH::isnorm<DERIVED_VEC_TYPE, MASK_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this));
+        }
+
         // ISSUB
+        inline MASK_TYPE issub () {
+            return EMULATED_FUNCTIONS::MATH::issub<DERIVED_VEC_TYPE, MASK_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this));
+        }
+
         // ISZERO
+        inline MASK_TYPE iszero () {
+            return EMULATED_FUNCTIONS::MATH::iszero<DERIVED_VEC_TYPE, MASK_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this));
+        }
+
         // ISZEROSUB
+        inline MASK_TYPE iszerosub () {
+            return EMULATED_FUNCTIONS::MATH::iszerosub<DERIVED_VEC_TYPE, MASK_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this));
+        }
 
         // SIN
         inline DERIVED_VEC_TYPE sin () {

@@ -1935,6 +1935,60 @@ int test_UME_SIMD4_32f(bool supressMessages)
         CHECK_CONDITION(vec1[0] > 3.99f && vec1[0] < 4.01f && vec1[3] > 3.13f && vec1[3] < 3.15f, "MCEIL");
     }
 
+    {
+        alignas(16) uint32_t init[4] = { 0x7F800000, 0xFF800000, 0x7F800123, 0xFF700456 };
+        SIMD4_32f vec0;
+        SIMDMask4 mask;
+        vec0.loada((const float*)&init[0]);
+        mask = vec0.isfin();
+        CHECK_CONDITION(mask[0] == false && mask[1] == false && mask[2] == false && mask[3] == true, "ISFIN");
+    }
+    
+    {
+        alignas(16) uint32_t init[4] = { 0x7F800000, 0xFF800000, 0x7F800123, 0xFF700456 };
+        SIMD4_32f vec0;
+        SIMDMask4 mask;
+        vec0.loada((const float*)&init[0]);
+        mask = vec0.isinf();
+        CHECK_CONDITION(mask[0] == true && mask[1] == true && mask[2] == false && mask[3] == false, "ISINF");
+    }
+    
+    {
+        alignas(16) uint32_t init[4] = { 0x7F800000, 0xFF800001, 0x7F800123, 0xFF700456 };
+        SIMD4_32f vec0;
+        SIMDMask4 mask;
+        vec0.loada((const float*)&init[0]);
+        mask = vec0.isan();
+        CHECK_CONDITION(mask[0] == true && mask[1] == false && mask[2] == false && mask[3] == true, "ISAN");
+    }
+    
+    {
+        alignas(16) uint32_t init[4] = { 0x7F800000, 0xFF800001, 0x7F800123, 0xFF700456 };
+        SIMD4_32f vec0;
+        SIMDMask4 mask;
+        vec0.loada((const float*)&init[0]);
+        mask = vec0.isnan();
+        CHECK_CONDITION(mask[0] == false && mask[1] == true && mask[2] == true && mask[3] == false, "ISNAN");
+    }
+    
+    {
+        alignas(16) uint32_t init[4] = { 0x7F800000, 0xFF800001, 0x80700456, 0x80f00456 };
+        SIMD4_32f vec0;
+        SIMDMask4 mask;
+        vec0.loada((const float*)&init[0]);
+        mask = vec0.isnorm();
+        CHECK_CONDITION(mask[0] == false && mask[1] == false && mask[2] == false && mask[3] == true, "ISNORM");
+    }
+    
+    {
+        alignas(16) uint32_t init[4] = { 0x7F800000, 0xFF800001, 0x80700456, 0x80f00456 };
+        SIMD4_32f vec0;
+        SIMDMask4 mask;
+        vec0.loada((const float*)&init[0]);
+        mask = vec0.issub();
+        CHECK_CONDITION(mask[0] == false && mask[1] == false && mask[2] == true && mask[3] == false, "ISSUB");
+    }
+
     {   
         SIMD4_32f vec0(2.14f, -12.34f, 9.23f, -256.3f);
         SIMD4_32f vec1;
