@@ -1953,7 +1953,6 @@ int test_UME_SIMD4_32f(bool supressMessages)
                          vec1[3] > -256.4f && vec1[3] < -256.2f, "MTAN");
     }
     
-    
     {
         SIMD4_32f vec0(2.14f, -12.34f, 9.23f, -256.3f);
         SIMD4_32f vec1;
