@@ -1850,6 +1850,52 @@ int test_UME_SIMD4_32f(bool supressMessages)
     }
 
     {
+        SIMD4_32f vec0(1.0f, 2.0f, -3.0f, -4.12f);
+        SIMD4_32f vec1(2.15f, 3.79f, 3.00f, 2.00f);
+        SIMD4_32f vec2;
+        vec2 = vec0.pow(vec1);
+        CHECK_CONDITION(vec2[0] > 0.99f   && vec2[0] < 1.01f    &&
+                        vec2[1] > 13.83f  && vec2[1] < 13.84f   &&
+                        vec2[2] > -27.01f && vec2[2] < -26.99f  &&
+                        vec2[3] > 16.97   && vec2[3] < 16.98, "POWV");
+    }
+
+    {
+        SIMD4_32f vec0(1.0f, 2.0f, -3.0f, -4.12f);
+        SIMD4_32f vec1(2.15f, 3.79f, 3.00f, 2.00f);
+        SIMD4_32f vec2;
+        SIMDMask4 mask(true, false, true, false);
+        vec2 = vec0.pow(mask, vec1);
+        CHECK_CONDITION(vec2[0] > 0.99f   && vec2[0] < 1.01f    &&
+                        vec2[1] > 1.99f   && vec2[1] < 2.01f    &&
+                        vec2[2] > -27.01f && vec2[2] < -26.99f  &&
+                        vec2[3] > -4.13f  && vec2[3] < -4.11f, "MPOWV");
+    }
+    
+    {
+        SIMD4_32f vec0(1.0f, 2.0f, -3.0f, -4.12f);
+        float val1 = 3.0f;
+        SIMD4_32f vec2;
+        vec2 = vec0.pow(val1);
+        CHECK_CONDITION(vec2[0] > 0.99f   && vec2[0] < 1.01f    &&
+                        vec2[1] > 7.99f   && vec2[1] < 8.01f   &&
+                        vec2[2] > -27.01f && vec2[2] < -26.99f  &&
+                        vec2[3] > -69.94  && vec2[3] < -69.93, "POWS");
+    }
+    
+    {
+        SIMD4_32f vec0(1.0f, 2.0f, -3.0f, -4.12f);
+        float val1 = 3.0f;
+        SIMD4_32f vec2;
+        SIMDMask4 mask(true, false, true, false);
+        vec2 = vec0.pow(mask, val1);
+        CHECK_CONDITION(vec2[0] > 0.99f   && vec2[0] < 1.01f    &&
+                        vec2[1] > 1.99f   && vec2[1] < 2.01f    &&
+                        vec2[2] > -27.01f && vec2[2] < -26.99f  &&
+                        vec2[3] > -4.13f  && vec2[3] < -4.11f, "MPOWS");
+    }
+
+    {
         SIMD4_32f vec0(3.8f);
         SIMD4_32f vec1;
         vec1 = vec0.round();

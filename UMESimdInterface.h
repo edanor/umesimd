@@ -2436,9 +2436,50 @@ namespace SIMD
             }
 
             // POWV
+            template<typename VEC_TYPE>
+            inline VEC_TYPE pow(VEC_TYPE const & a, VEC_TYPE const & b) {
+                UME_EMULATION_WARNING();
+                VEC_TYPE retval;
+                for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+                    retval.insert(i, std::pow(a[i], b[i]));
+                }
+                return retval;
+            }
+
             // MPOWV
+            template<typename VEC_TYPE, typename MASK_TYPE>
+            inline VEC_TYPE pow(MASK_TYPE const & mask, VEC_TYPE const & a, VEC_TYPE const & b) {
+                UME_EMULATION_WARNING();
+                VEC_TYPE retval;
+                for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+                    if(mask[i] == true) retval.insert(i, std::pow(a[i], b[i]));
+                    else retval.insert(i, a[i]);
+                }
+                return retval;
+            }
+
             // POWS
+            template<typename VEC_TYPE, typename SCALAR_TYPE>
+            inline VEC_TYPE pows(VEC_TYPE const & a, SCALAR_TYPE b) {
+                UME_EMULATION_WARNING();
+                VEC_TYPE retval;
+                for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+                    retval.insert(i, std::pow(a[i], b));
+                }
+                return retval;
+            }
+
             // MPOWS
+            template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
+            inline VEC_TYPE pows(MASK_TYPE const & mask, VEC_TYPE const & a, SCALAR_TYPE b) {
+                UME_EMULATION_WARNING();
+                VEC_TYPE retval;
+                for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+                    if(mask[i] == true) retval.insert(i, std::pow(a[i], b));
+                    else retval.insert(i, a[i]);
+                }
+                return retval;
+            }
             
             // ROUND
             template<typename VEC_TYPE>
@@ -4166,9 +4207,24 @@ namespace SIMD
         }
         
         // POWV
-        // MPOWV
+        inline DERIVED_VEC_TYPE pow (DERIVED_VEC_TYPE const & b) {
+            return EMULATED_FUNCTIONS::MATH::pow<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this), b);
+        }
+
+        // MPOWV        
+        inline DERIVED_VEC_TYPE pow (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) {
+            return EMULATED_FUNCTIONS::MATH::pow<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this), b);
+        }
+
         // POWS
+        inline DERIVED_VEC_TYPE pow (SCALAR_FLOAT_TYPE b) {
+            return EMULATED_FUNCTIONS::MATH::pows<DERIVED_VEC_TYPE, SCALAR_FLOAT_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this), b);
+        }
+
         // MPOWS
+        inline DERIVED_VEC_TYPE pow (MASK_TYPE const & mask, SCALAR_FLOAT_TYPE b) {
+            return EMULATED_FUNCTIONS::MATH::pows<DERIVED_VEC_TYPE, SCALAR_FLOAT_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this), b);
+        }
 
         // ROUND
         inline DERIVED_VEC_TYPE round () {
