@@ -2110,6 +2110,131 @@ int test_UME_SIMD4_32f(bool supressMessages)
                          vec0[3] > -0.046f  && vec0[3] < -0.044f, "MRCPSA");
     }
     {
+        SIMD4_32f vec0(123498.123f, -10198.12341f, -124095.123f, -1420975.124f);
+        SIMD4_32f vec1(87213.12496f, 9851.124987f, -18775.1667777f, -817641.124976f);
+        SIMD4_32f vec2(98273.821753f, 147.194f, 1204987.659871f, -19874.111111f);
+        SIMD4_32f vec3;
+        float lowRange[4] = {10770755507.34620307f, -100462841.15076064568f, 
+                             2331111618.2840661570f, 1161847679076.159986023f};
+        float hiRange[4]  = {10770755507.34620309f, -100462841.15076064566f, 
+                             2331111618.2840661572f, 1161847679076.159986025f};
+        bool result = true;
+
+        vec3 = vec0.fmuladd(vec1, vec2);
+        for(uint32_t i = 0; i < 4; i++) if(vec3[i] < lowRange[i] || vec3[i] > hiRange[i]) result = false;
+
+        CHECK_CONDITION(result, "FMULADDV");
+    }
+    {
+        SIMD4_32f vec0(123498.123f, -10198.12341f, -124095.123f, -1420975.124f);
+        SIMD4_32f vec1(87213.12496f, 9851.124987f, -18775.1667777f, -817641.124976f);
+        SIMD4_32f vec2(98273.821753f, 147.194f, 1204987.659871f, -19874.111111f);
+        SIMD4_32f vec3;
+        float lowRange[4] = {10770755507.34620307f, -10198.12342f, 
+                             2331111618.2840661570f, -1420975.125f};
+        float hiRange[4]  = {10770755507.34620309f, -10198.12340f, 
+                             2331111618.2840661572f, -1420975.123f};
+        bool result = true;
+        SIMDMask4 mask(true, false, true, false);
+
+        vec3 = vec0.fmuladd(mask, vec1, vec2);
+        for(uint32_t i = 0; i < 4; i++) if(vec3[i] < lowRange[i] || vec3[i] > hiRange[i]) result = false;
+
+        CHECK_CONDITION(result, "MFMULADDV");
+    }
+    {
+        SIMD4_32f vec0(123498.123f, -10198.12341f, -124095.123f, -1420975.124f);
+        SIMD4_32f vec1(87213.12496f, 9851.124987f, -18775.1667777f, -817641.124976f);
+        SIMD4_32f vec2(98273.821753f, 147.194f, 1204987.659871f, -19874.111111f);
+        SIMD4_32f vec3;
+        float lowRange[4] = {1.0770558e10f,  -1.00463129e8f,
+                             2.3287016e9f, 1.161847e12f};
+        float hiRange[4]  = {1.0770560e10f,  -1.00463127e8f,
+                             2.3287018e9f, 1.161848e12f};
+        bool result = true;
+
+        vec3 = vec0.fmulsub(vec1, vec2);
+        for(uint32_t i = 0; i < 4; i++) if(vec3[i] < lowRange[i] || vec3[i] > hiRange[i]) { result = false; break;};
+
+        CHECK_CONDITION(result, "FMULSUBV");
+    }
+    // MFMULSUBV
+    {
+        SIMD4_32f vec0(123498.123f, -10198.12341f, -124095.123f, -1420975.124f);
+        SIMD4_32f vec1(87213.12496f, 9851.124987f, -18775.1667777f, -817641.124976f);
+        SIMD4_32f vec2(98273.821753f, 147.194f, 1204987.659871f, -19874.111111f);
+        SIMD4_32f vec3;
+        float lowRange[4] = {1.0770558e10f,  -10198.12342f,
+                             2.3287016e9f,  -1420975.125f};
+        float hiRange[4]  = {1.0770560e10f,  -10198.12340f,
+                             2.3287018e9f,  -1420975.123f};
+        bool result = true;
+        SIMDMask4 mask(true, false, true, false);
+
+        vec3 = vec0.fmulsub(mask, vec1, vec2);
+        for(uint32_t i = 0; i < 4; i++) if(vec3[i] < lowRange[i] || vec3[i] > hiRange[i]) { result = false; break;};
+
+        CHECK_CONDITION(result, "MFMULSUBV");
+    }
+    {
+        SIMD4_32f vec0(123498.123f, -10198.12341f, -124095.123f, -1420975.124f);
+        SIMD4_32f vec1(87213.12496f, 9851.124987f, -18775.1667777f, -817641.124976f);
+        SIMD4_32f vec2(98273.821753f, 147.194f, 1204987.659871f, -19874.111111f);
+        SIMD4_32f vec3;
+        float lowRange[4] = {2.070739e10f, -51076.1f, -1.72157e11f, 4.44905e10f};
+        float hiRange[4]  = {2.070740e10f, -51076.0f, -1.72156e11f, 4.44906e10f};
+        bool result = true;
+
+        vec3 = vec0.faddmul(vec1, vec2);
+        for(uint32_t i = 0; i < 4; i++) if(vec3[i] < lowRange[i] || vec3[i] > hiRange[i]) { result = false; break;};
+
+        CHECK_CONDITION(result, "FADDMULV");
+    }
+    {
+        SIMD4_32f vec0(123498.123f, -10198.12341f, -124095.123f, -1420975.124f);
+        SIMD4_32f vec1(87213.12496f, 9851.124987f, -18775.1667777f, -817641.124976f);
+        SIMD4_32f vec2(98273.821753f, 147.194f, 1204987.659871f, -19874.111111f);
+        SIMD4_32f vec3;
+        float lowRange[4] = {2.070739e10f, -10198.12342f, -1.72157e11f, -1420975.125f};
+        float hiRange[4]  = {2.070740e10f, -10198.12340f, -1.72156e11f, -1420975.123f};
+        bool result = true;
+        SIMDMask4 mask(true, false, true, false);
+
+        vec3 = vec0.faddmul(mask, vec1, vec2);
+        for(uint32_t i = 0; i < 4; i++) if(vec3[i] < lowRange[i] || vec3[i] > hiRange[i]) { result = false; break;};
+
+        CHECK_CONDITION(result, "MFADDMULV");
+    }
+    {
+        SIMD4_32f vec0(123498.123f, -10198.12341f, -124095.123f, -1420975.124f);
+        SIMD4_32f vec1(87213.12496f, 9851.124987f, -18775.1667777f, -817641.124976f);
+        SIMD4_32f vec2(98273.821753f, 147.194f, 1204987.659871f, -19874.111111f);
+        SIMD4_32f vec3;
+        float lowRange[4] = {3.565865e9f, -2951130.0f, -1.269093e11f, 1.199072e10f};
+        float hiRange[4]  = {3.565866e9f, -2951128.0f, -1.269092e11f, 1.199073e10f};
+        bool result = true;
+
+        vec3 = vec0.fsubmul(vec1, vec2);
+        for(uint32_t i = 0; i < 4; i++) if(vec3[i] < lowRange[i] || vec3[i] > hiRange[i]) { result = false; break;};
+
+        CHECK_CONDITION(result, "FSUBMULV");
+    }
+    {
+        SIMD4_32f vec0(123498.123f, -10198.12341f, -124095.123f, -1420975.124f);
+        SIMD4_32f vec1(87213.12496f, 9851.124987f, -18775.1667777f, -817641.124976f);
+        SIMD4_32f vec2(98273.821753f, 147.194f, 1204987.659871f, -19874.111111f);
+        SIMD4_32f vec3;
+        float lowRange[4] = {3.565865e9f, -10198.12342f, -1.269093e11f, -1420975.125f};
+        float hiRange[4]  = {3.565866e9f, -10198.12340f, -1.269092e11f, -1420975.123f};
+        bool result = true;
+        SIMDMask4 mask(true, false, true, false);
+
+        vec3 = vec0.fsubmul(mask, vec1, vec2);
+        for(uint32_t i = 0; i < 4; i++) if(vec3[i] < lowRange[i] || vec3[i] > hiRange[i]) { result = false; break;};
+
+        CHECK_CONDITION(result, "MFSUBMULV");
+    }
+    {
         SIMD4_32f vec0(4.0f);
         SIMD4_32f vec1;
         vec1 = vec0.sqr();
