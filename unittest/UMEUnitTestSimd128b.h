@@ -2146,11 +2146,12 @@ int test_UME_SIMD4_32f(bool supressMessages)
         SIMD4_32f vec0(123498.123f, -10198.12341f, -124095.123f, -1420975.124f);
         SIMD4_32f vec1(87213.12496f, 9851.124987f, -18775.1667777f, -817641.124976f);
         SIMD4_32f vec2(98273.821753f, 147.194f, 1204987.659871f, -19874.111111f);
-        SIMD4_32f vec3;
-        float lowRange[4] = {1.0770558e10f,  -1.00463129e8f,
-                             2.3287016e9f, 1.161847e12f};
-        float hiRange[4]  = {1.0770560e10f,  -1.00463127e8f,
-                             2.3287018e9f, 1.161848e12f};
+        SIMD4_32f vec3; 
+
+        float lowRange[4] = { 1.07705e+10f,  -1.00464e+08f,
+                              2.3286e+09f, 1.16184e+12f};
+        float hiRange[4]  = { 1.07707e+10f,  -1.00462e+08f,
+                              2.3288e+09f, 1.16186e+12f};
         bool result = true;
 
         vec3 = vec0.fmulsub(vec1, vec2);
@@ -2164,10 +2165,10 @@ int test_UME_SIMD4_32f(bool supressMessages)
         SIMD4_32f vec1(87213.12496f, 9851.124987f, -18775.1667777f, -817641.124976f);
         SIMD4_32f vec2(98273.821753f, 147.194f, 1204987.659871f, -19874.111111f);
         SIMD4_32f vec3;
-        float lowRange[4] = {1.0770558e10f,  -10198.12342f,
-                             2.3287016e9f,  -1420975.125f};
-        float hiRange[4]  = {1.0770560e10f,  -10198.12340f,
-                             2.3287018e9f,  -1420975.123f};
+        float lowRange[4] = { 1.07705e+10f,  -10198.12342f,
+                              2.3286e+09f,   -1420975.125f};
+        float hiRange[4]  = { 1.07707e+10f,  -10198.12340f,
+                              2.3288e+09f,   -1420975.123f};
         bool result = true;
         SIMDMask4 mask(true, false, true, false);
 
