@@ -1117,6 +1117,92 @@ namespace SIMD
             }
         }
 
+        // RCP
+        template<typename VEC_TYPE>
+        inline VEC_TYPE rcp(VEC_TYPE const & b) {
+            UME_EMULATION_WARNING();
+            VEC_TYPE retval;
+            for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+                retval.insert(i, decltype(retval[0])(1.0)/b[i]);
+            }
+            return retval;
+        }
+        
+        // MRCP
+        template<typename VEC_TYPE, typename MASK_TYPE>
+        inline VEC_TYPE rcp(MASK_TYPE const & mask, VEC_TYPE const & b) {
+            UME_EMULATION_WARNING();
+            VEC_TYPE retval;
+            for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+                if(mask[i] == true) retval.insert(i, decltype(retval[0])(1.0)/b[i]);
+                else retval.insert(i, b[i]);
+            }
+            return retval;
+        }
+        
+        // RCPS
+        template<typename VEC_TYPE, typename SCALAR_TYPE>
+        inline VEC_TYPE rcpScalar(SCALAR_TYPE a, VEC_TYPE const & b) {
+            UME_EMULATION_WARNING();
+            VEC_TYPE retval;
+            for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+                retval.insert(i, a/b[i]);
+            }
+            return retval;
+        }
+
+        // MRCPS
+        template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
+        inline VEC_TYPE rcpScalar(MASK_TYPE const & mask, SCALAR_TYPE a, VEC_TYPE const & b) {
+            UME_EMULATION_WARNING();
+            VEC_TYPE retval;
+            for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+                if(mask[i] == true) retval.insert(i, a/b[i]);
+                else retval.insert(i, b[i]);
+            }
+            return retval;
+        }
+
+        // RCPA
+        template<typename VEC_TYPE>
+        inline VEC_TYPE & rcpAssign(VEC_TYPE & b) {
+            UME_EMULATION_WARNING();
+            for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+                b.insert(i, decltype(b[0])(1.0)/b[i]);
+            }
+            return b;
+        }
+        
+        // MRCPA
+        template<typename VEC_TYPE, typename MASK_TYPE>
+        inline VEC_TYPE & rcpAssign(MASK_TYPE const & mask, VEC_TYPE & b) {
+            UME_EMULATION_WARNING();
+            for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+                if(mask[i] == true) b.insert(i, decltype(b[0])(1.0)/b[i]);
+            }
+            return b;
+        }
+
+        // RCPSA
+        template<typename VEC_TYPE, typename SCALAR_TYPE>
+        inline VEC_TYPE & rcpScalarAssign(SCALAR_TYPE a, VEC_TYPE & b) {
+            UME_EMULATION_WARNING();
+            for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+                b.insert(i, a/b[i]);
+            }
+            return b;
+        }
+
+        // MRCPSA
+        template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
+        inline VEC_TYPE & rcpScalarAssign(MASK_TYPE const & mask, SCALAR_TYPE a, VEC_TYPE & b) {
+            UME_EMULATION_WARNING();
+            for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+                if(mask[i] == true) b.insert(i, a/b[i]);
+            }
+            return b;
+        }
+
         // LSHV
         template<typename VEC_TYPE, typename UINT_VEC_TYPE>
         inline VEC_TYPE shiftBitsLeft(VEC_TYPE const & a, UINT_VEC_TYPE const & b) {
@@ -3874,25 +3960,43 @@ namespace SIMD
        
         // RCP
         inline DERIVED_VEC_TYPE rcp () {
-            return EMULATED_FUNCTIONS::div<DERIVED_VEC_TYPE, SCALAR_TYPE> (1, static_cast<DERIVED_VEC_TYPE const &>(*this));
+            return EMULATED_FUNCTIONS::rcp<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // MRCP
+        inline DERIVED_VEC_TYPE rcp (MASK_TYPE const & mask) {
+            return EMULATED_FUNCTIONS::rcp<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this));
+        }
 
         // RCPS
         inline DERIVED_VEC_TYPE rcp (SCALAR_TYPE a) {
-            return EMULATED_FUNCTIONS::div<DERIVED_VEC_TYPE, SCALAR_TYPE> (a, static_cast<DERIVED_VEC_TYPE const &>(*this));
+            return EMULATED_FUNCTIONS::rcpScalar<DERIVED_VEC_TYPE, SCALAR_TYPE> (a, static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // MRCPS
+        inline DERIVED_VEC_TYPE rcp (MASK_TYPE const & mask, SCALAR_TYPE a) {
+            return EMULATED_FUNCTIONS::rcpScalar<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE> (mask, a, static_cast<DERIVED_VEC_TYPE const &>(*this));
+        }
+
         // RCPA
+        inline DERIVED_VEC_TYPE & rcpa () {
+            return EMULATED_FUNCTIONS::rcpAssign<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this));
+        }
+
+        // MRCPA
+        inline DERIVED_VEC_TYPE & rcpa (MASK_TYPE const & mask) {
+            return EMULATED_FUNCTIONS::rcpAssign<DERIVED_VEC_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this));
+        }
         
         // RCPSA
         inline DERIVED_VEC_TYPE & rcpa (SCALAR_TYPE a) {
-            return EMULATED_FUNCTIONS::divAssign<DERIVED_VEC_TYPE, SCALAR_TYPE> (a, static_cast<DERIVED_VEC_TYPE &>(*this));
+            return EMULATED_FUNCTIONS::rcpScalarAssign<DERIVED_VEC_TYPE, SCALAR_TYPE> (a, static_cast<DERIVED_VEC_TYPE &>(*this));
         }
 
         // MRCPSA
+        inline DERIVED_VEC_TYPE & rcpa (MASK_TYPE const & mask, SCALAR_TYPE a) {
+            return EMULATED_FUNCTIONS::rcpScalarAssign<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE> (mask, a, static_cast<DERIVED_VEC_TYPE &>(*this));
+        }
         
         // CMPEQV
         inline MASK_TYPE cmpeq (DERIVED_VEC_TYPE const & b) {

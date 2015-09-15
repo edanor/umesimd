@@ -2038,6 +2038,78 @@ int test_UME_SIMD4_32f(bool supressMessages)
         CHECK_CONDITION(vec2[1] > 11.99f && vec2[1] < 12.01f, "MULS");
     }
     {
+        SIMD4_32f vec0(12.34f, 321.1231f, 0.321f, -0.045f);
+        SIMD4_32f vec1;
+        vec1 = vec0.rcp();
+        CHECK_CONDITION( vec1[0] > 0.081f  && vec1[0] < 0.082f  &&
+                         vec1[1] > 0.0031f && vec1[1] < 0.0032f &&
+                         vec1[2] > 3.11f   && vec1[2] < 3.12f   &&
+                         vec1[3] > -22.23  && vec1[3] < -22.21, "RCP");
+    }
+    {
+        SIMD4_32f vec0(12.34f, 321.1231f, 0.321f, -0.045f);
+        SIMD4_32f vec1;
+        SIMDMask4 mask(true, false, false, true);
+        vec1 = vec0.rcp(mask);
+        CHECK_CONDITION( vec1[0] > 0.081f  && vec1[0] < 0.082f  &&
+                         vec1[1] > 321.12f && vec1[1] < 321.13f &&
+                         vec1[2] > 0.320f  && vec1[2] < 0.322f   &&
+                         vec1[3] > -22.23  && vec1[3] < -22.21, "MRCP");
+    }
+    {
+        SIMD4_32f vec0(12.34f, 321.1231f, 0.321f, -0.045f);
+        SIMD4_32f vec1;
+        vec1 = vec0.rcp(5.3f);
+        CHECK_CONDITION( vec1[0] > 0.42f   && vec1[0] < 0.43f   &&
+                         vec1[1] > 0.016f  && vec1[1] < 0.017f  &&
+                         vec1[2] > 16.51f  && vec1[2] < 16.52f  &&
+                         vec1[3] > -117.8f && vec1[3] < -117.7f, "RCPS");
+    }
+    {
+        SIMD4_32f vec0(12.34f, 321.1231f, 0.321f, -0.045f);
+        SIMD4_32f vec1;
+        SIMDMask4 mask(true, false, true, false);
+        vec1 = vec0.rcp(mask, 5.3f);
+        CHECK_CONDITION( vec1[0] > 0.42f    && vec1[0] < 0.43f   &&
+                         vec1[1] > 321.12f  && vec1[1] < 321.13f &&
+                         vec1[2] > 16.51f   && vec1[2] < 16.52f  &&
+                         vec1[3] > -0.046f  && vec1[3] < -0.044f, "MRCPS");
+    }
+    {
+        SIMD4_32f vec0(12.34f, 321.1231f, 0.321f, -0.045f);
+        vec0.rcpa();
+        CHECK_CONDITION( vec0[0] > 0.081f  && vec0[0] < 0.082f  &&
+                         vec0[1] > 0.0031f && vec0[1] < 0.0032f &&
+                         vec0[2] > 3.11f   && vec0[2] < 3.12f   &&
+                         vec0[3] > -22.23  && vec0[3] < -22.21, "RCPA");
+    }
+    {
+        SIMD4_32f vec0(12.34f, 321.1231f, 0.321f, -0.045f);
+        SIMDMask4 mask(true, false, false, true);
+        vec0.rcpa(mask);
+        CHECK_CONDITION( vec0[0] > 0.081f  && vec0[0] < 0.082f  &&
+                         vec0[1] > 321.12f && vec0[1] < 321.13f &&
+                         vec0[2] > 0.320f  && vec0[2] < 0.322f   &&
+                         vec0[3] > -22.23  && vec0[3] < -22.21, "MRCPA");
+    }
+    {
+        SIMD4_32f vec0(12.34f, 321.1231f, 0.321f, -0.045f);
+        vec0.rcpa(5.3f);
+        CHECK_CONDITION( vec0[0] > 0.42f   && vec0[0] < 0.43f   &&
+                         vec0[1] > 0.016f  && vec0[1] < 0.017f  &&
+                         vec0[2] > 16.51f  && vec0[2] < 16.52f  &&
+                         vec0[3] > -117.8f && vec0[3] < -117.7f, "RCPSA");
+    }
+    {
+        SIMD4_32f vec0(12.34f, 321.1231f, 0.321f, -0.045f);
+        SIMDMask4 mask(true, false, true, false);
+        vec0.rcpa(mask, 5.3f);
+        CHECK_CONDITION( vec0[0] > 0.42f    && vec0[0] < 0.43f   &&
+                         vec0[1] > 321.12f  && vec0[1] < 321.13f &&
+                         vec0[2] > 16.51f   && vec0[2] < 16.52f  &&
+                         vec0[3] > -0.046f  && vec0[3] < -0.044f, "MRCPSA");
+    }
+    {
         SIMD4_32f vec0(4.0f);
         SIMD4_32f vec1;
         vec1 = vec0.sqr();
@@ -2049,7 +2121,6 @@ int test_UME_SIMD4_32f(bool supressMessages)
         vec1 = vec0.sqrt();
         CHECK_CONDITION(vec1[0] > 1.99f && vec1[3] < 2.01f, "SQRT")
     }
-
     {
         SIMD4_32f vec0(1.0f, 2.0f, -3.0f, -4.12f);
         SIMD4_32f vec1(2.15f, 3.79f, 3.00f, 2.00f);
@@ -2060,7 +2131,6 @@ int test_UME_SIMD4_32f(bool supressMessages)
                         vec2[2] > -27.01f && vec2[2] < -26.99f  &&
                         vec2[3] > 16.97   && vec2[3] < 16.98, "POWV");
     }
-
     {
         SIMD4_32f vec0(1.0f, 2.0f, -3.0f, -4.12f);
         SIMD4_32f vec1(2.15f, 3.79f, 3.00f, 2.00f);
@@ -2072,7 +2142,6 @@ int test_UME_SIMD4_32f(bool supressMessages)
                         vec2[2] > -27.01f && vec2[2] < -26.99f  &&
                         vec2[3] > -4.13f  && vec2[3] < -4.11f, "MPOWV");
     }
-    
     {
         SIMD4_32f vec0(1.0f, 2.0f, -3.0f, -4.12f);
         float val1 = 3.0f;
@@ -2083,7 +2152,6 @@ int test_UME_SIMD4_32f(bool supressMessages)
                         vec2[2] > -27.01f && vec2[2] < -26.99f  &&
                         vec2[3] > -69.94  && vec2[3] < -69.93, "POWS");
     }
-    
     {
         SIMD4_32f vec0(1.0f, 2.0f, -3.0f, -4.12f);
         float val1 = 3.0f;
@@ -2095,7 +2163,6 @@ int test_UME_SIMD4_32f(bool supressMessages)
                         vec2[2] > -27.01f && vec2[2] < -26.99f  &&
                         vec2[3] > -4.13f  && vec2[3] < -4.11f, "MPOWS");
     }
-
     {
         SIMD4_32f vec0(3.8f);
         SIMD4_32f vec1;
@@ -2105,14 +2172,12 @@ int test_UME_SIMD4_32f(bool supressMessages)
         CHECK_CONDITION(vec1[0] > 3.99f && vec1[3] < 4.01f, "ROUND");
         CHECK_CONDITION(vec2[0] == 3 && vec2[3] == 3, "TRUNC");
     }
-
     {   
         SIMD4_32f vec0(3.14f);
         SIMD4_32f vec1;
         vec1 = vec0.floor();
         CHECK_CONDITION(vec1[0] > 2.99f && vec1[0] < 3.01f && vec1[3] > 2.99f && vec1[3] < 3.01f, "FLOOR");
     }
-
     {   
         SIMD4_32f vec0(3.14f);
         SIMD4_32f vec1;
@@ -2120,14 +2185,12 @@ int test_UME_SIMD4_32f(bool supressMessages)
         vec1 = vec0.floor(mask);
         CHECK_CONDITION(vec1[0] > 2.99f && vec1[0] < 3.01f && vec1[3] > 3.13f && vec1[3] < 3.15f, "MFLOOR");
     }
-    
     {   
         SIMD4_32f vec0(3.14f);
         SIMD4_32f vec1;
         vec1 = vec0.ceil();
         CHECK_CONDITION(vec1[0] > 3.99f && vec1[0] < 4.01f && vec1[3] > 3.99f && vec1[3] < 4.01f, "CEIL");
     }
-    
     {   
         SIMD4_32f vec0(3.14f);
         SIMD4_32f vec1;
@@ -2135,7 +2198,6 @@ int test_UME_SIMD4_32f(bool supressMessages)
         vec1 = vec0.ceil(mask);
         CHECK_CONDITION(vec1[0] > 3.99f && vec1[0] < 4.01f && vec1[3] > 3.13f && vec1[3] < 3.15f, "MCEIL");
     }
-
     {
         alignas(16) uint32_t init[4] = { 0x7F800000, 0xFF800000, 0x7F800123, 0xFF700456 };
         SIMD4_32f vec0;
@@ -2144,7 +2206,6 @@ int test_UME_SIMD4_32f(bool supressMessages)
         mask = vec0.isfin();
         CHECK_CONDITION(mask[0] == false && mask[1] == false && mask[2] == false && mask[3] == true, "ISFIN");
     }
-    
     {
         alignas(16) uint32_t init[4] = { 0x7F800000, 0xFF800000, 0x7F800123, 0xFF700456 };
         SIMD4_32f vec0;
@@ -2153,7 +2214,6 @@ int test_UME_SIMD4_32f(bool supressMessages)
         mask = vec0.isinf();
         CHECK_CONDITION(mask[0] == true && mask[1] == true && mask[2] == false && mask[3] == false, "ISINF");
     }
-    
     {
         alignas(16) uint32_t init[4] = { 0x7F800000, 0xFF800001, 0x7F800123, 0xFF700456 };
         SIMD4_32f vec0;
@@ -2162,7 +2222,6 @@ int test_UME_SIMD4_32f(bool supressMessages)
         mask = vec0.isan();
         CHECK_CONDITION(mask[0] == true && mask[1] == false && mask[2] == false && mask[3] == true, "ISAN");
     }
-    
     {
         alignas(16) uint32_t init[4] = { 0x7F800000, 0xFF800001, 0x7F800123, 0xFF700456 };
         SIMD4_32f vec0;
@@ -2171,7 +2230,6 @@ int test_UME_SIMD4_32f(bool supressMessages)
         mask = vec0.isnan();
         CHECK_CONDITION(mask[0] == false && mask[1] == true && mask[2] == true && mask[3] == false, "ISNAN");
     }
-    
     {
         alignas(16) uint32_t init[4] = { 0x7F800000, 0xFF800001, 0x80700456, 0x80f00456 };
         SIMD4_32f vec0;
@@ -2180,7 +2238,6 @@ int test_UME_SIMD4_32f(bool supressMessages)
         mask = vec0.isnorm();
         CHECK_CONDITION(mask[0] == false && mask[1] == false && mask[2] == false && mask[3] == true, "ISNORM");
     }
-    
     {
         alignas(16) uint32_t init[4] = { 0x7F800000, 0xFF800001, 0x80700456, 0x80f00456 };
         SIMD4_32f vec0;
@@ -2189,7 +2246,6 @@ int test_UME_SIMD4_32f(bool supressMessages)
         mask = vec0.issub();
         CHECK_CONDITION(mask[0] == false && mask[1] == false && mask[2] == true && mask[3] == false, "ISSUB");
     }
-
     {   
         SIMD4_32f vec0(2.14f, -12.34f, 9.23f, -256.3f);
         SIMD4_32f vec1;
@@ -2199,7 +2255,6 @@ int test_UME_SIMD4_32f(bool supressMessages)
                          vec1[2] > 0.193f && vec1[2] < 0.194f  &&
                          vec1[3] > 0.966f && vec1[3] < 0.967f, "SIN");
     }   
-
     {   
         SIMD4_32f vec0(2.14f, -12.34f, 9.23f, -256.3f);
         SIMD4_32f vec1;
@@ -2211,7 +2266,6 @@ int test_UME_SIMD4_32f(bool supressMessages)
                          vec1[3] > -256.4f && vec1[3] < -256.2f, "MSIN");
 
     }   
-    
     {
         SIMD4_32f vec0(2.14f, -12.34f, 9.23f, -256.3f);
         SIMD4_32f vec1;
@@ -2221,7 +2275,6 @@ int test_UME_SIMD4_32f(bool supressMessages)
                          vec1[2] > -0.982f && vec1[2] < -0.981f  &&
                          vec1[3] > 0.257f  && vec1[3] < 0.258f, "COS");
     }
-
     {
         SIMD4_32f vec0(2.14f, -12.34f, 9.23f, -256.3f);
         SIMD4_32f vec1;
@@ -2232,7 +2285,6 @@ int test_UME_SIMD4_32f(bool supressMessages)
                          vec1[2] > 9.22f   && vec1[2] < 9.24f    &&
                          vec1[3] > -256.4f && vec1[3] < -256.2f, "MCOS");
     }
-    
     {
         SIMD4_32f vec0(2.14f, -12.34f, 9.23f, -256.3f);
         SIMD4_32f vec1;
@@ -2242,7 +2294,6 @@ int test_UME_SIMD4_32f(bool supressMessages)
                          vec1[2] > -0.198f && vec1[2] < -0.197f  &&
                          vec1[3] > 3.756f  && vec1[3] < 3.757f, "TAN");
     }
-
     {
         SIMD4_32f vec0(2.14f, -12.34f, 9.23f, -256.3f);
         SIMD4_32f vec1;
@@ -2253,7 +2304,6 @@ int test_UME_SIMD4_32f(bool supressMessages)
                          vec1[2] > 9.22f   && vec1[2] < 9.24f    &&
                          vec1[3] > -256.4f && vec1[3] < -256.2f, "MTAN");
     }
-    
     {
         SIMD4_32f vec0(2.14f, -12.34f, 9.23f, -256.3f);
         SIMD4_32f vec1;
@@ -2263,7 +2313,6 @@ int test_UME_SIMD4_32f(bool supressMessages)
                          vec1[2] > -5.069f && vec1[2] < -5.068f  &&
                          vec1[3] > 0.266f  && vec1[3] < 0.267f, "CTAN");
     }
-
     {
         SIMD4_32f vec0(2.14f, -12.34f, 9.23f, -256.3f);
         SIMD4_32f vec1;
