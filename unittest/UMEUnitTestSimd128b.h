@@ -2159,7 +2159,6 @@ int test_UME_SIMD4_32f(bool supressMessages)
 
         CHECK_CONDITION(result, "FMULSUBV");
     }
-    // MFMULSUBV
     {
         SIMD4_32f vec0(123498.123f, -10198.12341f, -124095.123f, -1420975.124f);
         SIMD4_32f vec1(87213.12496f, 9851.124987f, -18775.1667777f, -817641.124976f);
@@ -2240,6 +2239,26 @@ int test_UME_SIMD4_32f(bool supressMessages)
         SIMD4_32f vec1;
         vec1 = vec0.sqr();
         CHECK_CONDITION(vec1[0] > 15.99f && vec1[3] < 16.01f, "SQR");
+    }
+    {
+        SIMD4_32f vec0(4.0f);
+        SIMD4_32f vec1;
+        SIMDMask4 mask(true, false, true, false);
+        vec1 = vec0.sqr(mask);
+        CHECK_CONDITION(vec1[0] > 15.99f && vec1[0] < 16.01f &&
+                        vec1[1] > 3.99f  && vec1[1] < 4.01f, "MSQR");
+    }
+    {
+        SIMD4_32f vec0(4.0f);
+        vec0.sqra();
+        CHECK_CONDITION(vec0[3] > 15.99f && vec0[3] < 16.01f, "SQRA");
+    }
+    {
+        SIMD4_32f vec0(4.0f);
+        SIMDMask4 mask(true, false, true, false);
+        vec0.sqra(mask);
+        CHECK_CONDITION(vec0[0] > 15.99f && vec0[0] < 16.01f &&
+                        vec0[1] > 3.99f  && vec0[1] < 4.01f, "MSQRA");
     }
     {
         SIMD4_32f vec0(4.0f);

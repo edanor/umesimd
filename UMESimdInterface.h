@@ -2808,13 +2808,14 @@ namespace SIMD
                 VEC_TYPE retval;
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                     if(mask[i] == true) retval.insert(i, a[i] * a[i]);
+                    else retval.insert(i, a[i]);
                 }
                 return retval;
             }
             
             // SQRA
             template<typename VEC_TYPE>
-            inline VEC_TYPE & sqr(VEC_TYPE & a) {
+            inline VEC_TYPE & sqrAssign(VEC_TYPE & a) {
                 UME_EMULATION_WARNING();
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                     a.insert(i, a[i] * a[i]);
@@ -2824,7 +2825,7 @@ namespace SIMD
             
             // MSQRA
             template<typename VEC_TYPE, typename MASK_TYPE>
-            inline VEC_TYPE & sqr(MASK_TYPE const & mask, VEC_TYPE & a) {
+            inline VEC_TYPE & sqrAssign(MASK_TYPE const & mask, VEC_TYPE & a) {
                 UME_EMULATION_WARNING();
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                     if(mask[i] == true) a.insert(i, a[i] * a[i]);
@@ -4849,9 +4850,21 @@ namespace SIMD
         inline DERIVED_VEC_TYPE sqr () {
             return EMULATED_FUNCTIONS::MATH::sqr<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
+
         // MSQR
+        inline DERIVED_VEC_TYPE sqr (MASK_TYPE const & mask) {
+            return EMULATED_FUNCTIONS::MATH::sqr<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this));
+        }
+
         // SQRA
+        inline DERIVED_VEC_TYPE & sqra () {
+            return EMULATED_FUNCTIONS::MATH::sqrAssign<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this));
+        }
+
         // MSQRA
+        inline DERIVED_VEC_TYPE & sqra (MASK_TYPE const & mask) {
+            return EMULATED_FUNCTIONS::MATH::sqrAssign<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this));
+        }
 
         // SQRT
         inline DERIVED_VEC_TYPE sqrt () {
