@@ -526,6 +526,70 @@ int test_UME_SIMD4_32u(bool supressMessages)
         CHECK_CONDITION(vec0[0] == 21 && vec0[1] == 20 && vec0[2] == 19 && vec0[3] == 18, "ADDSA");
     }
     {
+        SIMD4_32u vec0(0xFFFFFFFF, 0xFFFFFF00, 0x00000003, 0x12345678);
+        SIMD4_32u vec1(0x00000005, 0x00000100, 0x15166345, 0xFFFF0000);
+        SIMD4_32u vec2;
+        vec2 = vec0.sadd(vec1);
+        CHECK_CONDITION(vec2[0] == 0xFFFFFFFF && vec2[1] == 0xFFFFFFFF &&
+                        vec2[2] == 0x15166348 && vec2[3] == 0xFFFFFFFF, "SADDV");
+    }
+    {
+        SIMD4_32u vec0(0xFFFFFFFF, 0xFFFFFF00, 0x00000003, 0x12345678);
+        SIMD4_32u vec1(0x00000005, 0x00000100, 0x15166345, 0xFFFF0000);
+        SIMD4_32u vec2;
+        SIMDMask4 mask(true, false, true, true);
+        vec2 = vec0.sadd(mask, vec1);
+        CHECK_CONDITION(vec2[0] == 0xFFFFFFFF && vec2[1] == 0xFFFFFF00 &&
+                        vec2[2] == 0x15166348 && vec2[3] == 0xFFFFFFFF, "MSADDV");
+    }
+    {
+        SIMD4_32u vec0(0xFFFFFFFF, 0xFFFFFF00, 0x00000003, 0x12345678);
+        uint32_t val1 = 0x00000100;
+        SIMD4_32u vec2;
+        vec2 = vec0.sadd(val1);
+        CHECK_CONDITION(vec2[0] == 0xFFFFFFFF && vec2[1] == 0xFFFFFFFF &&
+                        vec2[2] == 0x00000103 && vec2[3] == 0x12345778, "SADDS");
+    }
+    {
+        SIMD4_32u vec0(0xFFFFFFFF, 0xFFFFFF00, 0x00000003, 0x12345678);
+        uint32_t val1 = 0x00000100;
+        SIMD4_32u vec2;
+        SIMDMask4 mask(true, false, true, true);
+        vec2 = vec0.sadd(mask, val1);
+        CHECK_CONDITION(vec2[0] == 0xFFFFFFFF && vec2[1] == 0xFFFFFF00 &&
+                        vec2[2] == 0x00000103 && vec2[3] == 0x12345778, "MSADDS");
+    }
+    {
+        SIMD4_32u vec0(0xFFFFFFFF, 0xFFFFFF00, 0x00000003, 0x12345678);
+        SIMD4_32u vec1(0x00000005, 0x00000100, 0x15166345, 0xFFFF0000);
+        vec0.sadda(vec1);
+        CHECK_CONDITION(vec0[0] == 0xFFFFFFFF && vec0[1] == 0xFFFFFFFF &&
+                        vec0[2] == 0x15166348 && vec0[3] == 0xFFFFFFFF, "SADDVA");
+    }
+    {
+        SIMD4_32u vec0(0xFFFFFFFF, 0xFFFFFF00, 0x00000003, 0x12345678);
+        SIMD4_32u vec1(0x00000005, 0x00000100, 0x15166345, 0xFFFF0000);
+        SIMDMask4 mask(true, false, true, true);
+        vec0.sadda(mask, vec1);
+        CHECK_CONDITION(vec0[0] == 0xFFFFFFFF && vec0[1] == 0xFFFFFF00 &&
+                        vec0[2] == 0x15166348 && vec0[3] == 0xFFFFFFFF, "MSADDVA");
+    }
+    {
+        SIMD4_32u vec0(0xFFFFFFFF, 0xFFFFFF00, 0x00000003, 0x12345678);
+        uint32_t val1 = 0x00000100;
+        vec0.sadda(val1);
+        CHECK_CONDITION(vec0[0] == 0xFFFFFFFF && vec0[1] == 0xFFFFFFFF &&
+                        vec0[2] == 0x00000103 && vec0[3] == 0x12345778, "SADDSA");
+    }
+    {
+        SIMD4_32u vec0(0xFFFFFFFF, 0xFFFFFF00, 0x00000003, 0x12345678);
+        uint32_t val1 = 0x00000100;
+        SIMDMask4 mask(true, false, true, true);
+        vec0.sadda(mask, val1);
+        CHECK_CONDITION(vec0[0] == 0xFFFFFFFF && vec0[1] == 0xFFFFFF00 &&
+                        vec0[2] == 0x00000103 && vec0[3] == 0x12345778, "MSADDSA");
+    }
+    {
         SIMD4_32u vec0(9, 8, 7, 6);
         SIMD4_32u vec1(0);
         vec1 = vec0.postInc();
@@ -1256,6 +1320,23 @@ int test_UME_SIMD4_32i(bool supressMessages)
         int32_t val1 = 12;
         vec0.adda(val1);
         CHECK_CONDITION(vec0[0] == 21 && vec0[1] == 4 && vec0[2] == 19 && vec0[3] == 18, "ADDSA");
+    }
+    {
+        SIMD4_32i vec0(0x7FFFFFFF, 0x7FFFFF00, 0x00000003, 0x12345678);
+        SIMD4_32i vec1(0x00000005, 0x00000100, 0x15166345, 0x7FFF0000);
+        SIMD4_32i vec2;
+        vec2 = vec0.sadd(vec1);
+        CHECK_CONDITION(vec2[0] == 0x7FFFFFFF && vec2[1] == 0x7FFFFFFF &&
+                        vec2[2] == 0x15166348 && vec2[3] == 0x7FFFFFFF, "SADDV");
+    }
+    {
+        SIMD4_32i vec0(0x7FFFFFFF, 0x7FFFFF00, 0x00000003, 0x12345678);
+        SIMD4_32i vec1(0x00000005, 0x00000100, 0x15166345, 0x7FFF0000);
+        SIMD4_32i vec2;
+        SIMDMask4 mask(true, false, true, true);
+        vec2 = vec0.sadd(mask, vec1);
+        CHECK_CONDITION(vec2[0] == 0x7FFFFFFF && vec2[1] == 0x7FFFFF00 &&
+                        vec2[2] == 0x15166348 && vec2[3] == 0x7FFFFFFF, "MSADDV");
     }
     {
         SIMD4_32i vec0(9, -8, 7, 6);

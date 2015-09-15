@@ -376,40 +376,170 @@ namespace SIMD
             
         // ADDA
         template<typename VEC_TYPE>
-        inline VEC_TYPE & addAssign (VEC_TYPE & src, VEC_TYPE const & b) {
+        inline VEC_TYPE & addAssign (VEC_TYPE & a, VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
-            for(uint32_t i = 0; i < VEC_TYPE::length(); i++) { src.insert(i, (src[i] + b[i])); }
-            return src;
+            for(uint32_t i = 0; i < VEC_TYPE::length(); i++) { a.insert(i, (a[i] + b[i])); }
+            return a;
         }
 
         // MADDA
         template<typename VEC_TYPE, typename MASK_TYPE>
-        inline VEC_TYPE & addAssign (MASK_TYPE const & mask, VEC_TYPE & src, VEC_TYPE const & b) {
+        inline VEC_TYPE & addAssign (MASK_TYPE const & mask, VEC_TYPE & a, VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
-                if(mask[i] == true) src.insert(i, (src[i] + b[i]));
+                if(mask[i] == true) a.insert(i, (a[i] + b[i]));
             }
-            return src;
+            return a;
         }
 
         // ADDSA
         template<typename VEC_TYPE, typename SCALAR_TYPE>
-        inline VEC_TYPE & addAssignScalar (VEC_TYPE & src, SCALAR_TYPE const & b) {
+        inline VEC_TYPE & addAssignScalar (VEC_TYPE & a, SCALAR_TYPE const & b) {
             UME_EMULATION_WARNING();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
-                src.insert(i, (src[i] + b));
+                a.insert(i, (a[i] + b));
             }
-            return src;
+            return a;
         }
 
         // MADDSA
         template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
-        inline VEC_TYPE & addAssignScalar (MASK_TYPE const & mask, VEC_TYPE & src, SCALAR_TYPE const & b) {
+        inline VEC_TYPE & addAssignScalar (MASK_TYPE const & mask, VEC_TYPE & a, SCALAR_TYPE const & b) {
             UME_EMULATION_WARNING();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
-                if(mask[i] == true) src.insert(i, src[i] + b);
+                if(mask[i] == true) a.insert(i, a[i] + b);
             }
-            return src;
+            return a;
+        }
+
+        // SADDV
+        template<typename VEC_TYPE>
+        inline VEC_TYPE addSaturated (VEC_TYPE const & a, VEC_TYPE const & b) {
+            UME_EMULATION_WARNING();
+            VEC_TYPE retval;
+            decltype(a[0]) temp = 0;
+            // maximum value
+            decltype(a[0]) satValue = std::numeric_limits<decltype(a[0])>::max();
+            for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+                temp = (a[i] > (satValue - b[i])) ? satValue : (a[i] + b[i]);
+                retval.insert(i, temp);
+            }
+            return retval;
+        }
+
+        // MSADDV
+        template<typename VEC_TYPE, typename MASK_TYPE>
+        inline VEC_TYPE addSaturated (MASK_TYPE const & mask, VEC_TYPE const & a, VEC_TYPE const & b) {
+            UME_EMULATION_WARNING();
+            VEC_TYPE retval;
+            decltype(a[0]) temp = 0;
+            // maximum value
+            decltype(a[0]) satValue = std::numeric_limits<decltype(a[0])>::max();
+            for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+                if(mask[i] == true) {
+                    temp = (a[i] > (satValue - b[i])) ? satValue : (a[i] + b[i]);
+                    retval.insert(i, temp);
+                }
+                else {
+                    retval.insert(i, a[i]);
+                }
+            }
+            return retval;
+        }
+
+        // SADDS
+        template<typename VEC_TYPE, typename SCALAR_TYPE>
+        inline VEC_TYPE addSaturatedScalar (VEC_TYPE const & a, SCALAR_TYPE b) {
+            UME_EMULATION_WARNING();
+            VEC_TYPE retval;
+            decltype(a[0]) temp = 0;
+            // maximum value
+            decltype(a[0]) satValue = std::numeric_limits<decltype(a[0])>::max();
+            for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+                temp = (a[i] > (satValue - b)) ? satValue : (a[i] + b);
+                retval.insert(i, temp);
+            }
+            return retval;
+        }
+
+        // MSADDS
+        template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
+        inline VEC_TYPE addSaturatedScalar (MASK_TYPE const & mask, VEC_TYPE const & a, SCALAR_TYPE b) {
+            UME_EMULATION_WARNING();
+            VEC_TYPE retval;
+            decltype(a[0]) temp = 0;
+            // maximum value
+            decltype(a[0]) satValue = std::numeric_limits<decltype(a[0])>::max();
+            for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+                if(mask[i] == true) {
+                    temp = (a[i] > (satValue - b)) ? satValue : (a[i] + b);
+                    retval.insert(i, temp);
+                }
+                else {
+                    retval.insert(i, a[i]);
+                }
+            }
+            return retval;
+        }
+
+        // SADDVA
+        template<typename VEC_TYPE>
+        inline VEC_TYPE & addSaturatedAssign(VEC_TYPE & a, VEC_TYPE const & b) {
+            UME_EMULATION_WARNING();
+            decltype(a[0]) temp = 0;
+            // maximum value
+            decltype(a[0]) satValue = std::numeric_limits<decltype(a[0])>::max();
+            for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+                temp = (a[i] > (satValue - b[i])) ? satValue : (a[i] + b[i]);
+                a.insert(i, temp);
+            }
+            return a;
+        }
+        
+        // MSADDVA
+        template<typename VEC_TYPE, typename MASK_TYPE>
+        inline VEC_TYPE & addSaturatedAssign(MASK_TYPE const & mask, VEC_TYPE & a, VEC_TYPE const & b) {
+            UME_EMULATION_WARNING();
+            decltype(a[0]) temp = 0;
+            // maximum value
+            decltype(a[0]) satValue = std::numeric_limits<decltype(a[0])>::max();
+            for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+                if(mask[i] == true) {
+                    temp = (a[i] > (satValue - b[i])) ? satValue : (a[i] + b[i]);
+                    a.insert(i, temp);
+                }
+            }
+            return a;
+        }
+
+        // SADDSA
+        template<typename VEC_TYPE, typename SCALAR_TYPE>
+        inline VEC_TYPE & addSaturatedScalarAssign(VEC_TYPE & a, SCALAR_TYPE b) {
+            UME_EMULATION_WARNING();
+            decltype(a[0]) temp = 0;
+            // maximum value
+            decltype(a[0]) satValue = std::numeric_limits<decltype(a[0])>::max();
+            for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+                temp = (a[i] > (satValue - b)) ? satValue : (a[i] + b);
+                a.insert(i, temp);
+            }
+            return a;
+        }
+
+        // MSADDSA
+        template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
+        inline VEC_TYPE & addSaturatedScalarAssign(MASK_TYPE const & mask, VEC_TYPE & a, SCALAR_TYPE b) {
+            UME_EMULATION_WARNING();
+            decltype(a[0]) temp = 0;
+            // maximum value
+            decltype(a[0]) satValue = std::numeric_limits<decltype(a[0])>::max();
+            for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+                if(mask[i] == true) {
+                    temp = (a[i] > (satValue - b)) ? satValue : (a[i] + b);
+                    a.insert(i, temp);
+                }
+            }
+            return a;
         }
 
         // POSTINC
@@ -2878,7 +3008,6 @@ namespace SIMD
                 return retval;
             }
         } // UME::SIMD::EMULATED_FUNCTIONS::MATH
-
     } // namespace UME::SIMD::EMULATED_FUNCTIONS
     
     // This class is a wrapper of scalar types that forbids implicit type conversions.
@@ -3069,14 +3198,14 @@ namespace SIMD
         }
 
         // TOINT
-        inline MaskAsInt<MASK_LEN> toInt() {
-            return 0;
-        }
+        //inline MaskAsInt<MASK_LEN> toInt() {
+        //    return 0;
+        //}
 
         // FROMINT
-        inline DERIVED_MASK_TYPE & fromInt(MaskAsInt<MASK_LEN>) {
-            return *this;
-        }
+        //inline DERIVED_MASK_TYPE & fromInt(MaskAsInt<MASK_LEN>) {
+        //    return *this;
+        //}
     };
 
     // **********************************************************************
@@ -3268,16 +3397,43 @@ namespace SIMD
         
         // SADDV
         inline DERIVED_VEC_TYPE sadd(DERIVED_VEC_TYPE const & b) {
-            return DERIVED_VEC_TYPE(); // TODO:
+            return EMULATED_FUNCTIONS::addSaturated<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         } 
 
         // MSADDV
+        inline DERIVED_VEC_TYPE sadd(MASK_TYPE const & mask, DERIVED_VEC_TYPE b) {
+            return EMULATED_FUNCTIONS::addSaturated<DERIVED_VEC_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
+        }
+
         // SADDS
+        inline DERIVED_VEC_TYPE sadd(SCALAR_TYPE b) {
+            return EMULATED_FUNCTIONS::addSaturatedScalar<DERIVED_VEC_TYPE, SCALAR_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this), b);
+        }
+
         // MSADDS
+        inline DERIVED_VEC_TYPE sadd(MASK_TYPE const & mask, SCALAR_TYPE b) {
+            return EMULATED_FUNCTIONS::addSaturatedScalar<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
+        }
+
         // SADDVA
+        inline DERIVED_VEC_TYPE & sadda(DERIVED_VEC_TYPE const & b) {
+            return EMULATED_FUNCTIONS::addSaturatedAssign<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this), b);
+        }
+
         // MSADDVA
+        inline DERIVED_VEC_TYPE & sadda(MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) {
+            return EMULATED_FUNCTIONS::addSaturatedAssign<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this), b);
+        }
+
         // SADDSA
+        inline DERIVED_VEC_TYPE & sadda(SCALAR_TYPE b) {
+            return EMULATED_FUNCTIONS::addSaturatedScalarAssign<DERIVED_VEC_TYPE, SCALAR_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this), b);
+        }
+
         // MSADDSA
+        inline DERIVED_VEC_TYPE & sadda(MASK_TYPE const & mask, SCALAR_TYPE b) {
+            return EMULATED_FUNCTIONS::addSaturatedScalarAssign<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE &>(*this), b);
+        }
         
         // POSTINC
         inline DERIVED_VEC_TYPE postInc () {
