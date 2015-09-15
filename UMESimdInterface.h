@@ -602,6 +602,7 @@ namespace SIMD
             VEC_TYPE retval;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                 if(mask[i] == true) retval.insert(i, a[i] - b[i]);
+                else retval.insert(i, a[i]);
             }
             return retval; 
         }
@@ -624,8 +625,75 @@ namespace SIMD
             VEC_TYPE retval;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                 if(mask[i] == true) retval.insert(i, (a[i] - b));
+                else retval.insert(i, a[i]);
             }
             return retval;
+        }
+
+        // SUBFROMV  - is handled using SUBV
+        // MSUBFROMV - is handled using MSUBV
+
+        // SUBFROMS
+        template<typename VEC_TYPE, typename SCALAR_TYPE>
+        inline VEC_TYPE subFromScalar (SCALAR_TYPE a, VEC_TYPE const & b) {
+            UME_EMULATION_WARNING();
+            VEC_TYPE retval;
+            for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+                retval.insert(i, a - b[i]);
+            }
+            return retval;
+        }
+
+        // MSUBFROMS
+        template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
+        inline VEC_TYPE subFromScalar (MASK_TYPE const & mask, SCALAR_TYPE a, VEC_TYPE const & b) {
+            UME_EMULATION_WARNING();
+            VEC_TYPE retval;
+            for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+                if(mask[i] == true) retval.insert(i, a - b[i]);
+                else retval.insert(i, a);
+            }
+            return retval;
+        }
+
+        // SUBFROMVA
+        template<typename VEC_TYPE>
+        inline VEC_TYPE & subFromAssign (VEC_TYPE const & a, VEC_TYPE & b) {
+            UME_EMULATION_WARNING();
+            for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+                b.insert(i, a[i] - b[i]);
+            }
+            return b;
+        }
+
+        // MSUBFROMVA
+        template<typename VEC_TYPE, typename MASK_TYPE>
+        inline VEC_TYPE & subFromAssign (MASK_TYPE const & mask, VEC_TYPE const & a, VEC_TYPE & b) {
+            UME_EMULATION_WARNING();
+            for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+                if( mask[i] == true) b.insert(i, a[i] - b[i]);
+            }
+            return b;
+        }
+
+        // SUBFROMSA
+        template<typename VEC_TYPE, typename SCALAR_TYPE>
+        inline VEC_TYPE & subFromScalarAssign (SCALAR_TYPE a, VEC_TYPE & b) {
+            UME_EMULATION_WARNING();
+            for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+                b.insert(i, a - b[i]);
+            }
+            return b;
+        }
+
+        // MSUBFROMSA
+        template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
+        inline VEC_TYPE & subFromScalarAssign (MASK_TYPE const & mask, SCALAR_TYPE a, VEC_TYPE & b) {
+            UME_EMULATION_WARNING();
+            for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+                if(mask[i] == true) b.insert(i, a - b[i]);
+            }
+            return b;
         }
 
         // NEG
@@ -689,6 +757,136 @@ namespace SIMD
                 if(mask[i] == true) dst.insert(i, dst[i] - b);
             }
             return dst;
+        }
+
+        // SSUBV
+        template<typename VEC_TYPE>
+        inline VEC_TYPE subSaturated (VEC_TYPE const & a, VEC_TYPE const & b) {
+            UME_EMULATION_WARNING();
+            VEC_TYPE retval;
+            decltype(a[0]) temp = 0;
+            // maximum value
+            decltype(a[0]) satValue = std::numeric_limits<decltype(a[0])>::min();
+            for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+                temp = (a[i] < (satValue + b[i])) ? satValue : (a[i] - b[i]);
+                retval.insert(i, temp);
+            }
+            return retval;
+        }
+
+        // MSSUBV
+        template<typename VEC_TYPE, typename MASK_TYPE>
+        inline VEC_TYPE subSaturated (MASK_TYPE const & mask, VEC_TYPE const & a, VEC_TYPE const & b) {
+            UME_EMULATION_WARNING();
+            VEC_TYPE retval;
+            decltype(a[0]) temp = 0;
+            // maximum value
+            decltype(a[0]) satValue = std::numeric_limits<decltype(a[0])>::min();
+            for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+                if(mask[i] == true) {
+                    temp = (a[i] < (satValue + b[i])) ? satValue : (a[i] - b[i]);
+                    retval.insert(i, temp);
+                }
+                else {
+                    retval.insert(i, a[i]);
+                }
+            }
+            return retval;
+        }
+
+        // SSUBS
+        template<typename VEC_TYPE, typename SCALAR_TYPE>
+        inline VEC_TYPE subSaturated (VEC_TYPE const & a, SCALAR_TYPE b) {
+            UME_EMULATION_WARNING();
+            VEC_TYPE retval;
+            decltype(a[0]) temp = 0;
+            // maximum value
+            decltype(a[0]) satValue = std::numeric_limits<decltype(a[0])>::min();
+            for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+                temp = (a[i] < (satValue + b)) ? satValue : (a[i] - b);
+                retval.insert(i, temp);
+            }
+            return retval;
+        }
+
+        // MSSUBS
+        template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
+        inline VEC_TYPE subSaturated (MASK_TYPE const & mask, VEC_TYPE const & a, SCALAR_TYPE b) {
+            UME_EMULATION_WARNING();
+            VEC_TYPE retval;
+            decltype(a[0]) temp = 0;
+            // maximum value
+            decltype(a[0]) satValue = std::numeric_limits<decltype(a[0])>::min();
+            for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+                if(mask[i] == true) {
+                    temp = (a[i] < (satValue + b)) ? satValue : (a[i] - b);
+                    retval.insert(i, temp);
+                }
+                else {
+                    retval.insert(i, a[i]);
+                }
+            }
+            return retval;
+        }
+
+        // SSUBVA
+        template<typename VEC_TYPE>
+        inline VEC_TYPE & subSaturatedAssign (VEC_TYPE & a, VEC_TYPE const & b) {
+            UME_EMULATION_WARNING();
+            decltype(a[0]) temp = 0;
+            // maximum value
+            decltype(a[0]) satValue = std::numeric_limits<decltype(a[0])>::min();
+            for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+                temp = (a[i] < (satValue + b[i])) ? satValue : (a[i] - b[i]);
+                a.insert(i, temp);
+            }
+            return a;
+        }
+
+        // MSSUBV
+        template<typename VEC_TYPE, typename MASK_TYPE>
+        inline VEC_TYPE & subSaturatedAssign (MASK_TYPE const & mask, VEC_TYPE & a, VEC_TYPE const & b) {
+            UME_EMULATION_WARNING();
+            decltype(a[0]) temp = 0;
+            // maximum value
+            decltype(a[0]) satValue = std::numeric_limits<decltype(a[0])>::min();
+            for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+                if(mask[i] == true) {
+                    temp = (a[i] < (satValue + b[i])) ? satValue : (a[i] - b[i]);
+                    a.insert(i, temp);
+                }
+            }
+            return a;
+        }
+
+        // SSUBS
+        template<typename VEC_TYPE, typename SCALAR_TYPE>
+        inline VEC_TYPE & subSaturatedScalarAssign (VEC_TYPE & a, SCALAR_TYPE b) {
+            UME_EMULATION_WARNING();
+            decltype(a[0]) temp = 0;
+            // maximum value
+            decltype(a[0]) satValue = std::numeric_limits<decltype(a[0])>::min();
+            for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+                temp = (a[i] < (satValue + b)) ? satValue : (a[i] - b);
+                a.insert(i, temp);
+            }
+            return a;
+        }
+
+        // MSSUBS
+        template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
+        inline VEC_TYPE & subSaturatedScalarAssign (MASK_TYPE const & mask, VEC_TYPE & a, SCALAR_TYPE b) {
+            UME_EMULATION_WARNING();
+            decltype(a[0]) temp = 0;
+            // maximum value
+            decltype(a[0]) satValue = std::numeric_limits<decltype(a[0])>::min();
+            for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+                if(mask[i] == true) {
+                    temp = (a[i] < (satValue + b)) ? satValue : (a[i] - b);
+                    a.insert(i, temp);
+                }
+            }
+            return a;
         }
 
         // POSTDEC
@@ -3495,21 +3693,84 @@ namespace SIMD
         }
 
         // SSUBV
+        inline DERIVED_VEC_TYPE ssub (DERIVED_VEC_TYPE const & b) {
+            return EMULATED_FUNCTIONS::subSaturated<DERIVED_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this), b);
+        }
+
         // MSSUBV
+        inline DERIVED_VEC_TYPE ssub (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) {
+            return EMULATED_FUNCTIONS::subSaturated<DERIVED_VEC_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
+        }
+
         // SSUBS
+        inline DERIVED_VEC_TYPE ssub (SCALAR_TYPE b) {
+            return EMULATED_FUNCTIONS::subSaturated<DERIVED_VEC_TYPE, SCALAR_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this), b);
+        }
+
         // MSSUBS
+        inline DERIVED_VEC_TYPE ssub (MASK_TYPE const & mask, SCALAR_TYPE b) {
+            return EMULATED_FUNCTIONS::subSaturated<DERIVED_VEC_TYPE, SCALAR_TYPE>(mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
+        }
+
         // SSUBVA
+        inline DERIVED_VEC_TYPE & ssuba (DERIVED_VEC_TYPE const & b) {
+            return EMULATED_FUNCTIONS::subSaturatedAssign<DERIVED_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE &>(*this), b);
+        }
+
         // MSSUBVA
+        inline DERIVED_VEC_TYPE & ssuba (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) {
+            return EMULATED_FUNCTIONS::subSaturatedAssign<DERIVED_VEC_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE &>(*this), b);
+        }
+
         // SSUBSA
+        inline DERIVED_VEC_TYPE & ssuba (SCALAR_TYPE b) {
+            return EMULATED_FUNCTIONS::subSaturatedScalarAssign<DERIVED_VEC_TYPE, SCALAR_TYPE>(static_cast<DERIVED_VEC_TYPE &>(*this), b);
+        }
+
         // MSSUBSA
+        inline DERIVED_VEC_TYPE & ssuba (MASK_TYPE const & mask, SCALAR_TYPE b) {
+            return EMULATED_FUNCTIONS::subSaturatedScalarAssign<DERIVED_VEC_TYPE, SCALAR_TYPE>(mask, static_cast<DERIVED_VEC_TYPE &>(*this), b);
+        }
+
         // SUBFROMV
+        inline DERIVED_VEC_TYPE subfrom (DERIVED_VEC_TYPE const & a) {
+            return EMULATED_FUNCTIONS::sub<DERIVED_VEC_TYPE>(a, static_cast<DERIVED_VEC_TYPE const &>(*this));
+        }
+
         // MSUBFROMV
+        inline DERIVED_VEC_TYPE subfrom (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & a) {
+            return EMULATED_FUNCTIONS::sub<DERIVED_VEC_TYPE, MASK_TYPE>(mask, a, static_cast<DERIVED_VEC_TYPE const &>(*this));
+        }
+
         // SUBFROMS
+        inline DERIVED_VEC_TYPE subfrom (SCALAR_TYPE a) {
+            return EMULATED_FUNCTIONS::subFromScalar<DERIVED_VEC_TYPE, SCALAR_TYPE>(a, static_cast<DERIVED_VEC_TYPE const &>(*this));
+        }
+
         // MSUBFROMS
+        inline DERIVED_VEC_TYPE subfrom (MASK_TYPE const & mask, SCALAR_TYPE a) {
+            return EMULATED_FUNCTIONS::subFromScalar<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE>(mask, a, static_cast<DERIVED_VEC_TYPE const &>(*this));
+        }
+
         // SUBFROMVA
+        inline DERIVED_VEC_TYPE & subfroma (DERIVED_VEC_TYPE const & a) {
+            return EMULATED_FUNCTIONS::subFromAssign<DERIVED_VEC_TYPE>(a, static_cast<DERIVED_VEC_TYPE &>(*this));
+        }
+
         // MSUBFROMVA
+        inline DERIVED_VEC_TYPE & subfroma (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & a) {
+            return EMULATED_FUNCTIONS::subFromAssign<DERIVED_VEC_TYPE, MASK_TYPE>(mask, a, static_cast<DERIVED_VEC_TYPE &>(*this));
+        }
+
         // SUBFROMSA
+        inline DERIVED_VEC_TYPE & subfroma (SCALAR_TYPE a) {
+            return EMULATED_FUNCTIONS::subFromScalarAssign<DERIVED_VEC_TYPE, SCALAR_TYPE>(a, static_cast<DERIVED_VEC_TYPE &>(*this));
+        }
+
         // MSUBFROMSA
+        inline DERIVED_VEC_TYPE & subfroma (MASK_TYPE const & mask, SCALAR_TYPE a) {
+            return EMULATED_FUNCTIONS::subFromScalarAssign<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE>(mask, a, static_cast<DERIVED_VEC_TYPE &>(*this));
+        }
 
         // POSTDEC
         inline DERIVED_VEC_TYPE postDec () {

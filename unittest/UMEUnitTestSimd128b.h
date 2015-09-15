@@ -1379,6 +1379,126 @@ int test_UME_SIMD4_32i(bool supressMessages)
         CHECK_CONDITION(vec0[0] == -3 && vec0[1] == -20 && vec0[2] == -5 && vec0[3] == -6, "SUBSA");
     }
     {
+        SIMD4_32i vec0(0x80000000, 0x80000053, 0xF21ACAF4, 0x12341234);
+        SIMD4_32i vec1(0x00000001, 0x00000100, 0x7FFF0000, 0x12341236);
+        SIMD4_32i vec2;
+        vec2 = vec0.ssub(vec1);
+        CHECK_CONDITION(vec2[0] == 0x80000000 && vec2[1] == 0x80000000 &&
+                        vec2[2] == 0x80000000 && vec2[3] == 0xFFFFFFFE, "SSUBV");
+    }
+    {
+        SIMD4_32i vec0(0x80000000, 0x80000053, 0xF21ACAF4, 0x12341234);
+        SIMD4_32i vec1(0x00000001, 0x00000100, 0x7FFF0000, 0x12341236);
+        SIMD4_32i vec2;
+        SIMDMask4 mask(true, false, false, true);
+        vec2 = vec0.ssub(mask, vec1);
+        CHECK_CONDITION(vec2[0] == 0x80000000 && vec2[1] == 0x80000053 &&
+                        vec2[2] == 0xF21ACAF4 && vec2[3] == 0xFFFFFFFE, "MSSUBV");
+    }
+    {
+        SIMD4_32i vec0(0x80000000, 0x80000053, 0xF21ACAF4, 0x12341234);
+        int32_t val1 = 0x00000100;
+        SIMD4_32i vec2;
+        vec2 = vec0.ssub(val1);
+        CHECK_CONDITION(vec2[0] == 0x80000000 && vec2[1] == 0x80000000 &&
+                        vec2[2] == 0xF21AC9F4 && vec2[3] == 0x12341134, "SSUBS");
+    }
+    {
+        SIMD4_32i vec0(0x80000000, 0x80000053, 0xF21ACAF4, 0x12341234);
+        int32_t val1 = 0x00000100;
+        SIMD4_32i vec2;
+        SIMDMask4 mask(true, false, false, true);
+        vec2 = vec0.ssub(mask, val1);
+        CHECK_CONDITION(vec2[0] == 0x80000000 && vec2[1] == 0x80000053 &&
+                        vec2[2] == 0xF21ACAF4 && vec2[3] == 0x12341134, "MSSUBS");
+    }
+    {
+        SIMD4_32i vec0(0x80000000, 0x80000053, 0xF21ACAF4, 0x12341234);
+        SIMD4_32i vec1(0x00000001, 0x00000100, 0x7FFF0000, 0x12341236);
+        vec0.ssuba(vec1);
+        CHECK_CONDITION(vec0[0] == 0x80000000 && vec0[1] == 0x80000000 &&
+                        vec0[2] == 0x80000000 && vec0[3] == 0xFFFFFFFE, "SSUBVA");
+    }
+    {
+        SIMD4_32i vec0(0x80000000, 0x80000053, 0xF21ACAF4, 0x12341234);
+        SIMD4_32i vec1(0x00000001, 0x00000100, 0x7FFF0000, 0x12341236);
+        SIMDMask4 mask(true, false, false, true);
+        vec0.ssuba(mask, vec1);
+        CHECK_CONDITION(vec0[0] == 0x80000000 && vec0[1] == 0x80000053 &&
+                        vec0[2] == 0xF21ACAF4 && vec0[3] == 0xFFFFFFFE, "MSSUBVA");
+    }
+    {
+        SIMD4_32i vec0(0x80000000, 0x80000053, 0xF21ACAF4, 0x12341234);
+        int32_t val1 = 0x00000100;
+        vec0.ssuba(val1);
+        CHECK_CONDITION(vec0[0] == 0x80000000 && vec0[1] == 0x80000000 &&
+                        vec0[2] == 0xF21AC9F4 && vec0[3] == 0x12341134, "SSUBSA");
+    }
+    {
+        SIMD4_32i vec0(0x80000000, 0x80000053, 0xF21ACAF4, 0x12341234);
+        int32_t val1 = 0x00000100;
+        SIMDMask4 mask(true, false, false, true);
+        vec0.ssuba(mask, val1);
+        CHECK_CONDITION(vec0[0] == 0x80000000 && vec0[1] == 0x80000053 &&
+                        vec0[2] == 0xF21ACAF4 && vec0[3] == 0x12341134, "MSSUBSA");
+    }
+    {
+        SIMD4_32i vec0(9, -8, 7, 6);
+        SIMD4_32i vec1(3, 14, 28, -60);
+        SIMD4_32i vec2;
+        vec2 = vec1.subfrom(vec0);
+        CHECK_CONDITION(vec2[0] == 6 && vec2[1] == -22 && vec2[2] == -21 && vec2[3] == 66, "SUBFROMV");
+    }
+    {
+        SIMD4_32i vec0(9, -8, 7, 6);
+        SIMD4_32i vec1(3, 14, 28, -60);
+        SIMD4_32i vec2;
+        SIMDMask4 mask(true, false, true, false);
+        vec2 = vec1.subfrom(mask, vec0);
+        CHECK_CONDITION(vec2[0] == 6 && vec2[1] == -8 && vec2[2] == -21 && vec2[3] == 6, "MSUBFROMV");
+    }
+    {
+        SIMD4_32i vec0(9, 8, 7, 6);
+        int32_t a = 34;
+        SIMD4_32i vec2;
+        vec2 = vec0.subfrom(a);
+        CHECK_CONDITION(vec2[0] == 25 && vec2[1] == 26 && vec2[2] == 27 && vec2[3] == 28, "SUBFROMS");
+    }
+    {
+        SIMD4_32i vec0(9, 8, 7, 6);
+        int32_t a = 34;
+        SIMD4_32i vec2;
+        SIMDMask4 mask(true, false, true, false);
+        vec2 = vec0.subfrom(mask, a);
+        CHECK_CONDITION(vec2[0] == 25 && vec2[1] == 34 && vec2[2] == 27 && vec2[3] == 34, "MSUBFROMS");
+    }
+    {
+        SIMD4_32i vec0(9, -8, 7, 6);
+        SIMD4_32i vec1(3, 14, 28, -60);
+        vec1.subfroma(vec0);
+        CHECK_CONDITION(vec1[0] == 6 && vec1[1] == -22 && vec1[2] == -21 && vec1[3] == 66, "SUBFROMVA");
+    }
+    {
+        SIMD4_32i vec0(9, -8, 7, 6);
+        SIMD4_32i vec1(3, 14, 28, -60);
+        SIMDMask4 mask(true, false, true, false);
+        vec1.subfroma(mask, vec0);
+        CHECK_CONDITION(vec1[0] == 6 && vec1[1] == 14 && vec1[2] == -21 && vec1[3] == -60, "MSUBFROMVA");
+    }
+    {
+        SIMD4_32i vec0(9, 8, 7, 6);
+        int32_t a = 34;
+        vec0.subfroma(a);
+        CHECK_CONDITION(vec0[0] == 25 && vec0[1] == 26 && vec0[2] == 27 && vec0[3] == 28, "SUBFROMSA");
+    }
+    {
+        SIMD4_32i vec0(9, 8, 7, 6);
+        int32_t a = 34;
+        SIMDMask4 mask(true, false, true, false);
+        vec0.subfroma(mask, a);
+        CHECK_CONDITION(vec0[0] == 25 && vec0[1] == 8 && vec0[2] == 27 && vec0[3] == 6, "MSUBFROMSA");
+    }
+    {
         SIMD4_32i vec0(9, -8, 7, 6);
         SIMD4_32i vec1(0);
         vec1 = vec0.postDec();
