@@ -72,4 +72,33 @@ char *g_test_header_ptr = NULL;
 #define UME_PI_F float(UME_PI_D)
 #define UME_2PI_F (2.0f*UME_PI_F)
 
+bool valueInRange(float value, float expectedValue, float errMargin) {
+    if(value > 0.0f)
+    {
+        return ((expectedValue)*(1.0f + errMargin) > value) 
+             & ((expectedValue)*(1.0f - errMargin) < value);
+    }
+    else
+    {
+        return ((expectedValue)*(1.0f + errMargin) < value)
+             & ((expectedValue)*(1.0f - errMargin) > value);
+    }
+}
+
+
+bool valueInRange(double value, double expectedValue, double errMargin) {
+    if(value > 0.0f)
+    {
+        return ((expectedValue)*(1.0f + errMargin) > value) 
+             & ((expectedValue)*(1.0f - errMargin) < value);
+    }
+    else
+    {
+        return ((expectedValue)*(1.0f + errMargin) < value)
+             & ((expectedValue)*(1.0f - errMargin) > value);
+    }
+}
+
+
+
 #endif

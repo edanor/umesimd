@@ -2263,6 +2263,230 @@ int test_UME_SIMD4_32f(bool supressMessages)
         CHECK_CONDITION(result, "MFSUBMULV");
     }
     {
+        SIMD4_32f vec0(123498.123f, -10198.12341f, -124095.123f, -1420975.124f);
+        SIMD4_32f vec1(87213.12496f, 9851.124987f, -18775.1667777f, -817641.124976f);
+        SIMD4_32f vec2;
+        float values[4] = {123498.125f, 9851.12500f, -18775.1660f, -817641.125f};
+        bool result = true;
+        vec2 = vec0.max(vec1);
+        for(uint32_t i = 0; i < 4; i++) if(!valueInRange(vec2[i], values[i], 0.01f)) { result = false; break;};
+        CHECK_CONDITION(result, "MAXV");
+    }
+    {
+        SIMD4_32f vec0(123498.123f, -10198.12341f, -124095.123f, -1420975.124f);
+        SIMD4_32f vec1(87213.12496f, 9851.124987f, -18775.1667777f, -817641.124976f);
+        SIMD4_32f vec2;
+        SIMDMask4 mask(true, false, true, false);
+        float values[4] = {123498.125f, -10198.1230f, -18775.1660f, -1420975.13f};
+        bool result = true;
+        vec2 = vec0.max(mask, vec1);
+        for(uint32_t i = 0; i < 4; i++) if(!valueInRange(vec2[i], values[i], 0.01f)) { result = false; break;};
+        CHECK_CONDITION(result, "MMAXV");
+    }
+    {
+        SIMD4_32f vec0(123498.123f, -10198.12341f, -124095.123f, -1420975.124f);
+        float val1 = -120000.0f;
+        SIMD4_32f vec2;
+        float values[4] = {123498.125f, -10198.1230f, -120000.000f, -120000.000f};
+        bool result = true;
+        vec2 = vec0.max(val1);
+        for(uint32_t i = 0; i < 4; i++) if(!valueInRange(vec2[i], values[i], 0.01f)) { result = false; break;};
+        CHECK_CONDITION(result, "MAXS");
+    }
+    {
+        SIMD4_32f vec0(123498.123f, -10198.12341f, -124095.123f, -1420975.124f);
+        float val1 = -120000.0f;
+        SIMD4_32f vec2;
+        SIMDMask4 mask(true, false, true, false);
+        float values[4] = {123498.125f, -10198.1230f, -120000.000f, -1420975.13f};
+        bool result = true;
+        vec2 = vec0.max(mask, val1);
+        for(uint32_t i = 0; i < 4; i++) if(!valueInRange(vec2[i], values[i], 0.01f)) { result = false; break;};
+        CHECK_CONDITION(result, "MMAXS");
+    }
+    {
+        SIMD4_32f vec0(123498.123f, -10198.12341f, -124095.123f, -1420975.124f);
+        SIMD4_32f vec1(87213.12496f, 9851.124987f, -18775.1667777f, -817641.124976f);
+        float values[4] = {123498.125f, 9851.12500f, -18775.1660f, -817641.125f};
+        bool result = true;
+        vec0.maxa(vec1);
+        for(uint32_t i = 0; i < 4; i++) if(!valueInRange(vec0[i], values[i], 0.01f)) { result = false; break;};
+        CHECK_CONDITION(result, "MAXVA");
+    }
+    {
+        SIMD4_32f vec0(123498.123f, -10198.12341f, -124095.123f, -1420975.124f);
+        SIMD4_32f vec1(87213.12496f, 9851.124987f, -18775.1667777f, -817641.124976f);
+        SIMDMask4 mask(true, false, true, false);
+        float values[4] = {123498.125f, -10198.1230f, -18775.1660f, -1420975.13f};
+        bool result = true;
+        vec0.maxa(mask, vec1);
+        for(uint32_t i = 0; i < 4; i++) if(!valueInRange(vec0[i], values[i], 0.01f)) { result = false; break;};
+        CHECK_CONDITION(result, "MMAXVA");
+    }
+    {
+        SIMD4_32f vec0(123498.123f, -10198.12341f, -124095.123f, -1420975.124f);
+        float val1 = -120000.0f;
+        float values[4] = {123498.125f, -10198.1230f, -120000.000f, -120000.000f};
+        bool result = true;
+        vec0.maxa(val1);
+        for(uint32_t i = 0; i < 4; i++) if(!valueInRange(vec0[i], values[i], 0.01f)) { result = false; break;};
+        CHECK_CONDITION(result, "MAXSA");
+    }
+    {
+        SIMD4_32f vec0(123498.123f, -10198.12341f, -124095.123f, -1420975.124f);
+        float val1 = -120000.0f;
+        SIMDMask4 mask(true, false, true, false);
+        float values[4] = {123498.125f, -10198.1230f, -120000.000f, -1420975.13f};
+        bool result = true;
+        vec0.maxa(mask, val1);
+        for(uint32_t i = 0; i < 4; i++) if(!valueInRange(vec0[i], values[i], 0.01f)) { result = false; break;};
+        CHECK_CONDITION(result, "MMAXSA");
+    }
+    {
+        SIMD4_32f vec0(123498.123f, -10198.12341f, -124095.123f, -817641.124976f);
+        SIMD4_32f vec1(87213.12496f, 9851.124987f, -18775.1667777f, -1420975.124f);
+        SIMD4_32f vec2;
+        float values[4] = { 87213.1250f, -10198.1230f, -124095.125f, -1420975.13f};
+        bool result = true;
+        vec2 = vec0.min(vec1);
+        for(uint32_t i = 0; i < 4; i++) if(!valueInRange(vec2[i], values[i], 0.01f)) { result = false; break;};
+        CHECK_CONDITION(result, "MINV");
+    }
+    {
+        SIMD4_32f vec0(123498.123f, -10198.12341f, -18775.1667777f, -817641.124976f);
+        SIMD4_32f vec1(87213.12496f, 9851.124987f, -124095.123f, -1420975.124f);
+        SIMD4_32f vec2;
+        SIMDMask4 mask(true, false, true, false);
+        float values[4] = { 87213.1250f, -10198.1230f, -124095.125f, -817641.125f};
+        bool result = true;
+        vec2 = vec0.min(mask, vec1);
+        for(uint32_t i = 0; i < 4; i++) if(!valueInRange(vec2[i], values[i], 0.01f)) { result = false; break;};
+        CHECK_CONDITION(result, "MMINV");
+    }
+    {
+        SIMD4_32f vec0(123498.123f, -10198.12341f, -124095.123f, -817641.124976f);
+        float val1 = -120000.0f;
+        SIMD4_32f vec2;
+        float values[4] = { -120000.000f, -120000.000f, -124095.125f, -817641.125f};
+        bool result = true;
+        vec2 = vec0.min(val1);
+        for(uint32_t i = 0; i < 4; i++) if(!valueInRange(vec2[i], values[i], 0.01f)) { result = false; break;};
+        CHECK_CONDITION(result, "MINS");
+    }
+    {
+        SIMD4_32f vec0(123498.123f, -10198.12341f, -124095.123f, -817641.124976f);
+        float val1 = -120000.0f;
+        SIMD4_32f vec2;
+        SIMDMask4 mask(true, false, true, false);
+        float values[4] = { -120000.000f, -10198.1230f, -124095.125f, -817641.125f};
+        bool result = true;
+        vec2 = vec0.min(mask, val1);
+        for(uint32_t i = 0; i < 4; i++) if(!valueInRange(vec2[i], values[i], 0.01f)) { result = false; break;};
+        CHECK_CONDITION(result, "MMINS");
+    }
+    {
+        SIMD4_32f vec0(123498.123f, -10198.12341f, -124095.123f, -817641.124976f);
+        SIMD4_32f vec1(87213.12496f, 9851.124987f, -18775.1667777f, -1420975.124f);
+        float values[4] = { 87213.1250f, -10198.1230f, -124095.125f, -1420975.13f};
+        bool result = true;
+        vec0.mina(vec1);
+        for(uint32_t i = 0; i < 4; i++) if(!valueInRange(vec0[i], values[i], 0.01f)) { result = false; break;};
+        CHECK_CONDITION(result, "MINVA");
+    }
+    {
+        SIMD4_32f vec0(123498.123f, -10198.12341f, -18775.1667777f, -817641.124976f);
+        SIMD4_32f vec1(87213.12496f, 9851.124987f, -124095.123f, -1420975.124f);
+        SIMDMask4 mask(true, false, true, false);
+        float values[4] = { 87213.1250f, -10198.1230f, -124095.125f, -817641.125f};
+        bool result = true;
+        vec0.mina(mask, vec1);
+        for(uint32_t i = 0; i < 4; i++) if(!valueInRange(vec0[i], values[i], 0.01f)) { result = false; break;};
+        CHECK_CONDITION(result, "MMINVA");
+    }
+    {
+        SIMD4_32f vec0(123498.123f, -10198.12341f, -124095.123f, -817641.124976f);
+        float val1 = -120000.0f;
+        float values[4] = { -120000.000f, -120000.000f, -124095.125f, -817641.125f};
+        bool result = true;
+        vec0.mina(val1);
+        for(uint32_t i = 0; i < 4; i++) if(!valueInRange(vec0[i], values[i], 0.01f)) { result = false; break;};
+        CHECK_CONDITION(result, "MINSA");
+    }
+    {
+        SIMD4_32f vec0(123498.123f, -10198.12341f, -124095.123f, -817641.124976f);
+        float val1 = -120000.0f;
+        SIMDMask4 mask(true, false, true, false);
+        float values[4] = { -120000.000f, -10198.1230f, -124095.125f, -817641.125f};
+        bool result = true;
+        vec0.mina(mask, val1);
+        for(uint32_t i = 0; i < 4; i++) if(!valueInRange(vec0[i], values[i], 0.01f)) { result = false; break;};
+        CHECK_CONDITION(result, "MMINSA");
+    }
+    {
+        SIMD4_32f vec0(123498.123f, -10198.12341f, 817641.124976f, -124095.123f);
+        float expected = 817641.124976f;
+        float res;
+        bool result = true;
+        res = vec0.hmax();
+        CHECK_CONDITION(valueInRange(res, expected, 0.01f), "HMAX");
+    }
+    {
+        SIMD4_32f vec0(123498.123f, -10198.12341f, 817641.124976f, -124095.123f);
+        SIMDMask4 mask(true, false, false, true);
+        float expected = 123498.123f;
+        float res;
+        bool result = true;
+        res = vec0.hmax(mask);
+        CHECK_CONDITION(valueInRange(res, expected, 0.01f), "MHMAX");
+    }
+    {
+        SIMD4_32f vec0(123498.123f, -10198.12341f, 817641.124976f, -124095.123f);
+        uint32_t res;
+        bool result = true;
+        res = vec0.imax();
+        CHECK_CONDITION(res == 2, "IMAX");
+    }
+    {
+        SIMD4_32f vec0(123498.123f, -10198.12341f, 817641.124976f, -124095.123f);
+        SIMDMask4 mask(true, false, false, true);
+        uint32_t res;
+        bool result = true;
+        res = vec0.imax(mask);
+        CHECK_CONDITION(res == 0, "MIMAX");
+    }
+    {
+        SIMD4_32f vec0(123498.123f, -10198.12341f, 817641.124976f, -124095.123f);
+        float expected = -124095.123f;
+        float res;
+        bool result = true;
+        res = vec0.hmin();
+        CHECK_CONDITION(valueInRange(res, expected, 0.01f), "HMIN");
+    }
+    {
+        SIMD4_32f vec0(123498.123f, -10198.12341f, 817641.124976f, -124095.123f);
+        SIMDMask4 mask(true, true, false, false);
+        float expected = -10198.12341f;
+        float res;
+        bool result = true;
+        res = vec0.hmin(mask);
+        CHECK_CONDITION(valueInRange(res, expected, 0.01f), "MHMIN");
+    }
+    {
+        SIMD4_32f vec0(123498.123f, -10198.12341f, 817641.124976f, -124095.123f);
+        uint32_t res;
+        bool result = true;
+        res = vec0.imin();
+        CHECK_CONDITION(res ==3, "IMIN");
+    }
+    {
+        SIMD4_32f vec0(123498.123f, -10198.12341f, 817641.124976f, -124095.123f);
+        SIMDMask4 mask(true, true, true, false);
+        uint32_t res;
+        bool result = true;
+        res = vec0.imin(mask);
+        CHECK_CONDITION(res == 1, "MIMIN");
+    }
+    {
         SIMD4_32f vec0(4.0f);
         SIMD4_32f vec1;
         vec1 = vec0.sqr();

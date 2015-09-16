@@ -2614,50 +2614,29 @@ namespace SIMD
                 return a;
             }
 
-            // reduceMax (VEC) -> scalar
-            template<typename SCALAR_TYPE, typename VEC_TYPE>
-            inline SCALAR_TYPE reduceMax(VEC_TYPE const & a) {
+            // MINS
+            template<typename VEC_TYPE, typename SCALAR_TYPE>
+            inline VEC_TYPE minScalar(VEC_TYPE const & a, SCALAR_TYPE b) {
                 UME_EMULATION_WARNING();
-                SCALAR_TYPE retval = a[0];
-                for(uint32_t i = 1; i < VEC_TYPE::length(); i++) {
-                    if(a[i] > retval) retval = a[i];
+                VEC_TYPE retval;
+                for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+                    retval.insert(i, a[i] < b ? a[i] : b);
                 }
                 return retval;
             }
 
-            // reduceMax (MASK, VEC) -> scalar
-            template<typename SCALAR_TYPE, typename VEC_TYPE, typename MASK_TYPE>
-            inline SCALAR_TYPE reduceMax(MASK_TYPE const & mask, VEC_TYPE const & a) {
+            // MMINS
+            template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
+            inline VEC_TYPE minScalar(MASK_TYPE const & mask, VEC_TYPE const & a, SCALAR_TYPE b) {
                 UME_EMULATION_WARNING();
-                SCALAR_TYPE retval = std::numeric_limits<SCALAR_TYPE>::min();
+                VEC_TYPE retval(std::numeric_limits<SCALAR_TYPE>::max());
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
-                    if( (mask[i] == true) && a[i] > retval) retval = a[i];
+                    if(mask[i] == true) retval.insert(i, a[i] < b ? a[i] : b);
+                    else retval.insert(i, a[i]);
                 }
                 return retval;
             }
 
-            // reduceMax (scalar, VEC) -> scalar
-            template<typename SCALAR_TYPE, typename VEC_TYPE>
-            inline SCALAR_TYPE reduceMax(SCALAR_TYPE a, VEC_TYPE const & b) {
-                UME_EMULATION_WARNING();
-                SCALAR_TYPE retval = a;
-                for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
-                    if(b[i] > retval) retval = b[i];
-                }
-                return retval;
-            }
-
-            // reduceMax (MASK, scalar, VEC) -> scalar
-            template<typename SCALAR_TYPE, typename VEC_TYPE, typename MASK_TYPE>
-            inline SCALAR_TYPE reduceMax(MASK_TYPE const & mask, SCALAR_TYPE a, VEC_TYPE const & b) {
-                UME_EMULATION_WARNING();
-                SCALAR_TYPE retval = a;
-                for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
-                    if((mask[i] == true) && (a[i] > retval)) retval = a[i];
-                }
-                return retval;
-            }
-            
             // MINV
             template<typename VEC_TYPE>
             inline VEC_TYPE min(VEC_TYPE const & a, VEC_TYPE const & b) {
@@ -2681,27 +2660,24 @@ namespace SIMD
                 return retval;
             }
 
-            // MINS
+            // MINSA
             template<typename VEC_TYPE, typename SCALAR_TYPE>
-            inline VEC_TYPE minScalar(VEC_TYPE const & a, SCALAR_TYPE b) {
+            inline VEC_TYPE & minScalarAssign(VEC_TYPE & a, SCALAR_TYPE b) {
                 UME_EMULATION_WARNING();
-                VEC_TYPE retval;
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
-                    retval.insert(i, a[i] < b ? a[i] : b);
+                    if(b < a[i]) a.insert(i, b);
                 }
-                return retval;
+                return a;
             }
 
-            // MMINS
+            // MMINSA
             template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
-            inline VEC_TYPE minScalar(MASK_TYPE const & mask, VEC_TYPE const & a, SCALAR_TYPE b) {
+            inline VEC_TYPE & minScalarAssign(MASK_TYPE const & mask, VEC_TYPE & a, SCALAR_TYPE b) {
                 UME_EMULATION_WARNING();
-                VEC_TYPE retval(std::numeric_limits<SCALAR_TYPE>::max());
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
-                    if(mask[i] == true) retval.insert(i, a[i] < b ? a[i] : b);
-                    else retval.insert(i, a[i]);
+                    if(mask[i] == true && (b < a[i])) a.insert(i, b);
                 }
-                return retval;
+                return a;
             }
             
             // MINVA
@@ -2724,24 +2700,130 @@ namespace SIMD
                 return a;
             }
 
-            // MINSA
-            template<typename VEC_TYPE, typename SCALAR_TYPE>
-            inline VEC_TYPE & minScalarAssign(VEC_TYPE & a, SCALAR_TYPE b) {
+            // HMAX
+            template<typename SCALAR_TYPE, typename VEC_TYPE>
+            inline SCALAR_TYPE reduceMax(VEC_TYPE const & a) {
                 UME_EMULATION_WARNING();
-                for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
-                    if(b < a[i]) a.insert(i, b);
+                SCALAR_TYPE retval = a[0];
+                for(uint32_t i = 1; i < VEC_TYPE::length(); i++) {
+                    if(a[i] > retval) retval = a[i];
                 }
-                return a;
+                return retval;
+            }
+            
+            // MHMAX
+            template<typename SCALAR_TYPE, typename VEC_TYPE, typename MASK_TYPE>
+            inline SCALAR_TYPE reduceMax(MASK_TYPE const & mask, VEC_TYPE const & a) {
+                UME_EMULATION_WARNING();
+                SCALAR_TYPE retval = std::numeric_limits<SCALAR_TYPE>::min();
+                for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+                    if( (mask[i] == true) && a[i] > retval) retval = a[i];
+                }
+                return retval;
             }
 
-            // MMINSA
-            template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
-            inline VEC_TYPE & minScalarAssign(MASK_TYPE const & mask, VEC_TYPE & a, SCALAR_TYPE b) {
+            // HMAXS
+            template<typename SCALAR_TYPE, typename VEC_TYPE>
+            inline SCALAR_TYPE reduceMax(SCALAR_TYPE a, VEC_TYPE const & b) {
                 UME_EMULATION_WARNING();
+                SCALAR_TYPE retval = a;
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
-                    if(mask[i] == true && (b < a[i])) a.insert(i, b);
+                    if(b[i] > retval) retval = b[i];
                 }
-                return a;
+                return retval;
+            }
+
+            // MHMAXS
+            template<typename SCALAR_TYPE, typename VEC_TYPE, typename MASK_TYPE>
+            inline SCALAR_TYPE reduceMax(MASK_TYPE const & mask, SCALAR_TYPE a, VEC_TYPE const & b) {
+                UME_EMULATION_WARNING();
+                SCALAR_TYPE retval = a;
+                for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+                    if((mask[i] == true) && (a[i] > retval)) retval = a[i];
+                }
+                return retval;
+            }
+
+            // IMAX
+            template<typename VEC_TYPE>
+            inline uint32_t indexMax(VEC_TYPE const & a) {
+                UME_EMULATION_WARNING();
+                uint32_t indexMax = 0;
+                decltype(a[0]) maxVal = a[0];
+                for(uint32_t i = 1; i < VEC_TYPE::length(); i++) {
+                    if(a[i] > maxVal) {
+                        maxVal = a[i];
+                        indexMax = i;
+                    }
+                }
+                return indexMax;
+            }
+
+            // MIMAX
+            template<typename VEC_TYPE, typename MASK_TYPE>
+            inline uint32_t indexMax(MASK_TYPE const & mask, VEC_TYPE const & a) {
+                UME_EMULATION_WARNING();
+                uint32_t indexMax = 0xFFFFFFFF;
+                decltype(a[0]) maxVal = std::numeric_limits<decltype(a[0])>::min();
+                for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+                    if(mask[i] == true && a[i] > maxVal) {
+                        maxVal = a[i];
+                        indexMax = i;
+                    }
+                }
+                return indexMax;
+            }
+
+            // HMIN
+            template<typename SCALAR_TYPE, typename VEC_TYPE> 
+            inline SCALAR_TYPE reduceMin(VEC_TYPE const & a) {
+                UME_EMULATION_WARNING();
+                SCALAR_TYPE retval = a[0];
+                for(uint32_t i = 1; i < VEC_TYPE::length(); i++) {
+                    if(a[i] < retval) retval = a[i];
+                }
+                return retval;
+            }
+
+            // MHMIN
+            template<typename SCALAR_TYPE, typename VEC_TYPE, typename MASK_TYPE>
+            inline SCALAR_TYPE reduceMin(MASK_TYPE const & mask, VEC_TYPE const & a) {
+                UME_EMULATION_WARNING();
+                SCALAR_TYPE retval = std::numeric_limits<SCALAR_TYPE>::max();
+                for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+                    if( (mask[i] == true) && a[i] < retval) retval = a[i];
+                }
+                return retval;
+            }
+
+            // IMIN
+            template<typename VEC_TYPE>
+            inline uint32_t indexMin(VEC_TYPE const & a) {
+                UME_EMULATION_WARNING();
+                uint32_t indexMin = 0;
+                decltype(a[0]) minVal = std::numeric_limits<decltype(a[0])>::max();
+                for(uint32_t i = 1; i < VEC_TYPE::length(); i++) {
+                    if(a[i] < minVal) {
+                        minVal = a[i];
+                        indexMin = i;
+                    }
+                }
+                return indexMin;
+            }
+
+            // MIMIN
+            template<typename VEC_TYPE, typename MASK_TYPE>
+            inline uint32_t indexMin(MASK_TYPE const & mask, VEC_TYPE const & a) {
+                UME_EMULATION_WARNING();
+                uint32_t indexMin = 0xFFFFFFFF;
+                decltype(a[0]) minVal = std::numeric_limits<decltype(a[0])>::max();
+                for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+                    if(mask[i] == true && a[i] < minVal) {
+                        minVal = a[i];
+                        indexMin = i;
+                    }
+                }
+                return indexMin;
             }
 
             // ABS
@@ -4414,16 +4496,6 @@ namespace SIMD
             return EMULATED_FUNCTIONS::MATH::min<DERIVED_VEC_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
         
-        // MINS
-        inline DERIVED_VEC_TYPE min (SCALAR_TYPE b) {
-            return EMULATED_FUNCTIONS::MATH::minScalar<DERIVED_VEC_TYPE, SCALAR_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this), b);
-        }
-
-        // MMINS
-        inline DERIVED_VEC_TYPE min (MASK_TYPE const & mask, SCALAR_TYPE b) {
-            return EMULATED_FUNCTIONS::MATH::minScalar<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
-        }
-        
         // MINVA
         inline DERIVED_VEC_TYPE & mina (DERIVED_VEC_TYPE const & b) {
             return EMULATED_FUNCTIONS::MATH::minAssign<DERIVED_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE &>(*this), b);
@@ -4434,6 +4506,16 @@ namespace SIMD
             return EMULATED_FUNCTIONS::MATH::minAssign<DERIVED_VEC_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
 
+        // MINS
+        inline DERIVED_VEC_TYPE min (SCALAR_TYPE b) {
+            return EMULATED_FUNCTIONS::MATH::minScalar<DERIVED_VEC_TYPE, SCALAR_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this), b);
+        }
+
+        // MMINS
+        inline DERIVED_VEC_TYPE min (MASK_TYPE const & mask, SCALAR_TYPE b) {
+            return EMULATED_FUNCTIONS::MATH::minScalar<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
+        }
+        
         // MINSA
         inline DERIVED_VEC_TYPE & mina (SCALAR_TYPE b) {
             return EMULATED_FUNCTIONS::MATH::minScalarAssign<DERIVED_VEC_TYPE, SCALAR_TYPE>(static_cast<DERIVED_VEC_TYPE &>(*this), b);
@@ -4445,33 +4527,45 @@ namespace SIMD
         }
 
         // HMAX
-        inline DERIVED_VEC_TYPE hmax () {
+        inline SCALAR_TYPE hmax () {
             return EMULATED_FUNCTIONS::MATH::reduceMax<SCALAR_TYPE, DERIVED_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this));
+        }
+
+        // MHMAX
+        inline SCALAR_TYPE hmax (MASK_TYPE const & mask) {
+            return EMULATED_FUNCTIONS::MATH::reduceMax<SCALAR_TYPE, DERIVED_VEC_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // IMAX
-
-        // MHMAX
-        inline DERIVED_VEC_TYPE hmax (MASK_TYPE const & mask) {
-            return EMULATED_FUNCTIONS::MATH::reduceMax<SCALAR_TYPE, DERIVED_VEC_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE const &>(*this));
+        inline uint32_t imax() {
+            return EMULATED_FUNCTIONS::MATH::indexMax<DERIVED_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // MIMAX
-
-        // HMAXS
-        inline DERIVED_VEC_TYPE hmax (SCALAR_TYPE a) {
-            return EMULATED_FUNCTIONS::MATH::reduceMax<SCALAR_TYPE, DERIVED_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this));
-        }
-        
-        // MHMAXS
-        inline DERIVED_VEC_TYPE hmax (MASK_TYPE const & mask, SCALAR_TYPE a) {
-            return EMULATED_FUNCTIONS::MATH::reduceMax<SCALAR_TYPE, DERIVED_VEC_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE const &>(*this));
+        inline uint32_t imax(MASK_TYPE const & mask) {
+            return EMULATED_FUNCTIONS::MATH::indexMax<DERIVED_VEC_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // HMIN
-        // IMIN
+        inline SCALAR_TYPE hmin() {
+            return EMULATED_FUNCTIONS::MATH::reduceMin<SCALAR_TYPE, DERIVED_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this));
+        }
+
         // MHMIN
+        inline SCALAR_TYPE hmin(MASK_TYPE const & mask) {
+            return EMULATED_FUNCTIONS::MATH::reduceMin<SCALAR_TYPE, DERIVED_VEC_TYPE>(mask, static_cast<DERIVED_VEC_TYPE const &>(*this));
+        }
+
+        // IMIN
+        inline uint32_t imin() {
+            return EMULATED_FUNCTIONS::MATH::indexMin<DERIVED_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this));
+        }
+
         // MIMIN
+        inline uint32_t imin(MASK_TYPE const & mask) {
+            return EMULATED_FUNCTIONS::MATH::indexMin<DERIVED_VEC_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE const &>(*this));
+        }
+
     };
 
     // ***************************************************************************
