@@ -356,12 +356,6 @@ int test_UME_SIMD8_16i(bool supressMessages)
         CHECK_CONDITION(res, "LSHSA");
     }
     {
-        SIMD8_16i vec0(-1);
-        SIMD8_16i vec1 = vec0.abs();
-
-        CHECK_CONDITION(vec1[0] == vec1[7] == 1, "ABS");
-    }
-    {
         SIMD8_16i vec0(1, 2, 3, 4, 5, 6, 7, 8);
         SIMD8_16i vec1(3, 4, 5, 6, 12, 14, 16, 18);
         SIMD8_16i vec2;
@@ -420,6 +414,12 @@ int test_UME_SIMD8_16i(bool supressMessages)
         vec0.rola(mask, 3);
         
         CHECK_CONDITION(vec0[0] == 8 && vec0[2] == 3 && vec0[7] == 8, "MROLSA");
+    }
+    {
+        SIMD8_16i vec0(-1);
+        SIMD8_16i vec1 = vec0.abs();
+
+        CHECK_CONDITION(vec1[0] == vec1[7] == 1, "ABS");
     }
 
     return g_failCount;
@@ -1894,6 +1894,34 @@ int test_UME_SIMD4_32i(bool supressMessages)
         CHECK_CONDITION(vec2[0] == 3 && vec2[1] == -5 && vec2[2] == -5 && vec2[3] == 3, "MBLENDS");
     }
     {
+        SIMD4_32i vec0(1, -2, 3, 4);
+        int32_t val1 = 0;
+        val1 = vec0.hmul();
+        CHECK_CONDITION(val1 == -24, "HMUL");
+    }
+    {
+        SIMD4_32i vec0(1, -2, 3, 4);
+        SIMDMask4 mask(true, false, true, false);
+        int32_t val1 = 0;
+        val1 = vec0.hmul(mask);
+        CHECK_CONDITION(val1 == 3, "MHMUL");
+    }
+    {
+        SIMD4_32i vec0(1, -2, 3, 4);
+        int32_t val1 = -42;
+        int32_t res = 0;
+        res = vec0.hmul(val1);
+        CHECK_CONDITION(res == 1008, "HMULS");
+    }
+    {
+        SIMD4_32i vec0(1, -2, 3, 4);
+        SIMDMask4 mask(true, false, true, false);
+        int32_t val1 = -42;
+        int32_t res = 0;
+        res = vec0.hmul(mask, val1);
+        CHECK_CONDITION(res == -126, "HMULS");
+    }
+    {
         SIMD4_32i vec0(0xF3333304, 0xFF0F3F00, 0x0FF0F000, 0x0F0F720F);
         int32_t val1;
         val1 = vec0.hand();
@@ -1950,32 +1978,32 @@ int test_UME_SIMD4_32i(bool supressMessages)
         CHECK_CONDITION(val1 == 0x0FFFF23F, "MHORS");
     }
     {
-        SIMD4_32i vec0(1, -2, 3, 4);
-        int32_t val1 = 0;
-        val1 = vec0.hmul();
-        CHECK_CONDITION(val1 == -24, "HMUL");
+        SIMD4_32i vec0(0xF3333304, 0xF00F0F00, 0x0FF0F000, 0x000F420F);
+        int32_t val1;
+        val1 = vec0.hxor();
+        CHECK_CONDITION(val1 == 0x0CC38E0B, "HXOR");
     }
     {
-        SIMD4_32i vec0(1, -2, 3, 4);
-        SIMDMask4 mask(true, false, true, false);
-        int32_t val1 = 0;
-        val1 = vec0.hmul(mask);
-        CHECK_CONDITION(val1 == 3, "MHMUL");
+        SIMD4_32i vec0(0xF3333304, 0xF00F0F00, 0x0FF0F000, 0x000F420F);
+        SIMDMask4 mask(false, false, true, true);
+        int32_t val1;
+        val1 = vec0.hxor(mask);
+        CHECK_CONDITION(val1 == 0x0FFFB20F, "MHXOR");
     }
     {
-        SIMD4_32i vec0(1, -2, 3, 4);
-        int32_t val1 = -42;
-        int32_t res = 0;
-        res = vec0.hmul(val1);
-        CHECK_CONDITION(res == 1008, "HMULS");
+        SIMD4_32i vec0(0xF3333304, 0xF00F0F00, 0x0FF0F000, 0x000F420F);
+        int32_t val1;
+        int32_t val2 = 0x00000030;
+        val1 = vec0.hxor(val2);
+        CHECK_CONDITION(val1 == 0x0CC38E3B, "HXORS");
     }
     {
-        SIMD4_32i vec0(1, -2, 3, 4);
-        SIMDMask4 mask(true, false, true, false);
-        int32_t val1 = -42;
-        int32_t res = 0;
-        res = vec0.hmul(mask, val1);
-        CHECK_CONDITION(res == -126, "HMULS");
+        SIMD4_32i vec0(0xF3333304, 0xF00F0F00, 0x0FF0F000, 0x000F420F);
+        SIMDMask4 mask(false, false, true, true);
+        int32_t val1;
+        int32_t val2 = 0x00000030;
+        val1 = vec0.hxor(mask, val2);
+        CHECK_CONDITION(val1 == 0x0FFFB23F, "MHXORS");
     }
     {
         SIMD4_32i vec0(9, -8, 7, 6);
