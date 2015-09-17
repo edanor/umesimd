@@ -239,6 +239,45 @@ namespace SIMD
         // type definitions are compiled correctly
     };
 
+    // 8b vectors
+    template<>
+    struct SIMDVecKNC_u_traits<uint8_t, 1>{
+        typedef int8_t    SCALAR_INT_TYPE;
+        typedef SIMDMask1 MASK_TYPE;
+    };
+
+    // 16b vectors
+    template<>
+    struct SIMDVecKNC_u_traits<uint8_t, 2>{
+        typedef int8_t   SCALAR_INT_TYPE;
+        typedef SIMDMask2 MASK_TYPE;
+    };
+
+    template<>
+    struct SIMDVecKNC_u_traits<uint16_t, 1>{
+        typedef int16_t   SCALAR_INT_TYPE;
+        typedef SIMDMask1 MASK_TYPE;
+    };
+
+    // 32b vectors
+    template<>
+    struct SIMDVecKNC_u_traits<uint8_t, 4>{
+        typedef int8_t   SCALAR_INT_TYPE;
+        typedef SIMDMask4 MASK_TYPE;
+    };
+
+    template<>
+    struct SIMDVecKNC_u_traits<uint16_t, 2>{
+        typedef int16_t   SCALAR_INT_TYPE;
+        typedef SIMDMask2 MASK_TYPE;
+    };
+
+    template<>
+    struct SIMDVecKNC_u_traits<uint32_t, 1>{
+        typedef int32_t   SCALAR_INT_TYPE;
+        typedef SIMDMask1 MASK_TYPE;
+    };
+
     // 64b vectors
     template<>
     struct SIMDVecKNC_u_traits<uint8_t, 8>{
@@ -256,6 +295,12 @@ namespace SIMD
     struct SIMDVecKNC_u_traits<uint32_t, 2>{
         typedef int32_t   SCALAR_INT_TYPE;
         typedef SIMDMask2 MASK_TYPE;
+    };
+
+    template<>
+    struct SIMDVecKNC_u_traits<uint64_t, 1>{
+        typedef int64_t   SCALAR_INT_TYPE;
+        typedef SIMDMask1 MASK_TYPE;
     };
 
     // 128b vectors
@@ -510,6 +555,51 @@ namespace SIMD
         // type definitions are compiled correctly
     };
 
+    // 8b vectors
+    template<>
+    struct SIMDVecKNC_i_traits<int8_t, 1> {
+        typedef SIMDVecKNC_u<uint8_t, 1> VEC_UINT;
+        typedef uint8_t SCALAR_UINT_TYPE;
+        typedef SIMDMask1 MASK_TYPE;
+    };
+
+    // 16b vectors
+    template<>
+    struct SIMDVecKNC_i_traits<int8_t, 2> {
+        typedef SIMDVecKNC_u<uint8_t, 2> VEC_UINT;
+        typedef uint8_t SCALAR_UINT_TYPE;
+        typedef SIMDMask2 MASK_TYPE;
+    };
+    
+    template<>
+    struct SIMDVecKNC_i_traits<int16_t, 1>{
+        typedef SIMDVecKNC_u<uint16_t, 1> VEC_UINT;
+        typedef uint16_t  SCALAR_UINT_TYPE;
+        typedef SIMDMask1 MASK_TYPE;
+    };
+    
+    // 32b vectors
+    template<>
+    struct SIMDVecKNC_i_traits<int8_t, 4> {
+        typedef SIMDVecKNC_u<uint8_t, 4> VEC_UINT;
+        typedef uint8_t SCALAR_UINT_TYPE;
+        typedef SIMDMask4 MASK_TYPE;
+    };
+    
+    template<>
+    struct SIMDVecKNC_i_traits<int16_t, 2>{
+        typedef SIMDVecKNC_u<uint16_t, 2> VEC_UINT;
+        typedef uint16_t  SCALAR_UINT_TYPE;
+        typedef SIMDMask2 MASK_TYPE;
+    };
+
+    template<>
+    struct SIMDVecKNC_i_traits<int32_t, 1>{
+        typedef SIMDVecKNC_u<uint32_t, 1> VEC_UINT;
+        typedef uint32_t SCALAR_UINT_TYPE;
+        typedef SIMDMask1 MASK_TYPE;
+    };
+
     // 64b vectors
     template<>
     struct SIMDVecKNC_i_traits<int8_t, 8> {
@@ -530,6 +620,13 @@ namespace SIMD
         typedef SIMDVecKNC_u<uint32_t, 2> VEC_UINT;
         typedef uint32_t SCALAR_UINT_TYPE;
         typedef SIMDMask2 MASK_TYPE;
+    };
+    
+    template<>
+    struct SIMDVecKNC_i_traits<int64_t, 1>{
+        typedef SIMDVecKNC_u<uint64_t, 1> VEC_UINT;
+        typedef uint64_t SCALAR_UINT_TYPE;
+        typedef SIMDMask1 MASK_TYPE;
     };
 
     // 128b vectors
@@ -987,6 +1084,17 @@ namespace SIMD
         // type definitions are compiled correctly
     };
 
+    // 32b vectors
+    template<>
+    struct SIMDVecKNC_f_traits<float, 1>{
+        typedef SIMDVecKNC_u<uint32_t, 1>  VEC_UINT_TYPE;
+        typedef SIMDVecKNC_i<int32_t, 1>  VEC_INT_TYPE;
+        typedef int32_t                   SCALAR_INT_TYPE;
+        typedef uint32_t                  SCALAR_UINT_TYPE;
+        typedef float*                    SCALAR_TYPE_PTR;
+        typedef SIMDMask1                 MASK_TYPE;
+    };
+
     // 64b vectors
     template<>
     struct SIMDVecKNC_f_traits<float, 2>{
@@ -996,6 +1104,16 @@ namespace SIMD
         typedef uint32_t                     SCALAR_UINT_TYPE;
         typedef float*                       SCALAR_TYPE_PTR;
         typedef SIMDMask2                    MASK_TYPE;
+    };
+
+    template<>
+    struct SIMDVecKNC_f_traits<double, 1>{
+        typedef SIMDVecKNC_u<uint64_t, 1>  VEC_UINT_TYPE;
+        typedef SIMDVecKNC_i<int64_t, 1>  VEC_INT_TYPE;
+        typedef int64_t                   SCALAR_INT_TYPE;
+        typedef uint64_t                  SCALAR_UINT_TYPE;
+        typedef double*                   SCALAR_TYPE_PTR;
+        typedef SIMDMask1                 MASK_TYPE;
     };
     
     // 128b vectors
@@ -1371,10 +1489,23 @@ namespace SIMD
         // cosAssign(MASK) -> VEC
     };
 
+    // 8b uint vectors
+    typedef SIMDVecKNC_u<uint8_t,  1>   SIMD1_8u;
+
+    // 16b uint vectors
+    typedef SIMDVecKNC_u<uint8_t,  2>   SIMD2_8u;
+    typedef SIMDVecKNC_u<uint16_t, 1>   SIMD1_16u;
+
+    // 32b uint vectors
+    typedef SIMDVecKNC_u<uint8_t,  4>   SIMD4_8u;
+    typedef SIMDVecKNC_u<uint16_t, 2>   SIMD2_16u;
+    typedef SIMDVecKNC_u<uint32_t, 1>   SIMD1_32u; 
+
     // 64b uint vectors
     typedef SIMDVecKNC_u<uint8_t,  8>   SIMD8_8u;
     typedef SIMDVecKNC_u<uint16_t, 4>   SIMD4_16u;
     typedef SIMDVecKNC_u<uint32_t, 2>   SIMD2_32u; 
+    typedef SIMDVecKNC_u<uint64_t, 1>   SIMD1_64u;
 
     // 128b uint vectors
     typedef SIMDVecKNC_u<uint8_t,  16>  SIMD16_8u;
@@ -1400,10 +1531,23 @@ namespace SIMD
     typedef SIMDVecKNC_u<uint32_t, 32>  SIMD32_32u;
     typedef SIMDVecKNC_u<uint64_t, 16>  SIMD16_64u;
 
+    // 8b int vectors
+    typedef SIMDVecKNC_i<int8_t,   1>   SIMD1_8i; 
+    
+    // 16b int vectors
+    typedef SIMDVecKNC_i<int8_t,   2>   SIMD2_8i; 
+    typedef SIMDVecKNC_i<int16_t,  1>   SIMD1_16i;
+
+    // 32b int vectors
+    typedef SIMDVecKNC_i<int8_t,   4>   SIMD4_8i; 
+    typedef SIMDVecKNC_i<int16_t,  2>   SIMD2_16i;
+    typedef SIMDVecKNC_i<int32_t,  1>   SIMD1_32i;
+
     // 64b int vectors
     typedef SIMDVecKNC_i<int8_t,   8>   SIMD8_8i; 
     typedef SIMDVecKNC_i<int16_t,  4>   SIMD4_16i;
     typedef SIMDVecKNC_i<int32_t,  2>   SIMD2_32i;
+    typedef SIMDVecKNC_i<int64_t,  1>   SIMD1_64i;
 
     // 128b int vectors
     typedef SIMDVecKNC_i<int8_t,   16>  SIMD16_8i; 
@@ -1429,9 +1573,12 @@ namespace SIMD
     typedef SIMDVecKNC_i<int32_t,  32>  SIMD32_32i;
     typedef SIMDVecKNC_i<int64_t,  16>  SIMD16_64i;
 
+    // 32b float vectors
+    typedef SIMDVecKNC_f<float, 1>      SIMD1_32f;
 
     // 64b float vectors
     typedef SIMDVecKNC_f<float, 2>      SIMD2_32f;
+    typedef SIMDVecKNC_f<double, 1>     SIMD1_64f;
 
     // 128b float vectors
     typedef SIMDVecKNC_f<float,  4>     SIMD4_32f;

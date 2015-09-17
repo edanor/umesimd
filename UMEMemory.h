@@ -73,11 +73,26 @@ namespace UME
 
         static inline void* AlignedMalloc(std::size_t size, std::size_t alignment)
         {
+            
 #if defined(_MSC_VER)
             return _aligned_malloc(size, alignment);
 #elif defined(__GNUC__) || (__ICC) || defined(__INTEL_COMPILER)
             void* memptr;
-            posix_memalign( &memptr, alignment, size); 
+            //std::cout << "AlignedMalloc: memptr(before):" << memptr;
+
+            int retval = 0;
+            do 
+            {
+                retval = posix_memalign( &memptr, alignment, size);
+                alignment*=2;
+            }while(retval != 0 && alignment < 2048);
+
+            if( retval != 0)
+            {
+                std::cout << "posix_memalign error: " << retval << std::endl;
+                std::cout << "sizeof(void*): " << sizeof(void*) << std::endl;
+            }
+            //std::cout << "AlignedMalloc: memptr(after):" << memptr;
             return memptr;
 #endif
         }

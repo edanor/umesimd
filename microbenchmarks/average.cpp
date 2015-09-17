@@ -189,10 +189,11 @@ TIMING_RES test_UME_SIMD()
     volatile float avg = 0.0f;
       
     // Calculate loop-peeling division
-    int PEEL_COUNT = ARRAY_SIZE/VEC_LEN;             // Divide array size by vector length.
-    int REM_COUNT = ARRAY_SIZE - PEEL_COUNT*VEC_LEN; // 
+    uint32_t PEEL_COUNT = ARRAY_SIZE/VEC_LEN;             // Divide array size by vector length.
+    uint32_t REM_COUNT = ARRAY_SIZE - PEEL_COUNT*VEC_LEN; // 
             
     float* temp;
+    
     temp = (float*) UME::DynamicMemory::AlignedMalloc(ARRAY_SIZE*sizeof(float), ALIGNMENT);
 
     start = __rdtsc();
@@ -201,7 +202,7 @@ TIMING_RES test_UME_SIMD()
     FLOAT_VEC_TYPE sum_vec(0.0f);
     // Instead of adding single elements, we are using SIMD to add elements
     // with STRIDE-8 distance. We then perform reduction using scalar code
-    for(int i = 0; i < PEEL_COUNT; i++)
+    for(uint32_t i = 0; i < PEEL_COUNT; i++)
     {
         x_vec.loada(&x[i*VEC_LEN]);
         //x_vec = _mm256_load_ps(&x[i*8]); // load elements with STRIDE-8
@@ -213,13 +214,13 @@ TIMING_RES test_UME_SIMD()
     sum_vec.storea(temp);
     
     // TODO: replace with reduce-add
-    for(int i = 0; i < VEC_LEN; ++i)
+    for(uint32_t i = 0; i < VEC_LEN; ++i)
     {
         sum += temp[i];  
     }
       
     // Calculating loop reminder
-    for(int i = 0; i < REM_COUNT; i++)
+    for(uint32_t i = 0; i < REM_COUNT; i++)
     {
         sum += x[PEEL_COUNT*VEC_LEN + i];
     }
@@ -252,11 +253,13 @@ TIMING_RES test_UME_SIMD()
 
 int main()
 {
-    TIMING_RES t_scalar, t_AVX, t_UME_SIMD8_32f, t_UME_SIMD4_32f;
+    TIMING_RES t_scalar, t_AVX, t_UME_SIMD8_32f, t_UME_SIMD4_32f, t_UME_SIMD2_32f, t_UME_SIMD1_32f;
     float t_scalar_avg = 0.0f, 
           t_AVX_avg = 0.0f, 
           t_UME_SIMD8_32f_avg = 0.0f,
-          t_UME_SIMD4_32f_avg = 0.0f;
+          t_UME_SIMD4_32f_avg = 0.0f,
+          t_UME_SIMD2_32f_avg = 0.0f,
+          t_UME_SIMD1_32f_avg = 0.0f;
 
     // Run each timing test 1000 times
     for(int i = 0; i < 100; i++)
@@ -273,11 +276,17 @@ int main()
          t_UME_SIMD4_32f = test_UME_SIMD<UME::SIMD::SIMD4_32f>();
          t_UME_SIMD4_32f_avg = 1.0f/(1.0f + float(i)) * (float(t_UME_SIMD4_32f) - t_UME_SIMD4_32f_avg);
          
+         t_UME_SIMD2_32f = test_UME_SIMD<UME::SIMD::SIMD2_32f>();
+         t_UME_SIMD2_32f_avg = 1.0f/(1.0f + float(i)) * (float(t_UME_SIMD2_32f) - t_UME_SIMD2_32f_avg);
+
+         t_UME_SIMD1_32f = test_UME_SIMD<UME::SIMD::SIMD1_32f>();
+         t_UME_SIMD1_32f_avg = 1.0f/(1.0f + float(i)) * (float(t_UME_SIMD1_32f) - t_UME_SIMD1_32f_avg);
     }
 
     std::cout << "Scalar code:\n\tTiming:             " << (long)t_scalar_avg
                                                         << "\t(speedup: 1.0x)" 
                                                         <<  std::endl;
+                                                        
     std::cout << "256b intrinsic code:\n\tTiming:     " << (long)t_AVX_avg 
                                                         <<  "\t(speedup: " 
                                                         << float(t_scalar_avg)/float(t_AVX_avg) << ")" 
@@ -289,6 +298,14 @@ int main()
     std::cout << "UME::SIMD::4_32f (128b):\n\tTiming: " << (long)t_UME_SIMD4_32f_avg 
                                                         << "\t(speedup: "
                                                         << float(t_scalar_avg)/float(t_UME_SIMD4_32f_avg) << ")" 
+                                                        << std::endl;
+    std::cout << "UME::SIMD::2_32f (64b):\n\tTiming: "  << (long)t_UME_SIMD2_32f_avg 
+                                                        << "\t(speedup: "
+                                                        << float(t_scalar_avg)/float(t_UME_SIMD2_32f_avg) << ")" 
+                                                        << std::endl;
+    std::cout << "UME::SIMD::1_32f (32b):\n\tTiming: "  << (long)t_UME_SIMD1_32f_avg 
+                                                        << "\t(speedup: "
+                                                        << float(t_scalar_avg)/float(t_UME_SIMD1_32f_avg) << ")" 
                                                         << std::endl;
 
     return 0;

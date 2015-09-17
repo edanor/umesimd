@@ -181,11 +181,10 @@ namespace SIMD
         // STORE
         template<typename VEC_TYPE, typename SCALAR_TYPE>
         inline SCALAR_TYPE* store(VEC_TYPE & src, SCALAR_TYPE * p) {
-            typedef decltype(src[0])* SCALAR_TYPE_PTR;
             UME_EMULATION_WARNING();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++)
             {
-                ((SCALAR_TYPE_PTR)p)[i] = src[i];
+                p[i] = src[i];
             }
             return p;
         }
@@ -193,11 +192,10 @@ namespace SIMD
         // MSTORE
         template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
         inline SCALAR_TYPE* store(MASK_TYPE const & mask, VEC_TYPE & src, SCALAR_TYPE * p) {
-            typedef decltype(src[0])* SCALAR_TYPE_PTR;
             UME_EMULATION_WARNING();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++)
             {
-                if(mask[i] == true) ((SCALAR_TYPE_PTR)p)[i] = src[i];
+                if(mask[i] == true) p[i] = src[i];
             }
             return p;
         }
@@ -307,7 +305,17 @@ namespace SIMD
                 dst.insert(i + VEC_HALF_TYPE::length(), src2[i]);
             }
         }
+        /*
+        template<typename VEC_TYPE>
+        inline VEC_TYPE & pack<uint8_t>(VEC_TYPE & dst, uint8_t src1, uint8_t src2) {
+            UME_EMULATION_WARNING();
+            static_assert(VEC_TYPE::length() == 2, "This operator is only allowed on SIMD2 types!");
+            dst.insert(0, src1);
+            dst.insert(1, src2);
+            return dst;
+        }
 
+        */
         // TOOD:
         // pack (VEC, VEC_QUARTER_LEN, VEC_QUARTER_LEN, VEC_QUARTER_LEN, VEC_QUARTER_LEN)
         // ...
@@ -4943,7 +4951,6 @@ namespace SIMD
         inline VEC_TYPE & operator= (const double & x) { }
  
     protected:
-            
         // Making destructor protected prohibits this class from being instantiated. Effectively this class can only be used as a base class.
         ~SIMDVecFloatInterface() {};
         
@@ -5135,7 +5142,6 @@ namespace SIMD
             return EMULATED_FUNCTIONS::MATH::ctan<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
     };
-
 } // namespace UME::SIMD
 } // namespace UME
 

@@ -1,4 +1,4 @@
-﻿// The MIT License (MIT)
+// The MIT License (MIT)
 //
 // Copyright (c) 2015 CERN
 //
@@ -28,47 +28,63 @@
 //  7th Framework programme Marie Curie Actions under grant PITN-GA-2012-316596".
 //
 
-#ifndef UME_UNIT_TEST_SIMD_H_
-#define UME_UNIT_TEST_SIMD_H_
+#ifndef UME_UNIT_TEST_SIMD_8B_H_
+#define UME_UNIT_TEST_SIMD_8B_H_
 
 #include "UMEUnitTestCommon.h"
-#include "../UMESimd.h"
 
-// masks
-#include "UMEUnitTestMasks.h"
+int test_UME_SIMD8b(bool supressMessages);
 
-#include "UMEUnitTestSimd8b.h"
-#include "UMEUnitTestSimd16b.h"
-#include "UMEUnitTestSimd32b.h"
-#include "UMEUnitTestSimd64b.h"
-#include "UMEUnitTestSimd128b.h"
-#include "UMEUnitTestSimd256b.h"
-#include "UMEUnitTestSimd512b.h"
-#include "UMEUnitTestSimd1024b.h"
+int test_UME_SIMD1_8(bool supressMessages);
+int test_UME_SIMD1_8u(bool supressMessages);
+int test_UME_SIMD1_8i(bool supressMessages);
 
-int test_UMESimd(bool supressMessages)
+using namespace UME::SIMD;
+
+int test_UME_SIMD8b(bool supressMessages) 
 {
-    char header[] = "UME::SIMD::SIMD vector test";
+    int simd1_8_res = test_UME_SIMD1_8(supressMessages);
+
+    return simd1_8_res;
+}
+
+int test_UME_SIMD1_8(bool supressMessages) {
+    int fail_u = test_UME_SIMD1_8u(supressMessages);
+    int fail_i = test_UME_SIMD1_8i(supressMessages);
+
+    return fail_u + fail_i;
+}
+
+int test_UME_SIMD1_8u(bool supressMessages) {
+    char header[] = "UME::SIMD::SIMD1_8u test";
     INIT_TEST(header, supressMessages);
 
-    int failCount = 0;
+    {
+        SIMD1_8u vec0;
+        CHECK_CONDITION(vec0.length() == 1, "ZERO-CONSTR");
+    }
 
-    // This checks if template based generation of vector types works correctly
-
-    // masks
-    failCount += test_UME_SIMDMasks(supressMessages);
-
-    // arithmetic vectors
-    failCount += test_UME_SIMD8b(supressMessages);
-    failCount += test_UME_SIMD16b(supressMessages);
-    //failCount += test_UME_SIMD32b(supressMessages);
-    failCount += test_UME_SIMD64b(supressMessages);
-    failCount += test_UME_SIMD128b(supressMessages);
-    failCount += test_UME_SIMD256b(supressMessages);
-    failCount += test_UME_SIMD512b(supressMessages);
-    failCount += test_UME_SIMD1024b(supressMessages);
-
-    return failCount;
+    return g_failCount;
 }
+
+int test_UME_SIMD1_8i(bool supressMessages) {
+    char header[] = "UME::SIMD::SIMD1_8i test";
+    INIT_TEST(header, supressMessages);
+
+    {
+        SIMD1_8i vec0;
+        CHECK_CONDITION(vec0.length() == 1, "ZERO-CONSTR");
+    }
+
+    {
+        SIMD1_8i vec0(5);
+        SIMD1_8i vec1(-126);
+        SIMD1_8i vec2 = vec0.add(vec1);
+        CHECK_CONDITION(vec2[0] == -121, "ADDV");
+    }
+
+    return g_failCount;
+}
+
 
 #endif

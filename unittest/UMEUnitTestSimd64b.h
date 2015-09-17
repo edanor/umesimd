@@ -48,6 +48,11 @@ int test_UME_SIMD2_32u(bool supressMessages);
 int test_UME_SIMD2_32i(bool supressMessages);
 int test_UME_SIMD2_32f(bool supressMessages);
 
+int test_UME_SIMD1_64(bool supressMessages);
+int test_UME_SIMD1_64u(bool supressMessages);
+int test_UME_SIMD1_64i(bool supressMessages);
+int test_UME_SIMD1_64f(bool supressMessages);
+
 using namespace UME::SIMD;
 
 int test_UME_SIMD64b(bool supressMessages)
@@ -55,8 +60,9 @@ int test_UME_SIMD64b(bool supressMessages)
     int simd8_8_res = test_UME_SIMD8_8(supressMessages);
     int simd4_16_res = test_UME_SIMD4_16(supressMessages);
     int simd2_32_res = test_UME_SIMD2_32(supressMessages);
+    int simd1_64_res = test_UME_SIMD1_64(supressMessages);
 
-    return simd8_8_res + simd4_16_res + simd2_32_res;
+    return simd8_8_res + simd4_16_res + simd2_32_res + simd1_64_res;
 }
 
 int test_UME_SIMD8_8(bool supressMessages)
@@ -84,6 +90,15 @@ int test_UME_SIMD2_32(bool supressMessages)
     return fail_u + fail_i + fail_f;
 }
 
+int test_UME_SIMD1_64(bool supressMessages)
+{
+    int fail_u = test_UME_SIMD1_64u(supressMessages);
+    int fail_i = test_UME_SIMD1_64i(supressMessages);
+    int fail_f = test_UME_SIMD1_64f(supressMessages);
+
+    return fail_u + fail_i + fail_f;
+}
+
 // ****************************************************************************
 // * Test functions for specific vector types
 // ****************************************************************************
@@ -94,7 +109,7 @@ int test_UME_SIMD8_8u(bool supressMessages) {
     
     {
         SIMD8_8u vec0;
-        CHECK_CONDITION(true, "ZERO-CONSTR");
+        CHECK_CONDITION(vec0.length() == 8, "ZERO-CONSTR");
     }
 
     return g_failCount;
@@ -106,7 +121,7 @@ int test_UME_SIMD8_8i(bool supressMessages) {
     
     {
         SIMD8_8i vec0;
-        CHECK_CONDITION(true, "ZERO-CONSTR");
+        CHECK_CONDITION(vec0.length() == 8, "ZERO-CONSTR");
     }
 
     return g_failCount;
@@ -118,7 +133,7 @@ int test_UME_SIMD4_16u(bool supressMessages) {
     
     {
         SIMD4_16u vec0;
-        CHECK_CONDITION(true, "ZERO-CONSTR");
+        CHECK_CONDITION(vec0.length() == 4, "ZERO-CONSTR");
     }
 
     return g_failCount;
@@ -130,7 +145,7 @@ int test_UME_SIMD4_16i(bool supressMessages) {
     
     {
         SIMD4_16i vec0;
-        CHECK_CONDITION(true, "ZERO-CONSTR");
+        CHECK_CONDITION(vec0.length() == 4, "ZERO-CONSTR");
     }
 
     return g_failCount;
@@ -142,7 +157,7 @@ int test_UME_SIMD2_32u(bool supressMessages) {
     
     {
         SIMD2_32u vec0;
-        CHECK_CONDITION(true, "ZERO-CONSTR");
+        CHECK_CONDITION(vec0.length() == 2, "ZERO-CONSTR");
     }
 
     return g_failCount;
@@ -154,7 +169,7 @@ int test_UME_SIMD2_32i(bool supressMessages) {
     
     {
         SIMD2_32i vec0;
-        CHECK_CONDITION(true, "ZERO-CONSTR");
+        CHECK_CONDITION(vec0.length() == 2, "ZERO-CONSTR");
     }
 
     return g_failCount;
@@ -166,7 +181,44 @@ int test_UME_SIMD2_32f(bool supressMessages) {
     
     {
         SIMD2_32f vec0;
-        CHECK_CONDITION(true, "ZERO-CONSTR");
+        CHECK_CONDITION(vec0.length() == 2, "ZERO-CONSTR");
+    }
+
+    return g_failCount;
+}
+
+int test_UME_SIMD1_64u(bool supressMessages) {
+    char header[] = "UME::SIMD::SIMD1_64u test";
+    INIT_TEST(header, supressMessages);
+
+    {
+        SIMD1_64u vec0;
+        CHECK_CONDITION(vec0.length() == 1, "ZERO-CONSTR");
+    }
+
+    return g_failCount;
+}
+
+
+int test_UME_SIMD1_64i(bool supressMessages) {
+    char header[] = "UME::SIMD::SIMD1_64i test";
+    INIT_TEST(header, supressMessages);
+
+    {
+        SIMD1_64i vec0;
+        CHECK_CONDITION(vec0.length() == 1, "ZERO-CONSTR");
+    }
+
+    return g_failCount;
+}
+
+int test_UME_SIMD1_64f(bool supressMessages) {
+    char header[] = "UME::SIMD::SIMD1_64f test";
+    INIT_TEST(header, supressMessages);
+
+    {
+        SIMD1_64f vec0;
+        CHECK_CONDITION(vec0.length() == 1, "ZERO-CONSTR");
     }
 
     return g_failCount;
