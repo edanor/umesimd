@@ -1673,7 +1673,7 @@ namespace SIMD
     public:
         inline SIMDVecAVX_f() : mVec() {};
 
-        inline explicit SIMDVecAVX_f(SCALAR_FLOAT_TYPE f) : mVec(i) {};
+        inline explicit SIMDVecAVX_f(SCALAR_FLOAT_TYPE f) : mVec(f) {};
 
         inline SIMDVecAVX_f(SCALAR_FLOAT_TYPE f0, SCALAR_FLOAT_TYPE f1) {
             mVec.insert(0, f0); mVec.insert(1, f1);
@@ -1795,7 +1795,7 @@ namespace SIMD
     public:
         inline SIMDVecAVX_f() : mVec() {};
 
-        inline explicit SIMDVecAVX_f(SCALAR_FLOAT_TYPE i) : mVec(i) {};
+        inline explicit SIMDVecAVX_f(SCALAR_FLOAT_TYPE f) : mVec(f) {};
             
         // Override Access operators
         inline SCALAR_FLOAT_TYPE operator[] (uint32_t index) const {
