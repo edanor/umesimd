@@ -207,16 +207,12 @@ namespace SIMD
         };
     };
 
-    class QUARTER_FLOAT_8
-    {
-        // This should be implemented for compatibility reasons
-    };
+    // forward declarations of simd types classes;
+    template<typename SCALAR_TYPE, uint32_t VEC_LEN>       class SIMDVecScalarEmuMask;
+    template<typename SCALAR_UINT_TYPE, uint32_t VEC_LEN>  class SIMDVecScalarEmu_u;
+    template<typename SCALAR_INT_TYPE, uint32_t VEC_LEN>   class SIMDVecScalarEmu_i;
+    template<typename SCALAR_FLOAT_TYPE, uint32_t VEC_LEN> class SIMDVecScalarEmu_f;
 
-    class HALF_FLOAT_16
-    {
-        // This should be implemented for compatibility reasons
-    };
-    
     template<typename VEC_TYPE, uint32_t VEC_LEN>
     struct SIMDVecScalarEmu_u_traits{
         // Generic trait class not containing type definition so that only correct explicit
@@ -226,13 +222,14 @@ namespace SIMD
     // 8b vectors
     template<>
     struct SIMDVecScalarEmu_u_traits<uint8_t, 1> {
-        typedef int8_t   SCALAR_INT_TYPE;
-        typedef bool     MASK_BASE_TYPE;
+        typedef int8_t                         SCALAR_INT_TYPE;
+        typedef bool                           MASK_BASE_TYPE;
     };
 
     // 16b vectors
     template<>
     struct SIMDVecScalarEmu_u_traits<uint8_t, 2> {
+        typedef SIMDVecScalarEmu_u<uint8_t, 1> HALF_LEN_VEC_TYPE;
         typedef int8_t   SCALAR_INT_TYPE;
         typedef bool     MASK_BASE_TYPE;
     };
@@ -246,14 +243,16 @@ namespace SIMD
     // 32b vectors
     template<>
     struct SIMDVecScalarEmu_u_traits<uint8_t, 4> {
-        typedef int8_t   SCALAR_INT_TYPE;
-        typedef bool     MASK_BASE_TYPE;
+        typedef SIMDVecScalarEmu_u<uint8_t, 2> HALF_LEN_VEC_TYPE;
+        typedef int8_t                         SCALAR_INT_TYPE;
+        typedef bool                           MASK_BASE_TYPE;
     };
     
     template<>
     struct SIMDVecScalarEmu_u_traits<uint16_t, 2> {
-        typedef int16_t   SCALAR_INT_TYPE;
-        typedef bool     MASK_BASE_TYPE;
+        typedef SIMDVecScalarEmu_u<uint16_t, 1> HALF_LEN_VEC_TYPE;
+        typedef int16_t                         SCALAR_INT_TYPE;
+        typedef bool                            MASK_BASE_TYPE;
     };
     
     template<>
@@ -265,20 +264,23 @@ namespace SIMD
     // 64b vectors
     template<>
     struct SIMDVecScalarEmu_u_traits<uint8_t, 8>{
-        typedef int8_t   SCALAR_INT_TYPE;
-        typedef bool     MASK_BASE_TYPE;
+        typedef SIMDVecScalarEmu_u<uint8_t, 4> HALF_LEN_VEC_TYPE;
+        typedef int8_t                         SCALAR_INT_TYPE;
+        typedef bool                           MASK_BASE_TYPE;
     };
 
     template<>
     struct SIMDVecScalarEmu_u_traits<uint16_t, 4>{
-        typedef int16_t  SCALAR_INT_TYPE;
-        typedef bool     MASK_BASE_TYPE;
+        typedef SIMDVecScalarEmu_u<uint16_t, 2> HALF_LEN_VEC_TYPE;
+        typedef int16_t                         SCALAR_INT_TYPE;
+        typedef bool                            MASK_BASE_TYPE;
     };
 
     template<>
     struct SIMDVecScalarEmu_u_traits<uint32_t, 2>{
-        typedef int32_t   SCALAR_INT_TYPE;
-        typedef bool      MASK_BASE_TYPE;
+        typedef SIMDVecScalarEmu_u<uint32_t, 1> HALF_LEN_VEC_TYPE;
+        typedef int32_t                         SCALAR_INT_TYPE;
+        typedef bool                            MASK_BASE_TYPE;
     };
 
     template<>
@@ -290,117 +292,141 @@ namespace SIMD
     // 128b vectors
     template<>
     struct SIMDVecScalarEmu_u_traits<uint8_t, 16>{
-        typedef int8_t   SCALAR_INT_TYPE;
-        typedef bool     MASK_BASE_TYPE;
+        typedef SIMDVecScalarEmu_u<uint8_t, 8> HALF_LEN_VEC_TYPE;
+        typedef int8_t                         SCALAR_INT_TYPE;
+        typedef bool                           MASK_BASE_TYPE;
     };
 
     template<>
     struct SIMDVecScalarEmu_u_traits<uint16_t, 8>{
-        typedef int16_t   SCALAR_INT_TYPE;
-        typedef bool      MASK_BASE_TYPE;
+        typedef SIMDVecScalarEmu_u<uint16_t, 4> HALF_LEN_VEC_TYPE;
+        typedef int16_t                         SCALAR_INT_TYPE;
+        typedef bool                            MASK_BASE_TYPE;
     };
 
     template<>
     struct SIMDVecScalarEmu_u_traits<uint32_t, 4>{
-        typedef int32_t   SCALAR_INT_TYPE;
-        typedef bool      MASK_BASE_TYPE;
+        typedef SIMDVecScalarEmu_u<uint32_t, 2> HALF_LEN_VEC_TYPE;
+        typedef int32_t                         SCALAR_INT_TYPE;
+        typedef bool                            MASK_BASE_TYPE;
     };
 
     template<>
     struct SIMDVecScalarEmu_u_traits<uint64_t, 2>{
-        typedef int64_t   SCALAR_INT_TYPE;
-        typedef bool      MASK_BASE_TYPE;
+        typedef SIMDVecScalarEmu_u<uint64_t, 1> HALF_LEN_VEC_TYPE;
+        typedef int64_t                         SCALAR_INT_TYPE;
+        typedef bool                            MASK_BASE_TYPE;
     };
 
     // 256b vectors
     template<>
     struct SIMDVecScalarEmu_u_traits<uint8_t, 32>{
-        typedef int8_t   SCALAR_INT_TYPE;
-        typedef bool    MASK_BASE_TYPE;
+        typedef SIMDVecScalarEmu_u<uint8_t, 16> HALF_LEN_VEC_TYPE;
+        typedef int8_t                          SCALAR_INT_TYPE;
+        typedef bool                            MASK_BASE_TYPE;
     };
     
     template<>
     struct SIMDVecScalarEmu_u_traits<uint16_t, 16>{
-        typedef int16_t   SCALAR_INT_TYPE;
-        typedef bool      MASK_BASE_TYPE;
+        typedef SIMDVecScalarEmu_u<uint16_t, 8> HALF_LEN_VEC_TYPE;
+        typedef int16_t                         SCALAR_INT_TYPE;
+        typedef bool                            MASK_BASE_TYPE;
     };
 
     template<>
     struct SIMDVecScalarEmu_u_traits<uint32_t, 8>{
-        typedef int32_t   SCALAR_INT_TYPE;
-        typedef bool      MASK_BASE_TYPE;
+        typedef SIMDVecScalarEmu_u<uint32_t, 4> HALF_LEN_VEC_TYPE;
+        typedef int32_t                         SCALAR_INT_TYPE;
+        typedef bool                            MASK_BASE_TYPE;
     };
     
     template<>
     struct SIMDVecScalarEmu_u_traits<uint64_t, 4>{
-        typedef int64_t   SCALAR_INT_TYPE;
-        typedef bool      MASK_BASE_TYPE;
+        typedef SIMDVecScalarEmu_u<uint64_t, 2> HALF_LEN_VEC_TYPE;
+        typedef int64_t                         SCALAR_INT_TYPE;
+        typedef bool                            MASK_BASE_TYPE;
     };
 
     // 512b vectors
     template<>
     struct SIMDVecScalarEmu_u_traits<uint8_t, 64>{
-        typedef int8_t    SCALAR_INT_TYPE;
-        typedef bool      MASK_BASE_TYPE;
+        typedef SIMDVecScalarEmu_u<uint8_t, 32> HALF_LEN_VEC_TYPE;
+        typedef int8_t                          SCALAR_INT_TYPE;
+        typedef bool                            MASK_BASE_TYPE;
     };
 
     template<>
     struct SIMDVecScalarEmu_u_traits<uint16_t, 32>{
-        typedef int16_t   SCALAR_INT_TYPE;
-        typedef bool      MASK_BASE_TYPE;
+        typedef SIMDVecScalarEmu_u<uint16_t, 16> HALF_LEN_VEC_TYPE;
+        typedef int16_t                          SCALAR_INT_TYPE;
+        typedef bool                             MASK_BASE_TYPE;
     };
 
     template<>
     struct SIMDVecScalarEmu_u_traits<uint32_t, 16>{
-        typedef int32_t   SCALAR_INT_TYPE;
-        typedef bool      MASK_BASE_TYPE;
+        typedef SIMDVecScalarEmu_u<uint32_t, 8> HALF_LEN_VEC_TYPE;
+        typedef int32_t                         SCALAR_INT_TYPE;
+        typedef bool                            MASK_BASE_TYPE;
     };
 
     template<>
     struct SIMDVecScalarEmu_u_traits<uint64_t, 8> {
-        typedef int64_t   SCALAR_INT_TYPE;
-        typedef bool      MASK_BASE_TYPE;
+        typedef SIMDVecScalarEmu_u<uint64_t, 4> HALF_LEN_VEC_TYPE;
+        typedef int64_t                         SCALAR_INT_TYPE;
+        typedef bool                            MASK_BASE_TYPE;
     };
     
     // 1024b vectors
     template<>
     struct SIMDVecScalarEmu_u_traits<uint8_t, 128> {
-        typedef int8_t    SCALAR_INT_TYPE;
-        typedef bool      MASK_BASE_TYPE;
+        typedef SIMDVecScalarEmu_u<uint8_t, 64> HALF_LEN_VEC_TYPE;
+        typedef int8_t                          SCALAR_INT_TYPE;
+        typedef bool                            MASK_BASE_TYPE;
     };
 
     template<>
     struct SIMDVecScalarEmu_u_traits<uint16_t, 64> {
-        typedef int16_t   SCALAR_INT_TYPE;
-        typedef bool      MASK_BASE_TYPE;
+        typedef SIMDVecScalarEmu_u<uint16_t, 32> HALF_LEN_VEC_TYPE;
+        typedef int16_t                          SCALAR_INT_TYPE;
+        typedef bool                             MASK_BASE_TYPE;
     };
 
     template<>
     struct SIMDVecScalarEmu_u_traits<uint32_t, 32> {
-        typedef int32_t   SCALAR_INT_TYPE;
-        typedef bool      MASK_BASE_TYPE;
+        typedef SIMDVecScalarEmu_u<uint32_t, 16> HALF_LEN_VEC_TYPE;
+        typedef int32_t                          SCALAR_INT_TYPE;
+        typedef bool                             MASK_BASE_TYPE;
     };
 
     template<>
     struct SIMDVecScalarEmu_u_traits<uint64_t, 16> {
-        typedef int64_t   SCALAR_INT_TYPE;
-        typedef bool      MASK_BASE_TYPE;
+        typedef SIMDVecScalarEmu_u<uint64_t, 8> HALF_LEN_VEC_TYPE;
+        typedef int64_t                         SCALAR_INT_TYPE;
+        typedef bool                            MASK_BASE_TYPE;
     };
 
-    // forward declarations of simd types classes;
-    template<typename SCALAR_TYPE, uint32_t VEC_LEN>       class SIMDVecScalarEmuMask;
-    template<typename SCALAR_UINT_TYPE, uint32_t VEC_LEN>  class SIMDVecScalarEmu_u;
-    template<typename SCALAR_INT_TYPE, uint32_t VEC_LEN>   class SIMDVecScalarEmu_i;
-    template<typename SCALAR_FLOAT_TYPE, uint32_t VEC_LEN> class SIMDVecScalarEmu_f;
     
+    // ***************************************************************************
+    // *
+    // *    Implementation of unsigned integer SIMDx_8u, SIMDx_16u, SIMDx_32u, 
+    // *    and SIMDx_64u.
+    // *
+    // *    This implementation uses scalar emulation available through to 
+    // *    SIMDVecUnsignedInterface.
+    // *
+    // ***************************************************************************
     template<typename SCALAR_UINT_TYPE, uint32_t VEC_LEN>
-    class SIMDVecScalarEmu_u final : public SIMDVecUnsignedInterface< 
-        SIMDVecScalarEmu_u<SCALAR_UINT_TYPE, VEC_LEN>, // DERIVED_VEC_TYPE
-        SIMDVecScalarEmu_u<SCALAR_UINT_TYPE, VEC_LEN>, // DERIVED_VEC_UINT_TYPE
-        SCALAR_UINT_TYPE,  // SCALAR_TYPE 
-        SCALAR_UINT_TYPE,  // SCALAR_UINT_TYPE - in this case is the same as above
-        VEC_LEN,
-        SIMDVecScalarEmuMask<typename SIMDVecScalarEmu_u_traits<SCALAR_UINT_TYPE, VEC_LEN>::MASK_BASE_TYPE, VEC_LEN>>
+    class SIMDVecScalarEmu_u final : 
+        public SIMDVecUnsignedInterface< 
+            SIMDVecScalarEmu_u<SCALAR_UINT_TYPE, VEC_LEN>, // DERIVED_VEC_TYPE
+            SIMDVecScalarEmu_u<SCALAR_UINT_TYPE, VEC_LEN>, // DERIVED_VEC_UINT_TYPE
+            SCALAR_UINT_TYPE,  // SCALAR_TYPE 
+            SCALAR_UINT_TYPE,  // SCALAR_UINT_TYPE - in this case is the same as above
+            VEC_LEN,
+            SIMDVecScalarEmuMask<typename SIMDVecScalarEmu_u_traits<SCALAR_UINT_TYPE, VEC_LEN>::MASK_BASE_TYPE, VEC_LEN>>,
+        public SIMDVecPackableInterface<
+            SIMDVecScalarEmu_u<SCALAR_UINT_TYPE, VEC_LEN>,        // DERIVED_VEC_TYPE
+            typename SIMDVecScalarEmu_u_traits<SCALAR_UINT_TYPE, VEC_LEN>::HALF_LEN_VEC_TYPE> // DERIVED_HALF_VEC_TYPE
     {
     public:
         typedef SIMDVecEmuRegister<SCALAR_UINT_TYPE, VEC_LEN>                                   VEC_EMU_REG;
@@ -476,7 +502,62 @@ namespace SIMD
             return retval;
         }
     };
-                    
+    
+    // ***************************************************************************
+    // *
+    // *    Partial specialization of unsigned integer SIMD for VEC_LEN == 1.
+    // *    This specialization is necessary to eliminate PACK operations from
+    // *    being used on SIMD1 types.
+    // *
+    // ***************************************************************************
+    template<typename SCALAR_UINT_TYPE>
+    class SIMDVecScalarEmu_u<SCALAR_UINT_TYPE, 1> : 
+        public SIMDVecUnsignedInterface< 
+            SIMDVecScalarEmu_u<SCALAR_UINT_TYPE, 1>, // DERIVED_VEC_TYPE
+            SIMDVecScalarEmu_u<SCALAR_UINT_TYPE, 1>, // DERIVED_VEC_UINT_TYPE
+            SCALAR_UINT_TYPE,  // SCALAR_TYPE 
+            SCALAR_UINT_TYPE,  // SCALAR_UINT_TYPE - in this case is the same as above
+            1,
+            SIMDVecScalarEmuMask<typename SIMDVecScalarEmu_u_traits<SCALAR_UINT_TYPE, 1>::MASK_BASE_TYPE, 1>>
+    {
+    public:
+        typedef SIMDVecEmuRegister<SCALAR_UINT_TYPE, 1>                                   VEC_EMU_REG;
+            
+        typedef typename SIMDVecScalarEmu_u_traits<SCALAR_UINT_TYPE, 1>::MASK_BASE_TYPE   MASK_BASE_TYPE;
+        typedef typename SIMDVecScalarEmu_u_traits<SCALAR_UINT_TYPE, 1>::SCALAR_INT_TYPE  SCALAR_INT_TYPE;
+
+        typedef SIMDVecScalarEmuMask<MASK_BASE_TYPE, 1>   MASK_TYPE;
+
+        // Conversion operators require access to private members.
+        friend class SIMDVecScalarEmu_i<SCALAR_INT_TYPE, 1>;
+
+    private:
+        // This is the only data member and it is a low level representation of vector register.
+        VEC_EMU_REG mVec; 
+
+    public:
+        inline SIMDVecScalarEmu_u() : mVec() {};
+
+        inline explicit SIMDVecScalarEmu_u(SCALAR_UINT_TYPE i) : mVec(i) {};
+
+        // Override Access operators
+        inline SCALAR_UINT_TYPE operator[] (uint32_t index) const {
+            SCALAR_UINT_TYPE temp = mVec[index];
+            return temp;
+        }
+                
+        // insert[] (scalar)
+        inline SIMDVecScalarEmu_u & insert(uint32_t index, SCALAR_UINT_TYPE value) {
+            mVec.insert(index, value);
+            return *this;
+        }
+
+        inline operator SIMDVecScalarEmu_i<SCALAR_INT_TYPE, 1>() const {
+            SIMDVecScalarEmu_i<SCALAR_INT_TYPE, 1> retval(mVec[0]);
+            return retval;
+        }
+    };
+
     template<typename SCALAR_INT_TYPE, uint32_t VEC_LEN>
     struct SIMDVecScalarEmu_i_traits{
         // Generic trait class not containing type definition so that only correct explicit
@@ -494,6 +575,7 @@ namespace SIMD
     // 16b vectors
     template<>
     struct SIMDVecScalarEmu_i_traits<int8_t, 2>{
+        typedef SIMDVecScalarEmu_i<int8_t, 1> HALF_LEN_VEC_TYPE;
         typedef SIMDVecScalarEmu_u<uint8_t, 2> VEC_UINT;
         typedef uint8_t SCALAR_UINT_TYPE;
         typedef bool    MASK_BASE_TYPE;
@@ -509,6 +591,7 @@ namespace SIMD
     // 32b vectors
     template<>
     struct SIMDVecScalarEmu_i_traits<int8_t, 4>{
+        typedef SIMDVecScalarEmu_i<int8_t, 2> HALF_LEN_VEC_TYPE;
         typedef SIMDVecScalarEmu_u<uint8_t, 4> VEC_UINT;
         typedef uint8_t SCALAR_UINT_TYPE;
         typedef bool    MASK_BASE_TYPE;
@@ -516,6 +599,7 @@ namespace SIMD
 
     template<>
     struct SIMDVecScalarEmu_i_traits<int16_t, 2>{
+        typedef SIMDVecScalarEmu_i<int16_t, 1> HALF_LEN_VEC_TYPE;
         typedef SIMDVecScalarEmu_u<uint16_t, 2> VEC_UINT;
         typedef uint16_t SCALAR_UINT_TYPE;
         typedef bool    MASK_BASE_TYPE;
@@ -531,6 +615,7 @@ namespace SIMD
     // 64b vectors
     template<>
     struct SIMDVecScalarEmu_i_traits<int8_t, 8>{
+        typedef SIMDVecScalarEmu_i<int8_t, 4> HALF_LEN_VEC_TYPE;
         typedef SIMDVecScalarEmu_u<uint8_t, 8> VEC_UINT;
         typedef uint8_t SCALAR_UINT_TYPE;
         typedef bool    MASK_BASE_TYPE;
@@ -538,6 +623,7 @@ namespace SIMD
     
     template<>
     struct SIMDVecScalarEmu_i_traits<int16_t, 4>{
+        typedef SIMDVecScalarEmu_i<int16_t, 2> HALF_LEN_VEC_TYPE;
         typedef SIMDVecScalarEmu_u<uint16_t, 4> VEC_UINT;
         typedef uint16_t  SCALAR_UINT_TYPE;
         typedef bool      MASK_BASE_TYPE;
@@ -545,6 +631,7 @@ namespace SIMD
 
     template<>
     struct SIMDVecScalarEmu_i_traits<int32_t, 2>{
+        typedef SIMDVecScalarEmu_i<int32_t, 1> HALF_LEN_VEC_TYPE;
         typedef SIMDVecScalarEmu_u<uint32_t, 2> VEC_UINT;
         typedef uint32_t SCALAR_UINT_TYPE;
         typedef bool     MASK_BASE_TYPE;
@@ -560,6 +647,7 @@ namespace SIMD
     // 128b vectors
     template<>
     struct SIMDVecScalarEmu_i_traits<int8_t, 16>{
+        typedef SIMDVecScalarEmu_i<int8_t, 8> HALF_LEN_VEC_TYPE;
         typedef SIMDVecScalarEmu_u<uint8_t, 16> VEC_UINT;
         typedef uint8_t SCALAR_UINT_TYPE;
         typedef bool    MASK_BASE_TYPE;
@@ -567,6 +655,7 @@ namespace SIMD
 
     template<>
     struct SIMDVecScalarEmu_i_traits<int16_t, 8>{
+        typedef SIMDVecScalarEmu_i<int16_t, 4> HALF_LEN_VEC_TYPE;
         typedef SIMDVecScalarEmu_u<uint16_t, 8> VEC_UINT;
         typedef uint16_t SCALAR_UINT_TYPE;
         typedef bool     MASK_BASE_TYPE;
@@ -574,6 +663,7 @@ namespace SIMD
             
     template<>
     struct SIMDVecScalarEmu_i_traits<int32_t, 4>{
+        typedef SIMDVecScalarEmu_i<int32_t, 2> HALF_LEN_VEC_TYPE;
         typedef SIMDVecScalarEmu_u<uint32_t, 4> VEC_UINT;
         typedef uint32_t SCALAR_UINT_TYPE;
         typedef bool     MASK_BASE_TYPE;
@@ -581,6 +671,7 @@ namespace SIMD
 
     template<>
     struct SIMDVecScalarEmu_i_traits<int64_t, 2>{
+        typedef SIMDVecScalarEmu_i<int64_t, 1> HALF_LEN_VEC_TYPE;
         typedef SIMDVecScalarEmu_u<uint64_t, 2> VEC_UINT;
         typedef uint64_t SCALAR_UINT_TYPE;
         typedef bool     MASK_BASE_TYPE;
@@ -589,6 +680,7 @@ namespace SIMD
     // 256b vectors
     template<>
     struct SIMDVecScalarEmu_i_traits<int8_t, 32>{
+        typedef SIMDVecScalarEmu_i<int8_t, 16> HALF_LEN_VEC_TYPE;
         typedef SIMDVecScalarEmu_u<uint8_t, 32> VEC_UINT;
         typedef uint8_t SCALAR_UINT_TYPE;
         typedef bool    MASK_BASE_TYPE;
@@ -596,6 +688,7 @@ namespace SIMD
     
     template<>
     struct SIMDVecScalarEmu_i_traits<int16_t, 16>{
+        typedef SIMDVecScalarEmu_i<int16_t, 8> HALF_LEN_VEC_TYPE;
         typedef SIMDVecScalarEmu_u<uint16_t, 16> VEC_UINT;
         typedef uint16_t SCALAR_UINT_TYPE;
         typedef bool     MASK_BASE_TYPE;
@@ -603,6 +696,7 @@ namespace SIMD
     
     template<>
     struct SIMDVecScalarEmu_i_traits<int32_t, 8>{
+        typedef SIMDVecScalarEmu_i<int32_t, 4> HALF_LEN_VEC_TYPE;
         typedef SIMDVecScalarEmu_u<uint32_t, 8> VEC_UINT;
         typedef uint32_t SCALAR_UINT_TYPE;
         typedef bool     MASK_BASE_TYPE;
@@ -610,6 +704,7 @@ namespace SIMD
 
     template<>
     struct SIMDVecScalarEmu_i_traits<int64_t, 4>{
+        typedef SIMDVecScalarEmu_i<int64_t, 2> HALF_LEN_VEC_TYPE;
         typedef SIMDVecScalarEmu_u<uint64_t, 4> VEC_UINT;
         typedef uint64_t SCALAR_UINT_TYPE;
         typedef bool     MASK_BASE_TYPE;
@@ -618,6 +713,7 @@ namespace SIMD
     // 512b vectors
     template<>
     struct SIMDVecScalarEmu_i_traits<int8_t, 64>{
+        typedef SIMDVecScalarEmu_i<int8_t, 32> HALF_LEN_VEC_TYPE;
         typedef SIMDVecScalarEmu_u<uint8_t, 64> VEC_UINT;
         typedef uint8_t SCALAR_UINT_TYPE;
         typedef bool    MASK_BASE_TYPE;
@@ -625,6 +721,7 @@ namespace SIMD
     
     template<>
     struct SIMDVecScalarEmu_i_traits<int16_t, 32>{
+        typedef SIMDVecScalarEmu_i<int16_t, 16> HALF_LEN_VEC_TYPE;
         typedef SIMDVecScalarEmu_u<uint16_t, 32> VEC_UINT;
         typedef uint16_t SCALAR_UINT_TYPE;
         typedef bool    MASK_BASE_TYPE;
@@ -632,6 +729,7 @@ namespace SIMD
     
     template<>
     struct SIMDVecScalarEmu_i_traits<int32_t, 16>{
+        typedef SIMDVecScalarEmu_i<int32_t, 8> HALF_LEN_VEC_TYPE;
         typedef SIMDVecScalarEmu_u<uint32_t, 16> VEC_UINT;
         typedef uint32_t SCALAR_UINT_TYPE;
         typedef bool    MASK_BASE_TYPE;
@@ -639,6 +737,7 @@ namespace SIMD
     
     template<>
     struct SIMDVecScalarEmu_i_traits<int64_t, 8>{
+        typedef SIMDVecScalarEmu_i<int64_t, 4> HALF_LEN_VEC_TYPE;
         typedef SIMDVecScalarEmu_u<uint64_t, 8> VEC_UINT;
         typedef uint64_t SCALAR_UINT_TYPE;
         typedef bool    MASK_BASE_TYPE;
@@ -647,6 +746,7 @@ namespace SIMD
     // 1024b vectors
     template<>
     struct SIMDVecScalarEmu_i_traits<int8_t, 128>{
+        typedef SIMDVecScalarEmu_i<int8_t, 64> HALF_LEN_VEC_TYPE;
         typedef SIMDVecScalarEmu_u<uint8_t, 128> VEC_UINT;
         typedef uint8_t SCALAR_UINT_TYPE;
         typedef bool    MASK_BASE_TYPE;
@@ -654,6 +754,7 @@ namespace SIMD
     
     template<>
     struct SIMDVecScalarEmu_i_traits<int16_t, 64>{
+        typedef SIMDVecScalarEmu_i<int16_t, 32> HALF_LEN_VEC_TYPE;
         typedef SIMDVecScalarEmu_u<uint16_t, 64> VEC_UINT;
         typedef uint16_t SCALAR_UINT_TYPE;
         typedef bool    MASK_BASE_TYPE;
@@ -661,6 +762,7 @@ namespace SIMD
     
     template<>
     struct SIMDVecScalarEmu_i_traits<int32_t, 32>{
+        typedef SIMDVecScalarEmu_i<int32_t, 16> HALF_LEN_VEC_TYPE;
         typedef SIMDVecScalarEmu_u<uint32_t, 32> VEC_UINT;
         typedef uint32_t SCALAR_UINT_TYPE;
         typedef bool    MASK_BASE_TYPE;
@@ -668,23 +770,37 @@ namespace SIMD
     
     template<>
     struct SIMDVecScalarEmu_i_traits<int64_t, 16>{
+        typedef SIMDVecScalarEmu_i<int64_t, 8> HALF_LEN_VEC_TYPE;
         typedef SIMDVecScalarEmu_u<uint64_t, 16> VEC_UINT;
         typedef uint64_t SCALAR_UINT_TYPE;
         typedef bool    MASK_BASE_TYPE;
     };  
 
+    // ***************************************************************************
+    // *
+    // *    Implementation of signed integer SIMDx_8i, SIMDx_16i, SIMDx_32i, 
+    // *    and SIMDx_64i.
+    // *
+    // *    This implementation uses scalar emulation available through to 
+    // *    SIMDVecSignedInterface.
+    // *
+    // ***************************************************************************
     template<typename SCALAR_INT_TYPE, uint32_t VEC_LEN>
-    class SIMDVecScalarEmu_i final : public SIMDVecSignedInterface<
-        SIMDVecScalarEmu_i<SCALAR_INT_TYPE, VEC_LEN>, 
-        typename SIMDVecScalarEmu_i_traits<SCALAR_INT_TYPE, VEC_LEN>::VEC_UINT,
-        SCALAR_INT_TYPE, 
-        VEC_LEN,
-        typename SIMDVecScalarEmu_i_traits<SCALAR_INT_TYPE, VEC_LEN>::SCALAR_UINT_TYPE,
-        SIMDVecScalarEmuMask<
-            typename SIMDVecScalarEmu_i_traits<
-                SCALAR_INT_TYPE, 
-                VEC_LEN>::MASK_BASE_TYPE, 
-                VEC_LEN>>
+    class SIMDVecScalarEmu_i final : 
+        public SIMDVecSignedInterface<
+            SIMDVecScalarEmu_i<SCALAR_INT_TYPE, VEC_LEN>, 
+            typename SIMDVecScalarEmu_i_traits<SCALAR_INT_TYPE, VEC_LEN>::VEC_UINT,
+            SCALAR_INT_TYPE, 
+            VEC_LEN,
+            typename SIMDVecScalarEmu_i_traits<SCALAR_INT_TYPE, VEC_LEN>::SCALAR_UINT_TYPE,
+            SIMDVecScalarEmuMask<
+                typename SIMDVecScalarEmu_i_traits<
+                    SCALAR_INT_TYPE, 
+                    VEC_LEN>::MASK_BASE_TYPE, 
+                    VEC_LEN>>,
+        public SIMDVecPackableInterface<
+            SIMDVecScalarEmu_i<SCALAR_INT_TYPE, VEC_LEN>,
+            typename SIMDVecScalarEmu_i_traits<SCALAR_INT_TYPE, VEC_LEN>::HALF_LEN_VEC_TYPE>
     {
     public:
         typedef SIMDVecEmuRegister<SCALAR_INT_TYPE, VEC_LEN>                            VEC_EMU_REG;
@@ -767,6 +883,62 @@ namespace SIMD
             return retval;
         }
     };
+    
+    // ***************************************************************************
+    // *
+    // *    Partial specialization of signed integer SIMD for VEC_LEN == 1.
+    // *    This specialization is necessary to eliminate PACK operations from
+    // *    being used on SIMD1 types.
+    // *
+    // ***************************************************************************
+    template<typename SCALAR_INT_TYPE>
+    class SIMDVecScalarEmu_i<SCALAR_INT_TYPE, 1> : 
+        public SIMDVecSignedInterface<
+            SIMDVecScalarEmu_i<SCALAR_INT_TYPE, 1>, 
+            typename SIMDVecScalarEmu_i_traits<SCALAR_INT_TYPE, 1>::VEC_UINT,
+            SCALAR_INT_TYPE, 
+            1,
+            typename SIMDVecScalarEmu_i_traits<SCALAR_INT_TYPE, 1>::SCALAR_UINT_TYPE,
+            SIMDVecScalarEmuMask<
+                typename SIMDVecScalarEmu_i_traits<SCALAR_INT_TYPE, 1>::MASK_BASE_TYPE, 
+                1>
+        >
+    {
+    public:
+        typedef SIMDVecEmuRegister<SCALAR_INT_TYPE, 1>                            VEC_EMU_REG;
+            
+        typedef typename SIMDVecScalarEmu_i_traits<SCALAR_INT_TYPE, 1>::SCALAR_UINT_TYPE     SCALAR_UINT_TYPE;
+        typedef typename SIMDVecScalarEmu_i_traits<SCALAR_INT_TYPE, 1>::VEC_UINT             VEC_UINT;
+        typedef typename SIMDVecScalarEmu_i_traits<SCALAR_INT_TYPE, 1>::MASK_BASE_TYPE       MASK_BASE_TYPE;
+
+        typedef SIMDVecScalarEmuMask<MASK_BASE_TYPE, 1> MASK_TYPE;
+
+
+        friend class SIMDVecScalarEmu_u<SCALAR_UINT_TYPE, 1>;
+    private:
+        VEC_EMU_REG mVec;
+
+    public:
+        inline SIMDVecScalarEmu_i() : mVec() {};
+
+        inline explicit SIMDVecScalarEmu_i(SCALAR_INT_TYPE i) : mVec(i) {};
+
+        // Override Access operators
+        inline SCALAR_INT_TYPE operator[] (uint32_t index) const {
+            return mVec[index];
+        }
+                
+        // insert[] (scalar)
+        inline SIMDVecScalarEmu_i & insert(uint32_t index, SCALAR_INT_TYPE value) {
+            mVec.insert(index, value);
+            return *this;
+        }
+
+        inline  operator SIMDVecScalarEmu_u<SCALAR_UINT_TYPE, 1>() const {
+            SIMDVecScalarEmu_u<SCALAR_UINT_TYPE, 1> retval(mVec[0]);
+            return retval;
+        }
+    };
 
     template<typename SCALAR_FLOAT_TYPE, uint32_t VEC_LEN>
     struct SIMDVecScalarEmu_f_traits{
@@ -787,6 +959,7 @@ namespace SIMD
     // 64b vectors
     template<>
     struct SIMDVecScalarEmu_f_traits<float, 2> {
+        typedef SIMDVecScalarEmu_f<float, 1>    HALF_LEN_VEC_TYPE;
         typedef SIMDVecScalarEmu_u<uint32_t, 2> VEC_UINT_TYPE;
         typedef SIMDVecScalarEmu_i<int32_t, 2>  VEC_INT_TYPE;
         typedef SIMDVecScalarEmuMask<bool, 2>   MASK_TYPE;
@@ -806,6 +979,7 @@ namespace SIMD
     // 128b vectors
     template<>
     struct SIMDVecScalarEmu_f_traits<float, 4>{
+        typedef SIMDVecScalarEmu_f<float, 2>    HALF_LEN_VEC_TYPE;
         typedef SIMDVecScalarEmu_u<uint32_t, 4> VEC_UINT_TYPE;
         typedef SIMDVecScalarEmu_i<int32_t, 4>  VEC_INT_TYPE;
         typedef SIMDVecScalarEmuMask<bool, 4>   MASK_TYPE;
@@ -815,6 +989,7 @@ namespace SIMD
 
     template<>
     struct SIMDVecScalarEmu_f_traits<double, 2>{
+        typedef SIMDVecScalarEmu_f<double, 1>   HALF_LEN_VEC_TYPE;
         typedef SIMDVecScalarEmu_u<uint64_t, 2> VEC_UINT_TYPE;
         typedef SIMDVecScalarEmu_i<int64_t, 2>  VEC_INT_TYPE;
         typedef SIMDVecScalarEmuMask<bool, 2>   MASK_TYPE;
@@ -825,6 +1000,7 @@ namespace SIMD
     // 256b vectors
     template<>
     struct SIMDVecScalarEmu_f_traits<float, 8>{
+        typedef SIMDVecScalarEmu_f<float, 4>    HALF_LEN_VEC_TYPE;
         typedef SIMDVecScalarEmu_u<uint32_t, 8> VEC_UINT_TYPE;
         typedef SIMDVecScalarEmu_i<int32_t, 8>  VEC_INT_TYPE;
         typedef SIMDVecScalarEmuMask<bool, 8>   MASK_TYPE;
@@ -834,6 +1010,7 @@ namespace SIMD
 
     template<>
     struct SIMDVecScalarEmu_f_traits<double, 4>{
+        typedef SIMDVecScalarEmu_f<double, 2>   HALF_LEN_VEC_TYPE;
         typedef SIMDVecScalarEmu_u<uint64_t, 4> VEC_UINT_TYPE;
         typedef SIMDVecScalarEmu_i<int64_t, 4>  VEC_INT_TYPE;
         typedef SIMDVecScalarEmuMask<bool, 4>   MASK_TYPE;
@@ -844,6 +1021,7 @@ namespace SIMD
     // 512b vectors
     template<>
     struct SIMDVecScalarEmu_f_traits<float, 16>{
+        typedef SIMDVecScalarEmu_f<float, 8>     HALF_LEN_VEC_TYPE;
         typedef SIMDVecScalarEmu_u<uint32_t, 16> VEC_UINT_TYPE;
         typedef SIMDVecScalarEmu_i<int32_t, 16>  VEC_INT_TYPE;
         typedef SIMDVecScalarEmuMask<bool, 16>   MASK_TYPE;
@@ -853,16 +1031,18 @@ namespace SIMD
     
     template<>
     struct SIMDVecScalarEmu_f_traits<double, 8>{
-        typedef SIMDVecScalarEmu_u<uint64_t, 8>  VEC_UINT_TYPE;
-        typedef SIMDVecScalarEmu_i<int64_t, 8>   VEC_INT_TYPE;
-        typedef SIMDVecScalarEmuMask<bool, 8>    MASK_TYPE;
-        typedef int64_t                          SCALAR_INT_TYPE;
-        typedef uint64_t                         SCALAR_UINT_TYPE;
+        typedef SIMDVecScalarEmu_f<double, 4>   HALF_LEN_VEC_TYPE;
+        typedef SIMDVecScalarEmu_u<uint64_t, 8> VEC_UINT_TYPE;
+        typedef SIMDVecScalarEmu_i<int64_t, 8>  VEC_INT_TYPE;
+        typedef SIMDVecScalarEmuMask<bool, 8>   MASK_TYPE;
+        typedef int64_t                         SCALAR_INT_TYPE;
+        typedef uint64_t                        SCALAR_UINT_TYPE;
     };
     
     // 1024b vectors
     template<>
     struct SIMDVecScalarEmu_f_traits<float, 32>{
+        typedef SIMDVecScalarEmu_f<float, 16>    HALF_LEN_VEC_TYPE;
         typedef SIMDVecScalarEmu_u<uint32_t, 32> VEC_UINT_TYPE;
         typedef SIMDVecScalarEmu_i<int32_t, 32>  VEC_INT_TYPE;
         typedef SIMDVecScalarEmuMask<bool, 32>   MASK_TYPE;
@@ -872,6 +1052,7 @@ namespace SIMD
 
     template<>
     struct SIMDVecScalarEmu_f_traits<double, 16>{
+        typedef SIMDVecScalarEmu_f<double, 8>    HALF_LEN_VEC_TYPE;
         typedef SIMDVecScalarEmu_u<uint64_t, 16> VEC_UINT_TYPE;
         typedef SIMDVecScalarEmu_i<int64_t, 16>  VEC_INT_TYPE;
         typedef SIMDVecScalarEmuMask<bool, 16>   MASK_TYPE;
@@ -879,25 +1060,41 @@ namespace SIMD
         typedef uint64_t                         SCALAR_UINT_TYPE;
     };
     
+    // ***************************************************************************
+    // *
+    // *    Implementation of floating point types SIMDx_32f and SIMDx_64f.
+    // *
+    // *    This implementation uses scalar emulation available through to 
+    // *    SIMDVecFloatInterface.
+    // *
+    // ***************************************************************************
     template<typename SCALAR_FLOAT_TYPE, uint32_t VEC_LEN>
-    class SIMDVecScalarEmu_f final : public SIMDVecFloatInterface<
-        SIMDVecScalarEmu_f<SCALAR_FLOAT_TYPE, VEC_LEN>, 
-        typename SIMDVecScalarEmu_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::VEC_UINT_TYPE,
-        typename SIMDVecScalarEmu_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::VEC_INT_TYPE,
-        SCALAR_FLOAT_TYPE, 
-        VEC_LEN,
-        typename SIMDVecScalarEmu_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::SCALAR_UINT_TYPE,
-        typename SIMDVecScalarEmu_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::MASK_TYPE>
+    class SIMDVecScalarEmu_f : 
+        public SIMDVecFloatInterface<
+            SIMDVecScalarEmu_f<SCALAR_FLOAT_TYPE, VEC_LEN>, 
+            typename SIMDVecScalarEmu_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::VEC_UINT_TYPE,
+            typename SIMDVecScalarEmu_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::VEC_INT_TYPE,
+            SCALAR_FLOAT_TYPE, 
+            VEC_LEN,
+            typename SIMDVecScalarEmu_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::SCALAR_UINT_TYPE,
+            typename SIMDVecScalarEmu_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::MASK_TYPE>,
+        public SIMDVecPackableInterface<
+            SIMDVecScalarEmu_f<SCALAR_FLOAT_TYPE, VEC_LEN>, 
+            typename SIMDVecScalarEmu_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::HALF_LEN_VEC_TYPE>
     {
     public:
-        typedef SIMDVecEmuRegister<SCALAR_FLOAT_TYPE, VEC_LEN>                            VEC_EMU_REG;
+        typedef SIMDVecEmuRegister<SCALAR_FLOAT_TYPE, VEC_LEN> VEC_EMU_REG;
     private:
         VEC_EMU_REG mVec;
 
     public:
-        inline SIMDVecScalarEmu_f() : mVec() {};
+        inline SIMDVecScalarEmu_f() : mVec() {}
 
-        inline explicit SIMDVecScalarEmu_f(SCALAR_FLOAT_TYPE i) : mVec(i) {};
+        inline explicit SIMDVecScalarEmu_f(SCALAR_FLOAT_TYPE f) : mVec(f) {}
+        
+        inline explicit SIMDVecScalarEmu_f(SCALAR_FLOAT_TYPE f0, SCALAR_FLOAT_TYPE f1) {
+            mVec.insert(0, f0); mVec.insert(1, f1);
+        }
 
         inline SIMDVecScalarEmu_f(SCALAR_FLOAT_TYPE i0, SCALAR_FLOAT_TYPE i1, SCALAR_FLOAT_TYPE i2, SCALAR_FLOAT_TYPE i3) {
             mVec.insert(0, i0);  mVec.insert(1, i1);  mVec.insert(2, i2);  mVec.insert(3, i3);
@@ -943,9 +1140,46 @@ namespace SIMD
             mVec.insert(index, value);
             return *this;
         }
-
     };
 
+    // ***************************************************************************
+    // *
+    // *    Partial specialization of floating point SIMD for VEC_LEN == 1.
+    // *    This specialization is necessary to eliminate PACK operations from
+    // *    being used on SIMD1 types.
+    // *
+    // ***************************************************************************
+    template<typename SCALAR_FLOAT_TYPE>
+    class SIMDVecScalarEmu_f<SCALAR_FLOAT_TYPE, 1> : public SIMDVecFloatInterface<
+        SIMDVecScalarEmu_f<SCALAR_FLOAT_TYPE, 1>, 
+        typename SIMDVecScalarEmu_f_traits<SCALAR_FLOAT_TYPE, 1>::VEC_UINT_TYPE,
+        typename SIMDVecScalarEmu_f_traits<SCALAR_FLOAT_TYPE, 1>::VEC_INT_TYPE,
+        SCALAR_FLOAT_TYPE, 
+        1,
+        typename SIMDVecScalarEmu_f_traits<SCALAR_FLOAT_TYPE, 1>::SCALAR_UINT_TYPE,
+        typename SIMDVecScalarEmu_f_traits<SCALAR_FLOAT_TYPE, 1>::MASK_TYPE>
+    {
+    public:
+        typedef SIMDVecEmuRegister<SCALAR_FLOAT_TYPE, 1> VEC_EMU_REG;
+    private:
+        VEC_EMU_REG mVec;
+
+    public:
+        inline SIMDVecScalarEmu_f() : mVec() {};
+
+        inline explicit SIMDVecScalarEmu_f(SCALAR_FLOAT_TYPE i) : mVec(i) {};
+
+        // Override Access operators
+        inline SCALAR_FLOAT_TYPE operator[] (uint32_t index) const {
+            return mVec[index];
+        }
+
+        // insert[] (scalar)
+        inline SIMDVecScalarEmu_f & insert(uint32_t index, SCALAR_FLOAT_TYPE value) {
+            mVec.insert(index, value);
+            return *this;
+        }
+    };
 #if defined USE_EMULATED_TYPES
     // mask vectors
     typedef SIMDVecScalarEmuMask<bool, 1>     SIMDMask1;
@@ -1063,7 +1297,6 @@ namespace SIMD
     // 1024b float vectors
     typedef SIMDVecScalarEmu_f<float,  32>      SIMD32_32f;
     typedef SIMDVecScalarEmu_f<double, 16>      SIMD16_64f;
-
 #endif
 
 } // SIMD

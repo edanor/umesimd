@@ -85,7 +85,6 @@ bool valueInRange(float value, float expectedValue, float errMargin) {
     }
 }
 
-
 bool valueInRange(double value, double expectedValue, double errMargin) {
     if(value > 0.0f)
     {
@@ -99,6 +98,31 @@ bool valueInRange(double value, double expectedValue, double errMargin) {
     }
 }
 
+bool valuesInRange(float *values, float *expectedValues, unsigned int count, float errMargin)
+{
+    bool retval = true;
+    for(unsigned int i = 0; i < count; i++) {
+        if(!valueInRange(values[i], expectedValues[i], errMargin))
+        {
+            retval = false;
+            break;
+        }
+    }
+    return retval;
+}
+
+bool valuesInRange(double *values, double *expectedValues, unsigned int count, double errMargin)
+{
+    bool retval = true;
+    for(unsigned int i = 0; i < count; i++) {
+        if(!valueInRange(values[i], expectedValues[i], errMargin))
+        {
+            retval = false;
+            break;
+        }
+    }
+    return retval;
+}
 
 
 #endif

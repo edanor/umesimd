@@ -77,7 +77,7 @@ namespace std
     }
 }
 
-#define constexpr 
+#define constexpr() 
 
 #endif
 #endif
@@ -103,7 +103,7 @@ namespace SIMD
     //   other backends. This will decrease overall amount of code, and remove potential, repeated errors in plugins.
     namespace EMULATED_FUNCTIONS
     {
-        // assign (VEC, VEC) -> VEC
+        // ASSIGN
         template<typename VEC_TYPE>
         inline VEC_TYPE & assign(VEC_TYPE & dst, VEC_TYPE const & src) {
             UME_EMULATION_WARNING();
@@ -113,7 +113,7 @@ namespace SIMD
             return dst;
         }
 
-        // assign (mask, VEC, VEC) -> VEC
+        // MASSIGN
         template<typename VEC_TYPE, typename MASK_TYPE>
         inline VEC_TYPE & assign(MASK_TYPE const & mask, VEC_TYPE & dst, VEC_TYPE const & src) {
             UME_EMULATION_WARNING();
@@ -123,7 +123,7 @@ namespace SIMD
             return dst;
         }
 
-        // assign (VEC, scalar) -> VEC
+        // ASSIGNS
         template<typename VEC_TYPE, typename SCALAR_TYPE>
         inline VEC_TYPE & assign(VEC_TYPE & dst, SCALAR_TYPE src) {
             UME_EMULATION_WARNING();
@@ -133,7 +133,7 @@ namespace SIMD
             return dst;
         }
 
-        // assign (MASK, VEC, scalar) -> VEC
+        // MASSIGNS
         template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
         inline VEC_TYPE & assign(MASK_TYPE const & mask, VEC_TYPE & dst, SCALAR_TYPE src) {
             UME_EMULATION_WARNING();
@@ -296,7 +296,7 @@ namespace SIMD
             return base;
         }
 
-        // pack (VEC, VEC_HALF_TYPE, VEC_HALF_TYPE)
+        // PACK
         template<typename VEC_TYPE, typename VEC_HALF_TYPE>
         inline VEC_TYPE & pack(VEC_TYPE & dst, VEC_HALF_TYPE const & src1, VEC_HALF_TYPE const & src2) {
             UME_EMULATION_WARNING();
@@ -304,25 +304,30 @@ namespace SIMD
                 dst.insert(i, src1[i]);
                 dst.insert(i + VEC_HALF_TYPE::length(), src2[i]);
             }
-        }
-        /*
-        template<typename VEC_TYPE>
-        inline VEC_TYPE & pack<uint8_t>(VEC_TYPE & dst, uint8_t src1, uint8_t src2) {
-            UME_EMULATION_WARNING();
-            static_assert(VEC_TYPE::length() == 2, "This operator is only allowed on SIMD2 types!");
-            dst.insert(0, src1);
-            dst.insert(1, src2);
             return dst;
         }
 
-        */
-        // TOOD:
-        // pack (VEC, VEC_QUARTER_LEN, VEC_QUARTER_LEN, VEC_QUARTER_LEN, VEC_QUARTER_LEN)
-        // ...
-        // packLow (VEC, VEC_HALF_LEN)
-        // packHigh (VEC, VEC_HALF_LEN)
-            
-        // unpack (VEC, VEC_HALF_LEN, VEC_HALF_LEN) 
+        // PACKLO
+        template<typename VEC_TYPE, typename VEC_HALF_TYPE>
+        inline VEC_TYPE & packLow(VEC_TYPE & dst, VEC_HALF_TYPE const & src1) {
+            UME_EMULATION_WARNING();
+            for(uint32_t i = 0; i < VEC_HALF_TYPE::length(); i++) {
+                dst.insert(i, src1[i]);
+            }
+            return dst;
+        }
+
+        // PACKHI
+        template<typename VEC_TYPE, typename VEC_HALF_TYPE>
+        inline VEC_TYPE & packHigh(VEC_TYPE & dst, VEC_HALF_TYPE const & src1) {
+            UME_EMULATION_WARNING();
+            for(uint32_t i = VEC_HALF_TYPE::length(); i < VEC_TYPE::length(); i++) {
+                dst.insert(i, src1[i - VEC_HALF_TYPE::length()]);
+            }
+            return dst;
+        }
+        
+        // UNPACK
         template<typename VEC_TYPE, typename VEC_HALF_TYPE>
         inline void unpack(VEC_TYPE const & src, VEC_HALF_TYPE & dst1, VEC_HALF_TYPE & dst2) {
             UME_EMULATION_WARNING();
@@ -333,10 +338,27 @@ namespace SIMD
             }
         }
 
-        // unpack (VEC, VEC_QUARTER_LEN, VEC_QUARTER_LEN, VEC_QUARTER_LEN, VEC_QUARTER_LEN)
-        // ...
-        // unpackLow (VEC, VEC_HALF_LEN)
-        // unpackHigh (VEC, VEC_HALF_LEN)
+        // UNPACKLO
+        template<typename VEC_TYPE, typename VEC_HALF_TYPE>
+        inline VEC_HALF_TYPE unpackLow(VEC_TYPE const & src) {
+            UME_EMULATION_WARNING();
+            VEC_HALF_TYPE retval;
+            for(uint32_t i = 0; i < VEC_HALF_TYPE::length(); i++) {
+                retval.insert(i, src[i]);
+            }
+            return retval;
+        }
+
+        // UNPACKHI
+        template<typename VEC_TYPE, typename VEC_HALF_TYPE>
+        inline VEC_HALF_TYPE unpackHigh(VEC_TYPE const & src) {
+            UME_EMULATION_WARNING();
+            VEC_HALF_TYPE retval;
+            for(uint32_t i = 0; i < VEC_HALF_TYPE::length(); i++) {
+                retval.insert(i, src[i + VEC_HALF_TYPE::length()]);
+            }
+            return retval;
+        }
 
         // ADDV
         template<typename VEC_TYPE>
@@ -3600,7 +3622,7 @@ namespace SIMD
     // *     - "SIMDVecFloatInterface" for floating point vectors
     // *
     // **********************************************************************
-    
+
     // DERIVED_VEC_TYPE - this is a derived class to be used as a part of 'Curiously Recurring Design Pattern (CRTP)'
     // SCALAR_TYPE - basic type of scalar elements packed in DERIVED_VEC_TYPE
     // VEC_LEN - number of SIMD elements in vector
@@ -3639,9 +3661,9 @@ namespace SIMD
     public:
     
         // TODO: can be marked as constexpr?
-        constexpr static uint32_t length() { return VEC_LEN; };
+        static uint32_t length() { return VEC_LEN; };
 
-        constexpr static uint32_t alignment() { return VEC_LEN*sizeof(SCALAR_TYPE); };
+        static uint32_t alignment() { return VEC_LEN*sizeof(SCALAR_TYPE); };
         
         inline SCALAR_TYPE extract(uint32_t index)
         {
@@ -4573,7 +4595,6 @@ namespace SIMD
         inline uint32_t imin(MASK_TYPE const & mask) {
             return EMULATED_FUNCTIONS::MATH::indexMin<DERIVED_VEC_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
-
     };
 
     // ***************************************************************************
@@ -5140,6 +5161,83 @@ namespace SIMD
         // MCTAN
         inline DERIVED_VEC_TYPE ctan (MASK_TYPE const & mask) {
             return EMULATED_FUNCTIONS::MATH::ctan<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this));
+        }
+    };
+    
+
+    // ***************************************************************************
+    // *
+    // *    Definition of Packable Interface. Pack operations can only be 
+    // *    performed on SIMD vector with lengths higher than 1 and being
+    // *    powers of 2. Vectors of such lengths have to derive from one of type
+    // *    interfaces: signed, unsigned or float and from packable interface.
+    // *    SIMD vectors of length 1 should only use type interface.
+    // *
+    // ***************************************************************************
+    template<class DERIVED_VEC_TYPE,
+             class DERIVED_HALF_VEC_TYPE>
+    class SIMDVecPackableInterface
+    {        
+        // Other vector types necessary for this class
+        typedef SIMDVecPackableInterface< 
+            DERIVED_VEC_TYPE, 
+            DERIVED_HALF_VEC_TYPE> VEC_TYPE;
+
+    private:
+        // Forbid assignment-initialization of vector using scalar values
+        // TODO: is this necessary?
+        inline VEC_TYPE & operator= (const int8_t & x) { }
+        inline VEC_TYPE & operator= (const int16_t & x) { }
+        inline VEC_TYPE & operator= (const int32_t & x) { }
+        inline VEC_TYPE & operator= (const int64_t & x) { }
+        inline VEC_TYPE & operator= (const uint8_t & x) { }
+        inline VEC_TYPE & operator= (const uint16_t & x) { }
+        inline VEC_TYPE & operator= (const uint32_t & x) { }
+        inline VEC_TYPE & operator= (const uint64_t & x) { }
+        inline VEC_TYPE & operator= (const float & x) { }
+        inline VEC_TYPE & operator= (const double & x) { }
+ 
+    public:
+        DERIVED_VEC_TYPE pack(DERIVED_HALF_VEC_TYPE const & a, DERIVED_HALF_VEC_TYPE const & b) {
+            return EMULATED_FUNCTIONS::pack<DERIVED_VEC_TYPE, DERIVED_HALF_VEC_TYPE> (
+                    static_cast<DERIVED_VEC_TYPE &>(*this), 
+                    static_cast<DERIVED_HALF_VEC_TYPE const &>(a),
+                    static_cast<DERIVED_HALF_VEC_TYPE const &>(b)
+                );
+        }
+        
+        DERIVED_VEC_TYPE & packlo(DERIVED_HALF_VEC_TYPE const & a) {
+            return EMULATED_FUNCTIONS::packLow<DERIVED_VEC_TYPE, DERIVED_HALF_VEC_TYPE> (
+                    static_cast<DERIVED_VEC_TYPE &>(*this), 
+                    static_cast<DERIVED_HALF_VEC_TYPE const &>(a)
+                );
+        }
+        
+        DERIVED_VEC_TYPE & packhi(DERIVED_HALF_VEC_TYPE const & a) {
+            return EMULATED_FUNCTIONS::packHigh<DERIVED_VEC_TYPE, DERIVED_HALF_VEC_TYPE> (
+                    static_cast<DERIVED_VEC_TYPE &>(*this), 
+                    static_cast<DERIVED_HALF_VEC_TYPE const &>(a)
+                );
+        }
+        
+        void unpack(DERIVED_HALF_VEC_TYPE & a, DERIVED_HALF_VEC_TYPE & b) {
+            EMULATED_FUNCTIONS::unpack<DERIVED_VEC_TYPE, DERIVED_HALF_VEC_TYPE> (
+                    static_cast<DERIVED_VEC_TYPE const &>(*this), 
+                    static_cast<DERIVED_HALF_VEC_TYPE &>(a),
+                    static_cast<DERIVED_HALF_VEC_TYPE &>(b)
+                );
+        }
+
+        DERIVED_HALF_VEC_TYPE unpackhi() {
+            return EMULATED_FUNCTIONS::unpackHigh<DERIVED_VEC_TYPE, DERIVED_HALF_VEC_TYPE> (
+                        static_cast<DERIVED_VEC_TYPE const &> (*this)
+                    );
+        }
+
+        DERIVED_HALF_VEC_TYPE unpacklo() {
+            return EMULATED_FUNCTIONS::unpackLow<DERIVED_VEC_TYPE, DERIVED_HALF_VEC_TYPE> (
+                        static_cast<DERIVED_VEC_TYPE const &> (*this)
+                    );
         }
     };
 } // namespace UME::SIMD

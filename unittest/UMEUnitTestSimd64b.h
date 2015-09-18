@@ -184,6 +184,16 @@ int test_UME_SIMD2_32f(bool supressMessages) {
         CHECK_CONDITION(vec0.length() == 2, "ZERO-CONSTR");
     }
 
+    {
+        SIMD1_32f vec0(3.14f);
+        SIMD1_32f vec1(2.71f);
+        SIMD2_32f vec2;
+
+        vec2.pack(vec0, vec1);
+        CHECK_CONDITION( vec2[0] > 3.13f && vec2[0] < 3.15f &&
+                         vec2[1] > 2.70f && vec2[1] < 2.72f, "PACK");
+    }
+
     return g_failCount;
 }
 

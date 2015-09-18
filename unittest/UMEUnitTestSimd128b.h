@@ -2137,6 +2137,32 @@ int test_UME_SIMD4_32f(bool supressMessages)
                          vec0[2] > 16.51f   && vec0[2] < 16.52f  &&
                          vec0[3] > -0.046f  && vec0[3] < -0.044f, "MRCPSA");
     }
+
+    {
+        SIMD2_32f vec0(12.34f, 321.1231f);
+        SIMD2_32f vec1(0.321f, -0.045f);
+        float expected[4] = {12.34f, 321.1231f, 0.321f, -0.045f};
+        float values[4];
+        SIMD4_32f vec2(-1.0f);
+        vec2.pack(vec0, vec1);
+        vec2.store(values);
+        CHECK_CONDITION(valuesInRange(values, expected, 4, 0.01f), "PACK");
+    }
+    {
+        SIMD4_32f vec0(12.34f, 321.1231f, 0.321f, -0.045f);
+        SIMD2_32f vec1, vec2;
+        float expected1[2] = {12.34f, 321.1231f};
+        float expected2[2] = {0.321f, -0.045f};
+        float values1[2];
+        float values2[2];
+
+        vec0.unpack(vec1, vec2);
+        
+        vec1.store(values1);
+        vec2.store(values2);
+        CHECK_CONDITION(valuesInRange(values1, expected1, 2, 0.01f) &&
+                        valuesInRange(values2, expected2, 2, 0.01f), "UNPACK");
+    }
     {
         SIMD4_32f vec0(123498.123f, -10198.12341f, -124095.123f, -1420975.124f);
         SIMD4_32f vec1(87213.12496f, 9851.124987f, -18775.1667777f, -817641.124976f);

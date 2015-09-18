@@ -145,6 +145,15 @@ int test_UME_SIMD2_16i(bool supressMessages) {
         CHECK_CONDITION(vec2[1] == -5118, "ADDV");
     }
 
+    {
+        SIMD1_16i vec0(3);
+        SIMD1_16i vec1(-123);
+        SIMD2_16i vec2;
+        vec2.pack(vec0, vec1);
+
+        CHECK_CONDITION((vec2[0] == 3) && (vec2[1] == -123), "PACK");
+    }
+    
     return g_failCount;
 }
 
@@ -178,8 +187,8 @@ int test_UME_SIMD1_32f(bool supressMessages) {
     INIT_TEST(header, supressMessages);
 
     {
-        SIMD1_32f vec0;
-        CHECK_CONDITION(vec0.length() == 1, "ZERO-CONSTR");
+//        SIMD1_32f vec0;
+//        CHECK_CONDITION(vec0.length() == 1, "ZERO-CONSTR");
     }
 
     return g_failCount;

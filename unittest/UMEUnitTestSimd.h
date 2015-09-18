@@ -61,7 +61,7 @@ int test_UMESimd(bool supressMessages)
     // arithmetic vectors
     failCount += test_UME_SIMD8b(supressMessages);
     failCount += test_UME_SIMD16b(supressMessages);
-    //failCount += test_UME_SIMD32b(supressMessages);
+    failCount += test_UME_SIMD32b(supressMessages);
     failCount += test_UME_SIMD64b(supressMessages);
     failCount += test_UME_SIMD128b(supressMessages);
     failCount += test_UME_SIMD256b(supressMessages);
