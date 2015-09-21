@@ -269,6 +269,15 @@ int test_UME_SIMD8_16u(bool supressMessages)
         CHECK_CONDITION(vec3[0] == 24 && vec3[4] == 7, "MBLENDV");
     }
     {
+        SIMD8_16u vec0(10, 20, 30, 40, 50, 60, 70, 80);
+        uint32_t swizzleMask[8] = {1, 6, 7, 4, 7, 6, 7, 0};
+        SIMDSwizzle8 sMask(swizzleMask);
+        SIMD8_16u vec2 = vec0.swizzle(sMask);
+        SIMD8_16u vec3(20, 70, 80, 50, 80, 70, 80, 10);
+        
+        CHECK_CONDITION(vec3.cmpex(vec2) == true, "SWIZZLE");
+    }
+    {
         SIMD8_16u vec0(3);
         uint16_t res = vec0.hadd();
         CHECK_CONDITION(res == 24, "HADD");

@@ -9,6 +9,14 @@ OK   UME::SIMD::SIMDMask16 test Id: 1 - ZERO-CONSTR()
 OK   UME::SIMD::SIMDMask32 test Id: 1 - ZERO-CONSTR()
 OK   UME::SIMD::SIMDMask64 test Id: 1 - ZERO-CONSTR()
 OK   UME::SIMD::SIMDMask128 test Id: 1 - ZERO-CONSTR()
+OK   UME::SIMD::SIMDSwizzle1 test Id: 1 - LENGTH
+OK   UME::SIMD::SIMDSwizzle2 test Id: 1 - LENGTH
+OK   UME::SIMD::SIMDSwizzle4 test Id: 1 - LENGTH
+OK   UME::SIMD::SIMDSwizzle8 test Id: 1 - LENGTH
+OK   UME::SIMD::SIMDSwizzle16 test Id: 1 - LENGTH
+OK   UME::SIMD::SIMDSwizzle32 test Id: 1 - LENGTH
+OK   UME::SIMD::SIMDSwizzle64 test Id: 1 - LENGTH
+OK   UME::SIMD::SIMDSwizzle128 test Id: 1 - LENGTH
 OK   UME::SIMD::SIMD1_8u test Id: 1 - ZERO-CONSTR
 OK   UME::SIMD::SIMD1_8i test Id: 1 - ZERO-CONSTR
 OK   UME::SIMD::SIMD1_8i test Id: 2 - ADDV
@@ -58,9 +66,10 @@ OK   UME::SIMD::SIMD8_16u test Id: 13 - ORVA
 OK   UME::SIMD::SIMD8_16u test Id: 14 - XORVA
 OK   UME::SIMD::SIMD8_16u test Id: 15 - NOT
 OK   UME::SIMD::SIMD8_16u test Id: 16 - MBLENDV
-OK   UME::SIMD::SIMD8_16u test Id: 17 - HADD
-OK   UME::SIMD::SIMD8_16u test Id: 18 - MAXV
-OK   UME::SIMD::SIMD8_16u test Id: 19 - MINV
+OK   UME::SIMD::SIMD8_16u test Id: 17 - SWIZZLE
+OK   UME::SIMD::SIMD8_16u test Id: 18 - HADD
+OK   UME::SIMD::SIMD8_16u test Id: 19 - MAXV
+OK   UME::SIMD::SIMD8_16u test Id: 20 - MINV
 OK   UME::SIMD::SIMD8_16i test Id: 1 - ZERO-CONSTR()
 OK   UME::SIMD::SIMD8_16i test Id: 2 - operator=
 OK   UME::SIMD::SIMD8_16i test Id: 3 - LOAD
@@ -495,4 +504,4 @@ OK   UME::SIMD::SIMD16_64u test Id: 1 - ZERO-CONSTR
 OK   UME::SIMD::SIMD16_64i test Id: 1 - ZERO-CONSTR
 OK   UME::SIMD::SIMD16_64f test Id: 1 - ZERO-CONSTR
 
-Total tests failed: 0/496
+Total tests failed: 0/505

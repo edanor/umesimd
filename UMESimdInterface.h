@@ -76,21 +76,8 @@ namespace std
         return (d != 0.0) && (!issubnormal) && (!std::isnan(d));
     }
 }
-
-#define constexpr() 
-
 #endif
 #endif
-
-/*
-#if defined (_MSC_VER)
-    #pragma loop(ivdep)
-#elif defined (__GNUC__)
-    #pragma GCC ivdep
-#elif defined (__ICC) || defined(__INTEL_COMPILER)
-    #pragma ivdep
-#endif
-    */
 
 namespace UME
 {
@@ -1975,6 +1962,48 @@ namespace SIMD
             return retval;
         }
 
+        // CMPEX 
+        template<typename VEC_TYPE>
+        inline bool isExact(VEC_TYPE const & a, VEC_TYPE const & b) {
+            UME_EMULATION_WARNING();
+            bool retval = true;
+            for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+                if(a[i] != b[i]) {
+                    retval = false;
+                    break;
+                }
+            }
+            return retval;
+        }
+        
+        // CMPEQRV
+        template<typename MASK_TYPE, typename VEC_TYPE>
+        inline MASK_TYPE isEqualInRange(VEC_TYPE const & a, VEC_TYPE const & b, VEC_TYPE const & margin) {
+            UME_EMULATION_WARNING();
+            MASK_TYPE retval;
+            for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+                if((a[i] < b[i] + margin[i]) && (a[i] > b[i] - margin[i]))
+                    retval.insert(i, true);       
+                else 
+                    retval.insert(i, false);
+            }
+            return retval;
+        }
+
+        // CMPEQRS
+        template<typename MASK_TYPE, typename VEC_TYPE, typename SCALAR_TYPE>
+        inline MASK_TYPE isEqualInRange(VEC_TYPE const & a, VEC_TYPE const & b, SCALAR_TYPE margin) {
+            UME_EMULATION_WARNING();
+            MASK_TYPE retval;
+            for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+                if((a[i] < b[i] + margin) && (a[i] > b[i] - margin))
+                    retval.insert(i, true);
+                else
+                    retval.insert(i, false);
+            }
+            return retval;
+        }
+
         // ANDV
         template<typename VEC_TYPE>
         inline VEC_TYPE binaryAnd (VEC_TYPE const & a, VEC_TYPE const & b) {
@@ -2333,6 +2362,28 @@ namespace SIMD
             return a;
         }
 
+        // SWIZZLE
+        template<typename VEC_TYPE, typename SWIZZLE_MASK_TYPE>
+        inline VEC_TYPE swizzle(SWIZZLE_MASK_TYPE const & sMask, VEC_TYPE const & a) {
+            UME_EMULATION_WARNING();
+            VEC_TYPE retval;
+            for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+                retval.insert(i, a[sMask[i]]);
+            }
+            return retval;
+        }
+
+        // SWIZZLEA
+        template<typename VEC_TYPE, typename SWIZZLE_MASK_TYPE>
+        inline VEC_TYPE & swizzleAssign(SWIZZLE_MASK_TYPE const & sMask, VEC_TYPE & a) {
+            UME_EMULATION_WARNING();
+            VEC_TYPE temp(a);
+            for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+                a.insert(i, temp[sMask[i]]);
+            }
+            return a;
+        }
+
         // reduceAdd(VEC) -> scalar
         template<typename SCALAR_TYPE, typename VEC_TYPE>
         inline SCALAR_TYPE reduceAdd (VEC_TYPE const & a) {
@@ -2552,7 +2603,7 @@ namespace SIMD
             }
             return retval;
         }
-            
+
         // ******************************************************************
         // * MATH FUNCTIONS                                                 
         // *****************************************************************
@@ -3407,6 +3458,70 @@ namespace SIMD
         } // UME::SIMD::EMULATED_FUNCTIONS::MATH
     } // namespace UME::SIMD::EMULATED_FUNCTIONS
     
+    // **********************************************************************
+    // *
+    // *  Declaration of SwizzleMaskInterface class
+    // *
+    // **********************************************************************
+ 
+    //// Checks if N is power of 2
+    //template<unsigned int N>
+    //struct isPow2
+    //{
+    //    enum {
+    //        value = N && !(N & (N -1))
+    //    };
+    //};
+
+    //// Calculates number of bits required to represent element of swizzle mask.
+    //template<unsigned int N, unsigned int P=0>
+    //struct SwizzleMaskBitsPerElement
+    //{
+    //    //static const unsigned int value = LogBase2<N/2, P+1>.value;
+    //    enum {
+    //        value = SwizzleMaskBitsPerElement<N/2 + !(isPow2<N>::value), P+1>::value
+    //    };
+    //};
+
+    //// Partial specialization for base case
+    //template<unsigned P>
+    //struct SwizzleMaskBitsPerElement<0, P>
+    //{
+    //    enum {
+    //        value = P
+    //    };
+    //};
+
+    //template<unsigned P>
+    //struct SwizzleMaskBitsPerElement<1, P>
+    //{
+    //    enum {
+    //        value = P
+    //    };
+    //};
+    
+    template<class DERIVED_MASK_TYPE, uint32_t SMASK_LEN>
+    class SIMDSwizzleMaskBaseInterface
+    {
+        // Declarations only. These operators should be overriden in derived types.
+        // EXTRACT
+        inline bool extract(uint32_t index);
+        // EXTRACT
+        inline bool operator[] (uint32_t index);
+        // INSERT
+        inline void insert(uint32_t index, uint32_t value);
+
+    protected:
+        ~SIMDSwizzleMaskBaseInterface() {};
+
+    public:
+        // LENGTH
+        static uint32_t length () { return SMASK_LEN; };
+
+        // ALIGNMENT
+        static int alignment () { return SMASK_LEN*sizeof(uint32_t); };
+    };
+
     // This class is a wrapper of scalar types that forbids implicit type conversions.
     template<typename SCALAR_TYPE> 
     class ScalarTypeWrapper
@@ -3511,7 +3626,7 @@ namespace SIMD
             typename MASK_BASE_TYPE, 
             uint32_t MASK_LEN>
     class SIMDMaskBaseInterface {
-        // Declarations only. These operators should be 
+        // Declarations only. These operators should be overriden in derived types.
         // EXTRACT
         inline bool extract(uint32_t index);
         // EXTRACT
@@ -3630,7 +3745,8 @@ namespace SIMD
     template<class DERIVED_VEC_TYPE, 
              typename SCALAR_TYPE, 
              uint32_t VEC_LEN,
-             typename MASK_TYPE>
+             typename MASK_TYPE,
+             typename SWIZZLE_MASK_TYPE>
     class SIMDVecBaseInterface
     {
         // Other vector types necessary for this class
@@ -3638,7 +3754,8 @@ namespace SIMD
             DERIVED_VEC_TYPE, 
             SCALAR_TYPE, 
             VEC_LEN, 
-            MASK_TYPE> VEC_TYPE;
+            MASK_TYPE,
+            SWIZZLE_MASK_TYPE> VEC_TYPE;
 
     private:
         // Forbid assignment-initialization of vector using scalar values
@@ -3736,21 +3853,15 @@ namespace SIMD
            return EMULATED_FUNCTIONS::store<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this), p);
         }
         
-        // TODO:
-        // pack(VEC, VEC_HALF_LEN, VEC_HALF_LEN)
-        // pack(VEC, VEC_QUARTER_LEN, VEC_QUARTER_LEN, VEC_QUARTER_LEN, VEC_QUARTER_LEN)
-        // ...
-        // packLow(VEC, VEC_HALF_LEN)
-        // packHigh(VEC, VEC_HALF_LEN)
+        // SWIZZLE
+        DERIVED_VEC_TYPE swizzle (SWIZZLE_MASK_TYPE const & sMask) {
+            return EMULATED_FUNCTIONS::swizzle<DERIVED_VEC_TYPE, SWIZZLE_MASK_TYPE> (sMask, static_cast<DERIVED_VEC_TYPE const &>(*this));
+        }
 
-        // unpack(VEC, VEC_HALF_LEN, VEC_HALF_LEN)
-        // unpack(VEC, VEC_QUARTER_LEN, VEC_QUARTER_LEN)
-        // ...
-        // unpackLow(VEC, VEC_HALF_LEN)
-        // unpackHigh(VEC, VEC_HALF_LEN)
-
-        // swizzle (VEC, swizzleMask)
-        // swizzle(MASK, VEC, swizzleMask) 
+        // SWIZZLEA
+        DERIVED_VEC_TYPE swizzlea (SWIZZLE_MASK_TYPE const & sMask) {
+            return EMULATED_FUNCTIONS::swizzleAssign<DERIVED_VEC_TYPE, SWIZZLE_MASK_TYPE> (sMask, static_cast<DERIVED_VEC_TYPE &>(*this));
+        }
 
         // ADDV
         inline DERIVED_VEC_TYPE add ( DERIVED_VEC_TYPE const & b) {
@@ -4169,6 +4280,11 @@ namespace SIMD
         // CMPLES
         inline MASK_TYPE cmple (SCALAR_TYPE b) {
             return EMULATED_FUNCTIONS::isLesserEqual<MASK_TYPE, DERIVED_VEC_TYPE, SCALAR_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this), b);
+        }
+
+        // CMPEX
+        inline bool cmpex (DERIVED_VEC_TYPE const & b) {
+            return EMULATED_FUNCTIONS::isExact<DERIVED_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
         // ANDV
@@ -4607,12 +4723,14 @@ namespace SIMD
              typename SCALAR_TYPE,
              typename SCALAR_UINT_TYPE, 
              uint32_t VEC_LEN,
-             typename MASK_TYPE> 
+             typename MASK_TYPE,
+             typename SWIZZLE_MASK_TYPE> 
     class SIMDVecUnsignedInterface : public SIMDVecBaseInterface< 
         DERIVED_VEC_TYPE,
         SCALAR_TYPE, 
         VEC_LEN,
-        MASK_TYPE>
+        MASK_TYPE,
+        SWIZZLE_MASK_TYPE>
     {
         // Other vector types necessary for this class
         typedef SIMDVecUnsignedInterface< DERIVED_VEC_TYPE, 
@@ -4620,7 +4738,8 @@ namespace SIMD
             SCALAR_TYPE,
             SCALAR_UINT_TYPE, 
             VEC_LEN, 
-            MASK_TYPE> VEC_TYPE;
+            MASK_TYPE,
+            SWIZZLE_MASK_TYPE> VEC_TYPE;
 
     private:
 
@@ -4858,14 +4977,16 @@ namespace SIMD
              typename SCALAR_TYPE, 
              uint32_t VEC_LEN,
              typename SCALAR_UINT_TYPE,
-             typename MASK_TYPE>
+             typename MASK_TYPE,
+             typename SWIZZLE_MASK_TYPE>
     class SIMDVecSignedInterface : public SIMDVecUnsignedInterface<
         DERIVED_VEC_TYPE, 
         DERIVED_VEC_UINT_TYPE, 
         SCALAR_TYPE, 
         SCALAR_UINT_TYPE, 
         VEC_LEN, 
-        MASK_TYPE>
+        MASK_TYPE,
+        SWIZZLE_MASK_TYPE>
     {
         // Other vector types necessary for this class
         typedef SIMDVecSignedInterface< DERIVED_VEC_TYPE,
@@ -4873,7 +4994,8 @@ namespace SIMD
                              SCALAR_TYPE,
                              VEC_LEN, 
                              SCALAR_UINT_TYPE,
-                             MASK_TYPE> VEC_TYPE;
+                             MASK_TYPE,
+                             SWIZZLE_MASK_TYPE> VEC_TYPE;
 
     private:
         // Forbid assignment-initialization of vector using scalar values
@@ -4939,14 +5061,16 @@ namespace SIMD
              typename SCALAR_FLOAT_TYPE, 
              uint32_t VEC_LEN,
              typename SCALAR_UINT_TYPE,
-             typename MASK_TYPE>     // TODO: REMOVE THIS?
+             typename MASK_TYPE,
+             typename SWIZZLE_MASK_TYPE>
     class SIMDVecFloatInterface : public SIMDVecSignedInterface< 
         DERIVED_VEC_TYPE, 
         DERIVED_VEC_UINT_TYPE, 
         SCALAR_FLOAT_TYPE,
         VEC_LEN,
         SCALAR_UINT_TYPE,
-        MASK_TYPE>
+        MASK_TYPE,
+        SWIZZLE_MASK_TYPE>
     {
         // Other vector types necessary for this class
         typedef SIMDVecFloatInterface< DERIVED_VEC_TYPE,
@@ -4955,7 +5079,8 @@ namespace SIMD
                     SCALAR_FLOAT_TYPE,
                     VEC_LEN, 
                     SCALAR_UINT_TYPE,
-                    MASK_TYPE> VEC_TYPE;
+                    MASK_TYPE,
+                    SWIZZLE_MASK_TYPE> VEC_TYPE;
     private:
 
         // Forbid assignment-initialization of vector using scalar values
@@ -4978,6 +5103,9 @@ namespace SIMD
         SCALAR_FLOAT_TYPE operator[] (SCALAR_UINT_TYPE index) const; // Declaration only! This operator has to be implemented in derived class.
         inline DERIVED_VEC_TYPE & insert(uint32_t index, SCALAR_FLOAT_TYPE value); // Declaration only! This operator has to be implemented in derived class.
     public:
+
+        // CMPEQRV
+        //inline DERIVED_VEC_TYPE 
 
         // ********************************************************************
         // * MATH FUNCTIONS
@@ -5164,7 +5292,6 @@ namespace SIMD
         }
     };
     
-
     // ***************************************************************************
     // *
     // *    Definition of Packable Interface. Pack operations can only be 
@@ -5198,7 +5325,7 @@ namespace SIMD
         inline VEC_TYPE & operator= (const double & x) { }
  
     public:
-        DERIVED_VEC_TYPE pack(DERIVED_HALF_VEC_TYPE const & a, DERIVED_HALF_VEC_TYPE const & b) {
+        DERIVED_VEC_TYPE & pack(DERIVED_HALF_VEC_TYPE const & a, DERIVED_HALF_VEC_TYPE const & b) {
             return EMULATED_FUNCTIONS::pack<DERIVED_VEC_TYPE, DERIVED_HALF_VEC_TYPE> (
                     static_cast<DERIVED_VEC_TYPE &>(*this), 
                     static_cast<DERIVED_HALF_VEC_TYPE const &>(a),
@@ -5228,14 +5355,14 @@ namespace SIMD
                 );
         }
 
-        DERIVED_HALF_VEC_TYPE unpackhi() {
-            return EMULATED_FUNCTIONS::unpackHigh<DERIVED_VEC_TYPE, DERIVED_HALF_VEC_TYPE> (
+        DERIVED_HALF_VEC_TYPE unpacklo() {
+            return EMULATED_FUNCTIONS::unpackLow<DERIVED_VEC_TYPE, DERIVED_HALF_VEC_TYPE> (
                         static_cast<DERIVED_VEC_TYPE const &> (*this)
                     );
         }
 
-        DERIVED_HALF_VEC_TYPE unpacklo() {
-            return EMULATED_FUNCTIONS::unpackLow<DERIVED_VEC_TYPE, DERIVED_HALF_VEC_TYPE> (
+        DERIVED_HALF_VEC_TYPE unpackhi() {
+            return EMULATED_FUNCTIONS::unpackHigh<DERIVED_VEC_TYPE, DERIVED_HALF_VEC_TYPE> (
                         static_cast<DERIVED_VEC_TYPE const &> (*this)
                     );
         }

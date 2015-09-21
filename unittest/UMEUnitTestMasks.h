@@ -41,6 +41,8 @@ int test_UME_SIMDMask32(bool supressMessages);
 int test_UME_SIMDMask64(bool supressMessages);
 int test_UME_SIMDMask128(bool supressMessages);
 
+using namespace UME::SIMD;
+
 int test_UME_SIMDMasks(bool supressMessages) {
     char header[] = "UME::SIMD::SIMDMasks test";
     INIT_TEST(header, supressMessages);
@@ -61,7 +63,7 @@ int test_UME_SIMDMask2(bool supressMessages) {
     INIT_TEST(header, supressMessages);
     
     {
-        UME::SIMD::SIMDMask2 mask;
+        SIMDMask2 mask;
         CHECK_CONDITION(true, "ZERO-CONSTR()");
     }
 
@@ -73,7 +75,7 @@ int test_UME_SIMDMask4(bool supressMessages) {
     INIT_TEST(header, supressMessages);
     
     {
-        UME::SIMD::SIMDMask4 mask;
+        SIMDMask4 mask;
         CHECK_CONDITION(true, "ZERO-CONSTR()");
     }
 
@@ -85,29 +87,29 @@ int test_UME_SIMDMask8(bool supressMessages) {
     INIT_TEST(header, supressMessages);
     
     {
-        UME::SIMD::SIMDMask16 mask;
+        SIMDMask16 mask;
         CHECK_CONDITION(true, "ZERO-CONSTR()");
     }
     {
-        UME::SIMD::SIMDMask8 mask0(true);
+        SIMDMask8 mask0(true);
         bool res = true;
         for(uint32_t i = 0; i < mask0.length(); i++) res &= mask0[i];
         CHECK_CONDITION(res == true, "SET-CONSTR");
     }
     {
-        UME::SIMD::SIMDMask8 mask(true, false, false, true, true, true, true, false);
+        SIMDMask8 mask(true, false, false, true, true, true, true, false);
         CHECK_CONDITION(mask[1] == false && mask[6] == true && mask[7] == false, "FULL-CONSTR");
     }
     {
-        UME::SIMD::SIMDMask8 mask0(true);
-        UME::SIMD::SIMDMask8 mask1(true, false, false, true, true, true, true, false);
+        SIMDMask8 mask0(true);
+        SIMDMask8 mask1(true, false, false, true, true, true, true, false);
         mask0.assign(mask1);
         CHECK_CONDITION(mask0[1] == false && mask0[6] == true && mask0[7] == false, "ASSIGN");
     }
     {
-        UME::SIMD::SIMDMask8 mask0(true, false, false, true, true, false, false, true);
-        UME::SIMD::SIMDMask8 mask1(true, false, false, false, false, true, false, true);
-        UME::SIMD::SIMDMask8 mask2;
+        SIMDMask8 mask0(true, false, false, true, true, false, false, true);
+        SIMDMask8 mask1(true, false, false, false, false, true, false, true);
+        SIMDMask8 mask2;
         mask2 = mask0.andm(mask1);
         CHECK_CONDITION(mask2[0] == true && mask2[3] == false && mask2[5] == false && mask2[7] == true, "AND");
     }
@@ -120,7 +122,7 @@ int test_UME_SIMDMask16(bool supressMessages) {
     INIT_TEST(header, supressMessages);
 
     {
-        UME::SIMD::SIMDMask16 mask;
+        SIMDMask16 mask;
         CHECK_CONDITION(true, "ZERO-CONSTR()");
     }
     return g_failCount;
@@ -131,7 +133,7 @@ int test_UME_SIMDMask32(bool supressMessages) {
     INIT_TEST(header, supressMessages);
     
     {
-        UME::SIMD::SIMDMask32 mask;
+        SIMDMask32 mask;
         CHECK_CONDITION(true, "ZERO-CONSTR()");
     }
     return g_failCount;
@@ -142,7 +144,7 @@ int test_UME_SIMDMask64(bool supressMessages) {
     INIT_TEST(header, supressMessages);
     
     {
-        UME::SIMD::SIMDMask64 mask;
+        SIMDMask64 mask;
         CHECK_CONDITION(true, "ZERO-CONSTR()");
     }
     return g_failCount;
@@ -153,7 +155,7 @@ int test_UME_SIMDMask128(bool supressMessages) {
     INIT_TEST(header, supressMessages);
     
     {
-        UME::SIMD::SIMDMask128 mask;
+        SIMDMask128 mask;
         CHECK_CONDITION(true, "ZERO-CONSTR()");
     }
 

@@ -231,6 +231,70 @@ namespace SIMD
     typedef SIMDVecKNCMask<bool, 64>    SIMDMask64;
     typedef SIMDVecKNCMask<bool, 128>   SIMDMask128;    
 
+    
+    // ********************************************************************************************
+    // SWIZZLE MASKS
+    // ********************************************************************************************
+    template<uint32_t SMASK_LEN>
+    class SIMDVecKNCSwizzleMask : 
+        public SIMDSwizzleMaskBaseInterface< 
+            SIMDVecKNCSwizzleMask<SMASK_LEN>,
+            SMASK_LEN>
+    {
+    private:
+        uint32_t mMaskElements[SMASK_LEN];
+    public:
+        SIMDVecKNCSwizzleMask() { };
+
+        explicit SIMDVecKNCSwizzleMask(uint32_t m0) {
+            UME_EMULATION_WARNING();
+            for(int i = 0; i < SMASK_LEN; i++) {
+                mMaskElements[i] = m0;
+            }
+        }
+
+        explicit SIMDVecKNCSwizzleMask(uint32_t *m) {
+            UME_EMULATION_WARNING();
+            for(int i = 0; i < SMASK_LEN; i++) {
+                mMaskElements[i] = m[i];
+            }
+        }
+
+        
+        inline uint32_t extract(uint32_t index) const {
+            UME_EMULATION_WARNING();
+            return mMaskElements[index];
+        }
+
+        // A non-modifying element-wise access operator
+        inline uint32_t operator[] (uint32_t index) const { 
+            UME_EMULATION_WARNING();
+            return mMaskElements[index]; 
+        }
+
+        // Element-wise modification operator
+        inline void insert(uint32_t index, uint32_t value) {
+            UME_EMULATION_WARNING();
+            mMaskElements[index] = value;
+        }
+
+        SIMDVecKNCSwizzleMask(SIMDVecKNCSwizzleMask const & mask) {
+            UME_EMULATION_WARNING();
+            for(int i = 0; i < SMASK_LEN; i++)
+            {
+                mMaskElements[i] = mask.mMaskElements[i];
+            }
+        }
+    };
+
+    typedef SIMDVecKNCSwizzleMask<1>   SIMDSwizzle1;
+    typedef SIMDVecKNCSwizzleMask<2>   SIMDSwizzle2;
+    typedef SIMDVecKNCSwizzleMask<4>   SIMDSwizzle4;
+    typedef SIMDVecKNCSwizzleMask<8>   SIMDSwizzle8;
+    typedef SIMDVecKNCSwizzleMask<16>  SIMDSwizzle16;
+    typedef SIMDVecKNCSwizzleMask<32>  SIMDSwizzle32;
+    typedef SIMDVecKNCSwizzleMask<64>  SIMDSwizzle64;
+    typedef SIMDVecKNCSwizzleMask<128> SIMDSwizzle128;
 
     // ********************************************************************************************
     // UNSIGNED INTEGER VECTORS
@@ -246,6 +310,7 @@ namespace SIMD
     struct SIMDVecKNC_u_traits<uint8_t, 1>{
         typedef int8_t                   SCALAR_INT_TYPE;
         typedef SIMDMask1                MASK_TYPE;
+        typedef SIMDSwizzle1             SWIZZLE_MASK_TYPE;
     };
 
     // 16b vectors
@@ -254,12 +319,14 @@ namespace SIMD
         typedef SIMDVecKNC_u<uint8_t, 1> HALF_LEN_VEC_TYPE;
         typedef int8_t                   SCALAR_INT_TYPE;
         typedef SIMDMask2                MASK_TYPE;
+        typedef SIMDSwizzle2             SWIZZLE_MASK_TYPE;
     };
 
     template<>
     struct SIMDVecKNC_u_traits<uint16_t, 1>{
-        typedef int16_t   SCALAR_INT_TYPE;
-        typedef SIMDMask1 MASK_TYPE;
+        typedef int16_t      SCALAR_INT_TYPE;
+        typedef SIMDMask1    MASK_TYPE;
+        typedef SIMDSwizzle1 SWIZZLE_MASK_TYPE;
     };
 
     // 32b vectors
@@ -268,6 +335,7 @@ namespace SIMD
         typedef SIMDVecKNC_u<uint8_t, 2> HALF_LEN_VEC_TYPE;
         typedef int8_t                   SCALAR_INT_TYPE;
         typedef SIMDMask4                MASK_TYPE;
+        typedef SIMDSwizzle4             SWIZZLE_MASK_TYPE;
     };
 
     template<>
@@ -275,12 +343,14 @@ namespace SIMD
         typedef SIMDVecKNC_u<uint16_t, 1> HALF_LEN_VEC_TYPE;
         typedef int16_t                   SCALAR_INT_TYPE;
         typedef SIMDMask2                 MASK_TYPE;
+        typedef SIMDSwizzle2              SWIZZLE_MASK_TYPE;
     };
 
     template<>
     struct SIMDVecKNC_u_traits<uint32_t, 1>{
-        typedef int32_t   SCALAR_INT_TYPE;
-        typedef SIMDMask1 MASK_TYPE;
+        typedef int32_t      SCALAR_INT_TYPE;
+        typedef SIMDMask1    MASK_TYPE;
+        typedef SIMDSwizzle1 SWIZZLE_MASK_TYPE;
     };
 
     // 64b vectors
@@ -289,6 +359,7 @@ namespace SIMD
         typedef SIMDVecKNC_u<uint8_t, 4> HALF_LEN_VEC_TYPE;
         typedef int8_t                   SCALAR_INT_TYPE;
         typedef SIMDMask8                MASK_TYPE;
+        typedef SIMDSwizzle8             SWIZZLE_MASK_TYPE;
     };
 
     template<>
@@ -296,6 +367,7 @@ namespace SIMD
         typedef SIMDVecKNC_u<uint16_t, 2> HALF_LEN_VEC_TYPE;
         typedef int16_t                   SCALAR_INT_TYPE;
         typedef SIMDMask4                 MASK_TYPE;
+        typedef SIMDSwizzle4              SWIZZLE_MASK_TYPE;
     };
 
     template<>
@@ -303,12 +375,14 @@ namespace SIMD
         typedef SIMDVecKNC_u<uint32_t, 1> HALF_LEN_VEC_TYPE;
         typedef int32_t                   SCALAR_INT_TYPE;
         typedef SIMDMask2                 MASK_TYPE;
+        typedef SIMDSwizzle2              SWIZZLE_MASK_TYPE;
     };
 
     template<>
     struct SIMDVecKNC_u_traits<uint64_t, 1>{
-        typedef int64_t   SCALAR_INT_TYPE;
-        typedef SIMDMask1 MASK_TYPE;
+        typedef int64_t      SCALAR_INT_TYPE;
+        typedef SIMDMask1    MASK_TYPE;
+        typedef SIMDSwizzle1 SWIZZLE_MASK_TYPE;
     };
 
     // 128b vectors
@@ -317,6 +391,7 @@ namespace SIMD
         typedef SIMDVecKNC_u<uint8_t, 8> HALF_LEN_VEC_TYPE;
         typedef int8_t                   SCALAR_INT_TYPE;
         typedef SIMDMask16               MASK_TYPE;
+        typedef SIMDSwizzle16            SWIZZLE_MASK_TYPE;
     };
 
     template<>
@@ -324,6 +399,7 @@ namespace SIMD
         typedef SIMDVecKNC_u<uint16_t, 4> HALF_LEN_VEC_TYPE;
         typedef int16_t                   SCALAR_INT_TYPE;
         typedef SIMDMask8                 MASK_TYPE;
+        typedef SIMDSwizzle8              SWIZZLE_MASK_TYPE;
     };
 
     template<>
@@ -331,6 +407,7 @@ namespace SIMD
         typedef SIMDVecKNC_u<uint32_t, 2> HALF_LEN_VEC_TYPE;
         typedef int32_t                   SCALAR_INT_TYPE;
         typedef SIMDMask4                 MASK_TYPE;
+        typedef SIMDSwizzle4              SWIZZLE_MASK_TYPE;
     };
 
     template<>
@@ -338,6 +415,7 @@ namespace SIMD
         typedef SIMDVecKNC_u<uint64_t, 1> HALF_LEN_VEC_TYPE;
         typedef int64_t                   SCALAR_INT_TYPE;
         typedef SIMDMask2                 MASK_TYPE;
+        typedef SIMDSwizzle2              SWIZZLE_MASK_TYPE;
     };
 
     // 256b vectors
@@ -346,6 +424,7 @@ namespace SIMD
         typedef SIMDVecKNC_u<uint8_t, 16> HALF_LEN_VEC_TYPE;
         typedef int8_t                    SCALAR_INT_TYPE;
         typedef SIMDMask32                MASK_TYPE;
+        typedef SIMDSwizzle32             SWIZZLE_MASK_TYPE;
     };
     
     template<>
@@ -353,6 +432,7 @@ namespace SIMD
         typedef SIMDVecKNC_u<uint16_t, 8> HALF_LEN_VEC_TYPE;
         typedef int16_t                   SCALAR_INT_TYPE;
         typedef SIMDMask16                MASK_TYPE;
+        typedef SIMDSwizzle16             SWIZZLE_MASK_TYPE;
     };
 
     template<>
@@ -360,6 +440,7 @@ namespace SIMD
         typedef SIMDVecKNC_u<uint32_t, 4> HALF_LEN_VEC_TYPE;
         typedef int32_t                   SCALAR_INT_TYPE;
         typedef SIMDMask8                 MASK_TYPE;
+        typedef SIMDSwizzle8              SWIZZLE_MASK_TYPE;
     };
     
     template<>
@@ -367,6 +448,7 @@ namespace SIMD
         typedef SIMDVecKNC_u<uint64_t, 2> HALF_LEN_VEC_TYPE;
         typedef int64_t                   SCALAR_INT_TYPE;
         typedef SIMDMask4                 MASK_TYPE;
+        typedef SIMDSwizzle4              SWIZZLE_MASK_TYPE;
     };
 
     // 512b vectors
@@ -375,6 +457,7 @@ namespace SIMD
         typedef SIMDVecKNC_u<uint8_t, 32> HALF_LEN_VEC_TYPE;
         typedef int8_t                    SCALAR_INT_TYPE;
         typedef SIMDMask64                MASK_TYPE;
+        typedef SIMDSwizzle64             SWIZZLE_MASK_TYPE;
     };
     
     template<>
@@ -382,6 +465,7 @@ namespace SIMD
         typedef SIMDVecKNC_u<uint16_t, 16> HALF_LEN_VEC_TYPE;
         typedef int16_t                    SCALAR_INT_TYPE;
         typedef SIMDMask32                 MASK_TYPE;
+        typedef SIMDSwizzle32              SWIZZLE_MASK_TYPE;
     };
 
     template<>
@@ -389,6 +473,7 @@ namespace SIMD
         typedef SIMDVecKNC_u<uint32_t, 8> HALF_LEN_VEC_TYPE;
         typedef int32_t                   SCALAR_INT_TYPE;
         typedef SIMDMask16                MASK_TYPE;
+        typedef SIMDSwizzle16             SWIZZLE_MASK_TYPE;
     };
     
     template<>
@@ -396,6 +481,7 @@ namespace SIMD
         typedef SIMDVecKNC_u<uint64_t, 4> HALF_LEN_VEC_TYPE;
         typedef int64_t                   SCALAR_INT_TYPE;
         typedef SIMDMask8                 MASK_TYPE;
+        typedef SIMDSwizzle8              SWIZZLE_MASK_TYPE;
     };
     
     // 1024b vectors
@@ -404,6 +490,7 @@ namespace SIMD
         typedef SIMDVecKNC_u<uint8_t, 64> HALF_LEN_VEC_TYPE;
         typedef int8_t                    SCALAR_INT_TYPE;
         typedef SIMDMask128               MASK_TYPE;
+        typedef SIMDSwizzle128            SWIZZLE_MASK_TYPE;
     };
     
     template<>
@@ -411,6 +498,7 @@ namespace SIMD
         typedef SIMDVecKNC_u<uint16_t, 32> HALF_LEN_VEC_TYPE;
         typedef int16_t                    SCALAR_INT_TYPE;
         typedef SIMDMask64                 MASK_TYPE;
+        typedef SIMDSwizzle64              SWIZZLE_MASK_TYPE;
     };
 
     template<>
@@ -418,6 +506,7 @@ namespace SIMD
         typedef SIMDVecKNC_u<uint32_t, 16> HALF_LEN_VEC_TYPE;
         typedef int32_t                    SCALAR_INT_TYPE;
         typedef SIMDMask32                 MASK_TYPE;
+        typedef SIMDSwizzle32              SWIZZLE_MASK_TYPE;
     };
     
     template<>
@@ -425,6 +514,7 @@ namespace SIMD
         typedef SIMDVecKNC_u<uint64_t, 8> HALF_LEN_VEC_TYPE;
         typedef int64_t                   SCALAR_INT_TYPE;
         typedef SIMDMask16                MASK_TYPE;
+        typedef SIMDSwizzle16             SWIZZLE_MASK_TYPE;
     };
 
     // ***************************************************************************
@@ -444,14 +534,14 @@ namespace SIMD
             SCALAR_UINT_TYPE,                        // SCALAR_TYPE
             SCALAR_UINT_TYPE,                        // SCALAR_UINT_TYPE
             VEC_LEN,
-            typename SIMDVecKNC_u_traits<SCALAR_UINT_TYPE, VEC_LEN>::MASK_TYPE>,
+            typename SIMDVecKNC_u_traits<SCALAR_UINT_TYPE, VEC_LEN>::MASK_TYPE,
+            typename SIMDVecKNC_u_traits<SCALAR_UINT_TYPE, VEC_LEN>::SWIZZLE_MASK_TYPE>,
         public SIMDVecPackableInterface<
             SIMDVecKNC_u<SCALAR_UINT_TYPE, VEC_LEN>, // DERIVED_VEC_TYPE
             typename SIMDVecKNC_u_traits<SCALAR_UINT_TYPE, VEC_LEN>::HALF_LEN_VEC_TYPE>
     {
     public:
-        typedef SIMDVecEmuRegister<SCALAR_UINT_TYPE, VEC_LEN>                                   VEC_EMU_REG;
-            
+        typedef SIMDVecEmuRegister<SCALAR_UINT_TYPE, VEC_LEN> VEC_EMU_REG;
         typedef typename SIMDVecKNC_u_traits<SCALAR_UINT_TYPE, VEC_LEN>::SCALAR_INT_TYPE  SCALAR_INT_TYPE;
         
         // Conversion operators require access to private members.
@@ -539,7 +629,8 @@ namespace SIMD
             SCALAR_UINT_TYPE,                  // SCALAR_TYPE
             SCALAR_UINT_TYPE,                  // SCALAR_UINT_TYPE
             1,
-            typename SIMDVecKNC_u_traits<SCALAR_UINT_TYPE, 1>::MASK_TYPE>
+            typename SIMDVecKNC_u_traits<SCALAR_UINT_TYPE, 1>::MASK_TYPE,
+            typename SIMDVecKNC_u_traits<SCALAR_UINT_TYPE, 1>::SWIZZLE_MASK_TYPE>
     {
     public:
         typedef SIMDVecEmuRegister<SCALAR_UINT_TYPE, 1>                                   VEC_EMU_REG;
@@ -586,7 +677,8 @@ namespace SIMD
             uint32_t, 
             uint32_t,
             16,
-            SIMDMask16>,
+            SIMDMask16,
+            SIMDSwizzle16>,
         public SIMDVecPackableInterface<
             SIMDVecKNC_u<uint32_t, 16>, // DERIVED_VEC_TYPE
             typename SIMDVecKNC_u_traits<uint32_t, 16>::HALF_LEN_VEC_TYPE>
@@ -654,8 +746,9 @@ namespace SIMD
     template<>
     struct SIMDVecKNC_i_traits<int8_t, 1> {
         typedef SIMDVecKNC_u<uint8_t, 1> VEC_UINT;
-        typedef uint8_t SCALAR_UINT_TYPE;
-        typedef SIMDMask1 MASK_TYPE;
+        typedef uint8_t                  SCALAR_UINT_TYPE;
+        typedef SIMDMask1                MASK_TYPE;
+        typedef SIMDSwizzle1             SWIZZLE_MASK_TYPE;
     };
 
     // 16b vectors
@@ -665,13 +758,15 @@ namespace SIMD
         typedef SIMDVecKNC_u<uint8_t, 2> VEC_UINT;
         typedef uint8_t                  SCALAR_UINT_TYPE;
         typedef SIMDMask2                MASK_TYPE;
+        typedef SIMDSwizzle2             SWIZZLE_MASK_TYPE;
     };
 
     template<>
     struct SIMDVecKNC_i_traits<int16_t, 1>{
         typedef SIMDVecKNC_u<uint16_t, 1> VEC_UINT;
-        typedef uint16_t  SCALAR_UINT_TYPE;
-        typedef SIMDMask1 MASK_TYPE;
+        typedef uint16_t                  SCALAR_UINT_TYPE;
+        typedef SIMDMask1                 MASK_TYPE;
+        typedef SIMDSwizzle1              SWIZZLE_MASK_TYPE;
     };
 
     // 32b vectors
@@ -681,6 +776,7 @@ namespace SIMD
         typedef SIMDVecKNC_u<uint8_t, 4> VEC_UINT;
         typedef uint8_t                  SCALAR_UINT_TYPE;
         typedef SIMDMask4                MASK_TYPE;
+        typedef SIMDSwizzle4             SWIZZLE_MASK_TYPE;
     };
     
     template<>
@@ -689,13 +785,15 @@ namespace SIMD
         typedef SIMDVecKNC_u<uint16_t, 2> VEC_UINT;
         typedef uint16_t                  SCALAR_UINT_TYPE;
         typedef SIMDMask2                 MASK_TYPE;
+        typedef SIMDSwizzle2              SWIZZLE_MASK_TYPE;
     };
 
     template<>
     struct SIMDVecKNC_i_traits<int32_t, 1>{
         typedef SIMDVecKNC_u<uint32_t, 1> VEC_UINT;
-        typedef uint32_t SCALAR_UINT_TYPE;
-        typedef SIMDMask1 MASK_TYPE;
+        typedef uint32_t                  SCALAR_UINT_TYPE;
+        typedef SIMDMask1                 MASK_TYPE;
+        typedef SIMDSwizzle1              SWIZZLE_MASK_TYPE;
     };
 
     // 64b vectors
@@ -705,6 +803,7 @@ namespace SIMD
         typedef SIMDVecKNC_u<uint8_t, 8> VEC_UINT;
         typedef uint8_t                  SCALAR_UINT_TYPE;
         typedef SIMDMask8                MASK_TYPE;
+        typedef SIMDSwizzle8             SWIZZLE_MASK_TYPE;
     };
     
     template<>
@@ -713,6 +812,7 @@ namespace SIMD
         typedef SIMDVecKNC_u<uint16_t, 4> VEC_UINT;
         typedef uint16_t                  SCALAR_UINT_TYPE;
         typedef SIMDMask4                 MASK_TYPE;
+        typedef SIMDSwizzle4              SWIZZLE_MASK_TYPE;
     };
 
     template<>
@@ -721,13 +821,15 @@ namespace SIMD
         typedef SIMDVecKNC_u<uint32_t, 2> VEC_UINT;
         typedef uint32_t                  SCALAR_UINT_TYPE;
         typedef SIMDMask2                 MASK_TYPE;
+        typedef SIMDSwizzle2              SWIZZLE_MASK_TYPE;
     };
     
     template<>
     struct SIMDVecKNC_i_traits<int64_t, 1>{
         typedef SIMDVecKNC_u<uint64_t, 1> VEC_UINT;
-        typedef uint64_t SCALAR_UINT_TYPE;
-        typedef SIMDMask1 MASK_TYPE;
+        typedef uint64_t                  SCALAR_UINT_TYPE;
+        typedef SIMDMask1                 MASK_TYPE;
+        typedef SIMDSwizzle1              SWIZZLE_MASK_TYPE;
     };
 
     // 128b vectors
@@ -737,6 +839,7 @@ namespace SIMD
         typedef SIMDVecKNC_u<uint8_t, 16> VEC_UINT;
         typedef uint8_t                   SCALAR_UINT_TYPE;
         typedef SIMDMask16                MASK_TYPE;
+        typedef SIMDSwizzle16             SWIZZLE_MASK_TYPE;
     };
 
     template<>
@@ -745,6 +848,7 @@ namespace SIMD
         typedef SIMDVecKNC_u<uint16_t, 8> VEC_UINT;
         typedef uint16_t                  SCALAR_UINT_TYPE;
         typedef SIMDMask8                 MASK_TYPE;
+        typedef SIMDSwizzle8              SWIZZLE_MASK_TYPE;
     };
             
     template<>
@@ -753,6 +857,7 @@ namespace SIMD
         typedef SIMDVecKNC_u<uint32_t, 4> VEC_UINT;
         typedef uint32_t                  SCALAR_UINT_TYPE;
         typedef SIMDMask4                 MASK_TYPE;
+        typedef SIMDSwizzle4              SWIZZLE_MASK_TYPE;
     };
 
     template<>
@@ -761,6 +866,7 @@ namespace SIMD
         typedef SIMDVecKNC_u<uint64_t, 2> VEC_UINT;
         typedef uint64_t                  SCALAR_UINT_TYPE;
         typedef SIMDMask2                 MASK_TYPE;
+        typedef SIMDSwizzle2              SWIZZLE_MASK_TYPE;
     };
 
     // 256b vectors
@@ -770,6 +876,7 @@ namespace SIMD
         typedef SIMDVecKNC_u<uint8_t, 32> VEC_UINT;
         typedef uint8_t                   SCALAR_UINT_TYPE;
         typedef SIMDMask32                MASK_TYPE;
+        typedef SIMDSwizzle32             SWIZZLE_MASK_TYPE;
     };
     
     template<>
@@ -778,6 +885,7 @@ namespace SIMD
         typedef SIMDVecKNC_u<uint16_t, 16> VEC_UINT;
         typedef uint16_t                   SCALAR_UINT_TYPE;
         typedef SIMDMask16                 MASK_TYPE;
+        typedef SIMDSwizzle16              SWIZZLE_MASK_TYPE;
     };
     
     template<>
@@ -786,6 +894,7 @@ namespace SIMD
         typedef SIMDVecKNC_u<uint32_t, 8> VEC_UINT;
         typedef uint32_t                  SCALAR_UINT_TYPE;
         typedef SIMDMask8                 MASK_TYPE;
+        typedef SIMDSwizzle8              SWIZZLE_MASK_TYPE;
     };
 
     template<>
@@ -794,6 +903,7 @@ namespace SIMD
         typedef SIMDVecKNC_u<uint64_t, 4> VEC_UINT;
         typedef uint64_t                  SCALAR_UINT_TYPE;
         typedef SIMDMask4                 MASK_TYPE;
+        typedef SIMDSwizzle4              SWIZZLE_MASK_TYPE;
     };
 
     // 512b vectors
@@ -803,6 +913,7 @@ namespace SIMD
         typedef SIMDVecKNC_u<uint8_t, 64> VEC_UINT;
         typedef uint8_t                   SCALAR_UINT_TYPE;
         typedef SIMDMask64                MASK_TYPE;
+        typedef SIMDSwizzle64             SWIZZLE_MASK_TYPE;
     };
     
     template<>
@@ -811,6 +922,7 @@ namespace SIMD
         typedef SIMDVecKNC_u<uint16_t, 32> VEC_UINT;
         typedef uint16_t                   SCALAR_UINT_TYPE;
         typedef SIMDMask32                 MASK_TYPE;
+        typedef SIMDSwizzle32              SWIZZLE_MASK_TYPE;
     };
     
     template<>
@@ -819,6 +931,7 @@ namespace SIMD
         typedef SIMDVecKNC_u<uint32_t, 16> VEC_UINT;
         typedef uint32_t                   SCALAR_UINT_TYPE;
         typedef SIMDMask16                 MASK_TYPE;
+        typedef SIMDSwizzle16              SWIZZLE_MASK_TYPE;
     };
 
     template<>
@@ -827,6 +940,7 @@ namespace SIMD
         typedef SIMDVecKNC_u<uint64_t, 8> VEC_UINT;
         typedef uint64_t                  SCALAR_UINT_TYPE;
         typedef SIMDMask8                 MASK_TYPE;
+        typedef SIMDSwizzle8              SWIZZLE_MASK_TYPE;
     };
 
     // 1024b vectors
@@ -836,6 +950,7 @@ namespace SIMD
         typedef SIMDVecKNC_u<uint8_t, 128> VEC_UINT;
         typedef uint8_t                    SCALAR_UINT_TYPE;
         typedef SIMDMask128                MASK_TYPE;
+        typedef SIMDSwizzle128             SWIZZLE_MASK_TYPE;
     };
     
     template<>
@@ -844,6 +959,7 @@ namespace SIMD
         typedef SIMDVecKNC_u<uint16_t, 64> VEC_UINT;
         typedef uint16_t                   SCALAR_UINT_TYPE;
         typedef SIMDMask64                 MASK_TYPE;
+        typedef SIMDSwizzle64              SWIZZLE_MASK_TYPE;
     };
     
     template<>
@@ -852,6 +968,7 @@ namespace SIMD
         typedef SIMDVecKNC_u<uint32_t, 32> VEC_UINT;
         typedef uint32_t                   SCALAR_UINT_TYPE;
         typedef SIMDMask32                 MASK_TYPE;
+        typedef SIMDSwizzle32              SWIZZLE_MASK_TYPE;
     };
 
     template<>
@@ -860,6 +977,7 @@ namespace SIMD
         typedef SIMDVecKNC_u<uint64_t, 16> VEC_UINT;
         typedef uint64_t                   SCALAR_UINT_TYPE;
         typedef SIMDMask16                 MASK_TYPE;
+        typedef SIMDSwizzle16              SWIZZLE_MASK_TYPE;
     };
     
     // ***************************************************************************
@@ -879,7 +997,8 @@ namespace SIMD
             SCALAR_INT_TYPE, 
             VEC_LEN,
             typename SIMDVecKNC_i_traits<SCALAR_INT_TYPE, VEC_LEN>::SCALAR_UINT_TYPE,
-            typename SIMDVecKNC_i_traits<SCALAR_INT_TYPE, VEC_LEN>::MASK_TYPE>,
+            typename SIMDVecKNC_i_traits<SCALAR_INT_TYPE, VEC_LEN>::MASK_TYPE,
+            typename SIMDVecKNC_i_traits<SCALAR_INT_TYPE, VEC_LEN>::SWIZZLE_MASK_TYPE>,
         public SIMDVecPackableInterface<
             SIMDVecKNC_i<SCALAR_INT_TYPE, VEC_LEN>,
             typename SIMDVecKNC_i_traits<SCALAR_INT_TYPE, VEC_LEN>::HALF_LEN_VEC_TYPE>
@@ -972,7 +1091,8 @@ namespace SIMD
             SCALAR_INT_TYPE, 
             1,
             typename SIMDVecKNC_i_traits<SCALAR_INT_TYPE, 1>::SCALAR_UINT_TYPE,
-            typename SIMDVecKNC_i_traits<SCALAR_INT_TYPE, 1>::MASK_TYPE>
+            typename SIMDVecKNC_i_traits<SCALAR_INT_TYPE, 1>::MASK_TYPE,
+            typename SIMDVecKNC_i_traits<SCALAR_INT_TYPE, 1>::SWIZZLE_MASK_TYPE>
     {
     public:
         typedef SIMDVecEmuRegister<SCALAR_INT_TYPE, 1>                            VEC_EMU_REG;
@@ -1018,7 +1138,8 @@ namespace SIMD
             int32_t, 
             16,
             uint32_t,
-            SIMDMask16>,
+            SIMDMask16,
+            SIMDSwizzle16>,
         public SIMDVecPackableInterface<
             SIMDVecKNC_i<int32_t, 16>,
             typename SIMDVecKNC_i_traits<int32_t, 16>::HALF_LEN_VEC_TYPE>
@@ -1102,6 +1223,7 @@ namespace SIMD
         typedef uint32_t                  SCALAR_UINT_TYPE;
         typedef float*                    SCALAR_TYPE_PTR;
         typedef SIMDMask1                 MASK_TYPE;
+        typedef SIMDSwizzle1              SWIZZLE_MASK_TYPE;
     };
 
     // 64b vectors
@@ -1114,6 +1236,7 @@ namespace SIMD
         typedef uint32_t                  SCALAR_UINT_TYPE;
         typedef float*                    SCALAR_TYPE_PTR;
         typedef SIMDMask2                 MASK_TYPE;
+        typedef SIMDSwizzle2              SWIZZLE_MASK_TYPE;
     };
 
     template<>
@@ -1124,6 +1247,7 @@ namespace SIMD
         typedef uint64_t                  SCALAR_UINT_TYPE;
         typedef double*                   SCALAR_TYPE_PTR;
         typedef SIMDMask1                 MASK_TYPE;
+        typedef SIMDSwizzle1              SWIZZLE_MASK_TYPE;
     };
     
     // 128b vectors
@@ -1136,6 +1260,7 @@ namespace SIMD
         typedef uint32_t                  SCALAR_UINT_TYPE;
         typedef float*                    SCALAR_TYPE_PTR;
         typedef SIMDMask4                 MASK_TYPE;
+        typedef SIMDSwizzle4              SWIZZLE_MASK_TYPE;
     };
 
     template<>
@@ -1147,6 +1272,7 @@ namespace SIMD
         typedef uint64_t                  SCALAR_UINT_TYPE;
         typedef double*                   SCALAR_TYPE_PTR;
         typedef SIMDMask2                 MASK_TYPE;
+        typedef SIMDSwizzle2              SWIZZLE_MASK_TYPE;
     };
 
     // 256b vectors
@@ -1159,6 +1285,7 @@ namespace SIMD
         typedef uint32_t                  SCALAR_UINT_TYPE;
         typedef float*                    SCALAR_TYPE_PTR;
         typedef SIMDMask8                 MASK_TYPE;
+        typedef SIMDSwizzle8              SWIZZLE_MASK_TYPE;
     };
 
     template<>
@@ -1170,6 +1297,7 @@ namespace SIMD
         typedef uint64_t                  SCALAR_UINT_TYPE;
         typedef double*                   SCALAR_TYPE_PTR;
         typedef SIMDMask4                 MASK_TYPE;
+        typedef SIMDSwizzle4              SWIZZLE_MASK_TYPE;
     };
     
     // 512b vectors
@@ -1182,6 +1310,7 @@ namespace SIMD
         typedef uint32_t                   SCALAR_UINT_TYPE;
         typedef float*                     SCALAR_TYPE_PTR;
         typedef SIMDMask16                 MASK_TYPE;
+        typedef SIMDSwizzle16              SWIZZLE_MASK_TYPE;
     };
     
     template<>
@@ -1193,6 +1322,7 @@ namespace SIMD
         typedef uint64_t                  SCALAR_UINT_TYPE;
         typedef double*                   SCALAR_TYPE_PTR;
         typedef SIMDMask8                 MASK_TYPE;
+        typedef SIMDSwizzle8              SWIZZLE_MASK_TYPE;
     };
 
     // 1024b vectors
@@ -1205,6 +1335,7 @@ namespace SIMD
         typedef uint32_t                  SCALAR_UINT_TYPE;
         typedef float*                    SCALAR_TYPE_PTR;
         typedef SIMDMask32                MASK_TYPE;
+        typedef SIMDSwizzle32             SWIZZLE_MASK_TYPE;
     };
     
     template<>
@@ -1216,6 +1347,7 @@ namespace SIMD
         typedef uint64_t                   SCALAR_UINT_TYPE;
         typedef double*                    SCALAR_TYPE_PTR;
         typedef SIMDMask16                 MASK_TYPE;
+        typedef SIMDSwizzle16              SWIZZLE_MASK_TYPE;
     };
 
     // ***************************************************************************
@@ -1235,7 +1367,8 @@ namespace SIMD
             SCALAR_FLOAT_TYPE, 
             VEC_LEN,
             typename SIMDVecKNC_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::SCALAR_UINT_TYPE,
-            typename SIMDVecKNC_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::MASK_TYPE>,
+            typename SIMDVecKNC_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::MASK_TYPE,
+            typename SIMDVecKNC_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::SWIZZLE_MASK_TYPE>,
         public SIMDVecPackableInterface<
             SIMDVecKNC_f<SCALAR_FLOAT_TYPE, VEC_LEN>,
             typename SIMDVecKNC_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::HALF_LEN_VEC_TYPE>
@@ -1359,7 +1492,8 @@ template<typename SCALAR_FLOAT_TYPE>
             SCALAR_FLOAT_TYPE, 
             1,
             typename SIMDVecKNC_f_traits<SCALAR_FLOAT_TYPE, 1>::SCALAR_UINT_TYPE,
-            typename SIMDVecKNC_f_traits<SCALAR_FLOAT_TYPE, 1>::MASK_TYPE>
+            typename SIMDVecKNC_f_traits<SCALAR_FLOAT_TYPE, 1>::MASK_TYPE,
+            typename SIMDVecKNC_f_traits<SCALAR_FLOAT_TYPE, 1>::SWIZZLE_MASK_TYPE>
     {
     public:
         typedef SIMDVecEmuRegister<SCALAR_FLOAT_TYPE, 1>                            VEC_EMU_REG;
@@ -1399,7 +1533,8 @@ template<typename SCALAR_FLOAT_TYPE>
             float, 
             16,
             uint32_t,
-            SIMDMask16>,
+            SIMDMask16,
+            SIMDSwizzle16>,
         public SIMDVecPackableInterface<
             SIMDVecKNC_f<float, 16>,
             SIMDVecKNC_f<float, 8>>

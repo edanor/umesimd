@@ -37,6 +37,10 @@
 // masks
 #include "UMEUnitTestMasks.h"
 
+// swizzle masks
+#include "UMEUnitTestSwizzleMask.h"
+
+// arithmetic vectors
 #include "UMEUnitTestSimd8b.h"
 #include "UMEUnitTestSimd16b.h"
 #include "UMEUnitTestSimd32b.h"
@@ -57,6 +61,9 @@ int test_UMESimd(bool supressMessages)
 
     // masks
     failCount += test_UME_SIMDMasks(supressMessages);
+
+    // swizzle masks
+    failCount += test_UME_SIMDSwizzleMasks(supressMessages);
 
     // arithmetic vectors
     failCount += test_UME_SIMD8b(supressMessages);

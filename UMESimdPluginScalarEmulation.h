@@ -39,6 +39,15 @@ namespace UME
 {
 namespace SIMD
 {
+    
+    // forward declarations of simd types classes;
+    template<typename SCALAR_TYPE, uint32_t VEC_LEN>       class SIMDVecScalarEmuMask;
+    template<uint32_t SMASK_LEN>                           class SIMDVecScalarEmuSwizzleMask;
+    template<typename SCALAR_UINT_TYPE, uint32_t VEC_LEN>  class SIMDVecScalarEmu_u;
+    template<typename SCALAR_INT_TYPE, uint32_t VEC_LEN>   class SIMDVecScalarEmu_i;
+    template<typename SCALAR_FLOAT_TYPE, uint32_t VEC_LEN> class SIMDVecScalarEmu_f;
+
+
     template<typename MASK_BASE_TYPE, uint32_t VEC_LEN>
     struct SIMDVecScalarEmuMask_traits {};
 
@@ -184,6 +193,8 @@ namespace SIMD
             mMask[28] = MASK_SCALAR_TYPE(m28); mMask[29] = MASK_SCALAR_TYPE(m29);
             mMask[30] = MASK_SCALAR_TYPE(m30); mMask[31] = MASK_SCALAR_TYPE(m31);
         };
+
+        // TODO: 64/128 element constructors
         
         inline bool extract(uint32_t index) const {
             return mMask[index];
@@ -204,14 +215,59 @@ namespace SIMD
             {
                 mMask[i] = mask.mMask[i];
             }
-        };
+        }
     };
 
-    // forward declarations of simd types classes;
-    template<typename SCALAR_TYPE, uint32_t VEC_LEN>       class SIMDVecScalarEmuMask;
-    template<typename SCALAR_UINT_TYPE, uint32_t VEC_LEN>  class SIMDVecScalarEmu_u;
-    template<typename SCALAR_INT_TYPE, uint32_t VEC_LEN>   class SIMDVecScalarEmu_i;
-    template<typename SCALAR_FLOAT_TYPE, uint32_t VEC_LEN> class SIMDVecScalarEmu_f;
+    template<uint32_t SMASK_LEN>
+    class SIMDVecScalarEmuSwizzleMask : 
+        public SIMDSwizzleMaskBaseInterface< 
+            SIMDVecScalarEmuSwizzleMask<SMASK_LEN>,
+            SMASK_LEN>
+    {
+    private:
+        uint32_t mMaskElements[SMASK_LEN];
+    public:
+        SIMDVecScalarEmuSwizzleMask() { };
+
+        explicit SIMDVecScalarEmuSwizzleMask(uint32_t m0) {
+            UME_EMULATION_WARNING();
+            for(int i = 0; i < SMASK_LEN; i++) {
+                mMaskElements[i] = m0;
+            }
+        }
+
+        explicit SIMDVecScalarEmuSwizzleMask(uint32_t *m) {
+            UME_EMULATION_WARNING();
+            for(int i = 0; i < SMASK_LEN; i++) {
+                mMaskElements[i] = m[i];
+            }
+        }
+
+        inline uint32_t extract(uint32_t index) const {
+            UME_EMULATION_WARNING();
+            return mMaskElements[index];
+        }
+
+        // A non-modifying element-wise access operator
+        inline uint32_t operator[] (uint32_t index) const {
+            UME_EMULATION_WARNING();
+            return mMaskElements[index]; 
+        }
+
+        // Element-wise modification operator
+        inline void insert(uint32_t index, uint32_t x) { 
+            UME_EMULATION_WARNING();
+            mMaskElements[index] = x;
+        }
+
+        SIMDVecScalarEmuSwizzleMask(SIMDVecScalarEmuSwizzleMask const & mask) {
+            UME_EMULATION_WARNING();
+            for(int i = 0; i < SMASK_LEN; i++)
+            {
+                mMaskElements[i] = mask.mMaskElements[i];
+            }
+        }
+    };
 
     template<typename VEC_TYPE, uint32_t VEC_LEN>
     struct SIMDVecScalarEmu_u_traits{
@@ -423,7 +479,8 @@ namespace SIMD
             SCALAR_UINT_TYPE,  // SCALAR_TYPE 
             SCALAR_UINT_TYPE,  // SCALAR_UINT_TYPE - in this case is the same as above
             VEC_LEN,
-            SIMDVecScalarEmuMask<typename SIMDVecScalarEmu_u_traits<SCALAR_UINT_TYPE, VEC_LEN>::MASK_BASE_TYPE, VEC_LEN>>,
+            SIMDVecScalarEmuMask<typename SIMDVecScalarEmu_u_traits<SCALAR_UINT_TYPE, VEC_LEN>::MASK_BASE_TYPE, VEC_LEN>,
+            SIMDVecScalarEmuSwizzleMask<VEC_LEN>>,
         public SIMDVecPackableInterface<
             SIMDVecScalarEmu_u<SCALAR_UINT_TYPE, VEC_LEN>,        // DERIVED_VEC_TYPE
             typename SIMDVecScalarEmu_u_traits<SCALAR_UINT_TYPE, VEC_LEN>::HALF_LEN_VEC_TYPE> // DERIVED_HALF_VEC_TYPE
@@ -518,7 +575,8 @@ namespace SIMD
             SCALAR_UINT_TYPE,  // SCALAR_TYPE 
             SCALAR_UINT_TYPE,  // SCALAR_UINT_TYPE - in this case is the same as above
             1,
-            SIMDVecScalarEmuMask<typename SIMDVecScalarEmu_u_traits<SCALAR_UINT_TYPE, 1>::MASK_BASE_TYPE, 1>>
+            SIMDVecScalarEmuMask<typename SIMDVecScalarEmu_u_traits<SCALAR_UINT_TYPE, 1>::MASK_BASE_TYPE, 1>,
+            SIMDVecScalarEmuSwizzleMask<1>>
     {
     public:
         typedef SIMDVecEmuRegister<SCALAR_UINT_TYPE, 1>                                   VEC_EMU_REG;
@@ -797,7 +855,8 @@ namespace SIMD
                 typename SIMDVecScalarEmu_i_traits<
                     SCALAR_INT_TYPE, 
                     VEC_LEN>::MASK_BASE_TYPE, 
-                    VEC_LEN>>,
+                    VEC_LEN>,
+            SIMDVecScalarEmuSwizzleMask<VEC_LEN>>,
         public SIMDVecPackableInterface<
             SIMDVecScalarEmu_i<SCALAR_INT_TYPE, VEC_LEN>,
             typename SIMDVecScalarEmu_i_traits<SCALAR_INT_TYPE, VEC_LEN>::HALF_LEN_VEC_TYPE>
@@ -901,7 +960,8 @@ namespace SIMD
             typename SIMDVecScalarEmu_i_traits<SCALAR_INT_TYPE, 1>::SCALAR_UINT_TYPE,
             SIMDVecScalarEmuMask<
                 typename SIMDVecScalarEmu_i_traits<SCALAR_INT_TYPE, 1>::MASK_BASE_TYPE, 
-                1>
+                1>,
+            SIMDVecScalarEmuSwizzleMask<1>
         >
     {
     public:
@@ -1077,7 +1137,8 @@ namespace SIMD
             SCALAR_FLOAT_TYPE, 
             VEC_LEN,
             typename SIMDVecScalarEmu_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::SCALAR_UINT_TYPE,
-            typename SIMDVecScalarEmu_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::MASK_TYPE>,
+            typename SIMDVecScalarEmu_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::MASK_TYPE,
+            SIMDVecScalarEmuSwizzleMask<VEC_LEN>>,
         public SIMDVecPackableInterface<
             SIMDVecScalarEmu_f<SCALAR_FLOAT_TYPE, VEC_LEN>, 
             typename SIMDVecScalarEmu_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::HALF_LEN_VEC_TYPE>
@@ -1157,7 +1218,8 @@ namespace SIMD
         SCALAR_FLOAT_TYPE, 
         1,
         typename SIMDVecScalarEmu_f_traits<SCALAR_FLOAT_TYPE, 1>::SCALAR_UINT_TYPE,
-        typename SIMDVecScalarEmu_f_traits<SCALAR_FLOAT_TYPE, 1>::MASK_TYPE>
+        typename SIMDVecScalarEmu_f_traits<SCALAR_FLOAT_TYPE, 1>::MASK_TYPE,
+        SIMDVecScalarEmuSwizzleMask<1>>
     {
     public:
         typedef SIMDVecEmuRegister<SCALAR_FLOAT_TYPE, 1> VEC_EMU_REG;
@@ -1182,14 +1244,23 @@ namespace SIMD
     };
 #if defined USE_EMULATED_TYPES
     // mask vectors
-    typedef SIMDVecScalarEmuMask<bool, 1>     SIMDMask1;
-    typedef SIMDVecScalarEmuMask<bool, 2>     SIMDMask2;
-    typedef SIMDVecScalarEmuMask<bool, 4>     SIMDMask4;
-    typedef SIMDVecScalarEmuMask<bool, 8>     SIMDMask8;
-    typedef SIMDVecScalarEmuMask<bool, 16>    SIMDMask16;
-    typedef SIMDVecScalarEmuMask<bool, 32>    SIMDMask32;
-    typedef SIMDVecScalarEmuMask<bool, 64>    SIMDMask64;
-    typedef SIMDVecScalarEmuMask<bool, 128>   SIMDMask128;     
+    typedef SIMDVecScalarEmuMask<bool, 1>   SIMDMask1;
+    typedef SIMDVecScalarEmuMask<bool, 2>   SIMDMask2;
+    typedef SIMDVecScalarEmuMask<bool, 4>   SIMDMask4;
+    typedef SIMDVecScalarEmuMask<bool, 8>   SIMDMask8;
+    typedef SIMDVecScalarEmuMask<bool, 16>  SIMDMask16;
+    typedef SIMDVecScalarEmuMask<bool, 32>  SIMDMask32;
+    typedef SIMDVecScalarEmuMask<bool, 64>  SIMDMask64;
+    typedef SIMDVecScalarEmuMask<bool, 128> SIMDMask128;     
+
+    typedef SIMDVecScalarEmuSwizzleMask<1>   SIMDSwizzle1;
+    typedef SIMDVecScalarEmuSwizzleMask<2>   SIMDSwizzle2;
+    typedef SIMDVecScalarEmuSwizzleMask<4>   SIMDSwizzle4;
+    typedef SIMDVecScalarEmuSwizzleMask<8>   SIMDSwizzle8;
+    typedef SIMDVecScalarEmuSwizzleMask<16>  SIMDSwizzle16;
+    typedef SIMDVecScalarEmuSwizzleMask<32>  SIMDSwizzle32;
+    typedef SIMDVecScalarEmuSwizzleMask<64>  SIMDSwizzle64;
+    typedef SIMDVecScalarEmuSwizzleMask<128> SIMDSwizzle128;
 
     // 8b uint vectors
     typedef SIMDVecScalarEmu_u<uint8_t, 1>      SIMD1_8u;
