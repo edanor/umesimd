@@ -104,9 +104,11 @@ namespace SIMD
     //                for the compiler to implicitly cast it to integer. To forbid this casting operations from
     //                happening the default type has to be wrapped into a class. 
     template<typename MASK_BASE_TYPE, uint32_t VEC_LEN>
-    class SIMDVecAVX512Mask final : public SIMDMaskBaseInterface< SIMDVecAVX512Mask<MASK_BASE_TYPE, VEC_LEN>,
-                                                               MASK_BASE_TYPE,
-                                                               VEC_LEN>
+    class SIMDVecAVX512Mask final : 
+        public SIMDMaskBaseInterface<
+            SIMDVecAVX512Mask<MASK_BASE_TYPE, VEC_LEN>,
+            MASK_BASE_TYPE,
+            VEC_LEN>
     {   
         typedef ScalarTypeWrapper<MASK_BASE_TYPE> MASK_SCALAR_TYPE; // Wrapp-up MASK_BASE_TYPE (int, float, bool) with a class
         typedef SIMDVecAVX512Mask_traits<MASK_BASE_TYPE, VEC_LEN> MASK_TRAITS;
@@ -138,7 +140,7 @@ namespace SIMD
             mMask[1] = MASK_SCALAR_TYPE(m1);
         }
 
-        SIMDVecAVX512Mask( bool m0, bool m1, bool m2, bool m3 )
+        SIMDVecAVX512Mask(bool m0, bool m1, bool m2, bool m3)
         {
             mMask[0] = MASK_SCALAR_TYPE(m0); 
             mMask[1] = MASK_SCALAR_TYPE(m1); 
@@ -146,8 +148,8 @@ namespace SIMD
             mMask[3] = MASK_SCALAR_TYPE(m3);
         };
 
-        SIMDVecAVX512Mask( bool m0, bool m1, bool m2, bool m3,
-                                bool m4, bool m5, bool m6, bool m7 )
+        SIMDVecAVX512Mask(bool m0, bool m1, bool m2, bool m3,
+                          bool m4, bool m5, bool m6, bool m7)
         {
             mMask[0] = MASK_SCALAR_TYPE(m0); mMask[1] = MASK_SCALAR_TYPE(m1);
             mMask[2] = MASK_SCALAR_TYPE(m2); mMask[3] = MASK_SCALAR_TYPE(m3);
@@ -155,35 +157,35 @@ namespace SIMD
             mMask[6] = MASK_SCALAR_TYPE(m6); mMask[7] = MASK_SCALAR_TYPE(m7);
         }
 
-        SIMDVecAVX512Mask( bool m0,  bool m1,  bool m2,  bool m3,
-                                bool m4,  bool m5,  bool m6,  bool m7,
-                                bool m8,  bool m9,  bool m10, bool m11,
-                                bool m12, bool m13, bool m14, bool m15 )
+        SIMDVecAVX512Mask(bool m0,  bool m1,  bool m2,  bool m3,
+                          bool m4,  bool m5,  bool m6,  bool m7,
+                          bool m8,  bool m9,  bool m10, bool m11,
+                          bool m12, bool m13, bool m14, bool m15)
         {
-            mMask[0] = MASK_SCALAR_TYPE(m0);  mMask[1] = MASK_SCALAR_TYPE(m1);
-            mMask[2] = MASK_SCALAR_TYPE(m2);  mMask[3] = MASK_SCALAR_TYPE(m3);
-            mMask[4] = MASK_SCALAR_TYPE(m4);  mMask[5] = MASK_SCALAR_TYPE(m5);
-            mMask[6] = MASK_SCALAR_TYPE(m6);  mMask[7] = MASK_SCALAR_TYPE(m7);
-            mMask[8] = MASK_SCALAR_TYPE(m8);  mMask[9] = MASK_SCALAR_TYPE(m9);
+            mMask[0]  = MASK_SCALAR_TYPE(m0);  mMask[1]  = MASK_SCALAR_TYPE(m1);
+            mMask[2]  = MASK_SCALAR_TYPE(m2);  mMask[3]  = MASK_SCALAR_TYPE(m3);
+            mMask[4]  = MASK_SCALAR_TYPE(m4);  mMask[5]  = MASK_SCALAR_TYPE(m5);
+            mMask[6]  = MASK_SCALAR_TYPE(m6);  mMask[7]  = MASK_SCALAR_TYPE(m7);
+            mMask[8]  = MASK_SCALAR_TYPE(m8);  mMask[9]  = MASK_SCALAR_TYPE(m9);
             mMask[10] = MASK_SCALAR_TYPE(m10); mMask[11] = MASK_SCALAR_TYPE(m11);
             mMask[12] = MASK_SCALAR_TYPE(m12); mMask[13] = MASK_SCALAR_TYPE(m13);
             mMask[14] = MASK_SCALAR_TYPE(m14); mMask[15] = MASK_SCALAR_TYPE(m15);
         }
 
-        SIMDVecAVX512Mask( bool m0,  bool m1,  bool m2,  bool m3,
-                                bool m4,  bool m5,  bool m6,  bool m7,
-                                bool m8,  bool m9,  bool m10, bool m11,
-                                bool m12, bool m13, bool m14, bool m15,
-                                bool m16, bool m17, bool m18, bool m19,
-                                bool m20, bool m21, bool m22, bool m23,
-                                bool m24, bool m25, bool m26, bool m27,
-                                bool m28, bool m29, bool m30, bool m31)
+        SIMDVecAVX512Mask(bool m0,  bool m1,  bool m2,  bool m3,
+                          bool m4,  bool m5,  bool m6,  bool m7,
+                          bool m8,  bool m9,  bool m10, bool m11,
+                          bool m12, bool m13, bool m14, bool m15,
+                          bool m16, bool m17, bool m18, bool m19,
+                          bool m20, bool m21, bool m22, bool m23,
+                          bool m24, bool m25, bool m26, bool m27,
+                          bool m28, bool m29, bool m30, bool m31)
         {
-            mMask[0] = MASK_SCALAR_TYPE(m0);   mMask[1] = MASK_SCALAR_TYPE(m1);
-            mMask[2] = MASK_SCALAR_TYPE(m2);   mMask[3] = MASK_SCALAR_TYPE(m3);
-            mMask[4] = MASK_SCALAR_TYPE(m4);   mMask[5] = MASK_SCALAR_TYPE(m5);
-            mMask[6] = MASK_SCALAR_TYPE(m6);   mMask[7] = MASK_SCALAR_TYPE(m7);
-            mMask[8] = MASK_SCALAR_TYPE(m8);   mMask[9] = MASK_SCALAR_TYPE(m9);
+            mMask[0]  = MASK_SCALAR_TYPE(m0);  mMask[1]  = MASK_SCALAR_TYPE(m1);
+            mMask[2]  = MASK_SCALAR_TYPE(m2);  mMask[3]  = MASK_SCALAR_TYPE(m3);
+            mMask[4]  = MASK_SCALAR_TYPE(m4);  mMask[5]  = MASK_SCALAR_TYPE(m5);
+            mMask[6]  = MASK_SCALAR_TYPE(m6);  mMask[7]  = MASK_SCALAR_TYPE(m7);
+            mMask[8]  = MASK_SCALAR_TYPE(m8);  mMask[9]  = MASK_SCALAR_TYPE(m9);
             mMask[10] = MASK_SCALAR_TYPE(m10); mMask[11] = MASK_SCALAR_TYPE(m11);
             mMask[12] = MASK_SCALAR_TYPE(m12); mMask[13] = MASK_SCALAR_TYPE(m13);
             mMask[14] = MASK_SCALAR_TYPE(m14); mMask[15] = MASK_SCALAR_TYPE(m15);
@@ -223,10 +225,11 @@ namespace SIMD
     // MASK VECTOR SPECIALIZATION
     // ********************************************************************************************
     template<>
-    class SIMDVecAVX512Mask<uint32_t, 8> : public SIMDMaskBaseInterface< 
-                                                               SIMDVecAVX512Mask<uint32_t, 8>,
-                                                               uint32_t,
-                                                               8>
+    class SIMDVecAVX512Mask<uint32_t, 8> : 
+        public SIMDMaskBaseInterface< 
+            SIMDVecAVX512Mask<uint32_t, 8>,
+            uint32_t,
+            8>
     {   
         static const uint32_t TRUE() { return 0xFFFFFFFF; };
         static const uint32_t FALSE() { return 0x00000000; };
@@ -255,7 +258,8 @@ namespace SIMD
             mMask = _mm256_set1_epi32(toMaskBool(m));
         }
         
-        SIMDVecAVX512Mask( bool m0, bool m1, bool m2, bool m3, bool m4, bool m5, bool m6, bool m7 ) {
+        SIMDVecAVX512Mask(bool m0, bool m1, bool m2, bool m3, 
+                          bool m4, bool m5, bool m6, bool m7) {
             mMask = _mm256_setr_epi32(toMaskBool(m0), toMaskBool(m1), 
                                       toMaskBool(m2), toMaskBool(m3),
                                       toMaskBool(m4), toMaskBool(m5), 
@@ -622,38 +626,75 @@ namespace SIMD
 
         inline explicit SIMDVecAVX512_u(SCALAR_UINT_TYPE i) : mVec(i) {};
 
-        inline SIMDVecAVX512_u(SCALAR_UINT_TYPE i0, SCALAR_UINT_TYPE i1, SCALAR_UINT_TYPE i2, SCALAR_UINT_TYPE i3) {
-            mVec.insert(0, i0);  mVec.insert(1, i1);  mVec.insert(2, i2);  mVec.insert(3, i3);
+        inline SIMDVecAVX512_u(SCALAR_UINT_TYPE i0, SCALAR_UINT_TYPE i1,
+                               SCALAR_UINT_TYPE i2, SCALAR_UINT_TYPE i3) {
+            mVec.insert(0, i0);  mVec.insert(1, i1);
+            mVec.insert(2, i2);  mVec.insert(3, i3);
         }
 
-        inline SIMDVecAVX512_u(SCALAR_UINT_TYPE i0, SCALAR_UINT_TYPE i1, SCALAR_UINT_TYPE i2, SCALAR_UINT_TYPE i3, SCALAR_UINT_TYPE i4, SCALAR_UINT_TYPE i5, SCALAR_UINT_TYPE i6, SCALAR_UINT_TYPE i7) 
+        inline SIMDVecAVX512_u(SCALAR_UINT_TYPE i0, SCALAR_UINT_TYPE i1,
+                               SCALAR_UINT_TYPE i2, SCALAR_UINT_TYPE i3,
+                               SCALAR_UINT_TYPE i4, SCALAR_UINT_TYPE i5,
+                               SCALAR_UINT_TYPE i6, SCALAR_UINT_TYPE i7) 
         {
-            mVec.insert(0, i0);  mVec.insert(1, i1);  mVec.insert(2, i2);  mVec.insert(3, i3);
-            mVec.insert(4, i4);  mVec.insert(5, i5);  mVec.insert(6, i6);  mVec.insert(7, i7);
+            mVec.insert(0, i0);  mVec.insert(1, i1);
+            mVec.insert(2, i2);  mVec.insert(3, i3);
+            mVec.insert(4, i4);  mVec.insert(5, i5);
+            mVec.insert(6, i6);  mVec.insert(7, i7);
         }
 
-        inline SIMDVecAVX512_u(SCALAR_UINT_TYPE i0, SCALAR_UINT_TYPE i1, SCALAR_UINT_TYPE i2, SCALAR_UINT_TYPE i3, SCALAR_UINT_TYPE i4, SCALAR_UINT_TYPE i5, SCALAR_UINT_TYPE i6, SCALAR_UINT_TYPE i7,
-                            SCALAR_UINT_TYPE i8, SCALAR_UINT_TYPE i9, SCALAR_UINT_TYPE i10, SCALAR_UINT_TYPE i11, SCALAR_UINT_TYPE i12, SCALAR_UINT_TYPE i13, SCALAR_UINT_TYPE i14, SCALAR_UINT_TYPE i15)
+        inline SIMDVecAVX512_u(SCALAR_UINT_TYPE i0,  SCALAR_UINT_TYPE i1,
+                               SCALAR_UINT_TYPE i2,  SCALAR_UINT_TYPE i3,
+                               SCALAR_UINT_TYPE i4,  SCALAR_UINT_TYPE i5,
+                               SCALAR_UINT_TYPE i6,  SCALAR_UINT_TYPE i7,
+                               SCALAR_UINT_TYPE i8,  SCALAR_UINT_TYPE i9,
+                               SCALAR_UINT_TYPE i10, SCALAR_UINT_TYPE i11,
+                               SCALAR_UINT_TYPE i12, SCALAR_UINT_TYPE i13,
+                               SCALAR_UINT_TYPE i14, SCALAR_UINT_TYPE i15)
         {
-            mVec.insert(0, i0);    mVec.insert(1, i1);    mVec.insert(2, i2);    mVec.insert(3, i3);
-            mVec.insert(4, i4);    mVec.insert(5, i5);    mVec.insert(6, i6);    mVec.insert(7, i7);
-            mVec.insert(8, i8);    mVec.insert(9, i9);    mVec.insert(10, i10);  mVec.insert(11, i11);
-            mVec.insert(12, i12);  mVec.insert(13, i13);  mVec.insert(14, i14);  mVec.insert(15, i15); 
+            mVec.insert(0, i0);    mVec.insert(1, i1);
+            mVec.insert(2, i2);    mVec.insert(3, i3);
+            mVec.insert(4, i4);    mVec.insert(5, i5);
+            mVec.insert(6, i6);    mVec.insert(7, i7);
+            mVec.insert(8, i8);    mVec.insert(9, i9);
+            mVec.insert(10, i10);  mVec.insert(11, i11);
+            mVec.insert(12, i12);  mVec.insert(13, i13);
+            mVec.insert(14, i14);  mVec.insert(15, i15); 
         }
 
-        inline SIMDVecAVX512_u(SCALAR_UINT_TYPE i0, SCALAR_UINT_TYPE i1, SCALAR_UINT_TYPE i2, SCALAR_UINT_TYPE i3, SCALAR_UINT_TYPE i4, SCALAR_UINT_TYPE i5, SCALAR_UINT_TYPE i6, SCALAR_UINT_TYPE i7,
-                            SCALAR_UINT_TYPE i8, SCALAR_UINT_TYPE i9, SCALAR_UINT_TYPE i10, SCALAR_UINT_TYPE i11, SCALAR_UINT_TYPE i12, SCALAR_UINT_TYPE i13, SCALAR_UINT_TYPE i14, SCALAR_UINT_TYPE i15,
-                            SCALAR_UINT_TYPE i16, SCALAR_UINT_TYPE i17, SCALAR_UINT_TYPE i18, SCALAR_UINT_TYPE i19, SCALAR_UINT_TYPE i20, SCALAR_UINT_TYPE i21, SCALAR_UINT_TYPE i22, SCALAR_UINT_TYPE i23,
-                            SCALAR_UINT_TYPE i24, SCALAR_UINT_TYPE i25, SCALAR_UINT_TYPE i26, SCALAR_UINT_TYPE i27, SCALAR_UINT_TYPE i28, SCALAR_UINT_TYPE i29, SCALAR_UINT_TYPE i30, SCALAR_UINT_TYPE i31)
+        inline SIMDVecAVX512_u(SCALAR_UINT_TYPE i0,  SCALAR_UINT_TYPE i1,
+                               SCALAR_UINT_TYPE i2,  SCALAR_UINT_TYPE i3,
+                               SCALAR_UINT_TYPE i4,  SCALAR_UINT_TYPE i5,
+                               SCALAR_UINT_TYPE i6,  SCALAR_UINT_TYPE i7,
+                               SCALAR_UINT_TYPE i8,  SCALAR_UINT_TYPE i9,
+                               SCALAR_UINT_TYPE i10, SCALAR_UINT_TYPE i11,
+                               SCALAR_UINT_TYPE i12, SCALAR_UINT_TYPE i13,
+                               SCALAR_UINT_TYPE i14, SCALAR_UINT_TYPE i15,
+                               SCALAR_UINT_TYPE i16, SCALAR_UINT_TYPE i17,
+                               SCALAR_UINT_TYPE i18, SCALAR_UINT_TYPE i19,
+                               SCALAR_UINT_TYPE i20, SCALAR_UINT_TYPE i21,
+                               SCALAR_UINT_TYPE i22, SCALAR_UINT_TYPE i23,
+                               SCALAR_UINT_TYPE i24, SCALAR_UINT_TYPE i25,
+                               SCALAR_UINT_TYPE i26, SCALAR_UINT_TYPE i27,
+                               SCALAR_UINT_TYPE i28, SCALAR_UINT_TYPE i29,
+                               SCALAR_UINT_TYPE i30, SCALAR_UINT_TYPE i31)
         {
-            mVec.insert(0, i0);    mVec.insert(1, i1);    mVec.insert(2, i2);    mVec.insert(3, i3);
-            mVec.insert(4, i4);    mVec.insert(5, i5);    mVec.insert(6, i6);    mVec.insert(7, i7);
-            mVec.insert(8, i8);    mVec.insert(9, i9);    mVec.insert(10, i10);  mVec.insert(11, i11);
-            mVec.insert(12, i12);  mVec.insert(13, i13);  mVec.insert(14, i14);  mVec.insert(15, i15);     
-            mVec.insert(16, i16);  mVec.insert(17, i17);  mVec.insert(18, i18);  mVec.insert(19, i19);
-            mVec.insert(20, i20);  mVec.insert(21, i21);  mVec.insert(22, i22);  mVec.insert(23, i23);
-            mVec.insert(24, i24);  mVec.insert(25, i25);  mVec.insert(26, i26);  mVec.insert(27, i27);
-            mVec.insert(28, i28);  mVec.insert(29, i29);  mVec.insert(30, i30);  mVec.insert(31, i31);
+            mVec.insert(0, i0);    mVec.insert(1, i1);
+            mVec.insert(2, i2);    mVec.insert(3, i3);
+            mVec.insert(4, i4);    mVec.insert(5, i5);
+            mVec.insert(6, i6);    mVec.insert(7, i7);
+            mVec.insert(8, i8);    mVec.insert(9, i9);
+            mVec.insert(10, i10);  mVec.insert(11, i11);
+            mVec.insert(12, i12);  mVec.insert(13, i13);
+            mVec.insert(14, i14);  mVec.insert(15, i15);     
+            mVec.insert(16, i16);  mVec.insert(17, i17);
+            mVec.insert(18, i18);  mVec.insert(19, i19);
+            mVec.insert(20, i20);  mVec.insert(21, i21);
+            mVec.insert(22, i22);  mVec.insert(23, i23);
+            mVec.insert(24, i24);  mVec.insert(25, i25);
+            mVec.insert(26, i26);  mVec.insert(27, i27);
+            mVec.insert(28, i28);  mVec.insert(29, i29);
+            mVec.insert(30, i30);  mVec.insert(31, i31);
         }
             
         // Override Access operators
@@ -951,16 +992,20 @@ namespace SIMD
         // GATHERS
         SIMDVecAVX512_u & gather ( uint32_t* baseAddr, uint64_t* indices) {
             UME_PERFORMANCE_UNOPTIMAL_WARNING();
-            alignas(32) uint32_t raw[8] = { baseAddr[indices[0]], baseAddr[indices[1]], baseAddr[indices[2]], baseAddr[indices[3]],
-                                            baseAddr[indices[4]], baseAddr[indices[5]], baseAddr[indices[6]], baseAddr[indices[7]]};
+            alignas(32) uint32_t raw[8] = { baseAddr[indices[0]], baseAddr[indices[1]],
+                                            baseAddr[indices[2]], baseAddr[indices[3]],
+                                            baseAddr[indices[4]], baseAddr[indices[5]],
+                                            baseAddr[indices[6]], baseAddr[indices[7]]};
             mVec = _mm256_load_si256((__m256i*)raw);
             return *this;
         }   
         // MGATHERS
         SIMDVecAVX512_u & gather (SIMDMask8 const & mask, uint32_t* baseAddr, uint64_t* indices) {
             UME_PERFORMANCE_UNOPTIMAL_WARNING();
-            alignas(32) uint32_t raw[8] = { baseAddr[indices[0]], baseAddr[indices[1]], baseAddr[indices[2]], baseAddr[indices[3]],
-                                            baseAddr[indices[4]], baseAddr[indices[5]], baseAddr[indices[6]], baseAddr[indices[7]]};
+            alignas(32) uint32_t raw[8] = { baseAddr[indices[0]], baseAddr[indices[1]],
+                                            baseAddr[indices[2]], baseAddr[indices[3]],
+                                            baseAddr[indices[4]], baseAddr[indices[5]],
+                                            baseAddr[indices[6]], baseAddr[indices[7]]};
             __m128i a_low  = _mm256_extractf128_si256 (mVec, 0);
             __m128i a_high = _mm256_extractf128_si256 (mVec, 1);
             __m128i b_low = _mm_load_si128((__m128i*)&raw[0]);
@@ -1019,7 +1064,9 @@ namespace SIMD
             alignas(32) uint32_t rawMask[8];
             _mm256_store_si256((__m256i*) raw, mVec);
             _mm256_store_si256((__m256i*) rawMask, mask.mMask);
-            for(int i = 0; i < 8; i++) { if(rawMask[i] == SIMDMask8::TRUE()) baseAddr[indices[i]] = raw[i]; };
+            for(int i = 0; i < 8; i++) { 
+                if(rawMask[i] == SIMDMask8::TRUE()) baseAddr[indices[i]] = raw[i]; 
+            };
             return baseAddr;
         }
         // SCATTERV
@@ -1082,7 +1129,7 @@ namespace SIMD
     template<>
     struct SIMDVecAVX512_i_traits<int16_t, 1> {
         typedef SIMDVecAVX512_u<uint16_t, 1> VEC_UINT;
-        typedef uint16_t                      SCALAR_UINT_TYPE;
+        typedef uint16_t                     SCALAR_UINT_TYPE;
         typedef SIMDMask1                    MASK_TYPE;
         typedef SIMDSwizzle1                 SWIZZLE_MASK_TYPE;
     };
@@ -1313,10 +1360,10 @@ namespace SIMD
             typename SIMDVecAVX512_i_traits<SCALAR_INT_TYPE, VEC_LEN>::HALF_LEN_VEC_TYPE>
     {
     public:
-        typedef SIMDVecEmuRegister<SCALAR_INT_TYPE, VEC_LEN>                            VEC_EMU_REG;
+        typedef SIMDVecEmuRegister<SCALAR_INT_TYPE, VEC_LEN> VEC_EMU_REG;
             
-        typedef typename SIMDVecAVX512_i_traits<SCALAR_INT_TYPE, VEC_LEN>::SCALAR_UINT_TYPE     SCALAR_UINT_TYPE;
-        typedef typename SIMDVecAVX512_i_traits<SCALAR_INT_TYPE, VEC_LEN>::VEC_UINT             VEC_UINT;
+        typedef typename SIMDVecAVX512_i_traits<SCALAR_INT_TYPE, VEC_LEN>::SCALAR_UINT_TYPE SCALAR_UINT_TYPE;
+        typedef typename SIMDVecAVX512_i_traits<SCALAR_INT_TYPE, VEC_LEN>::VEC_UINT         VEC_UINT;
         
         friend class SIMDVecScalarEmu_u<SCALAR_UINT_TYPE, VEC_LEN>;
     private:
@@ -1326,39 +1373,80 @@ namespace SIMD
         inline SIMDVecAVX512_i() : mVec() {};
 
         inline explicit SIMDVecAVX512_i(SCALAR_INT_TYPE i) : mVec(i) {};
-
-        inline SIMDVecAVX512_i(SCALAR_INT_TYPE i0, SCALAR_INT_TYPE i1, SCALAR_INT_TYPE i2, SCALAR_INT_TYPE i3) {
-            mVec.insert(0, i0);  mVec.insert(1, i1);  mVec.insert(2, i2);  mVec.insert(3, i3);
+        
+        inline SIMDVecAVX512_i(SCALAR_INT_TYPE i0, SCALAR_INT_TYPE i1) {
+            mVec.insert(0, i0);  mVec.insert(1, i1);
         }
 
-        inline SIMDVecAVX512_i(SCALAR_INT_TYPE i0, SCALAR_INT_TYPE i1, SCALAR_INT_TYPE i2, SCALAR_INT_TYPE i3, SCALAR_INT_TYPE i4, SCALAR_INT_TYPE i5, SCALAR_INT_TYPE i6, SCALAR_INT_TYPE i7) 
-        {
-            mVec.insert(0, i0);  mVec.insert(1, i1);  mVec.insert(2, i2);  mVec.insert(3, i3);
-            mVec.insert(4, i4);  mVec.insert(5, i5);  mVec.insert(6, i6);  mVec.insert(7, i7);
+        inline SIMDVecAVX512_i(SCALAR_INT_TYPE i0, SCALAR_INT_TYPE i1,
+                               SCALAR_INT_TYPE i2, SCALAR_INT_TYPE i3) {
+            mVec.insert(0, i0);  mVec.insert(1, i1);
+            mVec.insert(2, i2);  mVec.insert(3, i3);
         }
 
-        inline SIMDVecAVX512_i(SCALAR_INT_TYPE i0, SCALAR_INT_TYPE i1, SCALAR_INT_TYPE i2, SCALAR_INT_TYPE i3, SCALAR_INT_TYPE i4, SCALAR_INT_TYPE i5, SCALAR_INT_TYPE i6, SCALAR_INT_TYPE i7,
-                            SCALAR_INT_TYPE i8, SCALAR_INT_TYPE i9, SCALAR_INT_TYPE i10, SCALAR_INT_TYPE i11, SCALAR_INT_TYPE i12, SCALAR_INT_TYPE i13, SCALAR_INT_TYPE i14, SCALAR_INT_TYPE i15)
+        inline SIMDVecAVX512_i(SCALAR_INT_TYPE i0, SCALAR_INT_TYPE i1,
+                               SCALAR_INT_TYPE i2, SCALAR_INT_TYPE i3,
+                               SCALAR_INT_TYPE i4, SCALAR_INT_TYPE i5,
+                               SCALAR_INT_TYPE i6, SCALAR_INT_TYPE i7) 
         {
-            mVec.insert(0, i0);    mVec.insert(1, i1);    mVec.insert(2, i2);    mVec.insert(3, i3);
-            mVec.insert(4, i4);    mVec.insert(5, i5);    mVec.insert(6, i6);    mVec.insert(7, i7);
-            mVec.insert(8, i8);    mVec.insert(9, i9);    mVec.insert(10, i10);  mVec.insert(11, i11);
-            mVec.insert(12, i12);  mVec.insert(13, i13);  mVec.insert(14, i14);  mVec.insert(15, i15); 
+            mVec.insert(0, i0);  mVec.insert(1, i1);
+            mVec.insert(2, i2);  mVec.insert(3, i3);
+            mVec.insert(4, i4);  mVec.insert(5, i5);
+            mVec.insert(6, i6);  mVec.insert(7, i7);
         }
 
-        inline SIMDVecAVX512_i(SCALAR_INT_TYPE i0, SCALAR_INT_TYPE i1, SCALAR_INT_TYPE i2, SCALAR_INT_TYPE i3, SCALAR_INT_TYPE i4, SCALAR_INT_TYPE i5, SCALAR_INT_TYPE i6, SCALAR_INT_TYPE i7,
-                            SCALAR_INT_TYPE i8, SCALAR_INT_TYPE i9, SCALAR_INT_TYPE i10, SCALAR_INT_TYPE i11, SCALAR_INT_TYPE i12, SCALAR_INT_TYPE i13, SCALAR_INT_TYPE i14, SCALAR_INT_TYPE i15,
-                            SCALAR_INT_TYPE i16, SCALAR_INT_TYPE i17, SCALAR_INT_TYPE i18, SCALAR_INT_TYPE i19, SCALAR_INT_TYPE i20, SCALAR_INT_TYPE i21, SCALAR_INT_TYPE i22, SCALAR_INT_TYPE i23,
-                            SCALAR_INT_TYPE i24, SCALAR_INT_TYPE i25, SCALAR_INT_TYPE i26, SCALAR_INT_TYPE i27, SCALAR_INT_TYPE i28, SCALAR_INT_TYPE i29, SCALAR_INT_TYPE i30, SCALAR_INT_TYPE i31)
+        inline SIMDVecAVX512_i(SCALAR_INT_TYPE i0, SCALAR_INT_TYPE i1,
+                               SCALAR_INT_TYPE i2, SCALAR_INT_TYPE i3,
+                               SCALAR_INT_TYPE i4, SCALAR_INT_TYPE i5,
+                               SCALAR_INT_TYPE i6, SCALAR_INT_TYPE i7,
+                               SCALAR_INT_TYPE i8, SCALAR_INT_TYPE i9,
+                               SCALAR_INT_TYPE i10, SCALAR_INT_TYPE i11,
+                               SCALAR_INT_TYPE i12, SCALAR_INT_TYPE i13,
+                               SCALAR_INT_TYPE i14, SCALAR_INT_TYPE i15)
         {
-            mVec.insert(0, i0);    mVec.insert(1, i1);    mVec.insert(2, i2);    mVec.insert(3, i3);
-            mVec.insert(4, i4);    mVec.insert(5, i5);    mVec.insert(6, i6);    mVec.insert(7, i7);
-            mVec.insert(8, i8);    mVec.insert(9, i9);    mVec.insert(10, i10);  mVec.insert(11, i11);
-            mVec.insert(12, i12);  mVec.insert(13, i13);  mVec.insert(14, i14);  mVec.insert(15, i15);     
-            mVec.insert(16, i16);  mVec.insert(17, i17);  mVec.insert(18, i18);  mVec.insert(19, i19);
-            mVec.insert(20, i20);  mVec.insert(21, i21);  mVec.insert(22, i22);  mVec.insert(23, i23);
-            mVec.insert(24, i24);  mVec.insert(25, i25);  mVec.insert(26, i26);  mVec.insert(27, i27);
-            mVec.insert(28, i28);  mVec.insert(29, i29);  mVec.insert(30, i30);  mVec.insert(31, i31);
+            mVec.insert(0, i0);    mVec.insert(1, i1);
+            mVec.insert(2, i2);    mVec.insert(3, i3);
+            mVec.insert(4, i4);    mVec.insert(5, i5);
+            mVec.insert(6, i6);    mVec.insert(7, i7);
+            mVec.insert(8, i8);    mVec.insert(9, i9);
+            mVec.insert(10, i10);  mVec.insert(11, i11);
+            mVec.insert(12, i12);  mVec.insert(13, i13);
+            mVec.insert(14, i14);  mVec.insert(15, i15); 
+        }
+
+        inline SIMDVecAVX512_i(SCALAR_INT_TYPE i0,  SCALAR_INT_TYPE i1,
+                               SCALAR_INT_TYPE i2,  SCALAR_INT_TYPE i3,
+                               SCALAR_INT_TYPE i4,  SCALAR_INT_TYPE i5,
+                               SCALAR_INT_TYPE i6,  SCALAR_INT_TYPE i7,
+                               SCALAR_INT_TYPE i8,  SCALAR_INT_TYPE i9,
+                               SCALAR_INT_TYPE i10, SCALAR_INT_TYPE i11,
+                               SCALAR_INT_TYPE i12, SCALAR_INT_TYPE i13,
+                               SCALAR_INT_TYPE i14, SCALAR_INT_TYPE i15,
+                               SCALAR_INT_TYPE i16, SCALAR_INT_TYPE i17,
+                               SCALAR_INT_TYPE i18, SCALAR_INT_TYPE i19,
+                               SCALAR_INT_TYPE i20, SCALAR_INT_TYPE i21,
+                               SCALAR_INT_TYPE i22, SCALAR_INT_TYPE i23,
+                               SCALAR_INT_TYPE i24, SCALAR_INT_TYPE i25,
+                               SCALAR_INT_TYPE i26, SCALAR_INT_TYPE i27,
+                               SCALAR_INT_TYPE i28, SCALAR_INT_TYPE i29,
+                               SCALAR_INT_TYPE i30, SCALAR_INT_TYPE i31)
+        {
+            mVec.insert(0, i0);    mVec.insert(1, i1);
+            mVec.insert(2, i2);    mVec.insert(3, i3);
+            mVec.insert(4, i4);    mVec.insert(5, i5);
+            mVec.insert(6, i6);    mVec.insert(7, i7);
+            mVec.insert(8, i8);    mVec.insert(9, i9);
+            mVec.insert(10, i10);  mVec.insert(11, i11);
+            mVec.insert(12, i12);  mVec.insert(13, i13);
+            mVec.insert(14, i14);  mVec.insert(15, i15);     
+            mVec.insert(16, i16);  mVec.insert(17, i17);
+            mVec.insert(18, i18);  mVec.insert(19, i19);
+            mVec.insert(20, i20);  mVec.insert(21, i21);
+            mVec.insert(22, i22);  mVec.insert(23, i23);
+            mVec.insert(24, i24);  mVec.insert(25, i25);
+            mVec.insert(26, i26);  mVec.insert(27, i27);
+            mVec.insert(28, i28);  mVec.insert(29, i29);
+            mVec.insert(30, i30);  mVec.insert(31, i31);
         }
             
         // Override Access operators
@@ -1400,10 +1488,10 @@ namespace SIMD
             typename SIMDVecAVX512_i_traits<SCALAR_INT_TYPE, 1>::SWIZZLE_MASK_TYPE>
     {
     public:
-        typedef SIMDVecEmuRegister<SCALAR_INT_TYPE, 1>                            VEC_EMU_REG;
+        typedef SIMDVecEmuRegister<SCALAR_INT_TYPE, 1>                                VEC_EMU_REG;
             
-        typedef typename SIMDVecAVX512_i_traits<SCALAR_INT_TYPE, 1>::SCALAR_UINT_TYPE     SCALAR_UINT_TYPE;
-        typedef typename SIMDVecAVX512_i_traits<SCALAR_INT_TYPE, 1>::VEC_UINT             VEC_UINT;
+        typedef typename SIMDVecAVX512_i_traits<SCALAR_INT_TYPE, 1>::SCALAR_UINT_TYPE SCALAR_UINT_TYPE;
+        typedef typename SIMDVecAVX512_i_traits<SCALAR_INT_TYPE, 1>::VEC_UINT         VEC_UINT;
         
         friend class SIMDVecScalarEmu_u<SCALAR_UINT_TYPE, 1>;
     private:
@@ -1467,7 +1555,7 @@ namespace SIMD
         }
 
         inline SIMDVecAVX512_i(int32_t i0, int32_t i1, int32_t i2, int32_t i3, 
-                            int32_t i4, int32_t i5, int32_t i6, int32_t i7) 
+                               int32_t i4, int32_t i5, int32_t i6, int32_t i7) 
         {
             mVec = _mm256_setr_epi32(i0, i1, i2, i3, i4, i5, i6, i7);
         }
@@ -1692,8 +1780,8 @@ namespace SIMD
             typename SIMDVecAVX512_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::HALF_LEN_VEC_TYPE>
     {
     public:
-        typedef SIMDVecEmuRegister<SCALAR_FLOAT_TYPE, VEC_LEN>                            VEC_EMU_REG;
-        typedef typename SIMDVecAVX512_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::MASK_TYPE       MASK_TYPE;
+        typedef SIMDVecEmuRegister<SCALAR_FLOAT_TYPE, VEC_LEN>                         VEC_EMU_REG;
+        typedef typename SIMDVecAVX512_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::MASK_TYPE MASK_TYPE;
         
         typedef SIMDVecAVX512_f VEC_TYPE;
     private:
@@ -1708,51 +1796,87 @@ namespace SIMD
             mVec.insert(0, i0);  mVec.insert(1, i1); 
         }
 
-        inline SIMDVecAVX512_f(SCALAR_FLOAT_TYPE i0, SCALAR_FLOAT_TYPE i1, SCALAR_FLOAT_TYPE i2, SCALAR_FLOAT_TYPE i3) {
-            mVec.insert(0, i0);  mVec.insert(1, i1);  mVec.insert(2, i2);  mVec.insert(3, i3);
+        inline SIMDVecAVX512_f(SCALAR_FLOAT_TYPE i0, SCALAR_FLOAT_TYPE i1, 
+                               SCALAR_FLOAT_TYPE i2, SCALAR_FLOAT_TYPE i3) {
+            mVec.insert(0, i0);  mVec.insert(1, i1);  
+            mVec.insert(2, i2);  mVec.insert(3, i3);
         }
 
-        inline SIMDVecAVX512_f(SCALAR_FLOAT_TYPE i0, SCALAR_FLOAT_TYPE i1, SCALAR_FLOAT_TYPE i2, SCALAR_FLOAT_TYPE i3, SCALAR_FLOAT_TYPE i4, SCALAR_FLOAT_TYPE i5, SCALAR_FLOAT_TYPE i6, SCALAR_FLOAT_TYPE i7) 
+        inline SIMDVecAVX512_f(SCALAR_FLOAT_TYPE i0, SCALAR_FLOAT_TYPE i1, 
+                               SCALAR_FLOAT_TYPE i2, SCALAR_FLOAT_TYPE i3, 
+                               SCALAR_FLOAT_TYPE i4, SCALAR_FLOAT_TYPE i5, 
+                               SCALAR_FLOAT_TYPE i6, SCALAR_FLOAT_TYPE i7) 
         {
-            mVec.insert(0, i0);  mVec.insert(1, i1);  mVec.insert(2, i2);  mVec.insert(3, i3);
-            mVec.insert(4, i4);  mVec.insert(5, i5);  mVec.insert(6, i6);  mVec.insert(7, i7);
+            mVec.insert(0, i0);  mVec.insert(1, i1);  
+            mVec.insert(2, i2);  mVec.insert(3, i3);
+            mVec.insert(4, i4);  mVec.insert(5, i5);  
+            mVec.insert(6, i6);  mVec.insert(7, i7);
         }
 
-        inline SIMDVecAVX512_f(SCALAR_FLOAT_TYPE i0, SCALAR_FLOAT_TYPE i1, SCALAR_FLOAT_TYPE i2, SCALAR_FLOAT_TYPE i3, SCALAR_FLOAT_TYPE i4, SCALAR_FLOAT_TYPE i5, SCALAR_FLOAT_TYPE i6, SCALAR_FLOAT_TYPE i7,
-                            SCALAR_FLOAT_TYPE i8, SCALAR_FLOAT_TYPE i9, SCALAR_FLOAT_TYPE i10, SCALAR_FLOAT_TYPE i11, SCALAR_FLOAT_TYPE i12, SCALAR_FLOAT_TYPE i13, SCALAR_FLOAT_TYPE i14, SCALAR_FLOAT_TYPE i15)
+        inline SIMDVecAVX512_f(SCALAR_FLOAT_TYPE i0,  SCALAR_FLOAT_TYPE i1, 
+                               SCALAR_FLOAT_TYPE i2,  SCALAR_FLOAT_TYPE i3, 
+                               SCALAR_FLOAT_TYPE i4,  SCALAR_FLOAT_TYPE i5, 
+                               SCALAR_FLOAT_TYPE i6,  SCALAR_FLOAT_TYPE i7,
+                               SCALAR_FLOAT_TYPE i8,  SCALAR_FLOAT_TYPE i9, 
+                               SCALAR_FLOAT_TYPE i10, SCALAR_FLOAT_TYPE i11, 
+                               SCALAR_FLOAT_TYPE i12, SCALAR_FLOAT_TYPE i13, 
+                               SCALAR_FLOAT_TYPE i14, SCALAR_FLOAT_TYPE i15)
         {
-            mVec.insert(0, i0);    mVec.insert(1, i1);    mVec.insert(2, i2);    mVec.insert(3, i3);
-            mVec.insert(4, i4);    mVec.insert(5, i5);    mVec.insert(6, i6);    mVec.insert(7, i7);
-            mVec.insert(8, i8);    mVec.insert(9, i9);    mVec.insert(10, i10);  mVec.insert(11, i11);
-            mVec.insert(12, i12);  mVec.insert(13, i13);  mVec.insert(14, i14);  mVec.insert(15, i15); 
+            mVec.insert(0, i0);    mVec.insert(1, i1);    
+            mVec.insert(2, i2);    mVec.insert(3, i3);
+            mVec.insert(4, i4);    mVec.insert(5, i5);    
+            mVec.insert(6, i6);    mVec.insert(7, i7);
+            mVec.insert(8, i8);    mVec.insert(9, i9);    
+            mVec.insert(10, i10);  mVec.insert(11, i11);
+            mVec.insert(12, i12);  mVec.insert(13, i13);  
+            mVec.insert(14, i14);  mVec.insert(15, i15); 
         }
 
-        inline SIMDVecAVX512_f(SCALAR_FLOAT_TYPE i0, SCALAR_FLOAT_TYPE i1, SCALAR_FLOAT_TYPE i2, SCALAR_FLOAT_TYPE i3, SCALAR_FLOAT_TYPE i4, SCALAR_FLOAT_TYPE i5, SCALAR_FLOAT_TYPE i6, SCALAR_FLOAT_TYPE i7,
-                            SCALAR_FLOAT_TYPE i8, SCALAR_FLOAT_TYPE i9, SCALAR_FLOAT_TYPE i10, SCALAR_FLOAT_TYPE i11, SCALAR_FLOAT_TYPE i12, SCALAR_FLOAT_TYPE i13, SCALAR_FLOAT_TYPE i14, SCALAR_FLOAT_TYPE i15,
-                            SCALAR_FLOAT_TYPE i16, SCALAR_FLOAT_TYPE i17, SCALAR_FLOAT_TYPE i18, SCALAR_FLOAT_TYPE i19, SCALAR_FLOAT_TYPE i20, SCALAR_FLOAT_TYPE i21, SCALAR_FLOAT_TYPE i22, SCALAR_FLOAT_TYPE i23,
-                            SCALAR_FLOAT_TYPE i24, SCALAR_FLOAT_TYPE i25, SCALAR_FLOAT_TYPE i26, SCALAR_FLOAT_TYPE i27, SCALAR_FLOAT_TYPE i28, SCALAR_FLOAT_TYPE i29, SCALAR_FLOAT_TYPE i30, SCALAR_FLOAT_TYPE i31)
+        inline SIMDVecAVX512_f(SCALAR_FLOAT_TYPE i0,  SCALAR_FLOAT_TYPE i1,
+                               SCALAR_FLOAT_TYPE i2,  SCALAR_FLOAT_TYPE i3,
+                               SCALAR_FLOAT_TYPE i4,  SCALAR_FLOAT_TYPE i5,
+                               SCALAR_FLOAT_TYPE i6,  SCALAR_FLOAT_TYPE i7,
+                               SCALAR_FLOAT_TYPE i8,  SCALAR_FLOAT_TYPE i9,
+                               SCALAR_FLOAT_TYPE i10, SCALAR_FLOAT_TYPE i11,
+                               SCALAR_FLOAT_TYPE i12, SCALAR_FLOAT_TYPE i13,
+                               SCALAR_FLOAT_TYPE i14, SCALAR_FLOAT_TYPE i15,
+                               SCALAR_FLOAT_TYPE i16, SCALAR_FLOAT_TYPE i17,
+                               SCALAR_FLOAT_TYPE i18, SCALAR_FLOAT_TYPE i19,
+                               SCALAR_FLOAT_TYPE i20, SCALAR_FLOAT_TYPE i21,
+                               SCALAR_FLOAT_TYPE i22, SCALAR_FLOAT_TYPE i23,
+                               SCALAR_FLOAT_TYPE i24, SCALAR_FLOAT_TYPE i25,
+                               SCALAR_FLOAT_TYPE i26, SCALAR_FLOAT_TYPE i27,
+                               SCALAR_FLOAT_TYPE i28, SCALAR_FLOAT_TYPE i29,
+                               SCALAR_FLOAT_TYPE i30, SCALAR_FLOAT_TYPE i31)
         {
-            mVec.insert(0, i0);    mVec.insert(1, i1);    mVec.insert(2, i2);    mVec.insert(3, i3);
-            mVec.insert(4, i4);    mVec.insert(5, i5);    mVec.insert(6, i6);    mVec.insert(7, i7);
-            mVec.insert(8, i8);    mVec.insert(9, i9);    mVec.insert(10, i10);  mVec.insert(11, i11);
-            mVec.insert(12, i12);  mVec.insert(13, i13);  mVec.insert(14, i14);  mVec.insert(15, i15);     
-            mVec.insert(16, i16);  mVec.insert(17, i17);  mVec.insert(18, i18);  mVec.insert(19, i19);
-            mVec.insert(20, i20);  mVec.insert(21, i21);  mVec.insert(22, i22);  mVec.insert(23, i23);
-            mVec.insert(24, i24);  mVec.insert(25, i25);  mVec.insert(26, i26);  mVec.insert(27, i27);
-            mVec.insert(28, i28);  mVec.insert(29, i29);  mVec.insert(30, i30);  mVec.insert(31, i31);
+            mVec.insert(0, i0);    mVec.insert(1, i1);
+            mVec.insert(2, i2);    mVec.insert(3, i3);
+            mVec.insert(4, i4);    mVec.insert(5, i5);
+            mVec.insert(6, i6);    mVec.insert(7, i7);
+            mVec.insert(8, i8);    mVec.insert(9, i9);
+            mVec.insert(10, i10);  mVec.insert(11, i11);
+            mVec.insert(12, i12);  mVec.insert(13, i13);
+            mVec.insert(14, i14);  mVec.insert(15, i15);
+            mVec.insert(16, i16);  mVec.insert(17, i17);
+            mVec.insert(18, i18);  mVec.insert(19, i19);
+            mVec.insert(20, i20);  mVec.insert(21, i21);
+            mVec.insert(22, i22);  mVec.insert(23, i23);
+            mVec.insert(24, i24);  mVec.insert(25, i25);
+            mVec.insert(26, i26);  mVec.insert(27, i27);
+            mVec.insert(28, i28);  mVec.insert(29, i29);
+            mVec.insert(30, i30);  mVec.insert(31, i31);
         }
-            
+
         // Override Access operators
         inline SCALAR_FLOAT_TYPE operator[] (uint32_t index) const {
             return mVec[index];
         }
-                
+
         // insert[] (scalar)
         inline SIMDVecAVX512_f & insert(uint32_t index, SCALAR_FLOAT_TYPE value) {
             mVec.insert(index, value);
             return *this;
         }
-
     };
     
     // ***************************************************************************
@@ -1775,8 +1899,8 @@ namespace SIMD
             typename SIMDVecAVX512_f_traits<SCALAR_FLOAT_TYPE, 1>::SWIZZLE_MASK_TYPE>
     {
     public:
-        typedef SIMDVecEmuRegister<SCALAR_FLOAT_TYPE, 1>                            VEC_EMU_REG;
-        typedef typename SIMDVecAVX512_f_traits<SCALAR_FLOAT_TYPE, 1>::MASK_TYPE       MASK_TYPE;
+        typedef SIMDVecEmuRegister<SCALAR_FLOAT_TYPE, 1>                         VEC_EMU_REG;
+        typedef typename SIMDVecAVX512_f_traits<SCALAR_FLOAT_TYPE, 1>::MASK_TYPE MASK_TYPE;
         
         typedef SIMDVecAVX512_f VEC_TYPE;
     private:
@@ -1833,7 +1957,10 @@ namespace SIMD
             mVec = _mm256_set1_ps(f);
         }
 
-        inline SIMDVecAVX512_f(float f0, float f1, float f2, float f3, float f4, float f5, float f6, float f7) {
+        inline SIMDVecAVX512_f(float f0, float f1, 
+                               float f2, float f3, 
+                               float f4, float f5,
+                               float f6, float f7) {
  	    mVec = _mm256_set_ps(f0, f1, f2, f3, f4, f5, f6, f7);
         }
 

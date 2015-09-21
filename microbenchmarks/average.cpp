@@ -59,10 +59,10 @@ static __inline__ unsigned long long __rdtsc(void)
 }
 #endif
 
+typedef unsigned long long TIMING_RES;
+
 const int ARRAY_SIZE = 600000+7; // Array size increased to show the peeling effect.
 alignas(32) float x[ARRAY_SIZE];
-
-typedef unsigned long long TIMING_RES;
 
 // Scalar algorithm
 TIMING_RES test_scalar()
@@ -261,7 +261,7 @@ int main()
           t_UME_SIMD2_32f_avg = 0.0f,
           t_UME_SIMD1_32f_avg = 0.0f;
 
-    // Run each timing test 1000 times
+    // Run each timing test 100 times
     for(int i = 0; i < 100; i++)
     {
          t_scalar = test_scalar();
