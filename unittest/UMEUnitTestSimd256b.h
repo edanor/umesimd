@@ -509,6 +509,39 @@ int test_UME_SIMD8_32f(bool supressMessages)
         CHECK_CONDITION(vec2[2] > 11.13f && vec2[2] < 11.15f && vec2[6] > 11.9f && vec2[6] < 12.1f, "MADDS");
     }
     {
+        SIMD8_32f vec0(498.123f, -198.12341f, -95.123f, -975.124f,
+                       213.12496f, 851.124987f, -775.1667777f, -641.124976f);
+        SIMD8_32f vec1(12.34f, 321.1231f, 0.321f, -0.045f, 12.123f, -213.321f, 774.221f, 987.37f);
+        SIMD8_32f vec2(841.84f, 128.4f, 0.0041f, -0.00001f, 945.38f, 86.23f, 65.18f, 48.19f);
+        SIMD8_32f vec3;
+
+        float expected[8] = {6988.67773f, -63493.6094, -30.5303841f, 43.8805695f, 
+                             3529.09375f, -181476.594, -600085.188f, -632979.375f};
+        float values[8];
+        
+        vec3 = vec0.fmuladd(vec1, vec2);
+        vec3.store(values);
+
+        CHECK_CONDITION(valuesInRange(values, expected, 8, 0.01f), "FMULADD");
+    }
+    {
+        SIMD8_32f vec0(498.123f, -198.12341f, -95.123f, -975.124f,
+                       213.12496f, 851.124987f, -775.1667777f, -641.124976f);
+        SIMD8_32f vec1(12.34f, 321.1231f, 0.321f, -0.045f, 12.123f, -213.321f, 774.221f, 987.37f);
+        SIMD8_32f vec2(841.84f, 128.4f, 0.0041f, -0.00001f, 945.38f, 86.23f, 65.18f, 48.19f);
+        SIMD8_32f vec3;
+        SIMDMask8 mask(true, false, true, true, false, true, false, false);
+
+        float expected[8] = {6988.67773f, -198.12341f, -30.5303841f,  43.8805695f, 
+                             213.12496f,  -181476.594, -775.1667777f, -641.124976f};
+        float values[8];
+        
+        vec3 = vec0.fmuladd(mask, vec1, vec2);
+        vec3.store(values);
+
+        CHECK_CONDITION(valuesInRange(values, expected, 8, 0.01f), "MFMULADD");
+    }
+    {
         SIMD8_32f vec0(3.14f);
         SIMD8_32i vec1 = vec0.trunc();
         CHECK_CONDITION(vec1[0] == 3 && vec1[7] == 3, "TRUNC");

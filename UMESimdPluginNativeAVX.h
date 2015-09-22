@@ -2183,8 +2183,8 @@ namespace SIMD
 #else
             
 
-            __m128 temp = _mm_mul_ps(_mm_add_ps(this->mVec, a.mVec), b.mVec);
-            return _mm_blendv_ps(temp, this->mVec, _mm_cvtepi32_ps(mask.mMask));
+            __m128 temp = _mm_add_ps(_mm_mul_ps(this->mVec, a.mVec), b.mVec);
+            return _mm_blendv_ps(this->mVec, temp, _mm_cvtepi32_ps(mask.mMask));
 #endif
         }
     };
@@ -2332,8 +2332,8 @@ namespace SIMD
         
         // MFMULADD
         inline SIMDVecAVX_f fmuladd (SIMDMask8 const & mask, SIMDVecAVX_f const & a, SIMDVecAVX_f const & b) {
-            __m256 temp = _mm256_mul_ps(_mm256_add_ps(this->mVec, a.mVec), b.mVec);
-            return _mm256_blendv_ps(temp, this->mVec, _mm256_cvtepi32_ps(mask.mMask));
+            __m256 temp = _mm256_add_ps(_mm256_mul_ps(this->mVec, a.mVec), b.mVec);
+            return _mm256_blendv_ps(this->mVec, temp, _mm256_cvtepi32_ps(mask.mMask));
         }
 
         // SQRT
@@ -2543,8 +2543,8 @@ namespace SIMD
         
         // MFMULADD
         inline SIMDVecAVX_f fmuladd (SIMDMask16 const & mask, SIMDVecAVX_f const & a, SIMDVecAVX_f const & b) {
-            __m256 t0 = _mm256_mul_ps(_mm256_add_ps(this->mVecLo, a.mVecLo), b.mVecLo);
-            __m256 t1 = _mm256_mul_ps(_mm256_add_ps(this->mVecHi, a.mVecHi), b.mVecHi);
+            __m256 t0 = _mm256_add_ps(_mm256_mul_ps(this->mVecLo, a.mVecLo), b.mVecLo);
+            __m256 t1 = _mm256_add_ps(_mm256_mul_ps(this->mVecHi, a.mVecHi), b.mVecHi);
             __m256 t2 = _mm256_blendv_ps(t0, this->mVecLo, _mm256_cvtepi32_ps(mask.mMaskLo));
             __m256 t3 = _mm256_blendv_ps(t1, this->mVecHi, _mm256_cvtepi32_ps(mask.mMaskHi));
             return SIMDVecAVX_f(t2, t3);
