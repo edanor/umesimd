@@ -9,7 +9,7 @@ This piece of code was developed as part of ICE-DIP project at CERN.
  All questions should be submitted using the bug tracking system:
 
 
-[bug tracker](https://bitbucket.org/edanor/umesimd/issues?status=new&status=open)
+[bug tracker](https://bitbucket.org/edanor/umesimd/issues)
 
  
 or by sending e-mail to:
