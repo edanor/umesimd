@@ -1,0 +1,876 @@
+This piece of code was developed as part of ICE-DIP project at CERN.
+
+ "ICE-DIP is a European Industrial Doctorate project funded by the 
+ European Community's 7th Framework programme Marie Curie Actions under grant
+ PITN-GA-2012-316596".
+
+ All questions should be submitted using the bug tracking system or by
+ sending e-mail to:
+
+   przemyslaw.karpinski@cern.ch
+
+
+Table of co
+// ***************************************************************************
+// TABLE OF CONTENTS
+// ***************************************************************************
+ntents:
+
+ I.    Quick start
+ II.   Basic Usage
+ III.  C++ Operator overloading
+ IV.   In-place Vs. new destination
+ V.    Mask operations
+ VI.   Reordering operations
+ VII.  SIMD 1
+ VIII. Library reference
+
+
+// ***************************************************************************
+// I. QUICK START
+// ***************************************************************************
+
+   After downloading this repository you can try compiling and executing unit
+   test code and some microbenchmarks provided with the library. The code
+   doesn't contain any 'make' like file system.
+
+   1) Windows:
+        
+        On windows it is possible to create VS solution. Simply execute
+
+        > cd unittest
+        > create_solution_vs2012.bat
+
+        Solution should be created in 'unittest/vs2012project'. Opening the
+        solution and building it can be performed as with regular solution.
+
+     To debug unit test solution 
+      a) RMB on UMSSIMDUnitTest project
+      b) select "Set as startup project"
+      c) press F5 or select "Debug->Start Debugging"
+
+     To build for different instruction set:
+      a) RMB on UMESIMDUnitTest project
+      b) select "properties"
+      c) "Configuration Properties->C/C++->Code Generation"
+      d) Change "Enable Enhanced Instruction Set" field
+
+      To build for performance measurements, make sure that
+      both optimizations and inlining are turned ON:
+      a) "Properties->Configuration Properties->Optimization->Optimization"
+          
+          is set to: "Maximize Speed (/O2)"
+          
+      b) "Properties->Configuration Properties->Optimization->
+           ->Inline Function Expansion"
+      
+          is set to: "Any Suitable (/Ob2)"
+      
+   2) Linux:
+     $ cd unittest
+     $ g++ UMESIMDUnitTest.cpp -std=c++11 -O2
+
+   // NOTE the same build can be performed using ICC, but an additional flag:
+   //
+   //    -fp-model precise
+   //
+   //  needs to be added to make sure the same floating point model is used 
+   //  as for g++.
+
+   To build for different instruction set use following flags:
+
+   GCC:
+    - FMA:  -mfma
+    - AVX:  -mavx
+    - AVX2: -mavx2
+    - AVX512: -mavx512f -mavx512pf -mavx512er -mavx512cd
+
+   ICC:
+    - FMA:    -fma
+    - AVX:    -xavx
+    - AVX2:   -xCORE-AVX2
+    - AVX512: -xCORE-AVX512
+
+   If you are able to compile unit tests and spot no fails, you can try
+   compiling some of our microbenchmarks:
+
+    $ cd microbenchmars
+    $ g++ average.cpp -std=c++11 -O2 
+    $ g++ polynomial.cpp -std=c++11 -O2
+
+   If you want to use library in your own code, simply include:
+
+    UMESimd.h
+ 
+   file into your project. Data types can be then used by adding:
+
+    using namespace UME::SIMD
+ 
+   or by prefixing name of data types with 'UME::SIMD::' .
+
+
+
+// ***************************************************************************
+// II. BASIC USAGE 
+// ***************************************************************************
+
+   The C++ implementation gives the user a strict programming interface.
+   Because the interface in itself was designed so that it could be
+   implemented using languages other than c++, the operations permitted on
+   data types are using opcodes instead of c++ function prototypes. In 
+   general each member function can be called upon the same SIMD vector type.
+   For example:
+
+     SIMD4_32u vec_u_1(4), vec_u_2(2); // Declaring 2 vectors, each of 4 
+                                       // unsigned integer elements each of
+                                       // 32 bit precision.
+     SIMD8_64f vec_d_1(3.14),          // Declaring 2 vectors, each of 8
+               vec_d_2(2.71);          // floating point elements each of
+                                       // 64 bit precision.
+                                     
+     vec_u_1.adda(vec_u_2);            // Add values from vec_u_1 and vec_u_2,
+                                       // and store the result in vec_u_1.
+                                      
+     vec_d_1.adda(vec_d_2);            // Add values from vec_d_1 and vec_d_2,
+                                       // and store the result in vec_d_1.
+                                      
+   The interface makes a division between operations that are available only
+   on unsigned integer, signed integer of floating point vector types. This 
+   limitiation comes from the definition of scalar type. For example following
+   operation:
+
+     vec_u_1.ceil();         
+    
+   doesn't make too much sense, since ceiling operation is defined only for
+   floating point operations. Trying to call this operation on integer type
+   would result in an identity operation. 
+
+   On the other hand, the floating point vector types support all operations
+   that are well defined for both signed and unsigned integer types. Addition
+   operation is one of them, hence the above example makes complete sense.
+
+
+
+// ***************************************************************************
+// III. C++ OPERATOR OVERLOADING
+// ***************************************************************************
+
+   There is almost no operator overloading in UME::SIMD!!! 
+   
+   One exception is EXTRACT operation that is commonly used to implement 
+   scalar emulation. EXTRACT operation uses 'operator[]' to access indexed
+   elements. Because this operation is very slow it is not advised to use 
+   it in user code, except for certain cases when there is no other
+   possibility.
+
+   Second exception is ASSIGN operation used to assign value of one
+   vector to another. ASSIGN is implemented using 'operator=' and is
+   limited to vectors of the same type.
+   
+   There are some rational reasons for not having overloaded operators
+
+1. There is a limited list of operators a user could overload:
+
+     - * / % ˆ & | ~ ! = < > += -= *= /= %= ˆ= &= |= << >> >>= <<= == != <= >=
+     && || ++ -- , ->* -> ( ) [ ]
+ 
+   All of above operators have fixed number of operands. Problem arises when a
+   user would like to perform masking operation. Mask is another operand so
+   using the C++ operators would lead to multiple implementations when
+   implementing masked and non-masked code:
+
+     SIMD4_32f a, b, c, d;
+
+     a += b + c *d + c*b + c^2;
+
+   Now what happens when yo would like to add masks to the operation?
+   The only way to do so is to implement functions that take mask arguments.
+
+   SIMDMask4 m1, m2, m3,m4, m5, m6, m7;
+   
+   a = add(m1, a, 
+               add(m2, add(m3, add(m4, b, mul(m5, c, d)), 
+                       add(m6, mul(m7, c, b), sqr(m8, c)))
+                   )
+          );
+   
+   Because UME::SIMD uses member functions instead of regular functions,
+   The same code would be implemented as:
+
+     SIMD4_32f a, b, c, d;
+     SIMD4_32f t0, t1, t2, t3, t4, t5;
+     SIMDMask4, m1, m2, m3, m4, m5, m6, m7
+
+     t0 = c.mul(m5, d);
+     t1 = c.mul(m7, b);
+     t2 = c.sqr(m8);
+     t3 = b.add(m4, t0);
+     t4 = t1.add(m6, t2);
+     t5 = t3.add(m3, t4);
+     a = a.add(m1, t5);
+
+   or as:
+
+     a = a.add(m1, (b.add(m4, c.mul(m5, d))).add(m3, (c.mul(m7, b)).add(m6, c.sqr(m8))));
+
+   both forms are correct in terms of syntax provided by the UME::SIMD,
+   and should compile to the same instruction list with compiler optimizations
+   turned on (Optimization Level 2 advised).
+
+2. With 38 operators to overload with over 60 data types is another 2000+
+   functions to write. But since the number of functions available on the 
+   interface is already over 200 per data type, this is only a fraction of
+   work to be done. And it is still not enough to cover other operations that
+   the interface exposes.
+
+3. Implementing operator overloading is very tricky, especially when using 
+   templates, because it might affect the template resolution and collide with
+   templates present in other libraries. Because of limited resources and
+   ability to replace the operators with more uniform member function
+   notation, this 'feature' must be postponed in time, probably until
+   UME::SIMD version 2.0 (if that ever happens...).
+
+
+
+// ***************************************************************************
+// IV. IN-PLACE VS. NEW DESTINATION
+// ***************************************************************************
+
+   Most of the operations are designed to take one implicit operand and one or
+   more explicit operands. For example:
+
+     vec_d_4 = vec_d_1.fmuladd(vec_d_2, vec_d_3);
+    
+   The operation used is FMULADD (fused multiply and add ) operation which is
+   very similar to scalar version:
+    
+     d_4 = d_1 * d_2 + d_3;
+
+   The operation is often represented as: D = A*B + C.
+
+   If you want to store the result in d_1, you can rewrite this as:
+
+     d_1 = d_1 * d_2 + d_3;
+
+    
+   In vectorized version:
+     1) vec_d_1 is first  'implicit' source operand, that is 'A'.
+     2) vec_d_2 is second 'explicit' source operand, that is 'B'
+     3) vec_d_3 is third  'explicit' source operand, that is 'C'
+     4) vec_d_4 is destination operand 'D'
+
+   C++ offers 'assignment' operators such as: '+=', '*=', '\=' etc. that take
+   the left hand size operand as both source operand and destination operand:
+
+     d_1 *= d_2   ;  // equivalent to d_1 = d_1 * d_2
+    
+   Because the 'in-place' operation can potentially limit the resource usage
+   (number of hardware registers used), and because compilers are not very
+   good with handling vector registers, it is advised to use 'assign'
+   operations. Most of the interface functions give the same operation in two
+   variations:
+    
+      1) operation with new destination:
+      
+      vec_1 = vec_2.add(vec_3);  // vec_1 stores result, vec_2 is unchanged
+      
+      2) operation performed in-place:
+      
+      vec_2.adda(vec_3);         // vec_2 stores result, no vec_1 declaration
+                                 // needed
+   
+   In general the functions performing 'assign' operation are suffixed with
+   'a' such as:
+   
+   add (A = B + C)       -> adda ( B = B + C)
+   fmulsub (A = B*C - D) -> fmulsuba ( B = B*C - D)
+
+   While not all possible combinations are present in the interface, and not
+   all functions provide assign operations, the basic set of operations 
+   available using standard operators is covered.
+
+
+
+// ***************************************************************************
+// V. MASK OPERATIONS
+// ***************************************************************************
+
+   One advantage of UME::SIMD over other vectorization libraries, is the
+   ability to use mask types that are not depending on the vector type used.
+   That is, you can just declare SIMDMaskX object like this:
+
+     SIMDMask4 mask4(true, false, false, true); 
+
+   and use it in following code:
+
+     vec_u_1.adda(mask4, vec_u_2); // Use mask1 in masked operation on
+                                   // unsigned
+                                   // vector. Mind that the function name is
+                                   // the same as in the first example.
+
+     vec_d_1.adda(mask4, vec_d_2); // Use mask1 in masked operation on double
+                                   // vector. The same mask is used as in the
+                                   // first example!
+    
+   If you have previous experience with SIMD extensions, you will notice that 
+   the way masks were represented depended on the scalar type used (AVX,
+   AVX2). Newest AVX512 extension introduces concept of 'mask registers'. 
+   These registers can be used with vector instructions, so it is possible 
+   to hide mask implementation. For instruction sets that don't support masks,
+   the internal representation should take care of how the masks are handled.
+
+
+
+// ***************************************************************************
+// VI. REORDERING OPERATIONS
+// ***************************************************************************
+
+   One of the biggest problems to be solved in SIMD programming is the
+   implementation of Swizzle operation. Swizzle operation reorders elements of
+   a vector. In some implementations, you can find swizzle represented as
+   compile time mask of form:
+
+     // Example permutations using swizzle mask representation for SIMD4
+     abcd  - identity operations (no reordering)
+     abab  - pack upper half and lower half of destination with lower half 
+             of source
+     aaaa  - broadcast first element to all elements
+     cccc  - broadcast third element to all elements
+     
+   The number of possible swizzle masks is n^n, where n is the length of SIMD.
+   That is:
+
+     n = 1 =>  P(1) = 1^1 = 1
+     n = 2 =>  P(2) = 2^2 = 4
+     n = 4 =>  P(4) = 4^4 = 256
+       ...
+     n = 128 => P(128) = 128^128 = 5.2829453113566524635233978491652e+269
+        
+   In other words for SIMD128_8i it is not possible to represent swizzle as 
+   predefined constants... 
+
+   The swizzle form used in UME::SIMD is as follows:
+
+     SIMDSwizzle4 sMask(0, 1, 2, 3);  // equivalent of 'abcd' swizzle
+     SIMDSwizzle4 sMask(0, 1, 0, 1);  // equivalent of 'abab' swizzle
+     SIMDSwizzle4 sMask(0, 0, 0, 0);  // equivalent of 'aaaa' swizzle
+     SIMDSwizzle4 sMask(2, 2, 2, 2);  // equivalent of 'cccc' swizzle
+     
+   This allows the user to create swizzle masks of any sort. The underlying 
+   mechanisms perform specialization of swizzle masks for the masks supported
+   by the architecture, and perform more time consuming reordering otherwise.
+
+   For performance reasons it is advised for the user to use swizzle masks 
+   initialized with constants instead of run-time variables.
+
+   So far swizzle masks can be used only with SWIZZLE operation:
+   
+     vec_1 = vec_2.swizzle(sMask_1);
+    
+   Mind that the same operation can also use a mask:
+   
+     vec_1 = vec_2.swizzle(mask1, sMask_1);
+   
+   The functions of mask1 and sMask_1 are different!
+   From the result perspective, 'sMask_1' will be first used to
+   reorder elements of vec_2, then 'mask1' will be used to 
+   select elements between the original and reordered vectors.
+
+
+
+// ***************************************************************************
+// VII. SIMD 1
+// ***************************************************************************
+
+  This library implements a set of types that consist of 1 element only. These
+  data types are meant as an extension of scalar types into SIMD domain. By 
+  doing so it is now possible to use the same interface for both scalar types
+  and SIMD types.
+  
+  As initial performance results show, SIMD1 is in majority of the cases
+  equivalent to scalar code execution (with -O2 compilation flag!). Thanks to
+  this behaviour it is now possible to write just one piece of code using SIMD
+  abstraction and use it to create scalar reference point! This can be very
+  useful for measuring the performance drop inflicted by SIMD-like programming
+  and to limit the code duplication (separated SIMD1 and larger versions).
+  
+  One limitation exists on SIMD1 types: they don't implement operations for
+  packing and unpacking. Because SIMD1 is the smallest vector length, and the
+  vector length is not divisible by 2 there is no data type to be used
+  for these operations.
+
+
+
+// ***************************************************************************
+// VIII. Library reference
+// ***************************************************************************
+
+   There is not yet a full library reference. Please refer to
+   UMESimdInterface.h for description of all operations. The behaviour of
+   any given implementation should be exactly the same as behaviour of
+   functions used for scalar emulation. By search the operation opcode it
+   is possible to find equivalent member functions.
+
+   This library uses a very simple concept of a SIMD vector being represented 
+   by a pair of:
+    1) vector length (VEC_LEN) - that is a number of elements packed in a 
+       SIMD vector
+    2) scalar type (SCALAR_TYPE) - the type of a scalar used to represent 
+       a single element in a vector.
+
+   This leads to a following naming convention for all SIMD vectors:
+     SIMD<VEC_LEN>_<SCALAR_TYPE>
+
+   SCALAR_TYPE can be one of:
+     1) unsigned integer scalar type: uint8_t, uint16_t, uint32_t, uint64_t
+     2) signed integer scalar types: int8_t, int16_t, int32_t, int64_t
+     3) floating point scalar types: float (32b), double (64b)
+
+   In its current form the library defines all vector types of lengths up to
+   1024 bits.
+
+   According to that taxonomy, UMESIMD defines following data types:
+
+    8 bit vectors:
+        Unsigned integer      : SIMD1_8u
+        Signed integer        : SIMD1_8i
+
+    16 bit vectors:
+        Unsigned integer      : SIMD2_8u, SIMD1_16u
+        Signed integer        : SIMD2_8i, SIMD1_16i
+
+    32 bit vectors:
+        Unsigned integer      : SIMD4_8u, SIMD2_16u, SIMD1_32u
+        Signed integer        : SIMD4_8i, SIMD2_16i, SIMD1_32i
+        Floating point vectors: SIMD1_32f
+
+    64 bit vectors:
+        Unsigned integer      : SIMD8_8u, SIMD4_16u, SIMD2_32u, SIMD1_64u
+        Signed integer        : SIMD8_8i, SIMD4_16i, SIMD2_32i, SIMD1_64i
+        Floating point vectors: SIMD2_32f, SIMD1_64f
+
+    128 bit vectors:
+        Unsigned integer      : SIMD16_8u, SIMD8_16u, SIMD4_32u, SIMD2_64u
+        Signed integer        : SIMD16_8i, SIMD8_16i, SIMD4_32i, SIMD2_64i
+        Floating point vectors: SIMD4_32f, SIMD2_64f
+
+    256 bit vectors:
+        Unsigned integer      : SIMD32_8u, SIMD16_16u, SIMD8_32u, SIMD4_64u
+        Signed integer        : SIMD32_8i, SIMD16_16i, SIMD8_32i, SIMD4_64i
+        Floating point vectors: SIMD8_32f, SIMD4_64f
+
+    512 bit vectors:
+        Unsigned integer      : SIMD64_8u, SIMD32_16u, SIMD16_32u, SIMD8_64u
+        Signed integer        : SIMD64_8i, SIMD32_16i, SIMD16_32i, SIMD8_64i
+        Floating point vectors: SIMD16_32f, SIMD8_64f
+
+    1024 bit vectors:
+        Unsigned integer      : SIMD128_8u, SIMD64_16u, SIMD32_32u, SIMD16_64u
+        Signed integer        : SIMD128_8i, SIMD64_16i, SIMD32_32i, SIMD16_64i
+        Floating point vectors: SIMD32_32f, SIMD16_64f
+
+   As well as having full spectrum of SIMD vectors, the library also 
+   supports 'Mask' types and 'Swizzle Mask' types. Mask types are used widely 
+   in the library for conditional execution of operations on SIMD vectors, 
+   and for comparison operations. Swizzle Mask types are used in swizzle (that
+   is shuffling/reordering/permuting) operations.
+
+   These types are:
+
+   Mask types:
+     SIMDMask1, SIMDMask2, SIMDMask4, SIMDMask8, SIMDMask16, SIMDMask32,
+     SIMDMask64, SIMDMask128
+
+   Swizzle Mask types:
+     SIMDSwizzle1, SIMDSwizzle2, SIMDSwizzle4, SIMDSwizzle8, SIMDSwizzle16,
+     SIMDSwizzle32, SIMDSwizzle64, SIMDSwizzle128
+
+   All data types are implemented using C++ classes. All data types
+   implement uniform interface accessible as member functions of a 
+   particular data type class. Calling a member function uses the object as 
+   on of operation operands. In general it is possible to execute the same
+   operation on all vector types, with certain restrictions: 
+   - SIMD1 types dont implement PACK/UNPACK operations.
+   - The swizzle operations on SIMD1 are identity operations.
+   - Certain operations are restricted to Signed/floating point data types 
+    (e.g square root of a number, sign negation)
+   - The masking operations require mask of the same length as SIMD vector.
+     An example: SIMDMask4 needs to be used when performing MADD (masked
+     addition) operation on SIMD4_32u, SIMD4_32i, SIMD4_32f.
+
+   The library in its current form implements following operations 
+   (using interface codenames - function prototypes can be found in
+   SIMDInterface.h):
+
+   //NOTE: C++ interface definition will be provided later on. So far
+   // majority (about 99%) of the inteface is available with scalar 
+   // emulation, although not all combinations are tested.
+
+   1) Operations available on all vector types, mask types and swizzle 
+      mask types:
+        - LENGTH - returns length of vector (VEC_LEN)
+        - ALIGNMENT - returns required alignment for memory operations
+
+   2) Operations available on all SIMD vector types:
+
+    (Initialization)
+    - ZERO-CONSTR - Zero element constructor 
+    - SET-CONSTR  - One element constructor
+    - FULL-CONSTR - constructor with VEC_LEN scalar element 
+    - ASSIGNV     - Assignment with another vector
+    - MASSIGNV    - Masked assignment with another vector
+    - ASSIGNS     - Assignment with scalar
+    - MASSIGNS    - Masked assign with scalar
+
+    (Memory access)
+    - LOAD    - Load from memory (either aligned or unaligned) to vector 
+    - MLOAD   - Masked load from memory (either aligned or unaligned) to
+                vector
+    - LOADA   - Load from aligned memory to vector
+    - MLOADA  - Masked load from aligned memory to vector
+    - STORE   - Store vector content into memory (either aligned or unaligned)
+    - MSTORE  - Masked store vector content into memory (either aligned or
+                unaligned)
+    - STOREA  - Store vector content into aligned memory
+    - MSTOREA - Masked store vector content into aligned memory
+    - EXTRACT - Extract single element from a vector
+    - INSERT  - Insert single element into a vector
+
+    (Addition operations)
+    - ADDV     - Add with vector 
+    - MADDV    - Masked add with vector
+    - ADDS     - Add with scalar
+    - MADDS    - Masked add with scalar
+    - ADDVA    - Add with vector and assign
+    - MADDVA   - Masked add with vector and assign
+    - ADDSA    - Add with scalar and assign
+    - MADDSA   - Masked add with scalar and assign
+    - SADDV    - Saturated add with vector
+    - MSADDV   - Masked saturated add with vector
+    - SADDS    - Saturated add with scalar
+    - MSADDS   - Masked saturated add with scalar
+    - SADDVA   - Saturated add with vector and assign
+    - MSADDVA  - Masked saturated add with vector and assign
+    - SADDSA   - Satureated add with scalar and assign
+    - MSADDSA  - Masked staturated add with vector and assign
+    - POSTINC  - Postfix increment
+    - MPOSTINC - Masked postfix increment
+    - PREFINC  - Prefix increment
+    - MPREFINC - Masked prefix increment
+
+    (Subtraction operations)
+    - SUBV       - Sub with vector
+    - MSUBV      - Masked sub with vector
+    - SUBS       - Sub with scalar
+    - MSUBS      - Masked subtraction with scalar
+    - SUBVA      - Sub with vector and assign
+    - MSUBVA     - Masked sub with vector and assign
+    - SUBSA      - Sub with scalar and assign
+    - MSUBSA     - Masked sub with scalar and assign
+    - SSUBV      - Saturated sub with vector
+    - MSSUBV     - Masked saturated sub with vector
+    - SSUBS      - Saturated sub with scalar
+    - MSSUBS     - Masked saturated sub with scalar
+    - SSUBVA     - Saturated sub with vector and assign
+    - MSSUBVA    - Masked saturated sub with vector and assign
+    - SSUBSA     - Saturated sub with scalar and assign
+    - MSSUBSA    - Masked saturated sub with scalar and assign
+    - SUBFROMV   - Sub from vector
+    - MSUBFROMV  - Masked sub from vector
+    - SUBFROMS   - Sub from scalar (promoted to vector)
+    - MSUBFROMS  - Masked sub from scalar (promoted to vector)
+    - SUBFROMVA  - Sub from vector and assign
+    - MSUBFROMVA - Masked sub from vector and assign
+    - SUBFROMSA  - Sub from scalar (promoted to vector) and assign
+    - MSUBFROMSA - Masked sub from scalar (promoted to vector) and assign
+    - POSTDEC    - Postfix decrement
+    - MPOSTDEC   - Masked postfix decrement
+    - PREFDEC    - Prefix decrement
+    - MPREFDEC   - Masked prefix decrement
+
+    (Multiplication operations)
+    - MULV   - Multiplication with vector
+    - MMULV  - Masked multiplication with vector
+    - MULS   - Multiplication with scalar
+    - MMULS  - Masked multiplication with scalar
+    - MULVA  - Multiplication with vector and assign
+    - MMULVA - Masked multiplication with vector and assign
+    - MULSA  - Multiplication with scalar and assign
+    - MMULSA - Masked multiplication with scalar and assign
+
+    (Division operations)
+    - DIVV   - Division with vector
+    - MDIVV  - Masked division with vector
+    - DIVS   - Division with scalar
+    - MDIVS  - Masked division with scalar
+    - DIVVA  - Division with vector and assign
+    - MDIVVA - Masked division with vector and assign
+    - DIVSA  - Division with scalar and assign
+    - MDIVSA - Masked division with scalar and assign
+    - RCP    - Reciprocal
+    - MRCP   - Masked reciprocal
+    - RCPS   - Reciprocal with scalar numerator
+    - MRCPS  - Masked reciprocal with scalar
+    - RCPA   - Reciprocal and assign
+    - MRCPA  - Masked reciprocal and assign
+    - RCPSA  - Reciprocal with scalar and assign
+    - MRCPSA - Masked reciprocal with scalar and assign
+
+    (Comparison operations)
+    - CMPEQV - Element-wise 'equal' with vector
+    - CMPEQS - Element-wise 'equal' with scalar
+    - CMPNEV - Element-wise 'not equal' with vector
+    - CMPNES - Element-wise 'not equal' with scalar
+    - CMPGTV - Element-wise 'greater than' with vector
+    - CMPGTS - Element-wise 'greater than' with scalar
+    - CMPLTV - Element-wise 'less than' with vector
+    - CMPLTS - Element-wise 'less than' with scalar
+    - CMPGEV - Element-wise 'greater than or equal' with vector
+    - CMPGES - Element-wise 'greater than or equal' with scalar
+    - CMPLEV - Element-wise 'less than or equal' with vector
+    - CMPLES - Element-wise 'less than or equal' with scalar
+    - CMPEX  - Check if vectors are exact (returns scalar 'bool')
+
+    (Bitwise operations)
+    - ANDV   - AND with vector
+    - MANDV  - Masked AND with vector
+    - ANDS   - AND with scalar
+    - MANDS  - Masked AND with scalar
+    - ANDVA  - AND with vector and assign
+    - MANDVA - Masked AND with vector and assign
+    - ANDSA  - AND with scalar and assign
+    - MANDSA - Masked AND with scalar and assign
+    - ORV    - OR with vector
+    - MORV   - Masked OR with vector
+    - ORS    - OR with scalar
+    - MORS   - Masked OR with scalar
+    - ORVA   - OR with vector and assign
+    - MORVA  - Masked OR with vector and assign
+    - ORSA   - OR with scalar and assign
+    - MORSA  - Masked OR with scalar and assign
+    - XORV   - XOR with vector
+    - MXORV  - Masked XOR with vector
+    - XORS   - XOR with scalar
+    - MXORS  - Masked XOR with scalar
+    - XORVA  - XOR with vector and assign
+    - MXORVA - Masked XOR with vector and assign
+    - XORSA  - XOR with scalar and assign
+    - MXORSA - Masked XOR with scalar and assign
+    - NOT    - Negation of bits
+    - MNOT   - Masked negation of bits
+    - NOTA   - Negation of bits and assign
+    - MNOTA  - Masked negation of bits and assign
+
+    (Pack/Unpack operations - not available for SIMD1)
+    - PACK     - assign vector with two half-length vectors
+    - PACKLO   - assign lower half of a vector with a half-length vector
+    - PACKHI   - assign upper half of a vector with a half-length vector
+    - UNPACK   - Unpack lower and upper halfs to half-length vectors.
+    - UNPACKLO - Unpack lower half and return as a half-length vector.
+    - UNPACKHI - Unpack upper half and return as a half-length vector.
+
+    (Blend/Swizzle operations)
+    - BLENDV   - Blend (mix) two vectors
+    - BLENDS   - Blend (mix) vector with scalar (promoted to vector)
+    - BLENDVA  - Blend (mix) two vectors and assign
+    - BLENDSA  - Blend (mix) vector with scalar (promoted to vector) and
+                 assign
+    - SWIZZLE  - Swizzle (reorder/permute) vector elements
+    - SWIZZLEA - Swizzle (reorder/permute) vector elements and assign
+
+    (Reduction to scalar operations)
+    - HADD  - Add elements of a vector (horizontal add)
+    - MHADD - Masked add elements of a vector (horizontal add)
+    - HMUL  - Multiply elements of a vector (horizontal mul)
+    - MHMUL - Masked multiply elements of a vector (horizontal mul)
+    - HAND  - AND of elements of a vector (horizontal AND)
+    - MHAND - Masked AND of elements of a vector (horizontal AND)
+    - HOR   - OR of elements of a vector (horizontal OR)
+    - MHOR  - Masked OR of elements of a vector (horizontal OR)
+    - HXOR  - XOR of elements of a vector (horizontal XOR)
+    - MHXOR - Masked XOR of elements of a vector (horizontal XOR)
+
+    (Fused arithmetics)
+    - FMULADDV  - Fused multiply and add (A*B + C) with vectors
+    - MFMULADDV - Masked fused multiply and add (A*B + C) with vectors
+    - FMULSUBV  - Fused multiply and sub (A*B - C) with vectors
+    - MFMULSUBV - Masked fused multiply and sub (A*B - C) with vectors
+    - FADDMULV  - Fused add and multiply ((A + B)*C) with vectors
+    - MFADDMULV - Masked fused add and multiply ((A + B)*C) with vectors
+    - FSUBMULV  - Fused sub and multiply ((A - B)*C) with vectors
+    - MFSUBMULV - Masked fused sub and multiply ((A - B)*C) with vectors
+
+    (Mathematical operations)
+    - MAXV   - Max with vector
+    - MMAXV  - Masked max with vector
+    - MAXS   - Max with scalar
+    - MMAXS  - Masked max with scalar
+    - MAXVA  - Max with vector and assign
+    - MMAXVA - Masked max with vector and assign
+    - MAXSA  - Max with scalar (promoted to vector) and assign
+    - MMAXSA - Masked max with scalar (promoted to vector) and assign
+    - MINV   - Min with vector
+    - MMINV  - Masked min with vector
+    - MINS   - Min with scalar (promoted to vector)
+    - MMINS  - Masked min with scalar (promoted to vector)
+    - MINVA  - Min with vector and assign
+    - MMINVA - Masked min with vector and assign
+    - MINSA  - Min with scalar (promoted to vector) and assign
+    - MMINSA - Masked min with scalar (promoted to vector) and assign
+    - HMAX   - Max of elements of a vector (horizontal max)
+    - MHMAX  - Masked max of elements of a vector (horizontal max)
+    - IMAX   - Index of max element of a vector
+    - HMIN   - Min of elements of a vector (horizontal min)
+    - MHMIN  - Masked min of elements of a vector (horizontal min)
+    - IMIN   - Index of min element of a vector
+    - MIMIN  - Masked index of min element of a vector
+
+    (Gather/Scatter operations)
+    - GATHERS   - Gather from memory using indices from array
+    - MGATHERS  - Masked gather from memory using indices from array
+    - GATHERV   - Gather from memory using indices from vector
+    - MGATHERV  - Masked gather from memory using indices from vector
+    - SCATTERS  - Scatter to memory using indices from array
+    - MSCATTERS - Masked scatter to memory using indices from array
+    - SCATTERV  - Scatter to memory using indices from vector
+    - MSCATTERV - Masked scatter to memory using indices from vector
+
+    (Binary shift operations)
+    - LSHV   - Element-wise logical shift bits left (shift values in vector)
+    - MLSHV  - Masked element-wise logical shift bits left (shift values in
+               vector) 
+    - LSHS   - Element-wise logical shift bits left (shift value in scalar)
+    - MLSHS  - Masked element-wise logical shift bits left (shift value in
+               scalar)
+    - LSHVA  - Element-wise logical shift bits left (shift values in vector)
+               and assign
+    - MLSHVA - Masked element-wise logical shift bits left (shift values
+               in vector) and assign
+    - LSHSA  - Element-wise logical shift bits left (shift value in scalar)
+               and assign
+    - MLSHSA - Masked element-wise logical shift bits left (shift value in
+               scalar) and assign
+    - RSHV   - Logical shift bits right (shift values in vector)
+    - MRSHV  - Masked logical shift bits right (shift values in vector)
+    - RSHS   - Logical shift bits right (shift value in scalar)
+    - MRSHV  - Masked logical shift bits right (shift value in scalar)
+    - RSHVA  - Logical shift bits right (shift values in vector) and assign
+    - MRSHVA - Masked logical shift bits right (shift values in vector) and
+               assign
+    - RSHSA  - Logical shift bits right (shift value in scalar) and assign
+    - MRSHSA - Masked logical shift bits right (shift value in scalar) and
+               assign
+
+    (Binary rotation operations)
+    - ROLV   - Rotate bits left (shift values in vector)
+    - MROLV  - Masked rotate bits left (shift values in vector)
+    - ROLS   - Rotate bits right (shift value in scalar)
+    - MROLS  - Masked rotate bits left (shift value in scalar)
+    - ROLVA  - Rotate bits left (shift values in vector) and assign
+    - MROLVA - Masked rotate bits left (shift values in vector) and assign
+    - ROLSA  - Rotate bits left (shift value in scalar) and assign
+    - MROLSA - Masked rotate bits left (shift value in scalar) and assign
+    - RORV   - Rotate bits right (shift values in vector)
+    - MRORV  - Masked rotate bits right (shift values in vector) 
+    - RORS   - Rotate bits right (shift values in scalar)
+    - MRORS  - Masked rotate bits right (shift values in scalar) 
+    - RORVA  - Rotate bits right (shift values in vector) and assign 
+    - MRORVA - Masked rotate bits right (shift values in vector) and assign
+    - RORSA  - Rotate bits right (shift values in scalar) and assign
+    - MRORSA - Masked rotate bits right (shift values in scalar) and assign
+
+    3) Operations available for Signed integer and Unsigned integer 
+       data types:
+
+    (Signed/Unsigned cast)
+    - UTOI - Cast unsigned vector to signed vector
+    - ITOU - Cast signed vector to unsigned vector
+
+    4) Operations available for Signed integer and floating point SIMD types:
+
+    (Sign modification)
+    - NEG   - Negate signed values
+    - MNEG  - Masked negate signed values
+    - NEGA  - Negate signed values and assign
+    - MNEGA - Masked negate signed values and assign
+
+    (Mathematical functions)
+    - ABS   - Absolute value
+    - MABS  - Masked absolute value
+    - ABSA  - Absolute value and assign
+    - MABSA - Masked absolute value and assign
+
+    5) Operations available for floating point SIMD types:
+
+    (Comparison operations)
+    - CMPEQRV - Compare 'Equal within range' with margins from vector
+    - CMPEQRS - Compare 'Equal within range' with scalar margin
+
+    (Mathematical functions)
+    - SQR       - Square of vector values
+    - MSQR      - Masked square of vector values
+    - SQRA      - Square of vector values and assign
+    - MSQRA     - Masked square of vector values and assign
+    - SQRT      - Square root of vector values
+    - MSQRT     - Masked square root of vector values 
+    - SQRTA     - Square root of vector values and assign
+    - MSQRTA    - Masked square root of vector values and assign
+    - POWV      - Power (exponents in vector)
+    - MPOWV     - Masked power (exponents in vector)
+    - POWS      - Power (exponent in scalar)
+    - MPOWS     - Masked power (exponent in scalar) 
+    - ROUND     - Round to nearest integer
+    - MROUND    - Masked round to nearest integer
+    - TRUNC     - Truncate to integer (returns Signed integer vector)
+    - MTRUNC    - Masked truncate to integer (returns Signed integer vector)
+    - FLOOR     - Floor
+    - MFLOOR    - Masked floor
+    - CEIL      - Ceil
+    - MCEIL     - Masked ceil
+    - ISFIN     - Is finite
+    - ISINF     - Is infinite (INF)
+    - ISAN      - Is a number
+    - ISNAN     - Is 'Not a Number (NaN)'
+    - ISSUB     - Is subnormal
+    - ISZERO    - Is zero
+    - ISZEROSUB - Is zero or subnormal
+    - SIN       - Sine
+    - MSIN      - Masked sine
+    - COS       - Cosine
+    - MCOS      - Masked cosine
+    - TAN       - Tangent
+    - MTAN      - Masked tangent
+    - CTAN      - Cotangent
+    - MCTAN     - Masked cotangent
+
+    6) Operations available on Mask types
+    (construction)
+    - SET-CONSTR  - one element constructor (promote scalar to vector)
+    - FULL-CONSTR - MASK-LEN element constructor
+
+    (Memory access)
+    - LOAD    - Load values from memory (either aligned or unaligned) to mask
+    - LOADA   - Load values from aligned memory to mask 
+    - STORE   - Store values from mask to memory (either aligned or unaligned)
+    - STOREA  - Store values from mask to aligned memory
+    - EXTRACT - Extract single element from mask
+    - INSERT  - Insert single element into mask
+
+    (Initialization)
+    - ASSIGN  - Assign with mask
+
+    (Binary operations)
+    - AND  - Binary AND
+    - ANDA - Binary AND and assign
+    - OR   - Binary OR
+    - ANDA - Binary OR and assign
+    - XOR  - Binary XOR
+    - XORA - Binary XOR and assign
+    - NOT  - Binary NOT
+    - NOTA - Binary NOT and assign
+
+    7) Operations available on Swizzle Mask types
+
+    (Still working on this...)
+
+

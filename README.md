@@ -9,16 +9,13 @@ This piece of code was developed as part of ICE-DIP project at CERN.
  All questions should be submitted using the bug tracking system:
 
 
-   [bug tracker](https://bitbucket.org/edanor/umesimd/issues)
+[bug tracker](https://bitbucket.org/edanor/umesimd/issues?status=new&status=open)
 
-
+ 
 or by sending e-mail to:
 
-
-   przemyslaw.karpinski@cern.ch
-
+przemyslaw.karpinski@cern.ch
 
 Please refer to the wiki for introduction and additional information:
 
-
-   [wiki pages](https://bitbucket.org/edanor/umesimd/wiki/Home)
+[wiki pages](https://bitbucket.org/edanor/umesimd/wiki/Home)
