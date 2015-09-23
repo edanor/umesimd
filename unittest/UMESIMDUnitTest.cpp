@@ -23,7 +23,7 @@
 // SOFTWARE.
 //
 //
-//  This piece of code was developed as part of ICE-DIP project at CERN.
+// This piece of code was developed as part of ICE-DIP project at CERN.
 //  "ICE-DIP is a European Industrial Doctorate project funded by the European Community's 
 //  7th Framework programme Marie Curie Actions under grant PITN-GA-2012-316596".
 //

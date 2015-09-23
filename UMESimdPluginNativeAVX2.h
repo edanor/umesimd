@@ -1959,6 +1959,27 @@ namespace SIMD
         inline SIMDVecAVX2_f rcp () {
             return SIMDVecAVX2_f(_mm256_rcp_ps(this->mVec));
         }
+
+        // FMULADD
+        inline SIMDVecAVX2_f fmuladd(SIMDVecAVX2_f const & a, SIMDVecAVX2_f const & b) {
+#ifdef FMA
+            return _mm256_fmadd_ps (this->mVec, a.mVec, b.mVec);
+#else
+            return _mm256_add_ps(_mm256_mul_ps(this->mVec, a.mVec), b.mVec);
+#endif
+        }
+
+        // MFMULADD
+        inline SIMDVecAVX2_f fmuladd(SIMDMask8 const & mask, SIMDVecAVX2_f const & a, SIMDVecAVX2_f const & b) {
+#ifdef FMA
+            __m256 t0 = _mm256_fmadd_ps(this->mVec, a.mVec, b.mVec);
+            return _mm256_blendv_ps(this->mVec, t0, _mm256_cvtepi32_ps(mask.mMask));
+#else
+            __m256 t0 = _mm256_add_ps(_mm256_mul_ps(this->mVec, a.mVec), b.mVec);
+            return _mm256_blendv_ps(this->mVec, t0, _mm256_cvtepi32_ps(mask.mMask));
+#endif
+        }
+
         // ABS
         inline SIMDVecAVX2_f abs () {
             return _mm256_setzero_ps();
