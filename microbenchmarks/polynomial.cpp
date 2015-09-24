@@ -163,6 +163,10 @@ TIMING_RES test_SIMD()
     FLOAT_VEC_TYPE y_vec;
     FLOAT_VEC_TYPE t0, t1, t2, t3;
 
+    FLOAT_VEC_TYPE a0(a[0]),   a1(a[1]),   a2(a[2]),   a3(a[3]), 
+                   a4(a[4]),   a5(a[5]),   a6(a[6]),   a7(a[7]), 
+                   a8(a[8]),   a9(a[9]),   a10(a[10]), a11(11),
+                   a12(a[12]), a13(a[13]), a14(a[14]), a15(a[15]);
     start = __rdtsc();
 
     for(int i = 0; i < ARRAY_SIZE; i+= FLOAT_VEC_TYPE::length()) {
@@ -189,20 +193,20 @@ TIMING_RES test_SIMD()
               + x16_vec*a[16];
         */
 
-        y_vec = x_vec.fmuladd(FLOAT_VEC_TYPE(a[1]), FLOAT_VEC_TYPE(a[0]));
-        t0 = x_vec.fmuladd(FLOAT_VEC_TYPE(a[3]), FLOAT_VEC_TYPE(a[2]));
+        y_vec = x_vec.fmuladd(a1, a0);
+        t0 = x_vec.fmuladd(a3, a2);
         y_vec.adda(x2_vec.mul(t0));
 
-        t0 = x_vec.fmuladd(FLOAT_VEC_TYPE(a[7]), FLOAT_VEC_TYPE(a[6]));
-        t1 = x_vec.fmuladd(FLOAT_VEC_TYPE(a[5]), FLOAT_VEC_TYPE(a[4]));
+        t0 = x_vec.fmuladd(a7, a6);
+        t1 = x_vec.fmuladd(a5, a4);
         t2 = x2_vec.fmuladd(t0, t1);
         y_vec.adda(x4_vec.mul(t2));
 
-        t0 = x_vec.fmuladd(FLOAT_VEC_TYPE(a[15]), FLOAT_VEC_TYPE(a[14]));
-        t1 = x_vec.fmuladd(FLOAT_VEC_TYPE(a[13]), FLOAT_VEC_TYPE(a[12]));
+        t0 = x_vec.fmuladd(a15, a14);
+        t1 = x_vec.fmuladd(a13, a12);
         t2 = x2_vec.fmuladd(t0, t1);
-        t0 = x_vec.fmuladd(FLOAT_VEC_TYPE(a[11]), FLOAT_VEC_TYPE(a[10]));
-        t1 = x_vec.fmuladd(FLOAT_VEC_TYPE(a[9]), FLOAT_VEC_TYPE(a[8]));
+        t0 = x_vec.fmuladd(a11, a10);
+        t1 = x_vec.fmuladd(a9, a8);
         t3 = x2_vec.fmuladd(t0, t1);
         t0 = x4_vec.fmuladd(t2, t3);
         y_vec.adda(x8_vec.mul(t0));
@@ -296,67 +300,66 @@ int main()
     }
 
     std::cout << "Scalar code (float): " << (long)t_scalar_f_avg
-                                         << "\t(speedup: 1.0x)"
-                                         << std::endl;
+                                         << "(speedup: 1.0x)\n";
 
     std::cout << "Scalar code (double): " << (long)t_scalar_d_avg
-                                          << "\t(speedup: "
+                                          << "(speedup: "
                                           << float(t_scalar_f_avg)/float(t_scalar_d_avg)
-                                          << std::endl;
+                                          << "x)\n";
 
     std::cout << "SIMD code (1x32f): "  << (long) t_SIMD1_32f_avg
                                         << "\t(speedup: "
                                         << float(t_scalar_f_avg)/float(t_SIMD1_32f_avg)
-                                        << std::endl;
+                                        << "x)\n";
     
     std::cout << "SIMD code (2x32f): "  << (long) t_SIMD2_32f_avg
                                         << "\t(speedup: "
                                         << float(t_scalar_f_avg)/float(t_SIMD2_32f_avg)
-                                        << std::endl;
+                                        << "x)\n";
     
     std::cout << "SIMD code (4x32f): "  << (long) t_SIMD4_32f_avg
                                         << "\t(speedup: "
                                         << float(t_scalar_f_avg)/float(t_SIMD4_32f_avg)
-                                        << std::endl;
+                                        << "x)\n";
     
     std::cout << "SIMD code (8x32f): "  << (long) t_SIMD8_32f_avg
                                         << "\t(speedup: "
                                         << float(t_scalar_f_avg)/float(t_SIMD8_32f_avg)
-                                        << std::endl;
+                                        << "x)\n";
 
-    std::cout << "SIMD code (16x32f): "  << (long) t_SIMD16_32f_avg
+    std::cout << "SIMD code (16x32f): " << (long) t_SIMD16_32f_avg
                                         << "\t(speedup: "
                                         << float(t_scalar_f_avg)/float(t_SIMD16_32f_avg)
-                                        << std::endl;
+                                        << "x)\n";
     
-    std::cout << "SIMD code (32x32f): "  << (long) t_SIMD32_32f_avg
+    std::cout << "SIMD code (32x32f): " << (long) t_SIMD32_32f_avg
                                         << "\t(speedup: "
                                         << float(t_scalar_f_avg)/float(t_SIMD32_32f_avg)
-                                        << std::endl;
-    
+                                        << "x)\n";
+
     std::cout << "SIMD code (1x64f): "  << (long) t_SIMD1_64f_avg
                                         << "\t(speedup: "
                                         << float(t_scalar_f_avg)/float(t_SIMD1_64f_avg)
-                                        << std::endl;
+                                        << "x)\n";
     
     std::cout << "SIMD code (2x64f): "  << (long) t_SIMD2_64f_avg
                                         << "\t(speedup: "
                                         << float(t_scalar_f_avg)/float(t_SIMD2_64f_avg)
-                                        << std::endl;
+                                        << "x)\n";
     
     std::cout << "SIMD code (4x64f): "  << (long) t_SIMD4_64f_avg
                                         << "\t(speedup: "
                                         << float(t_scalar_f_avg)/float(t_SIMD4_64f_avg)
-                                        << std::endl;
+                                        << "x)\n";
     
     std::cout << "SIMD code (8x64f): "  << (long) t_SIMD8_64f_avg
                                         << "\t(speedup: "
                                         << float(t_scalar_f_avg)/float(t_SIMD8_64f_avg)
-                                        << std::endl;
+                                        << "x)\n";
     
     std::cout << "SIMD code (16x64f): "  << (long) t_SIMD16_64f_avg
                                         << "\t(speedup: "
                                         << float(t_scalar_f_avg)/float(t_SIMD16_64f_avg)
-                                        << std::endl;
+                                        << "x)\n";
     return 0;
 }
