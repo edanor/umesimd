@@ -108,7 +108,6 @@ TIMING_RES test_AVX_f_256()
 #if defined(__AVX__) || defined(__AVX2__) || defined(__AVX512__)
     unsigned long long start, end;    // Time measurements
     
-    srand ((unsigned int)time(NULL));
     // Initialize arrays with random data
     for(int i = 0; i < ARRAY_SIZE; i++)
     {
@@ -195,7 +194,6 @@ TIMING_RES test_AVX_d_256() {
 
     x = (double *) UME::DynamicMemory::AlignedMalloc(ARRAY_SIZE*sizeof(double), sizeof(double));
         
-    srand ((unsigned int)time(NULL));
     // Initialize arrays with random data
     for(int i = 0; i < ARRAY_SIZE; i++)
     {
@@ -268,7 +266,6 @@ TIMING_RES test_UME_SIMD()
 
     x = (FLOAT_T *) UME::DynamicMemory::AlignedMalloc(ARRAY_SIZE*sizeof(FLOAT_T), VEC_LEN*sizeof(FLOAT_T));
     
-    srand ((unsigned int)time(NULL));
     // Initialize arrays with random data
     for(int i = 0; i < ARRAY_SIZE; i++)
     {
@@ -292,7 +289,7 @@ TIMING_RES test_UME_SIMD()
     FLOAT_VEC_TYPE x_vec;
     FLOAT_VEC_TYPE sum_vec(0.0f);
     // Instead of adding single elements, we are using SIMD to add elements
-    // with STRIDE-8 distance. We then perform reduction using scalar code
+    // with STRIDE-<VEC_LEN> distance. We then perform reduction using scalar code
     for(uint32_t i = 0; i < PEEL_COUNT; i++)
     {
         x_vec.loada(&x[i*VEC_LEN]);
@@ -301,7 +298,6 @@ TIMING_RES test_UME_SIMD()
         //sum_vec = _mm256_add_ps(sum_vec, x_vec); // accumulate sum of values
     }
       
-    // Now the reduction operation converting a vector into a scalar value
     sum_vec.storea(temp);
     
     // TODO: replace with reduce-add
@@ -374,7 +370,8 @@ int main()
            t_UME_SIMD4_64f_avg = 0.0,
            t_UME_SIMD8_64f_avg = 0.0,
            t_UME_SIMD16_64f_avg = 0.0;
-
+    
+    srand ((unsigned int)time(NULL));
     // Run each timing test 100 times
     for(int i = 0; i < 100; i++)
     {
