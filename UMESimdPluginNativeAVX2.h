@@ -2951,8 +2951,18 @@ namespace SIMD
  
         //(Multiplication operations)
         // MULV   - Multiplication with vector
+        inline SIMDVecAVX2_f mul (SIMDVecAVX2_f const & b) {
+            __m256 t0 = _mm256_mul_ps(this->mVecLo, b.mVecLo);
+            __m256 t1 = _mm256_mul_ps(this->mVecHi, b.mVecHi);
+            return SIMDVecAVX2_f(t0, t1);
+        }
         // MMULV  - Masked multiplication with vector
         // MULS   - Multiplication with scalar
+        inline SIMDVecAVX2_f mul (float b) {
+            __m256 t0 = _mm256_mul_ps(this->mVecLo, _mm256_set1_ps(b));
+            __m256 t1 = _mm256_mul_ps(this->mVecHi, _mm256_set1_ps(b));
+            return SIMDVecAVX2_f(t0, t1);
+        }
         // MMULS  - Masked multiplication with scalar
         // MULVA  - Multiplication with vector and assign
         // MMULVA - Masked multiplication with vector and assign
@@ -3053,7 +3063,31 @@ namespace SIMD
  
         //(Fused arithmetics)
         // FMULADDV  - Fused multiply and add (A*B + C) with vectors
+        inline SIMDVecAVX2_f fmuladd(SIMDVecAVX2_f const & a, SIMDVecAVX2_f const & b) {
+#ifdef FMA
+            __m256 t0 = _mm256_fmadd_ps (this->mVecLo, a.mVecLo, b.mVecLo);
+            __m256 t1 = _mm256_fmadd_ps (this->mVecHi, a.mVecHi, b.mVecHi);
+            return SIMDVecAVX2_f(t0, t1);
+#else
+            __m256 t0 = _mm256_add_ps(_mm256_mul_ps(this->mVecLo, a.mVecLo), b.mVecLo);
+            __m256 t1 = _mm256_add_ps(_mm256_mul_ps(this->mVecHi, a.mVecHi), b.mVecHi);
+#endif
+            return SIMDVecAVX2_f(t0, t1);
+        }
+        
         // MFMULADDV - Masked fused multiply and add (A*B + C) with vectors
+        inline SIMDVecAVX2_f fmuladd(SIMDMask16 const & mask, SIMDVecAVX2_f const & a, SIMDVecAVX2_f const & b) {
+#ifdef FMA
+            __m256 t0 = _mm256_fmadd_ps(this->mVecLo, a.mVecLo, b.mVecLo);
+            __m256 t1 = _mm256_fmadd_ps(this->mVecHi, a.mVecHi, b.mVecHi);
+#else
+            __m256 t0 = _mm256_add_ps(_mm256_mul_ps(this->mVecLo, a.mVecLo), b.mVecLo);
+            __m256 t1 = _mm256_add_ps(_mm256_mul_ps(this->mVecHi, a.mVecHi), b.mVecHi);
+#endif
+            __m256 t2 = _mm256_blendv_ps(this->mVecLo, t0, _mm256_cvtepi32_ps(mask.mMaskLo));
+            __m256 t3 = _mm256_blendv_ps(this->mVecHi, t1, _mm256_cvtepi32_ps(mask.mMaskHi));
+            return SIMDVecAVX2_f(t2, t3);
+        }
         // FMULSUBV  - Fused multiply and sub (A*B - C) with vectors
         // MFMULSUBV - Masked fused multiply and sub (A*B - C) with vectors
         // FADDMULV  - Fused add and multiply ((A + B)*C) with vectors
