@@ -610,6 +610,15 @@ int test_UME_SIMD4_64f(bool supressMessages)
         CHECK_CONDITION(true, "ZERO-CONSTR");
     }
 
+    {
+        SIMD4_64f vec0(4.12, 2.34, 3.15, 8.16);
+        double expected[4] = {4.12, 0.0, 0.0, 8.16};
+        double values[4] = {0.0, 0.0, 0.0, 0.0};
+        SIMDMask4 mask(true, false, false, true);
+        vec0.storea(mask, values);
+        CHECK_CONDITION(valuesInRange(values, expected, 4, 0.1), "MSTOREA");
+    }
+
     return g_failCount;
 }
 

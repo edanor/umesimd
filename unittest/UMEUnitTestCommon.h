@@ -86,15 +86,15 @@ bool valueInRange(float value, float expectedValue, float errMargin) {
 }
 
 bool valueInRange(double value, double expectedValue, double errMargin) {
-    if(value > 0.0f)
+    if(value >= 0.0f)
     {
-        return ((expectedValue)*(1.0f + errMargin) > value) 
-             & ((expectedValue)*(1.0f - errMargin) < value);
+        return ((expectedValue)*(1.0f + errMargin) >= value) 
+             & ((expectedValue)*(1.0f - errMargin) <= value);
     }
     else
     {
-        return ((expectedValue)*(1.0f + errMargin) < value)
-             & ((expectedValue)*(1.0f - errMargin) > value);
+        return ((expectedValue)*(1.0f + errMargin) <= value)
+             & ((expectedValue)*(1.0f - errMargin) >= value);
     }
 }
 
