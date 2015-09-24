@@ -1,5 +1,6 @@
 OK   UME::SIMD::SIMDMask2 test Id: 1 - ZERO-CONSTR()
 OK   UME::SIMD::SIMDMask4 test Id: 1 - ZERO-CONSTR()
+OK   UME::SIMD::SIMDMask4 test Id: 2 - mask compatibility: 64f -> 32u
 OK   UME::SIMD::SIMDMask8 test Id: 1 - ZERO-CONSTR()
 OK   UME::SIMD::SIMDMask8 test Id: 2 - SET-CONSTR
 OK   UME::SIMD::SIMDMask8 test Id: 3 - FULL-CONSTR
@@ -461,6 +462,7 @@ OK   UME::SIMD::SIMD8_32f test Id: 25 - MSQRTA
 OK   UME::SIMD::SIMD4_64u test Id: 1 - ZERO-CONSTR
 OK   UME::SIMD::SIMD4_64i test Id: 1 - ZERO-CONSTR
 OK   UME::SIMD::SIMD4_64f test Id: 1 - ZERO-CONSTR
+OK   UME::SIMD::SIMD4_64f test Id: 2 - MSTOREA
 OK   UME::SIMD::SIMD64_8u test Id: 1 - ZERO-CONSTR
 OK   UME::SIMD::SIMD64_8i test Id: 1 - ZERO-CONSTR
 OK   UME::SIMD::SIMD32_16u test Id: 1 - ZERO-CONSTR
@@ -495,6 +497,7 @@ OK   UME::SIMD::SIMD8_64i test Id: 7 - MRORV
 OK   UME::SIMD::SIMD8_64i test Id: 8 - RORSA
 OK   UME::SIMD::SIMD8_64i test Id: 9 - MRORSA
 OK   UME::SIMD::SIMD8_64f test Id: 1 - ZERO-CONSTR
+OK   UME::SIMD::SIMD8_64f test Id: 2 - ADDVA
 OK   UME::SIMD::SIMD128_8u test Id: 1 - ZERO-CONSTR
 OK   UME::SIMD::SIMD128_8i test Id: 1 - ZERO-CONSTR
 OK   UME::SIMD::SIMD64_16u test Id: 1 - ZERO-CONSTR
@@ -506,4 +509,4 @@ OK   UME::SIMD::SIMD16_64u test Id: 1 - ZERO-CONSTR
 OK   UME::SIMD::SIMD16_64i test Id: 1 - ZERO-CONSTR
 OK   UME::SIMD::SIMD16_64f test Id: 1 - ZERO-CONSTR
 
-Total tests failed: 0/507
+Total tests failed: 0/510
