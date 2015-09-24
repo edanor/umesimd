@@ -3560,27 +3560,100 @@ namespace SIMD
         // MASSIGNV    - Masked assignment with another vector
         // ASSIGNS     - Assignment with scalar
         // MASSIGNS    - Masked assign with scalar
-
+        
         //(Memory access)
         // LOAD    - Load from memory (either aligned or unaligned) to vector 
         // MLOAD   - Masked load from memory (either aligned or unaligned) to
         //           vector
         // LOADA   - Load from aligned memory to vector
+        inline SIMDVecAVX_f & loada (double const * p) {
+            mVecLoLo = _mm256_load_pd(p); 
+            mVecLoHi = _mm256_load_pd(p+4);
+            mVecHiLo = _mm256_load_pd(p+8);
+            mVecHiHi = _mm256_load_pd(p+12);
+            return *this;
+        }
         // MLOADA  - Masked load from aligned memory to vector
+        inline SIMDVecAVX_f & loada (SIMDMask16 const & mask, double const * p) {
+            __m256d t0 = _mm256_load_pd(p);
+            __m256d t1 = _mm256_load_pd(p+4);
+            __m256d t2 = _mm256_load_pd(p+8);
+            __m256d t3 = _mm256_load_pd(p+12);
+
+            __m128i t4 = _mm256_extractf128_si256(mask.mMaskLo, 0);
+            __m128i t5 = _mm256_extractf128_si256(mask.mMaskLo, 1);
+            __m256d mask_pd_lo = _mm256_cvtepi32_pd(t4);
+            __m256d mask_pd_hi = _mm256_cvtepi32_pd(t5);
+            mVecLoLo = _mm256_blendv_pd(mVecLoLo, t0, mask_pd_lo);
+            mVecLoHi = _mm256_blendv_pd(mVecLoHi, t1, mask_pd_hi);
+
+            t4 = _mm256_extractf128_si256(mask.mMaskHi, 0);
+            t5 = _mm256_extractf128_si256(mask.mMaskHi, 1);
+            mask_pd_lo = _mm256_cvtepi32_pd(t4);
+            mask_pd_hi = _mm256_cvtepi32_pd(t5);
+            mVecHiLo = _mm256_blendv_pd(mVecLoLo, t2, mask_pd_lo);
+            mVecHiHi = _mm256_blendv_pd(mVecLoHi, t3, mask_pd_hi);
+
+            return *this;
+        }
         // STORE   - Store vector content into memory (either aligned or unaligned)
         // MSTORE  - Masked store vector content into memory (either aligned or
         //           unaligned)
         // STOREA  - Store vector content into aligned memory
+        inline double* storea(double* p) {
+            _mm256_store_pd(p,    mVecLoLo);
+            _mm256_store_pd(p+4,  mVecLoHi);
+            _mm256_store_pd(p+8,  mVecHiLo);
+            _mm256_store_pd(p+12, mVecHiHi);
+            return p;
+        }
         // MSTOREA - Masked store vector content into aligned memory
- 
+        inline double* storea(SIMDMask16 const & mask, double* p) {
+            union {
+                __m256d pd;
+                __m256i epi64;
+            }x;
+
+            __m128i t0 = _mm256_extractf128_si256(mask.mMaskLo, 0);
+            x.pd  = _mm256_cvtepi32_pd(t0);
+            _mm256_maskstore_pd(p,   x.epi64, mVecLoLo);
+            
+            t0 = _mm256_extractf128_si256(mask.mMaskLo, 1);
+            x.pd  = _mm256_cvtepi32_pd(t0);
+            _mm256_maskstore_pd(p+4, x.epi64, mVecLoHi);
+
+            t0 = _mm256_extractf128_si256(mask.mMaskHi, 0);
+            x.pd  = _mm256_cvtepi32_pd(t0);
+            _mm256_maskstore_pd(p+8, x.epi64, mVecHiLo);
+
+            t0 = _mm256_extractf128_si256(mask.mMaskHi, 1);
+            x.pd  = _mm256_cvtepi32_pd(t0);
+            _mm256_maskstore_pd(p+12, x.epi64, mVecHiHi);
+
+            return p;
+        }
         //(Addition operations)
         // ADDV     - Add with vector 
         // MADDV    - Masked add with vector
         // ADDS     - Add with scalar
         // MADDS    - Masked add with scalar
         // ADDVA    - Add with vector and assign
+        inline SIMDVecAVX_f & adda (SIMDVecAVX_f const & b) {
+            mVecLoLo = _mm256_add_pd(this->mVecLoLo, b.mVecLoLo);
+            mVecLoHi = _mm256_add_pd(this->mVecLoHi, b.mVecLoHi);
+            mVecHiLo = _mm256_add_pd(this->mVecHiLo, b.mVecHiLo);
+            mVecHiHi = _mm256_add_pd(this->mVecHiHi, b.mVecHiHi);
+            return *this;
+        }
         // MADDVA   - Masked add with vector and assign
         // ADDSA    - Add with scalar and assign
+        inline SIMDVecAVX_f & adda (double b) {
+            mVecLoLo = _mm256_add_pd(this->mVecLoLo, _mm256_set1_pd(b));
+            mVecLoHi = _mm256_add_pd(this->mVecLoHi, _mm256_set1_pd(b));
+            mVecHiLo = _mm256_add_pd(this->mVecHiLo, _mm256_set1_pd(b));
+            mVecHiHi = _mm256_add_pd(this->mVecHiHi, _mm256_set1_pd(b));
+            return *this;
+        }
         // MADDSA   - Masked add with scalar and assign
         // SADDV    - Saturated add with vector
         // MSADDV   - Masked saturated add with vector
