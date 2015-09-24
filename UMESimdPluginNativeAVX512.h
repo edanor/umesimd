@@ -31,7 +31,6 @@
 #ifndef UME_SIMD_PLUGIN_NATIVE_AVX512_H_
 #define UME_SIMD_PLUGIN_NATIVE_AVX512_H_
 
-
 #include <type_traits>
 
 #include "UMESimdInterface.h"

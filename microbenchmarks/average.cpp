@@ -475,7 +475,6 @@ int main()
                                         << float(t_scalar_f_avg)/float(t_UME_SIMD16_32f_avg) << ")" 
                                         << std::endl;
 
-    
     std::cout << "SIMD code (32x32f): " << (long)t_UME_SIMD32_32f_avg 
                                         << " (speedup: "
                                         << float(t_scalar_f_avg)/float(t_UME_SIMD32_32f_avg) << ")" 

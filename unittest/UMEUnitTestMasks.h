@@ -79,6 +79,18 @@ int test_UME_SIMDMask4(bool supressMessages) {
         CHECK_CONDITION(true, "ZERO-CONSTR()");
     }
 
+    {  
+        SIMD4_64f vec0(1.0, 2.0, 3.0, 4.0);
+        SIMD4_64f vec1(2.0, 1.0, 0.0, 5.0);
+
+        SIMDMask4 mask;
+        
+        mask = vec0.cmpgt(vec1);
+
+        CHECK_CONDITION(mask[0] == false && mask[1] == true &&
+                        mask[2] == true  &&  mask[3] == false, "mask compatibility: 64f -> 32u");
+    }
+
     return g_failCount;
 }
 

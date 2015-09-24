@@ -1242,6 +1242,8 @@ namespace SIMD
             return *this;
         }
     };
+
+
 #if defined USE_EMULATED_TYPES
     // mask vectors
     typedef SIMDVecScalarEmuMask<bool, 1>   SIMDMask1;

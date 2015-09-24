@@ -41,8 +41,7 @@
 namespace UME
 {
 namespace SIMD
-{   
-
+{
     // forward declarations of simd types classes;
     template<typename SCALAR_TYPE, uint32_t VEC_LEN>       class SIMDVecKNCMask;
     template<typename SCALAR_UINT_TYPE, uint32_t VEC_LEN>  class SIMDVecKNC_u;

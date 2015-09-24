@@ -64,7 +64,7 @@
 //         This type of warning is a DYNAMIC warning emited at run time.
 //
 // ************************************************************************************************
-
+//#define UME_SIMD_SHOW_EMULATION_WARNINGS
 #ifdef UME_SIMD_SHOW_EMULATION_WARNINGS
 namespace UME
 {

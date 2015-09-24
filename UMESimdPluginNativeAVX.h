@@ -46,6 +46,7 @@ namespace SIMD
 
     // forward declarations of simd types classes;
     template<typename SCALAR_TYPE, uint32_t VEC_LEN>       class SIMDVecAVXMask;
+    template<> class SIMDVecAVXMask<double, 4>;
     template<typename SCALAR_UINT_TYPE, uint32_t VEC_LEN>  class SIMDVecAVX_u;
     template<typename SCALAR_INT_TYPE, uint32_t VEC_LEN>   class SIMDVecAVX_i;
     template<typename SCALAR_FLOAT_TYPE, uint32_t VEC_LEN> class SIMDVecAVX_f;
@@ -114,6 +115,7 @@ namespace SIMD
         typedef SIMDVecAVXMask_traits<MASK_BASE_TYPE, VEC_LEN> MASK_TRAITS;
     private:
         MASK_SCALAR_TYPE mMask[VEC_LEN]; // each entry represents single mask element. For real SIMD vectors, mMask will be of mask intrinsic type.
+
     public:
         SIMDVecAVXMask() {
             UME_EMULATION_WARNING();
@@ -132,7 +134,7 @@ namespace SIMD
                 mMask[i] = MASK_SCALAR_TYPE(m);
             }
         }
-        
+
         // TODO: this should be handled using variadic templates, but unfortunatelly Visual Studio does not support this feature...
         SIMDVecAVXMask( bool m0, bool m1 )
         {
@@ -146,7 +148,7 @@ namespace SIMD
             mMask[1] = MASK_SCALAR_TYPE(m1); 
             mMask[2] = MASK_SCALAR_TYPE(m2); 
             mMask[3] = MASK_SCALAR_TYPE(m3);
-        };
+        }
 
         SIMDVecAVXMask( bool m0, bool m1, bool m2, bool m3,
                                 bool m4, bool m5, bool m6, bool m7 )
@@ -238,8 +240,14 @@ namespace SIMD
         // This function returns a boolean value based on internal representation
         static inline bool toBool(uint32_t m) { if( (m & 0x80000000) != 0) return true; else return false; }
 
+        friend class SIMDVecAVX_u<uint8_t, 4>;
+        friend class SIMDVecAVX_u<uint16_t, 4>;
         friend class SIMDVecAVX_u<uint32_t, 4>;
+        friend class SIMDVecAVX_u<uint64_t, 4>;
+        friend class SIMDVecAVX_i<int8_t, 4>;
+        friend class SIMDVecAVX_i<int16_t, 4>;
         friend class SIMDVecAVX_i<int32_t, 4>;
+        friend class SIMDVecAVX_i<int64_t, 4>;
         friend class SIMDVecAVX_f<float, 4>;
         friend class SIMDVecAVX_f<double, 4>;
     private:
@@ -287,8 +295,7 @@ namespace SIMD
             mMask = _mm_load_si128((__m128i*)raw);
         }
 
-        inline SIMDVecAVXMask<uint32_t, 4> & operator= (SIMDVecAVXMask<uint32_t, 4> const & x) {
-            //mMask = x.mMask;
+        inline SIMDVecAVXMask & operator= (SIMDVecAVXMask const & x) {
             mMask = _mm_load_si128(&x.mMask);
             return *this;
         }
@@ -308,8 +315,14 @@ namespace SIMD
         // This function returns a boolean value based on internal representation
         static inline bool toBool(uint32_t m) { if( (m & 0x80000000) != 0) return true; else return false; }
 
+        friend class SIMDVecAVX_u<uint8_t,  8>;
+        friend class SIMDVecAVX_u<uint16_t, 8>;
         friend class SIMDVecAVX_u<uint32_t, 8>;
+        friend class SIMDVecAVX_u<uint64_t, 8>;
+        friend class SIMDVecAVX_i<int8_t,  8>;
+        friend class SIMDVecAVX_i<int16_t, 8>;
         friend class SIMDVecAVX_i<int32_t, 8>;
+        friend class SIMDVecAVX_i<int64_t, 8>;
         friend class SIMDVecAVX_f<float, 8>;
         friend class SIMDVecAVX_f<double, 8>;
     private:
@@ -459,7 +472,7 @@ namespace SIMD
             return *this;
         }
     };
-
+    
     // Mask vectors. Mask vectors with bool base type will resolve into scalar emulation.
     typedef SIMDVecAVXMask<bool, 1>      SIMDMask1;
     typedef SIMDVecAVXMask<bool, 2>      SIMDMask2;
@@ -946,7 +959,7 @@ namespace SIMD
         }
 
         inline uint32_t extract (uint32_t index) const {
-            UME_PERFORMANCE_UNOPTIMAL_WARNING(); // This routine can be optimized
+            //UME_PERFORMANCE_UNOPTIMAL_WARNING(); // This routine can be optimized
             alignas(32) uint32_t raw[8];
             _mm256_store_si256 ((__m256i*)raw, mVec);
             return raw[index];
@@ -959,7 +972,7 @@ namespace SIMD
                 
         // insert[] (scalar)
         inline SIMDVecAVX_u & insert (uint32_t index, uint32_t value) {
-            UME_PERFORMANCE_UNOPTIMAL_WARNING();
+            //UME_PERFORMANCE_UNOPTIMAL_WARNING();
             alignas(32) uint32_t raw[8];
             _mm256_store_si256 ((__m256i*)raw, mVec);
             raw[index] = value;
@@ -1663,7 +1676,7 @@ namespace SIMD
         }
 
         inline int32_t extract(uint32_t index) const {
-            UME_PERFORMANCE_UNOPTIMAL_WARNING();
+            //UME_PERFORMANCE_UNOPTIMAL_WARNING();
             //return _mm256_extract_epi32(mVec, index); // TODO: this can be implemented in ICC
             alignas(32) int32_t raw[8];
             _mm256_store_si256((__m256i *)raw, mVec);
@@ -1677,7 +1690,7 @@ namespace SIMD
                 
         // insert[] (scalar)
         inline SIMDVecAVX_i & insert(uint32_t index, int32_t value) {
-            UME_PERFORMANCE_UNOPTIMAL_WARNING()
+            //UME_PERFORMANCE_UNOPTIMAL_WARNING()
             alignas(32) int32_t raw[8];
             _mm256_store_si256((__m256i *)raw, mVec);
             raw[index] = value;
@@ -2077,7 +2090,7 @@ namespace SIMD
 
         // EXTRACT
         inline float extract (uint32_t index) const {
-            UME_PERFORMANCE_UNOPTIMAL_WARNING();
+            //UME_PERFORMANCE_UNOPTIMAL_WARNING();
             alignas(32) float raw[8];
             _mm_store_ps(raw, mVec);
             return raw[index];
@@ -2085,13 +2098,13 @@ namespace SIMD
 
         // EXTRACT
         inline float operator[] (uint32_t index) const {
-            UME_PERFORMANCE_UNOPTIMAL_WARNING();
+            //UME_PERFORMANCE_UNOPTIMAL_WARNING();
             return extract(index);
         }
                 
         // INSERT
         inline SIMDVecAVX_f & insert (uint32_t index, float value) {
-            UME_PERFORMANCE_UNOPTIMAL_WARNING();
+            //UME_PERFORMANCE_UNOPTIMAL_WARNING();
             alignas(32) float raw[8];
             _mm_store_ps(raw, mVec);
             raw[index] = value;
@@ -2224,7 +2237,7 @@ namespace SIMD
 
         // EXTRACT
         inline float extract (uint32_t index) const {
-            UME_PERFORMANCE_UNOPTIMAL_WARNING();
+            //UME_PERFORMANCE_UNOPTIMAL_WARNING();
             alignas(32) float raw[8];
             _mm256_store_ps(raw, mVec);
             return raw[index];
@@ -2232,13 +2245,13 @@ namespace SIMD
 
         // EXTRACT
         inline float operator[] (uint32_t index) const {
-            UME_PERFORMANCE_UNOPTIMAL_WARNING();
+            //UME_PERFORMANCE_UNOPTIMAL_WARNING();
             return extract(index);
         }
                 
         // INSERT
         inline SIMDVecAVX_f & insert (uint32_t index, float value) {
-            UME_PERFORMANCE_UNOPTIMAL_WARNING();
+            //UME_PERFORMANCE_UNOPTIMAL_WARNING();
             alignas(32) float raw[8];
             _mm256_store_ps(raw, mVec);
             raw[index] = value;
@@ -2395,7 +2408,7 @@ namespace SIMD
 
         // EXTRACT
         inline float extract (uint32_t index) const {
-            UME_PERFORMANCE_UNOPTIMAL_WARNING();
+            //UME_PERFORMANCE_UNOPTIMAL_WARNING();
             alignas(32) float raw[8];
             if(index < 8) {
                 _mm256_store_ps(raw, mVecLo);
@@ -2409,13 +2422,13 @@ namespace SIMD
 
         // EXTRACT
         inline float operator[] (uint32_t index) const {
-            UME_PERFORMANCE_UNOPTIMAL_WARNING();
+            //UME_PERFORMANCE_UNOPTIMAL_WARNING();
             return extract(index);
         }
                 
         // INSERT
         inline SIMDVecAVX_f & insert (uint32_t index, float value) {
-            UME_PERFORMANCE_UNOPTIMAL_WARNING();
+            //UME_PERFORMANCE_UNOPTIMAL_WARNING();
             alignas(32) float raw[8];
             if(index < 8) {
                 _mm256_store_ps(raw, mVecLo);
@@ -2551,6 +2564,260 @@ namespace SIMD
         }
     };
     
+    template<>
+    class SIMDVecAVX_f<double, 4> : 
+        public SIMDVecFloatInterface<
+            SIMDVecAVX_f<double, 4>, 
+            SIMDVecAVX_u<uint64_t, 4>,
+            SIMDVecAVX_i<int64_t, 4>,
+            double, 
+            4,
+            uint64_t,
+            SIMDVecAVXMask<uint32_t, 4>, // Using non-standard mask!
+            SIMDSwizzle4>,
+        public SIMDVecPackableInterface<
+            SIMDVecAVX_f<float, 4>,
+            SIMDVecAVX_f<float, 2>>
+    {
+    private:
+        __m256d mVec;
+
+        inline SIMDVecAVX_f(__m256d const & x) {
+            this->mVec = x;
+        }
+
+    public:
+        inline SIMDVecAVX_f() {}
+
+        inline explicit SIMDVecAVX_f(double d) {
+            mVec = _mm256_set1_pd(d);
+        }
+
+        inline SIMDVecAVX_f(double d0, double d1, double d2, double d3) {
+            mVec = _mm256_setr_pd(d0, d1, d2, d3);
+        }
+
+        // EXTRACT
+        inline double extract (uint32_t index) const {
+            //UME_PERFORMANCE_UNOPTIMAL_WARNING();
+            alignas(32) double raw[4];
+            _mm256_store_pd(raw, mVec);
+            return raw[index];
+        }
+
+        // EXTRACT
+        inline double operator[] (uint32_t index) const {
+            //UME_PERFORMANCE_UNOPTIMAL_WARNING();
+            return extract(index);
+        }
+                
+        // INSERT
+        inline SIMDVecAVX_f & insert (uint32_t index, float value) {
+            //UME_PERFORMANCE_UNOPTIMAL_WARNING();
+            alignas(32) double raw[4];
+            _mm256_store_pd(raw, mVec);
+            raw[index] = value;
+            mVec = _mm256_load_pd(raw);
+            return *this;
+        }
+        
+        // ****************************************************************************************
+        // Overloading Interface functions starts here!
+        // ****************************************************************************************
+    };
+
+
+    template<>
+    class SIMDVecAVX_f<double, 8> : 
+        public SIMDVecFloatInterface<
+            SIMDVecAVX_f<double, 8>, 
+            SIMDVecAVX_u<uint64_t, 8>,
+            SIMDVecAVX_i<int64_t, 8>,
+            double, 
+            8,
+            uint64_t,
+            SIMDVecAVXMask<uint32_t, 8>, // Using non-standard mask!
+            SIMDSwizzle4>,
+        public SIMDVecPackableInterface<
+            SIMDVecAVX_f<double, 8>,
+            SIMDVecAVX_f<double, 2>>
+    {
+    private:
+        __m256d mVecLo;
+        __m256d mVecHi;
+
+        inline SIMDVecAVX_f(__m256d const & xLo, __m256d const & xHi) {
+            this->mVecLo = xLo;
+            this->mVecHi = xHi;
+        }
+
+    public:
+        inline SIMDVecAVX_f() {}
+
+        inline explicit SIMDVecAVX_f(double d) {
+            mVecLo = _mm256_set1_pd(d);
+            mVecHi = _mm256_set1_pd(d);
+        }
+
+        inline SIMDVecAVX_f(double d0, double d1, double d2, double d3,
+                            double d4, double d5, double d6, double d7) {
+            mVecLo = _mm256_setr_pd(d0, d1, d2, d3);
+            mVecHi = _mm256_setr_pd(d4, d5, d6, d7);
+        }
+
+        // EXTRACT
+        inline double extract (uint32_t index) const {
+            //UME_PERFORMANCE_UNOPTIMAL_WARNING();
+            alignas(32) double raw[4];
+
+            if(index < 4) {
+                _mm256_store_pd(raw, mVecLo);
+                return raw[index];
+            }
+            else {
+                _mm256_store_pd(raw, mVecHi);
+                return raw[index-4];
+            }
+        }
+
+        // EXTRACT
+        inline double operator[] (uint32_t index) const {
+            //UME_PERFORMANCE_UNOPTIMAL_WARNING();
+            return extract(index);
+        }
+                
+        // INSERT
+        inline SIMDVecAVX_f & insert (uint32_t index, float value) {
+            //UME_PERFORMANCE_UNOPTIMAL_WARNING();
+            alignas(32) double raw[4];
+            if(index < 4) {
+                _mm256_store_pd(raw, mVecLo);
+                raw[index] = value;
+                mVecLo = _mm256_load_pd(raw);
+            }
+            else {
+                _mm256_store_pd(raw, mVecHi);
+                raw[index-4] = value;
+                mVecHi = _mm256_load_pd(raw);
+            }
+            return *this;
+        }
+        
+        // ****************************************************************************************
+        // Overloading Interface functions starts here!
+        // ****************************************************************************************
+    };
+        
+    template<>
+    class SIMDVecAVX_f<double, 16> : 
+        public SIMDVecFloatInterface<
+            SIMDVecAVX_f<double, 16>, 
+            SIMDVecAVX_u<uint64_t, 16>,
+            SIMDVecAVX_i<int64_t, 16>,
+            double, 
+            16,
+            uint64_t,
+            SIMDVecAVXMask<uint32_t, 16>, // Using non-standard mask!
+            SIMDSwizzle4>,
+        public SIMDVecPackableInterface<
+            SIMDVecAVX_f<double, 16>,
+            SIMDVecAVX_f<double, 8>>
+    {
+    private:
+        __m256d mVecLoLo;
+        __m256d mVecLoHi;
+        __m256d mVecHiLo;
+        __m256d mVecHiHi;
+
+        inline SIMDVecAVX_f(__m256d const & xLoLo, __m256d const & xLoHi,
+                            __m256d const & xHiLo, __m256d const & xHiHi) {
+            this->mVecLoLo = xLoLo;
+            this->mVecLoHi = xLoHi;
+            this->mVecHiLo = xHiLo;
+            this->mVecHiHi = xHiHi;
+        }
+
+    public:
+        inline SIMDVecAVX_f() {}
+
+        inline explicit SIMDVecAVX_f(double d) {
+            mVecLoLo = _mm256_set1_pd(d);
+            mVecLoHi = _mm256_set1_pd(d);
+            mVecHiLo = _mm256_set1_pd(d);
+            mVecHiHi = _mm256_set1_pd(d);
+        }
+
+        inline SIMDVecAVX_f(double d0,  double d1,  double d2,  double d3,
+                            double d4,  double d5,  double d6,  double d7,
+                            double d8,  double d9,  double d10, double d11,
+                            double d12, double d13, double d14, double d15) {
+            mVecLoLo = _mm256_setr_pd(d0,  d1,  d2,  d3);
+            mVecLoHi = _mm256_setr_pd(d4,  d5,  d6,  d7);
+            mVecHiLo = _mm256_setr_pd(d8,  d9,  d10, d11);
+            mVecHiHi = _mm256_setr_pd(d12, d13, d14, d15);
+        }
+
+        // EXTRACT
+        inline double extract (uint32_t index) const {
+            //UME_PERFORMANCE_UNOPTIMAL_WARNING();
+            alignas(32) double raw[4];
+
+            if(index < 4) {
+                _mm256_store_pd(raw, mVecLoLo);
+                return raw[index];
+            }
+            else if (index < 8) {
+                _mm256_store_pd(raw, mVecLoHi);
+                return raw[index-4];
+            }
+            else if (index < 12) {
+                _mm256_store_pd(raw, mVecHiLo);
+                return raw[index-8];
+            } 
+            else {
+                _mm256_store_pd(raw, mVecHiHi);
+                return raw[index-12];
+            }
+        }
+
+        // EXTRACT
+        inline double operator[] (uint32_t index) const {
+            //UME_PERFORMANCE_UNOPTIMAL_WARNING();
+            return extract(index);
+        }
+                
+        // INSERT
+        inline SIMDVecAVX_f & insert (uint32_t index, double value) {
+            //UME_PERFORMANCE_UNOPTIMAL_WARNING();
+            alignas(32) double raw[4];
+            if(index < 4) {
+                _mm256_store_pd(raw, mVecLoLo);
+                raw[index] = value;
+                mVecLoLo = _mm256_load_pd(raw);
+            }
+            else if (index < 8) {
+                _mm256_store_pd(raw, mVecLoHi);
+                raw[index-4] = value;
+                mVecLoHi = _mm256_load_pd(raw);
+            }
+            else if (index < 12) {
+                _mm256_store_pd(raw, mVecHiLo);
+                raw[index-8] = value;
+                mVecHiLo = _mm256_load_pd(raw);
+            }
+            else {
+                _mm256_store_pd(raw, mVecHiHi);
+                raw[index-12] = value;
+                mVecHiHi = _mm256_load_pd(raw);
+            }
+            return *this;
+        }
+        
+        // ****************************************************************************************
+        // Overloading Interface functions starts here!
+        // ****************************************************************************************
+    };
+
     // 8b uint vectors
     typedef SIMDVecAVX_u<uint8_t, 1>    SIMD1_8u;
     
