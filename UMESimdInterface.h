@@ -5325,6 +5325,8 @@ namespace SIMD
         inline VEC_TYPE & operator= (const double & x) { }
  
     public:
+
+        // PACK
         DERIVED_VEC_TYPE & pack(DERIVED_HALF_VEC_TYPE const & a, DERIVED_HALF_VEC_TYPE const & b) {
             return EMULATED_FUNCTIONS::pack<DERIVED_VEC_TYPE, DERIVED_HALF_VEC_TYPE> (
                     static_cast<DERIVED_VEC_TYPE &>(*this), 
@@ -5333,13 +5335,15 @@ namespace SIMD
                 );
         }
         
+        // PACKLO
         DERIVED_VEC_TYPE & packlo(DERIVED_HALF_VEC_TYPE const & a) {
             return EMULATED_FUNCTIONS::packLow<DERIVED_VEC_TYPE, DERIVED_HALF_VEC_TYPE> (
                     static_cast<DERIVED_VEC_TYPE &>(*this), 
                     static_cast<DERIVED_HALF_VEC_TYPE const &>(a)
                 );
         }
-        
+
+        // PACKHI
         DERIVED_VEC_TYPE & packhi(DERIVED_HALF_VEC_TYPE const & a) {
             return EMULATED_FUNCTIONS::packHigh<DERIVED_VEC_TYPE, DERIVED_HALF_VEC_TYPE> (
                     static_cast<DERIVED_VEC_TYPE &>(*this), 
@@ -5347,6 +5351,7 @@ namespace SIMD
                 );
         }
         
+        // UNPACK
         void unpack(DERIVED_HALF_VEC_TYPE & a, DERIVED_HALF_VEC_TYPE & b) {
             EMULATED_FUNCTIONS::unpack<DERIVED_VEC_TYPE, DERIVED_HALF_VEC_TYPE> (
                     static_cast<DERIVED_VEC_TYPE const &>(*this), 
@@ -5355,12 +5360,14 @@ namespace SIMD
                 );
         }
 
+        // UNPACKLO
         DERIVED_HALF_VEC_TYPE unpacklo() {
             return EMULATED_FUNCTIONS::unpackLow<DERIVED_VEC_TYPE, DERIVED_HALF_VEC_TYPE> (
                         static_cast<DERIVED_VEC_TYPE const &> (*this)
                     );
         }
 
+        // UNPACKHI
         DERIVED_HALF_VEC_TYPE unpackhi() {
             return EMULATED_FUNCTIONS::unpackHigh<DERIVED_VEC_TYPE, DERIVED_HALF_VEC_TYPE> (
                         static_cast<DERIVED_VEC_TYPE const &> (*this)
