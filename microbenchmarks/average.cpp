@@ -192,7 +192,7 @@ TIMING_RES test_AVX_d_256() {
 
     double *x;
 
-    x = (double *) UME::DynamicMemory::AlignedMalloc(ARRAY_SIZE*sizeof(double), sizeof(double));
+    x = (double *) UME::DynamicMemory::AlignedMalloc(ARRAY_SIZE*sizeof(double), 4*sizeof(double));
         
     // Initialize arrays with random data
     for(int i = 0; i < ARRAY_SIZE; i++)
@@ -264,7 +264,7 @@ TIMING_RES test_UME_SIMD()
     
     FLOAT_T *x;
 
-    x = (FLOAT_T *) UME::DynamicMemory::AlignedMalloc(ARRAY_SIZE*sizeof(FLOAT_T), VEC_LEN*sizeof(FLOAT_T));
+    x = (FLOAT_T *) UME::DynamicMemory::AlignedMalloc(ARRAY_SIZE*sizeof(FLOAT_T), ALIGNMENT);
     
     // Initialize arrays with random data
     for(int i = 0; i < ARRAY_SIZE; i++)
@@ -282,7 +282,7 @@ TIMING_RES test_UME_SIMD()
             
     FLOAT_T* temp;
     
-    temp = (FLOAT_T*) UME::DynamicMemory::AlignedMalloc(ARRAY_SIZE*sizeof(FLOAT_T), VEC_LEN*ALIGNMENT);
+    temp = (FLOAT_T*) UME::DynamicMemory::AlignedMalloc(ARRAY_SIZE*sizeof(FLOAT_T), ALIGNMENT);
 
     start = __rdtsc();
       
@@ -292,13 +292,13 @@ TIMING_RES test_UME_SIMD()
     // with STRIDE-<VEC_LEN> distance. We then perform reduction using scalar code
     for(uint32_t i = 0; i < PEEL_COUNT; i++)
     {
-        x_vec.loada(&x[i*VEC_LEN]);
+        x_vec.load(&x[i*VEC_LEN]);
         //x_vec = _mm256_load_ps(&x[i*8]); // load elements with STRIDE-8
         sum_vec.adda(x_vec);
         //sum_vec = _mm256_add_ps(sum_vec, x_vec); // accumulate sum of values
     }
       
-    sum_vec.storea(temp);
+    sum_vec.store(temp);
     
     // TODO: replace with reduce-add
     for(uint32_t i = 0; i < VEC_LEN; ++i)
