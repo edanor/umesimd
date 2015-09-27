@@ -233,14 +233,14 @@ namespace SIMD
         SIMDVecKNCMask(__mmask8 & m) : mMask(m) {};
 
         friend class SIMDVecKNC_u<uint8_t,  8>;
-        friend class SIMDVecKNC_u<uint16_t, 16>;
-        friend class SIMDVecKNC_u<uint32_t, 32>;
-        friend class SIMDVecKNC_u<uint64_t, 64>;
+        friend class SIMDVecKNC_u<uint16_t, 8>;
+        friend class SIMDVecKNC_u<uint32_t, 8>;
+        friend class SIMDVecKNC_u<uint64_t, 8>;
 
         friend class SIMDVecKNC_u<int8_t,  8>;
-        friend class SIMDVecKNC_u<int16_t, 16>;
-        friend class SIMDVecKNC_u<int32_t, 32>;
-        friend class SIMDVecKNC_u<int64_t, 64>;
+        friend class SIMDVecKNC_u<int16_t, 8>;
+        friend class SIMDVecKNC_u<int32_t, 8>;
+        friend class SIMDVecKNC_u<int64_t, 8>;
         
         friend class SIMDVecKNC_f<float, 8>;
         friend class SIMDVecKNC_f<double, 8>;
@@ -281,6 +281,74 @@ namespace SIMD
         }
     };
     
+    template<>
+    class SIMDVecKNCMask<bool, 16> : 
+        public SIMDMaskBaseInterface< 
+            SIMDVecKNCMask<bool, 16>,
+            bool,
+            16>
+    {   
+    private:
+        __mmask16 mMask;
+
+        SIMDVecKNCMask(__mmask16 & m) : mMask(m) {};
+
+        friend class SIMDVecKNC_u<uint8_t,  16>;
+        friend class SIMDVecKNC_u<uint16_t, 16>;
+        friend class SIMDVecKNC_u<uint32_t, 16>;
+        friend class SIMDVecKNC_u<uint64_t, 16>;
+
+        friend class SIMDVecKNC_u<int8_t,  16>;
+        friend class SIMDVecKNC_u<int16_t, 16>;
+        friend class SIMDVecKNC_u<int32_t, 16>;
+        friend class SIMDVecKNC_u<int64_t, 16>;
+        
+        friend class SIMDVecKNC_f<float, 16>;
+        friend class SIMDVecKNC_f<double, 16>;
+    public:
+        SIMDVecKNCMask() { }
+
+        // Regardless of the mask representation, the interface should only allow initialization using 
+        // standard bool or using equivalent mask
+        SIMDVecKNCMask( bool m ) {
+            mMask = __mmask16(-int16_t(m));
+        }
+
+        SIMDVecKNCMask( bool m0,  bool m1,  bool m2,  bool m3,
+                        bool m4,  bool m5,  bool m6,  bool m7,
+                        bool m8,  bool m9,  bool m10, bool m11,
+                        bool m12, bool m13, bool m14, bool m15
+                        )
+        {
+            mMask = __mmask16(int16_t(m0)  << 0 | int8_t(m1)  << 1 |
+                              int16_t(m2)  << 2 | int8_t(m3)  << 3 |
+                              int16_t(m4)  << 4 | int8_t(m5)  << 5 |
+                              int16_t(m6)  << 6 | int8_t(m7)  << 7 |
+                              int16_t(m8)  << 0 | int8_t(m9)  << 1 |
+                              int16_t(m10) << 2 | int8_t(m11) << 3 |
+                              int16_t(m12) << 4 | int8_t(m13) << 5 |
+                              int16_t(m14) << 6 | int8_t(m15) << 7 );
+        }
+
+        // A non-modifying element-wise access operator
+        inline bool operator[] (uint32_t index) const { return (int16_t(mMask) & (1 << index)) != 0; }
+
+        inline bool extract(uint32_t index)
+        {
+            return (int16_t(mMask) & (1 << index)) != 0;
+        }
+
+        // Element-wise modification operator
+        inline void insert(uint32_t index, bool x) { 
+            if(x == true) mMask |= ( 1 << index );
+            else mMask &= ~( 1 << index );
+        }
+
+        SIMDVecKNCMask(SIMDVecKNCMask const & mask) {
+            mMask = mask.mMask;
+        }
+    };
+
     // Mask vectors. Mask vectors with bool base type will resolve into scalar emulation.
     typedef SIMDVecKNCMask<bool, 1>     SIMDMask1;
     typedef SIMDVecKNCMask<bool, 2>     SIMDMask2;
@@ -1708,13 +1776,15 @@ template<typename SCALAR_FLOAT_TYPE>
         inline float * store (float * p)
         {
             if((uint64_t(p) % 64) == 0) {
-                _mm512_store_ps(p, mVec);
+                _mm512_mask_store_ps(p, 
+                                     0x00FF, // Only store 8 lower elements!
+                                     mVec);
             }
             else {
                 alignas(64) float raw[8];
-                mVec = _mm512_mask_load_ps(mVec,
-                                    0x00FF,
-                                    raw);
+                _mm512_mask_store_ps(raw,
+                                     0x00FF, // Only store 8 lower elements!
+                                     mVec);
                 
                 memcpy(p, raw, 8*sizeof(float));
                 return p;
@@ -1745,20 +1815,45 @@ template<typename SCALAR_FLOAT_TYPE>
         }
         //(Addition operations)
         // ADDV     - Add with vector 
-       /* inline SIMDVecKNC_f add (SIMDVecKNC_f const & b) {
-            __m512 t0 = _mm512_add_ps(this->mVec, b.mVec);
+        inline SIMDVecKNC_f add (SIMDVecKNC_f const & b) {
+            __m512 t0 = _mm512_add_ps(mVec, b.mVec);
             return SIMDVecKNC_f(t0);
-        }*/
+        }
         // MADDV    - Masked add with vector
-        // ADDS     - Add with scalar
+        inline SIMDVecKNC_f add (SIMDMask8 const & mask, SIMDVecKNC_f const & b) {
+            __m512 t0 = _mm512_mask_add_ps(mVec, mask.mMask, mVec, b.mVec);
+            return SIMDVecKNC_f(t0);
+        }
+        // ADDS     - Add with scalar 
+        inline SIMDVecKNC_f add (float b) {
+            __m512 t0 = _mm512_add_ps(mVec, _mm512_set1_ps(b));
+            return SIMDVecKNC_f(t0);
+        }
         // MADDS    - Masked add with scalar
+        inline SIMDVecKNC_f add (SIMDMask8 const & mask, float b) {
+            __m512 t0 = _mm512_mask_add_ps(mVec, 
+                                        mask.mMask, 
+                                        mVec, 
+                                        _mm512_set1_ps(b));
+            return SIMDVecKNC_f(t0);
+        }
         // ADDVA    - Add with vector and assign
-       /* inline SIMDVecKNC_f & adda (SIMDVecKNC_f const & b) {
-            this->mVec = _mm512_add_ps(this->mVec, b.mVec);
+        inline SIMDVecKNC_f & adda (SIMDVecKNC_f const & b) {
+            mVec = _mm512_mask_add_ps(mVec,
+                                      0x00FF,
+                                      mVec,
+                                      b.mVec);
             return *this;
-        }*/
+        }
         // MADDVA   - Masked add with vector and assign
         // ADDSA    - Add with scalar and assign
+        inline SIMDVecKNC_f & adda (float b) {
+            mVec = _mm512_mask_add_ps(mVec,
+                                      0x00FF,
+                                      mVec,
+                                      _mm512_set1_ps(b));
+            return *this;
+        }
         // MADDSA   - Masked add with scalar and assign
         // SADDV    - Saturated add with vector
         // MSADDV   - Masked saturated add with vector
@@ -1805,8 +1900,19 @@ template<typename SCALAR_FLOAT_TYPE>
  
         //(Multiplication operations)
         // MULV   - Multiplication with vector
+        inline SIMDVecKNC_f mul(SIMDVecKNC_f const & b) {
+            __m512 t0 = _mm512_mask_mul_ps(mVec, 0x00FF, mVec, b.mVec);
+            return SIMDVecKNC_f(t0);
+        }
         // MMULV  - Masked multiplication with vector
         // MULS   - Multiplication with scalar
+        inline SIMDVecKNC_f mul(float b) {
+            __m512 t0 = _mm512_mask_mul_ps(mVec, 
+                                           0x00FF, 
+                                           mVec, 
+                                           _mm512_set1_ps(b));
+            return SIMDVecKNC_f(t0);
+        }
         // MMULS  - Masked multiplication with scalar
         // MULVA  - Multiplication with vector and assign
         // MMULVA - Masked multiplication with vector and assign
@@ -1907,6 +2013,10 @@ template<typename SCALAR_FLOAT_TYPE>
  
         //(Fused arithmetics)
         // FMULADDV  - Fused multiply and add (A*B + C) with vectors
+        inline SIMDVecKNC_f fmuladd(SIMDVecKNC_f const & b, SIMDVecKNC_f const & c) {
+            __m512 t0 = _mm512_mask_fmadd_ps(mVec, 0x00FF, b.mVec, c.mVec);
+            return SIMDVecKNC_f(t0);
+        }
         // MFMULADDV - Masked fused multiply and add (A*B + C) with vectors
         // FMULSUBV  - Fused multiply and sub (A*B - C) with vectors
         // MFMULSUBV - Masked fused multiply and sub (A*B - C) with vectors
@@ -2133,23 +2243,80 @@ template<typename SCALAR_FLOAT_TYPE>
 
         //(Memory access)
         // LOAD    - Load from memory (either aligned or unaligned) to vector 
+        inline SIMDVecKNC_f & load (float const * p) {
+            if((uint64_t(p) % 64) == 0) {
+                
+                 mVec = _mm512_load_ps(p);
+            }
+            else {
+                alignas(64) float raw[16];
+                memcpy(raw, p, 16*sizeof(float));
+                mVec = _mm512_load_ps(raw);
+            }
+            return * this;
+        }
         // MLOAD   - Masked load from memory (either aligned or unaligned) to
         //           vector
+        inline SIMDVecKNC_f & load (SIMDMask16 const & mask, float const * p) {
+            if((uint64_t(p) % 64) == 0) {
+                mVec = _mm512_mask_load_ps(mVec, mask.mMask, p);
+            }
+            else {
+                alignas(64) float raw[16];
+                memcpy(raw, p, 16*sizeof(float));
+                mVec = _mm512_mask_load_ps(mVec,
+                                    mask.mMask,
+                                    raw);
+            }
+            return *this;
+        }
         // LOADA   - Load from aligned memory to vector
+             // For this class alignment is 32B!!!
         inline SIMDVecKNC_f & loada (float const * p) {
             mVec = _mm512_load_ps(p);
             return *this;
         }
         // MLOADA  - Masked load from aligned memory to vector
+        inline SIMDVecKNC_f & loada (SIMDMask16 const & mask, float const * p) {
+            mVec = _mm512_mask_load_ps(mVec, mask.mMask, p);
+            return *this;
+        }
         // STORE   - Store vector content into memory (either aligned or unaligned)
+        inline float * store (float * p)
+        {
+            if((uint64_t(p) % 64) == 0) {
+                _mm512_store_ps(p, mVec);
+            }
+            else {
+                alignas(64) float raw[16];
+                _mm512_store_ps(raw, mVec);
+                memcpy(p, raw, 16*sizeof(float));
+                return p;
+            }
+        }
         // MSTORE  - Masked store vector content into memory (either aligned or
         //           unaligned)
+        inline float * store(SIMDMask16 const & mask, float *p) {
+            if((uint64_t(p) % 64) == 0) {
+                _mm512_mask_store_ps(p, mask.mMask, mVec);
+            }
+            else {
+                alignas(64) float raw[8];
+                _mm512_mask_store_ps(p, mask.mMask, mVec);
+            }
+            return p;
+        }
+
         // STOREA  - Store vector content into aligned memory
         inline float* storea(float* p) {
             _mm512_store_ps(p, mVec);
             return p;
         }
         // MSTOREA - Masked store vector content into aligned memory
+        inline float* storea(SIMDMask16 const & mask, float* p) {
+            _mm512_mask_store_ps(p, mask.mMask, mVec);
+            return p;
+        }
         // EXTRACT - Extract single element from a vector
         // INSERT  - Insert single element into a vector
  
@@ -2161,6 +2328,10 @@ template<typename SCALAR_FLOAT_TYPE>
         }
         // MADDV    - Masked add with vector
         // ADDS     - Add with scalar
+        inline SIMDVecKNC_f add (float b) {
+            __m512 t0 = _mm512_add_ps(this->mVec, _mm512_set1_ps(b));
+            return SIMDVecKNC_f(t0);
+        }
         // MADDS    - Masked add with scalar
         // ADDVA    - Add with vector and assign
         inline SIMDVecKNC_f & adda (SIMDVecKNC_f const & b) {
@@ -2169,6 +2340,10 @@ template<typename SCALAR_FLOAT_TYPE>
         }
         // MADDVA   - Masked add with vector and assign
         // ADDSA    - Add with scalar and assign
+        inline SIMDVecKNC_f & adda (float b) {
+            this->mVec = _mm512_add_ps(this->mVec, _mm512_set1_ps(b));
+            return *this;
+        }
         // MADDSA   - Masked add with scalar and assign
         // SADDV    - Saturated add with vector
         // MSADDV   - Masked saturated add with vector
@@ -2215,8 +2390,16 @@ template<typename SCALAR_FLOAT_TYPE>
  
         //(Multiplication operations)
         // MULV   - Multiplication with vector
+        inline SIMDVecKNC_f mul(SIMDVecKNC_f const & b) {
+            __m512 t0 = _mm512_mul_ps(mVec, b.mVec);
+            return SIMDVecKNC_f(t0);
+        }
         // MMULV  - Masked multiplication with vector
         // MULS   - Multiplication with scalar
+        inline SIMDVecKNC_f mul(float b) {
+            __m512 t0 = _mm512_mul_ps(mVec, _mm512_set1_ps(b));
+            return SIMDVecKNC_f(t0);
+        }
         // MMULS  - Masked multiplication with scalar
         // MULVA  - Multiplication with vector and assign
         // MMULVA - Masked multiplication with vector and assign
@@ -2317,6 +2500,10 @@ template<typename SCALAR_FLOAT_TYPE>
  
         //(Fused arithmetics)
         // FMULADDV  - Fused multiply and add (A*B + C) with vectors
+        inline SIMDVecKNC_f fmuladd(SIMDVecKNC_f const & b, SIMDVecKNC_f const & c) {
+            __m512 t0 = _mm512_fmadd_ps(mVec, b.mVec, c.mVec);
+            return SIMDVecKNC_f(t0);
+        }
         // MFMULADDV - Masked fused multiply and add (A*B + C) with vectors
         // FMULSUBV  - Fused multiply and sub (A*B - C) with vectors
         // MFMULSUBV - Masked fused multiply and sub (A*B - C) with vectors

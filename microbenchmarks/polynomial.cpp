@@ -170,7 +170,7 @@ TIMING_RES test_SIMD()
     start = __rdtsc();
 
     for(int i = 0; i < ARRAY_SIZE; i+= FLOAT_VEC_TYPE::length()) {
-        x_vec.loada(&x[i]);
+        x_vec.load(&x[i]);
         x2_vec  = x_vec.mul(x_vec);
         x4_vec  = x2_vec.mul(x2_vec);
         x8_vec  = x4_vec.mul(x4_vec);
@@ -213,7 +213,7 @@ TIMING_RES test_SIMD()
 
         y_vec.adda(x16_vec.mul(a[16]));
 
-        y_vec.storea(&y[0]);
+        y_vec.store(&y[0]);
     }
 
     end = __rdtsc();
@@ -223,9 +223,6 @@ TIMING_RES test_SIMD()
 
     return end - start;
 }
-
-
-
 
 int main()
 {
@@ -255,7 +252,7 @@ int main()
           t_SIMD4_64f_avg = 0.0f,
           t_SIMD8_64f_avg = 0.0f,
           t_SIMD16_64f_avg = 0.0f;
-
+    
     // Run each timing test 100 times
     for(int i = 0; i < 100; i++)
     {
@@ -298,7 +295,14 @@ int main()
         t_SIMD16_64f = test_SIMD<double, UME::SIMD::SIMD16_64f>();
         t_SIMD16_64f_avg = 1.0f/(1.0f + float(i)) * (float(t_SIMD16_64f) - t_SIMD16_64f_avg);
     }
-
+    
+    std::cout << "The result is amount of time it takes to calculate polynomial of\n" 
+                 "order 16 (no zero-coefficients) of: " << ARRAY_SIZE << " elements.\n" 
+                 "All timing results in clock cycles. \n"
+                 "Speedup calculated with scalar floating point result as reference.\n\n"
+                 "SIMD version uses following operations: \n"
+                 " ZERO-CONSTR, ONE-CONSTR, LOAD, STORE, MULV, FMULADDV, ADDVA\n";
+                 
     std::cout << "Scalar code (float): " << (long)t_scalar_f_avg
                                          << "(speedup: 1.0x)\n";
 

@@ -298,6 +298,17 @@ TIMING_RES test_UME_SIMD()
     }
       
     sum_vec.store(temp);
+
+   /* if(VEC_LEN == 8) {
+        std::cout << "sum_vec[0] " << sum_vec[0] << " " << temp[0] << std::endl;
+        std::cout << "sum_vec[1] " << sum_vec[1] << " " << temp[0] << std::endl;
+        std::cout << "sum_vec[2] " << sum_vec[2] << " " << temp[0] << std::endl;
+        std::cout << "sum_vec[3] " << sum_vec[3] << " " << temp[0] << std::endl;
+        std::cout << "sum_vec[4] " << sum_vec[4] << " " << temp[0] << std::endl;
+        std::cout << "sum_vec[5] " << sum_vec[5] << " " << temp[0] << std::endl;
+        std::cout << "sum_vec[6] " << sum_vec[6] << " " << temp[0] << std::endl;
+        std::cout << "sum_vec[7] " << sum_vec[7] << " " << temp[0] << std::endl;
+    }*/
     
     // TODO: replace with reduce-add
     for(uint32_t i = 0; i < VEC_LEN; ++i)
