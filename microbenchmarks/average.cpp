@@ -62,7 +62,7 @@ static __inline__ unsigned long long __rdtsc(void)
 typedef unsigned long long TIMING_RES;
 
 const int ARRAY_SIZE = 600000+7; // Array size increased to show the peeling effect.
-alignas(32) float x[ARRAY_SIZE];
+//alignas(32) float x[ARRAY_SIZE];
 
 // Scalar algorithm
 template<typename FLOAT_T>
@@ -190,7 +190,6 @@ TIMING_RES test_AVX_d_256() {
     alignas(32) double temp[4];
 
     double *x;
-
     x = (double *) UME::DynamicMemory::AlignedMalloc(ARRAY_SIZE*sizeof(double), 4*sizeof(double));
         
     // Initialize arrays with random data
@@ -252,6 +251,83 @@ TIMING_RES test_AVX_d_256() {
 #endif
     return 0;
 }
+TIMING_RES test_AVX_f_512()
+{
+#if defined(__AVX512__) || defined(__MIC__)
+    unsigned long long start, end;    // Time measurements
+    
+   
+    float sum = 0.0f;
+    volatile float avg = 0.0f;
+      
+    // Calculate loop-peeling division
+    int PEEL_COUNT = ARRAY_SIZE/16;             // Divide array size by vector length.
+    int REM_COUNT = ARRAY_SIZE - PEEL_COUNT*16; // 
+            
+    alignas(64) float temp[16];
+  
+    float *x;
+    x = (float *) UME::DynamicMemory::AlignedMalloc(ARRAY_SIZE*sizeof(float), 16*sizeof(float));
+    
+    // Initialize arrays with random data
+    for(int i = 0; i < ARRAY_SIZE; i++)
+    {
+        // Generate random numbers in range (0.0;1000.0)
+        x[i] = static_cast <float> (rand()) / static_cast <float> (RAND_MAX/1000);
+    }
+
+    start = __rdtsc();
+      
+    __m512 x_vec;
+    __m512 sum_vec = _mm512_setzero_ps();
+    // Instead of adding single elements, we are using SIMD to add elements
+    // with STRIDE-8 distance. We then perform reduction using scalar code
+    for(int i = 0; i < PEEL_COUNT; i++)
+    {
+        x_vec = _mm512_load_ps(&x[i*16]); // load elements with STRIDE-16
+        sum_vec = _mm512_add_ps(sum_vec, x_vec); // accumulate sum of values
+    }
+      
+    // Now the reduction operation converting a vector into a scalar value
+    _mm512_store_ps(temp, sum_vec);
+    for(int i = 0; i < 16; ++i)
+    {
+        sum += temp[i];  
+    }
+      
+    // Calculating loop reminder
+    for(int i = 0; i < REM_COUNT; i++)
+    {
+        sum += x[PEEL_COUNT*16 + i];
+    }
+      
+    avg = sum/(float)ARRAY_SIZE;
+      
+    end = __rdtsc();
+      
+    // Verify the result is correct
+    float test_sum = 0.0f;
+    float test_avg = 0.0f;
+    for(int i = 0; i < ARRAY_SIZE; i++)
+    {
+        test_sum += x[i];
+    }
+      
+    test_avg = test_sum/(float)ARRAY_SIZE;
+    float normalized_res = avg/test_avg;
+    float err_margin = 0.001f;
+    if(    normalized_res > (1.0f + err_margin)  
+        || normalized_res < (1.0f - err_margin) )
+    {
+        std::cout << "Result invalid: " << avg << " expected: " << test_avg << std::endl;
+    }
+    
+    UME::DynamicMemory::AlignedFree(x);
+
+    return end - start;
+#endif
+    return 0;
+}
 
 template<typename FLOAT_T, typename FLOAT_VEC_TYPE>
 TIMING_RES test_UME_SIMD()
@@ -299,17 +375,6 @@ TIMING_RES test_UME_SIMD()
       
     sum_vec.store(temp);
 
-   /* if(VEC_LEN == 8) {
-        std::cout << "sum_vec[0] " << sum_vec[0] << " " << temp[0] << std::endl;
-        std::cout << "sum_vec[1] " << sum_vec[1] << " " << temp[0] << std::endl;
-        std::cout << "sum_vec[2] " << sum_vec[2] << " " << temp[0] << std::endl;
-        std::cout << "sum_vec[3] " << sum_vec[3] << " " << temp[0] << std::endl;
-        std::cout << "sum_vec[4] " << sum_vec[4] << " " << temp[0] << std::endl;
-        std::cout << "sum_vec[5] " << sum_vec[5] << " " << temp[0] << std::endl;
-        std::cout << "sum_vec[6] " << sum_vec[6] << " " << temp[0] << std::endl;
-        std::cout << "sum_vec[7] " << sum_vec[7] << " " << temp[0] << std::endl;
-    }*/
-    
     // TODO: replace with reduce-add
     for(uint32_t i = 0; i < VEC_LEN; ++i)
     {
@@ -353,6 +418,7 @@ int main()
 {
     TIMING_RES t_scalar_f, t_AVX_f,
                t_scalar_d, t_AVX_d,
+               t_AVX512_f,
                t_UME_SIMD1_32f, 
                t_UME_SIMD2_32f, 
                t_UME_SIMD4_32f, 
@@ -366,6 +432,7 @@ int main()
                t_UME_SIMD16_64f;
     float t_scalar_f_avg = 0.0f, 
           t_AVX_f_avg = 0.0f, 
+          t_AVX512_f_avg = 0.0f,
           t_UME_SIMD1_32f_avg = 0.0f,
           t_UME_SIMD2_32f_avg = 0.0f,
           t_UME_SIMD4_32f_avg = 0.0f,
@@ -397,6 +464,9 @@ int main()
          t_AVX_d = test_AVX_d_256();
          t_AVX_d_avg = 1.0f/(1.0f + float(i)) * (float(t_AVX_d) - t_AVX_d_avg);
          
+         t_AVX512_f = test_AVX_f_512();
+         t_AVX512_f_avg = 1.0f/(1.0f + float(i)) * (float(t_AVX512_f) - t_AVX512_f_avg);
+
          t_UME_SIMD1_32f = test_UME_SIMD<float, UME::SIMD::SIMD1_32f>();
          t_UME_SIMD1_32f_avg = 1.0f/(1.0f + float(i)) * (float(t_UME_SIMD1_32f) - t_UME_SIMD1_32f_avg);
 
@@ -435,7 +505,7 @@ int main()
                  "All timing results in clock cycles. \n"
                  "Speedup calculated with scalar floating point result as reference.\n\n"
                  "SIMD version uses following operations: \n"
-                 " ZERO-CONSTR, ONE-CONSTR, LOAD, ADDA, STORE\n";
+                 " ZERO-CONSTR, SET-CONSTR, LOAD, ADDA, STORE\n";
                  
 
     std::cout << "Scalar code (float): "    << (long)t_scalar_f_avg
@@ -456,6 +526,14 @@ int main()
                                                     << float(t_scalar_f_avg)/float(t_AVX_d_avg) << ")\n";
 #else
     std::cout << "256b intrinsic code:     AVX/AVX2/AVX512 disabled, cannot run measurement\n";
+#endif
+
+#if defined(__AVX512__) || defined(__MIC__)                                                    
+    std::cout << "512b intrinsic code (float): "    << (long)t_AVX512_f_avg 
+                                                    <<  " (speedup: " 
+                                                    << float(t_scalar_f_avg)/float(t_AVX512_f_avg) << ")\n";
+#else
+    std::cout << "512b intrinsic code:     AVX512/KNC disabled, cannot run measurement\n";
 #endif
 
     // using 'float' vectors
