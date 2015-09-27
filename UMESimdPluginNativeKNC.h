@@ -219,6 +219,67 @@ namespace SIMD
             }
         }
     };
+
+    template<>
+    class SIMDVecKNCMask<bool, 8> : 
+        public SIMDMaskBaseInterface< 
+            SIMDVecKNCMask<bool, 8>,
+            bool,
+            8>
+    {   
+    private:
+        __mmask8 mMask;
+
+        SIMDVecKNCMask(__mmask8 & m) : mMask(m) {};
+
+        friend class SIMDVecKNC_u<uint8_t,  8>;
+        friend class SIMDVecKNC_u<uint16_t, 16>;
+        friend class SIMDVecKNC_u<uint32_t, 32>;
+        friend class SIMDVecKNC_u<uint64_t, 64>;
+
+        friend class SIMDVecKNC_u<int8_t,  8>;
+        friend class SIMDVecKNC_u<int16_t, 16>;
+        friend class SIMDVecKNC_u<int32_t, 32>;
+        friend class SIMDVecKNC_u<int64_t, 64>;
+        
+        friend class SIMDVecKNC_f<float, 8>;
+        friend class SIMDVecKNC_f<double, 8>;
+    public:
+        SIMDVecKNCMask() { }
+
+        // Regardless of the mask representation, the interface should only allow initialization using 
+        // standard bool or using equivalent mask
+        SIMDVecKNCMask( bool m ) {
+            mMask = __mmask8(-int8_t(m));
+        }
+
+        SIMDVecKNCMask( bool m0, bool m1, bool m2, bool m3,
+                        bool m4, bool m5, bool m6, bool m7 )
+        {
+            mMask = __mmask8(int8_t(m0) << 0 | int8_t(m1) << 1 |
+                             int8_t(m2) << 2 | int8_t(m3) << 3 |
+                             int8_t(m4) << 4 | int8_t(m5) << 5 |
+                             int8_t(m6) << 6 | int8_t(m7) << 7);
+        }
+
+        // A non-modifying element-wise access operator
+        inline bool operator[] (uint32_t index) const { return (int8_t(mMask) & (1 << index)) != 0; }
+
+        inline bool extract(uint32_t index)
+        {
+            return (int8_t(mMask) & (1 << index)) != 0;
+        }
+
+        // Element-wise modification operator
+        inline void insert(uint32_t index, bool x) { 
+            if(x == true) mMask |= ( 1 << index );
+            else mMask &= ~( 1 << index );
+        }
+
+        SIMDVecKNCMask(SIMDVecKNCMask const & mask) {
+            mMask = mask.mMask;
+        }
+    };
     
     // Mask vectors. Mask vectors with bool base type will resolve into scalar emulation.
     typedef SIMDVecKNCMask<bool, 1>     SIMDMask1;
@@ -1600,30 +1661,88 @@ template<typename SCALAR_FLOAT_TYPE>
         //(Memory access)
         // LOAD    - Load from memory (either aligned or unaligned) to vector 
         inline SIMDVecKNC_f & load (float const * p) {
-            
+            if((uint64_t(p) % 64) == 0) {
+                
+                 mVec = _mm512_mask_load_ps(_mm512_setzero_ps(),
+                                       0x00FF,
+                                       p);
+            }
+            else {
+                alignas(64) float raw[8];
+                memcpy(raw, p, 8*sizeof(float));
+                mVec = _mm512_mask_load_ps(_mm512_setzero_ps(),
+                                    0x00FF,
+                                    raw);
+            }
+            return * this;
         }
         // MLOAD   - Masked load from memory (either aligned or unaligned) to
         //           vector
+        inline SIMDVecKNC_f & load (SIMDMask8 const & mask, float const * p) {
+            if((uint64_t(p) % 64) == 0) {
+                mVec = _mm512_mask_load_ps(mVec, mask.mMask, p);
+            }
+            else {
+                alignas(64) float raw[8];
+                memcpy(raw, p, 8*sizeof(float));
+                mVec = _mm512_mask_load_ps(mVec,
+                                    mask.mMask,
+                                    raw);
+            }
+            return *this;
+        }
         // LOADA   - Load from aligned memory to vector
              // For this class alignment is 32B!!!
         inline SIMDVecKNC_f & loada (float const * p) {
-            if(((uint64_t)p) % 64 == 0)
-                mVec = _mm512_load_ps(p);
-            else
-                load(p);
+            mVec = _mm512_mask_load_ps(mVec,
+                                       0x00FF,
+                                       p);
             return *this;
         }
         // MLOADA  - Masked load from aligned memory to vector
+        inline SIMDVecKNC_f & loada (SIMDMask8 const & mask, float const * p) {
+            mVec = _mm512_mask_load_ps(mVec, mask.mMask, p);
+            return *this;
+        }
         // STORE   - Store vector content into memory (either aligned or unaligned)
+        inline float * store (float * p)
+        {
+            if((uint64_t(p) % 64) == 0) {
+                _mm512_store_ps(p, mVec);
+            }
+            else {
+                alignas(64) float raw[8];
+                mVec = _mm512_mask_load_ps(mVec,
+                                    0x00FF,
+                                    raw);
+                
+                memcpy(p, raw, 8*sizeof(float));
+                return p;
+            }
+        }
         // MSTORE  - Masked store vector content into memory (either aligned or
         //           unaligned)
+        inline float * store(SIMDMask8 const & mask, float *p) {
+            if((uint64_t(p) % 64) == 0) {
+                _mm512_mask_store_ps(p, mask.mMask, mVec);
+            }
+            else {
+                alignas(64) float raw[8];
+                _mm512_mask_store_ps(p, mask.mMask, mVec);
+            }
+            return p;
+        }
+
         // STOREA  - Store vector content into aligned memory
         inline float* storea(float* p) {
             _mm512_store_ps(p, mVec);
             return p;
         }
         // MSTOREA - Masked store vector content into aligned memory
- 
+        inline float* storea(SIMDMask8 const & mask, float* p) {
+            _mm512_mask_store_ps(p, mask.mMask, mVec);
+            return p;
+        }
         //(Addition operations)
         // ADDV     - Add with vector 
        /* inline SIMDVecKNC_f add (SIMDVecKNC_f const & b) {

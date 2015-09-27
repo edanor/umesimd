@@ -74,7 +74,6 @@ TIMING_RES test_scalar()
 
     x = (FLOAT_T *) UME::DynamicMemory::AlignedMalloc(ARRAY_SIZE*sizeof(FLOAT_T), sizeof(FLOAT_T));
 
-    srand ((unsigned int)time(NULL));
     // Initialize arrays with random data
     for(int i = 0; i < ARRAY_SIZE; i++)
     {
@@ -423,7 +422,9 @@ int main()
 
     std::cout << "The result is amount of time it takes to calculate average of: " << ARRAY_SIZE << " elements.\n" 
                  "All timing results in clock cycles. \n"
-                 "Speedup calculated with scalar floating point result as reference.\n\n";
+                 "Speedup calculated with scalar floating point result as reference.\n\n"
+                 "SIMD version uses following operations: \n"
+                 " ZERO-CONSTR, ONE-CONSTR, LOAD, ADDA, STORE\n";
                  
 
     std::cout << "Scalar code (float): "    << (long)t_scalar_f_avg
