@@ -320,14 +320,14 @@ namespace SIMD
                         bool m12, bool m13, bool m14, bool m15
                         )
         {
-            mMask = __mmask16(int16_t(m0)  << 0 | int8_t(m1)  << 1 |
-                              int16_t(m2)  << 2 | int8_t(m3)  << 3 |
-                              int16_t(m4)  << 4 | int8_t(m5)  << 5 |
-                              int16_t(m6)  << 6 | int8_t(m7)  << 7 |
-                              int16_t(m8)  << 0 | int8_t(m9)  << 1 |
-                              int16_t(m10) << 2 | int8_t(m11) << 3 |
-                              int16_t(m12) << 4 | int8_t(m13) << 5 |
-                              int16_t(m14) << 6 | int8_t(m15) << 7 );
+            mMask = __mmask16(int16_t(m0)  << 0  | int8_t(m1)  << 1 |
+                              int16_t(m2)  << 2  | int8_t(m3)  << 3 |
+                              int16_t(m4)  << 4  | int8_t(m5)  << 5 |
+                              int16_t(m6)  << 6  | int8_t(m7)  << 7 |
+                              int16_t(m8)  << 8  | int8_t(m9)  << 9 |
+                              int16_t(m10) << 10 | int8_t(m11) << 11 |
+                              int16_t(m12) << 12 | int8_t(m13) << 13 |
+                              int16_t(m14) << 14 | int8_t(m15) << 15 );
         }
 
         // A non-modifying element-wise access operator
@@ -2018,6 +2018,10 @@ template<typename SCALAR_FLOAT_TYPE>
             return SIMDVecKNC_f(t0);
         }
         // MFMULADDV - Masked fused multiply and add (A*B + C) with vectors
+        inline SIMDVecKNC_f fmuladd(SIMDMask8 const & mask, SIMDVecKNC_f const & b, SIMDVecKNC_f const & c) {
+            __m512 t0 = _mm512_mask_fmadd_ps(mVec, mask.mMask, b.mVec, c.mVec);
+            return SIMDVecKNC_f(t0);
+        }
         // FMULSUBV  - Fused multiply and sub (A*B - C) with vectors
         // MFMULSUBV - Masked fused multiply and sub (A*B - C) with vectors
         // FADDMULV  - Fused add and multiply ((A + B)*C) with vectors
@@ -2192,33 +2196,35 @@ template<typename SCALAR_FLOAT_TYPE>
         }
 
     public:
-        inline SIMDVecKNC_f() {
-            mVec = _mm512_setzero_ps();
-        }
+        // ZERO-CONSTR - Zero element constructor 
+        inline SIMDVecKNC_f() {}
 
+        // SET-CONSTR  - One element constructor
         inline explicit SIMDVecKNC_f(float f) {
             mVec = _mm512_set1_ps(f);
         }
-
+        
+        // FULL-CONSTR - constructor with VEC_LEN scalar element 
         inline SIMDVecKNC_f(float f0, float f1, float f2,  float f3,  float f4,  float f5,  float f6,  float f7,
                             float f8, float f9, float f10, float f11, float f12, float f13, float f14, float f15) {
             mVec = _mm512_setr_ps(f0, f1, f2, f3, f4, f5, f6, f7, f8, f9, f10, f11, f12, f13, f14, f15);
         }
-
+        
+        // EXTRACT - Extract single element from a vector
         inline float extract (uint32_t index) const {
             UME_PERFORMANCE_UNOPTIMAL_WARNING();
             alignas(64) float raw[16];
             _mm512_store_ps(raw, mVec);
             return raw[index];
         }
-
-        // Override Access operators
+        
+        // EXTRACT - Extract single element from a vector
         inline float operator[] (uint32_t index) const {
             UME_PERFORMANCE_UNOPTIMAL_WARNING();
             return extract(index);
         }
                 
-        // insert[] (scalar)
+        // INSERT  - Insert single element into a vector
         inline SIMDVecKNC_f & insert(uint32_t index, float value) {
             UME_PERFORMANCE_UNOPTIMAL_WARNING();
             alignas(64) float raw[16];
@@ -2233,9 +2239,6 @@ template<typename SCALAR_FLOAT_TYPE>
         // ****************************************************************************************
         
         //(Initialization)
-        // ZERO-CONSTR - Zero element constructor 
-        // SET-CONSTR  - One element constructor
-        // FULL-CONSTR - constructor with VEC_LEN scalar element 
         // ASSIGNV     - Assignment with another vector
         // MASSIGNV    - Masked assignment with another vector
         // ASSIGNS     - Assignment with scalar
@@ -2317,8 +2320,6 @@ template<typename SCALAR_FLOAT_TYPE>
             _mm512_mask_store_ps(p, mask.mMask, mVec);
             return p;
         }
-        // EXTRACT - Extract single element from a vector
-        // INSERT  - Insert single element into a vector
  
         //(Addition operations)
         // ADDV     - Add with vector 
@@ -2681,13 +2682,16 @@ template<typename SCALAR_FLOAT_TYPE>
         }
 
     public:
+        // ZERO-CONSTR - Zero element constructor 
         inline SIMDVecKNC_f() {}
-
+        
+        // SET-CONSTR  - One element constructor
         inline explicit SIMDVecKNC_f(float f) {
             mVecLo = _mm512_set1_ps(f);
             mVecHi = _mm512_set1_ps(f);
         }
-
+        
+        // FULL-CONSTR - constructor with VEC_LEN scalar element 
         inline SIMDVecKNC_f(float f0,  float f1,  float f2,  float f3,  
                             float f4,  float f5,  float f6,  float f7,
                             float f8,  float f9,  float f10, float f11, 
@@ -2705,7 +2709,8 @@ template<typename SCALAR_FLOAT_TYPE>
                                     f24, f25, f26, f27,
                                     f28, f29, f30, f31);
         }
-
+        
+        // EXTRACT - Extract single element from a vector
         inline float extract (uint32_t index) const {
             UME_PERFORMANCE_UNOPTIMAL_WARNING();
             alignas(64) float raw[16];
@@ -2718,14 +2723,14 @@ template<typename SCALAR_FLOAT_TYPE>
                 return raw[index - 16];
             }
         }
-
-        // Override Access operators
+        
+        // EXTRACT - Extract single element from a vector
         inline float operator[] (uint32_t index) const {
             UME_PERFORMANCE_UNOPTIMAL_WARNING();
             return extract(index);
         }
                 
-        // insert[] (scalar)
+        // INSERT  - Insert single element into a vector
         inline SIMDVecKNC_f & insert(uint32_t index, float value) {
             UME_PERFORMANCE_UNOPTIMAL_WARNING();
             alignas(64) float raw[16];
@@ -2747,9 +2752,6 @@ template<typename SCALAR_FLOAT_TYPE>
         // ****************************************************************************************
         
         //(Initialization)
-        // ZERO-CONSTR - Zero element constructor 
-        // SET-CONSTR  - One element constructor
-        // FULL-CONSTR - constructor with VEC_LEN scalar element 
         // ASSIGNV     - Assignment with another vector
         // MASSIGNV    - Masked assignment with another vector
         // ASSIGNS     - Assignment with scalar
@@ -2757,6 +2759,19 @@ template<typename SCALAR_FLOAT_TYPE>
 
         //(Memory access)
         // LOAD    - Load from memory (either aligned or unaligned) to vector 
+        inline SIMDVecKNC_f & load (float const * p) {
+            if((uint64_t(p) % 64) == 0) {
+                 mVecLo = _mm512_load_ps(p);
+                 mVecHi = _mm512_load_ps(p+16);
+            }
+            else {
+                alignas(64) float raw[32];
+                memcpy(raw, p, 32*sizeof(float));
+                mVecLo = _mm512_load_ps(raw);
+                mVecHi = _mm512_load_ps(raw + 16);
+            }
+            return * this;
+        }
         // MLOAD   - Masked load from memory (either aligned or unaligned) to
         //           vector
         // LOADA   - Load from aligned memory to vector
@@ -2767,6 +2782,20 @@ template<typename SCALAR_FLOAT_TYPE>
         }
         // MLOADA  - Masked load from aligned memory to vector
         // STORE   - Store vector content into memory (either aligned or unaligned)
+        inline float * store (float * p)
+        {
+            if((uint64_t(p) % 64) == 0) {
+                _mm512_store_ps(p, mVecLo);
+                _mm512_store_ps(p + 16, mVecHi);
+            }
+            else {
+                alignas(64) float raw[32];
+                _mm512_store_ps(raw, mVecLo);
+                _mm512_store_ps(raw + 16, mVecHi);
+                memcpy(p, raw, 32*sizeof(float));
+                return p;
+            }
+        }
         // MSTORE  - Masked store vector content into memory (either aligned or
         //           unaligned)
         // STOREA  - Store vector content into aligned memory
@@ -2776,8 +2805,6 @@ template<typename SCALAR_FLOAT_TYPE>
             return p;
         }
         // MSTOREA - Masked store vector content into aligned memory
-        // EXTRACT - Extract single element from a vector
-        // INSERT  - Insert single element into a vector
  
         //(Addition operations)
         // ADDV     - Add with vector 
@@ -2843,8 +2870,18 @@ template<typename SCALAR_FLOAT_TYPE>
  
         //(Multiplication operations)
         // MULV   - Multiplication with vector
+        inline SIMDVecKNC_f mul (SIMDVecKNC_f const & b) {
+            __m512 t0 = _mm512_mul_ps(this->mVecLo, b.mVecLo);
+            __m512 t1 = _mm512_mul_ps(this->mVecHi, b.mVecHi);
+            return SIMDVecKNC_f(t0, t1);
+        }
         // MMULV  - Masked multiplication with vector
         // MULS   - Multiplication with scalar
+        inline SIMDVecKNC_f mul (float b) {
+            __m512 t0 = _mm512_mul_ps(this->mVecLo, _mm512_set1_ps(b));
+            __m512 t1 = _mm512_mul_ps(this->mVecHi, _mm512_set1_ps(b));
+            return SIMDVecKNC_f(t0, t1);
+        }
         // MMULS  - Masked multiplication with scalar
         // MULVA  - Multiplication with vector and assign
         // MMULVA - Masked multiplication with vector and assign
@@ -2945,6 +2982,11 @@ template<typename SCALAR_FLOAT_TYPE>
  
         //(Fused arithmetics)
         // FMULADDV  - Fused multiply and add (A*B + C) with vectors
+        inline SIMDVecKNC_f fmuladd (SIMDVecKNC_f const & b, SIMDVecKNC_f const & c) {
+            __m512 t0 = _mm512_fmadd_ps(this->mVecLo, b.mVecLo, c.mVecLo);
+            __m512 t1 = _mm512_fmadd_ps(this->mVecHi, b.mVecHi, c.mVecHi);
+            return SIMDVecKNC_f(t0, t1);
+        }
         // MFMULADDV - Masked fused multiply and add (A*B + C) with vectors
         // FMULSUBV  - Fused multiply and sub (A*B - C) with vectors
         // MFMULSUBV - Masked fused multiply and sub (A*B - C) with vectors

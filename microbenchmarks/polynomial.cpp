@@ -217,7 +217,7 @@ TIMING_RES test_SIMD()
     }
 
     end = __rdtsc();
-    
+
     UME::DynamicMemory::AlignedFree(y);
     UME::DynamicMemory::AlignedFree(x);
 
@@ -301,7 +301,7 @@ int main()
                  "All timing results in clock cycles. \n"
                  "Speedup calculated with scalar floating point result as reference.\n\n"
                  "SIMD version uses following operations: \n"
-                 " ZERO-CONSTR, ONE-CONSTR, LOAD, STORE, MULV, FMULADDV, ADDVA\n";
+                 " ZERO-CONSTR, SET-CONSTR, LOAD, STORE, MULV, FMULADDV, ADDVA\n";
                  
     std::cout << "Scalar code (float): " << (long)t_scalar_f_avg
                                          << "(speedup: 1.0x)\n";
