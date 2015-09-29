@@ -1152,6 +1152,9 @@ namespace SIMD
         inline SIMDVecScalarEmu_f() : mVec() {}
 
         inline explicit SIMDVecScalarEmu_f(SCALAR_FLOAT_TYPE f) : mVec(f) {}
+        inline explicit SIMDVecScalarEmu_f(const SCALAR_FLOAT_TYPE *p) {
+            this->load(p);
+        }
         
         inline explicit SIMDVecScalarEmu_f(SCALAR_FLOAT_TYPE f0, SCALAR_FLOAT_TYPE f1) {
             mVec.insert(0, f0); mVec.insert(1, f1);
