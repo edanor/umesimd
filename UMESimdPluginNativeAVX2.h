@@ -232,8 +232,8 @@ namespace SIMD
             uint32_t,
             4>
     {   
-        static const uint32_t TRUE() { return 0xFFFFFFFF; };
-        static const uint32_t FALSE() { return 0x00000000; };
+        static uint32_t TRUE() { return 0xFFFFFFFF; };
+        static uint32_t FALSE() { return 0x00000000; };
 
         // This function returns internal representation of boolean value based on bool input
         static inline uint32_t toMaskBool(bool m) { if (m == true) return TRUE(); else return FALSE(); }
@@ -304,8 +304,8 @@ namespace SIMD
             uint32_t,
             8>
     {   
-        static const uint32_t TRUE() { return 0xFFFFFFFF; };
-        static const uint32_t FALSE() { return 0x00000000; };
+        static uint32_t TRUE() { return 0xFFFFFFFF; };
+        static uint32_t FALSE() { return 0x00000000; };
 
         // This function returns internal representation of boolean value based on bool input
         static inline uint32_t toMaskBool(bool m) { if (m == true) return TRUE(); else return FALSE(); }
@@ -378,8 +378,8 @@ namespace SIMD
             uint32_t,
             16>
     {   
-        static const uint32_t TRUE() { return 0xFFFFFFFF; };
-        static const uint32_t FALSE() { return 0x00000000; };
+        static uint32_t TRUE() { return 0xFFFFFFFF; };
+        static uint32_t FALSE() { return 0x00000000; };
 
         // This function returns internal representation of boolean value based on bool input
         static inline uint32_t toMaskBool(bool m) { if (m == true) return TRUE(); else return FALSE(); }
@@ -475,8 +475,8 @@ namespace SIMD
             uint32_t,
             32>
     {   
-        static const uint32_t TRUE() { return 0xFFFFFFFF; };
-        static const uint32_t FALSE() { return 0x00000000; };
+        static uint32_t TRUE() { return 0xFFFFFFFF; };
+        static uint32_t FALSE() { return 0x00000000; };
 
         // This function returns internal representation of boolean value based on bool input
         static inline uint32_t toMaskBool(bool m) { if (m == true) return TRUE(); else return FALSE(); }
@@ -2047,6 +2047,8 @@ namespace SIMD
 
         inline explicit SIMDVecAVX2_f(SCALAR_FLOAT_TYPE i) : mVec(i) {};
         
+        inline SIMDVecAVX2_f(const SCALAR_FLOAT_TYPE *p) { this->load(p); }
+        
         inline SIMDVecAVX2_f(SCALAR_FLOAT_TYPE i0, SCALAR_FLOAT_TYPE i1) {
             mVec.insert(0, i0);  mVec.insert(1, i1);
         }
@@ -2128,6 +2130,7 @@ namespace SIMD
         inline SIMDVecAVX2_f() : mVec() {};
 
         inline explicit SIMDVecAVX2_f(SCALAR_FLOAT_TYPE i) : mVec(i) {};
+        inline explicit SIMDVecAVX2_f(SCALAR_FLOAT_TYPE *p) { this->load(p); }
         
         // Override Access operators
         inline SCALAR_FLOAT_TYPE operator[] (uint32_t index) const {
@@ -2174,6 +2177,8 @@ namespace SIMD
         inline explicit SIMDVecAVX2_f(float f) {
             mVec = _mm_set1_ps(f);
         }
+
+        inline explicit SIMDVecAVX2_f(float *p) { this->load(p); }
         
         // FULL-CONSTR - constructor with VEC_LEN scalar element 
         inline SIMDVecAVX2_f(float f0, float f1, float f2, float f3) {
@@ -2597,6 +2602,8 @@ namespace SIMD
             mVec = _mm256_set1_ps(f);
         }
 
+        inline explicit SIMDVecAVX2_f(float *p) { this->load(p); }
+        
         inline SIMDVecAVX2_f(float f0, float f1, float f2, float f3, float f4, float f5, float f6, float f7) {
             mVec = _mm256_setr_ps(f0, f1, f2, f3, f4, f5, f6, f7);
         }
@@ -3281,6 +3288,8 @@ namespace SIMD
             mVecHiHi = _mm256_set1_ps(f);
         }
         
+        inline explicit SIMDVecAVX2_f(float *p) { this->load(p); }
+        
         // FULL-CONSTR - constructor with VEC_LEN scalar element 
         inline SIMDVecAVX2_f(float f0, float f1, float f2, float f3, 
                              float f4, float f5, float f6, float f7,
@@ -3861,7 +3870,7 @@ namespace SIMD
     // 128b float vectors
     typedef SIMDVecAVX2_f<float,  4>     SIMD4_32f;
     typedef SIMDVecAVX2_f<double, 2>     SIMD2_64f;
-
+    
     // 256b float vectors
     typedef SIMDVecAVX2_f<float,  8>     SIMD8_32f;
     typedef SIMDVecAVX2_f<double, 4>     SIMD4_64f;
