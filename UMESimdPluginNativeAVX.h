@@ -232,8 +232,8 @@ namespace SIMD
         uint32_t,
         4>
     {   
-        static const uint32_t TRUE() { return 0xFFFFFFFF; };
-        static const uint32_t FALSE() { return 0x00000000; };
+        static uint32_t TRUE() { return 0xFFFFFFFF; };
+        static uint32_t FALSE() { return 0x00000000; };
 
         // This function returns internal representation of boolean value based on bool input
         static inline uint32_t toMaskBool(bool m) { if (m == true) return TRUE(); else return FALSE(); }
@@ -255,9 +255,7 @@ namespace SIMD
 
         SIMDVecAVXMask(__m128i const & x) { mMask = x; };
     public:
-        SIMDVecAVXMask() {
-            mMask = _mm_set1_epi32(FALSE());
-        }
+        SIMDVecAVXMask() {}
 
         // Regardless of the mask representation, the interface should only allow initialization using 
         // standard bool or using equivalent mask
@@ -276,7 +274,7 @@ namespace SIMD
 
         inline bool extract(uint32_t index) const {
             UME_PERFORMANCE_UNOPTIMAL_WARNING() 
-            alignas(32) uint32_t raw[8];
+            alignas(32) uint32_t raw[4];
             _mm_store_si128((__m128i*)raw, mMask);
             return raw[index] == TRUE();
         }
@@ -289,7 +287,7 @@ namespace SIMD
         // Element-wise modification operator
         inline void insert(uint32_t index, bool x) {
             UME_PERFORMANCE_UNOPTIMAL_WARNING() 
-            alignas(32) static uint32_t raw[8] = { 0, 0, 0, 0, 0, 0, 0, 0};
+            alignas(32) static uint32_t raw[4] = { 0, 0, 0, 0};
             _mm_store_si128((__m128i*)raw, mMask);
             raw[index] = toMaskBool(x);
             mMask = _mm_load_si128((__m128i*)raw);
@@ -307,8 +305,8 @@ namespace SIMD
         uint32_t,
         8>
     {   
-        static const uint32_t TRUE() { return 0xFFFFFFFF; };
-        static const uint32_t FALSE() { return 0x00000000; };
+        static uint32_t TRUE() { return 0xFFFFFFFF; };
+        static uint32_t FALSE() { return 0x00000000; };
 
         // This function returns internal representation of boolean value based on bool input
         static inline uint32_t toMaskBool(bool m) { if (m == true) return TRUE(); else return FALSE(); }
@@ -385,8 +383,8 @@ namespace SIMD
         uint32_t,
         16>
     {   
-        static const uint32_t TRUE() { return 0xFFFFFFFF; };
-        static const uint32_t FALSE() { return 0x00000000; };
+        static uint32_t TRUE() { return 0xFFFFFFFF; };
+        static uint32_t FALSE() { return 0x00000000; };
 
         // This function returns internal representation of boolean value based on bool input
         static inline uint32_t toMaskBool(bool m) { if (m == true) return TRUE(); else return FALSE(); }
@@ -2338,6 +2336,11 @@ namespace SIMD
  
         //(Reduction to scalar operations)
         // HADD  - Add elements of a vector (horizontal add)
+        inline float hadd() {
+            alignas(16) float raw[4];
+            _mm_store_ps(raw, mVec);
+            return raw[0] + raw[1] + raw[2] + raw[3];
+        }
         // MHADD - Masked add elements of a vector (horizontal add)
         // HMUL  - Multiply elements of a vector (horizontal mul)
         // MHMUL - Masked multiply elements of a vector (horizontal mul)
