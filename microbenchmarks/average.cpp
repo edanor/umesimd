@@ -107,6 +107,10 @@ TIMING_RES test_AVX_f_256()
 #if defined(__AVX__) || defined(__AVX2__) || defined(__AVX512__)
     unsigned long long start, end;    // Time measurements
     
+    float *x;
+
+    x = (float *) UME::DynamicMemory::AlignedMalloc(ARRAY_SIZE*sizeof(float), sizeof(float));
+
     // Initialize arrays with random data
     for(int i = 0; i < ARRAY_SIZE; i++)
     {
@@ -169,6 +173,8 @@ TIMING_RES test_AVX_f_256()
         std::cout << "Result invalid: " << avg << " expected: " << test_avg << std::endl;
     }
     
+    UME::DynamicMemory::AlignedFree(x);
+
     return end - start;
 #endif
     return 0;

@@ -90,7 +90,50 @@ int test_UME_SIMDMask4(bool supressMessages) {
         CHECK_CONDITION(mask[0] == false && mask[1] == true &&
                         mask[2] == true  &&  mask[3] == false, "mask compatibility: 64f -> 32u");
     }
-
+    {
+        SIMDMask4 mask0(true, true, false, false);
+        SIMDMask4 mask1(false, true, false, true);
+        mask0 &= mask1;
+        CHECK_CONDITION(mask0[0] == false && mask0[1] == true &&
+                        mask0[2] == false && mask0[3] == false, "operator&=");
+    }
+    {
+        SIMDMask4 mask0(true, true, false, false);
+        SIMDMask4 mask1(false, true, false, true);
+        mask0 |= mask1;
+        CHECK_CONDITION(mask0[0] == true  && mask0[1] == true &&
+                        mask0[2] == false && mask0[3] == true, "operator|=");
+    }
+    {
+        SIMDMask4 mask0(true, false, false, true);
+        SIMDMask4 mask1 = !mask0;
+        CHECK_CONDITION(mask1[0] == false && mask1[1] == true &&
+                        mask1[2] == true  && mask1[3] == false, "operator!");
+    }
+    {
+        SIMDMask4 mask0(true, false, false, true);
+        SIMDMask4 mask1(false, true, false, true);
+        mask1 = mask0;
+        CHECK_CONDITION(mask1[0] == true && mask1[1] == false &&
+                        mask1[2] == false && mask1[3] == true, "operator=");
+    }
+    {
+        SIMDMask4 mask0(true, false, false, true);
+        SIMDMask4 mask1(false, false, false, false);
+        bool b0 = mask0.hor();
+        bool b1 = mask1.hor();
+        CHECK_CONDITION(b0 == true && b1 == false, "HOR");
+    }
+    {
+        SIMDMask4 mask0(true, false, false, true);
+        SIMDMask4 mask1(false, false, false, false);
+        SIMDMask4 mask2(true, true, true, true);
+        bool b0 = mask0.hand();
+        bool b1 = mask1.hand();
+        bool b2 = mask2.hand();
+        CHECK_CONDITION(b0 == false && b1 == false && b2 == true, "HAND");
+    }
+    
     return g_failCount;
 }
 

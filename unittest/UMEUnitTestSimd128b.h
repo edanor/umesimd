@@ -946,6 +946,13 @@ int test_UME_SIMD4_32u(bool supressMessages)
     }
     {
         SIMD4_32u  vec0(1, 2, 3, 5);
+        SIMD4_32u  vec1(1, 9, 0, 2);
+        SIMDMask4 mask;
+        mask = vec0 > vec1;
+        CHECK_CONDITION(mask[0] == false && mask[1] == false && mask[2] == true && mask[3] == true, "operator>");
+    }
+    {
+        SIMD4_32u  vec0(1, 2, 3, 5);
         uint32_t val1 = 3;
         SIMDMask4 mask;
         mask = vec0.cmpgt(val1);
