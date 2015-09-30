@@ -3681,9 +3681,17 @@ namespace SIMD
             return EMULATED_FUNCTIONS::assign<DERIVED_MASK_TYPE>(static_cast<DERIVED_MASK_TYPE &>(*this), maskOp);
         };
 
+        inline DERIVED_MASK_TYPE & operator= (DERIVED_MASK_TYPE const & maskOp) {
+            return EMULATED_FUNCTIONS::assign<DERIVED_MASK_TYPE>(static_cast<DERIVED_MASK_TYPE &>(*this), maskOp);
+        };
+
         // AND 
-        DERIVED_MASK_TYPE andm ( DERIVED_MASK_TYPE const & maskOp) const {
+        inline DERIVED_MASK_TYPE andm ( DERIVED_MASK_TYPE const & maskOp) const {
             return EMULATED_FUNCTIONS::binaryAnd<DERIVED_MASK_TYPE>(static_cast<DERIVED_MASK_TYPE const &>(*this), maskOp);
+        };
+        
+        inline DERIVED_MASK_TYPE operator& ( DERIVED_MASK_TYPE const & maskOp) const {
+            return andm(maskOp);
         };
 
         // ANDA
@@ -3692,12 +3700,16 @@ namespace SIMD
         };
         
         inline DERIVED_MASK_TYPE & operator&= (DERIVED_MASK_TYPE const & maskOp) {
-            return EMULATED_FUNCTIONS::binaryAndAssign<DERIVED_MASK_TYPE>(static_cast<DERIVED_MASK_TYPE &>(*this), maskOp);
+            return anda(maskOp);
         };
 
         // OR
         inline DERIVED_MASK_TYPE orm (DERIVED_MASK_TYPE const & maskOp) const {
             return EMULATED_FUNCTIONS::binaryOr<DERIVED_MASK_TYPE>(static_cast<DERIVED_MASK_TYPE const &>(*this), maskOp);
+        }
+
+        inline DERIVED_MASK_TYPE operator| (DERIVED_MASK_TYPE const & maskOp) const {
+            return orm(maskOp);
         }
 
         // ORA
@@ -3706,7 +3718,7 @@ namespace SIMD
         }
 
         inline DERIVED_MASK_TYPE & operator|= (DERIVED_MASK_TYPE const & maskOp) {
-            return EMULATED_FUNCTIONS::binaryOrAssign<DERIVED_MASK_TYPE>(static_cast<DERIVED_MASK_TYPE &>(*this), maskOp);
+            return ora(maskOp);
         }
 
         // XOR
@@ -3714,9 +3726,17 @@ namespace SIMD
             return EMULATED_FUNCTIONS::binaryXor<DERIVED_MASK_TYPE>(static_cast<DERIVED_MASK_TYPE const &>(*this), maskOp);
         }
         
+        inline DERIVED_MASK_TYPE operator^ (DERIVED_MASK_TYPE const & maskOp) const {
+            return xorm(maskOp);
+        }
+
         // XORA
         inline DERIVED_MASK_TYPE & xora (DERIVED_MASK_TYPE const & maskOp) {
             return EMULATED_FUNCTIONS::binaryXorAssign<DERIVED_MASK_TYPE>(static_cast<DERIVED_MASK_TYPE &>(*this), maskOp);
+        }
+
+        inline DERIVED_MASK_TYPE & operator^= (DERIVED_MASK_TYPE const & maskOp) {
+            return xora(maskOp);
         }
 
         // NOT
@@ -3725,7 +3745,7 @@ namespace SIMD
         }
         
         inline DERIVED_MASK_TYPE operator!() const {
-            return EMULATED_FUNCTIONS::logicalNot<DERIVED_MASK_TYPE>(static_cast<DERIVED_MASK_TYPE const &>(*this));
+            return notm();
         }
 
         // NOTA
@@ -3759,11 +3779,6 @@ namespace SIMD
         inline bool hxor() const {
             return EMULATED_FUNCTIONS::reduceBinaryXor<MASK_BASE_TYPE, DERIVED_MASK_TYPE>(static_cast<DERIVED_MASK_TYPE const &>(*this));
         }
-
-        inline DERIVED_MASK_TYPE & operator= (DERIVED_MASK_TYPE const & mask) {
-            return EMULATED_FUNCTIONS::assign<DERIVED_MASK_TYPE>(static_cast<DERIVED_MASK_TYPE &>(*this), mask);
-        }
-
     };
 
     // **********************************************************************
@@ -3910,17 +3925,21 @@ namespace SIMD
         }
 
         // ADDV
-        inline DERIVED_VEC_TYPE add ( DERIVED_VEC_TYPE const & b) const {
+        inline DERIVED_VEC_TYPE add (DERIVED_VEC_TYPE const & b) const {
             return EMULATED_FUNCTIONS::add<DERIVED_VEC_TYPE> ( static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
+        inline DERIVED_VEC_TYPE operator+ (DERIVED_VEC_TYPE const & b) const {
+            return add(b);
+        }
+
         // MADDV
-        inline DERIVED_VEC_TYPE add( MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) const {
+        inline DERIVED_VEC_TYPE add (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) const {
             return EMULATED_FUNCTIONS::add<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
         // ADDS
-        inline DERIVED_VEC_TYPE add(SCALAR_TYPE b) const {
+        inline DERIVED_VEC_TYPE add (SCALAR_TYPE b) const {
             return EMULATED_FUNCTIONS::addScalar<DERIVED_VEC_TYPE, SCALAR_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
@@ -3933,6 +3952,10 @@ namespace SIMD
         inline DERIVED_VEC_TYPE & adda (DERIVED_VEC_TYPE const & b) {
             return EMULATED_FUNCTIONS::addAssign<DERIVED_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
+        
+        inline DERIVED_VEC_TYPE & operator+= (DERIVED_VEC_TYPE const & b) {
+            return adda(b);
+        }
 
         // MADDVA
         inline DERIVED_VEC_TYPE & adda (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) {
@@ -3943,7 +3966,7 @@ namespace SIMD
         inline DERIVED_VEC_TYPE & adda (SCALAR_TYPE b) {
             return EMULATED_FUNCTIONS::addAssignScalar<DERIVED_VEC_TYPE, SCALAR_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
-        
+
         // MADDSA
         inline DERIVED_VEC_TYPE & adda (MASK_TYPE const & mask, SCALAR_TYPE b) {
             return EMULATED_FUNCTIONS::addAssignScalar<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this), b);
@@ -3993,6 +4016,10 @@ namespace SIMD
         inline DERIVED_VEC_TYPE postInc () {
             return EMULATED_FUNCTIONS::postfixIncrement<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this));
         }
+        
+        inline DERIVED_VEC_TYPE operator++ (int) {
+            return postInc();
+        }
 
         // MPOSTINC
         inline DERIVED_VEC_TYPE postInc (MASK_TYPE const & mask) {
@@ -4002,6 +4029,10 @@ namespace SIMD
         // PREFINC
         inline DERIVED_VEC_TYPE & prefInc () {
             return EMULATED_FUNCTIONS::prefixIncrement<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this));
+        }
+        
+        inline DERIVED_VEC_TYPE & operator++ () {
+            return prefInc();
         }
 
         // MPREFINC
@@ -4013,6 +4044,10 @@ namespace SIMD
         inline DERIVED_VEC_TYPE sub (DERIVED_VEC_TYPE const & b) const {
             return EMULATED_FUNCTIONS::sub<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
+        
+        inline DERIVED_VEC_TYPE operator- (DERIVED_VEC_TYPE const & b) const {
+            return sub(b);
+        }
 
         // MSUBV
         inline DERIVED_VEC_TYPE sub (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) const {
@@ -4023,6 +4058,7 @@ namespace SIMD
         inline DERIVED_VEC_TYPE sub (SCALAR_TYPE b) const {
             return EMULATED_FUNCTIONS::subScalar<DERIVED_VEC_TYPE, SCALAR_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
+
         // MSUBS
         inline DERIVED_VEC_TYPE sub (MASK_TYPE const & mask, SCALAR_TYPE b) const {
             return EMULATED_FUNCTIONS::subScalar<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
@@ -4031,6 +4067,10 @@ namespace SIMD
         // SUBVA
         inline DERIVED_VEC_TYPE & suba (DERIVED_VEC_TYPE const & b) {
             return EMULATED_FUNCTIONS::subAssign<DERIVED_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE &>(*this), b);
+        }
+
+        inline DERIVED_VEC_TYPE & operator-= (DERIVED_VEC_TYPE const & b) {
+            return suba(b);
         }
 
         // MSUBVA
@@ -4133,6 +4173,10 @@ namespace SIMD
             return EMULATED_FUNCTIONS::postfixDecrement<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this));
         }
 
+        inline DERIVED_VEC_TYPE operator-- (int) {
+            return postDec();
+        }
+
         // MPOSTDEC
         inline DERIVED_VEC_TYPE postDec (MASK_TYPE const & mask) {
             return EMULATED_FUNCTIONS::postfixDecrement<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this));
@@ -4143,6 +4187,10 @@ namespace SIMD
             return EMULATED_FUNCTIONS::prefixDecrement<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this));
         }
         
+        inline DERIVED_VEC_TYPE & operator-- () {
+            return prefDec();
+        }
+
         // MPREFDEC
         inline DERIVED_VEC_TYPE & prefDec (MASK_TYPE const & mask) {
             return EMULATED_FUNCTIONS::prefixDecrement<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this));
@@ -4151,6 +4199,10 @@ namespace SIMD
         // MULV
         inline DERIVED_VEC_TYPE mul (DERIVED_VEC_TYPE const & b) const {
             return EMULATED_FUNCTIONS::mult<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this), b);
+        }
+        
+        inline DERIVED_VEC_TYPE operator* (DERIVED_VEC_TYPE const & b) const {
+            return mul(b);
         }
 
         // MMULV
@@ -4172,6 +4224,10 @@ namespace SIMD
         inline DERIVED_VEC_TYPE & mula (DERIVED_VEC_TYPE const & b) {
             return EMULATED_FUNCTIONS::multAssign<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
+        
+        inline DERIVED_VEC_TYPE & operator*= (DERIVED_VEC_TYPE const & b) {
+            return mula(b);
+        }
 
         // MMULVA
         inline DERIVED_VEC_TYPE & mula (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) {
@@ -4192,6 +4248,10 @@ namespace SIMD
         inline DERIVED_VEC_TYPE div (DERIVED_VEC_TYPE const & b) const {
             return EMULATED_FUNCTIONS::div<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
+        
+        inline DERIVED_VEC_TYPE operator/ (DERIVED_VEC_TYPE const & b) const {
+            return div(b);
+        }
 
         // MDIVV
         inline DERIVED_VEC_TYPE div (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) const {
@@ -4211,6 +4271,10 @@ namespace SIMD
         // DIVVA
         inline DERIVED_VEC_TYPE diva (DERIVED_VEC_TYPE const & b) {
             return EMULATED_FUNCTIONS::divAssign<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this), b);
+        }
+        
+        inline DERIVED_VEC_TYPE operator/= (DERIVED_VEC_TYPE const & b) {
+            return diva(b);
         }
 
         // MDIVVA
@@ -4274,15 +4338,11 @@ namespace SIMD
         }
         
         inline MASK_TYPE operator== (DERIVED_VEC_TYPE const & b) const {
-            return EMULATED_FUNCTIONS::isEqual<MASK_TYPE, DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this), b);
+            return cmpeq(b);
         }
 
         // CMPEQS
         inline MASK_TYPE cmpeq (SCALAR_TYPE b) const {
-            return EMULATED_FUNCTIONS::isEqual<MASK_TYPE, DERIVED_VEC_TYPE, SCALAR_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this), b);
-        }
-        
-        inline MASK_TYPE operator== (SCALAR_TYPE b) const {
             return EMULATED_FUNCTIONS::isEqual<MASK_TYPE, DERIVED_VEC_TYPE, SCALAR_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
@@ -4292,17 +4352,13 @@ namespace SIMD
         }
 
         inline MASK_TYPE operator!= (DERIVED_VEC_TYPE const & b) const {
-            return EMULATED_FUNCTIONS::isNotEqual<MASK_TYPE, DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this), b);
+            return cmpne(b);
         }
 
         // CMPNES
         inline MASK_TYPE cmpne (SCALAR_TYPE b) const {
             return EMULATED_FUNCTIONS::isNotEqual<MASK_TYPE, DERIVED_VEC_TYPE, SCALAR_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this), b);
-        }    
-        
-        inline MASK_TYPE operator!= (SCALAR_TYPE b) const {
-            return EMULATED_FUNCTIONS::isNotEqual<MASK_TYPE, DERIVED_VEC_TYPE, SCALAR_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this), b);
-        }    
+        }
 
         // CMPGTV
         inline MASK_TYPE cmpgt (DERIVED_VEC_TYPE const & b) const {
@@ -4310,15 +4366,11 @@ namespace SIMD
         }
         
         inline MASK_TYPE operator> (DERIVED_VEC_TYPE const & b) const {
-            return EMULATED_FUNCTIONS::isGreater<MASK_TYPE, DERIVED_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this), b);
+            return cmpgt(b);
         }
 
         // CMPGTS
         inline MASK_TYPE cmpgt (SCALAR_TYPE b) const {
-            return EMULATED_FUNCTIONS::isGreater<MASK_TYPE, DERIVED_VEC_TYPE, SCALAR_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this), b);
-        }
-        
-        inline MASK_TYPE operator> (SCALAR_TYPE b) const {
             return EMULATED_FUNCTIONS::isGreater<MASK_TYPE, DERIVED_VEC_TYPE, SCALAR_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
@@ -4328,15 +4380,11 @@ namespace SIMD
         }
 
         inline MASK_TYPE operator< (DERIVED_VEC_TYPE const & b) const {
-            return EMULATED_FUNCTIONS::isLesser<MASK_TYPE, DERIVED_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this), b);
+            return cmplt(b);
         }
 
         // CMPLTS
         inline MASK_TYPE cmplt (SCALAR_TYPE b) const {
-            return EMULATED_FUNCTIONS::isLesser<MASK_TYPE, DERIVED_VEC_TYPE, SCALAR_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this), b);
-        }
-
-        inline MASK_TYPE operator< (SCALAR_TYPE b) const {
             return EMULATED_FUNCTIONS::isLesser<MASK_TYPE, DERIVED_VEC_TYPE, SCALAR_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
@@ -4346,15 +4394,11 @@ namespace SIMD
         }
         
         inline MASK_TYPE operator>= (DERIVED_VEC_TYPE const & b) const {
-            return EMULATED_FUNCTIONS::isGreaterEqual<MASK_TYPE, DERIVED_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this), b);
+            return cmpge(b);
         }
 
         // CMPGES
         inline MASK_TYPE cmpge (SCALAR_TYPE b) const {
-            return EMULATED_FUNCTIONS::isGreaterEqual<MASK_TYPE, DERIVED_VEC_TYPE, SCALAR_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this), b);
-        }
-
-        inline MASK_TYPE operator>= (SCALAR_TYPE b) const {
             return EMULATED_FUNCTIONS::isGreaterEqual<MASK_TYPE, DERIVED_VEC_TYPE, SCALAR_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
         
@@ -4364,15 +4408,11 @@ namespace SIMD
         }
 
         inline MASK_TYPE operator<= (DERIVED_VEC_TYPE const & b) const {
-            return EMULATED_FUNCTIONS::isLesserEqual<MASK_TYPE, DERIVED_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this), b);
+            return cmple(b);
         }
 
         // CMPLES
         inline MASK_TYPE cmple (SCALAR_TYPE b) const {
-            return EMULATED_FUNCTIONS::isLesserEqual<MASK_TYPE, DERIVED_VEC_TYPE, SCALAR_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this), b);
-        }
-        
-        inline MASK_TYPE operator<= (SCALAR_TYPE b) const {
             return EMULATED_FUNCTIONS::isLesserEqual<MASK_TYPE, DERIVED_VEC_TYPE, SCALAR_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
@@ -4384,6 +4424,10 @@ namespace SIMD
         // ANDV
         inline DERIVED_VEC_TYPE andv (DERIVED_VEC_TYPE const & b) const {
             return EMULATED_FUNCTIONS::binaryAnd<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this), b);
+        }
+
+        inline DERIVED_VEC_TYPE operator& (DERIVED_VEC_TYPE const & b) const {
+            return andv(b);
         }
 
         // MANDV
@@ -4406,6 +4450,10 @@ namespace SIMD
             return EMULATED_FUNCTIONS::binaryAndAssign<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
 
+        inline DERIVED_VEC_TYPE & operator&= (DERIVED_VEC_TYPE const & b) {
+            return anda(b);
+        }
+
         // MANDVA
         inline DERIVED_VEC_TYPE & anda (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) {
             return EMULATED_FUNCTIONS::binaryAndAssign<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this), b);
@@ -4424,6 +4472,10 @@ namespace SIMD
         // ORV
         inline DERIVED_VEC_TYPE orv ( DERIVED_VEC_TYPE const & b) const {
             return EMULATED_FUNCTIONS::binaryOr<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this), b);
+        }
+
+        inline DERIVED_VEC_TYPE operator| ( DERIVED_VEC_TYPE const & b) const {
+            return orv(b);
         }
 
         // MORV
@@ -4445,6 +4497,10 @@ namespace SIMD
         inline DERIVED_VEC_TYPE & ora (DERIVED_VEC_TYPE const & b) {
             return EMULATED_FUNCTIONS::binaryOrAssign<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
+        
+        inline DERIVED_VEC_TYPE & operator|= (DERIVED_VEC_TYPE const & b) {
+            return ora(b);
+        }
 
         // MORVA
         inline DERIVED_VEC_TYPE & ora (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) {
@@ -4455,7 +4511,7 @@ namespace SIMD
         inline DERIVED_VEC_TYPE & ora (SCALAR_TYPE b) {
             return EMULATED_FUNCTIONS::binaryOrAssign<DERIVED_VEC_TYPE, SCALAR_TYPE>(static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
-            
+
         // MORSA
         inline DERIVED_VEC_TYPE & ora (MASK_TYPE const & mask, SCALAR_TYPE b) {
             return EMULATED_FUNCTIONS::binaryOrAssign<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this), b);
@@ -4464,6 +4520,10 @@ namespace SIMD
         // XORV
         inline DERIVED_VEC_TYPE xorv (DERIVED_VEC_TYPE const & b) const {
             return EMULATED_FUNCTIONS::binaryXor<DERIVED_VEC_TYPE> ( static_cast<DERIVED_VEC_TYPE const &>(*this), b);
+        }
+        
+        inline DERIVED_VEC_TYPE operator^ (DERIVED_VEC_TYPE const & b) const {
+            return xorv(b);
         }
 
         // MXORV
@@ -4484,6 +4544,10 @@ namespace SIMD
         // XORVA
         inline DERIVED_VEC_TYPE & xora (DERIVED_VEC_TYPE const & b) {
             return EMULATED_FUNCTIONS::binaryXorAssign<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this), b);
+        }
+        
+        inline DERIVED_VEC_TYPE & operator^= (DERIVED_VEC_TYPE const & b) {
+            return xora(b);
         }
 
         // MXORVA
@@ -4506,6 +4570,10 @@ namespace SIMD
             return EMULATED_FUNCTIONS::binaryNot<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
     
+        inline DERIVED_VEC_TYPE operator~ () const {
+            return notv();
+        }
+
         // MNOT
         inline DERIVED_VEC_TYPE notv (MASK_TYPE const & mask) const {
             return EMULATED_FUNCTIONS::binaryNot<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this));
@@ -4549,13 +4617,6 @@ namespace SIMD
         // MHADD
         inline SCALAR_TYPE hadd (MASK_TYPE const & mask) const {
             return EMULATED_FUNCTIONS::reduceAdd<SCALAR_TYPE, DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &> (*this));
-        }
-
-        // TODO: is this even necessary in the interface?
-        inline SCALAR_TYPE horizontal_add_x(VEC_TYPE const & a) {
-            UME_EMULATION_WARNING();
-            // TODO:
-            return -1;
         }
 
         // HMUL
@@ -4839,7 +4900,7 @@ namespace SIMD
 
         // Forbid assignment-initialization of vector using scalar values
         // TODO: is this necessary?
-        /*inline VEC_TYPE & operator= (const int8_t & x) { }
+        inline VEC_TYPE & operator= (const int8_t & x) { }
         inline VEC_TYPE & operator= (const int16_t & x) { }
         inline VEC_TYPE & operator= (const int32_t & x) { }
         inline VEC_TYPE & operator= (const int64_t & x) { }
@@ -4849,7 +4910,7 @@ namespace SIMD
         inline VEC_TYPE & operator= (const uint64_t & x) { }
         inline VEC_TYPE & operator= (const float & x) { }
         inline VEC_TYPE & operator= (const double & x) { }
- */
+ 
         SCALAR_UINT_TYPE operator[] (SCALAR_UINT_TYPE index) const; // Declaration only! This operator has to be implemented in derived class.
         inline DERIVED_VEC_TYPE & insert(uint32_t index, SCALAR_UINT_TYPE value); // Declaration only! This operator has to be implemented in derived class.
 
@@ -5113,9 +5174,21 @@ namespace SIMD
         ~SIMDVecSignedInterface() {};
     public:
         
+        // SUBV
+        // 'operator-' needs to be overloaded again despite its' presence
+        // in base interface. This is because there is 'operator-()' declared
+        // also in this class.
+        inline DERIVED_VEC_TYPE operator- (DERIVED_VEC_TYPE const & b) {
+            return EMULATED_FUNCTIONS::sub<DERIVED_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this), b);
+        }
+
         // NEG
         inline DERIVED_VEC_TYPE neg () const {
             return EMULATED_FUNCTIONS::unaryMinus<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this));
+        }
+
+        inline DERIVED_VEC_TYPE operator- () const {
+            return neg();
         }
 
         // MNEG
@@ -5469,6 +5542,7 @@ namespace SIMD
                     );
         }
     };
+
 } // namespace UME::SIMD
 } // namespace UME
 

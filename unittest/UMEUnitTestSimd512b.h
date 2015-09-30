@@ -574,6 +574,18 @@ int test_UME_SIMD8_64f(bool supressMessages) {
         vec1.store(values);
         CHECK_CONDITION(valuesInRange(values, expected, 8, 0.1), "ADDVA");
     }
+    {
+        SIMD8_64f vec0(1.0, 2.0, 3.0, 4.0,
+                       5.0, 6.0, 7.0, 8.0);
+        SIMD8_64f vec1(3.0);
+        double values[8]   = { 0.0, 0.0, 0.0, 0.0,
+                               0.0, 0.0, 0.0, 0.0 };
+        double expected[8] = { 4.0, 5.0, 6.0,  7.0,
+                               8.0, 9.0, 10.0, 11.0 };
+        vec1 += vec0;
+        vec1.store(values);
+        CHECK_CONDITION(valuesInRange(values, expected, 8, 0.1), "ADDVA(operator+=)");
+    }
 
     return g_failCount;
 }

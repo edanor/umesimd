@@ -168,7 +168,13 @@ int test_UME_SIMDMask8(bool supressMessages) {
         mask2 = mask0.andm(mask1);
         CHECK_CONDITION(mask2[0] == true && mask2[3] == false && mask2[5] == false && mask2[7] == true, "AND");
     }
-
+    {
+        SIMDMask8 mask0(true, false, false, true, true, false, false, true);
+        SIMDMask8 mask1(true, false, false, false, false, true, false, true);
+        SIMDMask8 mask2;
+        mask2 = mask0 & mask1;
+        CHECK_CONDITION(mask2[0] == true && mask2[3] == false && mask2[5] == false && mask2[7] == true, "AND(operator&)");
+    }
     return g_failCount;
 }
 

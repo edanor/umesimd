@@ -187,9 +187,25 @@ int test_UME_SIMD8_16u(bool supressMessages)
         SIMD8_16u vec0(4, 8, 12, 16, 20, 24, 28, 32);
         SIMD8_16u vec1(1, 2, 3, 4, 5, 6, 7, 8);
         vec0.rsha(2);
+        SIMDMask8 mask; 
+        mask = vec0 == vec1; // 0xFF
+        CHECK_CONDITION(mask[0] == true && mask[7] == true, "CMPEQV(operator==)");
+    }
+    {
+        SIMD8_16u vec0(4, 8, 12, 16, 20, 24, 28, 32);
+        SIMD8_16u vec1(1, 2, 3, 4, 5, 6, 7, 8);
+        vec0.rsha(2);
         SIMDMask8 mask;
         mask = vec0.cmpne(vec1); // 0x00
         CHECK_CONDITION(mask[0] == false && mask[7] == false, "CMPNEV");
+    }
+    {
+        SIMD8_16u vec0(4, 8, 12, 16, 20, 24, 28, 32);
+        SIMD8_16u vec1(1, 2, 3, 4, 5, 6, 7, 8);
+        vec0.rsha(2);
+        SIMDMask8 mask;
+        mask = vec0 != vec1; // 0x00
+        CHECK_CONDITION(mask[0] == false && mask[7] == false, "CMPNEV(operator!=)");
     }
     {
         SIMD8_16u vec0(4, 8, 12, 16, 20, 24, 28, 32);
@@ -204,8 +220,24 @@ int test_UME_SIMD8_16u(bool supressMessages)
         SIMD8_16u vec1(1, 2, 3, 5, 5, 6, 8, 8);
         vec0.rsha(2);
         SIMDMask8 mask;
+        mask = vec1 > vec0; // 0x48
+        CHECK_CONDITION(mask[3] == true && mask[5] == false, "CMPGTV(operator>)");
+    }
+    {
+        SIMD8_16u vec0(4, 8, 12, 16, 20, 24, 28, 32);
+        SIMD8_16u vec1(1, 2, 3, 5, 5, 6, 8, 8);
+        vec0.rsha(2);
+        SIMDMask8 mask;
         mask = vec0.cmplt(vec1); // 0x48
         CHECK_CONDITION(mask[3] == true && mask[5] == false, "CMPLTV");
+    }
+    {
+        SIMD8_16u vec0(4, 8, 12, 16, 20, 24, 28, 32);
+        SIMD8_16u vec1(1, 2, 3, 5, 5, 6, 8, 8);
+        vec0.rsha(2);
+        SIMDMask8 mask;
+        mask = vec0 < vec1; // 0x48
+        CHECK_CONDITION(mask[3] == true && mask[5] == false, "CMPLTV(operator<)");
     }
     {
         SIMD8_16u vec0(4, 8, 12, 16, 20, 24, 28, 32);
@@ -220,8 +252,24 @@ int test_UME_SIMD8_16u(bool supressMessages)
         SIMD8_16u vec1(1, 2, 3, 3, 5, 5, 8, 8);
         vec0.rsha(2);
         SIMDMask8 mask;
+        mask = vec0 >= vec1; // 0xBF
+        CHECK_CONDITION(mask[2] == true && mask[6] == false, "CMPGEV(operator>=)");
+    }
+    {
+        SIMD8_16u vec0(4, 8, 12, 16, 20, 24, 28, 32);
+        SIMD8_16u vec1(1, 2, 3, 3, 5, 5, 8, 8);
+        vec0.rsha(2);
+        SIMDMask8 mask;
         mask = vec0.cmple(vec1); // 0xD7
         CHECK_CONDITION(mask[3] == false && mask[6] == true, "CMPLEV");
+    }
+    {
+        SIMD8_16u vec0(4, 8, 12, 16, 20, 24, 28, 32);
+        SIMD8_16u vec1(1, 2, 3, 3, 5, 5, 8, 8);
+        vec0.rsha(2);
+        SIMDMask8 mask;
+        mask = vec0 <= vec1; // 0xD7
+        CHECK_CONDITION(mask[3] == false && mask[6] == true, "CMPLEV(operator<=)");
     }
     {
         SIMD8_16u vec0(0xF2F1);
@@ -233,8 +281,21 @@ int test_UME_SIMD8_16u(bool supressMessages)
     {
         SIMD8_16u vec0(0xF2F1);
         SIMD8_16u vec1(0x2F1F);
+        SIMD8_16u vec2;
+        vec2 = vec0 & vec1;
+        CHECK_CONDITION(vec2[0] == 0x2211, "ANDV(operator&)");
+    }
+    {
+        SIMD8_16u vec0(0xF2F1);
+        SIMD8_16u vec1(0x2F1F);
         vec1.anda(vec0);
         CHECK_CONDITION(vec1[0] == 0x2211, "ANDVA");
+    }
+    {
+        SIMD8_16u vec0(0xF2F1);
+        SIMD8_16u vec1(0x2F1F);
+        vec1 &= vec0;
+        CHECK_CONDITION(vec1[0] == 0x2211, "ANDVA(operator&=)");
     }
     {
         SIMD8_16u vec0(0x7281);
@@ -246,14 +307,33 @@ int test_UME_SIMD8_16u(bool supressMessages)
     {
         SIMD8_16u vec0(0x7281);
         SIMD8_16u vec1(0x2314);
+        SIMD8_16u vec2;
+        vec2 = vec0 | vec1;
+        CHECK_CONDITION(vec2[0] == 0x7395, "ORV(operator|)");
+    }
+    {
+        SIMD8_16u vec0(0x7281);
+        SIMD8_16u vec1(0x2314);
         vec0.ora(vec1);
         CHECK_CONDITION(vec0[0] == 0x7395, "ORVA");
     }
     {
         SIMD8_16u vec0(0x7281);
         SIMD8_16u vec1(0x2314);
+        vec0 |= vec1;
+        CHECK_CONDITION(vec0[0] == 0x7395, "ORVA(operator|=)");
+    }
+    {
+        SIMD8_16u vec0(0x7281);
+        SIMD8_16u vec1(0x2314);
         vec0.xora(vec1);
         CHECK_CONDITION(vec0[0] == 0x5195, "XORVA");
+    }
+    {
+        SIMD8_16u vec0(0x7281);
+        SIMD8_16u vec1(0x2314);
+        vec0 ^= vec1;
+        CHECK_CONDITION(vec0[0] == 0x5195, "XORVA(operator^=)");
     }
     {
         SIMD8_16u vec0(0x7281);
@@ -503,6 +583,13 @@ int test_UME_SIMD4_32u(bool supressMessages)
         SIMD4_32u vec0(9, 8, 7, 6);
         SIMD4_32u vec1(3, 14, 28, 60);
         SIMD4_32u vec2;
+        vec2 = vec0 + vec1;
+        CHECK_CONDITION(vec2[0] == 12 && vec2[1] == 22 && vec2[2] == 35 && vec2[3] == 66, "ADDV(operator+)");
+    }
+    {
+        SIMD4_32u vec0(9, 8, 7, 6);
+        SIMD4_32u vec1(3, 14, 28, 60);
+        SIMD4_32u vec2;
         SIMDMask4 mask(true, false, true, true);
         vec2 = vec0.add(mask, vec1);
         CHECK_CONDITION(vec2[0] == 12 && vec2[1] == 8 && vec2[2] == 35 && vec2[3] == 66, "MADDV");
@@ -527,6 +614,12 @@ int test_UME_SIMD4_32u(bool supressMessages)
         SIMD4_32u vec1(3, 14, 28, 60);
         vec0.adda(vec1);
         CHECK_CONDITION(vec0[0] == 12 && vec0[1] == 22 && vec0[2] == 35 && vec0[3] == 66, "ADDVA");
+    }
+    {
+        SIMD4_32u vec0(9, 8, 7, 6);
+        SIMD4_32u vec1(3, 14, 28, 60);
+        vec0 += vec1;
+        CHECK_CONDITION(vec0[0] == 12 && vec0[1] == 22 && vec0[2] == 35 && vec0[3] == 66, "ADDVA(operator+=)");
     }
     {
         SIMD4_32u vec0(9, 8, 7, 6);
@@ -608,9 +701,23 @@ int test_UME_SIMD4_32u(bool supressMessages)
     {
         SIMD4_32u vec0(9, 8, 7, 6);
         SIMD4_32u vec1(0);
+        vec1 = vec0++;
+        CHECK_CONDITION(vec0[0] == 10 && vec0[1] == 9 && vec0[2] == 8 && vec0[3] == 7, "POSTINC 1(operator++)");
+        CHECK_CONDITION(vec1[0] == 9 && vec1[1] == 8 && vec1[2] == 7 && vec1[3] == 6, "POSTINC 2(operator++)");
+    }
+    {
+        SIMD4_32u vec0(9, 8, 7, 6);
+        SIMD4_32u vec1(0);
         vec1 = vec0.prefInc();
         CHECK_CONDITION(vec0[0] == 10 && vec0[1] == 9 && vec0[2] == 8 && vec0[3] == 7, "PREFINC 1");
         CHECK_CONDITION(vec1[0] == 10 && vec1[1] == 9 && vec1[2] == 8 && vec1[3] == 7, "PREFINC 2");
+    }
+    {
+        SIMD4_32u vec0(9, 8, 7, 6);
+        SIMD4_32u vec1(0);
+        vec1 = ++vec0;
+        CHECK_CONDITION(vec0[0] == 10 && vec0[1] == 9 && vec0[2] == 8 && vec0[3] == 7, "PREFINC 1(operator++)");
+        CHECK_CONDITION(vec1[0] == 10 && vec1[1] == 9 && vec1[2] == 8 && vec1[3] == 7, "PREFINC 2(operator++)");
     }
     {
         SIMD4_32u vec0(9, 14, 28, 60);
@@ -618,6 +725,13 @@ int test_UME_SIMD4_32u(bool supressMessages)
         SIMD4_32u vec2;
         vec2 = vec0.sub(vec1);
         CHECK_CONDITION(vec2[0] == 6 && vec2[1] == 6 && vec2[2] == 21 && vec2[3] == 54, "SUBV");
+    }
+    {
+        SIMD4_32u vec0(9, 14, 28, 60);
+        SIMD4_32u vec1(3, 8,   7,  6);
+        SIMD4_32u vec2;
+        vec2 = vec0 - vec1;
+        CHECK_CONDITION(vec2[0] == 6 && vec2[1] == 6 && vec2[2] == 21 && vec2[3] == 54, "SUBV(operator-)");
     }
     {
         SIMD4_32u vec0(900, 8, 7, 6);
@@ -631,6 +745,12 @@ int test_UME_SIMD4_32u(bool supressMessages)
         SIMD4_32u vec1(3, 8,   7,  6);
         vec0.suba(vec1);
         CHECK_CONDITION(vec0[0] == 6 && vec0[1] == 6 && vec0[2] == 21 && vec0[3] == 54, "SUBVA");
+    }
+    {
+        SIMD4_32u vec0(9, 14, 28, 60);
+        SIMD4_32u vec1(3, 8,   7,  6);
+        vec0 -= vec1;
+        CHECK_CONDITION(vec0[0] == 6 && vec0[1] == 6 && vec0[2] == 21 && vec0[3] == 54, "SUBVA(operator-=)");
     }
     {
         SIMD4_32u vec0(9, 8, 7, 6);
@@ -648,9 +768,16 @@ int test_UME_SIMD4_32u(bool supressMessages)
     {
         SIMD4_32u vec0(9, 8, 7, 6);
         SIMD4_32u vec1(0);
-        vec1 = vec0.prefDec();
-        CHECK_CONDITION(vec0[0] == 8 && vec0[1] == 7 && vec0[2] == 6 && vec0[3] == 5, "PREFDEC 1");
-        CHECK_CONDITION(vec1[0] == 8 && vec1[1] == 7 && vec1[2] == 6 && vec1[3] == 5, "PREFDEC 2");
+        vec1 = vec0--;
+        CHECK_CONDITION(vec0[0] == 8 && vec0[1] == 7 && vec0[2] == 6 && vec0[3] == 5, "POSTDEC 1(operator--)");
+        CHECK_CONDITION(vec1[0] == 9 && vec1[1] == 8 && vec1[2] == 7 && vec1[3] == 6, "POSTDEC 2(operaotr--)");
+    }
+    {
+        SIMD4_32u vec0(9, 8, 7, 6);
+        SIMD4_32u vec1(0);
+        vec1 = --vec0;
+        CHECK_CONDITION(vec0[0] == 8 && vec0[1] == 7 && vec0[2] == 6 && vec0[3] == 5, "PREFDEC 1(operator--)");
+        CHECK_CONDITION(vec1[0] == 8 && vec1[1] == 7 && vec1[2] == 6 && vec1[3] == 5, "PREFDEC 2(operator--)");
     }
     {
         SIMD4_32u vec0(9, 8, 7, 6);
@@ -661,10 +788,24 @@ int test_UME_SIMD4_32u(bool supressMessages)
     }
     {
         SIMD4_32u vec0(9, 8, 7, 6);
+        SIMD4_32u vec1(0);
+        SIMD4_32u vec2;
+        vec2 = vec0 * vec1;
+        CHECK_CONDITION(vec2[0] == 0 && vec2[1] == 0 && vec2[2] == 0 && vec2[3] == 0, "MULV 1(operator*)");
+    }
+    {
+        SIMD4_32u vec0(9, 8, 7, 6);
         SIMD4_32u vec1(3);
         SIMD4_32u vec2;
         vec2 = vec0.mul(vec1);
         CHECK_CONDITION(vec2[0] == 27 && vec2[1] == 24 && vec2[2] == 21 && vec2[3] == 18, "MULV 2");
+    }
+    {
+        SIMD4_32u vec0(9, 8, 7, 6);
+        SIMD4_32u vec1(3);
+        SIMD4_32u vec2;
+        vec2 = vec0 * vec1;
+        CHECK_CONDITION(vec2[0] == 27 && vec2[1] == 24 && vec2[2] == 21 && vec2[3] == 18, "MULV 2(operator*)");
     }
     {
         SIMD4_32u vec0(9, 8, 7, 6);
@@ -688,6 +829,12 @@ int test_UME_SIMD4_32u(bool supressMessages)
     }
     {
         SIMD4_32u vec0(9, 8, 7, 6);
+        SIMD4_32u vec1(3);
+        vec0 *= vec1;
+        CHECK_CONDITION(vec0[0] == 27 && vec0[1] == 24 && vec0[2] == 21 && vec0[3] == 18, "MULVA(operator*=)");
+    }
+    {
+        SIMD4_32u vec0(9, 8, 7, 6);
         uint32_t val1 = 3;
         vec0.mula(val1);
         CHECK_CONDITION(vec0[0] == 27 && vec0[1] == 24 && vec0[2] == 21 && vec0[3] == 18, "MULSA");
@@ -701,6 +848,13 @@ int test_UME_SIMD4_32u(bool supressMessages)
     }
     {
         SIMD4_32u vec0(9, 8, 7, 6);
+        SIMD4_32u vec1(3);
+        SIMD4_32u vec2;
+        vec2 = vec0 / vec1;
+        CHECK_CONDITION(vec2[0] == 3 && vec2[1] == 2 && vec2[2] == 2 && vec2[3] == 2, "DIVV(operator/)");
+    }
+    {
+        SIMD4_32u vec0(9, 8, 7, 6);
         uint32_t val1 = 3;
         SIMD4_32u vec2;
         vec2 = vec0.div(val1);
@@ -711,6 +865,12 @@ int test_UME_SIMD4_32u(bool supressMessages)
         SIMD4_32u vec1(3);
         vec0.diva(vec1);
         CHECK_CONDITION(vec0[0] == 3 && vec0[1] == 2 && vec0[2] == 2 && vec0[3] == 2, "DIVVA");
+    }
+    {
+        SIMD4_32u vec0(9, 8, 7, 6);
+        SIMD4_32u vec1(3);
+        vec0 /= vec1;
+        CHECK_CONDITION(vec0[0] == 3 && vec0[1] == 2 && vec0[2] == 2 && vec0[3] == 2, "DIVVA(operator/=)");
     }
     {
         SIMD4_32u vec0(9, 8, 7, 6);
@@ -918,6 +1078,13 @@ int test_UME_SIMD4_32u(bool supressMessages)
     }
     {
         SIMD4_32u  vec0(1, 2, 3, 5);
+        SIMD4_32u  vec1(1, 9, 0, 5);
+        SIMDMask4 mask;
+        mask = vec0 == vec1;
+        CHECK_CONDITION(mask[0] == true && mask[1] == false && mask[2] == false && mask[3] == true, "CMPEQV(operator==)");
+    }
+    {
+        SIMD4_32u  vec0(1, 2, 3, 5);
         uint32_t val1 = 3;
         SIMDMask4 mask;
         mask = vec0.cmpeq(val1);
@@ -929,6 +1096,13 @@ int test_UME_SIMD4_32u(bool supressMessages)
         SIMDMask4 mask;
         mask = vec0.cmpne(vec1);
         CHECK_CONDITION(mask[0] == false && mask[1] == true && mask[2] == true && mask[3] == false, "CMPNEV");
+    }
+    {
+        SIMD4_32u  vec0(1, 2, 3, 5);
+        SIMD4_32u  vec1(1, 9, 0, 5);
+        SIMDMask4 mask;
+        mask = vec0 != vec1;
+        CHECK_CONDITION(mask[0] == false && mask[1] == true && mask[2] == true && mask[3] == false, "CMPNEV(operator!=)");
     }
     {
         SIMD4_32u  vec0(1, 2, 3, 5);
@@ -949,7 +1123,7 @@ int test_UME_SIMD4_32u(bool supressMessages)
         SIMD4_32u  vec1(1, 9, 0, 2);
         SIMDMask4 mask;
         mask = vec0 > vec1;
-        CHECK_CONDITION(mask[0] == false && mask[1] == false && mask[2] == true && mask[3] == true, "operator>");
+        CHECK_CONDITION(mask[0] == false && mask[1] == false && mask[2] == true && mask[3] == true, "CMPGTV(operator>)");
     }
     {
         SIMD4_32u  vec0(1, 2, 3, 5);
@@ -967,6 +1141,13 @@ int test_UME_SIMD4_32u(bool supressMessages)
     }
     {
         SIMD4_32u  vec0(1, 2, 3, 5);
+        SIMD4_32u  vec1(1, 9, 0, 2);
+        SIMDMask4 mask;
+        mask = vec0 < vec1;
+        CHECK_CONDITION(mask[0] == false && mask[1] == true && mask[2] == false && mask[3] == false, "CMPLTV(operator<)");
+    }
+    {
+        SIMD4_32u  vec0(1, 2, 3, 5);
         uint32_t val1 = 3;
         SIMDMask4 mask;
         mask = vec0.cmplt(val1);
@@ -978,6 +1159,13 @@ int test_UME_SIMD4_32u(bool supressMessages)
         SIMDMask4 mask;
         mask = vec0.cmpge(vec1);
         CHECK_CONDITION(mask[0] == true && mask[1] == false && mask[2] == true && mask[3] == true, "CMPGEV");
+    }
+    {
+        SIMD4_32u  vec0(1, 2, 3, 5);
+        SIMD4_32u  vec1(1, 9, 3, 2);
+        SIMDMask4 mask;
+        mask = vec0 >= vec1;
+        CHECK_CONDITION(mask[0] == true && mask[1] == false && mask[2] == true && mask[3] == true, "CMPGEV(operator >=)");
     }
     {
         SIMD4_32u  vec0(1, 2, 3, 5);
@@ -995,6 +1183,13 @@ int test_UME_SIMD4_32u(bool supressMessages)
     }
     {
         SIMD4_32u  vec0(1, 2, 3, 5);
+        SIMD4_32u  vec1(1, 9, 3, 2);
+        SIMDMask4 mask;
+        mask = vec0 <= vec1;
+        CHECK_CONDITION(mask[0] == true && mask[1] == true && mask[2] == true && mask[3] == false, "CMPLEV(operator<=)");
+    }
+    {
+        SIMD4_32u  vec0(1, 2, 3, 5);
         uint32_t val1 = 3;
         SIMDMask4 mask;
         mask = vec0.cmple(val1);
@@ -1009,6 +1204,16 @@ int test_UME_SIMD4_32u(bool supressMessages)
         CHECK_CONDITION(
             vec2[0] == 0x01012000 && vec2[1] == 0x00000300 && vec2[2] == 0x09508060 && vec2[3] == 0x000F4020, 
             "ANDV");
+    }
+    {
+        SIMD4_32u vec0(0xF3333334, 0xF00F0F10, 0x0FF0F0F0, 0x000F423F);
+        SIMD4_32u vec1(0x09C9AC81, 0x01C0A301, 0x3956806F, 0x571FC5A0);
+        SIMD4_32u vec2;
+
+        vec2 = vec0 & vec1;
+        CHECK_CONDITION(
+            vec2[0] == 0x01012000 && vec2[1] == 0x00000300 && vec2[2] == 0x09508060 && vec2[3] == 0x000F4020, 
+            "ANDV(operator&)");
     }
     {
         SIMD4_32u vec0(0xF3333334, 0xF00F0F10, 0x0FF0F0F0, 0x000F423F);
@@ -1043,6 +1248,15 @@ int test_UME_SIMD4_32u(bool supressMessages)
     {
         SIMD4_32u vec0(0xF3333334, 0xF00F0F10, 0x0FF0F0F0, 0x000F423F);
         SIMD4_32u vec1(0x09C9AC81, 0x01C0A301, 0x3956806F, 0x571FC5A0);
+
+        vec0 &= vec1;
+        CHECK_CONDITION(
+            vec0[0] == 0x01012000 && vec0[1] == 0x00000300 && vec0[2] == 0x09508060 && vec0[3] == 0x000F4020, 
+            "ANDVA(operator&=)");
+    }
+    {
+        SIMD4_32u vec0(0xF3333334, 0xF00F0F10, 0x0FF0F0F0, 0x000F423F);
+        SIMD4_32u vec1(0x09C9AC81, 0x01C0A301, 0x3956806F, 0x571FC5A0);
         SIMDMask4 mask(true, false, false, true);
 
         vec0.anda(mask, vec1);
@@ -1071,6 +1285,14 @@ int test_UME_SIMD4_32u(bool supressMessages)
     {
         SIMD4_32u vec0(0xF3333334, 0xF00F0F10, 0x0FF0F0F0, 0x000F423F);
         SIMD4_32u vec1;
+        vec1 = ~vec0;
+        CHECK_CONDITION(
+            vec1[0] == 0x0CCCCCCB && vec1[1] == 0x0FF0F0EF && vec1[2] == 0xF00F0F0F && vec1[3] == 0xFFF0BDC0, 
+            "NOT(operator~)");
+    }
+    {
+        SIMD4_32u vec0(0xF3333334, 0xF00F0F10, 0x0FF0F0F0, 0x000F423F);
+        SIMD4_32u vec1;
         SIMDMask4 mask(true, false, true, false);
         vec1 = vec0.notv(mask);
         CHECK_CONDITION(
@@ -1088,7 +1310,7 @@ int test_UME_SIMD4_32u(bool supressMessages)
     {
         SIMD4_32u vec0(3), vec1(5);
         SIMD4_32u vec2(2);
-        SIMDMask4       mask(true, false, false, true);
+        SIMDMask4 mask(true, false, false, true);
         vec2 = vec0.blend(mask, vec1);
         CHECK_CONDITION(vec2[0] == 3 && vec2[1] == 5 && vec2[2] == 5 && vec2[3] == 3, "MBLENDV");
     }
@@ -1096,8 +1318,7 @@ int test_UME_SIMD4_32u(bool supressMessages)
         SIMD4_32u vec0(3);
         uint32_t val1 = 5;
         SIMD4_32u vec2(2);
-        SIMDMask4       mask(true, false, false, true);
-    
+        SIMDMask4 mask(true, false, false, true);
         vec2 = vec0.blend(mask, val1);
         CHECK_CONDITION(vec2[0] == 3 && vec2[1] == 5 && vec2[2] == 5 && vec2[3] == 3, "MBLENDS");
     }
@@ -1306,6 +1527,13 @@ int test_UME_SIMD4_32i(bool supressMessages)
         SIMD4_32i vec0(9, -8, 7, 6);
         SIMD4_32i vec1(3, 14, 28, -60);
         SIMD4_32i vec2;
+        vec2 = vec0 + vec1;
+        CHECK_CONDITION(vec2[0] == 12 && vec2[1] == 6 && vec2[2] == 35 && vec2[3] == -54, "ADDV(operator+)");
+    }
+    {
+        SIMD4_32i vec0(9, -8, 7, 6);
+        SIMD4_32i vec1(3, 14, 28, -60);
+        SIMD4_32i vec2;
         SIMDMask4 mask(true, false, true, true);
         vec2 = vec0.add(mask, vec1);
         CHECK_CONDITION(vec2[0] == 12 && vec2[1] == -8 && vec2[2] == 35 && vec2[3] == -54, "MADDV");
@@ -1330,6 +1558,12 @@ int test_UME_SIMD4_32i(bool supressMessages)
         SIMD4_32i vec1(3, 14, 28, -60);
         vec0.adda(vec1);
         CHECK_CONDITION(vec0[0] == 12 && vec0[1] == 6 && vec0[2] == 35 && vec0[3] == -54, "ADDVA");
+    }
+    {
+        SIMD4_32i vec0(9, -8, 7, 6);
+        SIMD4_32i vec1(3, 14, 28, -60);
+        vec0 += vec1;
+        CHECK_CONDITION(vec0[0] == 12 && vec0[1] == 6 && vec0[2] == 35 && vec0[3] == -54, "ADDVA(operator+=)");
     }
     {
         SIMD4_32i vec0(9, -8, 7, 6);
@@ -1364,9 +1598,23 @@ int test_UME_SIMD4_32i(bool supressMessages)
     {
         SIMD4_32i vec0(9, -8, 7, 6);
         SIMD4_32i vec1(0);
+        vec1 = vec0++;
+        CHECK_CONDITION(vec0[0] == 10 && vec0[1] == -7 && vec0[2] == 8 && vec0[3] == 7, "POSTINC 1(operator++)");
+        CHECK_CONDITION(vec1[0] == 9 && vec1[1] == -8 && vec1[2] == 7 && vec1[3] == 6, "POSTINC 2(operator++)");
+    }
+    {
+        SIMD4_32i vec0(9, -8, 7, 6);
+        SIMD4_32i vec1(0);
         vec1 = vec0.prefInc();
         CHECK_CONDITION(vec0[0] == 10 && vec0[1] == -7 && vec0[2] == 8 && vec0[3] == 7, "PREFINC 1");
         CHECK_CONDITION(vec1[0] == 10 && vec1[1] == -7 && vec1[2] == 8 && vec1[3] == 7, "PREFINC 2");
+    }
+    {
+        SIMD4_32i vec0(9, -8, 7, 6);
+        SIMD4_32i vec1(0);
+        vec1 = ++vec0;
+        CHECK_CONDITION(vec0[0] == 10 && vec0[1] == -7 && vec0[2] == 8 && vec0[3] == 7, "PREFINC 1(operator++)");
+        CHECK_CONDITION(vec1[0] == 10 && vec1[1] == -7 && vec1[2] == 8 && vec1[3] == 7, "PREFINC 2(operator++)");
     }
     {
         SIMD4_32i vec0(9, -8, 7, 6);
@@ -1374,6 +1622,13 @@ int test_UME_SIMD4_32i(bool supressMessages)
         SIMD4_32i vec2;
         vec2 = vec0.sub(vec1);
         CHECK_CONDITION(vec2[0] == 6 && vec2[1] == -22 && vec2[2] == -21 && vec2[3] == 66, "SUBV");
+    }
+    {
+        SIMD4_32i vec0(9, -8, 7, 6);
+        SIMD4_32i vec1(3, 14, 28, -60);
+        SIMD4_32i vec2;
+        vec2 = vec0 - vec1;
+        CHECK_CONDITION(vec2[0] == 6 && vec2[1] == -22 && vec2[2] == -21 && vec2[3] == 66, "SUBV(operator-)");
     }
     {
         SIMD4_32i vec0(9, 8, 7, 6);
@@ -1387,6 +1642,12 @@ int test_UME_SIMD4_32i(bool supressMessages)
         SIMD4_32i vec1(3, 14, 28, -60);
         vec0.suba(vec1);
         CHECK_CONDITION(vec0[0] == 6 && vec0[1] == -22 && vec0[2] == -21 && vec0[3] == 66, "SUBVA");
+    }
+    {
+        SIMD4_32i vec0(9, -8, 7, 6);
+        SIMD4_32i vec1(3, 14, 28, -60);
+        vec0-=vec1;
+        CHECK_CONDITION(vec0[0] == 6 && vec0[1] == -22 && vec0[2] == -21 && vec0[3] == 66, "SUBVA(operator-=)");
     }
     {
         SIMD4_32i vec0(9, -8, 7, 6);
@@ -1524,9 +1785,23 @@ int test_UME_SIMD4_32i(bool supressMessages)
     {
         SIMD4_32i vec0(9, -8, 7, 6);
         SIMD4_32i vec1(0);
+        vec1 = vec0--;
+        CHECK_CONDITION(vec0[0] == 8 && vec0[1] == -9 && vec0[2] == 6 && vec0[3] == 5, "POSTDEC 1(operator--)");
+        CHECK_CONDITION(vec1[0] == 9 && vec1[1] == -8 && vec1[2] == 7 && vec1[3] == 6, "POSTDEC 2(operator--)");
+    }
+    {
+        SIMD4_32i vec0(9, -8, 7, 6);
+        SIMD4_32i vec1(0);
         vec1 = vec0.prefDec();
         CHECK_CONDITION(vec0[0] == 8 && vec0[1] == -9 && vec0[2] == 6 && vec0[3] == 5, "PREFDEC 1");
         CHECK_CONDITION(vec1[0] == 8 && vec1[1] == -9 && vec1[2] == 6 && vec1[3] == 5, "PREFDEC 2");
+    }
+    {
+        SIMD4_32i vec0(9, -8, 7, 6);
+        SIMD4_32i vec1(0);
+        vec1 = --vec0;
+        CHECK_CONDITION(vec0[0] == 8 && vec0[1] == -9 && vec0[2] == 6 && vec0[3] == 5, "PREFDEC 1(operator--)");
+        CHECK_CONDITION(vec1[0] == 8 && vec1[1] == -9 && vec1[2] == 6 && vec1[3] == 5, "PREFDEC 2(operator--)");
     }
     {
         SIMD4_32i vec0(9, 8, 7, 6);
@@ -1537,10 +1812,24 @@ int test_UME_SIMD4_32i(bool supressMessages)
     }
     {
         SIMD4_32i vec0(9, 8, 7, 6);
+        SIMD4_32i vec1(0);
+        SIMD4_32i vec2;
+        vec2 = vec0 * vec1;
+        CHECK_CONDITION(vec2[0] == 0 && vec2[1] == 0 && vec2[2] == 0 && vec2[3] == 0, "MULV 1(operator*)");
+    }
+    {
+        SIMD4_32i vec0(9, 8, 7, 6);
         SIMD4_32i vec1(-3);
         SIMD4_32i vec2;
         vec2 = vec0.mul(vec1);
         CHECK_CONDITION(vec2[0] == -27 && vec2[1] == -24 && vec2[2] == -21 && vec2[3] == -18, "MULV 2");
+    }
+    {
+        SIMD4_32i vec0(9, 8, 7, 6);
+        SIMD4_32i vec1(-3);
+        SIMD4_32i vec2;
+        vec2 = vec0 * vec1;
+        CHECK_CONDITION(vec2[0] == -27 && vec2[1] == -24 && vec2[2] == -21 && vec2[3] == -18, "MULV 2(operator*)");
     }
     {
         SIMD4_32i vec0(9, 8, 7, 6);
@@ -1564,6 +1853,12 @@ int test_UME_SIMD4_32i(bool supressMessages)
     }
     {
         SIMD4_32i vec0(9, 8, 7, 6);
+        SIMD4_32i vec1(-3);
+        vec0*=vec1;
+        CHECK_CONDITION(vec0[0] == -27 && vec0[1] == -24 && vec0[2] == -21 && vec0[3] == -18, "MULVA(operator*=)");
+    }
+    {
+        SIMD4_32i vec0(9, 8, 7, 6);
         int32_t val1 = -3;
         vec0.mula(val1);
         CHECK_CONDITION(vec0[0] == -27 && vec0[1] == -24 && vec0[2] == -21 && vec0[3] == -18, "MULSA");
@@ -1577,6 +1872,13 @@ int test_UME_SIMD4_32i(bool supressMessages)
     }
     {
         SIMD4_32i vec0(9, 8, -7, 6);
+        SIMD4_32i vec1(3);
+        SIMD4_32i vec2;
+        vec2 = vec0 / vec1;
+        CHECK_CONDITION(vec2[0] == 3 && vec2[1] == 2 && vec2[2] == -2 && vec2[3] == 2, "DIVV(operator/)");
+    }
+    {
+        SIMD4_32i vec0(9, 8, -7, 6);
         int32_t val1 = -3;
         SIMD4_32i vec2;
         vec2 = vec0.div(val1);
@@ -1587,6 +1889,12 @@ int test_UME_SIMD4_32i(bool supressMessages)
         SIMD4_32i vec1(3);
         vec0.diva(vec1);
         CHECK_CONDITION(vec0[0] == 3 && vec0[1] == 2 && vec0[2] == -2 && vec0[3] == 2, "DIVVA");
+    }
+    {
+        SIMD4_32i vec0(9, 8, -7, 6);
+        SIMD4_32i vec1(3);
+        vec0 /= vec1;
+        CHECK_CONDITION(vec0[0] == 3 && vec0[1] == 2 && vec0[2] == -2 && vec0[3] == 2, "DIVVA(operator/=)");
     }
     {
         SIMD4_32i vec0(9, 8, -7, 6);
@@ -1734,6 +2042,13 @@ int test_UME_SIMD4_32i(bool supressMessages)
     }
     {
         SIMD4_32i  vec0(1, 2, -3, -5);
+        SIMD4_32i  vec1(1, 9, 0, -5);
+        SIMDMask4 mask;
+        mask = vec0 == vec1;
+        CHECK_CONDITION(mask[0] == true && mask[1] == false && mask[2] == false && mask[3] == true, "CMPEQV(operator==)");
+    }
+    {
+        SIMD4_32i  vec0(1, 2, -3, -5);
         int32_t val1 = -3;
         SIMDMask4 mask;
         mask = vec0.cmpeq(val1);
@@ -1745,6 +2060,13 @@ int test_UME_SIMD4_32i(bool supressMessages)
         SIMDMask4 mask;
         mask = vec0.cmpne(vec1);
         CHECK_CONDITION(mask[0] == false && mask[1] == true && mask[2] == true && mask[3] == false, "CMPNEV");
+    }
+    {
+        SIMD4_32i  vec0(1, 2, -3, -5);
+        SIMD4_32i  vec1(1, 9, 0, -5);
+        SIMDMask4 mask;
+        mask = vec0 != vec1;
+        CHECK_CONDITION(mask[0] == false && mask[1] == true && mask[2] == true && mask[3] == false, "CMPNEV(operator!=)");
     }
     {
         SIMD4_32i  vec0(1, 2, -3, -5);
@@ -1761,6 +2083,13 @@ int test_UME_SIMD4_32i(bool supressMessages)
         CHECK_CONDITION(mask[0] == false && mask[1] == false && mask[2] == true && mask[3] == false, "CMPGTV");
     }
     {
+        SIMD4_32i  vec0(1, 2, 3, -5);
+        SIMD4_32i  vec1(1, 9, 0, -2);
+        SIMDMask4 mask;
+        mask = vec0 > vec1;
+        CHECK_CONDITION(mask[0] == false && mask[1] == false && mask[2] == true && mask[3] == false, "CMPGTV(operator>)");
+    }
+    {
         SIMD4_32i  vec0(1, 2, -3, -5);
         int32_t val1 = -3;
         SIMDMask4 mask;
@@ -1773,6 +2102,13 @@ int test_UME_SIMD4_32i(bool supressMessages)
         SIMDMask4 mask;
         mask = vec0.cmplt(vec1);
         CHECK_CONDITION(mask[0] == false && mask[1] == true && mask[2] == false && mask[3] == true, "CMPLTV");
+    }
+    {
+        SIMD4_32i  vec0(1, 2, 3, -5);
+        SIMD4_32i  vec1(1, 9, 0, -2);
+        SIMDMask4 mask;
+        mask = vec0 < vec1;
+        CHECK_CONDITION(mask[0] == false && mask[1] == true && mask[2] == false && mask[3] == true, "CMPLTV(operator<)");
     }
     {
         SIMD4_32i  vec0(1, 2, -3, -5);
@@ -1790,6 +2126,13 @@ int test_UME_SIMD4_32i(bool supressMessages)
     }
     {
         SIMD4_32i  vec0(1, 2, -3, -5);
+        SIMD4_32i  vec1(1, 9, -3, -2);
+        SIMDMask4 mask;
+        mask = vec0 >= vec1;
+        CHECK_CONDITION(mask[0] == true && mask[1] == false && mask[2] == true && mask[3] == false, "CMPGEV(operator>=)");
+    }
+    {
+        SIMD4_32i  vec0(1, 2, -3, -5);
         int32_t val1 = -3;
         SIMDMask4 mask;
         mask = vec0.cmpge(val1);
@@ -1801,6 +2144,13 @@ int test_UME_SIMD4_32i(bool supressMessages)
         SIMDMask4 mask;
         mask = vec0.cmple(vec1);
         CHECK_CONDITION(mask[0] == true && mask[1] == true && mask[2] == true && mask[3] == false, "CMPLEV");
+    }
+    {
+        SIMD4_32i  vec0(1, 2, -3, -5);
+        SIMD4_32i  vec1(1, 9, -3, -7);
+        SIMDMask4 mask;
+        mask = vec0 <= vec1;
+        CHECK_CONDITION(mask[0] == true && mask[1] == true && mask[2] == true && mask[3] == false, "CMPLEV(operator<=)");
     }
     {
         SIMD4_32i  vec0(1, 2, -3, -5);
@@ -1818,6 +2168,16 @@ int test_UME_SIMD4_32i(bool supressMessages)
         CHECK_CONDITION(
             vec2[0] == 0x01012000 && vec2[1] == 0x00000300 && vec2[2] == 0x09508060 && vec2[3] == 0x000F4020, 
             "ANDV");
+    }
+    {
+        SIMD4_32i vec0(0xF3333334, 0xF00F0F10, 0x0FF0F0F0, 0x000F423F);
+        SIMD4_32i vec1(0x09C9AC81, 0x01C0A301, 0x3956806F, 0x571FC5A0);
+        SIMD4_32i vec2;
+
+        vec2 = vec0 & vec1;
+        CHECK_CONDITION(
+            vec2[0] == 0x01012000 && vec2[1] == 0x00000300 && vec2[2] == 0x09508060 && vec2[3] == 0x000F4020, 
+            "ANDV(operator&)");
     }
     {
         SIMD4_32i vec0(0xF3333334, 0xF00F0F10, 0x0FF0F0F0, 0x000F423F);
@@ -1852,6 +2212,15 @@ int test_UME_SIMD4_32i(bool supressMessages)
     {
         SIMD4_32i vec0(0xF3333334, 0xF00F0F10, 0x0FF0F0F0, 0x000F423F);
         SIMD4_32i vec1(0x09C9AC81, 0x01C0A301, 0x3956806F, 0x571FC5A0);
+
+        vec0 &= vec1;
+        CHECK_CONDITION(
+            vec0[0] == 0x01012000 && vec0[1] == 0x00000300 && vec0[2] == 0x09508060 && vec0[3] == 0x000F4020, 
+            "ANDVA(operator&=)");
+    }
+    {
+        SIMD4_32i vec0(0xF3333334, 0xF00F0F10, 0x0FF0F0F0, 0x000F423F);
+        SIMD4_32i vec1(0x09C9AC81, 0x01C0A301, 0x3956806F, 0x571FC5A0);
         SIMDMask4 mask(true, false, false, true);
 
         vec0.anda(mask, vec1);
@@ -1876,6 +2245,14 @@ int test_UME_SIMD4_32i(bool supressMessages)
         CHECK_CONDITION(
             vec1[0] == 0x0CCCCCCB && vec1[1] == 0x0FF0F0EF && vec1[2] == 0xF00F0F0F && vec1[3] == 0xFFF0BDC0, 
             "NOT");
+    }
+    {
+        SIMD4_32i vec0(0xF3333334, 0xF00F0F10, 0x0FF0F0F0, 0x000F423F);
+        SIMD4_32i vec1;
+        vec1 = ~vec0;
+        CHECK_CONDITION(
+            vec1[0] == 0x0CCCCCCB && vec1[1] == 0x0FF0F0EF && vec1[2] == 0xF00F0F0F && vec1[3] == 0xFFF0BDC0, 
+            "NOT(operator~)");
     }
     {
         SIMD4_32i vec0(0xF3333334, 0xF00F0F10, 0x0FF0F0F0, 0x000F423F);
@@ -2027,6 +2404,18 @@ int test_UME_SIMD4_32i(bool supressMessages)
         vec1 = vec0.neg();
         CHECK_CONDITION(vec1[0] == -9 && vec1[1] == 8 && vec1[2] == -7 && vec1[3] == -6, "NEG");
     }
+    {
+        SIMD4_32i vec0(9, -8, 7, 6);
+        SIMD4_32i vec1;
+        vec1 = -vec0;
+        CHECK_CONDITION(vec1[0] == -9 && vec1[1] == 8 && vec1[2] == -7 && vec1[3] == -6, "NEG(operator-)");
+    }
+    {
+        SIMD4_32i vec0(9, -8, 7, 6);
+        SIMD4_32i vec1;
+        vec1 = -vec0;
+        CHECK_CONDITION(vec1[0] == -9 && vec1[1] == 8 && vec1[2] == -7 && vec1[3] == -6, "NEG(operator-)");
+    }
     return g_failCount;
 }
 
@@ -2062,6 +2451,13 @@ int test_UME_SIMD4_32f(bool supressMessages)
     }
     {
         SIMD4_32f vec0(1.0f);
+        SIMD4_32f vec1(2.0f);
+        SIMD4_32f vec2;
+        vec2 = vec0 + vec1;
+        CHECK_CONDITION(vec2[0] == 3.0f, "ADDV(operator+)");
+    }
+    {
+        SIMD4_32f vec0(1.0f);
         float val1 = 2.0f;
         SIMD4_32f vec2;
         vec2 = vec0.add(val1);
@@ -2073,6 +2469,13 @@ int test_UME_SIMD4_32f(bool supressMessages)
         SIMD4_32f vec2;
         vec2 = vec0.mul(vec1);
         CHECK_CONDITION(vec2[1] > 11.99f && vec2[1] < 12.01f, "MULV");
+    }
+    {
+        SIMD4_32f vec0(3.0f);
+        SIMD4_32f vec1(4.0f);
+        SIMD4_32f vec2;
+        vec2 = vec0 * vec1;
+        CHECK_CONDITION(vec2[1] > 11.99f && vec2[1] < 12.01f, "MULV(operator*)");
     }
     {
         SIMD4_32f vec0(3.0f);

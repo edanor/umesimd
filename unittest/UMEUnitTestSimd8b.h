@@ -82,6 +82,12 @@ int test_UME_SIMD1_8i(bool supressMessages) {
         SIMD1_8i vec2 = vec0.add(vec1);
         CHECK_CONDITION(vec2[0] == -121, "ADDV");
     }
+    {
+        SIMD1_8i vec0(5);
+        SIMD1_8i vec1(-126);
+        SIMD1_8i vec2 = vec0 + vec1;
+        CHECK_CONDITION(vec2[0] == -121, "ADDV(operator+)");
+    }
 
     return g_failCount;
 }

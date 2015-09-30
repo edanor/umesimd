@@ -4486,6 +4486,11 @@ namespace SIMD
         // ZERO-CONSTR - Zero element constructor 
         inline SIMDVecAVX_f() {}
         
+        // LOAD-CONSTR - Construct by loading from memory
+        inline explicit SIMDVecAVX_f(const double *p) {
+            this->load(p);
+        }
+
         // SET-CONSTR  - One element constructor
         inline explicit SIMDVecAVX_f(double d) {
             mVecLo = _mm256_set1_pd(d);

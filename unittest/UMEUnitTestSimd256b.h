@@ -216,6 +216,12 @@ int test_UME_SIMD8_32u(bool supressMessages)
     {
         SIMD8_32u vec0( 1, 2, 3, 4, 1,  2,  3,  4);
         SIMD8_32u vec1( 8, 2, 1, 9, 24, 45, 12, 1);
+        vec0 += vec1;
+        CHECK_CONDITION(vec0[3] == 13 && vec0[7] == 5, "ADDVA(operator+=)");
+    }
+    {
+        SIMD8_32u vec0( 1, 2, 3, 4, 1,  2,  3,  4);
+        SIMD8_32u vec1( 8, 2, 1, 9, 24, 45, 12, 1);
         SIMDMask8 mask(true, true, false, false, false, false, true, true);        
         vec0.adda(mask, vec1);
         CHECK_CONDITION(vec0[1] == 4 && vec0[2] == 3 && vec0[5] == 2 && vec0[7] == 5, "MADDVA");
@@ -242,6 +248,12 @@ int test_UME_SIMD8_32u(bool supressMessages)
     {
         SIMD8_32u vec0( 1,  2,  3,  4,  5,  6,  7,  8);
         SIMD8_32u vec1( 9, 10, 11, 12, 13, 14, 15, 16);
+        SIMD8_32u vec2 = vec0 * vec1;
+        CHECK_CONDITION(vec2[3] == 48 && vec2[7] == 128, "MULV(operator*)");
+    }
+    {
+        SIMD8_32u vec0( 1,  2,  3,  4,  5,  6,  7,  8);
+        SIMD8_32u vec1( 9, 10, 11, 12, 13, 14, 15, 16);
         SIMDMask8 mask(true, false, true, false, true, false, false, true);
         SIMD8_32u vec2 = vec0.mul(mask, vec1);
         CHECK_CONDITION(vec2[3] == 4 && vec2[7] == 128, "MMULV");
@@ -264,6 +276,12 @@ int test_UME_SIMD8_32u(bool supressMessages)
         SIMD8_32u vec1(1, 4, 3, 6, 5, 6, 9, 12);
         SIMDMask8 mask = vec0.cmpeq(vec1);
         CHECK_CONDITION(mask[0] == true && mask[1] == false && mask[5] == true && mask[6] == false, "CMPEQV");
+    }
+    {
+        SIMD8_32u vec0(1, 2, 3, 4, 5, 6, 7, 8);
+        SIMD8_32u vec1(1, 4, 3, 6, 5, 6, 9, 12);
+        SIMDMask8 mask = vec0 == vec1;
+        CHECK_CONDITION(mask[0] == true && mask[1] == false && mask[5] == true && mask[6] == false, "CMPEQV(operator==)");
     }
     {
         SIMD8_32u vec0(1, 2, 3, 4, 5, 3, 7, 8);
@@ -487,6 +505,12 @@ int test_UME_SIMD8_32f(bool supressMessages)
         SIMD8_32f vec1(1.0f, 2.4f, 3.14f,     8.43f, 9.2f, 1.0f,  0.1f, 2.56f);
         SIMD8_32f vec2 = vec0.add(vec1);
         CHECK_CONDITION(vec2[2] > 11.13f && vec2[2] < 11.15f && vec2[6] > 12.0f && vec2[6] < 12.2f, "ADDV");
+    }
+    {
+        SIMD8_32f vec0(1.0f, 3.0f,  8.0f, -41231.0f, 9.0f, 5.0f, 12.0f,  4.0f);
+        SIMD8_32f vec1(1.0f, 2.4f, 3.14f,     8.43f, 9.2f, 1.0f,  0.1f, 2.56f);
+        SIMD8_32f vec2 = vec0 + vec1;
+        CHECK_CONDITION(vec2[2] > 11.13f && vec2[2] < 11.15f && vec2[6] > 12.0f && vec2[6] < 12.2f, "ADDV(operator+)");
     }
     {
         SIMD8_32f vec0(1.0f, 3.0f,  8.0f, -41231.0f, 9.0f, 5.0f, 12.0f,  4.0f);

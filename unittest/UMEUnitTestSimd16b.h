@@ -98,6 +98,12 @@ int test_UME_SIMD2_8i(bool supressMessages) {
         SIMD2_8i vec2 = vec0.add(vec1);
         CHECK_CONDITION(vec2[1] == -121, "ADDV");
     }
+    {
+        SIMD2_8i vec0(5);
+        SIMD2_8i vec1(-126);
+        SIMD2_8i vec2 = vec0 + vec1;
+        CHECK_CONDITION(vec2[1] == -121, "ADDV(operator+)");
+    }
 
     return g_failCount;
 }
@@ -123,12 +129,17 @@ int test_UME_SIMD1_16i(bool supressMessages) {
         SIMD1_16i vec0;
         CHECK_CONDITION(vec0.length() == 1, "ZERO-CONSTR");
     }
-
     {
         SIMD1_16i vec0(5);
         SIMD1_16i vec1(-5123);
         SIMD1_16i vec2 = vec0.add(vec1);
         CHECK_CONDITION(vec2[0] == -5118, "ADDV");
+    }
+    {
+        SIMD1_16i vec0(5);
+        SIMD1_16i vec1(-5123);
+        SIMD1_16i vec2 = vec0 + vec1;
+        CHECK_CONDITION(vec2[0] == -5118, "ADDV(operator+)");
     }
 
     return g_failCount;
