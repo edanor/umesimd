@@ -110,7 +110,7 @@ namespace SIMD
     private:
         MASK_SCALAR_TYPE mMask[VEC_LEN]; // each entry represents single mask element. For real SIMD vectors, mMask will be of mask intrinsic type.
     public:
-        SIMDVecScalarEmuMask() {
+        inline SIMDVecScalarEmuMask() {
             UME_EMULATION_WARNING();
             for(int i = 0; i < VEC_LEN; i++)
             {
@@ -120,22 +120,24 @@ namespace SIMD
 
         // Regardless of the mask representation, the interface should only allow initialization using 
         // standard bool or using equivalent mask
-        SIMDVecScalarEmuMask( bool m ) {
+        inline explicit SIMDVecScalarEmuMask(bool m) {
             UME_EMULATION_WARNING();
             for(int i = 0; i < VEC_LEN; i++)
             {
                 mMask[i] = MASK_SCALAR_TYPE(m);
             }
         };
+
+        inline explicit SIMDVecScalarEmuMask(bool const * p) { this->load(p); }
         
         // TODO: this should be handled using variadic templates, but unfortunatelly Visual Studio does not support this feature...
-        SIMDVecScalarEmuMask( bool m0, bool m1 )
+        inline SIMDVecScalarEmuMask(bool m0, bool m1)
         {
             mMask[0] = MASK_SCALAR_TYPE(m0); 
             mMask[1] = MASK_SCALAR_TYPE(m1);
         };
 
-        SIMDVecScalarEmuMask( bool m0, bool m1, bool m2, bool m3 )
+        inline SIMDVecScalarEmuMask(bool m0, bool m1, bool m2, bool m3)
         {
             mMask[0] = MASK_SCALAR_TYPE(m0); 
             mMask[1] = MASK_SCALAR_TYPE(m1); 
@@ -143,8 +145,8 @@ namespace SIMD
             mMask[3] = MASK_SCALAR_TYPE(m3);
         };
 
-        SIMDVecScalarEmuMask( bool m0, bool m1, bool m2, bool m3,
-                                bool m4, bool m5, bool m6, bool m7 )
+        inline SIMDVecScalarEmuMask( bool m0, bool m1, bool m2, bool m3,
+                                bool m4, bool m5, bool m6, bool m7)
         {
             mMask[0] = MASK_SCALAR_TYPE(m0); mMask[1] = MASK_SCALAR_TYPE(m1);
             mMask[2] = MASK_SCALAR_TYPE(m2); mMask[3] = MASK_SCALAR_TYPE(m3);
@@ -152,10 +154,10 @@ namespace SIMD
             mMask[6] = MASK_SCALAR_TYPE(m6); mMask[7] = MASK_SCALAR_TYPE(m7);
         };
 
-        SIMDVecScalarEmuMask( bool m0,  bool m1,  bool m2,  bool m3,
+        inline SIMDVecScalarEmuMask( bool m0,  bool m1,  bool m2,  bool m3,
                                 bool m4,  bool m5,  bool m6,  bool m7,
                                 bool m8,  bool m9,  bool m10, bool m11,
-                                bool m12, bool m13, bool m14, bool m15 )
+                                bool m12, bool m13, bool m14, bool m15)
         {
             mMask[0] = MASK_SCALAR_TYPE(m0);  mMask[1] = MASK_SCALAR_TYPE(m1);
             mMask[2] = MASK_SCALAR_TYPE(m2);  mMask[3] = MASK_SCALAR_TYPE(m3);
@@ -167,7 +169,7 @@ namespace SIMD
             mMask[14] = MASK_SCALAR_TYPE(m14); mMask[15] = MASK_SCALAR_TYPE(m15);
         };
 
-        SIMDVecScalarEmuMask( bool m0,  bool m1,  bool m2,  bool m3,
+        inline SIMDVecScalarEmuMask( bool m0,  bool m1,  bool m2,  bool m3,
                                 bool m4,  bool m5,  bool m6,  bool m7,
                                 bool m8,  bool m9,  bool m10, bool m11,
                                 bool m12, bool m13, bool m14, bool m15,
@@ -209,7 +211,7 @@ namespace SIMD
             mMask[index] = MASK_SCALAR_TYPE(x);
         }
 
-        SIMDVecScalarEmuMask(SIMDVecScalarEmuMask const & mask) {
+        inline SIMDVecScalarEmuMask(SIMDVecScalarEmuMask const & mask) {
             UME_EMULATION_WARNING();
             for(int i = 0; i < VEC_LEN; i++)
             {
@@ -227,16 +229,16 @@ namespace SIMD
     private:
         uint32_t mMaskElements[SMASK_LEN];
     public:
-        SIMDVecScalarEmuSwizzleMask() { };
+        inline SIMDVecScalarEmuSwizzleMask() { };
 
-        explicit SIMDVecScalarEmuSwizzleMask(uint32_t m0) {
+        inline explicit SIMDVecScalarEmuSwizzleMask(uint32_t m0) {
             UME_EMULATION_WARNING();
             for(int i = 0; i < SMASK_LEN; i++) {
                 mMaskElements[i] = m0;
             }
         }
 
-        explicit SIMDVecScalarEmuSwizzleMask(uint32_t *m) {
+        inline explicit SIMDVecScalarEmuSwizzleMask(uint32_t *m) {
             UME_EMULATION_WARNING();
             for(int i = 0; i < SMASK_LEN; i++) {
                 mMaskElements[i] = m[i];
@@ -504,6 +506,9 @@ namespace SIMD
         inline SIMDVecScalarEmu_u() : mVec() {};
 
         inline explicit SIMDVecScalarEmu_u(SCALAR_UINT_TYPE i) : mVec(i) {};
+        
+        // LOAD-CONSTR - Construct by loading from memory
+        inline explicit SIMDVecScalarEmu_u(SCALAR_UINT_TYPE const * p) { this->load(p); };
 
         inline SIMDVecScalarEmu_u(SCALAR_UINT_TYPE i0, SCALAR_UINT_TYPE i1, SCALAR_UINT_TYPE i2, SCALAR_UINT_TYPE i3) {
             mVec.insert(0, i0);  mVec.insert(1, i1);  mVec.insert(2, i2);  mVec.insert(3, i3);
@@ -597,6 +602,9 @@ namespace SIMD
         inline SIMDVecScalarEmu_u() : mVec() {};
 
         inline explicit SIMDVecScalarEmu_u(SCALAR_UINT_TYPE i) : mVec(i) {};
+        
+        // LOAD-CONSTR - Construct by loading from memory
+        inline explicit SIMDVecScalarEmu_u(SCALAR_UINT_TYPE const * p) { this->load(p); };
 
         // Override Access operators
         inline SCALAR_UINT_TYPE operator[] (uint32_t index) const {
@@ -879,6 +887,9 @@ namespace SIMD
         inline SIMDVecScalarEmu_i() : mVec() {};
 
         inline explicit SIMDVecScalarEmu_i(SCALAR_INT_TYPE i) : mVec(i) {};
+        
+        // LOAD-CONSTR - Construct by loading from memory
+        inline explicit SIMDVecScalarEmu_i(SCALAR_INT_TYPE const * p) { this->load(p); };
 
         inline SIMDVecScalarEmu_i(SCALAR_INT_TYPE i0, SCALAR_INT_TYPE i1, SCALAR_INT_TYPE i2, SCALAR_INT_TYPE i3) {
             mVec.insert(0, i0);  mVec.insert(1, i1);  mVec.insert(2, i2);  mVec.insert(3, i3);
@@ -982,6 +993,9 @@ namespace SIMD
         inline SIMDVecScalarEmu_i() : mVec() {};
 
         inline explicit SIMDVecScalarEmu_i(SCALAR_INT_TYPE i) : mVec(i) {};
+        
+        // LOAD-CONSTR - Construct by loading from memory
+        inline explicit SIMDVecScalarEmu_i(SCALAR_INT_TYPE const * p) { this->load(p); };
 
         // Override Access operators
         inline SCALAR_INT_TYPE operator[] (uint32_t index) const {
@@ -1152,10 +1166,9 @@ namespace SIMD
         inline SIMDVecScalarEmu_f() : mVec() {}
 
         inline explicit SIMDVecScalarEmu_f(SCALAR_FLOAT_TYPE f) : mVec(f) {}
-
-        inline explicit SIMDVecScalarEmu_f(const SCALAR_FLOAT_TYPE *p) {
-            this->load(p);
-        }
+        
+        // LOAD-CONSTR - Construct by loading from memory
+        inline explicit SIMDVecScalarEmu_f(const SCALAR_FLOAT_TYPE *p) { this->load(p); }
         
         inline explicit SIMDVecScalarEmu_f(SCALAR_FLOAT_TYPE f0, SCALAR_FLOAT_TYPE f1) {
             mVec.insert(0, f0); mVec.insert(1, f1);
@@ -1234,6 +1247,9 @@ namespace SIMD
         inline SIMDVecScalarEmu_f() : mVec() {};
 
         inline explicit SIMDVecScalarEmu_f(SCALAR_FLOAT_TYPE i) : mVec(i) {};
+        
+        // LOAD-CONSTR - Construct by loading from memory
+        inline explicit SIMDVecScalarEmu_f(const SCALAR_FLOAT_TYPE *p) { this->load(p); }
 
         // Override Access operators
         inline SCALAR_FLOAT_TYPE operator[] (uint32_t index) const {

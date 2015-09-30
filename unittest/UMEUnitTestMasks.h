@@ -78,7 +78,12 @@ int test_UME_SIMDMask4(bool supressMessages) {
         SIMDMask4 mask;
         CHECK_CONDITION(true, "ZERO-CONSTR()");
     }
-
+    {
+        bool arr[4] = {true, false, false, true};
+        SIMDMask4 mask(arr);
+        CHECK_CONDITION(mask[0] == true  && mask[1] == false &&
+                        mask[2] == false && mask[3] == true, "LOAD-CONSTR()");
+    }
     {  
         SIMD4_64f vec0(1.0, 2.0, 3.0, 4.0);
         SIMD4_64f vec1(2.0, 1.0, 0.0, 5.0);

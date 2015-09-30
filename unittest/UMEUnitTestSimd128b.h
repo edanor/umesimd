@@ -429,7 +429,7 @@ int test_UME_SIMD8_16i(bool supressMessages)
     }
     {
         SIMD8_16i vec0(1, 2, 3, 4, 5, 6, 7, 8);
-        SIMD8_16i vec1(0);
+        SIMD8_16i vec1((int16_t)0);
         int16_t vals[] = { 4, 8, 12, 16, 20, 24, 28, 32 };
         bool res = true;
         vec1 = vec0.lsh(2);
@@ -693,28 +693,28 @@ int test_UME_SIMD4_32u(bool supressMessages)
     }
     {
         SIMD4_32u vec0(9, 8, 7, 6);
-        SIMD4_32u vec1(0);
+        SIMD4_32u vec1((uint32_t)0);
         vec1 = vec0.postInc();
         CHECK_CONDITION(vec0[0] == 10 && vec0[1] == 9 && vec0[2] == 8 && vec0[3] == 7, "POSTINC 1");
         CHECK_CONDITION(vec1[0] == 9 && vec1[1] == 8 && vec1[2] == 7 && vec1[3] == 6, "POSTINC 2");
     }
     {
         SIMD4_32u vec0(9, 8, 7, 6);
-        SIMD4_32u vec1(0);
+        SIMD4_32u vec1((uint32_t)0);
         vec1 = vec0++;
         CHECK_CONDITION(vec0[0] == 10 && vec0[1] == 9 && vec0[2] == 8 && vec0[3] == 7, "POSTINC 1(operator++)");
         CHECK_CONDITION(vec1[0] == 9 && vec1[1] == 8 && vec1[2] == 7 && vec1[3] == 6, "POSTINC 2(operator++)");
     }
     {
         SIMD4_32u vec0(9, 8, 7, 6);
-        SIMD4_32u vec1(0);
+        SIMD4_32u vec1((uint32_t)0);
         vec1 = vec0.prefInc();
         CHECK_CONDITION(vec0[0] == 10 && vec0[1] == 9 && vec0[2] == 8 && vec0[3] == 7, "PREFINC 1");
         CHECK_CONDITION(vec1[0] == 10 && vec1[1] == 9 && vec1[2] == 8 && vec1[3] == 7, "PREFINC 2");
     }
     {
         SIMD4_32u vec0(9, 8, 7, 6);
-        SIMD4_32u vec1(0);
+        SIMD4_32u vec1((uint32_t)0);
         vec1 = ++vec0;
         CHECK_CONDITION(vec0[0] == 10 && vec0[1] == 9 && vec0[2] == 8 && vec0[3] == 7, "PREFINC 1(operator++)");
         CHECK_CONDITION(vec1[0] == 10 && vec1[1] == 9 && vec1[2] == 8 && vec1[3] == 7, "PREFINC 2(operator++)");
@@ -760,35 +760,35 @@ int test_UME_SIMD4_32u(bool supressMessages)
     }
     {
         SIMD4_32u vec0(9, 8, 7, 6);
-        SIMD4_32u vec1(0);
+        SIMD4_32u vec1((uint32_t)0);
         vec1 = vec0.postDec();
         CHECK_CONDITION(vec0[0] == 8 && vec0[1] == 7 && vec0[2] == 6 && vec0[3] == 5, "POSTDEC 1");
         CHECK_CONDITION(vec1[0] == 9 && vec1[1] == 8 && vec1[2] == 7 && vec1[3] == 6, "POSTDEC 2");
     }
     {
         SIMD4_32u vec0(9, 8, 7, 6);
-        SIMD4_32u vec1(0);
+        SIMD4_32u vec1((uint32_t)0);
         vec1 = vec0--;
         CHECK_CONDITION(vec0[0] == 8 && vec0[1] == 7 && vec0[2] == 6 && vec0[3] == 5, "POSTDEC 1(operator--)");
         CHECK_CONDITION(vec1[0] == 9 && vec1[1] == 8 && vec1[2] == 7 && vec1[3] == 6, "POSTDEC 2(operaotr--)");
     }
     {
         SIMD4_32u vec0(9, 8, 7, 6);
-        SIMD4_32u vec1(0);
+        SIMD4_32u vec1((uint32_t)0);
         vec1 = --vec0;
         CHECK_CONDITION(vec0[0] == 8 && vec0[1] == 7 && vec0[2] == 6 && vec0[3] == 5, "PREFDEC 1(operator--)");
         CHECK_CONDITION(vec1[0] == 8 && vec1[1] == 7 && vec1[2] == 6 && vec1[3] == 5, "PREFDEC 2(operator--)");
     }
     {
         SIMD4_32u vec0(9, 8, 7, 6);
-        SIMD4_32u vec1(0);
+        SIMD4_32u vec1((uint32_t)0);
         SIMD4_32u vec2;
         vec2 = vec0.mul(vec1);
         CHECK_CONDITION(vec2[0] == 0 && vec2[1] == 0 && vec2[2] == 0 && vec2[3] == 0, "MULV 1");
     }
     {
         SIMD4_32u vec0(9, 8, 7, 6);
-        SIMD4_32u vec1(0);
+        SIMD4_32u vec1((uint32_t)0);
         SIMD4_32u vec2;
         vec2 = vec0 * vec1;
         CHECK_CONDITION(vec2[0] == 0 && vec2[1] == 0 && vec2[2] == 0 && vec2[3] == 0, "MULV 1(operator*)");
@@ -2431,6 +2431,11 @@ int test_UME_SIMD4_32f(bool supressMessages)
     {
         SIMD4_32f vec0(3.14f);
         CHECK_CONDITION(vec0[3] == 3.14f, "SET-CONSTR");
+    }
+    {
+        float arr[4] = {1.11f, 2.22f, 3.33f, 4.44f};
+        SIMD4_32f vec0(arr);
+        CHECK_CONDITION(vec0[3] == 4.44f && vec0[1] == 2.22f, "LOAD-CONSTR");
     }
     {
         SIMD4_32f vec0(1.11f, 2.22f, 3.33f, 4.44f);

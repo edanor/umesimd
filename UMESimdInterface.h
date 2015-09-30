@@ -3657,12 +3657,12 @@ namespace SIMD
         static int alignment () { return MASK_LEN*sizeof(MASK_BASE_TYPE); };
         
         // LOAD
-        inline DERIVED_MASK_TYPE & load (bool* addr) {
+        inline DERIVED_MASK_TYPE & load (bool const * addr) {
             return EMULATED_FUNCTIONS::load<DERIVED_MASK_TYPE, bool>(static_cast<DERIVED_MASK_TYPE &>(*this), addr);
         };
 
         // LOADA
-        inline DERIVED_MASK_TYPE & loadAligned (bool* addrAligned) {
+        inline DERIVED_MASK_TYPE & loadAligned (bool const * addrAligned) {
             return EMULATED_FUNCTIONS::loadAligned<DERIVED_MASK_TYPE, bool>(static_cast<DERIVED_MASK_TYPE &>(*this), addrAligned);
         };
 

@@ -114,7 +114,7 @@ namespace SIMD
     private:
         MASK_SCALAR_TYPE mMask[VEC_LEN]; // each entry represents single mask element. For real SIMD vectors, mMask will be of mask intrinsic type.
     public:
-        SIMDVecAVX2Mask() {
+        inline SIMDVecAVX2Mask() {
             UME_EMULATION_WARNING();
             for(int i = 0; i < VEC_LEN; i++)
             {
@@ -124,7 +124,7 @@ namespace SIMD
 
         // Regardless of the mask representation, the interface should only allow initialization using 
         // standard bool or using equivalent mask
-        SIMDVecAVX2Mask( bool m ) {
+        inline explicit SIMDVecAVX2Mask( bool m ) {
             UME_EMULATION_WARNING();
             for(int i = 0; i < VEC_LEN; i++)
             {
@@ -132,14 +132,17 @@ namespace SIMD
             }
         }
         
+        // LOAD-CONSTR - Construct by loading from memory
+        inline explicit SIMDVecAVX2Mask( bool const * p) { this->load(p); }
+        
         // TODO: this should be handled using variadic templates, but unfortunatelly Visual Studio does not support this feature...
-        SIMDVecAVX2Mask( bool m0, bool m1 )
+        inline SIMDVecAVX2Mask( bool m0, bool m1 )
         {
             mMask[0] = MASK_SCALAR_TYPE(m0); 
             mMask[1] = MASK_SCALAR_TYPE(m1);
         }
 
-        SIMDVecAVX2Mask( bool m0, bool m1, bool m2, bool m3 )
+        inline SIMDVecAVX2Mask( bool m0, bool m1, bool m2, bool m3 )
         {
             mMask[0] = MASK_SCALAR_TYPE(m0); 
             mMask[1] = MASK_SCALAR_TYPE(m1); 
@@ -147,7 +150,7 @@ namespace SIMD
             mMask[3] = MASK_SCALAR_TYPE(m3);
         };
 
-        SIMDVecAVX2Mask( bool m0, bool m1, bool m2, bool m3,
+        inline SIMDVecAVX2Mask( bool m0, bool m1, bool m2, bool m3,
                                 bool m4, bool m5, bool m6, bool m7 )
         {
             mMask[0] = MASK_SCALAR_TYPE(m0); mMask[1] = MASK_SCALAR_TYPE(m1);
@@ -156,7 +159,7 @@ namespace SIMD
             mMask[6] = MASK_SCALAR_TYPE(m6); mMask[7] = MASK_SCALAR_TYPE(m7);
         }
 
-        SIMDVecAVX2Mask( bool m0,  bool m1,  bool m2,  bool m3,
+        inline SIMDVecAVX2Mask( bool m0,  bool m1,  bool m2,  bool m3,
                                 bool m4,  bool m5,  bool m6,  bool m7,
                                 bool m8,  bool m9,  bool m10, bool m11,
                                 bool m12, bool m13, bool m14, bool m15 )
@@ -171,7 +174,7 @@ namespace SIMD
             mMask[14] = MASK_SCALAR_TYPE(m14); mMask[15] = MASK_SCALAR_TYPE(m15);
         }
 
-        SIMDVecAVX2Mask( bool m0,  bool m1,  bool m2,  bool m3,
+        inline SIMDVecAVX2Mask( bool m0,  bool m1,  bool m2,  bool m3,
                                 bool m4,  bool m5,  bool m6,  bool m7,
                                 bool m8,  bool m9,  bool m10, bool m11,
                                 bool m12, bool m13, bool m14, bool m15,
@@ -211,7 +214,7 @@ namespace SIMD
             mMask[index] = MASK_SCALAR_TYPE(x);
         }
 
-        SIMDVecAVX2Mask(SIMDVecAVX2Mask const & mask) {
+        inline SIMDVecAVX2Mask(SIMDVecAVX2Mask const & mask) {
             UME_EMULATION_WARNING();
             for(int i = 0; i < VEC_LEN; i++)
             {
@@ -247,24 +250,27 @@ namespace SIMD
     private:
         __m128i mMask;
 
-        SIMDVecAVX2Mask(__m128i const & x) { mMask = x; };
+        inline SIMDVecAVX2Mask(__m128i const & x) { mMask = x; };
     public:
-        SIMDVecAVX2Mask() {
+        inline SIMDVecAVX2Mask() {
             mMask = _mm_set1_epi32(FALSE());
         }
 
         // Regardless of the mask representation, the interface should only allow initialization using 
         // standard bool or using equivalent mask
-        SIMDVecAVX2Mask( bool m ) {
+        inline explicit SIMDVecAVX2Mask( bool m ) {
             mMask = _mm_set1_epi32(toMaskBool(m));
         }
         
-        SIMDVecAVX2Mask( bool m0, bool m1, bool m2, bool m3 ) {
+        // LOAD-CONSTR - Construct by loading from memory
+        inline explicit SIMDVecAVX2Mask( bool const * p) { this->load(p); }
+
+        inline SIMDVecAVX2Mask( bool m0, bool m1, bool m2, bool m3 ) {
             mMask = _mm_setr_epi32(toMaskBool(m0), toMaskBool(m1), 
                                    toMaskBool(m2), toMaskBool(m3));
         }
         
-        SIMDVecAVX2Mask(SIMDVecAVX2Mask const & mask) {
+        inline SIMDVecAVX2Mask(SIMDVecAVX2Mask const & mask) {
             UME_EMULATION_WARNING();
             this->mMask = mask.mMask;
         }
@@ -319,26 +325,30 @@ namespace SIMD
     private:
         __m256i mMask;
 
-        SIMDVecAVX2Mask(__m256i const & x) { mMask = x; };
+        inline SIMDVecAVX2Mask(__m256i const & x) { mMask = x; };
     public:
-        SIMDVecAVX2Mask() {
+        inline SIMDVecAVX2Mask() {
             mMask = _mm256_set1_epi32(FALSE());
         }
 
         // Regardless of the mask representation, the interface should only allow initialization using 
         // standard bool or using equivalent mask
-        SIMDVecAVX2Mask( bool m ) {
+        inline explicit SIMDVecAVX2Mask( bool m ) {
             mMask = _mm256_set1_epi32(toMaskBool(m));
         }
         
-        SIMDVecAVX2Mask( bool m0, bool m1, bool m2, bool m3, bool m4, bool m5, bool m6, bool m7 ) {
+        // LOAD-CONSTR - Construct by loading from memory
+        inline explicit SIMDVecAVX2Mask( bool const * p) { this->load(p); }
+
+        
+        inline SIMDVecAVX2Mask( bool m0, bool m1, bool m2, bool m3, bool m4, bool m5, bool m6, bool m7 ) {
             mMask = _mm256_setr_epi32(toMaskBool(m0), toMaskBool(m1), 
                                       toMaskBool(m2), toMaskBool(m3),
                                       toMaskBool(m4), toMaskBool(m5), 
                                       toMaskBool(m6), toMaskBool(m7));
         }
         
-        SIMDVecAVX2Mask(SIMDVecAVX2Mask const & mask) {
+        inline SIMDVecAVX2Mask(SIMDVecAVX2Mask const & mask) {
             UME_EMULATION_WARNING();
             this->mMask = mask.mMask;
         }
@@ -394,22 +404,22 @@ namespace SIMD
         __m256i mMaskLo;
         __m256i mMaskHi;
 
-        SIMDVecAVX2Mask(__m256i const & xLo, __m256i const & xHi) { mMaskLo = xLo; mMaskHi = xHi;};
+        inline SIMDVecAVX2Mask(__m256i const & xLo, __m256i const & xHi) { mMaskLo = xLo; mMaskHi = xHi;};
     public:
-        SIMDVecAVX2Mask() {
+        inline SIMDVecAVX2Mask() {
         }
 
         // Regardless of the mask representation, the interface should only allow initialization using 
         // standard bool or using equivalent mask
-        SIMDVecAVX2Mask( bool m ) {
+        inline SIMDVecAVX2Mask(bool m) {
             mMaskLo = _mm256_set1_epi32(toMaskBool(m));
             mMaskHi = _mm256_set1_epi32(toMaskBool(m));
         }
         
-        SIMDVecAVX2Mask( bool m0,  bool m1,  bool m2,  bool m3, 
-                         bool m4,  bool m5,  bool m6,  bool m7,
-                         bool m8,  bool m9,  bool m10, bool m11,
-                         bool m12, bool m13, bool m14, bool m15) {
+        inline SIMDVecAVX2Mask(bool m0,  bool m1,  bool m2,  bool m3, 
+                               bool m4,  bool m5,  bool m6,  bool m7,
+                               bool m8,  bool m9,  bool m10, bool m11,
+                               bool m12, bool m13, bool m14, bool m15) {
             mMaskLo = _mm256_setr_epi32(toMaskBool(m0), toMaskBool(m1), 
                                       toMaskBool(m2), toMaskBool(m3),
                                       toMaskBool(m4), toMaskBool(m5), 
@@ -420,7 +430,7 @@ namespace SIMD
                                       toMaskBool(m14), toMaskBool(m15));
         }
         
-        SIMDVecAVX2Mask(SIMDVecAVX2Mask const & mask) {
+        inline SIMDVecAVX2Mask(SIMDVecAVX2Mask const & mask) {
             UME_EMULATION_WARNING();
             this->mMaskLo = mask.mMaskLo;
             this->mMaskHi = mask.mMaskHi;
@@ -493,7 +503,7 @@ namespace SIMD
         __m256i mMaskHiLo; // bits 32-47
         __m256i mMaskHiHi; // bits 48_63
 
-        SIMDVecAVX2Mask(__m256i const & xLoLo, __m256i const & xLoHi,
+        inline SIMDVecAVX2Mask(__m256i const & xLoLo, __m256i const & xLoHi,
                         __m256i const & xHiLo, __m256i const & xHiHi) { 
             mMaskLoLo = xLoLo; 
             mMaskLoHi = xLoHi;
@@ -502,18 +512,21 @@ namespace SIMD
         };
 
     public:
-        SIMDVecAVX2Mask() {}
+        inline SIMDVecAVX2Mask() {}
 
         // Regardless of the mask representation, the interface should only allow initialization using 
         // standard bool or using equivalent mask
-        SIMDVecAVX2Mask( bool m ) {
+        inline explicit SIMDVecAVX2Mask(bool m) {
             mMaskLoLo = _mm256_set1_epi32(toMaskBool(m));
             mMaskLoHi = _mm256_set1_epi32(toMaskBool(m));
             mMaskHiLo = _mm256_set1_epi32(toMaskBool(m));
             mMaskHiHi = _mm256_set1_epi32(toMaskBool(m));
         }
         
-        SIMDVecAVX2Mask( bool m0,  bool m1,  bool m2,  bool m3, 
+        // LOAD-CONSTR - Construct by loading from memory
+        inline explicit SIMDVecAVX2Mask(bool const * p) { this->load(p); }
+        
+        inline SIMDVecAVX2Mask( bool m0,  bool m1,  bool m2,  bool m3, 
                          bool m4,  bool m5,  bool m6,  bool m7,
                          bool m8,  bool m9,  bool m10, bool m11,
                          bool m12, bool m13, bool m14, bool m15,
@@ -539,7 +552,7 @@ namespace SIMD
                                       toMaskBool(m30), toMaskBool(m31));
         }
         
-        SIMDVecAVX2Mask(SIMDVecAVX2Mask const & mask) {
+        inline SIMDVecAVX2Mask(SIMDVecAVX2Mask const & mask) {
             UME_EMULATION_WARNING();
             this->mMaskLoLo = mask.mMaskLoLo;
             this->mMaskLoHi = mask.mMaskLoHi;
@@ -632,16 +645,16 @@ namespace SIMD
     private:
         uint32_t mMaskElements[SMASK_LEN];
     public:
-        SIMDVecAVX2SwizzleMask() { };
+        inline SIMDVecAVX2SwizzleMask() { };
 
-        explicit SIMDVecAVX2SwizzleMask(uint32_t m0) {
+        inline explicit SIMDVecAVX2SwizzleMask(uint32_t m0) {
             UME_EMULATION_WARNING();
             for(int i = 0; i < SMASK_LEN; i++) {
                 mMaskElements[i] = m0;
             }
         }
 
-        explicit SIMDVecAVX2SwizzleMask(uint32_t *m) {
+        inline explicit SIMDVecAVX2SwizzleMask(uint32_t *m) {
             UME_EMULATION_WARNING();
             for(int i = 0; i < SMASK_LEN; i++) {
                 mMaskElements[i] = m[i];
@@ -666,7 +679,7 @@ namespace SIMD
             mMaskElements[index] = value;
         }
 
-        SIMDVecAVX2SwizzleMask(SIMDVecAVX2SwizzleMask const & mask) {
+        inline SIMDVecAVX2SwizzleMask(SIMDVecAVX2SwizzleMask const & mask) {
             UME_EMULATION_WARNING();
             for(int i = 0; i < SMASK_LEN; i++)
             {
@@ -944,6 +957,9 @@ namespace SIMD
         inline SIMDVecAVX2_u() : mVec() {};
 
         inline explicit SIMDVecAVX2_u(SCALAR_UINT_TYPE i) : mVec(i) {};
+        
+        // LOAD-CONSTR - Construct by loading from memory
+        inline explicit SIMDVecAVX2_u(SCALAR_UINT_TYPE const *p) { this->load(p); };
 
         inline SIMDVecAVX2_u(SCALAR_UINT_TYPE i0, SCALAR_UINT_TYPE i1, SCALAR_UINT_TYPE i2, SCALAR_UINT_TYPE i3) {
             mVec.insert(0, i0);  mVec.insert(1, i1);  mVec.insert(2, i2);  mVec.insert(3, i3);
@@ -1034,6 +1050,9 @@ namespace SIMD
 
         inline explicit SIMDVecAVX2_u(SCALAR_UINT_TYPE i) : mVec(i) {};
             
+        // LOAD-CONSTR - Construct by loading from memory
+        inline explicit SIMDVecAVX2_u(SCALAR_UINT_TYPE const *p) { this->load(p); };
+
         // Override Access operators
         inline SCALAR_UINT_TYPE operator[] (uint32_t index) const {
             return mVec[index];
@@ -1084,6 +1103,9 @@ namespace SIMD
         inline explicit SIMDVecAVX2_u(uint32_t i) {
             mVec = _mm256_set1_epi32(i);
         }
+        
+        // LOAD-CONSTR - Construct by loading from memory
+        inline explicit SIMDVecAVX2_u(uint32_t const *p) { this->load(p); };
 
         inline SIMDVecAVX2_u(uint32_t i0, uint32_t i1, uint32_t i2, uint32_t i3, 
                             uint32_t i4, uint32_t i5, uint32_t i6, uint32_t i7) 
@@ -1658,6 +1680,9 @@ namespace SIMD
         inline SIMDVecAVX2_i() : mVec() {};
 
         inline explicit SIMDVecAVX2_i(SCALAR_INT_TYPE i) : mVec(i) {};
+        
+        // LOAD-CONSTR - Construct by loading from memory
+        inline explicit SIMDVecAVX2_i(SCALAR_INT_TYPE const *p) { this->load(p); };
 
         inline SIMDVecAVX2_i(SCALAR_INT_TYPE i0, SCALAR_INT_TYPE i1) {
             mVec.insert(0, i0);  mVec.insert(1, i1);
@@ -1749,6 +1774,10 @@ namespace SIMD
         inline SIMDVecAVX2_i() : mVec() {};
 
         inline explicit SIMDVecAVX2_i(SCALAR_INT_TYPE i) : mVec(i) {};
+        
+        // LOAD-CONSTR - Construct by loading from memory
+        inline explicit SIMDVecAVX2_i(SCALAR_INT_TYPE const *p) { this->load(p); };
+
         // Override Access operators
         inline SCALAR_INT_TYPE operator[] (uint32_t index) const {
             return mVec[index];
@@ -1800,6 +1829,9 @@ namespace SIMD
         inline explicit SIMDVecAVX2_i(int32_t i) {
             mVec = _mm256_set1_epi32(i);
         }
+        
+        // LOAD-CONSTR - Construct by loading from memory
+        inline explicit SIMDVecAVX2_i(int32_t const *p) { this->load(p); };
 
         inline SIMDVecAVX2_i(int32_t i0, int32_t i1, int32_t i2, int32_t i3, 
                             int32_t i4, int32_t i5, int32_t i6, int32_t i7) 
@@ -2047,7 +2079,8 @@ namespace SIMD
 
         inline explicit SIMDVecAVX2_f(SCALAR_FLOAT_TYPE i) : mVec(i) {};
         
-        inline SIMDVecAVX2_f(const SCALAR_FLOAT_TYPE *p) { this->load(p); }
+        // LOAD-CONSTR - Construct by loading from memory
+        inline explicit SIMDVecAVX2_f(SCALAR_FLOAT_TYPE const *p) { this->load(p); };
         
         inline SIMDVecAVX2_f(SCALAR_FLOAT_TYPE i0, SCALAR_FLOAT_TYPE i1) {
             mVec.insert(0, i0);  mVec.insert(1, i1);
@@ -2130,6 +2163,8 @@ namespace SIMD
         inline SIMDVecAVX2_f() : mVec() {};
 
         inline explicit SIMDVecAVX2_f(SCALAR_FLOAT_TYPE i) : mVec(i) {};
+        
+        // LOAD-CONSTR - Construct by loading from memory
         inline explicit SIMDVecAVX2_f(SCALAR_FLOAT_TYPE *p) { this->load(p); }
         
         // Override Access operators
@@ -2177,7 +2212,8 @@ namespace SIMD
         inline explicit SIMDVecAVX2_f(float f) {
             mVec = _mm_set1_ps(f);
         }
-
+        
+        // LOAD-CONSTR - Construct by loading from memory
         inline explicit SIMDVecAVX2_f(float *p) { this->load(p); }
         
         // FULL-CONSTR - constructor with VEC_LEN scalar element 
@@ -2601,7 +2637,8 @@ namespace SIMD
         inline explicit SIMDVecAVX2_f(float f) {
             mVec = _mm256_set1_ps(f);
         }
-
+        
+        // LOAD-CONSTR - Construct by loading from memory
         inline explicit SIMDVecAVX2_f(float *p) { this->load(p); }
         
         inline SIMDVecAVX2_f(float f0, float f1, float f2, float f3, float f4, float f5, float f6, float f7) {
@@ -2779,6 +2816,9 @@ namespace SIMD
             mVecHi = _mm256_set1_ps(f);
         }
         
+        // LOAD-CONSTR - Construct by loading from memory
+        inline explicit SIMDVecAVX2_f(float const *p) { this->load(p); };
+
         // FULL-CONSTR - constructor with VEC_LEN scalar element 
         inline SIMDVecAVX2_f(float f0, float f1, float f2, float f3, 
                              float f4, float f5, float f6, float f7,
@@ -3288,6 +3328,7 @@ namespace SIMD
             mVecHiHi = _mm256_set1_ps(f);
         }
         
+        // LOAD-CONSTR - Construct by loading from memory
         inline explicit SIMDVecAVX2_f(float *p) { this->load(p); }
         
         // FULL-CONSTR - constructor with VEC_LEN scalar element 
