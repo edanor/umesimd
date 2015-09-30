@@ -2,18 +2,22 @@ OK   UME::SIMD::SIMDMask2 test Id: 1 - ZERO-CONSTR()
 OK   UME::SIMD::SIMDMask4 test Id: 1 - ZERO-CONSTR()
 OK   UME::SIMD::SIMDMask4 test Id: 2 - LOAD-CONSTR()
 OK   UME::SIMD::SIMDMask4 test Id: 3 - mask compatibility: 64f -> 32u
-OK   UME::SIMD::SIMDMask4 test Id: 4 - operator&=
-OK   UME::SIMD::SIMDMask4 test Id: 5 - operator|=
-OK   UME::SIMD::SIMDMask4 test Id: 6 - operator!
-OK   UME::SIMD::SIMDMask4 test Id: 7 - operator=
-OK   UME::SIMD::SIMDMask4 test Id: 8 - HOR
-OK   UME::SIMD::SIMDMask4 test Id: 9 - HAND
+OK   UME::SIMD::SIMDMask4 test Id: 4 - LANDA
+OK   UME::SIMD::SIMDMask4 test Id: 5 - LANDA(operator&=)
+OK   UME::SIMD::SIMDMask4 test Id: 6 - LORA
+OK   UME::SIMD::SIMDMask4 test Id: 7 - LORA(operator|=)
+OK   UME::SIMD::SIMDMask4 test Id: 8 - LNOT
+OK   UME::SIMD::SIMDMask4 test Id: 9 - LNOT(operator!)
+OK   UME::SIMD::SIMDMask4 test Id: 10 - ASSIGN
+OK   UME::SIMD::SIMDMask4 test Id: 11 - ASSIGN(operator=)
+OK   UME::SIMD::SIMDMask4 test Id: 12 - HLOR
+OK   UME::SIMD::SIMDMask4 test Id: 13 - HLAND
 OK   UME::SIMD::SIMDMask8 test Id: 1 - ZERO-CONSTR()
 OK   UME::SIMD::SIMDMask8 test Id: 2 - SET-CONSTR
 OK   UME::SIMD::SIMDMask8 test Id: 3 - FULL-CONSTR
 OK   UME::SIMD::SIMDMask8 test Id: 4 - ASSIGN
-OK   UME::SIMD::SIMDMask8 test Id: 5 - AND
-OK   UME::SIMD::SIMDMask8 test Id: 6 - AND(operator&)
+OK   UME::SIMD::SIMDMask8 test Id: 5 - LAND
+OK   UME::SIMD::SIMDMask8 test Id: 6 - LAND(operator&)
 OK   UME::SIMD::SIMDMask16 test Id: 1 - ZERO-CONSTR()
 OK   UME::SIMD::SIMDMask32 test Id: 1 - ZERO-CONSTR()
 OK   UME::SIMD::SIMDMask64 test Id: 1 - ZERO-CONSTR()
@@ -593,4 +597,4 @@ OK   UME::SIMD::SIMD16_64u test Id: 1 - ZERO-CONSTR
 OK   UME::SIMD::SIMD16_64i test Id: 1 - ZERO-CONSTR
 OK   UME::SIMD::SIMD16_64f test Id: 1 - ZERO-CONSTR
 
-Total tests failed: 0/594
+Total tests failed: 0/598

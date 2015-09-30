@@ -98,45 +98,72 @@ int test_UME_SIMDMask4(bool supressMessages) {
     {
         SIMDMask4 mask0(true, true, false, false);
         SIMDMask4 mask1(false, true, false, true);
+        mask0.landa(mask1);
+        CHECK_CONDITION(mask0[0] == false && mask0[1] == true &&
+                        mask0[2] == false && mask0[3] == false, "LANDA");
+    }
+    {
+        SIMDMask4 mask0(true, true, false, false);
+        SIMDMask4 mask1(false, true, false, true);
         mask0 &= mask1;
         CHECK_CONDITION(mask0[0] == false && mask0[1] == true &&
-                        mask0[2] == false && mask0[3] == false, "operator&=");
+                        mask0[2] == false && mask0[3] == false, "LANDA(operator&=)");
+    }
+    {
+        SIMDMask4 mask0(true, true, false, false);
+        SIMDMask4 mask1(false, true, false, true);
+        mask0.lora(mask1);
+        CHECK_CONDITION(mask0[0] == true  && mask0[1] == true &&
+                        mask0[2] == false && mask0[3] == true, "LORA");
     }
     {
         SIMDMask4 mask0(true, true, false, false);
         SIMDMask4 mask1(false, true, false, true);
         mask0 |= mask1;
         CHECK_CONDITION(mask0[0] == true  && mask0[1] == true &&
-                        mask0[2] == false && mask0[3] == true, "operator|=");
+                        mask0[2] == false && mask0[3] == true, "LORA(operator|=)");
+    }
+    {
+        SIMDMask4 mask0(true, false, false, true);
+        SIMDMask4 mask1 = mask0.lnot();
+        CHECK_CONDITION(mask1[0] == false && mask1[1] == true &&
+                        mask1[2] == true  && mask1[3] == false, "LNOT");
     }
     {
         SIMDMask4 mask0(true, false, false, true);
         SIMDMask4 mask1 = !mask0;
         CHECK_CONDITION(mask1[0] == false && mask1[1] == true &&
-                        mask1[2] == true  && mask1[3] == false, "operator!");
+                        mask1[2] == true  && mask1[3] == false, "LNOT(operator!)");
+    }
+    {
+        SIMDMask4 mask0(true, false, false, true);
+        SIMDMask4 mask1(false, true, false, true);
+        mask1.assign(mask0);
+        CHECK_CONDITION(mask1[0] == true && mask1[1] == false &&
+                        mask1[2] == false && mask1[3] == true, "ASSIGN");
     }
     {
         SIMDMask4 mask0(true, false, false, true);
         SIMDMask4 mask1(false, true, false, true);
         mask1 = mask0;
         CHECK_CONDITION(mask1[0] == true && mask1[1] == false &&
-                        mask1[2] == false && mask1[3] == true, "operator=");
+                        mask1[2] == false && mask1[3] == true, "ASSIGN(operator=)");
     }
     {
         SIMDMask4 mask0(true, false, false, true);
         SIMDMask4 mask1(false, false, false, false);
-        bool b0 = mask0.hor();
-        bool b1 = mask1.hor();
-        CHECK_CONDITION(b0 == true && b1 == false, "HOR");
+        bool b0 = mask0.hlor();
+        bool b1 = mask1.hlor();
+        CHECK_CONDITION(b0 == true && b1 == false, "HLOR");
     }
     {
         SIMDMask4 mask0(true, false, false, true);
         SIMDMask4 mask1(false, false, false, false);
         SIMDMask4 mask2(true, true, true, true);
-        bool b0 = mask0.hand();
-        bool b1 = mask1.hand();
-        bool b2 = mask2.hand();
-        CHECK_CONDITION(b0 == false && b1 == false && b2 == true, "HAND");
+        bool b0 = mask0.hland();
+        bool b1 = mask1.hland();
+        bool b2 = mask2.hland();
+        CHECK_CONDITION(b0 == false && b1 == false && b2 == true, "HLAND");
     }
     
     return g_failCount;
@@ -170,15 +197,15 @@ int test_UME_SIMDMask8(bool supressMessages) {
         SIMDMask8 mask0(true, false, false, true, true, false, false, true);
         SIMDMask8 mask1(true, false, false, false, false, true, false, true);
         SIMDMask8 mask2;
-        mask2 = mask0.andm(mask1);
-        CHECK_CONDITION(mask2[0] == true && mask2[3] == false && mask2[5] == false && mask2[7] == true, "AND");
+        mask2 = mask0.land(mask1);
+        CHECK_CONDITION(mask2[0] == true && mask2[3] == false && mask2[5] == false && mask2[7] == true, "LAND");
     }
     {
         SIMDMask8 mask0(true, false, false, true, true, false, false, true);
         SIMDMask8 mask1(true, false, false, false, false, true, false, true);
         SIMDMask8 mask2;
         mask2 = mask0 & mask1;
-        CHECK_CONDITION(mask2[0] == true && mask2[3] == false && mask2[5] == false && mask2[7] == true, "AND(operator&)");
+        CHECK_CONDITION(mask2[0] == true && mask2[3] == false && mask2[5] == false && mask2[7] == true, "LAND(operator&)");
     }
     return g_failCount;
 }
