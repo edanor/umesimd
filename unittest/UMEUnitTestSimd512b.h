@@ -393,10 +393,155 @@ int test_UME_SIMD16_32f(bool supressMessages)
 {
     char header[] = "UME::SIMD::SIMD16_32f test";
     INIT_TEST(header, supressMessages);
+    const int32_t VEC_LEN = 16;
     
     {
         SIMD16_32f vec0;
         CHECK_CONDITION(true, "ZERO-CONSTR");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_Init1_l);
+        SIMD16_32f vec1(g_Init1_r);
+        SIMD16_32f vec2 = vec0.add(vec1);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, g_addRes1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "ADDV");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_Init1_l);
+        SIMD16_32f vec1(g_Init1_r);
+        SIMD16_32f vec2 = vec0 + vec1;
+        vec2.store(values);
+        bool inRange = valuesInRange(values, g_addRes1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "ADDV(operator+)");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_Init1_l);
+        SIMD16_32f vec1(g_Init1_r);
+        vec0.adda(vec1);
+        vec0.store(values);
+        bool inRange = valuesInRange(values, g_addRes1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "ADDVA");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_Init1_l);
+        SIMD16_32f vec1(g_Init1_r);
+        vec0 += vec1;
+        vec0.store(values);
+        bool inRange = valuesInRange(values, g_addRes1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "ADDVA(operator+=)");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_Init1_l);
+        SIMD16_32f vec1(g_Init1_r);
+        SIMD16_32f vec2 = vec0.sub(vec1);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, g_subRes1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "SUBV");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_Init1_l);
+        SIMD16_32f vec1(g_Init1_r);
+        SIMD16_32f vec2 = vec0 - vec1;
+        vec2.store(values);
+        bool inRange = valuesInRange(values, g_subRes1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "SUBV(operator-)");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_Init1_l);
+        SIMD16_32f vec1(g_Init1_r);
+        vec0.suba(vec1);
+        vec0.store(values);
+        bool inRange = valuesInRange(values, g_subRes1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "SUBVA");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_Init1_l);
+        SIMD16_32f vec1(g_Init1_r);
+        vec0 -= vec1;
+        vec0.store(values);
+        bool inRange = valuesInRange(values, g_subRes1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "SUBVA(operator-=)");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_Init1_l);
+        SIMD16_32f vec1(g_Init1_r);
+        SIMD16_32f vec2 = vec0.mul(vec1);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, g_mulRes1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "MULV");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_Init1_l);
+        SIMD16_32f vec1(g_Init1_r);
+        SIMD16_32f vec2 = vec0 * vec1;
+        vec2.store(values);
+        bool inRange = valuesInRange(values, g_mulRes1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "MULV(operator*)");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_Init1_l);
+        SIMD16_32f vec1(g_Init1_r);
+        vec0.mula(vec1);
+        vec0.store(values);
+        bool inRange = valuesInRange(values, g_mulRes1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "MULVA");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_Init1_l);
+        SIMD16_32f vec1(g_Init1_r);
+        vec0 *= vec1;
+        vec0.store(values);
+        bool inRange = valuesInRange(values, g_mulRes1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "MULVA(operator*)");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_Init1_l);
+        SIMD16_32f vec1(g_Init1_r);
+        SIMD16_32f vec2 = vec0.div(vec1);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, g_divRes1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "DIVV");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_Init1_l);
+        SIMD16_32f vec1(g_Init1_r);
+        SIMD16_32f vec2 = vec0 / vec1;
+        vec2.store(values);
+        bool inRange = valuesInRange(values, g_divRes1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "DIVV(operator/)");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_Init1_l);
+        SIMD16_32f vec1(g_Init1_r);
+        vec0.diva(vec1);
+        vec0.store(values);
+        bool inRange = valuesInRange(values, g_divRes1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "DIVVA");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_Init1_l);
+        SIMD16_32f vec1(g_Init1_r);
+        vec0 /= vec1;
+        vec0.store(values);
+        bool inRange = valuesInRange(values, g_divRes1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "DIVVA(operator/)");
     }
 
     return g_failCount;

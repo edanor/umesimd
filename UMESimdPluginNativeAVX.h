@@ -3110,7 +3110,7 @@ namespace SIMD
         // LOAD-CONSTR - Construct by loading from memory
         inline explicit SIMDVecAVX_f(float const * p) {
             mVecLo = _mm256_loadu_ps(p);
-            mVecHi = _mm256_loadu_ps(p+16);
+            mVecHi = _mm256_loadu_ps(p+);
         }
 
         // FULL-CONSTR - constructor with VEC_LEN scalar element 
