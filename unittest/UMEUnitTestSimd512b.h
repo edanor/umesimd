@@ -401,149 +401,1293 @@ int test_UME_SIMD16_32f(bool supressMessages)
     }
     {
         float values[VEC_LEN];
-        SIMD16_32f vec0(g_Init1_l);
-        SIMD16_32f vec1(g_Init1_r);
+        SIMD16_32f vec0(g_inputA_1);
+        SIMD16_32f vec1(g_inputB_1);
         SIMD16_32f vec2 = vec0.add(vec1);
         vec2.store(values);
-        bool inRange = valuesInRange(values, g_addRes1, VEC_LEN, 0.01f);
+        bool inRange = valuesInRange(values, g_ADDV_res1, VEC_LEN, 0.01f);
         CHECK_CONDITION(inRange, "ADDV");
     }
     {
         float values[VEC_LEN];
-        SIMD16_32f vec0(g_Init1_l);
-        SIMD16_32f vec1(g_Init1_r);
+        SIMD16_32f vec0(g_inputA_1);
+        SIMD16_32f vec1(g_inputB_1);
         SIMD16_32f vec2 = vec0 + vec1;
         vec2.store(values);
-        bool inRange = valuesInRange(values, g_addRes1, VEC_LEN, 0.01f);
+        bool inRange = valuesInRange(values, g_ADDV_res1, VEC_LEN, 0.01f);
         CHECK_CONDITION(inRange, "ADDV(operator+)");
     }
     {
         float values[VEC_LEN];
-        SIMD16_32f vec0(g_Init1_l);
-        SIMD16_32f vec1(g_Init1_r);
+        SIMD16_32f vec0(g_inputA_1);
+        SIMD16_32f vec1(g_inputB_1);
+        SIMDMask16 mask(g_mask_1);
+        SIMD16_32f vec2 = vec0.add(mask, vec1);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, g_MADDV_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "MADDV");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMD16_32f vec1 = vec0.add(g_scalar1);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, g_ADDS_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "ADDS");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMDMask16 mask(g_mask_1);
+        SIMD16_32f vec2 = vec0.add(mask, g_scalar1);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, g_MADDS_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "MADDS");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMD16_32f vec1(g_inputB_1);
         vec0.adda(vec1);
         vec0.store(values);
-        bool inRange = valuesInRange(values, g_addRes1, VEC_LEN, 0.01f);
+        bool inRange = valuesInRange(values, g_ADDV_res1, VEC_LEN, 0.01f);
         CHECK_CONDITION(inRange, "ADDVA");
     }
     {
         float values[VEC_LEN];
-        SIMD16_32f vec0(g_Init1_l);
-        SIMD16_32f vec1(g_Init1_r);
+        SIMD16_32f vec0(g_inputA_1);
+        SIMD16_32f vec1(g_inputB_1);
         vec0 += vec1;
         vec0.store(values);
-        bool inRange = valuesInRange(values, g_addRes1, VEC_LEN, 0.01f);
+        bool inRange = valuesInRange(values, g_ADDV_res1, VEC_LEN, 0.01f);
         CHECK_CONDITION(inRange, "ADDVA(operator+=)");
     }
     {
         float values[VEC_LEN];
-        SIMD16_32f vec0(g_Init1_l);
-        SIMD16_32f vec1(g_Init1_r);
+        SIMD16_32f vec0(g_inputA_1);
+        SIMD16_32f vec1(g_inputB_1);
+        SIMDMask16 mask(g_mask_1);
+        vec0.adda(mask, vec1);
+        vec0.store(values);
+        bool inRange = valuesInRange(values, g_MADDV_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "MADDVA");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        vec0.adda(g_scalar1);
+        vec0.store(values);
+        bool inRange = valuesInRange(values, g_ADDS_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "ADDSA");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMDMask16 mask(g_mask_1);
+        vec0.adda(mask, g_scalar1);
+        vec0.store(values);
+        bool inRange = valuesInRange(values, g_MADDS_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "MADDSA");
+    }
+    // SADDV
+    // MSADDV
+    // SADDS
+    // MSADDS
+    // SADDVA
+    // MSADDVA
+    // SADDSA
+    // MSADDSA
+    {
+        float values0[VEC_LEN];
+        float values1[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMD16_32f vec1 = vec0.postinc();
+        vec0.store(values0);
+        vec1.store(values1);
+        bool inRange0 = valuesInRange(values0, g_POSTPREFINC_res1, VEC_LEN, 0.01f);
+        bool inRange1 = valuesInRange(values1, g_inputA_1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange0 && inRange1, "POSTINC");
+    }
+    {
+        float values0[VEC_LEN];
+        float values1[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMD16_32f vec1 = vec0++;
+        vec0.store(values0);
+        vec1.store(values1);
+        bool inRange0 = valuesInRange(values0, g_POSTPREFINC_res1, VEC_LEN, 0.01f);
+        bool inRange1 = valuesInRange(values1, g_inputA_1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange0 && inRange1, "POSTINC(operator++(int))");
+    }
+    {
+        float values0[VEC_LEN];
+        float values1[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMDMask16 mask(g_mask_1);
+        SIMD16_32f vec1 = vec0.postinc(mask);
+        vec0.store(values0);
+        vec1.store(values1);
+        bool inRange0 = valuesInRange(values0, g_MPOSTPREFINC_res1, VEC_LEN, 0.01f);
+        bool inRange1 = valuesInRange(values1, g_inputA_1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange0 && inRange1, "MPOSTINC");
+    }
+    {
+        float values0[VEC_LEN];
+        float values1[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMD16_32f vec1 = vec0.prefinc();
+        vec0.store(values0);
+        vec1.store(values1);
+        bool inRange0 = valuesInRange(values0, g_POSTPREFINC_res1, VEC_LEN, 0.01f);
+        bool inRange1 = valuesInRange(values1, g_POSTPREFINC_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange0 && inRange1, "PREFINC");
+    }
+    {
+        float values0[VEC_LEN];
+        float values1[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMD16_32f vec1 = ++vec0;
+        vec0.store(values0);
+        vec1.store(values1);
+        bool inRange0 = valuesInRange(values0, g_POSTPREFINC_res1, VEC_LEN, 0.01f);
+        bool inRange1 = valuesInRange(values1, g_POSTPREFINC_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange0 && inRange1, "PREFINC(operator++())");
+    }
+    {
+        float values0[VEC_LEN];
+        float values1[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMDMask16 mask(g_mask_1);
+        SIMD16_32f vec1 = vec0.prefinc(mask);
+        vec0.store(values0);
+        vec1.store(values1);
+        bool inRange0 = valuesInRange(values0, g_MPOSTPREFINC_res1, VEC_LEN, 0.01f);
+        bool inRange1 = valuesInRange(values1, g_MPOSTPREFINC_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange0 && inRange1, "MPREFINC");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMD16_32f vec1(g_inputB_1);
         SIMD16_32f vec2 = vec0.sub(vec1);
         vec2.store(values);
-        bool inRange = valuesInRange(values, g_subRes1, VEC_LEN, 0.01f);
+        bool inRange = valuesInRange(values, g_SUBV_res1, VEC_LEN, 0.01f);
         CHECK_CONDITION(inRange, "SUBV");
     }
     {
         float values[VEC_LEN];
-        SIMD16_32f vec0(g_Init1_l);
-        SIMD16_32f vec1(g_Init1_r);
+        SIMD16_32f vec0(g_inputA_1);
+        SIMD16_32f vec1(g_inputB_1);
         SIMD16_32f vec2 = vec0 - vec1;
         vec2.store(values);
-        bool inRange = valuesInRange(values, g_subRes1, VEC_LEN, 0.01f);
+        bool inRange = valuesInRange(values, g_SUBV_res1, VEC_LEN, 0.01f);
         CHECK_CONDITION(inRange, "SUBV(operator-)");
     }
     {
         float values[VEC_LEN];
-        SIMD16_32f vec0(g_Init1_l);
-        SIMD16_32f vec1(g_Init1_r);
+        SIMD16_32f vec0(g_inputA_1);
+        SIMD16_32f vec1(g_inputB_1);
+        SIMDMask16 mask(g_mask_1);
+        SIMD16_32f vec2 = vec0.sub(mask, vec1);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, g_MSUBV_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "MSUBV");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMD16_32f vec1 = vec0.sub(g_scalar1);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, g_SUBS_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "SUBS");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMDMask16 mask(g_mask_1);
+        SIMD16_32f vec1 = vec0.sub(mask, g_scalar1);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, g_MSUBS_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "MSUBS");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMD16_32f vec1(g_inputB_1);
         vec0.suba(vec1);
         vec0.store(values);
-        bool inRange = valuesInRange(values, g_subRes1, VEC_LEN, 0.01f);
+        bool inRange = valuesInRange(values, g_SUBV_res1, VEC_LEN, 0.01f);
         CHECK_CONDITION(inRange, "SUBVA");
     }
     {
         float values[VEC_LEN];
-        SIMD16_32f vec0(g_Init1_l);
-        SIMD16_32f vec1(g_Init1_r);
+        SIMD16_32f vec0(g_inputA_1);
+        SIMD16_32f vec1(g_inputB_1);
         vec0 -= vec1;
         vec0.store(values);
-        bool inRange = valuesInRange(values, g_subRes1, VEC_LEN, 0.01f);
+        bool inRange = valuesInRange(values, g_SUBV_res1, VEC_LEN, 0.01f);
         CHECK_CONDITION(inRange, "SUBVA(operator-=)");
     }
     {
         float values[VEC_LEN];
-        SIMD16_32f vec0(g_Init1_l);
-        SIMD16_32f vec1(g_Init1_r);
+        SIMD16_32f vec0(g_inputA_1);
+        SIMD16_32f vec1(g_inputB_1);
+        SIMDMask16 mask(g_mask_1);
+        vec0.suba(mask, vec1);
+        vec0.store(values);
+        bool inRange = valuesInRange(values, g_MSUBV_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "MSUBVA");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        vec0.suba(g_scalar1);
+        vec0.store(values);
+        bool inRange = valuesInRange(values, g_SUBS_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "SUBSA");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMDMask16 mask(g_mask_1);
+        vec0.suba(mask, g_scalar1);
+        vec0.store(values);
+        bool inRange = valuesInRange(values, g_MSUBS_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "MSUBSA");
+    }
+    // SSUBV
+    // MSSUBV
+    // SSUBS
+    // MSSUBS
+    // SSUBVA
+    // MSSUBVA
+    // SSUBSA
+    // MSSUBSA
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMD16_32f vec1(g_inputB_1);
+        SIMD16_32f vec2 = vec0.subfrom(vec1);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, g_SUBFROMV_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "SUBFROMV");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMD16_32f vec1(g_inputB_1);
+        SIMDMask16 mask(g_mask_1);
+        SIMD16_32f vec2 = vec0.subfrom(mask, vec1);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, g_MSUBFROMV_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "MSUBFROMV");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMD16_32f vec2 = vec0.subfrom(g_scalar1);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, g_SUBFROMS_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "SUBFROMS");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMDMask16 mask(g_mask_1);
+        SIMD16_32f vec1 = vec0.subfrom(mask, g_scalar1);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, g_MSUBFROMS_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "MSUBFROMS");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMD16_32f vec1(g_inputB_1);
+        vec0.subfroma(vec1);
+        vec0.store(values);
+        bool inRange = valuesInRange(values, g_SUBFROMV_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "SUBFROMVA");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMD16_32f vec1(g_inputB_1);
+        SIMDMask16 mask(g_mask_1);
+        vec0.subfroma(mask, vec1);
+        vec0.store(values);
+        bool inRange = valuesInRange(values, g_MSUBFROMV_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "MSUBFROMVA");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        vec0.subfroma(g_scalar1);
+        vec0.store(values);
+        bool inRange = valuesInRange(values, g_SUBFROMS_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "SUBFROMSA");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMDMask16 mask(g_mask_1);
+        vec0.subfroma(mask, g_scalar1);
+        vec0.store(values);
+        bool inRange = valuesInRange(values, g_MSUBFROMS_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "MSUBFROMSA");
+    }
+    {
+        float values0[VEC_LEN];
+        float values1[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMD16_32f vec1 = vec0.postdec();
+        vec0.store(values0);
+        vec1.store(values1);
+        bool inRange0 = valuesInRange(values0, g_POSTPREFDEC_res1, VEC_LEN, 0.01f);
+        bool inRange1 = valuesInRange(values1, g_inputA_1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange0 && inRange1, "POSTDEC");
+    }
+    {
+        float values0[VEC_LEN];
+        float values1[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMD16_32f vec1 = vec0--;
+        vec0.store(values0);
+        vec1.store(values1);
+        bool inRange0 = valuesInRange(values0, g_POSTPREFDEC_res1, VEC_LEN, 0.01f);
+        bool inRange1 = valuesInRange(values1, g_inputA_1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange0 && inRange1, "POSTDEC(operator--(int))");
+    }
+    {
+        float values0[VEC_LEN];
+        float values1[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMDMask16 mask(g_mask_1);
+        SIMD16_32f vec1 = vec0.postdec(mask);
+        vec0.store(values0);
+        vec1.store(values1);
+        bool inRange0 = valuesInRange(values0, g_MPOSTPREFDEC_res1, VEC_LEN, 0.01f);
+        bool inRange1 = valuesInRange(values1, g_inputA_1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange0 && inRange1, "MPOSTDEC");
+    }
+    {
+        float values0[VEC_LEN];
+        float values1[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMD16_32f vec1 = vec0.prefdec();
+        vec0.store(values0);
+        vec1.store(values1);
+        bool inRange0 = valuesInRange(values0, g_POSTPREFDEC_res1, VEC_LEN, 0.01f);
+        bool inRange1 = valuesInRange(values1, g_POSTPREFDEC_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange0 && inRange1, "PREFDEC");
+    }
+    {
+        float values0[VEC_LEN];
+        float values1[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMD16_32f vec1 = --vec0;
+        vec0.store(values0);
+        vec1.store(values1);
+        bool inRange0 = valuesInRange(values0, g_POSTPREFDEC_res1, VEC_LEN, 0.01f);
+        bool inRange1 = valuesInRange(values1, g_POSTPREFDEC_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange0 && inRange1, "PREFDEC(operator--())");
+    }
+    {
+        float values0[VEC_LEN];
+        float values1[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMDMask16 mask(g_mask_1);
+        SIMD16_32f vec1 = vec0.prefdec(mask);
+        vec0.store(values0);
+        vec1.store(values1);
+        bool inRange0 = valuesInRange(values0, g_MPOSTPREFDEC_res1, VEC_LEN, 0.01f);
+        bool inRange1 = valuesInRange(values1, g_MPOSTPREFDEC_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange0 && inRange1, "MPREFDEC");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMD16_32f vec1(g_inputB_1);
         SIMD16_32f vec2 = vec0.mul(vec1);
         vec2.store(values);
-        bool inRange = valuesInRange(values, g_mulRes1, VEC_LEN, 0.01f);
+        bool inRange = valuesInRange(values, g_MULV_res1, VEC_LEN, 0.01f);
         CHECK_CONDITION(inRange, "MULV");
     }
     {
         float values[VEC_LEN];
-        SIMD16_32f vec0(g_Init1_l);
-        SIMD16_32f vec1(g_Init1_r);
+        SIMD16_32f vec0(g_inputA_1);
+        SIMD16_32f vec1(g_inputB_1);
         SIMD16_32f vec2 = vec0 * vec1;
         vec2.store(values);
-        bool inRange = valuesInRange(values, g_mulRes1, VEC_LEN, 0.01f);
+        bool inRange = valuesInRange(values, g_MULV_res1, VEC_LEN, 0.01f);
         CHECK_CONDITION(inRange, "MULV(operator*)");
     }
     {
         float values[VEC_LEN];
-        SIMD16_32f vec0(g_Init1_l);
-        SIMD16_32f vec1(g_Init1_r);
+        SIMD16_32f vec0(g_inputA_1);
+        SIMD16_32f vec1(g_inputB_1);
+        SIMDMask16 mask(g_mask_1);
+        SIMD16_32f vec2 = vec0.mul(mask, vec1);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, g_MMUL_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "MMULV");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMD16_32f vec1 = vec0.mul(g_scalar1);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, g_MULS_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "MULS");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMDMask16 mask(g_mask_1);
+        SIMD16_32f vec2 = vec0.mul(mask, g_scalar1);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, g_MMULS_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "MMULS");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMD16_32f vec1(g_inputB_1);
         vec0.mula(vec1);
         vec0.store(values);
-        bool inRange = valuesInRange(values, g_mulRes1, VEC_LEN, 0.01f);
+        bool inRange = valuesInRange(values, g_MULV_res1, VEC_LEN, 0.01f);
         CHECK_CONDITION(inRange, "MULVA");
     }
     {
         float values[VEC_LEN];
-        SIMD16_32f vec0(g_Init1_l);
-        SIMD16_32f vec1(g_Init1_r);
+        SIMD16_32f vec0(g_inputA_1);
+        SIMD16_32f vec1(g_inputB_1);
         vec0 *= vec1;
         vec0.store(values);
-        bool inRange = valuesInRange(values, g_mulRes1, VEC_LEN, 0.01f);
+        bool inRange = valuesInRange(values, g_MULV_res1, VEC_LEN, 0.01f);
         CHECK_CONDITION(inRange, "MULVA(operator*)");
     }
     {
         float values[VEC_LEN];
-        SIMD16_32f vec0(g_Init1_l);
-        SIMD16_32f vec1(g_Init1_r);
+        SIMD16_32f vec0(g_inputA_1);
+        SIMD16_32f vec1(g_inputB_1);
+        SIMDMask16 mask(g_mask_1);
+        vec0.mula(mask, vec1);
+        vec0.store(values);
+        bool inRange = valuesInRange(values, g_MMUL_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "MMULVA");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        vec0.mula(g_scalar1);
+        vec0.store(values);
+        bool inRange = valuesInRange(values, g_MULS_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "MULSA");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMDMask16 mask(g_mask_1);
+        vec0.mula(mask, g_scalar1);
+        vec0.store(values);
+        bool inRange = valuesInRange(values, g_MMULS_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "MMULSA");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMD16_32f vec1(g_inputB_1);
         SIMD16_32f vec2 = vec0.div(vec1);
         vec2.store(values);
-        bool inRange = valuesInRange(values, g_divRes1, VEC_LEN, 0.01f);
+        bool inRange = valuesInRange(values, g_DIVV_res1, VEC_LEN, 0.01f);
         CHECK_CONDITION(inRange, "DIVV");
     }
     {
         float values[VEC_LEN];
-        SIMD16_32f vec0(g_Init1_l);
-        SIMD16_32f vec1(g_Init1_r);
+        SIMD16_32f vec0(g_inputA_1);
+        SIMD16_32f vec1(g_inputB_1);
         SIMD16_32f vec2 = vec0 / vec1;
         vec2.store(values);
-        bool inRange = valuesInRange(values, g_divRes1, VEC_LEN, 0.01f);
+        bool inRange = valuesInRange(values, g_DIVV_res1, VEC_LEN, 0.01f);
         CHECK_CONDITION(inRange, "DIVV(operator/)");
     }
     {
         float values[VEC_LEN];
-        SIMD16_32f vec0(g_Init1_l);
-        SIMD16_32f vec1(g_Init1_r);
+        SIMD16_32f vec0(g_inputA_1);
+        SIMD16_32f vec1(g_inputB_1);
+        SIMDMask16 mask(g_mask_1);
+        SIMD16_32f vec2 = vec0.div(mask, vec1);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, g_MDIVV_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "MDIVV");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMD16_32f vec1 = vec0.div(g_scalar1);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, g_DIVS_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "DIVS");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMDMask16 mask(g_mask_1);
+        SIMD16_32f vec1 = vec0.div(mask, g_scalar1);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, g_MDIVS_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "MDIVS");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMD16_32f vec1(g_inputB_1);
         vec0.diva(vec1);
         vec0.store(values);
-        bool inRange = valuesInRange(values, g_divRes1, VEC_LEN, 0.01f);
+        bool inRange = valuesInRange(values, g_DIVV_res1, VEC_LEN, 0.01f);
         CHECK_CONDITION(inRange, "DIVVA");
     }
     {
         float values[VEC_LEN];
-        SIMD16_32f vec0(g_Init1_l);
-        SIMD16_32f vec1(g_Init1_r);
+        SIMD16_32f vec0(g_inputA_1);
+        SIMD16_32f vec1(g_inputB_1);
         vec0 /= vec1;
         vec0.store(values);
-        bool inRange = valuesInRange(values, g_divRes1, VEC_LEN, 0.01f);
+        bool inRange = valuesInRange(values, g_DIVV_res1, VEC_LEN, 0.01f);
         CHECK_CONDITION(inRange, "DIVVA(operator/)");
     }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMD16_32f vec1(g_inputB_1);
+        SIMDMask16 mask(g_mask_1);
+        vec0.diva(mask, vec1);
+        vec0.store(values);
+        bool inRange = valuesInRange(values, g_MDIVV_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "MDIVVA");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        vec0.diva(g_scalar1);
+        vec0.store(values);
+        bool inRange = valuesInRange(values, g_DIVS_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "DIVSA");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMDMask16 mask(g_mask_1);
+        vec0.diva(mask, g_scalar1);
+        vec0.store(values);
+        bool inRange = valuesInRange(values, g_MDIVS_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "MDIVSA");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMD16_32f vec1 = vec0.rcp();
+        vec1.store(values);
+        bool inRange = valuesInRange(values, g_RCP_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "RCP");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMDMask16 mask(g_mask_1);
+        SIMD16_32f vec1 = vec0.rcp(mask);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, g_MRCP_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "MRCP");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMD16_32f vec1 = vec0.rcp(g_scalar1);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, g_RCPS_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "RCPS");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMDMask16 mask(g_mask_1);
+        SIMD16_32f vec1 = vec0.rcp(mask, g_scalar1);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, g_MRCPS_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "MRCPS");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        vec0.rcpa();
+        vec0.store(values);
+        bool inRange = valuesInRange(values, g_RCP_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "RCPA");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMDMask16 mask(g_mask_1);
+        vec0.rcpa(mask);
+        vec0.store(values);
+        bool inRange = valuesInRange(values, g_MRCP_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "MRCPA");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        vec0.rcpa(g_scalar1);
+        vec0.store(values);
+        bool inRange = valuesInRange(values, g_RCPS_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "RCPSA");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMDMask16 mask(g_mask_1);
+        vec0.rcpa(mask, g_scalar1);
+        vec0.store(values);
+        bool inRange = valuesInRange(values, g_MRCPS_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "MRCPSA");
+    }
 
+    // CMPEQV
+    // CMPEQS
+    // CMPNEV
+    // CMPNES
+    // CMPGTV
+    // CMPGTS
+    // CMPLTV
+    // CMPLTS
+    // CMPGEV
+    // CMPGES
+    // CMPLEV
+    // CMPLES
+    // CMPES
+
+    // ANDV
+    // MANDV
+    // ANDS
+    // MANDS
+    // ANDVA
+    // MANDVA
+    // ANDSA
+    // MANDSA
+    // ORV
+    // MORV
+    // ORS
+    // MORS
+    // ORVA
+    // MORVA
+    // ORSA
+    // MPRSA
+    // XORV
+    // MXORV
+    // XORS
+    // MXORS
+    // XORVA
+    // MXORVA
+    // XORSA
+    // MXORSA
+    // NOT
+    // MNOT
+    // NOTA
+    // MNOTA
+    // BLENDV
+    // BLENDS
+    // BLENDVA
+    // BLENDSA
+    // HADD
+    // MHADD
+    // HMUL
+    // MHMUL
+    // HMULS
+    // MHMULS
+    // HAND
+    // MHAND
+    // HANDS
+    // MHANDS
+    // HOR
+    // MHOR
+    // HORS
+    // MHORS
+    // MXOR
+    // MHXOR
+    // HXORS
+    // MHXORS
+
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMD16_32f vec1(g_inputB_1);
+        SIMD16_32f vec2(g_inputC_1);
+        SIMD16_32f vec3 = vec0.fmuladd(vec1, vec2);
+        vec3.store(values);
+        bool inRange = valuesInRange(values, g_FMULADD_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "FMULADDV");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMD16_32f vec1(g_inputB_1);
+        SIMD16_32f vec2(g_inputC_1);
+        SIMDMask16 mask(g_mask_1);
+        SIMD16_32f vec3 = vec0.fmuladd(mask, vec1, vec2);
+        vec3.store(values);
+        bool inRange = valuesInRange(values, g_MFMULADD_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "MFMULADDV");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMD16_32f vec1(g_inputB_1);
+        SIMD16_32f vec2(g_inputC_1);
+        SIMD16_32f vec3 = vec0.fmulsub(vec1, vec2);
+        vec3.store(values);
+        bool inRange = valuesInRange(values, g_FMULSUB_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "FMULSUBV");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMD16_32f vec1(g_inputB_1);
+        SIMD16_32f vec2(g_inputC_1);
+        SIMDMask16 mask(g_mask_1);
+        SIMD16_32f vec3 = vec0.fmulsub(mask, vec1, vec2);
+        vec3.store(values);
+        bool inRange = valuesInRange(values, g_MFMULSUBV_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "MFMULSUBV");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMD16_32f vec1(g_inputB_1);
+        SIMD16_32f vec2(g_inputC_1);
+        SIMD16_32f vec3 = vec0.faddmul(vec1, vec2);
+        vec3.store(values);
+        bool inRange = valuesInRange(values, g_FADDMULV_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "FADDMULV");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMD16_32f vec1(g_inputB_1);
+        SIMD16_32f vec2(g_inputC_1);
+        SIMDMask16 mask(g_mask_1);
+        SIMD16_32f vec3 = vec0.faddmul(mask, vec1, vec2);
+        vec3.store(values);
+        bool inRange = valuesInRange(values, g_MFADDMULV_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "MFADDMULV");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMD16_32f vec1(g_inputB_1);
+        SIMD16_32f vec2(g_inputC_1);
+        SIMD16_32f vec3 = vec0.fsubmul(vec1, vec2);
+        vec3.store(values);
+        bool inRange = valuesInRange(values, g_FSUBMULV_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "FSUBMULV");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMD16_32f vec1(g_inputB_1);
+        SIMD16_32f vec2(g_inputC_1);
+        SIMDMask16 mask(g_mask_1);
+        SIMD16_32f vec3 = vec0.fsubmul(mask, vec1, vec2);
+        vec3.store(values);
+        bool inRange = valuesInRange(values, g_MFSUBMULV_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "MFSUBMULV");
+    }
+    
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMD16_32f vec1(g_inputB_1);
+        SIMD16_32f vec2 = vec0.max(vec1);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, g_MAXV_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "MAXV");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMD16_32f vec1(g_inputB_1);
+        SIMDMask16 mask(g_mask_1);
+        SIMD16_32f vec2 = vec0.max(mask, vec1);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, g_MMAXV_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "MMAXV");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMD16_32f vec1 = vec0.max(g_scalar1);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, g_MAXS_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "MAXS");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMDMask16 mask(g_mask_1);
+        SIMD16_32f vec1 = vec0.max(mask, g_scalar1);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, g_MMAXS_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "MMAXS");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMD16_32f vec1(g_inputB_1);
+        vec0.maxa(vec1);
+        vec0.store(values);
+        bool inRange = valuesInRange(values, g_MAXV_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "MAXVA");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMD16_32f vec1(g_inputB_1);
+        SIMDMask16 mask(g_mask_1);
+        vec0.maxa(mask, vec1);
+        vec0.store(values);
+        bool inRange = valuesInRange(values, g_MMAXV_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "MMAXVA");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        vec0.maxa(g_scalar1);
+        vec0.store(values);
+        bool inRange = valuesInRange(values, g_MAXS_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "MAXSA");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMDMask16 mask(g_mask_1);
+        vec0.maxa(mask, g_scalar1);
+        vec0.store(values);
+        bool inRange = valuesInRange(values, g_MMAXS_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "MMAXSA");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMD16_32f vec1(g_inputB_1);
+        SIMD16_32f vec2 = vec0.min(vec1);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, g_MINV_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "MINV");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMD16_32f vec1(g_inputB_1);
+        SIMDMask16 mask(g_mask_1);
+        SIMD16_32f vec2 = vec0.min(mask, vec1);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, g_MMINV_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "MMINV");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMD16_32f vec1 = vec0.min(g_scalar1);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, g_MINS_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "MINS");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMDMask16 mask(g_mask_1);
+        SIMD16_32f vec1 = vec0.min(mask, g_scalar1);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, g_MMINS_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "MMINS");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMD16_32f vec1(g_inputB_1);
+        vec0.mina(vec1);
+        vec0.store(values);
+        bool inRange = valuesInRange(values, g_MINV_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "MINVA");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMD16_32f vec1(g_inputB_1);
+        SIMDMask16 mask(g_mask_1);
+        vec0.mina(mask, vec1);
+        vec0.store(values);
+        bool inRange = valuesInRange(values, g_MMINV_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "MMINVA");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        vec0.mina(g_scalar1);
+        vec0.store(values);
+        bool inRange = valuesInRange(values, g_MINS_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "MINSA");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMDMask16 mask(g_mask_1);
+        vec0.mina(mask, g_scalar1);
+        vec0.store(values);
+        bool inRange = valuesInRange(values, g_MMINS_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "MMINSA");
+    }
+    // HMAX
+    // MHMAX
+    // IMAX
+    // MIMAX
+    // HMIN
+    // MHMIN
+    // IMIN
+    // MIMIN
+
+    // GATHER
+    // MGATHER
+    // MGATHERV
+    // SCATTER
+    // MSCATTER
+    // SCATTERV
+    // MSCATTERV
+
+    // LSHV
+    // MLSHV
+    // LSHS
+    // MLSHS
+    // LSHVA
+    // MLSHVA
+    // LSHSA
+    // MLSHSA
+    // RSHV
+    // MRSHV
+    // RSHS
+    // MRSHS
+    // RSHVA
+    // MRSHVA
+    // RSHSA
+    // MRSHSA
+    // ROLV
+    // MROLV
+    // ROLS
+    // MROLS
+    // ROLVA
+    // MROLVA
+    // ROLSA
+    // MROLSA
+    // RORV
+    // MRORV
+    // RORS
+    // MRORS
+    // RORVA
+    // MRORVA
+    // RORSA
+    // MRORSA
+
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMD16_32f vec1 = vec0.neg();
+        vec1.store(values);
+        bool inRange = valuesInRange(values, g_NEG_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "NEG");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMD16_32f vec1 = -vec0;
+        vec1.store(values);
+        bool inRange = valuesInRange(values, g_NEG_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "NEG(operator-)");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMDMask16 mask(g_mask_1);
+        SIMD16_32f vec1 = vec0.neg(mask);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, g_MNEG_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "MNEG");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        vec0.nega();
+        vec0.store(values);
+        bool inRange = valuesInRange(values, g_NEG_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "NEGA");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMDMask16 mask(g_mask_1);
+        vec0.nega(mask);
+        vec0.store(values);
+        bool inRange = valuesInRange(values, g_MNEG_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "MNEGA");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMD16_32f vec1 = vec0.abs();
+        vec1.store(values);
+        bool inRange = valuesInRange(values, g_ABS_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "ABS");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMDMask16 mask(g_mask_1);
+        SIMD16_32f vec1 = vec0.abs(mask);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, g_MABS_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "MABS");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        vec0.absa();
+        vec0.store(values);
+        bool inRange = valuesInRange(values, g_ABS_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "ABSA");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMDMask16 mask(g_mask_1);
+        vec0.absa(mask);
+        vec0.store(values);
+        bool inRange = valuesInRange(values, g_MABS_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "MABSA");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMD16_32f vec1 = vec0.sqr();
+        vec1.store(values);
+        bool inRange = valuesInRange(values, g_SQR_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "SQR");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMDMask16 mask(g_mask_1);
+        SIMD16_32f vec1 = vec0.sqr(mask);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, g_MSQR_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "MSQR");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        vec0.sqra();
+        vec0.store(values);
+        bool inRange = valuesInRange(values, g_SQR_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "SQRA");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMDMask16 mask(g_mask_1);
+        vec0.sqra(mask);
+        vec0.store(values);
+        bool inRange = valuesInRange(values, g_MSQR_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "MSQRA");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMD16_32f vec1 = vec0.abs();  // SQRT is well defined only for 
+        SIMD16_32f vec2 = vec1.sqrt(); // positive numbers! Use SQRT(ABS(.))
+        vec2.store(values);
+        bool inRange = valuesInRange(values, g_SQRT_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "SQRT");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMDMask16 mask(g_mask_1);
+        SIMD16_32f vec1 = vec0.abs(mask);  // SQRT is well defined only for 
+        SIMD16_32f vec2 = vec1.sqrt(mask); // positive numbers! Use SQRT(ABS(.))
+        vec2.store(values);
+        bool inRange = valuesInRange(values, g_MSQRT_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "MSQRT");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMD16_32f vec1 = vec0.abs();  // SQRT is well defined only for 
+        vec1.sqrta();                  // positive numbers! Use SQRT(ABS(.))
+        vec1.store(values);
+        bool inRange = valuesInRange(values, g_SQRT_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "SQRTA");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMDMask16 mask(g_mask_1);
+        SIMD16_32f vec1 = vec0.abs(mask);  // SQRT is well defined only for 
+        vec1.sqrta(mask);                  // positive numbers! Use SQRT(ABS(.))
+        vec1.store(values);
+        bool inRange = valuesInRange(values, g_MSQRT_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "MSQRTA");
+    }
+    // POWV
+    // MPOWV
+    // POWS
+    // MPOWS
+    // ROUND
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMD16_32f vec1 = vec0.round();
+        vec1.store(values);
+        //bool inRange = valuesInRange(values, g_ROUND_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(false, "ROUND");
+    }
+    // MROUND
+    // TRUNC
+    {
+        int32_t values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMD16_32i vec1 = vec0.trunc();
+        vec1.store(values);
+        bool exact = valuesExact(values, g_TRUNC_res1, VEC_LEN);
+        CHECK_CONDITION(exact, "TRUNC");
+    }
+    // MTRUNC
+    {
+        int32_t values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMDMask16 mask(g_mask_1);
+        SIMD16_32i vec1 = vec0.trunc(mask); 
+        vec1.store(values);
+        bool exact = valuesExact(values, g_MTRUNC_res1, VEC_LEN);
+        CHECK_CONDITION(exact, "MTRUNC");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMD16_32f vec1 = vec0.floor();
+        vec1.store(values);
+        bool inRange = valuesInRange(values, g_FLOOR_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "FLOOR");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMDMask16 mask(g_mask_1);
+        SIMD16_32f vec1 = vec0.floor(mask);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, g_MFLOOR_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "MFLOOR");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMD16_32f vec1 = vec0.ceil();
+        vec1.store(values);
+        bool inRange = valuesInRange(values, g_CEIL_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "CEIL");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMDMask16 mask(g_mask_1);
+        SIMD16_32f vec1 = vec0.ceil(mask);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, g_MCEIL_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "MCEIL");
+    }
+    // ISFIN
+    // ISINF
+    // ISAN
+    // ISNAN
+    // ISNORM
+    // ISSUB
+    // ISZERO
+    // ISZEROSUB
+
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMD16_32f vec1 = vec0.sin();
+        vec1.store(values);
+        bool inRange = valuesInRange(values, g_SIN_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "SIN");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMDMask16 mask(g_mask_1);
+        SIMD16_32f vec1 = vec0.sin(mask);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, g_MSIN_res1, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "MSIN");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMD16_32f vec1 = vec0.cos();
+        vec1.store(values);
+        bool inRange = valuesInRange(values, g_COS_res1, VEC_LEN, 0.05f);
+        CHECK_CONDITION(inRange, "COS");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMDMask16 mask(g_mask_1);
+        SIMD16_32f vec1 = vec0.cos(mask);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, g_MCOS_res1, VEC_LEN, 0.05f);
+        CHECK_CONDITION(inRange, "MCOS");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMD16_32f vec1 = vec0.tan();
+        vec1.store(values);
+        bool inRange = valuesInRange(values, g_TAN_res1, VEC_LEN, 0.05f);
+        CHECK_CONDITION(inRange, "TAN");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMDMask16 mask(g_mask_1);
+        SIMD16_32f vec1 = vec0.tan(mask);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, g_MTAN_res1, VEC_LEN, 0.05f);
+        CHECK_CONDITION(inRange, "MTAN");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMD16_32f vec1 = vec0.ctan();
+        vec1.store(values);
+        bool inRange = valuesInRange(values, g_CTAN_res1, VEC_LEN, 0.05f);
+        CHECK_CONDITION(inRange, "CTAN");
+    }
+    {
+        float values[VEC_LEN];
+        SIMD16_32f vec0(g_inputA_1);
+        SIMDMask16 mask(g_mask_1);
+        SIMD16_32f vec1 = vec0.ctan(mask);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, g_MCTAN_res1, VEC_LEN, 0.05f);
+        CHECK_CONDITION(inRange, "MCTAN");
+    }
     return g_failCount;
 }
 

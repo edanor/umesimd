@@ -694,7 +694,7 @@ int test_UME_SIMD4_32u(bool supressMessages)
     {
         SIMD4_32u vec0(9, 8, 7, 6);
         SIMD4_32u vec1((uint32_t)0);
-        vec1 = vec0.postInc();
+        vec1 = vec0.postinc();
         CHECK_CONDITION(vec0[0] == 10 && vec0[1] == 9 && vec0[2] == 8 && vec0[3] == 7, "POSTINC 1");
         CHECK_CONDITION(vec1[0] == 9 && vec1[1] == 8 && vec1[2] == 7 && vec1[3] == 6, "POSTINC 2");
     }
@@ -708,7 +708,7 @@ int test_UME_SIMD4_32u(bool supressMessages)
     {
         SIMD4_32u vec0(9, 8, 7, 6);
         SIMD4_32u vec1((uint32_t)0);
-        vec1 = vec0.prefInc();
+        vec1 = vec0.prefinc();
         CHECK_CONDITION(vec0[0] == 10 && vec0[1] == 9 && vec0[2] == 8 && vec0[3] == 7, "PREFINC 1");
         CHECK_CONDITION(vec1[0] == 10 && vec1[1] == 9 && vec1[2] == 8 && vec1[3] == 7, "PREFINC 2");
     }
@@ -761,7 +761,7 @@ int test_UME_SIMD4_32u(bool supressMessages)
     {
         SIMD4_32u vec0(9, 8, 7, 6);
         SIMD4_32u vec1((uint32_t)0);
-        vec1 = vec0.postDec();
+        vec1 = vec0.postdec();
         CHECK_CONDITION(vec0[0] == 8 && vec0[1] == 7 && vec0[2] == 6 && vec0[3] == 5, "POSTDEC 1");
         CHECK_CONDITION(vec1[0] == 9 && vec1[1] == 8 && vec1[2] == 7 && vec1[3] == 6, "POSTDEC 2");
     }
@@ -1591,7 +1591,7 @@ int test_UME_SIMD4_32i(bool supressMessages)
     {
         SIMD4_32i vec0(9, -8, 7, 6);
         SIMD4_32i vec1(0);
-        vec1 = vec0.postInc();
+        vec1 = vec0.postinc();
         CHECK_CONDITION(vec0[0] == 10 && vec0[1] == -7 && vec0[2] == 8 && vec0[3] == 7, "POSTINC 1");
         CHECK_CONDITION(vec1[0] == 9 && vec1[1] == -8 && vec1[2] == 7 && vec1[3] == 6, "POSTINC 2");
     }
@@ -1605,7 +1605,7 @@ int test_UME_SIMD4_32i(bool supressMessages)
     {
         SIMD4_32i vec0(9, -8, 7, 6);
         SIMD4_32i vec1(0);
-        vec1 = vec0.prefInc();
+        vec1 = vec0.prefinc();
         CHECK_CONDITION(vec0[0] == 10 && vec0[1] == -7 && vec0[2] == 8 && vec0[3] == 7, "PREFINC 1");
         CHECK_CONDITION(vec1[0] == 10 && vec1[1] == -7 && vec1[2] == 8 && vec1[3] == 7, "PREFINC 2");
     }
@@ -1760,7 +1760,7 @@ int test_UME_SIMD4_32i(bool supressMessages)
         SIMD4_32i vec1(3, 14, 28, -60);
         SIMDMask4 mask(true, false, true, false);
         vec1.subfroma(mask, vec0);
-        CHECK_CONDITION(vec1[0] == 6 && vec1[1] == 14 && vec1[2] == -21 && vec1[3] == -60, "MSUBFROMVA");
+        CHECK_CONDITION(vec1[0] == 6 && vec1[1] == -8 && vec1[2] == -21 && vec1[3] == 6, "MSUBFROMVA");
     }
     {
         SIMD4_32i vec0(9, 8, 7, 6);
@@ -1773,12 +1773,12 @@ int test_UME_SIMD4_32i(bool supressMessages)
         int32_t a = 34;
         SIMDMask4 mask(true, false, true, false);
         vec0.subfroma(mask, a);
-        CHECK_CONDITION(vec0[0] == 25 && vec0[1] == 8 && vec0[2] == 27 && vec0[3] == 6, "MSUBFROMSA");
+        CHECK_CONDITION(vec0[0] == 25 && vec0[1] == 34 && vec0[2] == 27 && vec0[3] == 34, "MSUBFROMSA");
     }
     {
         SIMD4_32i vec0(9, -8, 7, 6);
         SIMD4_32i vec1(0);
-        vec1 = vec0.postDec();
+        vec1 = vec0.postdec();
         CHECK_CONDITION(vec0[0] == 8 && vec0[1] == -9 && vec0[2] == 6 && vec0[3] == 5, "POSTDEC 1");
         CHECK_CONDITION(vec1[0] == 9 && vec1[1] == -8 && vec1[2] == 7 && vec1[3] == 6, "POSTDEC 2");
     }
@@ -1792,7 +1792,7 @@ int test_UME_SIMD4_32i(bool supressMessages)
     {
         SIMD4_32i vec0(9, -8, 7, 6);
         SIMD4_32i vec1(0);
-        vec1 = vec0.prefDec();
+        vec1 = vec0.prefdec();
         CHECK_CONDITION(vec0[0] == 8 && vec0[1] == -9 && vec0[2] == 6 && vec0[3] == 5, "PREFDEC 1");
         CHECK_CONDITION(vec1[0] == 8 && vec1[1] == -9 && vec1[2] == 6 && vec1[3] == 5, "PREFDEC 2");
     }

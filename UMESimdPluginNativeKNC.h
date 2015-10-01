@@ -2364,28 +2364,57 @@ template<typename SCALAR_FLOAT_TYPE>
         //(Addition operations)
         // ADDV     - Add with vector 
         inline SIMDVecKNC_f add (SIMDVecKNC_f const & b) {
-            __m512 t0 = _mm512_add_ps(this->mVec, b.mVec);
+            __m512 t0 = _mm512_add_ps(mVec, b.mVec);
             return SIMDVecKNC_f(t0);
+        }
+        inline SIMDVecKNC_f operator+ (SIMDVecKNC_f const & b) {
+            return this->add(b);
         }
         // MADDV    - Masked add with vector
+        inline SIMDVecKNC_f add (SIMDMask16 const & mask, SIMDVecKNC_f const & b) {
+            __m512 t0 = _mm512_mask_add_ps(mVec, mask.mMask, mVec, b.mVec);
+        }
         // ADDS     - Add with scalar
         inline SIMDVecKNC_f add (float b) {
-            __m512 t0 = _mm512_add_ps(this->mVec, _mm512_set1_ps(b));
+            __m512 t0 = _mm512_add_ps(mVec, _mm512_set1_ps(b));
             return SIMDVecKNC_f(t0);
         }
+        inline SIMDVecKNC_f operator+ (float b) {
+            return this->add(b);
+        }
         // MADDS    - Masked add with scalar
+        inline SIMDVecKNC_f add (SIMDMask16 const & mask, float b) {
+            __m512 t0 = _mm512_set1_ps(b);
+            __m512 t1 = _mm512_mask_add_ps(mVec, mask.mMask, mVec, t0);
+            return SIMDVecKNC_f(t1);
+        }
         // ADDVA    - Add with vector and assign
         inline SIMDVecKNC_f & adda (SIMDVecKNC_f const & b) {
             mVec = _mm512_add_ps(mVec, b.mVec);
             return *this;
         }
+        inline SIMDVecKNC_f & operator+= (SIMDVecKNC_f const & b) {
+            return this->adda(b);
+        }
         // MADDVA   - Masked add with vector and assign
+        inline SIMDVecKNC_f & adda (SIMDMask16 const & mask, SIMDVecKNC_f const & b) {
+            mVec = _mm512_mask_add_ps(mVec, mask.mMask, mVec, b.mVec);
+            return *this;
+        }
         // ADDSA    - Add with scalar and assign
         inline SIMDVecKNC_f & adda (float b) {
             mVec = _mm512_add_ps(mVec, _mm512_set1_ps(b));
             return *this;
         }
+        inline SIMDVecKNC_f & operator+= (float b) {
+            return this->adda(b);
+        }
         // MADDSA   - Masked add with scalar and assign
+        inline SIMDVecKNC_f & adda (SIMDMask16 const & mask, float b) {
+            __m512 t0 = _mm512_set1_ps(b);
+            mVec = _mm512_mask_add_ps(mVec, mask.mMask, mVec, t0);
+            return *this;
+        }
         // SADDV    - Saturated add with vector
         // MSADDV   - Masked saturated add with vector
         // SADDS    - Saturated add with scalar
@@ -2395,33 +2424,90 @@ template<typename SCALAR_FLOAT_TYPE>
         // SADDSA   - Satureated add with scalar and assign
         // MSADDSA  - Masked staturated add with vector and assign
         // POSTINC  - Postfix increment
+        inline SIMDVecKNC_f postinc () {
+            __m512 t0 = _mm512_set1_ps(1.0f);
+            __m512 t1 = mVec;
+            mVec = _mm512_add_ps(t0, t1);
+            return SIMDVecKNC_f(t1);
+        }
+        inline SIMDVecKNC_f operator++ (int) {
+            return postinc();
+        }
         // MPOSTINC - Masked postfix increment
+        inline SIMDVecKNC_f postinc (SIMDMask16 const & mask) {
+            __m512 t0 = _mm512_set1_ps(1.0f);
+            __m512 t1 = mVec;
+            mVec = _mm512_mask_add_ps(mVec, mask.mMask, mVec, t0);
+            return SIMDVecKNC_f(t1);
+        }
         // PREFINC  - Prefix increment
+        inline SIMDVecKNC_f & prefinc() {
+            __m512 t0 = _mm512_set1_ps(1.0f);
+            mVec = _mm512_add_ps(mVec, t0);
+            return *this;
+        }
+        inline SIMDVecKNC_f & operator++ () {
+            return prefinc();
+        }
         // MPREFINC - Masked prefix increment
- 
+        inline SIMDVecKNC_f & prefinc(SIMDMask16 const & mask) {
+            __m512 t0 = _mm512_set1_ps(1.0f);
+            mVec = _mm512_mask_add_ps(mVec, mask.mMask, mVec, t0);
+            return *this;
+        }
         //(Subtraction operations)
         // SUBV       - Sub with vector
         inline SIMDVecKNC_f sub(SIMDVecKNC_f const & b) {
             return SIMDVecKNC_f(_mm512_sub_ps(mVec, b.mVec));
         }
+        inline SIMDVecKNC_f operator- (SIMDVecKNC_f const & b) {
+            return this->sub(b);
+        }
         // MSUBV      - Masked sub with vector
+        inline SIMDVecKNC_f sub(SIMDMask16 const & mask, SIMDVecKNC_f const & b) {
+            __m512 t0 = _mm512_mask_sub_ps(mVec, mask.mMask, mVec, b.mVec);
+            return SIMDVecKNC_f(t0);
+        }
         // SUBS       - Sub with scalar
         inline SIMDVecKNC_f sub(float b) {
             return SIMDVecKNC_f(_mm512_sub_ps(mVec, _mm512_set1_ps(b)));
         }
+        inline SIMDVecKNC_f operator- (float b) {
+            return this->sub(b);
+        }
         // MSUBS      - Masked subtraction with scalar
+        inline SIMDVecKNC_f sub(SIMDMask16 const & mask, float b) {
+            __m512 t0 = _mm512_set1_ps(b);
+            __m512 t1 = _mm512_mask_sub_ps(mVec, mask.mMask, mVec, t0);
+            return SIMDVecKNC_f(t1);
+        }
         // SUBVA      - Sub with vector and assign
         inline SIMDVecKNC_f & suba(SIMDVecKNC_f const & b) {
             mVec = _mm512_sub_ps(mVec, b.mVec);
             return *this;
         }
+        inline SIMDVecKNC_f & operator-= (SIMDVecKNC_f const & b) {
+            return suba(b);
+        }
         // MSUBVA     - Masked sub with vector and assign
+        inline SIMDVecKNC_f & suba(SIMDMask16 const & mask, SIMDVecKNC_f const & b) {
+            mVec = _mm512_mask_sub_ps(mVec, mask.mMask, mVec, b.mVec);
+            return *this;
+        }
         // SUBSA      - Sub with scalar and assign
         inline SIMDVecKNC_f & suba(float b) {
             mVec = _mm512_sub_ps(mVec, _mm512_set1_ps(b));
             return *this;
         }
+        inline SIMDVecKNC_f & operator-= (float b) {
+            return this->suba(b);
+        }
         // MSUBSA     - Masked sub with scalar and assign
+        inline SIMDVecKNC_f & suba(SIMDMask16 const & mask, float b) {
+            __m512 t0 = _mm512_set1_ps(b);
+            mVec = _mm512_mask_sub_ps(mVec, mask.mMask, mVec, t0);
+            return *this;
+        }
         // SSUBV      - Saturated sub with vector
         // MSSUBV     - Masked saturated sub with vector
         // SSUBS      - Saturated sub with scalar
@@ -2435,37 +2521,132 @@ template<typename SCALAR_FLOAT_TYPE>
             return SIMDVecKNC_f(_mm512_sub_ps(a.mVec, mVec));
         }
         // MSUBFROMV  - Masked sub from vector
+        inline SIMDVecKNC_f subfrom(SIMDMask16 const & mask, SIMDVecKNC_f const & a) {
+            __m512 t0 = _mm512_mask_sub_ps(mVec, mask.mMask, a.mVec, mVec);
+            return SIMDVecKNC_f(t0);
+        }
         // SUBFROMS   - Sub from scalar (promoted to vector)
         inline SIMDVecKNC_f subfrom(float a) {
             return SIMDVecKNC_f(_mm512_sub_ps(_mm512_set1_ps(a), mVec));
         }
         // MSUBFROMS  - Masked sub from scalar (promoted to vector)
+        inline SIMDVecKNC_f subfrom(SIMDMask16 const & mask, float a) {
+            __m512 t0 = _mm512_set1_ps(a);
+            __m512 t1 = _mm512_mask_sub_ps(mVec, mask.mMask, t0, mVec);
+            return SIMDVecKNC_f(t1);
+        }
         // SUBFROMVA  - Sub from vector and assign
+        inline SIMDVecKNC_f & subfroma(SIMDVecKNC_f const & a) {
+            mVec = _mm512_sub_ps(a.mVec, mVec);
+            return *this;
+        }
         // MSUBFROMVA - Masked sub from vector and assign
+        inline SIMDVecKNC_f & subfroma(SIMDMask16 const & mask, SIMDVecKNC_f const & a) {
+            mVec = _mm512_mask_sub_ps(mVec, mask.mMask, a.mVec, mVec);
+            return *this;
+        }
         // SUBFROMSA  - Sub from scalar (promoted to vector) and assign
+        inline SIMDVecKNC_f subfroma(float a) {
+            mVec = _mm512_sub_ps(_mm512_set1_ps(a), mVec);
+            return *this;
+        }
         // MSUBFROMSA - Masked sub from scalar (promoted to vector) and assign
+        inline SIMDVecKNC_f & subfroma(SIMDMask16 const & mask, float a) {
+            __m512 t0 = _mm512_set1_ps(a);
+            mVec = _mm512_mask_sub_ps(mVec, mask.mMask, t0, mVec);
+            return *this;
+        }
         // POSTDEC    - Postfix decrement
+        inline SIMDVecKNC_f postdec() {
+            __m512 t0 = _mm512_set1_ps(1.0f);
+            __m512 t1 = mVec;
+            mVec = _mm512_sub_ps(mVec, t0);
+            return t1;
+        }
+        inline SIMDVecKNC_f operator-- (int) {
+            return postdec();
+        }
         // MPOSTDEC   - Masked postfix decrement
+        inline SIMDVecKNC_f postdec(SIMDMask16 const & mask) {
+            __m512 t0 = _mm512_set1_ps(1.0f);
+            __m512 t1 = mVec;
+            mVec = _mm512_mask_sub_ps(mVec, mask.mMask, mVec, t0);
+            return t1;
+        }
         // PREFDEC    - Prefix decrement
+        inline SIMDVecKNC_f & prefdec() {
+            __m512 t0 = _mm512_set1_ps(1.0f);
+            mVec = _mm512_sub_ps(mVec, t0);
+            return *this;
+        }
+        inline SIMDVecKNC_f & operator-- () {
+            return prefdec();
+        }
         // MPREFDEC   - Masked prefix decrement
- 
+        inline SIMDVecKNC_f & prefDec(SIMDMask16 const & mask) {
+            __m512 t0 = _mm512_set1_ps(1.0f);
+            mVec = _mm512_mask_sub_ps(mVec, mask.mMask, mVec, t0);
+            return *this;
+        }
+
         //(Multiplication operations)
         // MULV   - Multiplication with vector
         inline SIMDVecKNC_f mul(SIMDVecKNC_f const & b) {
             __m512 t0 = _mm512_mul_ps(mVec, b.mVec);
             return SIMDVecKNC_f(t0);
         }
+        inline SIMDVecKNC_f operator* (SIMDVecKNC_f const & b) {
+            return this->mul(b);
+        }
         // MMULV  - Masked multiplication with vector
+        inline SIMDVecKNC_f mul(SIMDMask16 const & mask, SIMDVecKNC_f const & b) {
+            __m512 t0 = _mm512_mask_mul_ps(mVec, mask.mMask, mVec, b.mVec);
+            return SIMDVecKNC_f(t0);
+        }
+
         // MULS   - Multiplication with scalar
         inline SIMDVecKNC_f mul(float b) {
             __m512 t0 = _mm512_mul_ps(mVec, _mm512_set1_ps(b));
             return SIMDVecKNC_f(t0);
         }
+        inline SIMDVecKNC_f operator* (float b) {
+            return this->mul(b);
+        }
         // MMULS  - Masked multiplication with scalar
+        inline SIMDVecKNC_f mul(SIMDMask16 const & mask, float b) {
+            __m512 t0 = _mm512_set1_ps(b);
+            __m512 t1 = _mm512_mask_mul_ps(mVec, mask.mMask, mVec, t0);
+            return SIMDVecKNC_f(t1);
+        }
+
         // MULVA  - Multiplication with vector and assign
+        inline SIMDVecKNC_f & mula(SIMDVecKNC_f const & b) {
+            mVec = _mm512_mul_ps(mVec, b.mVec);
+            return *this;
+        }
+        inline SIMDVecKNC_f & operator*= (SIMDVecKNC_f const & b) {
+            return mula(b);
+        }
         // MMULVA - Masked multiplication with vector and assign
+        inline SIMDVecKNC_f & mula(SIMDMask16 const & mask, SIMDVecKNC_f const & b) {
+            mVec = _mm512_mask_mul_ps(mVec, mask.mMask, mVec, b.mVec);
+            return *this;
+        }
         // MULSA  - Multiplication with scalar and assign
+        inline SIMDVecKNC_f & mula(float b) {
+            __m512 t0  = _mm512_set1_ps(b);
+            mVec = _mm512_mul_ps(mVec, t0);
+            return *this;
+        }
+        inline SIMDVecKNC_f & operator*= (float b) {
+            return mula(b);
+        }
         // MMULSA - Masked multiplication with scalar and assign
+        inline SIMDVecKNC_f & mula(SIMDMask16 const & mask, float b) {
+            __m512 t0 = _mm512_set1_ps(b);
+            mVec = _mm512_mask_mul_ps(mVec, mask.mMask, mVec, t0);
+            return *this;
+        }
  
         //(Division operations)
         // DIVV   - Division with vector
@@ -2473,33 +2654,97 @@ template<typename SCALAR_FLOAT_TYPE>
             __m512 t0 = _mm512_div_ps(mVec, b.mVec);
             return SIMDVecKNC_f(t0);
         }
+        inline SIMDVecKNC_f operator/ (SIMDVecKNC_f const & b) {
+            return this->div(b);
+        }
         // MDIVV  - Masked division with vector
+        inline SIMDVecKNC_f div(SIMDMask16 const & mask, SIMDVecKNC_f const & b) {
+            __m512 t0 = _mm512_mask_div_ps(mVec, mask.mMask, mVec, b.mVec);
+            return SIMDVecKNC_f(t0);
+        }
         // DIVS   - Division with scalar
         inline SIMDVecKNC_f div(float b) {
             __m512 t0 = _mm512_div_ps(mVec, _mm512_set1_ps(b));
             return SIMDVecKNC_f(t0);
         }
+        inline SIMDVecKNC_f operator/ (float b) {
+            return this->div(b);
+        }
         // MDIVS  - Masked division with scalar
+        inline SIMDVecKNC_f div(SIMDMask16 const & mask, float b) {
+            __m512 t0 = _mm512_set1_ps(b);
+            __m512 t1 = _mm512_mask_div_ps(mVec, mask.mMask, mVec, t0);
+            return SIMDVecKNC_f(t1);
+        }
         // DIVVA  - Division with vector and assign
         inline SIMDVecKNC_f & diva(SIMDVecKNC_f const & b) {
             mVec = _mm512_div_ps(mVec, b.mVec);
             return *this;
         }
         // MDIVVA - Masked division with vector and assign
+        inline SIMDVecKNC_f & diva(SIMDMask16 const & mask, SIMDVecKNC_f const & b) {
+            mVec = _mm512_mask_div_ps(mVec, mask.mMask, mVec, b.mVec);
+            return *this;
+        }
         // DIVSA  - Division with scalar and assign
         inline SIMDVecKNC_f & diva(float b) {
             mVec = _mm512_div_ps(mVec, _mm512_set1_ps(b));
             return *this;
         }
         // MDIVSA - Masked division with scalar and assign
+        inline SIMDVecKNC_f & diva(SIMDMask16 const & mask, float b) {
+            __m512 t0 = _mm512_set1_ps(b);
+            mVec = _mm512_mask_div_ps(mVec, mask.mMask, mVec, t0);
+            return *this;
+        }
         // RCP    - Reciprocal
+        inline SIMDVecKNC_f rcp() {
+            __m512 t0 = _mm512_rcp23_ps(mVec);
+            return SIMDVecKNC_f(t0);
+        }
         // MRCP   - Masked reciprocal
+        inline SIMDVecKNC_f rcp(SIMDMask16 const & mask) {
+            __m512 t0 = _mm512_mask_rcp23_ps(mVec, mask.mMask, mVec);
+            return SIMDVecKNC_f(t0);
+        }
         // RCPS   - Reciprocal with scalar numerator
+        inline SIMDVecKNC_f rcp(float b) {
+            __m512 t0 = _mm512_set1_ps(b);
+            __m512 t1 = _mm512_rcp23_ps(mVec);
+            __m512 t2 = _mm512_mul_ps(t0, t1);
+            return SIMDVecKNC_f(t2);
+        }
         // MRCPS  - Masked reciprocal with scalar
+        inline SIMDVecKNC_f rcp(SIMDMask16 const & mask, float b) {
+            __m512 t0 = _mm512_set1_ps(b);
+            __m512 t1 = _mm512_rcp23_ps(mVec);
+            __m512 t2 = _mm512_mask_mul_ps(mVec, mask.mMask, t0, t1);
+            return SIMDVecKNC_f(t2);
+        }
         // RCPA   - Reciprocal and assign
+        inline SIMDVecKNC_f & rcpa() {
+            mVec = _mm512_rcp23_ps(mVec);
+            return *this;
+        }
         // MRCPA  - Masked reciprocal and assign
+        inline SIMDVecKNC_f & rcpa(SIMDMask16 const & mask) {
+            mVec = _mm512_mask_rcp23_ps(mVec, mask.mMask, mVec);
+            return *this;
+        }
         // RCPSA  - Reciprocal with scalar and assign
+        inline SIMDVecKNC_f & rcpa(float b) {
+            __m512 t0 = _mm512_set1_ps(b);
+            __m512 t1 = _mm512_rcp23_ps(mVec);
+            mVec = _mm512_mul_ps(t0, t1);
+            return *this;
+        }
         // MRCPSA - Masked reciprocal with scalar and assign
+        inline SIMDVecKNC_f & rcpa(SIMDMask16 const & mask, float b) {
+            __m512 t0 = _mm512_set1_ps(b);
+            __m512 t1 = _mm512_rcp23_ps(mVec);
+            mVec = _mm512_mask_mul_ps(mVec, mask.mMask, t0, t1);
+            return *this;
+        }
  
         //(Comparison operations)
         // CMPEQV - Element-wise 'equal' with vector

@@ -647,8 +647,28 @@ namespace SIMD
             return retval;
         }
 
-        // SUBFROMV  - is handled using SUBV
-        // MSUBFROMV - is handled using MSUBV
+        // SUBFROMV
+        template<typename VEC_TYPE>
+        inline VEC_TYPE subFrom (VEC_TYPE const & a, VEC_TYPE const & b) {
+            UME_EMULATION_WARNING();
+            VEC_TYPE retval;
+            for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+                retval.insert(i, a[i] - b[i]);
+            }
+            return retval;
+        }
+
+        // MSUBFROMV
+        template<typename VEC_TYPE, typename MASK_TYPE>
+        inline VEC_TYPE subFrom (MASK_TYPE const & mask, VEC_TYPE const & a, VEC_TYPE const & b) {
+            UME_EMULATION_WARNING();
+            VEC_TYPE retval;
+            for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+                if(mask[i] == true) retval.insert(i, a[i] - b[i]);
+                else retval.insert(i, a[i]);
+            }
+            return retval;
+        }
 
         // SUBFROMS
         template<typename VEC_TYPE, typename SCALAR_TYPE>
@@ -688,7 +708,8 @@ namespace SIMD
         inline VEC_TYPE & subFromAssign (MASK_TYPE const & mask, VEC_TYPE const & a, VEC_TYPE & b) {
             UME_EMULATION_WARNING();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
-                if( mask[i] == true) b.insert(i, a[i] - b[i]);
+                if(mask[i] == true) b.insert(i, a[i] - b[i]);
+                else b.insert(i, a[i]);
             }
             return b;
         }
@@ -709,6 +730,7 @@ namespace SIMD
             UME_EMULATION_WARNING();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                 if(mask[i] == true) b.insert(i, a - b[i]);
+                else b.insert(i, a);
             }
             return b;
         }
@@ -731,8 +753,29 @@ namespace SIMD
             VEC_TYPE retval;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                 if( mask[i] == true ) retval.insert(i, -a[i]);
+                else retval.insert(i, a[i]);
             }
             return retval;
+        }
+
+        // NEGA
+        template<typename VEC_TYPE>
+        inline VEC_TYPE & unaryMinusAssign (VEC_TYPE & a) {
+            UME_EMULATION_WARNING();
+            for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+                a.insert(i, -a[i]);
+            }
+            return a;
+        }
+
+        // MNEGA
+        template<typename VEC_TYPE, typename MASK_TYPE>
+        inline VEC_TYPE & unaryMinusAssign (MASK_TYPE const & mask, VEC_TYPE & a) {
+            UME_EMULATION_WARNING();
+            for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+                if( mask[i] == true ) a.insert(i, -a[i]);
+            }
+            return a;
         }
             
         // SUBVA
@@ -1004,7 +1047,7 @@ namespace SIMD
         inline VEC_TYPE & multAssign (MASK_TYPE const & mask, VEC_TYPE & dst, VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
-                dst.insert(i, dst[i] * b[i]);
+                if(mask[i] == true) dst.insert(i, dst[i] * b[i]);
             }
             return dst;
         }
@@ -1132,6 +1175,7 @@ namespace SIMD
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                 if(mask[i] == true) a.insert(i, a[i]/b);
             }
+            return a;
         }
 
         // RCP
@@ -3984,7 +4028,7 @@ namespace SIMD
         }
         
         inline DERIVED_VEC_TYPE & operator+= (DERIVED_VEC_TYPE const & b) {
-            return adda(b);
+            return this->adda(b);
         }
 
         // MADDVA
@@ -4043,30 +4087,30 @@ namespace SIMD
         }
         
         // POSTINC
-        inline DERIVED_VEC_TYPE postInc () {
+        inline DERIVED_VEC_TYPE postinc () {
             return EMULATED_FUNCTIONS::postfixIncrement<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this));
         }
         
         inline DERIVED_VEC_TYPE operator++ (int) {
-            return postInc();
+            return postinc();
         }
 
         // MPOSTINC
-        inline DERIVED_VEC_TYPE postInc (MASK_TYPE const & mask) {
+        inline DERIVED_VEC_TYPE postinc (MASK_TYPE const & mask) {
             return EMULATED_FUNCTIONS::postfixIncrement<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this));
         }
 
         // PREFINC
-        inline DERIVED_VEC_TYPE & prefInc () {
+        inline DERIVED_VEC_TYPE & prefinc () {
             return EMULATED_FUNCTIONS::prefixIncrement<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this));
         }
         
         inline DERIVED_VEC_TYPE & operator++ () {
-            return prefInc();
+            return prefinc();
         }
 
         // MPREFINC
-        inline DERIVED_VEC_TYPE & prefInc (MASK_TYPE const & mask) {
+        inline DERIVED_VEC_TYPE & prefinc (MASK_TYPE const & mask) {
             return EMULATED_FUNCTIONS::prefixIncrement<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this));
         }
 
@@ -4160,12 +4204,12 @@ namespace SIMD
 
         // SUBFROMV
         inline DERIVED_VEC_TYPE subfrom (DERIVED_VEC_TYPE const & a) const {
-            return EMULATED_FUNCTIONS::sub<DERIVED_VEC_TYPE>(a, static_cast<DERIVED_VEC_TYPE const &>(*this));
+            return EMULATED_FUNCTIONS::subFrom<DERIVED_VEC_TYPE>(a, static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // MSUBFROMV
         inline DERIVED_VEC_TYPE subfrom (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & a) const {
-            return EMULATED_FUNCTIONS::sub<DERIVED_VEC_TYPE, MASK_TYPE>(mask, a, static_cast<DERIVED_VEC_TYPE const &>(*this));
+            return EMULATED_FUNCTIONS::subFrom<DERIVED_VEC_TYPE, MASK_TYPE>(mask, a, static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // SUBFROMS
@@ -4199,30 +4243,30 @@ namespace SIMD
         }
 
         // POSTDEC
-        inline DERIVED_VEC_TYPE postDec () {
+        inline DERIVED_VEC_TYPE postdec () {
             return EMULATED_FUNCTIONS::postfixDecrement<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this));
         }
 
         inline DERIVED_VEC_TYPE operator-- (int) {
-            return postDec();
+            return postdec();
         }
 
         // MPOSTDEC
-        inline DERIVED_VEC_TYPE postDec (MASK_TYPE const & mask) {
+        inline DERIVED_VEC_TYPE postdec (MASK_TYPE const & mask) {
             return EMULATED_FUNCTIONS::postfixDecrement<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this));
         }
 
         // PREFDEC
-        inline DERIVED_VEC_TYPE & prefDec() {
+        inline DERIVED_VEC_TYPE & prefdec() {
             return EMULATED_FUNCTIONS::prefixDecrement<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this));
         }
         
         inline DERIVED_VEC_TYPE & operator-- () {
-            return prefDec();
+            return prefdec();
         }
 
         // MPREFDEC
-        inline DERIVED_VEC_TYPE & prefDec (MASK_TYPE const & mask) {
+        inline DERIVED_VEC_TYPE & prefdec (MASK_TYPE const & mask) {
             return EMULATED_FUNCTIONS::prefixDecrement<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this));
         }
 
@@ -4309,7 +4353,7 @@ namespace SIMD
 
         // MDIVVA
         inline DERIVED_VEC_TYPE diva (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) {
-            return EMULATED_FUNCTIONS::divAssign<DERIVED_VEC_TYPE, MASK_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this), b);
+            return EMULATED_FUNCTIONS::divAssign<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
 
         // DIVSA
@@ -5055,7 +5099,7 @@ namespace SIMD
             return EMULATED_FUNCTIONS::shiftBitsRightAssign<DERIVED_VEC_TYPE, DERIVED_VEC_UINT_TYPE>(static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
         
-        // RSHVA
+        // MRSHVA
         inline DERIVED_VEC_TYPE & rsha (MASK_TYPE const & mask, DERIVED_VEC_UINT_TYPE const & b) {
             return EMULATED_FUNCTIONS::shiftBitsRightAssign<DERIVED_VEC_TYPE, DERIVED_VEC_UINT_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
@@ -5226,6 +5270,16 @@ namespace SIMD
             return EMULATED_FUNCTIONS::unaryMinus<DERIVED_VEC_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
+        // NEGA
+        inline DERIVED_VEC_TYPE & nega() {
+            return EMULATED_FUNCTIONS::unaryMinusAssign<DERIVED_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE &>(*this));
+        }
+
+        // MNEGA
+        inline DERIVED_VEC_TYPE & nega(MASK_TYPE const & mask) {
+            return EMULATED_FUNCTIONS::unaryMinusAssign<DERIVED_VEC_TYPE>(mask, static_cast<DERIVED_VEC_TYPE &>(*this));
+        }
+
         // ABS
         inline DERIVED_VEC_TYPE abs () const {
             return EMULATED_FUNCTIONS::MATH::abs<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this));
@@ -5237,13 +5291,13 @@ namespace SIMD
         }
 
         // ABSA
-        inline DERIVED_VEC_TYPE absa () const {
-            return EMULATED_FUNCTIONS::MATH::absAssign<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this));
+        inline DERIVED_VEC_TYPE absa () {
+            return EMULATED_FUNCTIONS::MATH::absAssign<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this));
         }
 
         // MABSA
-        inline DERIVED_VEC_TYPE absa (MASK_TYPE const & mask) const {
-            return EMULATED_FUNCTIONS::MATH::absAssign<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this));
+        inline DERIVED_VEC_TYPE absa (MASK_TYPE const & mask) {
+            return EMULATED_FUNCTIONS::MATH::absAssign<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this));
         }
 
     };
