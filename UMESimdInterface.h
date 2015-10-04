@@ -391,7 +391,7 @@ namespace SIMD
             return retval;
         }
             
-        // ADDA
+        // ADDVA
         template<typename VEC_TYPE>
         inline VEC_TYPE & addAssign (VEC_TYPE & a, VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
@@ -399,7 +399,7 @@ namespace SIMD
             return a;
         }
 
-        // MADDA
+        // MADDVA
         template<typename VEC_TYPE, typename MASK_TYPE>
         inline VEC_TYPE & addAssign (MASK_TYPE const & mask, VEC_TYPE & a, VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
