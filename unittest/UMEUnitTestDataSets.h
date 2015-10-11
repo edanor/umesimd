@@ -59,7 +59,7 @@ struct DataSet_1_32u {
         static const uint32_t POSTPREFDEC[32];
         static const uint32_t MPOSTPREFDEC[32];
         static const uint32_t MULV[32];
-        static const uint32_t MMUL[32];
+        static const uint32_t MMULV[32];
         static const uint32_t MULS[32];
         static const uint32_t MMULS[32];
         static const uint32_t DIVV[32];
@@ -70,7 +70,7 @@ struct DataSet_1_32u {
         static const uint32_t MRCP[32];
         static const uint32_t RCPS[32];
         static const uint32_t MRCPS[32];
-        static const uint32_t FMULADD[32];
+        static const uint32_t FMULADDV[32];
         static const uint32_t MFMULADD[32];
         static const uint32_t FMULSUB[32];
         static const uint32_t MFMULSUBV[32];
@@ -120,7 +120,7 @@ struct DataSet_1_32f {
         static const float POSTPREFDEC[32];
         static const float MPOSTPREFDEC[32];
         static const float MULV[32];
-        static const float MMUL[32];
+        static const float MMULV[32];
         static const float MULS[32];
         static const float MMULS[32];
         static const float DIVV[32];
@@ -131,7 +131,7 @@ struct DataSet_1_32f {
         static const float MRCP[32];
         static const float RCPS[32];
         static const float MRCPS[32];
-        static const float FMULADD[32];
+        static const float FMULADDV[32];
         static const float MFMULADD[32];
         static const float FMULSUB[32];
         static const float MFMULSUBV[32];

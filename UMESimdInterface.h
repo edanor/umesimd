@@ -3948,6 +3948,21 @@ namespace SIMD
             return EMULATED_FUNCTIONS::assign<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this), value);
         }
 
+        // PREFETCH0
+        static inline void prefetch0 (SCALAR_TYPE const *p) {
+            // DO NOTHING!
+        }
+
+        // PREFETCH1
+        static inline void prefetch1 (SCALAR_TYPE const *p) {
+            // DO NOTHING!
+        }
+
+        // PREFETCH2
+        static inline void prefetch2 (SCALAR_TYPE const *p) {
+            // DO NOTHING!
+        }
+
         // LOAD
         inline DERIVED_VEC_TYPE & load (SCALAR_TYPE const *p) {
             return EMULATED_FUNCTIONS::load<DERIVED_VEC_TYPE, SCALAR_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this), p);
@@ -5627,6 +5642,26 @@ namespace SIMD
         }
     };
 
+    template<typename VEC_TYPE>
+    inline VEC_TYPE addv (VEC_TYPE const & src1, VEC_TYPE const & src2) {
+        return src1.add(src2);
+    }
+
+    template<typename VEC_TYPE>
+    inline VEC_TYPE & addva (VEC_TYPE & src1, VEC_TYPE const & src2) {
+        return src1.addva(src2);
+    }
+    
+    // How to restrict template parameter resolution to certain types only?
+    template<typename VEC_TYPE>
+    inline VEC_TYPE adds (float src1, VEC_TYPE const & src2) {
+        return src2.add(src1);
+    }
+    
+    template<typename VEC_TYPE>
+    inline VEC_TYPE adds (VEC_TYPE const & src1, float src2) {
+        return src1.add(src2);
+    }
 } // namespace UME::SIMD
 } // namespace UME
 

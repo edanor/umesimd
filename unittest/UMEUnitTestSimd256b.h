@@ -198,7 +198,8 @@ int test_UME_SIMD8_32u(bool supressMessages)
 {
     char header[] = "UME::SIMD::SIMD8_32u test";
     INIT_TEST(header, supressMessages);
-
+    
+    genericUintTest<SIMD8_32u, uint32_t, SIMDMask8, 8, DataSet_1_32u>();
     {
         SIMD8_32u vec0;
         CHECK_CONDITION(true, "ZERO-CONSTR"); 

@@ -1168,7 +1168,7 @@ namespace SIMD
         inline explicit SIMDVecScalarEmu_f(SCALAR_FLOAT_TYPE f) : mVec(f) {}
         
         // LOAD-CONSTR - Construct by loading from memory
-        inline explicit SIMDVecScalarEmu_f(const SCALAR_FLOAT_TYPE *p) { load(p); }
+        inline explicit SIMDVecScalarEmu_f(const SCALAR_FLOAT_TYPE *p) { this->load(p); }
         
         inline SIMDVecScalarEmu_f(SCALAR_FLOAT_TYPE f0, SCALAR_FLOAT_TYPE f1) {
             mVec.insert(0, f0); mVec.insert(1, f1);
@@ -1390,6 +1390,17 @@ namespace SIMD
     // 1024b float vectors
     typedef SIMDVecScalarEmu_f<float,  32>      SIMD32_32f;
     typedef SIMDVecScalarEmu_f<double, 16>      SIMD16_64f;
+
+    // Define default-length vectors
+    typedef SIMDVecScalarEmu_u<uint8_t,  16>     SIMDVec_8u;
+    typedef SIMDVecScalarEmu_u<uint16_t, 16>     SIMDVec_16u;
+    typedef SIMDVecScalarEmu_u<uint32_t, 16>     SIMDVec_32u;
+    typedef SIMDVecScalarEmu_i<int8_t, 16>       SIMDVec_8i;
+    typedef SIMDVecScalarEmu_i<int16_t, 16>      SIMDVec_16i;
+    typedef SIMDVecScalarEmu_i<int32_t, 16>      SIMDVec_32i;
+    typedef SIMDVecScalarEmu_f<float, 16>        SIMDVec_32f;
+    typedef SIMDVecScalarEmu_f<double, 16>       SIMDVec_64f;
+    typedef SIMDMask16                           SIMDMask;
 #endif
 
 } // SIMD

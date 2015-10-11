@@ -519,7 +519,8 @@ int test_UME_SIMD4_32u(bool supressMessages)
     char header[] = "UME::SIMD::SIMD4_32u test";
     
     INIT_TEST(header, supressMessages);
-
+    
+    genericUintTest<SIMD4_32u, uint32_t, SIMDMask4, 4, DataSet_1_32u>();
     {
         SIMD4_32u vec1;
         CHECK_CONDITION(true, "ZERO-CONSTR");  
@@ -2466,10 +2467,23 @@ int test_UME_SIMD4_32f(bool supressMessages)
     }
     {
         SIMD4_32f vec0(1.0f);
+        SIMD4_32f vec1(2.0f);
+        SIMD4_32f vec2;
+        vec2 = addv(vec0, vec1);
+        CHECK_CONDITION(vec2[0] == 3.0f, "ADDV function");
+    }
+    {
+        SIMD4_32f vec0(1.0f);
         float val1 = 2.0f;
         SIMD4_32f vec2;
         vec2 = vec0.add(val1);
         CHECK_CONDITION(vec2[3] > 2.99f && vec2[3] < 3.01f, "ADDS");
+    }
+    {
+        SIMD4_32f vec0(1.0f);
+        SIMD4_32f vec2;
+        vec2 = adds(vec0, 2.0f);
+        CHECK_CONDITION(vec2[0] == 3.0f, "ADDS function");
     }
     {
         SIMD4_32f vec0(3.0f);

@@ -699,7 +699,7 @@ void genericMMULVTest()
     MASK_TYPE mask(DATA_SET::inputs::maskA);
     VEC_TYPE vec2 = vec0.mul(mask, vec1);
     vec2.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MMUL, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::MMULV, VEC_LEN, 0.01f);
     CHECK_CONDITION(inRange, "MMULV");
 }
     
@@ -759,7 +759,7 @@ void genericMMULVATest()
     MASK_TYPE mask(DATA_SET::inputs::maskA);
     vec0.mula(mask, vec1);
     vec0.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MMUL, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::MMULV, VEC_LEN, 0.01f);
     CHECK_CONDITION(inRange, "MMULVA");
 }
     
@@ -996,7 +996,6 @@ void genericMRCPSATest()
     bool inRange = valuesInRange(values, DATA_SET::outputs::MRCPS, VEC_LEN, 0.01f);
     CHECK_CONDITION(inRange, "MRCPSA");
 }
-
     
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericFMULADDVTest()
@@ -1007,7 +1006,7 @@ void genericFMULADDVTest()
     VEC_TYPE vec2(DATA_SET::inputs::inputC);
     VEC_TYPE vec3 = vec0.fmuladd(vec1, vec2);
     vec3.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::FMULADD, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::FMULADDV, VEC_LEN, 0.01f);
     CHECK_CONDITION(inRange, "FMULADDV");
 }
     
@@ -1881,6 +1880,53 @@ void genericBaseInterfaceTest()
     // MRORVA
     // RORSA
     // MRORSA
+    //genericIntTest<VEC_TYOEm SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+
+    // POWV
+    // MPOWV
+    // POWS
+    // MPOWS
+
+}
+
+template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
+void genericUintInterfaceTest()
+{
+    genericADDVTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
+    genericMADDVTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericADDSTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
+    genericMADDSTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericPREFINCTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
+    genericMPREFINCTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericPOSTINCTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
+    genericMPOSTINCTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericSUBVTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
+    genericMSUBVTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericSUBSTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
+    genericMSUBSTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericSUBFROMVTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
+    genericMSUBFROMVTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericSUBFROMSTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
+    genericMSUBFROMSTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericPREFDECTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
+    genericMPREFDECTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericPOSTDECTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
+    genericMPOSTDECTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericMULVTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
+    genericMMULVTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericMULSTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
+    genericMMULSTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericDIVVTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
+    genericMDIVVTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericDIVSTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
+    genericMDIVSTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericRCPTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
+    genericMRCPTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+}
+
+template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
+void genericIntInterfaceTest() 
+{
     genericNEGTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
     genericMNEGTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
     genericNEGATest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
@@ -1889,35 +1935,12 @@ void genericBaseInterfaceTest()
     genericMABSTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
     genericABSATest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
     genericMABSATest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
-    genericSQRTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
-    genericMSQRTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
-    genericSQRATest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
-    genericMSQRATest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
-    genericSQRTTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
-    genericMSQRTTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
-    genericSQRTATest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
-    genericMSQRTATest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
-    // POWV
-    // MPOWV
-    // POWS
-    // MPOWS
 }
-
-template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
-void genericUintTest()
-{
-    //genericBaseInterfaceTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
-    genericADDVTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
-    genericMADDVTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
-}
-
 
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename VEC_INT_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
-void genericFloatTest()
+void genericFloatInterfaceTest()
 {
-    genericBaseInterfaceTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
-
     genericROUNDTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
     // MROUND
     genericTRUNCTest<VEC_TYPE, SCALAR_TYPE, VEC_INT_TYPE, VEC_LEN, DATA_SET>();
@@ -1935,6 +1958,16 @@ void genericFloatTest()
     // ISZERO
     // ISZEROSUB
     /*
+    
+    genericSQRTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
+    genericMSQRTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericSQRATest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
+    genericMSQRATest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericSQRTTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
+    genericMSQRTTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericSQRTATest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
+    genericMSQRTATest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+
     genericSINTest<VEC_TYPE, VEC_LEN, DATA_SET>();
     genericMSINTest<VEC_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
     genericCOSTest<VEC_TYPE, VEC_LEN, DATA_SET>();
@@ -1944,4 +1977,19 @@ void genericFloatTest()
     genericCTANTest<VEC_TYPE, VEC_LEN, DATA_SET>();
     genericMCTANTest<VEC_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();*/
 }
+
+template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
+void genericUintTest() {
+    genericBaseInterfaceTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET> ();
+    genericUintInterfaceTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET> ();
+}
+
+template<typename VEC_TYPE, typename SCALAR_TYPE, typename VEC_INT_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
+void genericFloatTest() {
+    genericBaseInterfaceTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET> ();
+    genericUintInterfaceTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET> ();
+    genericIntInterfaceTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET> ();
+    genericFloatInterfaceTest<VEC_TYPE, SCALAR_TYPE, VEC_INT_TYPE, MASK_TYPE, VEC_LEN, DATA_SET> ();
+}
+
 #endif
