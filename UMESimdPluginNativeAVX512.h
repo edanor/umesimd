@@ -230,39 +230,36 @@ namespace SIMD
             uint32_t,
             8>
     {   
-        static const uint32_t TRUE() { return 0xFFFFFFFF; };
-        static const uint32_t FALSE() { return 0x00000000; };
+        static uint32_t TRUE() { return 0x1; };
+        static uint32_t FALSE() { return 0x0; };
 
         // This function returns internal representation of boolean value based on bool input
         static inline uint32_t toMaskBool(bool m) { if (m == true) return TRUE(); else return FALSE(); }
         // This function returns a boolean value based on internal representation
-        static inline bool toBool(uint32_t m) { if( (m & 0x80000000) != 0) return true; else return false; }
+        static inline bool toBool(uint32_t m) { if( m != 0) return true; else return false; }
 
         friend class SIMDVecAVX512_u<uint32_t, 8>;
         friend class SIMDVecAVX512_i<int32_t, 8>;
         friend class SIMDVecAVX512_f<float, 8>;
         friend class SIMDVecAVX512_f<double, 8>;
-    private:
-        __m256i mMask;
 
-        SIMDVecAVX512Mask(__m256i const & x) { mMask = x; };
+    private:
+        __mmask8 mMask;
+
+        SIMDVecAVX512Mask(__mmask8 const & x) { mMask = x; };
     public:
-        SIMDVecAVX512Mask() {
-            mMask = _mm256_set1_epi32(FALSE());
-        }
+        SIMDVecAVX512Mask() {}
 
         // Regardless of the mask representation, the interface should only allow initialization using 
         // standard bool or using equivalent mask
         SIMDVecAVX512Mask( bool m ) {
-            mMask = _mm256_set1_epi32(toMaskBool(m));
+            mMask = m ? 0xFF : 0x00;
         }
         
         SIMDVecAVX512Mask(bool m0, bool m1, bool m2, bool m3, 
                           bool m4, bool m5, bool m6, bool m7) {
-            mMask = _mm256_setr_epi32(toMaskBool(m0), toMaskBool(m1), 
-                                      toMaskBool(m2), toMaskBool(m3),
-                                      toMaskBool(m4), toMaskBool(m5), 
-                                      toMaskBool(m6), toMaskBool(m7));
+            mMask = m0        | (m1 << 1) | (m2 << 2) | (m3 << 3) |
+                    (m4 << 4) | (m5 << 5) | (m6 << 6) | (m7 << 7);
         }
         
         SIMDVecAVX512Mask(SIMDVecAVX512Mask const & mask) {
@@ -271,10 +268,7 @@ namespace SIMD
         }
 
         inline bool extract(uint32_t index) const {
-            UME_PERFORMANCE_UNOPTIMAL_WARNING() 
-            alignas(32) uint32_t raw[8];
-            _mm256_store_si256((__m256i*)raw, mMask);
-            return raw[index] == TRUE();
+            return mMask & (1 << index) != 0; 
         }
         
         // A non-modifying element-wise access operator
@@ -284,16 +278,17 @@ namespace SIMD
 
         // Element-wise modification operator
         inline void insert(uint32_t index, bool x) {
-            UME_PERFORMANCE_UNOPTIMAL_WARNING() 
-            alignas(32) static uint32_t raw[8] = { 0, 0, 0, 0, 0, 0, 0, 0};
-            _mm256_store_si256((__m256i*)raw, mMask);
-            raw[index] = toMaskBool(x);
-            mMask = _mm256_load_si256((__m256i*)raw);
+            if(x) {
+                mMask |= (1 << index);
+            }
+            else
+            {
+                mMask &= ~(1 << index);
+            }
         }
 
         inline SIMDVecAVX512Mask<uint32_t, 8> & operator= (SIMDVecAVX512Mask<uint32_t, 8> const & x) {
-            //mMask = x.mMask;
-            mMask = _mm256_load_si256(&x.mMask);
+            mMask = x.mMask;
             return *this;
         }
     };
@@ -623,7 +618,9 @@ namespace SIMD
     public:
         inline SIMDVecAVX512_u() : mVec() {};
 
-        inline explicit SIMDVecAVX512_u(SCALAR_UINT_TYPE i) : mVec(i) {};
+        inline explicit SIMDVecAVX512_u(SCALAR_UINT_TYPE i) : mVec(i) {}
+
+        inline explicit SIMDVecAVX512_u(SCALAR_UINT_TYPE const *p) { this->load(p); }
 
         inline SIMDVecAVX512_u(SCALAR_UINT_TYPE i0, SCALAR_UINT_TYPE i1,
                                SCALAR_UINT_TYPE i2, SCALAR_UINT_TYPE i3) {
@@ -750,6 +747,8 @@ namespace SIMD
         inline SIMDVecAVX512_u() : mVec() {};
 
         inline explicit SIMDVecAVX512_u(SCALAR_UINT_TYPE i) : mVec(i) {};
+
+        inline explicit SIMDVecAVX512_u(SCALAR_UINT_TYPE const *p) { this->load(p); }
                     
         // Override Access operators
         inline SCALAR_UINT_TYPE operator[] (uint32_t index) const {
@@ -802,6 +801,8 @@ namespace SIMD
             mVec = _mm256_set1_epi32(i);
         }
 
+        inline explicit SIMDVecAVX512_u(uint32_t const *p) { this->load(p); }
+
         inline SIMDVecAVX512_u(uint32_t i0, uint32_t i1, uint32_t i2, uint32_t i3, 
                             uint32_t i4, uint32_t i5, uint32_t i6, uint32_t i7) 
         {
@@ -835,264 +836,100 @@ namespace SIMD
             return addrAligned;
         }
 
+        // ADDV
+        inline SIMDVecAVX512_u add (SIMDVecAVX512_u const & b) {
+            __m256i t0 = _mm256_add_epi32(mVec, b.mVec);
+            return SIMDVecAVX512_u(t0);
+        }
+
+        inline SIMDVecAVX512_u operator+ (SIMDVecAVX512_u const & b) {
+            return add(b);
+        }
+
+        // MADDV
+        inline SIMDVecAVX512_u add (SIMDMask8 const & mask, SIMDVecAVX512_u const & b) {
+            __m256i t0 = _mm256_mask_add_epi32(mVec, mask.mMask, mVec, b.mVec);
+            return SIMDVecAVX512_u(t0);
+        }
+
         // ADDS
         inline SIMDVecAVX512_u add (uint32_t b) {
-            __m128i b_vec = _mm_set1_epi32(b);
-            __m128i a_low = _mm256_extractf128_si256 (mVec, 0);
-            __m128i a_high = _mm256_extractf128_si256 (mVec, 1);
-            __m128i r_low = _mm_add_epi32(a_low, b_vec);
-            __m128i r_high = _mm_add_epi32(a_high, b_vec);
-            mVec = _mm256_insertf128_si256(mVec, r_low, 0);
-            mVec = _mm256_insertf128_si256(mVec, r_high, 1);
-            return *this;            
+            __m256i t0 = _mm256_set1_epi32(b);
+            __m256i t1 = _mm256_add_epi32(mVec, t0);
+            return SIMDVecAVX512_u(t1);            
         }
+
+        // MADDS
+        inline SIMDVecAVX512_u add (SIMDMask8 const & mask, uint32_t b) {
+            __m256i t0 = _mm256_set1_epi32(b);
+            __m256i t1 = _mm256_mask_add_epi32(mVec, mask.mMask, mVec, t0);
+            return SIMDVecAVX512_u(t1);            
+        }
+
         // ADDVA
         inline SIMDVecAVX512_u adda (SIMDVecAVX512_u const & b) {
-            __m128i a_low = _mm256_extractf128_si256 (mVec, 0);
-            __m128i a_high = _mm256_extractf128_si256 (mVec, 1);
-            __m128i b_low = _mm256_extractf128_si256 (b.mVec, 0);
-            __m128i b_high = _mm256_extractf128_si256 (b.mVec, 1);
-            __m128i r_low = _mm_add_epi32(a_low, b_low);
-            __m128i r_high = _mm_add_epi32(a_high, b_high);
-            mVec = _mm256_insertf128_si256(mVec, r_low, 0);
-            mVec = _mm256_insertf128_si256(mVec, r_high, 1);
+            mVec = _mm256_add_epi32(mVec, b.mVec);
             return *this;            
         }
         // MADDVA
         inline SIMDVecAVX512_u & adda (SIMDMask8 const & mask, SIMDVecAVX512_u const & b) {
-            __m128i a_low = _mm256_extractf128_si256 (mVec, 0);
-            __m128i a_high = _mm256_extractf128_si256 (mVec, 1);
-            __m128i b_low = _mm256_extractf128_si256 (b.mVec, 0);
-            __m128i b_high = _mm256_extractf128_si256 (b.mVec, 1);
-            __m128i r_low = _mm_add_epi32(a_low, b_low);
-            __m128i r_high = _mm_add_epi32(a_high, b_high);
-            __m128i m_low = _mm256_extractf128_si256 (mask.mMask, 0);
-            __m128i m_high = _mm256_extractf128_si256 (mask.mMask, 1);
-            r_low = _mm_blendv_epi8(a_low, r_low, m_low);
-            r_high = _mm_blendv_epi8(a_high, r_high, m_high);
-            mVec = _mm256_insertf128_si256(mVec, r_low, 0);
-            mVec = _mm256_insertf128_si256(mVec, r_high, 1);
+            __m256i t0 = _mm256_mask_add_epi32(mVec, mask.mMask, mVec, b.mVec);
             return *this;            
         }
         // ADDSA 
         inline SIMDVecAVX512_u & adda (uint32_t b) {
-            __m128i a_low = _mm256_extractf128_si256 (mVec, 0);
-            __m128i a_high = _mm256_extractf128_si256 (mVec, 1);
-            __m128i b_vec = _mm_set1_epi32(b);
-            __m128i r_low = _mm_add_epi32(a_low, b_vec);
-            __m128i r_high = _mm_add_epi32(a_high, b_vec);
-            mVec = _mm256_insertf128_si256(mVec, r_low, 0);
-            mVec = _mm256_insertf128_si256(mVec, r_high, 1);
+            __m256i t0 = _mm256_set1_epi32(b);
+            mVec = _mm256_add_epi32(mVec, t0);
             return *this;
         }
         // MADDSA
         inline SIMDVecAVX512_u & adda (SIMDMask8 const & mask, uint32_t b) {
-            __m128i b_vec = _mm_set1_epi32(b);
-            __m128i a_low = _mm256_extractf128_si256 (mVec, 0);
-            __m128i a_high = _mm256_extractf128_si256 (mVec, 1);
-            __m128i r_low = _mm_add_epi32(a_low, b_vec);
-            __m128i r_high = _mm_add_epi32(a_high, b_vec);
-            __m128i m_low = _mm256_extractf128_si256 (mask.mMask, 0);
-            __m128i m_high = _mm256_extractf128_si256 (mask.mMask, 1);
-            r_low = _mm_blendv_epi8(a_low, r_low, m_low);
-            r_high = _mm_blendv_epi8(a_high, r_high, m_high);
-            mVec = _mm256_insertf128_si256(mVec, r_low, 0);
-            mVec = _mm256_insertf128_si256(mVec, r_high, 1);
+            __m256i t0 = _mm256_set1_epi32(b);
+            mVec = _mm256_mask_add_epi32(mVec, mask.mMask, mVec, t0);
             return *this;            
         }
         // MULV
         inline SIMDVecAVX512_u mul (SIMDVecAVX512_u const & b) {
-            __m128i a_low = _mm256_extractf128_si256 (mVec, 0);
-            __m128i a_high = _mm256_extractf128_si256 (mVec, 1);
-            __m128i b_low = _mm256_extractf128_si256 (b.mVec, 0);
-            __m128i b_high = _mm256_extractf128_si256 (b.mVec, 1);
-            __m128i r_low = _mm_mullo_epi32(a_low, b_low);
-            __m128i r_high = _mm_mullo_epi32(a_high, b_high);
-            __m256i ret = _mm256_setzero_si256();
-            ret = _mm256_insertf128_si256(ret, r_low, 0);
-            ret = _mm256_insertf128_si256(ret, r_high, 1);
-            return SIMDVecAVX512_u(ret);
+            __m256i t0 = _mm256_mul_epi32(mVec, b.mVec);
+            return SIMDVecAVX512_u(t0);
         }
         // MMULV
         inline SIMDVecAVX512_u mul (SIMDMask8 const & mask, SIMDVecAVX512_u const & b) {
-            __m128i a_low = _mm256_extractf128_si256 (mVec, 0);
-            __m128i a_high = _mm256_extractf128_si256 (mVec, 1);
-            __m128i b_low = _mm256_extractf128_si256 (b.mVec, 0);
-            __m128i b_high = _mm256_extractf128_si256 (b.mVec, 1);
-            __m128i r_low = _mm_mullo_epi32(a_low, b_low);
-            __m128i r_high = _mm_mullo_epi32(a_high, b_high);
-            __m128i m_low = _mm256_extractf128_si256 (mask.mMask, 0);            
-            __m128i m_high = _mm256_extractf128_si256 (mask.mMask, 1);            
-            r_low = _mm_blendv_epi8(a_low, r_low, m_low);
-            r_high = _mm_blendv_epi8(a_high, r_high, m_high);
-            __m256i ret = _mm256_setzero_si256();
-            ret = _mm256_insertf128_si256(ret, r_low, 0);
-            ret = _mm256_insertf128_si256(ret, r_high, 1);
-            return SIMDVecAVX512_u(ret);
+            __m256i t0 = _mm256_mask_mul_epi32(mVec, mask.mMask, mVec, b.mVec);
+            return SIMDVecAVX512_u();
         }
         // MULS
         inline SIMDVecAVX512_u mul (uint32_t b) {
-            __m128i a_low = _mm256_extractf128_si256 (mVec, 0);
-            __m128i a_high = _mm256_extractf128_si256 (mVec, 1);
-            __m128i b_vec = _mm_set1_epi32(b);
-            __m128i r_low = _mm_mullo_epi32(a_low, b_vec);
-            __m128i r_high = _mm_mullo_epi32(a_high, b_vec);
-            __m256i ret = _mm256_setzero_si256();
-            ret = _mm256_insertf128_si256(ret, r_low, 0);
-            ret = _mm256_insertf128_si256(ret, r_high, 1);
-            return SIMDVecAVX512_u(ret);
+            __m256i t0 = _mm256_set1_epi32(b);
+            __m256i t1 = _mm256_mul_epi32(mVec, t0);
+            return SIMDVecAVX512_u(t1);
         }
         // MMULS
         inline SIMDVecAVX512_u mul (SIMDMask8 const & mask, uint32_t b) {
-            __m128i a_low = _mm256_extractf128_si256 (mVec, 0);
-            __m128i a_high = _mm256_extractf128_si256 (mVec, 1);
-            __m128i b_vec = _mm_set1_epi32(b);
-            __m128i r_low = _mm_mullo_epi32(a_low, b_vec);
-            __m128i r_high = _mm_mullo_epi32(a_high, b_vec);
-            __m128i m_low = _mm256_extractf128_si256 (mask.mMask, 0);            
-            __m128i m_high = _mm256_extractf128_si256 (mask.mMask, 1);       
-            r_low = _mm_blendv_epi8(a_low, r_low, m_low);
-            r_high = _mm_blendv_epi8(a_high, r_high, m_high);
-            __m256i ret = _mm256_setzero_si256();
-            ret = _mm256_insertf128_si256(ret, r_low, 0);
-            ret = _mm256_insertf128_si256(ret, r_high, 1);
-            return SIMDVecAVX512_u(ret);
+            __m256i t0 = _mm256_set1_epi32(b);
+            __m256i t1 = _mm256_mask_mul_epi32(mVec, mask.mMask, mVec, t0);
+            return SIMDVecAVX512_u(t1);
         }
         // CMPEQV
         inline SIMDMask8 cmpeq (SIMDVecAVX512_u const & b) {
-            __m128i a_low = _mm256_extractf128_si256 (mVec, 0);
-            __m128i a_high = _mm256_extractf128_si256 (mVec, 1);
-            __m128i b_low = _mm256_extractf128_si256 (b.mVec, 0);
-            __m128i b_high = _mm256_extractf128_si256 (b.mVec, 1);
-            
-            __m128i r_low = _mm_cmpeq_epi32(a_low, b_low);
-            __m128i r_high = _mm_cmpeq_epi32(a_high, b_high);
-
-            __m256i ret = _mm256_setzero_si256();
-            ret = _mm256_insertf128_si256 (ret, r_low, 0);
-            ret = _mm256_insertf128_si256 (ret, r_high, 1);
-            return SIMDMask8(ret);
+            __mmask8 m0 = _mm256_cmpeq_epi32_mask(mVec, b.mVec);
+            return SIMDMask8(m0);
         }
         // MCMPEQ
         inline SIMDMask8 cmpeq (uint32_t b) {
-            __m128i b_vec = _mm_set1_epi32(b);
-            __m128i a_low = _mm256_extractf128_si256 (mVec, 0);
-            __m128i a_high = _mm256_extractf128_si256 (mVec, 1);
-
-            __m128i r_low = _mm_cmpeq_epi32(a_low, b_vec);
-            __m128i r_high = _mm_cmpeq_epi32(a_high, b_vec);
-
-            __m256i ret = _mm256_setzero_si256();
-            ret = _mm256_insertf128_si256 (ret, r_low, 0);
-            ret = _mm256_insertf128_si256 (ret, r_high, 1);
-            return SIMDMask8(ret);
+            __m256i t0 = _mm256_set1_epi32(b);
+            __mmask8 m0 = _mm256_cmpeq_epi32_mask(mVec, t0);
+            return SIMDMask8(m0);
         }
 
         // GATHERS
-        SIMDVecAVX512_u & gather ( uint32_t* baseAddr, uint64_t* indices) {
-            UME_PERFORMANCE_UNOPTIMAL_WARNING();
-            alignas(32) uint32_t raw[8] = { baseAddr[indices[0]], baseAddr[indices[1]],
-                                            baseAddr[indices[2]], baseAddr[indices[3]],
-                                            baseAddr[indices[4]], baseAddr[indices[5]],
-                                            baseAddr[indices[6]], baseAddr[indices[7]]};
-            mVec = _mm256_load_si256((__m256i*)raw);
-            return *this;
-        }   
         // MGATHERS
-        SIMDVecAVX512_u & gather (SIMDMask8 const & mask, uint32_t* baseAddr, uint64_t* indices) {
-            UME_PERFORMANCE_UNOPTIMAL_WARNING();
-            alignas(32) uint32_t raw[8] = { baseAddr[indices[0]], baseAddr[indices[1]],
-                                            baseAddr[indices[2]], baseAddr[indices[3]],
-                                            baseAddr[indices[4]], baseAddr[indices[5]],
-                                            baseAddr[indices[6]], baseAddr[indices[7]]};
-            __m128i a_low  = _mm256_extractf128_si256 (mVec, 0);
-            __m128i a_high = _mm256_extractf128_si256 (mVec, 1);
-            __m128i b_low = _mm_load_si128((__m128i*)&raw[0]);
-            __m128i b_high = _mm_load_si128((__m128i*)&raw[4]);
-            __m128i m_low = _mm256_extractf128_si256 (mask.mMask, 0);
-            __m128i m_high = _mm256_extractf128_si256 (mask.mMask, 1);
-            __m128i r_low = _mm_blendv_epi8(a_low, b_low, m_low);
-            __m128i r_high = _mm_blendv_epi8(a_high, b_high, m_high);
-            mVec = _mm256_insertf128_si256(mVec, r_low, 0);
-            mVec = _mm256_insertf128_si256(mVec, r_high, 1);
-            return *this;
-        }
         // GATHERV
-        SIMDVecAVX512_u & gather (uint32_t* baseAddr, SIMDVecAVX512_u const & indices) {
-            UME_PERFORMANCE_UNOPTIMAL_WARNING();
-            alignas(32) uint32_t rawInd[8];
-            alignas(32) uint32_t raw[8]; 
-            
-            _mm256_store_si256((__m256i*) rawInd, indices.mVec);
-            for(int i = 0; i < 8; i++) { raw[i] = baseAddr[rawInd[i]]; }
-            mVec = _mm256_load_si256((__m256i*)raw);
-            return *this;
-        }
         // MGATHERV
-        SIMDVecAVX512_u & gather (SIMDMask8 const & mask, uint32_t* baseAddr, SIMDVecAVX512_u const & indices) {
-            UME_PERFORMANCE_UNOPTIMAL_WARNING();
-            alignas(32) uint32_t rawInd[8];
-            alignas(32) uint32_t raw[8]; 
-            
-            _mm256_store_si256((__m256i*) rawInd, indices.mVec);
-            for(int i = 0; i < 8; i++) { raw[i] = baseAddr[rawInd[i]]; }
-            __m128i a_low  = _mm256_extractf128_si256 (mVec, 0);
-            __m128i a_high = _mm256_extractf128_si256 (mVec, 1);
-            __m128i b_low = _mm_load_si128((__m128i*)&raw[0]);
-            __m128i b_high = _mm_load_si128((__m128i*)&raw[4]);
-            __m128i m_low = _mm256_extractf128_si256 (mask.mMask, 0);
-            __m128i m_high = _mm256_extractf128_si256 (mask.mMask, 1);
-            __m128i r_low = _mm_blendv_epi8(a_low, b_low, m_low);
-            __m128i r_high = _mm_blendv_epi8(a_high, b_high, m_high);
-            mVec = _mm256_insertf128_si256(mVec, r_low, 0);
-            mVec = _mm256_insertf128_si256(mVec, r_high, 1);
-            return *this;
-        }
         // SCATTERS
-        uint32_t* scatter (uint32_t* baseAddr, uint64_t* indices) {
-            UME_PERFORMANCE_UNOPTIMAL_WARNING();
-            alignas(32) uint32_t raw[8];
-            _mm256_store_si256((__m256i*) raw, mVec);
-            for(int i = 0; i < 8; i++) { baseAddr[indices[i]] = raw[i]; };
-            return baseAddr;
-        }
         // MSCATTERS
-        uint32_t* scatter (SIMDMask8 const & mask, uint32_t* baseAddr, uint64_t* indices) {
-            UME_PERFORMANCE_UNOPTIMAL_WARNING();
-            alignas(32) uint32_t raw[8];
-            alignas(32) uint32_t rawMask[8];
-            _mm256_store_si256((__m256i*) raw, mVec);
-            _mm256_store_si256((__m256i*) rawMask, mask.mMask);
-            for(int i = 0; i < 8; i++) { 
-                if(rawMask[i] == SIMDMask8::TRUE()) baseAddr[indices[i]] = raw[i]; 
-            };
-            return baseAddr;
-        }
         // SCATTERV
-        uint32_t* scatter (uint32_t* baseAddr, SIMDVecAVX512_u const & indices) {
-            UME_PERFORMANCE_UNOPTIMAL_WARNING();
-            alignas(32) uint32_t raw[8];
-            alignas(32) uint32_t rawIndices[8];
-            _mm256_store_si256((__m256i*) raw, mVec);
-            _mm256_store_si256((__m256i*) rawIndices, indices.mVec);
-            for(int i = 0; i < 8; i++) { baseAddr[rawIndices[i]] = raw[i]; };
-            return baseAddr;
-        }
         // MSCATTERV
-        uint32_t* scatter (SIMDMask8 const & mask, uint32_t* baseAddr, SIMDVecAVX512_u const & indices) {
-            UME_PERFORMANCE_UNOPTIMAL_WARNING();
-            alignas(32) uint32_t raw[8];
-            alignas(32) uint32_t rawIndices[8];
-            alignas(32) uint32_t rawMask[8];
-            _mm256_store_si256((__m256i*) raw, mVec);
-            _mm256_store_si256((__m256i*) rawIndices, indices.mVec);
-            _mm256_store_si256((__m256i*) rawMask, mask.mMask);
-            for(int i = 0; i < 8; i++) { 
-                if(rawMask[i] == SIMDMask8::TRUE())
-                    baseAddr[rawIndices[i]] = raw[i]; 
-            };
-            return baseAddr;
-        }
         
         inline  operator SIMDVecAVX512_i<int32_t, 8> const ();
     };
@@ -1586,26 +1423,13 @@ namespace SIMD
 
         // ABS
         SIMDVecAVX512_i abs () {
-            __m128i a_low  = _mm256_extractf128_si256(mVec, 0);
-            __m128i a_high = _mm256_extractf128_si256(mVec, 1);
-            __m256i ret = _mm256_setzero_si256();
-            ret = _mm256_insertf128_si256(ret, _mm_abs_epi32(a_low), 0);
-            ret = _mm256_insertf128_si256(ret, _mm_abs_epi32(a_high), 1);
-            return SIMDVecAVX512_i(ret);
+            __m256i t0 = _mm256_abs_epi32(mVec);
+            return SIMDVecAVX512_i(t0);
         }
         // MABS
         SIMDVecAVX512_i abs (SIMDMask8 const & mask) {
-            __m128i a_low  = _mm256_extractf128_si256(mVec, 0);
-            __m128i a_high = _mm256_extractf128_si256(mVec, 1);
-            __m128i m_low  = _mm256_extractf128_si256(mask.mMask, 0);
-            __m128i m_high = _mm256_extractf128_si256(mask.mMask, 1);
-            
-            __m128i r_low = _mm_blendv_epi8(a_low, _mm_abs_epi32(a_low), m_low);
-            __m128i r_high = _mm_blendv_epi8(a_high, _mm_abs_epi32(a_high), m_high);
-            __m256i ret = _mm256_setzero_si256();
-            ret = _mm256_insertf128_si256(ret, r_low, 0);
-            ret = _mm256_insertf128_si256(ret, r_high, 1);
-            return SIMDVecAVX512_i(ret);
+            __m256i t0 = _mm256_mask_abs_epi32(mVec, mask.mMask, mVec);
+            return SIMDVecAVX512_i(t0);
         }
     };
 
@@ -1789,7 +1613,9 @@ namespace SIMD
     public:
         inline SIMDVecAVX512_f() : mVec() {};
 
-        inline explicit SIMDVecAVX512_f(SCALAR_FLOAT_TYPE i) : mVec(i) {};
+        inline explicit SIMDVecAVX512_f(SCALAR_FLOAT_TYPE i) : mVec(i) {}
+
+        inline explicit SIMDVecAVX512_f(SCALAR_FLOAT_TYPE const *p) { this->load(p); }
         
         inline SIMDVecAVX512_f(SCALAR_FLOAT_TYPE i0, SCALAR_FLOAT_TYPE i1) {
             mVec.insert(0, i0);  mVec.insert(1, i1); 
@@ -1910,6 +1736,8 @@ namespace SIMD
 
         inline explicit SIMDVecAVX512_f(SCALAR_FLOAT_TYPE f) : mVec(f) {};
 
+        inline explicit SIMDVecAVX512_f(SCALAR_FLOAT_TYPE const *p) { this->load(p); }
+
         // Override Access operators
         inline SCALAR_FLOAT_TYPE operator[] (uint32_t index) const {
             return mVec[index];
@@ -1955,6 +1783,8 @@ namespace SIMD
         inline explicit SIMDVecAVX512_f(float f) {
             mVec = _mm256_set1_ps(f);
         }
+
+        inline explicit SIMDVecAVX512_f(float const *p) { this->load(p); }
 
         inline SIMDVecAVX512_f(float f0, float f1, 
                                float f2, float f3, 
