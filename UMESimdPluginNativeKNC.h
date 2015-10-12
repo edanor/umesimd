@@ -3396,9 +3396,24 @@ template<typename SCALAR_FLOAT_TYPE>
  
         // (Mathematical functions)
         // ABS   - Absolute value
+        inline SIMDVecKNC_f abs() const {
+            return SIMDVecKNC_f(_mm512_abs_ps(mVec));
+        }
         // MABS  - Masked absolute value
+        inline SIMDVecKNC_f abs(SIMDMask16 const & mask) const {
+            __m512 t0 = _mm512_mask_abs_ps(mVec, mask.mMask, mVec);
+            return SIMDVecKNC_f(t0);
+        }
         // ABSA  - Absolute value and assign
+        inline SIMDVecKNC_f & abs() {
+            mVec = _mm512_abs_ps(mVec);
+            return *this;
+        }
         // MABSA - Masked absolute value and assign
+        inline SIMDVecKNC_f & abx(SIMDMask16 const & mask) {
+            mVec= _mm512_mask_abs_ps(mVec, mask.mMask, mVec);
+            return *this;
+        }
  
         // 5) Operations available for floating point SIMD types:
  
