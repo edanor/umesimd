@@ -944,7 +944,13 @@ namespace SIMD
         }
 
         // LOAD-CONSTR - Construct by loading from memory
-        inline explicit SIMDVecKNC_u(uint32_t const * p ) { this->load(p); }
+        inline explicit SIMDVecKNC_u(uint32_t const * p ) { 
+            alignas(64) uint32_t raw[16];
+            for(int i = 0 ; i < 16; i++) {
+                raw[i] = p[i];
+            }
+            mVec = _mm512_load_epi32(raw);
+        }
 
         inline SIMDVecKNC_u(uint32_t i0,  uint32_t i1,  uint32_t i2,  uint32_t i3, 
                             uint32_t i4,  uint32_t i5,  uint32_t i6,  uint32_t i7,
@@ -956,7 +962,7 @@ namespace SIMD
         }
 
         inline uint32_t extract (uint32_t index) const {
-            UME_PERFORMANCE_UNOPTIMAL_WARNING(); // This routine can be optimized
+            UME_PERFORMANCE_UNOPTIMAL_WARNING();
             alignas(64) uint32_t raw[16];
             _mm512_store_epi32(raw, mVec);
             return raw[index];
@@ -973,7 +979,7 @@ namespace SIMD
             alignas(64) uint32_t raw[16];
             _mm512_store_epi32 (raw, mVec);
             raw[index] = value;
-            _mm512_load_epi32(raw);
+            mVec = _mm512_load_epi32(raw);
             return *this;
         }        
         
@@ -2497,6 +2503,7 @@ template<typename SCALAR_FLOAT_TYPE>
         // MADDV    - Masked add with vector
         inline SIMDVecKNC_f add (SIMDMask16 const & mask, SIMDVecKNC_f const & b) {
             __m512 t0 = _mm512_mask_add_ps(mVec, mask.mMask, mVec, b.mVec);
+            return SIMDVecKNC_f(t0);
         }
         // ADDS     - Add with scalar
         inline SIMDVecKNC_f add (float b) {
@@ -2646,7 +2653,7 @@ template<typename SCALAR_FLOAT_TYPE>
         }
         // MSUBFROMV  - Masked sub from vector
         inline SIMDVecKNC_f subfrom(SIMDMask16 const & mask, SIMDVecKNC_f const & a) {
-            __m512 t0 = _mm512_mask_sub_ps(mVec, mask.mMask, a.mVec, mVec);
+            __m512 t0 = _mm512_mask_sub_ps(a.mVec, mask.mMask, a.mVec, mVec);
             return SIMDVecKNC_f(t0);
         }
         // SUBFROMS   - Sub from scalar (promoted to vector)
@@ -2656,7 +2663,7 @@ template<typename SCALAR_FLOAT_TYPE>
         // MSUBFROMS  - Masked sub from scalar (promoted to vector)
         inline SIMDVecKNC_f subfrom(SIMDMask16 const & mask, float a) {
             __m512 t0 = _mm512_set1_ps(a);
-            __m512 t1 = _mm512_mask_sub_ps(mVec, mask.mMask, t0, mVec);
+            __m512 t1 = _mm512_mask_sub_ps(t0, mask.mMask, t0, mVec);
             return SIMDVecKNC_f(t1);
         }
         // SUBFROMVA  - Sub from vector and assign
@@ -2666,7 +2673,7 @@ template<typename SCALAR_FLOAT_TYPE>
         }
         // MSUBFROMVA - Masked sub from vector and assign
         inline SIMDVecKNC_f & subfroma(SIMDMask16 const & mask, SIMDVecKNC_f const & a) {
-            mVec = _mm512_mask_sub_ps(mVec, mask.mMask, a.mVec, mVec);
+            mVec = _mm512_mask_sub_ps(a.mVec, mask.mMask, a.mVec, mVec);
             return *this;
         }
         // SUBFROMSA  - Sub from scalar (promoted to vector) and assign
@@ -2677,7 +2684,7 @@ template<typename SCALAR_FLOAT_TYPE>
         // MSUBFROMSA - Masked sub from scalar (promoted to vector) and assign
         inline SIMDVecKNC_f & subfroma(SIMDMask16 const & mask, float a) {
             __m512 t0 = _mm512_set1_ps(a);
-            mVec = _mm512_mask_sub_ps(mVec, mask.mMask, t0, mVec);
+            mVec = _mm512_mask_sub_ps(t0, mask.mMask, t0, mVec);
             return *this;
         }
         // POSTDEC    - Postfix decrement
