@@ -461,6 +461,9 @@ const bool DataSet_1_32u::outputs::CMPLES[32] = {
     false,  false,  false,  false,  false,  false,  false,  false
 };
 
+const bool DataSet_1_32u::outputs::CMPEV = false;
+const bool DataSet_1_32u::outputs::CMPES = false;
+
 const uint32_t DataSet_1_32u::outputs::FMULADDV[32] = {
     1942988697, 2356664642, 1528700295, 2388448928,
     4000487527, 1037487451, 4066970895, 566313154,
@@ -1098,7 +1101,8 @@ const bool DataSet_1_32f::outputs::CMPLES[32] = {
     false,  false,  false,  false,  false,  false,  true,   false
 };
 
-const bool DataSet_1_32f::outputs::CMPEX = true;
+const bool DataSet_1_32f::outputs::CMPEV = false;
+const bool DataSet_1_32f::outputs::CMPES = false;
 
 const float DataSet_1_32f::outputs::FMULADDV[32] = {
     4.8062588453E+04f,  1.9570918466E+05f,  1.6680128452E+06f,  -5.0704659711E+09f,

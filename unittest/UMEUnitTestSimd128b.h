@@ -355,7 +355,7 @@ int test_UME_SIMD8_16u(bool supressMessages)
         SIMD8_16u vec2 = vec0.swizzle(sMask);
         SIMD8_16u vec3(20, 70, 80, 50, 80, 70, 80, 10);
         
-        CHECK_CONDITION(vec3.cmpex(vec2) == true, "SWIZZLE");
+        CHECK_CONDITION(vec3.cmpe(vec2) == true, "SWIZZLE");
     }
     {
         SIMD8_16u vec0(3);

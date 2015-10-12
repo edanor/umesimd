@@ -1159,7 +1159,23 @@ void genericCMPLESTest()
     bool inRange = valuesExact(values, DATA_SET::outputs::CMPLES, VEC_LEN);
     CHECK_CONDITION(inRange, "CMPLES");
 }
-        // CMPEX  - Check if vectors are exact (returns scalar 'bool')
+
+template<typename VEC_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
+void genericCMPEVTest()
+{
+    VEC_TYPE vec0(DATA_SET::inputs::inputA);
+    VEC_TYPE vec1(DATA_SET::inputs::inputB);
+    bool value = vec0.cmpe(vec1);
+    CHECK_CONDITION(value == DATA_SET::outputs::CMPEV, "CMPEV");
+}
+
+template<typename VEC_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
+void genericCMPESTest()
+{
+    VEC_TYPE vec0(DATA_SET::inputs::inputA);
+    bool value = vec0.cmpe(DATA_SET::inputs::scalarA);
+    CHECK_CONDITION(value == DATA_SET::outputs::CMPES, "CMPES");
+}
  
         //(Bitwise operations)
         // ANDV   - AND with vector
@@ -1976,7 +1992,8 @@ void genericBaseInterfaceTest()
     genericCMPGESTest<VEC_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
     genericCMPLEVTest<VEC_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
     genericCMPLESTest<VEC_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
-    // CMPES
+    genericCMPEVTest<VEC_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericCMPESTest<VEC_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
 
     // ANDV
     // MANDV

@@ -82,7 +82,8 @@ struct DataSet_1_32u {
         static const bool  CMPGES[32];
         static const bool  CMPLEV[32];
         static const bool  CMPLES[32];
-        static const bool  CMPEX;
+        static const bool  CMPEV;
+        static const bool  CMPES;
 
         static const uint32_t FMULADDV[32];
         static const uint32_t MFMULADD[32];
@@ -157,7 +158,8 @@ struct DataSet_1_32f {
         static const bool  CMPGES[32];
         static const bool  CMPLEV[32];
         static const bool  CMPLES[32];
-        static const bool  CMPEX;
+        static const bool  CMPEV;
+        static const bool  CMPES;
 
         static const float FMULADDV[32];
         static const float MFMULADD[32];

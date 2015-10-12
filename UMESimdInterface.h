@@ -4505,9 +4505,14 @@ namespace SIMD
             return EMULATED_FUNCTIONS::isLesserEqual<MASK_TYPE, DERIVED_VEC_TYPE, SCALAR_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
-        // CMPEX
-        inline bool cmpex (DERIVED_VEC_TYPE const & b) const {
+        // CMPEV
+        inline bool cmpe (DERIVED_VEC_TYPE const & b) const {
             return EMULATED_FUNCTIONS::isExact<DERIVED_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this), b);
+        }
+
+        // CMPES
+        inline bool cmpe (SCALAR_TYPE b) const {
+            return EMULATED_FUNCTIONS::isExact<DERIVED_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this), DERIVED_VEC_TYPE(b));
         }
         
         // ANDV

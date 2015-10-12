@@ -2905,16 +2905,69 @@ template<typename SCALAR_FLOAT_TYPE>
             return SIMDMask16(m0);
         }
         // CMPNEV - Element-wise 'not equal' with vector
+        inline SIMDMask16 cmpne (SIMDVecKNC_f const & b) const {
+            __mmask16 m0 = _mm512_cmpneq_ps_mask(mVec, b.mVec);
+            return SIMDMask16(m0);
+        }
         // CMPNES - Element-wise 'not equal' with scalar
+        inline SIMDMask16 cmpne (float b) const {
+            __mmask16 m0 = _mm512_cmpneq_ps_mask(mVec, _mm512_set1_ps(b));
+            return SIMDMask16(m0);
+        }
         // CMPGTV - Element-wise 'greater than' with vector
+        inline SIMDMask16 cmpgt (SIMDVecKNC_f const & b) const {
+            //__mmask16 m0 = _mm512_cmpgt_ps_mask(mVec, b.mVec);
+            __mmask16 m0 = _mm512_cmp_ps_mask(mVec, b.mVec, 14);
+            return SIMDMask16(m0);
+        }
         // CMPGTS - Element-wise 'greater than' with scalar
+        inline SIMDMask16 cmpgt (float b) const {
+            //__mmask16 m0 = _mm512_cmpgt_ps_mask(mVec, _mm512_set1_ps(b));
+            __mmask16 m0 = _mm512_cmp_ps_mask(mVec, _mm512_set1_ps(b), 14);
+            return SIMDMask16(m0);
+        }
         // CMPLTV - Element-wise 'less than' with vector
+        inline SIMDMask16 cmplt (SIMDVecKNC_f const & b) const {
+            __mmask16 m0 = _mm512_cmplt_ps_mask(mVec, b.mVec);
+            return SIMDMask16(m0);
+        }
         // CMPLTS - Element-wise 'less than' with scalar
+        inline SIMDMask16 cmplt (float b) const {
+            __mmask16 m0 = _mm512_cmplt_ps_mask(mVec, _mm512_set1_ps(b));
+            return SIMDMask16(m0);
+        }
         // CMPGEV - Element-wise 'greater than or equal' with vector
+        inline SIMDMask16 cmpge (SIMDVecKNC_f const & b) const {
+            //__mmask16 m0 = _mm512_cmpge_ps_mask(mVec, b.mVec);
+            __mmask16 m0 = _mm512_cmp_ps_mask(mVec, b.mVec, 13);
+            return SIMDMask16(m0);
+        }
         // CMPGES - Element-wise 'greater than or equal' with scalar
+        inline SIMDMask16 cmpge (float b) const {
+            //__mmask16 m0 = _mm512_cmpge_ps_mask(mVec, _mm512_set1_ps(b));
+            __mmask16 m0 = _mm512_cmp_ps_mask(mVec, _mm512_set1_ps(b), 13);
+            return SIMDMask16(m0);
+        }
         // CMPLEV - Element-wise 'less than or equal' with vector
+        inline SIMDMask16 cmple (SIMDVecKNC_f const & b) const {
+            __mmask16 m0 = _mm512_cmple_ps_mask(mVec, b.mVec);
+            return SIMDMask16(m0);
+        }
         // CMPLES - Element-wise 'less than or equal' with scalar
-        // CMPEX  - Check if vectors are exact (returns scalar 'bool')
+        inline SIMDMask16 cmple (float b) const {
+            __mmask16 m0 = _mm512_cmple_ps_mask(mVec, _mm512_set1_ps(b));
+            return SIMDMask16(m0);
+        }
+        // CMPEV  - Check if vectors are exact (returns scalar 'bool')
+        inline bool cmpe (SIMDVecKNC_f const & b) const {
+            __mmask16 m0 = _mm512_cmpeq_ps_mask(mVec, b.mVec);
+            return m0 == 0xFF;
+        }
+        // CMPES - Check if all vector elements are equal to scalar value
+        inline bool cmpe (float b) const {
+            __mmask16 m0 = _mm512_cmpeq_ps_mask(mVec, _mm512_set1_ps(b));
+            return m0 == 0xFF;
+        }
  
         //(Bitwise operations)
         // ANDV   - AND with vector
