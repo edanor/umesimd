@@ -167,7 +167,7 @@ namespace SIMD
 
         // STORE
         template<typename VEC_TYPE, typename SCALAR_TYPE>
-        inline SCALAR_TYPE* store(VEC_TYPE & src, SCALAR_TYPE * p) {
+        inline SCALAR_TYPE* store(VEC_TYPE const & src, SCALAR_TYPE * p) {
             UME_EMULATION_WARNING();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++)
             {
@@ -3744,12 +3744,12 @@ namespace SIMD
         };
 
         // STORE
-        inline MASK_BASE_TYPE* store (bool* addr) const {
+        inline bool* store (bool* addr) const {
             return EMULATED_FUNCTIONS::store<DERIVED_MASK_TYPE, bool> (static_cast<DERIVED_MASK_TYPE const &>(*this), addr);
         };
 
         // STOREA
-        inline MASK_BASE_TYPE* storea (bool* addrAligned) const {
+        inline bool* storea (bool* addrAligned) const {
             return EMULATED_FUNCTIONS::storeAligned<DERIVED_MASK_TYPE, bool> (static_cast<DERIVED_MASK_TYPE const &>(*this), addrAligned);
         };
 

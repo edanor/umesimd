@@ -132,6 +132,19 @@ bool valuesExact(uint32_t const *values, uint32_t const *expectedValues, unsigne
     return retval;
 }
 
+bool valuesExact(bool const *values, bool const *expectedValues, unsigned int count)
+{
+    bool retval = true;
+    for(unsigned int i = 0; i < count; i++) {
+        if(values[i] != expectedValues[i])
+        {
+            retval = false;
+            break;
+        }
+    }
+    return retval;
+}
+
 bool valuesInRange(float const *values, float const *expectedValues, unsigned int count, float errMargin)
 {
     bool retval = true;
@@ -997,6 +1010,215 @@ void genericMRCPSATest()
     CHECK_CONDITION(inRange, "MRCPSA");
 }
     
+template<typename VEC_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
+void genericCMPEQVTest()
+{
+    bool values[VEC_LEN];
+    VEC_TYPE vec0(DATA_SET::inputs::inputA);
+    VEC_TYPE vec1(DATA_SET::inputs::inputB);
+    MASK_TYPE mask(true);
+    mask = vec0.cmpeq(vec1);
+    mask.store(values);
+    bool inRange = valuesExact(values, DATA_SET::outputs::CMPEQV, VEC_LEN);
+    CHECK_CONDITION(inRange, "CMPEQV");
+}
+
+template<typename VEC_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
+void genericCMPEQSTest()
+{
+    bool values[VEC_LEN];
+    VEC_TYPE vec0(DATA_SET::inputs::inputA);
+    MASK_TYPE mask(true);
+    mask = vec0.cmpeq(DATA_SET::inputs::scalarA);
+    mask.store(values);
+    bool inRange = valuesExact(values, DATA_SET::outputs::CMPEQS, VEC_LEN);
+    CHECK_CONDITION(inRange, "CMPEQS");
+}
+
+template<typename VEC_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
+void genericCMPNEVTest()
+{
+    bool values[VEC_LEN];
+    VEC_TYPE vec0(DATA_SET::inputs::inputA);
+    VEC_TYPE vec1(DATA_SET::inputs::inputB);
+    MASK_TYPE mask(true);
+    mask = vec0.cmpne(vec1);
+    mask.store(values);
+    bool inRange = valuesExact(values, DATA_SET::outputs::CMPNEV, VEC_LEN);
+    CHECK_CONDITION(inRange, "CMPNEV");
+}
+
+template<typename VEC_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
+void genericCMPNESTest()
+{
+    bool values[VEC_LEN];
+    VEC_TYPE vec0(DATA_SET::inputs::inputA);
+    MASK_TYPE mask(true);
+    mask = vec0.cmpne(DATA_SET::inputs::scalarA);
+    mask.store(values);
+    bool inRange = valuesExact(values, DATA_SET::outputs::CMPNES, VEC_LEN);
+    CHECK_CONDITION(inRange, "CMPNES");
+}
+
+template<typename VEC_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
+void genericCMPGTVTest()
+{
+    bool values[VEC_LEN];
+    VEC_TYPE vec0(DATA_SET::inputs::inputA);
+    VEC_TYPE vec1(DATA_SET::inputs::inputB);
+    MASK_TYPE mask(true);
+    mask = vec0.cmpgt(vec1);
+    mask.store(values);
+    bool inRange = valuesExact(values, DATA_SET::outputs::CMPGTV, VEC_LEN);
+    CHECK_CONDITION(inRange, "CMPGTV");
+}
+
+template<typename VEC_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
+void genericCMPGTSTest()
+{
+    bool values[VEC_LEN];
+    VEC_TYPE vec0(DATA_SET::inputs::inputA);
+    MASK_TYPE mask(true);
+    mask = vec0.cmpgt(DATA_SET::inputs::scalarA);
+    mask.store(values);
+    bool inRange = valuesExact(values, DATA_SET::outputs::CMPGTS, VEC_LEN);
+    CHECK_CONDITION(inRange, "CMPGTS");
+}
+
+template<typename VEC_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
+void genericCMPLTVTest()
+{
+    bool values[VEC_LEN];
+    VEC_TYPE vec0(DATA_SET::inputs::inputA);
+    VEC_TYPE vec1(DATA_SET::inputs::inputB);
+    MASK_TYPE mask(true);
+    mask = vec0.cmplt(vec1);
+    mask.store(values);
+    bool inRange = valuesExact(values, DATA_SET::outputs::CMPLTV, VEC_LEN);
+    CHECK_CONDITION(inRange, "CMPLTV");
+}
+
+template<typename VEC_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
+void genericCMPLTSTest()
+{
+    bool values[VEC_LEN];
+    VEC_TYPE vec0(DATA_SET::inputs::inputA);
+    MASK_TYPE mask(true);
+    mask = vec0.cmplt(DATA_SET::inputs::scalarA);
+    mask.store(values);
+    bool inRange = valuesExact(values, DATA_SET::outputs::CMPLTS, VEC_LEN);
+    CHECK_CONDITION(inRange, "CMPLTS");
+}
+
+template<typename VEC_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
+void genericCMPGEVTest()
+{
+    bool values[VEC_LEN];
+    VEC_TYPE vec0(DATA_SET::inputs::inputA);
+    VEC_TYPE vec1(DATA_SET::inputs::inputB);
+    MASK_TYPE mask(true);
+    mask = vec0.cmpge(vec1);
+    mask.store(values);
+    bool inRange = valuesExact(values, DATA_SET::outputs::CMPGEV, VEC_LEN);
+    CHECK_CONDITION(inRange, "CMPGEV");
+}
+
+template<typename VEC_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
+void genericCMPGESTest()
+{
+    bool values[VEC_LEN];
+    VEC_TYPE vec0(DATA_SET::inputs::inputA);
+    MASK_TYPE mask(true);
+    mask = vec0.cmpge(DATA_SET::inputs::scalarA);
+    mask.store(values);
+    bool inRange = valuesExact(values, DATA_SET::outputs::CMPGES, VEC_LEN);
+    CHECK_CONDITION(inRange, "CMPGES");
+}
+
+template<typename VEC_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
+void genericCMPLEVTest()
+{
+    bool values[VEC_LEN];
+    VEC_TYPE vec0(DATA_SET::inputs::inputA);
+    VEC_TYPE vec1(DATA_SET::inputs::inputB);
+    MASK_TYPE mask(true);
+    mask = vec0.cmple(vec1);
+    mask.store(values);
+    bool inRange = valuesExact(values, DATA_SET::outputs::CMPLEV, VEC_LEN);
+    CHECK_CONDITION(inRange, "CMPLEV");
+}
+
+template<typename VEC_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
+void genericCMPLESTest()
+{
+    bool values[VEC_LEN];
+    VEC_TYPE vec0(DATA_SET::inputs::inputA);
+    MASK_TYPE mask(true);
+    mask = vec0.cmple(DATA_SET::inputs::scalarA);
+    mask.store(values);
+    bool inRange = valuesExact(values, DATA_SET::outputs::CMPLES, VEC_LEN);
+    CHECK_CONDITION(inRange, "CMPLES");
+}
+        // CMPEX  - Check if vectors are exact (returns scalar 'bool')
+ 
+        //(Bitwise operations)
+        // ANDV   - AND with vector
+        // MANDV  - Masked AND with vector
+        // ANDS   - AND with scalar
+        // MANDS  - Masked AND with scalar
+        // ANDVA  - AND with vector and assign
+        // MANDVA - Masked AND with vector and assign
+        // ANDSA  - AND with scalar and assign
+        // MANDSA - Masked AND with scalar and assign
+        // ORV    - OR with vector
+        // MORV   - Masked OR with vector
+        // ORS    - OR with scalar
+        // MORS   - Masked OR with scalar
+        // ORVA   - OR with vector and assign
+        // MORVA  - Masked OR with vector and assign
+        // ORSA   - OR with scalar and assign
+        // MORSA  - Masked OR with scalar and assign
+        // XORV   - XOR with vector
+        // MXORV  - Masked XOR with vector
+        // XORS   - XOR with scalar
+        // MXORS  - Masked XOR with scalar
+        // XORVA  - XOR with vector and assign
+        // MXORVA - Masked XOR with vector and assign
+        // XORSA  - XOR with scalar and assign
+        // MXORSA - Masked XOR with scalar and assign
+        // NOT    - Negation of bits
+        // MNOT   - Masked negation of bits
+        // NOTA   - Negation of bits and assign
+        // MNOTA  - Masked negation of bits and assign
+ 
+        // (Pack/Unpack operations - not available for SIMD1)
+        // PACK     - assign vector with two half-length vectors
+        // PACKLO   - assign lower half of a vector with a half-length vector
+        // PACKHI   - assign upper half of a vector with a half-length vector
+        // UNPACK   - Unpack lower and upper halfs to half-length vectors.
+        // UNPACKLO - Unpack lower half and return as a half-length vector.
+        // UNPACKHI - Unpack upper half and return as a half-length vector.
+ 
+        //(Blend/Swizzle operations)
+        // BLENDV   - Blend (mix) two vectors
+        // BLENDS   - Blend (mix) vector with scalar (promoted to vector)
+        // BLENDVA  - Blend (mix) two vectors and assign
+        // BLENDSA  - Blend (mix) vector with scalar (promoted to vector) and
+        // assign
+        // SWIZZLE  - Swizzle (reorder/permute) vector elements
+        // SWIZZLEA - Swizzle (reorder/permute) vector elements and assign
+ 
+        //(Reduction to scalar operations)
+        // HADD  - Add elements of a vector (horizontal add)
+        // MHADD - Masked add elements of a vector (horizontal add)
+        // HMUL  - Multiply elements of a vector (horizontal mul)
+        // MHMUL - Masked multiply elements of a vector (horizontal mul)
+        // HAND  - AND of elements of a vector (horizontal AND)
+        // MHAND - Masked AND of elements of a vector (horizontal AND)
+        // HOR   - OR of elements of a vector (horizontal OR)
+        // MHOR  - Masked OR of elements of a vector (horizontal OR)
+        // HXOR  - XOR of elements of a vector (horizontal XOR)
+        // MHXOR - Masked XOR of elements of a vector (horizontal XOR)
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericFMULADDVTest()
 {
@@ -1742,18 +1964,18 @@ void genericBaseInterfaceTest()
     genericMRCPATest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
     genericRCPSATest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
     genericMRCPSATest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
-    // CMPEQV
-    // CMPEQS
-    // CMPNEV
-    // CMPNES
-    // CMPGTV
-    // CMPGTS
-    // CMPLTV
-    // CMPLTS
-    // CMPGEV
-    // CMPGES
-    // CMPLEV
-    // CMPLES
+    genericCMPEQVTest<VEC_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericCMPEQSTest<VEC_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericCMPNEVTest<VEC_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericCMPNESTest<VEC_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericCMPGTVTest<VEC_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericCMPGTSTest<VEC_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericCMPLTVTest<VEC_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericCMPLTSTest<VEC_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericCMPGEVTest<VEC_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericCMPGESTest<VEC_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericCMPLEVTest<VEC_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericCMPLESTest<VEC_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
     // CMPES
 
     // ANDV

@@ -377,6 +377,90 @@ const uint32_t DataSet_1_32u::outputs::MRCPS[32] = {
     2748106285, 0,          0,          446256628
 };
 
+const bool DataSet_1_32u::outputs::CMPEQV[32] = {
+    false,  false,  false,  false,  false,  false,  false,  false,
+    false,  false,  false,  false,  false,  false,  false,  false,
+    false,  false,  false,  false,  false,  false,  false,  false,
+    false,  false,  false,  false,  false,  false,  false,  false
+};
+
+const bool DataSet_1_32u::outputs::CMPEQS[32] = {
+    false,  false,  false,  false,  false,  false,  false,  false,
+    false,  false,  false,  false,  false,  false,  false,  false,
+    false,  false,  false,  false,  false,  false,  false,  false,
+    false,  false,  false,  false,  false,  false,  false,  false
+};
+
+const bool DataSet_1_32u::outputs::CMPNEV[32] = {
+    true,   true,   true,   true,   true,   true,   true,   true,
+    true,   true,   true,   true,   true,   true,   true,   true,
+    true,   true,   true,   true,   true,   true,   true,   true,
+    true,   true,   true,   true,   true,   true,   true,   true
+};
+
+const bool DataSet_1_32u::outputs::CMPNES[32] = {
+    true,   true,   true,   true,   true,   true,   true,   true,
+    true,   true,   true,   true,   true,   true,   true,   true,
+    true,   true,   true,   true,   true,   true,   true,   true,
+    true,   true,   true,   true,   true,   true,   true,   true
+};
+
+const bool DataSet_1_32u::outputs::CMPGTV[32] = {
+    true,   true,   true,   false,  true,   true,   false,  true,
+    false,  true,   false,  true,   false,  true,   false,  false,
+    true,   false,  false,  false,  true,   false,  true,   true,
+    true,   true,   false,  false,  true,   true,   true,   false
+};
+
+const bool DataSet_1_32u::outputs::CMPGTS[32] = {
+    true,   true,   true,   true,   true,   true,   true,   true,
+    true,   true,   true,   true,   true,   true,   true,   true,
+    true,   true,   true,   true,   true,   true,   true,   true,
+    true,   true,   true,   true,   true,   true,   true,   true
+};
+
+const bool DataSet_1_32u::outputs::CMPLTV[32] = {
+    false,  false,  false,  true,   false,  false,  true,   false,
+    true,   false,  true,   false,  true,   false,  true,   true,
+    false,  true,   true,   true,   false,  true,   false,  false,
+    false,  false,  true,   true,   false,  false,  false,  true
+};
+
+const bool DataSet_1_32u::outputs::CMPLTS[32] = {
+    false,  false,  false,  false,  false,  false,  false,  false,
+    false,  false,  false,  false,  false,  false,  false,  false,
+    false,  false,  false,  false,  false,  false,  false,  false,
+    false,  false,  false,  false,  false,  false,  false,  false
+};
+
+const bool DataSet_1_32u::outputs::CMPGEV[32] = {
+    true,   true,   true,   false,  true,   true,   false,  true,
+    false,  true,   false,  true,   false,  true,   false,  false,
+    true,   false,  false,  false,  true,   false,  true,   true,
+    true,   true,   false,  false,  true,   true,   true,   false
+};
+
+const bool DataSet_1_32u::outputs::CMPGES[32] = {
+    true,   true,   true,   true,   true,   true,   true,   true,
+    true,   true,   true,   true,   true,   true,   true,   true,
+    true,   true,   true,   true,   true,   true,   true,   true,
+    true,   true,   true,   true,   true,   true,   true,   true
+};
+
+const bool DataSet_1_32u::outputs::CMPLEV[32] = {
+    false,  false,  false,  true,   false,  false,  true,   false,
+    true,   false,  true,   false,  true,   false,  true,   true,
+    false,  true,   true,   true,   false,  true,   false,  false,
+    false,  false,  true,   true,   false,  false,  false,  true
+};
+
+const bool DataSet_1_32u::outputs::CMPLES[32] = {
+    false,  false,  false,  false,  false,  false,  false,  false,
+    false,  false,  false,  false,  false,  false,  false,  false,
+    false,  false,  false,  false,  false,  false,  false,  false,
+    false,  false,  false,  false,  false,  false,  false,  false
+};
+
 const uint32_t DataSet_1_32u::outputs::FMULADDV[32] = {
     1942988697, 2356664642, 1528700295, 2388448928,
     4000487527, 1037487451, 4066970895, 566313154,
@@ -929,6 +1013,92 @@ const float DataSet_1_32f::outputs::MRCPS[32] = {
     -5.4312252801E+02f, 4.1919410000E+03f,  9.8141947000E+03f,  -1.2277831197E-05f,
     6.1809000000E+04f,  -1.0107321514E-04f, 1.0543073135E-03f,  9.9999999990E+04f
 };
+
+const bool DataSet_1_32f::outputs::CMPEQV[32] = {
+    false,  false,  false,  false,  false,  false,  false,  false,
+    false,  false,  false,  false,  false,  false,  false,  false,
+    false,  false,  false,  false,  false,  false,  false,  false,
+    false,  false,  false,  false,  false,  false,  false,  false
+};
+
+const bool DataSet_1_32f::outputs::CMPEQS[32] = {
+    false,  false,  false,  false,  false,  false,  false,  false,
+    false,  false,  false,  false,  false,  false,  false,  false,
+    false,  false,  false,  false,  false,  false,  false,  false,
+    false,  false,  false,  false,  false,  false,  false,  false
+};
+
+const bool DataSet_1_32f::outputs::CMPNEV[32] = {
+    true,   true,   true,   true,   true,   true,   true,   true,
+    true,   true,   true,   true,   true,   true,   true,   true,
+    true,   true,   true,   true,   true,   true,   true,   true,
+    true,   true,   true,   true,   true,   true,   true,   true
+};
+
+const bool DataSet_1_32f::outputs::CMPNES[32] = {
+    true,   true,   true,   true,   true,   true,   true,   true,
+    true,   true,   true,   true,   true,   true,   true,   true,
+    true,   true,   true,   true,   true,   true,   true,   true,
+    true,   true,   true,   true,   true,   true,   true,   true
+};
+
+const bool DataSet_1_32f::outputs::CMPGTV[32] = {
+    false,  true,   true,   false,  true,   false,  true,   false,
+    false,  false,  false,  false,  false,  false,  false,  false,
+    true,   true,   false,  false,  false,  true,   false,  false,
+    false,  false,  true,   true,   true,   true,   false,  true
+};
+
+const bool DataSet_1_32f::outputs::CMPGTS[32] = {
+    true,   true,   true,   false,  true,   true,   true,   true,
+    true,   false,  true,   true,   true,   true,   true,   true,
+    true,   true,   true,   true,   true,   true,   false,  false,
+    true,   true,   true,   true,   true,   true,   false,  true
+};
+
+const bool DataSet_1_32f::outputs::CMPLTV[32] = {
+    true,   false,  false,  true,   false,  true,   false,  true,
+    true,   true,   true,   true,   true,   true,   true,   true,
+    false,  false,  true,   true,   true,   false,  true,   true,
+    true,   true,   false,  false,  false,  false,  true,   false
+};
+
+const bool DataSet_1_32f::outputs::CMPLTS[32] = {
+    false,  false,  false,  true,   false,  false,  false,  false,
+    false,  true,   false,  false,  false,  false,  false,  false,
+    false,  false,  false,  false,  false,  false,  true,   true,
+    false,  false,  false,  false,  false,  false,  true,   false
+};
+
+const bool DataSet_1_32f::outputs::CMPGEV[32] = {
+    false,  true,   true,   false,  true,   false,  true,   false,
+    false,  false,  false,  false,  false,  false,  false,  false,
+    true,   true,   false,  false,  false,  true,   false,  false,
+    false,  false,  true,   true,   true,   true,   false,  true
+};
+
+const bool DataSet_1_32f::outputs::CMPGES[32] = {
+    true,   true,   true,   false,  true,   true,   true,   true,
+    true,   false,  true,   true,   true,   true,   true,   true,
+    true,   true,   true,   true,   true,   true,   false,  false,
+    true,   true,   true,   true,   true,   true,   false,  true
+};
+
+const bool DataSet_1_32f::outputs::CMPLEV[32] = {
+    true,   false,  false,  true,   false,  true,   false,  true,
+    true,   true,   true,   true,   true,   true,   true,   true,
+    false,  false,  true,   true,   true,   false,  true,   true,
+    true,   true,   false,  false,  false,  false,  true,   false
+};
+
+const bool DataSet_1_32f::outputs::CMPLES[32] = {
+    false,  false,  false,  true,   false,  false,  false,  false,
+    false,  true,   false,  false,  false,  false,  false,  false,
+    false,  false,  false,  false,  false,  false,  true,   true,
+    false,  false,  false,  false,  false,  false,  true,   false
+};
+
+const bool DataSet_1_32f::outputs::CMPEX = true;
 
 const float DataSet_1_32f::outputs::FMULADDV[32] = {
     4.8062588453E+04f,  1.9570918466E+05f,  1.6680128452E+06f,  -5.0704659711E+09f,

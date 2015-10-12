@@ -2410,9 +2410,25 @@ template<typename SCALAR_FLOAT_TYPE>
         
         //(Initialization)
         // ASSIGNV     - Assignment with another vector
+        inline SIMDVecKNC_f & assign (SIMDVecKNC_f const & b) {
+            mVec = b.mVec;
+            return *this;
+        }
         // MASSIGNV    - Masked assignment with another vector
+        inline SIMDVecKNC_f & assign (SIMDMask16 const & mask, SIMDVecKNC_f const & b) {
+            mVec = _mm512_mask_mov_ps(mVec, mask.mMask, b.mVec);
+            return *this;
+        }
         // ASSIGNS     - Assignment with scalar
+        inline SIMDVecKNC_f & assign (float b) {
+            mVec = _mm512_set1_ps(b);
+            return *this;
+        }
         // MASSIGNS    - Masked assign with scalar
+        inline SIMDVecKNC_f & assign (SIMDMask16 const & mask, float b) {
+            mVec = _mm512_mask_mov_ps(mVec, mask.mMask, _mm512_set1_ps(b));
+            return *this;
+        }
 
         //(Memory access)
         // LOAD    - Load from memory (either aligned or unaligned) to vector 
@@ -2879,7 +2895,15 @@ template<typename SCALAR_FLOAT_TYPE>
  
         //(Comparison operations)
         // CMPEQV - Element-wise 'equal' with vector
+        inline SIMDMask16 cmpeq (SIMDVecKNC_f const & b) const {
+            __mmask16 m0 = _mm512_cmpeq_ps_mask(mVec, b.mVec);
+            return SIMDMask16(m0);
+        }
         // CMPEQS - Element-wise 'equal' with scalar
+        inline SIMDMask16 cmpeq (float b) const {
+            __mmask16 m0 = _mm512_cmpeq_ps_mask(mVec, _mm512_set1_ps(b));
+            return SIMDMask16(m0);
+        }
         // CMPNEV - Element-wise 'not equal' with vector
         // CMPNES - Element-wise 'not equal' with scalar
         // CMPGTV - Element-wise 'greater than' with vector
