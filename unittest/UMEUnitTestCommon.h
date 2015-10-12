@@ -106,6 +106,10 @@ bool valueInRange(double value, double expectedValue, double errMargin) {
     }
 }
 
+bool valueInRange(uint32_t value, uint32_t expectedValue, float errMargin) {
+    return valueInRange((float)value, (float)expectedValue, errMargin);
+}
+
 bool valuesExact(int32_t const *values, int32_t const *expectedValues, unsigned int count) 
 {
     bool retval = true;
@@ -1536,6 +1540,30 @@ void genericMMINSATest()
 }
     
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
+void genericHMAXTest()
+{
+    VEC_TYPE vec0(DATA_SET::inputs::inputA);
+    SCALAR_TYPE value = vec0.hmax();
+    SCALAR_TYPE expected = DATA_SET::outputs::HMAX[VEC_LEN-1];
+    bool inRange = valueInRange(value, expected, 0.01f);
+    CHECK_CONDITION(inRange, "HMAX");
+}
+
+// MHMAX
+    
+template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
+void genericHMINTest()
+{
+    VEC_TYPE vec0(DATA_SET::inputs::inputA);
+    SCALAR_TYPE value = vec0.hmin();
+    SCALAR_TYPE expected = DATA_SET::outputs::HMIN[VEC_LEN-1];
+    bool inRange = valueInRange(value, expected, 0.01f);
+    CHECK_CONDITION(inRange, "HMIN");
+}
+
+// MHMIN
+
+template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericNEGTest()
 {
     {
@@ -2070,11 +2098,11 @@ void genericBaseInterfaceTest()
     genericMMINVATest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
     genericMINSATest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
     genericMMINSATest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
-    // HMAX
+    genericHMAXTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
     // MHMAX
     // IMAX
     // MIMAX
-    // HMIN
+    genericHMINTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
     // MHMIN
     // IMIN
     // MIMIN

@@ -2971,7 +2971,22 @@ template<typename SCALAR_FLOAT_TYPE>
  
         //(Bitwise operations)
         // ANDV   - AND with vector
+        inline SIMDVecKNC_f andv (SIMDVecKNC_f const & b) const {
+            __m512i t0 = _mm512_castps_si512(mVec);
+            __m512i t1 = _mm512_castps_si512(b.mVec);
+            __m512i t2 = _mm512_and_epi32(t0, t1);
+            __m512  t3 = _mm512_castsi512_ps(t2);
+            return SIMDVecKNC_f(t3);
+        }
         // MANDV  - Masked AND with vector
+        inline SIMDVecKNC_f andv (SIMDMask16 const & mask, SIMDVecKNC_f const & b) const {
+            __m512i t0 = _mm512_castps_si512(mVec);
+            __m512i t1 = _mm512_castps_si512(b.mVec);
+            __m512i t2 = _mm512_and_epi32(t0, t1);
+            __m512  t3 = _mm512_castsi512_ps(t2);
+            __m512  t4 = _mm512_mask_blend_ps(mask.mMask, mVec, t3);
+            return SIMDVecKNC_f(t4);
+        }
         // ANDS   - AND with scalar
         // MANDS  - Masked AND with scalar
         // ANDVA  - AND with vector and assign
@@ -3018,56 +3033,292 @@ template<typename SCALAR_FLOAT_TYPE>
  
         //(Reduction to scalar operations)
         // HADD  - Add elements of a vector (horizontal add)
+        inline float hadd () const {
+            alignas(64) uint32_t raw[16];
+            union {
+                float    retval_f;
+                uint32_t retval_u;
+            };
+            retval_u = 0;
+
+            _mm512_store_ps(raw, mVec);
+            for(int i = 0; i < 16; i++) {
+                retval_u += raw[i];
+            }
+            return retval_f;
+        }
         // MHADD - Masked add elements of a vector (horizontal add)
+        inline float hadd (SIMDMask16 const & mask) const {
+            alignas(64) uint32_t raw[16];
+            union {
+                float    retval_f;
+                uint32_t retval_u;
+            };
+            retval_u = 0;
+            _mm512_store_ps(raw, mVec);
+            for(int i = 0; i < 16; i++) {
+                if(mask.mMask & (1 << i)) retval_u += raw[i];
+            }
+            return retval_f;
+        }
         // HMUL  - Multiply elements of a vector (horizontal mul)
+        inline float hmul () const {
+            alignas(64) uint32_t raw[16];
+            union {
+                float    retval_f;
+                uint32_t retval_u;
+            };
+            retval_u = 1;
+            _mm512_store_ps(raw, mVec);
+            for(int i = 0; i < 16; i++) {
+                retval_u *= raw[i];
+            }
+            return retval_f;
+        }
         // MHMUL - Masked multiply elements of a vector (horizontal mul)
+        inline float hmul (SIMDMask16 const & mask) const {
+            alignas(64) uint32_t raw[16];
+            union {
+                float    retval_f;
+                uint32_t retval_u;
+            };
+            retval_u = 1;
+            _mm512_store_ps(raw, mVec);
+            for(int i = 0; i < 16; i++) {
+                if(mask.mMask & (1 << i)) retval_u *= raw[i];
+            }
+            return retval_f;
+        }
         // HAND  - AND of elements of a vector (horizontal AND)
+        inline float hand () const {
+            alignas(64) uint32_t raw[16];
+            union {
+                float    retval_f;
+                uint32_t retval_u;
+            };
+            retval_u = 0xFFFFFFFF;
+            _mm512_store_ps(raw, mVec);
+            for(int i = 0; i < 16; i++) {
+                retval_u &= raw[i];
+            }
+            return retval_f;
+        }
         // MHAND - Masked AND of elements of a vector (horizontal AND)
+        inline float hand (SIMDMask16 const & mask) const {
+            alignas(64) uint32_t raw[16];
+            union {
+                float    retval_f;
+                uint32_t retval_u;
+            };
+            retval_u = 0xFFFFFFFF;
+            _mm512_store_ps(raw, mVec);
+            for(int i = 0; i < 16; i++) {
+                if(mask.mMask & (1 << i)) retval_u &= raw[i];
+            }
+            return retval_f;
+        }
         // HOR   - OR of elements of a vector (horizontal OR)
+        inline float hor () const {
+            alignas(64) uint32_t raw[16];
+            union {
+                float    retval_f;
+                uint32_t retval_u;
+            };
+            retval_u = 0;
+            _mm512_store_ps(raw, mVec);
+            for(int i = 0; i < 16; i++) {
+                retval_u |= raw[i];
+            }
+            return retval_f;
+        }
         // MHOR  - Masked OR of elements of a vector (horizontal OR)
+        inline float hor (SIMDMask16 const & mask) const {
+            alignas(64) uint32_t raw[16];
+            union {
+                float    retval_f;
+                uint32_t retval_u;
+            };
+            retval_u = 0;
+            _mm512_store_ps(raw, mVec);
+            for(int i = 0; i < 16; i++) {
+                if(mask.mMask & (1 << i)) retval_u |= raw[i];
+            }
+            return retval_f;
+        }
         // HXOR  - XOR of elements of a vector (horizontal XOR)
+        inline float hxor () const {
+            alignas(64) uint32_t raw[16];
+            union {
+                float    retval_f;
+                uint32_t retval_u;
+            };
+            retval_u = 0;
+            _mm512_store_ps(raw, mVec);
+            for(int i = 0; i < 16; i++) {
+                retval_u ^= raw[i];
+            }
+            return retval_f;
+        }
         // MHXOR - Masked XOR of elements of a vector (horizontal XOR)
+        inline float hxor (SIMDMask16 const & mask) const {
+            alignas(64) uint32_t raw[16];
+            union {
+                float    retval_f;
+                uint32_t retval_u;
+            };
+            retval_u = 0;
+            _mm512_store_ps(raw, mVec);
+            for(int i = 0; i < 16; i++) {
+                if(mask.mMask & (1 << i)) retval_u ^= raw[i];
+            }
+            return retval_f;
+        }
  
         //(Fused arithmetics)
         // FMULADDV  - Fused multiply and add (A*B + C) with vectors
-        inline SIMDVecKNC_f fmuladd(SIMDVecKNC_f const & b, SIMDVecKNC_f const & c) {
+        inline SIMDVecKNC_f fmuladd(SIMDVecKNC_f const & b, SIMDVecKNC_f const & c) const {
             __m512 t0 = _mm512_fmadd_ps(mVec, b.mVec, c.mVec);
             return SIMDVecKNC_f(t0);
         }
         // MFMULADDV - Masked fused multiply and add (A*B + C) with vectors
-        inline SIMDVecKNC_f fmuladd(SIMDMask16 const & mask, SIMDVecKNC_f const & b, SIMDVecKNC_f const & c) {
+        inline SIMDVecKNC_f fmuladd(SIMDMask16 const & mask, SIMDVecKNC_f const & b, SIMDVecKNC_f const & c) const {
             __m512 t0 = _mm512_mask_fmadd_ps(mVec, mask.mMask, b.mVec, c.mVec);
             return SIMDVecKNC_f(t0);
         }
         // FMULSUBV  - Fused multiply and sub (A*B - C) with vectors
+        inline SIMDVecKNC_f fmulsub(SIMDVecKNC_f const & b, SIMDVecKNC_f const & c) {
+            __m512 t0 = _mm512_fmsub_ps(mVec, b.mVec, c.mVec);
+            return SIMDVecKNC_f(t0);
+        }
         // MFMULSUBV - Masked fused multiply and sub (A*B - C) with vectors
+        inline SIMDVecKNC_f fmulsub(SIMDMask16 const & mask, SIMDVecKNC_f const & b, SIMDVecKNC_f const & c) {
+            __m512 t0 = _mm512_mask_fmsub_ps(mVec, mask.mMask, b.mVec, c.mVec);
+            return SIMDVecKNC_f(t0);
+        }
         // FADDMULV  - Fused add and multiply ((A + B)*C) with vectors
+        inline SIMDVecKNC_f faddmul(SIMDVecKNC_f const & b, SIMDVecKNC_f const & c) const {
+            __m512 t0 = _mm512_add_ps(mVec, b.mVec);
+            __m512 t1 = _mm512_mul_ps(t0, c.mVec);
+            return SIMDVecKNC_f(t1);
+        }
         // MFADDMULV - Masked fused add and multiply ((A + B)*C) with vectors
+        inline SIMDVecKNC_f faddmul(SIMDMask16 const & mask, SIMDVecKNC_f const & b, SIMDVecKNC_f const & c) const {
+            __m512 t0 = _mm512_mask_add_ps(mVec, mask.mMask, mVec, b.mVec);
+            __m512 t1 = _mm512_mask_mul_ps(t0, mask.mMask, t0, c.mVec);
+            return SIMDVecKNC_f(t1);
+        }
         // FSUBMULV  - Fused sub and multiply ((A - B)*C) with vectors
+        inline SIMDVecKNC_f fsubmul(SIMDVecKNC_f const & b, SIMDVecKNC_f const & c) const {
+            __m512 t0 = _mm512_sub_ps(mVec, b.mVec);
+            __m512 t1 = _mm512_mul_ps(t0, c.mVec);
+            return SIMDVecKNC_f(t1);
+        }
         // MFSUBMULV - Masked fused sub and multiply ((A - B)*C) with vectors
+        inline SIMDVecKNC_f fsubmul(SIMDMask16 const & mask, SIMDVecKNC_f const & b, SIMDVecKNC_f const & c) const {
+            __m512 t0 = _mm512_mask_sub_ps(mVec, mask.mMask, mVec, b.mVec);
+            __m512 t1 = _mm512_mask_mul_ps(t0, mask.mMask, t0, c.mVec);
+            return SIMDVecKNC_f(t1);
+        }
  
         // (Mathematical operations)
         // MAXV   - Max with vector
+        inline SIMDVecKNC_f max(SIMDVecKNC_f const & b) const {
+            __m512 t0 = _mm512_gmax_ps(mVec, b.mVec);
+            return SIMDVecKNC_f(t0);
+        }
         // MMAXV  - Masked max with vector
+        inline SIMDVecKNC_f max(SIMDMask16 const & mask, SIMDVecKNC_f const & b) const {
+            __m512 t0 = _mm512_mask_gmax_ps(mVec, mask.mMask, mVec, b.mVec);
+            return SIMDVecKNC_f(t0);
+        }
         // MAXS   - Max with scalar
+        inline SIMDVecKNC_f max(float b) const {
+            __m512 t0 = _mm512_gmax_ps(mVec, _mm512_set1_ps(b));
+            return SIMDVecKNC_f(t0);
+        }
         // MMAXS  - Masked max with scalar
+        inline SIMDVecKNC_f max(SIMDMask16 const & mask, float b) const {
+            __m512 t0 = _mm512_mask_gmax_ps(mVec, mask.mMask, mVec, _mm512_set1_ps(b));
+            return SIMDVecKNC_f(t0);
+        }
         // MAXVA  - Max with vector and assign
+        inline SIMDVecKNC_f & maxa(SIMDVecKNC_f const & b) {
+            mVec = _mm512_gmax_ps(mVec, b.mVec);
+            return *this;
+        }        
         // MMAXVA - Masked max with vector and assign
+        inline SIMDVecKNC_f & maxa(SIMDMask16 const & mask, SIMDVecKNC_f const & b) {
+            mVec = _mm512_mask_gmax_ps(mVec, mask.mMask, mVec, b.mVec);
+            return *this;
+        }
         // MAXSA  - Max with scalar (promoted to vector) and assign
+        inline SIMDVecKNC_f & maxa(float b) {
+            mVec = _mm512_gmax_ps(mVec, _mm512_set1_ps(b));
+            return *this;
+        }
         // MMAXSA - Masked max with scalar (promoted to vector) and assign
+        inline SIMDVecKNC_f & maxa(SIMDMask16 const & mask, float b) {
+            mVec = _mm512_mask_gmax_ps(mVec, mask.mMask, mVec, _mm512_set1_ps(b));
+            return *this;
+        }
         // MINV   - Min with vector
+        inline SIMDVecKNC_f min(SIMDVecKNC_f const & b) const {
+            __m512 t0 = _mm512_gmin_ps(mVec, b.mVec);
+            return SIMDVecKNC_f(t0);
+        }        
         // MMINV  - Masked min with vector
+        inline SIMDVecKNC_f min(SIMDMask16 const & mask, SIMDVecKNC_f const & b) const {
+            __m512 t0 = _mm512_mask_gmin_ps(mVec, mask.mMask, mVec, b.mVec);
+            return SIMDVecKNC_f(t0);
+        }
         // MINS   - Min with scalar (promoted to vector)
+        inline SIMDVecKNC_f min(float b) const {
+            __m512 t0 = _mm512_gmin_ps(mVec, _mm512_set1_ps(b));
+            return SIMDVecKNC_f(t0);
+        }
         // MMINS  - Masked min with scalar (promoted to vector)
+        inline SIMDVecKNC_f min(SIMDMask16 const & mask, float b) const {
+            __m512 t0 = _mm512_mask_gmin_ps(mVec, mask.mMask, mVec, _mm512_set1_ps(b));
+            return SIMDVecKNC_f(t0);
+        }
         // MINVA  - Min with vector and assign
+        inline SIMDVecKNC_f & mina(SIMDVecKNC_f const & b) {
+            mVec = _mm512_gmin_ps(mVec, b.mVec);
+            return *this;
+        }        
         // MMINVA - Masked min with vector and assign
+        inline SIMDVecKNC_f & mina(SIMDMask16 const & mask, SIMDVecKNC_f const & b) {
+            mVec = _mm512_mask_gmin_ps(mVec, mask.mMask, mVec, b.mVec);
+            return *this;
+        }
         // MINSA  - Min with scalar (promoted to vector) and assign
+        inline SIMDVecKNC_f & mina(float b) {
+            mVec = _mm512_gmin_ps(mVec, _mm512_set1_ps(b));
+            return *this;
+        }
         // MMINSA - Masked min with scalar (promoted to vector) and assign
+        inline SIMDVecKNC_f & mina(SIMDMask16 const & mask, float b) {
+            mVec = _mm512_mask_gmin_ps(mVec, mask.mMask, mVec, _mm512_set1_ps(b));
+            return *this;
+        }
         // HMAX   - Max of elements of a vector (horizontal max)
+        inline float hmax() {
+            return _mm512_reduce_gmax_ps(mVec);
+        }
         // MHMAX  - Masked max of elements of a vector (horizontal max)
+        inline float hmax(SIMDMask16 const & mask) {
+            return _mm512_mask_reduce_gmax_ps(mask.mMask, mVec);
+        }
         // IMAX   - Index of max element of a vector
+        // MIMAX  - Masked index of max element of a vector
         // HMIN   - Min of elements of a vector (horizontal min)
+        inline float hmin() {
+            return _mm512_reduce_gmin_ps(mVec);
+        }
         // MHMIN  - Masked min of elements of a vector (horizontal min)
+        inline float hmin(SIMDMask16 const & mask) {
+            return _mm512_mask_reduce_gmin_ps(mask.mMask, mVec);
+        }
         // IMIN   - Index of min element of a vector
         // MIMIN  - Masked index of min element of a vector
  

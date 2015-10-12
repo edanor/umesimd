@@ -101,6 +101,10 @@ struct DataSet_1_32u {
         static const uint32_t MMINV[32];
         static const uint32_t MINS[32];
         static const uint32_t MMINS[32];
+        static const uint32_t HMAX[32];
+        static const uint32_t MHMAX[32];
+        static const uint32_t HMIN[32];
+        static const uint32_t MHMIN[32];
         static const uint32_t SQR[32];
         static const uint32_t MSQR[32];
         static const uint32_t SQRT[32];
@@ -177,6 +181,10 @@ struct DataSet_1_32f {
         static const float MMINV[32];
         static const float MINS[32];
         static const float MMINS[32];
+        static const float HMAX[32];
+        static const float MHMAX[32];
+        static const float HMIN[32];
+        static const float MHMIN[32];
         static const float NEG[32];
         static const float MNEG[32];
         static const float ABS[32];
