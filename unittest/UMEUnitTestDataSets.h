@@ -102,6 +102,8 @@ struct DataSet_1_32u {
         static const uint32_t MBXORV[32];
         static const uint32_t BXORS[32];
         static const uint32_t MBXORS[32];
+        static const uint32_t BNOT[32];
+        static const uint32_t MBNOT[32];
 
         static const uint32_t HAND[32];
         static const uint32_t MHAND[32];

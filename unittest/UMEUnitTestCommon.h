@@ -1468,10 +1468,52 @@ void genericMBXORSATest()
     bool inRange = valuesInRange(values, DATA_SET::outputs::MBXORS, VEC_LEN, 0.01f);
     CHECK_CONDITION(inRange, "MBXORSA");
 }
-        // NOT    - Negation of bits
-        // MNOT   - Masked negation of bits
-        // NOTA   - Negation of bits and assign
-        // MNOTA  - Masked negation of bits and assign
+
+template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
+void genericBNOTTest()
+{
+    SCALAR_TYPE values[VEC_LEN];
+    VEC_TYPE vec0(DATA_SET::inputs::inputA);
+    VEC_TYPE vec1 = vec0.bnot();
+    vec1.store(values);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::BNOT, VEC_LEN, 0.01f);
+    CHECK_CONDITION(inRange, "BNOT");
+}
+
+template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
+void genericMBNOTTest()
+{
+    SCALAR_TYPE values[VEC_LEN];
+    VEC_TYPE vec0(DATA_SET::inputs::inputA);
+    MASK_TYPE mask(DATA_SET::inputs::maskA);
+    VEC_TYPE vec1 = vec0.bnot(mask);
+    vec1.store(values);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::MBNOT, VEC_LEN, 0.01f);
+    CHECK_CONDITION(inRange, "MBNOT");
+}
+
+template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
+void genericBNOTATest()
+{
+    SCALAR_TYPE values[VEC_LEN];
+    VEC_TYPE vec0(DATA_SET::inputs::inputA);
+    vec0.bnota();
+    vec0.store(values);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::BNOT, VEC_LEN, 0.01f);
+    CHECK_CONDITION(inRange, "BNOTA");
+}
+
+template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
+void genericMBNOTATest()
+{
+    SCALAR_TYPE values[VEC_LEN];
+    VEC_TYPE vec0(DATA_SET::inputs::inputA);
+    MASK_TYPE mask(DATA_SET::inputs::maskA);
+    vec0.bnota(mask);
+    vec0.store(values);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::MBNOT, VEC_LEN, 0.01f);
+    CHECK_CONDITION(inRange, "MBNOTA");
+}
  
         // (Pack/Unpack operations - not available for SIMD1)
         // PACK     - assign vector with two half-length vectors
@@ -1509,8 +1551,6 @@ void genericHMULTest()
     CHECK_CONDITION(inRange, "HMUL");
 }
         // MHMUL - Masked multiply elements of a vector (horizontal mul)
-
-
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericHANDTest()
@@ -2374,11 +2414,10 @@ void genericBitwiseInterfaceTest()
     genericMBXORVATest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
     genericBXORSATest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
     genericMBXORSATest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
-    
-    // NOT
-    // MNOT
-    // NOTA
-    // MNOTA
+    genericBNOTTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
+    genericMBNOTTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericBNOTATest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
+    genericMBNOTATest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
 
     genericHANDTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
     // MHAND
