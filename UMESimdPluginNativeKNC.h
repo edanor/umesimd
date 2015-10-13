@@ -3637,50 +3637,6 @@ template<typename SCALAR_FLOAT_TYPE>
         // SCATTERV  - Scatter to memory using indices from vector
         // MSCATTERV - Masked scatter to memory using indices from vector
  
-        // (Binary shift operations)
-        // LSHV   - Element-wise logical shift bits left (shift values in vector)
-        // MLSHV  - Masked element-wise logical shift bits left (shift values in
-        //          vector) 
-        // LSHS   - Element-wise logical shift bits left (shift value in scalar)
-        // MLSHS  - Masked element-wise logical shift bits left (shift value in
-        //          scalar)
-        // LSHVA  - Element-wise logical shift bits left (shift values in vector)
-        //          and assign
-        // MLSHVA - Masked element-wise logical shift bits left (shift values
-        //          in vector) and assign
-        // LSHSA  - Element-wise logical shift bits left (shift value in scalar)
-        //          and assign
-        // MLSHSA - Masked element-wise logical shift bits left (shift value in
-        //          scalar) and assign
-        // RSHV   - Logical shift bits right (shift values in vector)
-        // MRSHV  - Masked logical shift bits right (shift values in vector)
-        // RSHS   - Logical shift bits right (shift value in scalar)
-        // MRSHV  - Masked logical shift bits right (shift value in scalar)
-        // RSHVA  - Logical shift bits right (shift values in vector) and assign
-        // MRSHVA - Masked logical shift bits right (shift values in vector) and
-        //          assign
-        // RSHSA  - Logical shift bits right (shift value in scalar) and assign
-        // MRSHSA - Masked logical shift bits right (shift value in scalar) and
-        //          assign
- 
-        // (Binary rotation operations)
-        // ROLV   - Rotate bits left (shift values in vector)
-        // MROLV  - Masked rotate bits left (shift values in vector)
-        // ROLS   - Rotate bits right (shift value in scalar)
-        // MROLS  - Masked rotate bits left (shift value in scalar)
-        // ROLVA  - Rotate bits left (shift values in vector) and assign
-        // MROLVA - Masked rotate bits left (shift values in vector) and assign
-        // ROLSA  - Rotate bits left (shift value in scalar) and assign
-        // MROLSA - Masked rotate bits left (shift value in scalar) and assign
-        // RORV   - Rotate bits right (shift values in vector)
-        // MRORV  - Masked rotate bits right (shift values in vector) 
-        // RORS   - Rotate bits right (shift values in scalar)
-        // MRORS  - Masked rotate bits right (shift values in scalar) 
-        // RORVA  - Rotate bits right (shift values in vector) and assign 
-        // MRORVA - Masked rotate bits right (shift values in vector) and assign
-        // RORSA  - Rotate bits right (shift values in scalar) and assign
-        // MRORSA - Masked rotate bits right (shift values in scalar) and assign
- 
         // 3) Operations available for Signed integer and Unsigned integer 
         // data types:
  

@@ -275,8 +275,8 @@ int test_UME_SIMD8_16u(bool supressMessages)
         SIMD8_16u vec0(0xF2F1);
         SIMD8_16u vec1(0x2F1F);
         SIMD8_16u vec2;
-        vec2 = vec0.andv(vec1);
-        CHECK_CONDITION(vec2[0] == 0x2211, "ANDV");
+        vec2 = vec0.band(vec1);
+        CHECK_CONDITION(vec2[0] == 0x2211, "BANDV");
     }
     {
         SIMD8_16u vec0(0xF2F1);
@@ -288,8 +288,8 @@ int test_UME_SIMD8_16u(bool supressMessages)
     {
         SIMD8_16u vec0(0xF2F1);
         SIMD8_16u vec1(0x2F1F);
-        vec1.anda(vec0);
-        CHECK_CONDITION(vec1[0] == 0x2211, "ANDVA");
+        vec1.banda(vec0);
+        CHECK_CONDITION(vec1[0] == 0x2211, "BANDVA");
     }
     {
         SIMD8_16u vec0(0xF2F1);
@@ -301,45 +301,45 @@ int test_UME_SIMD8_16u(bool supressMessages)
         SIMD8_16u vec0(0x7281);
         SIMD8_16u vec1(0x2314);
         SIMD8_16u vec2;
-        vec2 = vec0.orv(vec1);
-        CHECK_CONDITION(vec2[0] == 0x7395, "ORV");
+        vec2 = vec0.bor(vec1);
+        CHECK_CONDITION(vec2[0] == 0x7395, "BORV");
     }
     {
         SIMD8_16u vec0(0x7281);
         SIMD8_16u vec1(0x2314);
         SIMD8_16u vec2;
         vec2 = vec0 | vec1;
-        CHECK_CONDITION(vec2[0] == 0x7395, "ORV(operator|)");
+        CHECK_CONDITION(vec2[0] == 0x7395, "BORV(operator|)");
     }
     {
         SIMD8_16u vec0(0x7281);
         SIMD8_16u vec1(0x2314);
-        vec0.ora(vec1);
-        CHECK_CONDITION(vec0[0] == 0x7395, "ORVA");
+        vec0.bora(vec1);
+        CHECK_CONDITION(vec0[0] == 0x7395, "BORVA");
     }
     {
         SIMD8_16u vec0(0x7281);
         SIMD8_16u vec1(0x2314);
         vec0 |= vec1;
-        CHECK_CONDITION(vec0[0] == 0x7395, "ORVA(operator|=)");
+        CHECK_CONDITION(vec0[0] == 0x7395, "BORVA(operator|=)");
     }
     {
         SIMD8_16u vec0(0x7281);
         SIMD8_16u vec1(0x2314);
-        vec0.xora(vec1);
-        CHECK_CONDITION(vec0[0] == 0x5195, "XORVA");
+        vec0.bxora(vec1);
+        CHECK_CONDITION(vec0[0] == 0x5195, "BXORVA");
     }
     {
         SIMD8_16u vec0(0x7281);
         SIMD8_16u vec1(0x2314);
         vec0 ^= vec1;
-        CHECK_CONDITION(vec0[0] == 0x5195, "XORVA(operator^=)");
+        CHECK_CONDITION(vec0[0] == 0x5195, "BXORVA(operator^=)");
     }
     {
         SIMD8_16u vec0(0x7281);
         SIMD8_16u vec1(0x2314);
-        vec0 = vec1.notv();
-        CHECK_CONDITION(vec0[0] == 0xDCEB, "NOT");
+        vec0 = vec1.bnot();
+        CHECK_CONDITION(vec0[0] == 0xDCEB, "BNOT");
     }
     {
         SIMD8_16u vec0(7);
@@ -1201,10 +1201,10 @@ int test_UME_SIMD4_32u(bool supressMessages)
         SIMD4_32u vec1(0x09C9AC81, 0x01C0A301, 0x3956806F, 0x571FC5A0);
         SIMD4_32u vec2;
 
-        vec2 = vec0.andv(vec1);
+        vec2 = vec0.band(vec1);
         CHECK_CONDITION(
             vec2[0] == 0x01012000 && vec2[1] == 0x00000300 && vec2[2] == 0x09508060 && vec2[3] == 0x000F4020, 
-            "ANDV");
+            "BANDV");
     }
     {
         SIMD4_32u vec0(0xF3333334, 0xF00F0F10, 0x0FF0F0F0, 0x000F423F);
@@ -1214,17 +1214,17 @@ int test_UME_SIMD4_32u(bool supressMessages)
         vec2 = vec0 & vec1;
         CHECK_CONDITION(
             vec2[0] == 0x01012000 && vec2[1] == 0x00000300 && vec2[2] == 0x09508060 && vec2[3] == 0x000F4020, 
-            "ANDV(operator&)");
+            "BANDV(operator&)");
     }
     {
         SIMD4_32u vec0(0xF3333334, 0xF00F0F10, 0x0FF0F0F0, 0x000F423F);
         uint32_t val1 = 0x571FC5A0;
         SIMD4_32u vec2;
 
-        vec2 = vec0.ands(val1);
+        vec2 = vec0.band(val1);
         CHECK_CONDITION(
             vec2[0] == 0x53130120 && vec2[1] == 0x500F0500 && vec2[2] == 0x0710C0A0 && vec2[3] == 0x000F4020, 
-            "ANDS");
+            "BANDS");
     }
     {
         SIMD4_32u vec0(0xF3333334, 0xF00F0F10, 0x0FF0F0F0, 0x000F423F);
@@ -1232,19 +1232,19 @@ int test_UME_SIMD4_32u(bool supressMessages)
         SIMD4_32u vec2;
         SIMDMask4 mask(true, false, false, true);
 
-        vec2 = vec0.ands(mask, val1);
+        vec2 = vec0.band(mask, val1);
         CHECK_CONDITION(
             vec2[0] == 0x53130120 && vec2[1] == 0xF00F0F10 && vec2[2] == 0x0FF0F0F0 && vec2[3] == 0x000F4020, 
-            "MANDS");
+            "MBANDS");
     }
     {
         SIMD4_32u vec0(0xF3333334, 0xF00F0F10, 0x0FF0F0F0, 0x000F423F);
         SIMD4_32u vec1(0x09C9AC81, 0x01C0A301, 0x3956806F, 0x571FC5A0);
 
-        vec0.anda(vec1);
+        vec0.banda(vec1);
         CHECK_CONDITION(
             vec0[0] == 0x01012000 && vec0[1] == 0x00000300 && vec0[2] == 0x09508060 && vec0[3] == 0x000F4020, 
-            "ANDVA");
+            "BANDVA");
     }
     {
         SIMD4_32u vec0(0xF3333334, 0xF00F0F10, 0x0FF0F0F0, 0x000F423F);
@@ -1253,35 +1253,35 @@ int test_UME_SIMD4_32u(bool supressMessages)
         vec0 &= vec1;
         CHECK_CONDITION(
             vec0[0] == 0x01012000 && vec0[1] == 0x00000300 && vec0[2] == 0x09508060 && vec0[3] == 0x000F4020, 
-            "ANDVA(operator&=)");
+            "BANDVA(operator&=)");
     }
     {
         SIMD4_32u vec0(0xF3333334, 0xF00F0F10, 0x0FF0F0F0, 0x000F423F);
         SIMD4_32u vec1(0x09C9AC81, 0x01C0A301, 0x3956806F, 0x571FC5A0);
         SIMDMask4 mask(true, false, false, true);
 
-        vec0.anda(mask, vec1);
+        vec0.banda(mask, vec1);
         CHECK_CONDITION(
             vec0[0] == 0x01012000 && vec0[1] == 0xF00F0F10 && vec0[2] == 0x0FF0F0F0 && vec0[3] == 0x000F4020, 
-            "MANDVA");
+            "MBANDVA");
     }
     {
         SIMD4_32u vec0(0xF3333334, 0xF00F0F10, 0x0FF0F0F0, 0x000F423F);
         uint32_t val1 = 0x571FC5A0;
         SIMDMask4 mask(true, false, false, true);
                 
-        vec0.anda(mask, val1);
+        vec0.banda(mask, val1);
         CHECK_CONDITION(
             vec0[0] == 0x53130120 && vec0[1] == 0xF00F0F10 && vec0[2] == 0x0FF0F0F0 && vec0[3] == 0x000F4020, 
-            "MANDSA");
+            "MBANDSA");
     }
     {
         SIMD4_32u vec0(0xF3333334, 0xF00F0F10, 0x0FF0F0F0, 0x000F423F);
         SIMD4_32u vec1;
-        vec1 = vec0.notv();
+        vec1 = vec0.bnot();
         CHECK_CONDITION(
             vec1[0] == 0x0CCCCCCB && vec1[1] == 0x0FF0F0EF && vec1[2] == 0xF00F0F0F && vec1[3] == 0xFFF0BDC0, 
-            "NOT");
+            "BNOT");
     }
     {
         SIMD4_32u vec0(0xF3333334, 0xF00F0F10, 0x0FF0F0F0, 0x000F423F);
@@ -1289,24 +1289,24 @@ int test_UME_SIMD4_32u(bool supressMessages)
         vec1 = ~vec0;
         CHECK_CONDITION(
             vec1[0] == 0x0CCCCCCB && vec1[1] == 0x0FF0F0EF && vec1[2] == 0xF00F0F0F && vec1[3] == 0xFFF0BDC0, 
-            "NOT(operator~)");
+            "BNOT(operator~)");
     }
     {
         SIMD4_32u vec0(0xF3333334, 0xF00F0F10, 0x0FF0F0F0, 0x000F423F);
         SIMD4_32u vec1;
         SIMDMask4 mask(true, false, true, false);
-        vec1 = vec0.notv(mask);
+        vec1 = vec0.bnot(mask);
         CHECK_CONDITION(
             vec1[0] == 0x0CCCCCCB && vec1[1] == 0xF00F0F10 && vec1[2] == 0xF00F0F0F && vec1[3] == 0x000F423F, 
-            "MNOT");
+            "MBNOT");
     }
     {
         SIMD4_32u vec0(0xF3333334, 0xF00F0F10, 0x0FF0F0F0, 0x000F423F);
         SIMDMask4 mask(true, false, true, false);
-        vec0.nota(mask);
+        vec0.bnota(mask);
         CHECK_CONDITION(
             vec0[0] == 0x0CCCCCCB && vec0[1] == 0xF00F0F10 && vec0[2] == 0xF00F0F0F && vec0[3] == 0x000F423F, 
-            "MNOTA");
+            "MBNOTA");
     }
     {
         SIMD4_32u vec0(3), vec1(5);
@@ -2165,10 +2165,10 @@ int test_UME_SIMD4_32i(bool supressMessages)
         SIMD4_32i vec1(0x09C9AC81, 0x01C0A301, 0x3956806F, 0x571FC5A0);
         SIMD4_32i vec2;
 
-        vec2 = vec0.andv(vec1);
+        vec2 = vec0.band(vec1);
         CHECK_CONDITION(
             vec2[0] == 0x01012000 && vec2[1] == 0x00000300 && vec2[2] == 0x09508060 && vec2[3] == 0x000F4020, 
-            "ANDV");
+            "BANDV");
     }
     {
         SIMD4_32i vec0(0xF3333334, 0xF00F0F10, 0x0FF0F0F0, 0x000F423F);
@@ -2178,17 +2178,17 @@ int test_UME_SIMD4_32i(bool supressMessages)
         vec2 = vec0 & vec1;
         CHECK_CONDITION(
             vec2[0] == 0x01012000 && vec2[1] == 0x00000300 && vec2[2] == 0x09508060 && vec2[3] == 0x000F4020, 
-            "ANDV(operator&)");
+            "BANDV(operator&)");
     }
     {
         SIMD4_32i vec0(0xF3333334, 0xF00F0F10, 0x0FF0F0F0, 0x000F423F);
         int32_t val1 = 0x571FC5A0;
         SIMD4_32i vec2;
 
-        vec2 = vec0.ands(val1);
+        vec2 = vec0.band(val1);
         CHECK_CONDITION(
             vec2[0] == 0x53130120 && vec2[1] == 0x500F0500 && vec2[2] == 0x0710C0A0 && vec2[3] == 0x000F4020, 
-            "ANDS");
+            "BANDS");
     }
     {
         SIMD4_32i vec0(0xF3333334, 0xF00F0F10, 0x0FF0F0F0, 0x000F423F);
@@ -2196,19 +2196,19 @@ int test_UME_SIMD4_32i(bool supressMessages)
         SIMD4_32i vec2;
         SIMDMask4 mask(true, false, false, true);
 
-        vec2 = vec0.ands(mask, val1);
+        vec2 = vec0.band(mask, val1);
         CHECK_CONDITION(
             vec2[0] == 0x53130120 && vec2[1] == 0xF00F0F10 && vec2[2] == 0x0FF0F0F0 && vec2[3] == 0x000F4020, 
-            "MANDS");
+            "MBANDS");
     }
     {
         SIMD4_32i vec0(0xF3333334, 0xF00F0F10, 0x0FF0F0F0, 0x000F423F);
         SIMD4_32i vec1(0x09C9AC81, 0x01C0A301, 0x3956806F, 0x571FC5A0);
 
-        vec0.anda(vec1);
+        vec0.banda(vec1);
         CHECK_CONDITION(
             vec0[0] == 0x01012000 && vec0[1] == 0x00000300 && vec0[2] == 0x09508060 && vec0[3] == 0x000F4020, 
-            "ANDVA");
+            "BANDVA");
     }
     {
         SIMD4_32i vec0(0xF3333334, 0xF00F0F10, 0x0FF0F0F0, 0x000F423F);
@@ -2217,35 +2217,35 @@ int test_UME_SIMD4_32i(bool supressMessages)
         vec0 &= vec1;
         CHECK_CONDITION(
             vec0[0] == 0x01012000 && vec0[1] == 0x00000300 && vec0[2] == 0x09508060 && vec0[3] == 0x000F4020, 
-            "ANDVA(operator&=)");
+            "BANDVA(operator&=)");
     }
     {
         SIMD4_32i vec0(0xF3333334, 0xF00F0F10, 0x0FF0F0F0, 0x000F423F);
         SIMD4_32i vec1(0x09C9AC81, 0x01C0A301, 0x3956806F, 0x571FC5A0);
         SIMDMask4 mask(true, false, false, true);
 
-        vec0.anda(mask, vec1);
+        vec0.banda(mask, vec1);
         CHECK_CONDITION(
             vec0[0] == 0x01012000 && vec0[1] == 0xF00F0F10 && vec0[2] == 0x0FF0F0F0 && vec0[3] == 0x000F4020, 
-            "MANDVA");
+            "MBANDVA");
     }
     {
         SIMD4_32i vec0(0xF3333334, 0xF00F0F10, 0x0FF0F0F0, 0x000F423F);
         int32_t val1 = 0x571FC5A0;
         SIMDMask4 mask(true, false, false, true);
         
-        vec0.anda(mask, val1);
+        vec0.banda(mask, val1);
         CHECK_CONDITION(
             vec0[0] == 0x53130120 && vec0[1] == 0xF00F0F10 && vec0[2] == 0x0FF0F0F0 && vec0[3] == 0x000F4020, 
-            "MANDSA");
+            "MBANDSA");
     }
     {
         SIMD4_32i vec0(0xF3333334, 0xF00F0F10, 0x0FF0F0F0, 0x000F423F);
         SIMD4_32i vec1;
-        vec1 = vec0.notv();
+        vec1 = vec0.bnot();
         CHECK_CONDITION(
             vec1[0] == 0x0CCCCCCB && vec1[1] == 0x0FF0F0EF && vec1[2] == 0xF00F0F0F && vec1[3] == 0xFFF0BDC0, 
-            "NOT");
+            "BNOT");
     }
     {
         SIMD4_32i vec0(0xF3333334, 0xF00F0F10, 0x0FF0F0F0, 0x000F423F);
@@ -2253,24 +2253,24 @@ int test_UME_SIMD4_32i(bool supressMessages)
         vec1 = ~vec0;
         CHECK_CONDITION(
             vec1[0] == 0x0CCCCCCB && vec1[1] == 0x0FF0F0EF && vec1[2] == 0xF00F0F0F && vec1[3] == 0xFFF0BDC0, 
-            "NOT(operator~)");
+            "BNOT(operator~)");
     }
     {
         SIMD4_32i vec0(0xF3333334, 0xF00F0F10, 0x0FF0F0F0, 0x000F423F);
         SIMD4_32i vec1;
         SIMDMask4 mask(true, false, true, false);
-        vec1 = vec0.notv(mask);
+        vec1 = vec0.bnot(mask);
         CHECK_CONDITION(
             vec1[0] == 0x0CCCCCCB && vec1[1] == 0xF00F0F10 && vec1[2] == 0xF00F0F0F && vec1[3] == 0x000F423F, 
-            "MNOT");
+            "MBNOT");
     }
     {
         SIMD4_32i vec0(0xF3333334, 0xF00F0F10, 0x0FF0F0F0, 0x000F423F);
         SIMDMask4 mask(true, false, true, false);
-        vec0.nota(mask);
+        vec0.bnota(mask);
         CHECK_CONDITION(
             vec0[0] == 0x0CCCCCCB && vec0[1] == 0xF00F0F10 && vec0[2] == 0xF00F0F0F && vec0[3] == 0x000F423F, 
-            "MNOTA");
+            "MBNOTA");
     }
     {
         SIMD4_32i vec0(3), vec1(-5);

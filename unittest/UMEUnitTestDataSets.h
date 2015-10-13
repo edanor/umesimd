@@ -89,6 +89,20 @@ struct DataSet_1_32u {
         static const uint32_t MHADD[32];
         static const uint32_t HMUL[32];
         static const uint32_t MHMUL[32];
+
+        static const uint32_t BANDV[32];
+        static const uint32_t MBANDV[32];
+        static const uint32_t BANDS[32];
+        static const uint32_t MBANDS[32];
+        static const uint32_t BORV[32];
+        static const uint32_t MBORV[32];
+        static const uint32_t BORS[32];
+        static const uint32_t MBORS[32];
+        static const uint32_t BXORV[32];
+        static const uint32_t MBXORV[32];
+        static const uint32_t BXORS[32];
+        static const uint32_t MBXORS[32];
+
         static const uint32_t HAND[32];
         static const uint32_t MHAND[32];
         static const uint32_t HOR[32];

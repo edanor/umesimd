@@ -4788,171 +4788,171 @@ namespace SIMD
         inline VEC_TYPE & operator= (const double & x) { }
  
     public:
-        // ANDV
-        inline DERIVED_VEC_TYPE andv (DERIVED_VEC_TYPE const & b) const {
+        // BANDV
+        inline DERIVED_VEC_TYPE band (DERIVED_VEC_TYPE const & b) const {
             return EMULATED_FUNCTIONS::binaryAnd<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
         inline DERIVED_VEC_TYPE operator& (DERIVED_VEC_TYPE const & b) const {
-            return andv(b);
+            return band(b);
         }
 
-        // MANDV
-        inline DERIVED_VEC_TYPE andv (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) const {
+        // MBANDV
+        inline DERIVED_VEC_TYPE band (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) const {
             return EMULATED_FUNCTIONS::binaryAnd<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
-        // ANDS
-        inline DERIVED_VEC_TYPE ands (SCALAR_TYPE b) const {
+        // BANDS
+        inline DERIVED_VEC_TYPE band (SCALAR_TYPE b) const {
             return EMULATED_FUNCTIONS::binaryAnd<DERIVED_VEC_TYPE, SCALAR_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
-        // MANDS
-        inline DERIVED_VEC_TYPE ands (MASK_TYPE const & mask, SCALAR_TYPE b) const {
+        // MBANDS
+        inline DERIVED_VEC_TYPE band (MASK_TYPE const & mask, SCALAR_TYPE b) const {
             return EMULATED_FUNCTIONS::binaryAnd<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
-        // ANDVA
-        inline DERIVED_VEC_TYPE & anda (DERIVED_VEC_TYPE const & b) {
+        // BANDVA
+        inline DERIVED_VEC_TYPE & banda (DERIVED_VEC_TYPE const & b) {
             return EMULATED_FUNCTIONS::binaryAndAssign<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
 
         inline DERIVED_VEC_TYPE & operator&= (DERIVED_VEC_TYPE const & b) {
-            return anda(b);
+            return banda(b);
         }
 
-        // MANDVA
-        inline DERIVED_VEC_TYPE & anda (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) {
+        // MBANDVA
+        inline DERIVED_VEC_TYPE & banda (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) {
             return EMULATED_FUNCTIONS::binaryAndAssign<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
         
-        // ANDSA
-        inline DERIVED_VEC_TYPE & anda (SCALAR_TYPE b) {
+        // BANDSA
+        inline DERIVED_VEC_TYPE & banda (SCALAR_TYPE b) {
             return EMULATED_FUNCTIONS::binaryAndAssign<DERIVED_VEC_TYPE, SCALAR_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
 
-        // MANDSA
-        inline DERIVED_VEC_TYPE & anda (MASK_TYPE const & mask, SCALAR_TYPE b) {
+        // MBANDSA
+        inline DERIVED_VEC_TYPE & banda (MASK_TYPE const & mask, SCALAR_TYPE b) {
             return EMULATED_FUNCTIONS::binaryAndAssign<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
 
-        // ORV
-        inline DERIVED_VEC_TYPE orv ( DERIVED_VEC_TYPE const & b) const {
+        // BORV
+        inline DERIVED_VEC_TYPE bor ( DERIVED_VEC_TYPE const & b) const {
             return EMULATED_FUNCTIONS::binaryOr<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
         inline DERIVED_VEC_TYPE operator| ( DERIVED_VEC_TYPE const & b) const {
-            return orv(b);
+            return bor(b);
         }
 
-        // MORV
-        inline DERIVED_VEC_TYPE orv ( MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) const {
+        // MBORV
+        inline DERIVED_VEC_TYPE bor ( MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) const {
             return EMULATED_FUNCTIONS::binaryOr<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
-        // ORS
-        inline DERIVED_VEC_TYPE ors (SCALAR_TYPE b) const {
+        // BORS
+        inline DERIVED_VEC_TYPE bor (SCALAR_TYPE b) const {
             return EMULATED_FUNCTIONS::binaryOr<DERIVED_VEC_TYPE, SCALAR_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
-        // MORS
-        inline DERIVED_VEC_TYPE ors (MASK_TYPE const & mask, SCALAR_TYPE b) const {
+        // MBORS
+        inline DERIVED_VEC_TYPE bor (MASK_TYPE const & mask, SCALAR_TYPE b) const {
             return EMULATED_FUNCTIONS::binaryOr<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
-        // ORVA
-        inline DERIVED_VEC_TYPE & ora (DERIVED_VEC_TYPE const & b) {
+        // BORVA
+        inline DERIVED_VEC_TYPE & bora (DERIVED_VEC_TYPE const & b) {
             return EMULATED_FUNCTIONS::binaryOrAssign<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
         
         inline DERIVED_VEC_TYPE & operator|= (DERIVED_VEC_TYPE const & b) {
-            return ora(b);
+            return bora(b);
         }
 
-        // MORVA
-        inline DERIVED_VEC_TYPE & ora (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) {
+        // MBORVA
+        inline DERIVED_VEC_TYPE & bora (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) {
             return EMULATED_FUNCTIONS::binaryOrAssign<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
 
-        // ORSA
-        inline DERIVED_VEC_TYPE & ora (SCALAR_TYPE b) {
+        // BORSA
+        inline DERIVED_VEC_TYPE & bora (SCALAR_TYPE b) {
             return EMULATED_FUNCTIONS::binaryOrAssign<DERIVED_VEC_TYPE, SCALAR_TYPE>(static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
 
-        // MORSA
-        inline DERIVED_VEC_TYPE & ora (MASK_TYPE const & mask, SCALAR_TYPE b) {
+        // MBORSA
+        inline DERIVED_VEC_TYPE & bora (MASK_TYPE const & mask, SCALAR_TYPE b) {
             return EMULATED_FUNCTIONS::binaryOrAssign<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
 
-        // XORV
-        inline DERIVED_VEC_TYPE xorv (DERIVED_VEC_TYPE const & b) const {
+        // BXORV
+        inline DERIVED_VEC_TYPE bxor (DERIVED_VEC_TYPE const & b) const {
             return EMULATED_FUNCTIONS::binaryXor<DERIVED_VEC_TYPE> ( static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
         
         inline DERIVED_VEC_TYPE operator^ (DERIVED_VEC_TYPE const & b) const {
-            return xorv(b);
+            return bxor(b);
         }
 
-        // MXORV
-        inline DERIVED_VEC_TYPE xorv (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) const {
+        // MBXORV
+        inline DERIVED_VEC_TYPE bxor (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) const {
             return EMULATED_FUNCTIONS::binaryXor<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
-        // XORS
-        inline DERIVED_VEC_TYPE xors (SCALAR_TYPE b) const {
+        // BXORS
+        inline DERIVED_VEC_TYPE bxor (SCALAR_TYPE b) const {
             return EMULATED_FUNCTIONS::binaryXor<DERIVED_VEC_TYPE, SCALAR_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
-        // MXORS
-        inline DERIVED_VEC_TYPE xorv (MASK_TYPE const & mask, SCALAR_TYPE b) const {
+        // MBXORS
+        inline DERIVED_VEC_TYPE bxor (MASK_TYPE const & mask, SCALAR_TYPE b) const {
             return EMULATED_FUNCTIONS::binaryXor<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
-        // XORVA
-        inline DERIVED_VEC_TYPE & xora (DERIVED_VEC_TYPE const & b) {
+        // BXORVA
+        inline DERIVED_VEC_TYPE & bxora (DERIVED_VEC_TYPE const & b) {
             return EMULATED_FUNCTIONS::binaryXorAssign<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
         
         inline DERIVED_VEC_TYPE & operator^= (DERIVED_VEC_TYPE const & b) {
-            return xora(b);
+            return bxora(b);
         }
 
-        // MXORVA
-        inline DERIVED_VEC_TYPE & xora (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) {
+        // MBXORVA
+        inline DERIVED_VEC_TYPE & bxora (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) {
             return EMULATED_FUNCTIONS::binaryXorAssign<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
 
-        // XORSA
-        inline DERIVED_VEC_TYPE & xora (SCALAR_TYPE b) {
+        // BXORSA
+        inline DERIVED_VEC_TYPE & bxora (SCALAR_TYPE b) {
             return EMULATED_FUNCTIONS::binaryXorAssign<DERIVED_VEC_TYPE, SCALAR_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
 
-        // MXORSA
-        inline DERIVED_VEC_TYPE & xora (MASK_TYPE const & mask, SCALAR_TYPE b) {
+        // MBXORSA
+        inline DERIVED_VEC_TYPE & bxora (MASK_TYPE const & mask, SCALAR_TYPE b) {
             return EMULATED_FUNCTIONS::binaryXorAssign<DERIVED_VEC_TYPE,SCALAR_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
 
-        // NOT
-        inline DERIVED_VEC_TYPE notv () const {
+        // BNOT
+        inline DERIVED_VEC_TYPE bnot () const {
             return EMULATED_FUNCTIONS::binaryNot<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
     
         inline DERIVED_VEC_TYPE operator~ () const {
-            return notv();
+            return bnot();
         }
 
-        // MNOT
-        inline DERIVED_VEC_TYPE notv (MASK_TYPE const & mask) const {
+        // MBNOT
+        inline DERIVED_VEC_TYPE bnot (MASK_TYPE const & mask) const {
             return EMULATED_FUNCTIONS::binaryNot<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
-        // NOTA
-        inline DERIVED_VEC_TYPE & nota () {
+        // BNOTA
+        inline DERIVED_VEC_TYPE & bnota () {
             return EMULATED_FUNCTIONS::binaryNotAssign<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this));
         }
 
-        // MNOTA
-        inline DERIVED_VEC_TYPE & nota (MASK_TYPE const & mask) {
+        // MBNOTA
+        inline DERIVED_VEC_TYPE & bnota (MASK_TYPE const & mask) {
             return EMULATED_FUNCTIONS::binaryNotAssign<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this));
         }
 
