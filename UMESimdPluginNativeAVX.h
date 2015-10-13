@@ -956,9 +956,7 @@ namespace SIMD
     template<typename SCALAR_UINT_TYPE, uint32_t VEC_LEN>
     class SIMDVecAVX_u final : 
         public SIMDVecUnsignedInterface< 
-            SIMDVecAVX_u<SCALAR_UINT_TYPE, VEC_LEN>, // DERIVED_VEC_TYPE
-            SIMDVecAVX_u<SCALAR_UINT_TYPE, VEC_LEN>, // DERIVED_VEC_UINT_TYPE
-            SCALAR_UINT_TYPE,                        // SCALAR_TYPE
+            SIMDVecAVX_u<SCALAR_UINT_TYPE, VEC_LEN>, // DERIVED_UINT_VEC_TYPE
             SCALAR_UINT_TYPE,                        // SCALAR_UINT_TYPE
             VEC_LEN,
             typename SIMDVecAVX_u_traits<SCALAR_UINT_TYPE, VEC_LEN>::MASK_TYPE,
@@ -1056,11 +1054,9 @@ namespace SIMD
     // ***************************************************************************
     template<typename SCALAR_UINT_TYPE>
     class SIMDVecAVX_u<SCALAR_UINT_TYPE, 1>: 
-        public SIMDVecUnsignedInterface< 
-            SIMDVecAVX_u<SCALAR_UINT_TYPE, 1>, // DERIVED_VEC_TYPE
-            SIMDVecAVX_u<SCALAR_UINT_TYPE, 1>, // DERIVED_VEC_UINT_TYPE
-            SCALAR_UINT_TYPE,                        // SCALAR_TYPE
-            SCALAR_UINT_TYPE,                        // SCALAR_UINT_TYPE
+        public SIMDVecUnsignedInterface<
+            SIMDVecAVX_u<SCALAR_UINT_TYPE, 1>, // DERIVED_UINT_VEC_TYPE
+            SCALAR_UINT_TYPE,                  // SCALAR_UINT_TYPE
             1,
             typename SIMDVecAVX_u_traits<SCALAR_UINT_TYPE, 1>::MASK_TYPE,
             typename SIMDVecAVX_u_traits<SCALAR_UINT_TYPE, 1>::SWIZZLE_MASK_TYPE>
@@ -1110,9 +1106,7 @@ namespace SIMD
     template<>
     class SIMDVecAVX_u<uint32_t, 8> : 
         public SIMDVecUnsignedInterface< 
-            SIMDVecAVX_u<uint32_t, 8>, 
             SIMDVecAVX_u<uint32_t, 8>,
-            uint32_t,
             uint32_t, 
             8,
             SIMDMask8,

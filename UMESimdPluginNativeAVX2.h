@@ -931,10 +931,8 @@ namespace SIMD
     // ***************************************************************************
     template<typename SCALAR_UINT_TYPE, uint32_t VEC_LEN>
     class SIMDVecAVX2_u final : 
-        public SIMDVecUnsignedInterface< 
-            SIMDVecAVX2_u<SCALAR_UINT_TYPE, VEC_LEN>, // DERIVED_VEC_TYPE
+        public SIMDVecUnsignedInterface<
             SIMDVecAVX2_u<SCALAR_UINT_TYPE, VEC_LEN>, // DERIVED_VEC_UINT_TYPE
-            SCALAR_UINT_TYPE,                        // SCALAR_TYPE
             SCALAR_UINT_TYPE,                        // SCALAR_UINT_TYPE
             VEC_LEN,
             typename SIMDVecAVX2_u_traits<SCALAR_UINT_TYPE, VEC_LEN>::MASK_TYPE,
@@ -1027,9 +1025,7 @@ namespace SIMD
     template<typename SCALAR_UINT_TYPE>
     class SIMDVecAVX2_u<SCALAR_UINT_TYPE, 1> final : 
         public SIMDVecUnsignedInterface< 
-            SIMDVecAVX2_u<SCALAR_UINT_TYPE, 1>, // DERIVED_VEC_TYPE
             SIMDVecAVX2_u<SCALAR_UINT_TYPE, 1>, // DERIVED_VEC_UINT_TYPE
-            SCALAR_UINT_TYPE,                        // SCALAR_TYPE
             SCALAR_UINT_TYPE,                        // SCALAR_UINT_TYPE
             1,
             typename SIMDVecAVX2_u_traits<SCALAR_UINT_TYPE, 1>::MASK_TYPE,
@@ -1078,9 +1074,7 @@ namespace SIMD
     template<>
     class SIMDVecAVX2_u<uint32_t, 8> : 
         public SIMDVecUnsignedInterface< 
-            SIMDVecAVX2_u<uint32_t, 8>, 
             SIMDVecAVX2_u<uint32_t, 8>,
-            uint32_t,
             uint32_t, 
             8,
             SIMDMask8,
@@ -2420,37 +2414,6 @@ namespace SIMD
         // CMPLEV - Element-wise 'less than or equal' with vector
         // CMPLES - Element-wise 'less than or equal' with scalar
         // CMPEX  - Check if vectors are exact (returns scalar 'bool')
-
-        //(Bitwise operations)
-        // ANDV   - AND with vector
-        // MANDV  - Masked AND with vector
-        // ANDS   - AND with scalar
-        // MANDS  - Masked AND with scalar
-        // ANDVA  - AND with vector and assign
-        // MANDVA - Masked AND with vector and assign
-        // ANDSA  - AND with scalar and assign
-        // MANDSA - Masked AND with scalar and assign
-        // ORV    - OR with vector
-        // MORV   - Masked OR with vector
-        // ORS    - OR with scalar
-        // MORS   - Masked OR with scalar
-        // ORVA   - OR with vector and assign
-        // MORVA  - Masked OR with vector and assign
-        // ORSA   - OR with scalar and assign
-        // MORSA  - Masked OR with scalar and assign
-        // XORV   - XOR with vector
-        // MXORV  - Masked XOR with vector
-        // XORS   - XOR with scalar
-        // MXORS  - Masked XOR with scalar
-        // XORVA  - XOR with vector and assign
-        // MXORVA - Masked XOR with vector and assign
-        // XORSA  - XOR with scalar and assign
-        // MXORSA - Masked XOR with scalar and assign
-        // NOT    - Negation of bits
-        // MNOT   - Masked negation of bits
-        // NOTA   - Negation of bits and assign
-        // MNOTA  - Masked negation of bits and assign
-
         // (Pack/Unpack operations - not available for SIMD1)
         // PACK     - assign vector with two half-length vectors
         // PACKLO   - assign lower half of a vector with a half-length vector
@@ -2473,12 +2436,6 @@ namespace SIMD
         // MHADD - Masked add elements of a vector (horizontal add)
         // HMUL  - Multiply elements of a vector (horizontal mul)
         // MHMUL - Masked multiply elements of a vector (horizontal mul)
-        // HAND  - AND of elements of a vector (horizontal AND)
-        // MHAND - Masked AND of elements of a vector (horizontal AND)
-        // HOR   - OR of elements of a vector (horizontal OR)
-        // MHOR  - Masked OR of elements of a vector (horizontal OR)
-        // HXOR  - XOR of elements of a vector (horizontal XOR)
-        // MHXOR - Masked XOR of elements of a vector (horizontal XOR)
 
         //(Fused arithmetics)
         // FMULADDV  - Fused multiply and add (A*B + C) with vectors
@@ -2524,50 +2481,6 @@ namespace SIMD
         // MSCATTERS - Masked scatter to memory using indices from array
         // SCATTERV  - Scatter to memory using indices from vector
         // MSCATTERV - Masked scatter to memory using indices from vector
-
-        // (Binary shift operations)
-        // LSHV   - Element-wise logical shift bits left (shift values in vector)
-        // MLSHV  - Masked element-wise logical shift bits left (shift values in
-        //       vector) 
-        // LSHS   - Element-wise logical shift bits left (shift value in scalar)
-        // MLSHS  - Masked element-wise logical shift bits left (shift value in
-        //       scalar)
-        // LSHVA  - Element-wise logical shift bits left (shift values in vector)
-        //       and assign
-        // MLSHVA - Masked element-wise logical shift bits left (shift values
-        //       in vector) and assign
-        // LSHSA  - Element-wise logical shift bits left (shift value in scalar)
-        //       and assign
-        // MLSHSA - Masked element-wise logical shift bits left (shift value in
-        //       scalar) and assign
-        // RSHV   - Logical shift bits right (shift values in vector)
-        // MRSHV  - Masked logical shift bits right (shift values in vector)
-        // RSHS   - Logical shift bits right (shift value in scalar)
-        // MRSHV  - Masked logical shift bits right (shift value in scalar)
-        // RSHVA  - Logical shift bits right (shift values in vector) and assign
-        // MRSHVA - Masked logical shift bits right (shift values in vector) and
-        //       assign
-        // RSHSA  - Logical shift bits right (shift value in scalar) and assign
-        // MRSHSA - Masked logical shift bits right (shift value in scalar) and
-        //       assign
-
-        // (Binary rotation operations)
-        // ROLV   - Rotate bits left (shift values in vector)
-        // MROLV  - Masked rotate bits left (shift values in vector)
-        // ROLS   - Rotate bits right (shift value in scalar)
-        // MROLS  - Masked rotate bits left (shift value in scalar)
-        // ROLVA  - Rotate bits left (shift values in vector) and assign
-        // MROLVA - Masked rotate bits left (shift values in vector) and assign
-        // ROLSA  - Rotate bits left (shift value in scalar) and assign
-        // MROLSA - Masked rotate bits left (shift value in scalar) and assign
-        // RORV   - Rotate bits right (shift values in vector)
-        // MRORV  - Masked rotate bits right (shift values in vector) 
-        // RORS   - Rotate bits right (shift values in scalar)
-        // MRORS  - Masked rotate bits right (shift values in scalar) 
-        // RORVA  - Rotate bits right (shift values in vector) and assign 
-        // MRORVA - Masked rotate bits right (shift values in vector) and assign
-        // RORSA  - Rotate bits right (shift values in scalar) and assign
-        // MRORSA - Masked rotate bits right (shift values in scalar) and assign
 
         // 3) Operations available for Signed integer and Unsigned integer 
         // data types:
@@ -2899,36 +2812,6 @@ namespace SIMD
         // CMPLES - Element-wise 'less than or equal' with scalar
         // CMPEX  - Check if vectors are exact (returns scalar 'bool')
  
-        //(Bitwise operations)
-        // ANDV   - AND with vector
-        // MANDV  - Masked AND with vector
-        // ANDS   - AND with scalar
-        // MANDS  - Masked AND with scalar
-        // ANDVA  - AND with vector and assign
-        // MANDVA - Masked AND with vector and assign
-        // ANDSA  - AND with scalar and assign
-        // MANDSA - Masked AND with scalar and assign
-        // ORV    - OR with vector
-        // MORV   - Masked OR with vector
-        // ORS    - OR with scalar
-        // MORS   - Masked OR with scalar
-        // ORVA   - OR with vector and assign
-        // MORVA  - Masked OR with vector and assign
-        // ORSA   - OR with scalar and assign
-        // MORSA  - Masked OR with scalar and assign
-        // XORV   - XOR with vector
-        // MXORV  - Masked XOR with vector
-        // XORS   - XOR with scalar
-        // MXORS  - Masked XOR with scalar
-        // XORVA  - XOR with vector and assign
-        // MXORVA - Masked XOR with vector and assign
-        // XORSA  - XOR with scalar and assign
-        // MXORSA - Masked XOR with scalar and assign
-        // NOT    - Negation of bits
-        // MNOT   - Masked negation of bits
-        // NOTA   - Negation of bits and assign
-        // MNOTA  - Masked negation of bits and assign
- 
         // (Pack/Unpack operations - not available for SIMD1)
         // PACK     - assign vector with two half-length vectors
         // PACKLO   - assign lower half of a vector with a half-length vector
@@ -2951,12 +2834,6 @@ namespace SIMD
         // MHADD - Masked add elements of a vector (horizontal add)
         // HMUL  - Multiply elements of a vector (horizontal mul)
         // MHMUL - Masked multiply elements of a vector (horizontal mul)
-        // HAND  - AND of elements of a vector (horizontal AND)
-        // MHAND - Masked AND of elements of a vector (horizontal AND)
-        // HOR   - OR of elements of a vector (horizontal OR)
-        // MHOR  - Masked OR of elements of a vector (horizontal OR)
-        // HXOR  - XOR of elements of a vector (horizontal XOR)
-        // MHXOR - Masked XOR of elements of a vector (horizontal XOR)
  
         //(Fused arithmetics)
         // FMULADDV  - Fused multiply and add (A*B + C) with vectors        
@@ -3019,50 +2896,6 @@ namespace SIMD
         // MSCATTERS - Masked scatter to memory using indices from array
         // SCATTERV  - Scatter to memory using indices from vector
         // MSCATTERV - Masked scatter to memory using indices from vector
- 
-        // (Binary shift operations)
-        // LSHV   - Element-wise logical shift bits left (shift values in vector)
-        // MLSHV  - Masked element-wise logical shift bits left (shift values in
-        //          vector) 
-        // LSHS   - Element-wise logical shift bits left (shift value in scalar)
-        // MLSHS  - Masked element-wise logical shift bits left (shift value in
-        //          scalar)
-        // LSHVA  - Element-wise logical shift bits left (shift values in vector)
-        //          and assign
-        // MLSHVA - Masked element-wise logical shift bits left (shift values
-        //          in vector) and assign
-        // LSHSA  - Element-wise logical shift bits left (shift value in scalar)
-        //          and assign
-        // MLSHSA - Masked element-wise logical shift bits left (shift value in
-        //          scalar) and assign
-        // RSHV   - Logical shift bits right (shift values in vector)
-        // MRSHV  - Masked logical shift bits right (shift values in vector)
-        // RSHS   - Logical shift bits right (shift value in scalar)
-        // MRSHV  - Masked logical shift bits right (shift value in scalar)
-        // RSHVA  - Logical shift bits right (shift values in vector) and assign
-        // MRSHVA - Masked logical shift bits right (shift values in vector) and
-        //          assign
-        // RSHSA  - Logical shift bits right (shift value in scalar) and assign
-        // MRSHSA - Masked logical shift bits right (shift value in scalar) and
-        //          assign
- 
-        // (Binary rotation operations)
-        // ROLV   - Rotate bits left (shift values in vector)
-        // MROLV  - Masked rotate bits left (shift values in vector)
-        // ROLS   - Rotate bits right (shift value in scalar)
-        // MROLS  - Masked rotate bits left (shift value in scalar)
-        // ROLVA  - Rotate bits left (shift values in vector) and assign
-        // MROLVA - Masked rotate bits left (shift values in vector) and assign
-        // ROLSA  - Rotate bits left (shift value in scalar) and assign
-        // MROLSA - Masked rotate bits left (shift value in scalar) and assign
-        // RORV   - Rotate bits right (shift values in vector)
-        // MRORV  - Masked rotate bits right (shift values in vector) 
-        // RORS   - Rotate bits right (shift values in scalar)
-        // MRORS  - Masked rotate bits right (shift values in scalar) 
-        // RORVA  - Rotate bits right (shift values in vector) and assign 
-        // MRORVA - Masked rotate bits right (shift values in vector) and assign
-        // RORSA  - Rotate bits right (shift values in scalar) and assign
-        // MRORSA - Masked rotate bits right (shift values in scalar) and assign
  
         // 3) Operations available for Signed integer and Unsigned integer 
         // data types:
@@ -3426,7 +3259,7 @@ namespace SIMD
         // MRCPA  - Masked reciprocal and assign
         // RCPSA  - Reciprocal with scalar and assign
         // MRCPSA - Masked reciprocal with scalar and assign
- 
+
         //(Comparison operations)
         // CMPEQV - Element-wise 'equal' with vector
         // CMPEQS - Element-wise 'equal' with scalar
@@ -3441,36 +3274,6 @@ namespace SIMD
         // CMPLEV - Element-wise 'less than or equal' with vector
         // CMPLES - Element-wise 'less than or equal' with scalar
         // CMPEX  - Check if vectors are exact (returns scalar 'bool')
- 
-        //(Bitwise operations)
-        // ANDV   - AND with vector
-        // MANDV  - Masked AND with vector
-        // ANDS   - AND with scalar
-        // MANDS  - Masked AND with scalar
-        // ANDVA  - AND with vector and assign
-        // MANDVA - Masked AND with vector and assign
-        // ANDSA  - AND with scalar and assign
-        // MANDSA - Masked AND with scalar and assign
-        // ORV    - OR with vector
-        // MORV   - Masked OR with vector
-        // ORS    - OR with scalar
-        // MORS   - Masked OR with scalar
-        // ORVA   - OR with vector and assign
-        // MORVA  - Masked OR with vector and assign
-        // ORSA   - OR with scalar and assign
-        // MORSA  - Masked OR with scalar and assign
-        // XORV   - XOR with vector
-        // MXORV  - Masked XOR with vector
-        // XORS   - XOR with scalar
-        // MXORS  - Masked XOR with scalar
-        // XORVA  - XOR with vector and assign
-        // MXORVA - Masked XOR with vector and assign
-        // XORSA  - XOR with scalar and assign
-        // MXORSA - Masked XOR with scalar and assign
-        // NOT    - Negation of bits
-        // MNOT   - Masked negation of bits
-        // NOTA   - Negation of bits and assign
-        // MNOTA  - Masked negation of bits and assign
  
         // (Pack/Unpack operations - not available for SIMD1)
         // PACK     - assign vector with two half-length vectors
@@ -3494,12 +3297,6 @@ namespace SIMD
         // MHADD - Masked add elements of a vector (horizontal add)
         // HMUL  - Multiply elements of a vector (horizontal mul)
         // MHMUL - Masked multiply elements of a vector (horizontal mul)
-        // HAND  - AND of elements of a vector (horizontal AND)
-        // MHAND - Masked AND of elements of a vector (horizontal AND)
-        // HOR   - OR of elements of a vector (horizontal OR)
-        // MHOR  - Masked OR of elements of a vector (horizontal OR)
-        // HXOR  - XOR of elements of a vector (horizontal XOR)
-        // MHXOR - Masked XOR of elements of a vector (horizontal XOR)
  
         //(Fused arithmetics)
         // FMULADDV  - Fused multiply and add (A*B + C) with vectors
@@ -3569,50 +3366,6 @@ namespace SIMD
         // MSCATTERS - Masked scatter to memory using indices from array
         // SCATTERV  - Scatter to memory using indices from vector
         // MSCATTERV - Masked scatter to memory using indices from vector
- 
-        // (Binary shift operations)
-        // LSHV   - Element-wise logical shift bits left (shift values in vector)
-        // MLSHV  - Masked element-wise logical shift bits left (shift values in
-        //          vector) 
-        // LSHS   - Element-wise logical shift bits left (shift value in scalar)
-        // MLSHS  - Masked element-wise logical shift bits left (shift value in
-        //          scalar)
-        // LSHVA  - Element-wise logical shift bits left (shift values in vector)
-        //          and assign
-        // MLSHVA - Masked element-wise logical shift bits left (shift values
-        //          in vector) and assign
-        // LSHSA  - Element-wise logical shift bits left (shift value in scalar)
-        //          and assign
-        // MLSHSA - Masked element-wise logical shift bits left (shift value in
-        //          scalar) and assign
-        // RSHV   - Logical shift bits right (shift values in vector)
-        // MRSHV  - Masked logical shift bits right (shift values in vector)
-        // RSHS   - Logical shift bits right (shift value in scalar)
-        // MRSHV  - Masked logical shift bits right (shift value in scalar)
-        // RSHVA  - Logical shift bits right (shift values in vector) and assign
-        // MRSHVA - Masked logical shift bits right (shift values in vector) and
-        //          assign
-        // RSHSA  - Logical shift bits right (shift value in scalar) and assign
-        // MRSHSA - Masked logical shift bits right (shift value in scalar) and
-        //          assign
- 
-        // (Binary rotation operations)
-        // ROLV   - Rotate bits left (shift values in vector)
-        // MROLV  - Masked rotate bits left (shift values in vector)
-        // ROLS   - Rotate bits right (shift value in scalar)
-        // MROLS  - Masked rotate bits left (shift value in scalar)
-        // ROLVA  - Rotate bits left (shift values in vector) and assign
-        // MROLVA - Masked rotate bits left (shift values in vector) and assign
-        // ROLSA  - Rotate bits left (shift value in scalar) and assign
-        // MROLSA - Masked rotate bits left (shift value in scalar) and assign
-        // RORV   - Rotate bits right (shift values in vector)
-        // MRORV  - Masked rotate bits right (shift values in vector) 
-        // RORS   - Rotate bits right (shift values in scalar)
-        // MRORS  - Masked rotate bits right (shift values in scalar) 
-        // RORVA  - Rotate bits right (shift values in vector) and assign 
-        // MRORVA - Masked rotate bits right (shift values in vector) and assign
-        // RORSA  - Rotate bits right (shift values in scalar) and assign
-        // MRORSA - Masked rotate bits right (shift values in scalar) and assign
  
         // 3) Operations available for Signed integer and Unsigned integer 
         // data types:
@@ -4019,36 +3772,6 @@ namespace SIMD
         // CMPLES - Element-wise 'less than or equal' with scalar
         // CMPEX  - Check if vectors are exact (returns scalar 'bool')
  
-        //(Bitwise operations)
-        // ANDV   - AND with vector
-        // MANDV  - Masked AND with vector
-        // ANDS   - AND with scalar
-        // MANDS  - Masked AND with scalar
-        // ANDVA  - AND with vector and assign
-        // MANDVA - Masked AND with vector and assign
-        // ANDSA  - AND with scalar and assign
-        // MANDSA - Masked AND with scalar and assign
-        // ORV    - OR with vector
-        // MORV   - Masked OR with vector
-        // ORS    - OR with scalar
-        // MORS   - Masked OR with scalar
-        // ORVA   - OR with vector and assign
-        // MORVA  - Masked OR with vector and assign
-        // ORSA   - OR with scalar and assign
-        // MORSA  - Masked OR with scalar and assign
-        // XORV   - XOR with vector
-        // MXORV  - Masked XOR with vector
-        // XORS   - XOR with scalar
-        // MXORS  - Masked XOR with scalar
-        // XORVA  - XOR with vector and assign
-        // MXORVA - Masked XOR with vector and assign
-        // XORSA  - XOR with scalar and assign
-        // MXORSA - Masked XOR with scalar and assign
-        // NOT    - Negation of bits
-        // MNOT   - Masked negation of bits
-        // NOTA   - Negation of bits and assign
-        // MNOTA  - Masked negation of bits and assign
- 
         // (Pack/Unpack operations - not available for SIMD1)
         // PACK     - assign vector with two half-length vectors
         // PACKLO   - assign lower half of a vector with a half-length vector
@@ -4071,13 +3794,7 @@ namespace SIMD
         // MHADD - Masked add elements of a vector (horizontal add)
         // HMUL  - Multiply elements of a vector (horizontal mul)
         // MHMUL - Masked multiply elements of a vector (horizontal mul)
-        // HAND  - AND of elements of a vector (horizontal AND)
-        // MHAND - Masked AND of elements of a vector (horizontal AND)
-        // HOR   - OR of elements of a vector (horizontal OR)
-        // MHOR  - Masked OR of elements of a vector (horizontal OR)
-        // HXOR  - XOR of elements of a vector (horizontal XOR)
-        // MHXOR - Masked XOR of elements of a vector (horizontal XOR)
- 
+
         //(Fused arithmetics)
         // FMULADDV  - Fused multiply and add (A*B + C) with vectors
         // MFMULADDV - Masked fused multiply and add (A*B + C) with vectors
@@ -4122,50 +3839,6 @@ namespace SIMD
         // MSCATTERS - Masked scatter to memory using indices from array
         // SCATTERV  - Scatter to memory using indices from vector
         // MSCATTERV - Masked scatter to memory using indices from vector
- 
-        // (Binary shift operations)
-        // LSHV   - Element-wise logical shift bits left (shift values in vector)
-        // MLSHV  - Masked element-wise logical shift bits left (shift values in
-        //          vector) 
-        // LSHS   - Element-wise logical shift bits left (shift value in scalar)
-        // MLSHS  - Masked element-wise logical shift bits left (shift value in
-        //          scalar)
-        // LSHVA  - Element-wise logical shift bits left (shift values in vector)
-        //          and assign
-        // MLSHVA - Masked element-wise logical shift bits left (shift values
-        //          in vector) and assign
-        // LSHSA  - Element-wise logical shift bits left (shift value in scalar)
-        //          and assign
-        // MLSHSA - Masked element-wise logical shift bits left (shift value in
-        //          scalar) and assign
-        // RSHV   - Logical shift bits right (shift values in vector)
-        // MRSHV  - Masked logical shift bits right (shift values in vector)
-        // RSHS   - Logical shift bits right (shift value in scalar)
-        // MRSHV  - Masked logical shift bits right (shift value in scalar)
-        // RSHVA  - Logical shift bits right (shift values in vector) and assign
-        // MRSHVA - Masked logical shift bits right (shift values in vector) and
-        //          assign
-        // RSHSA  - Logical shift bits right (shift value in scalar) and assign
-        // MRSHSA - Masked logical shift bits right (shift value in scalar) and
-        //          assign
- 
-        // (Binary rotation operations)
-        // ROLV   - Rotate bits left (shift values in vector)
-        // MROLV  - Masked rotate bits left (shift values in vector)
-        // ROLS   - Rotate bits right (shift value in scalar)
-        // MROLS  - Masked rotate bits left (shift value in scalar)
-        // ROLVA  - Rotate bits left (shift values in vector) and assign
-        // MROLVA - Masked rotate bits left (shift values in vector) and assign
-        // ROLSA  - Rotate bits left (shift value in scalar) and assign
-        // MROLSA - Masked rotate bits left (shift value in scalar) and assign
-        // RORV   - Rotate bits right (shift values in vector)
-        // MRORV  - Masked rotate bits right (shift values in vector) 
-        // RORS   - Rotate bits right (shift values in scalar)
-        // MRORS  - Masked rotate bits right (shift values in scalar) 
-        // RORVA  - Rotate bits right (shift values in vector) and assign 
-        // MRORVA - Masked rotate bits right (shift values in vector) and assign
-        // RORSA  - Rotate bits right (shift values in scalar) and assign
-        // MRORSA - Masked rotate bits right (shift values in scalar) and assign
  
         // 3) Operations available for Signed integer and Unsigned integer 
         // data types:

@@ -3455,6 +3455,28 @@ namespace SIMD
                 return retval;
             }
 
+            // EXP
+            template<typename VEC_TYPE>
+            inline VEC_TYPE exp (VEC_TYPE const & a) {
+                UME_EMULATION_WARNING();
+                VEC_TYPE retval;
+                for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+                    retval.insert(i, std::exp(a[i]));
+                }
+                return retval;
+            }
+
+            // MEXP
+            template<typename VEC_TYPE, typename MASK_TYPE>
+            inline VEC_TYPE exp (MASK_TYPE const & mask, VEC_TYPE const & a) {
+                UME_EMULATION_WARNING();
+                VEC_TYPE retval;
+                for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+                    retval.insert(i, (mask[i] == true) ? std::exp(a[i]) : a[i]);
+                }
+                return retval;
+            }
+
             // SIN
             template<typename VEC_TYPE>
             inline VEC_TYPE sin (VEC_TYPE const & a) {
@@ -4133,10 +4155,6 @@ namespace SIMD
         inline DERIVED_VEC_TYPE sub (DERIVED_VEC_TYPE const & b) const {
             return EMULATED_FUNCTIONS::sub<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
-        
-        inline DERIVED_VEC_TYPE operator- (DERIVED_VEC_TYPE const & b) const {
-            return sub(b);
-        }
 
         // MSUBV
         inline DERIVED_VEC_TYPE sub (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) const {
@@ -4514,174 +4532,6 @@ namespace SIMD
         inline bool cmpe (SCALAR_TYPE b) const {
             return EMULATED_FUNCTIONS::isExact<DERIVED_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this), DERIVED_VEC_TYPE(b));
         }
-        
-        // ANDV
-        inline DERIVED_VEC_TYPE andv (DERIVED_VEC_TYPE const & b) const {
-            return EMULATED_FUNCTIONS::binaryAnd<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this), b);
-        }
-
-        inline DERIVED_VEC_TYPE operator& (DERIVED_VEC_TYPE const & b) const {
-            return andv(b);
-        }
-
-        // MANDV
-        inline DERIVED_VEC_TYPE andv (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) const {
-            return EMULATED_FUNCTIONS::binaryAnd<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
-        }
-
-        // ANDS
-        inline DERIVED_VEC_TYPE ands (SCALAR_TYPE b) const {
-            return EMULATED_FUNCTIONS::binaryAnd<DERIVED_VEC_TYPE, SCALAR_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this), b);
-        }
-
-        // MANDS
-        inline DERIVED_VEC_TYPE ands (MASK_TYPE const & mask, SCALAR_TYPE b) const {
-            return EMULATED_FUNCTIONS::binaryAnd<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
-        }
-
-        // ANDVA
-        inline DERIVED_VEC_TYPE & anda (DERIVED_VEC_TYPE const & b) {
-            return EMULATED_FUNCTIONS::binaryAndAssign<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this), b);
-        }
-
-        inline DERIVED_VEC_TYPE & operator&= (DERIVED_VEC_TYPE const & b) {
-            return anda(b);
-        }
-
-        // MANDVA
-        inline DERIVED_VEC_TYPE & anda (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) {
-            return EMULATED_FUNCTIONS::binaryAndAssign<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this), b);
-        }
-        
-        // ANDSA
-        inline DERIVED_VEC_TYPE & anda (SCALAR_TYPE b) {
-            return EMULATED_FUNCTIONS::binaryAndAssign<DERIVED_VEC_TYPE, SCALAR_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this), b);
-        }
-
-        // MANDSA
-        inline DERIVED_VEC_TYPE & anda (MASK_TYPE const & mask, SCALAR_TYPE b) {
-            return EMULATED_FUNCTIONS::binaryAndAssign<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this), b);
-        }
-
-        // ORV
-        inline DERIVED_VEC_TYPE orv ( DERIVED_VEC_TYPE const & b) const {
-            return EMULATED_FUNCTIONS::binaryOr<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this), b);
-        }
-
-        inline DERIVED_VEC_TYPE operator| ( DERIVED_VEC_TYPE const & b) const {
-            return orv(b);
-        }
-
-        // MORV
-        inline DERIVED_VEC_TYPE orv ( MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) const {
-            return EMULATED_FUNCTIONS::binaryOr<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
-        }
-
-        // ORS
-        inline DERIVED_VEC_TYPE ors (SCALAR_TYPE b) const {
-            return EMULATED_FUNCTIONS::binaryOr<DERIVED_VEC_TYPE, SCALAR_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this), b);
-        }
-
-        // MORS
-        inline DERIVED_VEC_TYPE ors (MASK_TYPE const & mask, SCALAR_TYPE b) const {
-            return EMULATED_FUNCTIONS::binaryOr<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
-        }
-
-        // ORVA
-        inline DERIVED_VEC_TYPE & ora (DERIVED_VEC_TYPE const & b) {
-            return EMULATED_FUNCTIONS::binaryOrAssign<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this), b);
-        }
-        
-        inline DERIVED_VEC_TYPE & operator|= (DERIVED_VEC_TYPE const & b) {
-            return ora(b);
-        }
-
-        // MORVA
-        inline DERIVED_VEC_TYPE & ora (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) {
-            return EMULATED_FUNCTIONS::binaryOrAssign<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this), b);
-        }
-
-        // ORSA
-        inline DERIVED_VEC_TYPE & ora (SCALAR_TYPE b) {
-            return EMULATED_FUNCTIONS::binaryOrAssign<DERIVED_VEC_TYPE, SCALAR_TYPE>(static_cast<DERIVED_VEC_TYPE &>(*this), b);
-        }
-
-        // MORSA
-        inline DERIVED_VEC_TYPE & ora (MASK_TYPE const & mask, SCALAR_TYPE b) {
-            return EMULATED_FUNCTIONS::binaryOrAssign<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this), b);
-        }
-
-        // XORV
-        inline DERIVED_VEC_TYPE xorv (DERIVED_VEC_TYPE const & b) const {
-            return EMULATED_FUNCTIONS::binaryXor<DERIVED_VEC_TYPE> ( static_cast<DERIVED_VEC_TYPE const &>(*this), b);
-        }
-        
-        inline DERIVED_VEC_TYPE operator^ (DERIVED_VEC_TYPE const & b) const {
-            return xorv(b);
-        }
-
-        // MXORV
-        inline DERIVED_VEC_TYPE xorv (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) const {
-            return EMULATED_FUNCTIONS::binaryXor<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
-        }
-
-        // XORS
-        inline DERIVED_VEC_TYPE xors (SCALAR_TYPE b) const {
-            return EMULATED_FUNCTIONS::binaryXor<DERIVED_VEC_TYPE, SCALAR_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this), b);
-        }
-
-        // MXORS
-        inline DERIVED_VEC_TYPE xorv (MASK_TYPE const & mask, SCALAR_TYPE b) const {
-            return EMULATED_FUNCTIONS::binaryXor<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
-        }
-
-        // XORVA
-        inline DERIVED_VEC_TYPE & xora (DERIVED_VEC_TYPE const & b) {
-            return EMULATED_FUNCTIONS::binaryXorAssign<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this), b);
-        }
-        
-        inline DERIVED_VEC_TYPE & operator^= (DERIVED_VEC_TYPE const & b) {
-            return xora(b);
-        }
-
-        // MXORVA
-        inline DERIVED_VEC_TYPE & xora (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) {
-            return EMULATED_FUNCTIONS::binaryXorAssign<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this), b);
-        }
-
-        // XORSA
-        inline DERIVED_VEC_TYPE & xora (SCALAR_TYPE b) {
-            return EMULATED_FUNCTIONS::binaryXorAssign<DERIVED_VEC_TYPE, SCALAR_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this), b);
-        }
-
-        // MXORSA
-        inline DERIVED_VEC_TYPE & xora (MASK_TYPE const & mask, SCALAR_TYPE b) {
-            return EMULATED_FUNCTIONS::binaryXorAssign<DERIVED_VEC_TYPE,SCALAR_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this), b);
-        }
-
-        // NOT
-        inline DERIVED_VEC_TYPE notv () const {
-            return EMULATED_FUNCTIONS::binaryNot<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this));
-        }
-    
-        inline DERIVED_VEC_TYPE operator~ () const {
-            return notv();
-        }
-
-        // MNOT
-        inline DERIVED_VEC_TYPE notv (MASK_TYPE const & mask) const {
-            return EMULATED_FUNCTIONS::binaryNot<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this));
-        }
-
-        // NOTA
-        inline DERIVED_VEC_TYPE & nota () {
-            return EMULATED_FUNCTIONS::binaryNotAssign<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this));
-        }
-
-        // MNOTA
-        inline DERIVED_VEC_TYPE & nota (MASK_TYPE const & mask) {
-            return EMULATED_FUNCTIONS::binaryNotAssign<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this));
-        }
 
         // BLENDV
         inline DERIVED_VEC_TYPE blend (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) const {
@@ -4712,6 +4562,9 @@ namespace SIMD
         inline SCALAR_TYPE hadd (MASK_TYPE const & mask) const {
             return EMULATED_FUNCTIONS::reduceAdd<SCALAR_TYPE, DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &> (*this));
         }
+        
+        // HADDS
+        // MHADDS
 
         // HMUL
         inline SCALAR_TYPE hmul () const {
@@ -4733,66 +4586,6 @@ namespace SIMD
             return EMULATED_FUNCTIONS::reduceMultScalar<SCALAR_TYPE, DERIVED_VEC_TYPE, MASK_TYPE>(mask, a, static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
         
-        // HAND
-        inline SCALAR_TYPE hand ()const  {
-            return EMULATED_FUNCTIONS::reduceBinaryAnd<SCALAR_TYPE, DERIVED_VEC_TYPE>( static_cast<DERIVED_VEC_TYPE const &>(*this));
-        }
-
-        // MHAND
-        inline SCALAR_TYPE hand (MASK_TYPE const & mask) const {
-            return EMULATED_FUNCTIONS::reduceBinaryAnd<SCALAR_TYPE, DERIVED_VEC_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE const &>(*this));
-        }
-
-        // HANDS
-        inline SCALAR_TYPE hand (SCALAR_TYPE a) const {
-            return EMULATED_FUNCTIONS::reduceBinaryAndScalar<SCALAR_TYPE, DERIVED_VEC_TYPE>(a, static_cast<DERIVED_VEC_TYPE const &>(*this));
-        }
-
-        // MHANDS
-        inline SCALAR_TYPE hand (MASK_TYPE const & mask, SCALAR_TYPE a) const {
-            return EMULATED_FUNCTIONS::reduceBinaryAndScalar<SCALAR_TYPE, DERIVED_VEC_TYPE, MASK_TYPE>(mask, a, static_cast<DERIVED_VEC_TYPE const &>(*this));
-        }
-
-        // HOR
-        inline SCALAR_TYPE hor () const {
-            return EMULATED_FUNCTIONS::reduceBinaryOr<SCALAR_TYPE, DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this));
-        }
-
-        // MHOR
-        inline SCALAR_TYPE hor (MASK_TYPE const & mask) const {
-            return EMULATED_FUNCTIONS::reduceBinaryOr<SCALAR_TYPE, DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this));
-        }
-
-        // HORS
-        inline SCALAR_TYPE hor (SCALAR_TYPE a) const {
-            return EMULATED_FUNCTIONS::reduceBinaryOrScalar<SCALAR_TYPE, DERIVED_VEC_TYPE> (a, static_cast<DERIVED_VEC_TYPE const &>(*this));
-        }
-
-        // MHORS
-        inline SCALAR_TYPE hor (MASK_TYPE const & mask, SCALAR_TYPE a) const {
-            return EMULATED_FUNCTIONS::reduceBinaryOrScalar<SCALAR_TYPE, DERIVED_VEC_TYPE, MASK_TYPE> (mask, a, static_cast<DERIVED_VEC_TYPE const &>(*this));
-        }
-        
-        // HXOR
-        inline SCALAR_TYPE hxor () const {
-            return EMULATED_FUNCTIONS::reduceBinaryXor<SCALAR_TYPE, DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this));
-        }
-
-        // MHXOR
-        inline SCALAR_TYPE hxor (MASK_TYPE const & mask) const {
-            return EMULATED_FUNCTIONS::reduceBinaryXor<SCALAR_TYPE, DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this));
-        }
-
-        // HXORS
-        inline SCALAR_TYPE hxor (SCALAR_TYPE a) const {
-            return EMULATED_FUNCTIONS::reduceBinaryXorScalar<SCALAR_TYPE, DERIVED_VEC_TYPE> (a, static_cast<DERIVED_VEC_TYPE const &>(*this));
-        }
-
-        // MHXORS
-        inline SCALAR_TYPE hxor (MASK_TYPE const & mask, SCALAR_TYPE a) const {
-            return EMULATED_FUNCTIONS::reduceBinaryXorScalar<SCALAR_TYPE, DERIVED_VEC_TYPE> (mask, a, static_cast<DERIVED_VEC_TYPE const &>(*this));
-        }
-
         // ******************************************************************
         // * Fused arithmetics
         // ******************************************************************
@@ -4961,37 +4754,26 @@ namespace SIMD
             return EMULATED_FUNCTIONS::MATH::indexMin<DERIVED_VEC_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
     };
-
+    
     // ***************************************************************************
     // *
-    // *    Definition of interface for vectors using UNSIGNED INTEGER scalar types
+    // *    Definition of Bitwise Interface. Bitwise operations can only be
+    // *    performed on integer (signed and unsigned) data types in C++.
+    // *    While making bitwise operations on floating points is sometimes
+    // *    necessary, it is not safe and not portable. 
     // *
     // ***************************************************************************
     template<typename DERIVED_VEC_TYPE,
-             typename DERIVED_VEC_UINT_TYPE,
              typename SCALAR_TYPE,
-             typename SCALAR_UINT_TYPE, 
-             uint32_t VEC_LEN,
-             typename MASK_TYPE,
-             typename SWIZZLE_MASK_TYPE> 
-    class SIMDVecUnsignedInterface : public SIMDVecBaseInterface< 
-        DERIVED_VEC_TYPE,
-        SCALAR_TYPE, 
-        VEC_LEN,
-        MASK_TYPE,
-        SWIZZLE_MASK_TYPE>
-    {
-        // Other vector types necessary for this class
-        typedef SIMDVecUnsignedInterface< DERIVED_VEC_TYPE, 
-            DERIVED_VEC_UINT_TYPE,
+             typename MASK_TYPE>
+    class SIMDVecBitwiseInterface {
+        
+        typedef SIMDVecBitwiseInterface< 
+            DERIVED_VEC_TYPE, 
             SCALAR_TYPE,
-            SCALAR_UINT_TYPE, 
-            VEC_LEN, 
-            MASK_TYPE,
-            SWIZZLE_MASK_TYPE> VEC_TYPE;
+            MASK_TYPE> VEC_TYPE;
 
     private:
-
         // Forbid assignment-initialization of vector using scalar values
         // TODO: is this necessary?
         inline VEC_TYPE & operator= (const int8_t & x) { }
@@ -5005,246 +4787,255 @@ namespace SIMD
         inline VEC_TYPE & operator= (const float & x) { }
         inline VEC_TYPE & operator= (const double & x) { }
  
-        SCALAR_UINT_TYPE operator[] (SCALAR_UINT_TYPE index) const; // Declaration only! This operator has to be implemented in derived class.
-        inline DERIVED_VEC_TYPE & insert(uint32_t index, SCALAR_UINT_TYPE value); // Declaration only! This operator has to be implemented in derived class.
-
-    protected:
-            
-        // Making destructor protected prohibits this class from being instantiated. Effectively this class can only be used as a base class.
-        ~SIMDVecUnsignedInterface() {};
     public:
-        
-        // GATHER
-        inline DERIVED_VEC_TYPE & gather (SCALAR_TYPE * baseAddr, uint64_t* indices) {
-            return EMULATED_FUNCTIONS::gather<DERIVED_VEC_TYPE, SCALAR_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this), baseAddr, indices);
+        // ANDV
+        inline DERIVED_VEC_TYPE andv (DERIVED_VEC_TYPE const & b) const {
+            return EMULATED_FUNCTIONS::binaryAnd<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
-        // MGATHER
-        inline DERIVED_VEC_TYPE & gather (MASK_TYPE const & mask, SCALAR_TYPE* baseAddr, uint64_t* indices) {
-            return EMULATED_FUNCTIONS::gather<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this), baseAddr, indices);
+        inline DERIVED_VEC_TYPE operator& (DERIVED_VEC_TYPE const & b) const {
+            return andv(b);
         }
 
-        // GATHERV
-        inline DERIVED_VEC_TYPE gather (SCALAR_TYPE * baseAddr, DERIVED_VEC_UINT_TYPE const & indices) {
-            return EMULATED_FUNCTIONS::gather<DERIVED_VEC_TYPE, SCALAR_TYPE, DERIVED_VEC_UINT_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this), baseAddr, indices);
-        }
-        
-        // MGATHERV
-        inline DERIVED_VEC_TYPE gather (MASK_TYPE const & mask, SCALAR_TYPE* baseAddr, DERIVED_VEC_UINT_TYPE const & indices) {
-            return EMULATED_FUNCTIONS::gather<DERIVED_VEC_TYPE, SCALAR_TYPE, DERIVED_VEC_UINT_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this), baseAddr, indices);
+        // MANDV
+        inline DERIVED_VEC_TYPE andv (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) const {
+            return EMULATED_FUNCTIONS::binaryAnd<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
-        // SCATTER
-        inline SCALAR_TYPE* scatter (SCALAR_TYPE* baseAddr, uint64_t* indices) {
-            return EMULATED_FUNCTIONS::scatter<DERIVED_VEC_TYPE, SCALAR_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this), baseAddr, indices);
-        }
-        
-        // MSCATTER
-        inline SCALAR_TYPE*  scatter (MASK_TYPE const & mask, SCALAR_TYPE* baseAddr, uint64_t* indices) {
-            return EMULATED_FUNCTIONS::scatter<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this), baseAddr, indices);
-        }       
-
-        // SCATTERV
-        inline SCALAR_TYPE*  scatter (SCALAR_TYPE* baseAddr, DERIVED_VEC_UINT_TYPE const & indices) {
-            return EMULATED_FUNCTIONS::scatter<DERIVED_VEC_TYPE, SCALAR_TYPE, DERIVED_VEC_UINT_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this), baseAddr, indices);
-        }
-        
-        // MSCATTERV
-        inline SCALAR_TYPE*  scatter (MASK_TYPE const & mask, SCALAR_TYPE* baseAddr, DERIVED_VEC_UINT_TYPE const & indices) {
-            return EMULATED_FUNCTIONS::scatter<DERIVED_VEC_TYPE, SCALAR_TYPE, DERIVED_VEC_UINT_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this), baseAddr, indices);
-        }       
-
-        // LSHV
-        inline DERIVED_VEC_TYPE lsh (DERIVED_VEC_UINT_TYPE const & b) const {
-            return EMULATED_FUNCTIONS::shiftBitsLeft<DERIVED_VEC_TYPE, DERIVED_VEC_UINT_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this), b);
+        // ANDS
+        inline DERIVED_VEC_TYPE ands (SCALAR_TYPE b) const {
+            return EMULATED_FUNCTIONS::binaryAnd<DERIVED_VEC_TYPE, SCALAR_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
-        // MLSHV
-        inline DERIVED_VEC_TYPE lsh (MASK_TYPE const & mask, DERIVED_VEC_UINT_TYPE const & b) const {
-            return EMULATED_FUNCTIONS::shiftBitsLeft<DERIVED_VEC_TYPE, DERIVED_VEC_UINT_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
+        // MANDS
+        inline DERIVED_VEC_TYPE ands (MASK_TYPE const & mask, SCALAR_TYPE b) const {
+            return EMULATED_FUNCTIONS::binaryAnd<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
+        }
+
+        // ANDVA
+        inline DERIVED_VEC_TYPE & anda (DERIVED_VEC_TYPE const & b) {
+            return EMULATED_FUNCTIONS::binaryAndAssign<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this), b);
+        }
+
+        inline DERIVED_VEC_TYPE & operator&= (DERIVED_VEC_TYPE const & b) {
+            return anda(b);
+        }
+
+        // MANDVA
+        inline DERIVED_VEC_TYPE & anda (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) {
+            return EMULATED_FUNCTIONS::binaryAndAssign<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
         
-        // LSHS
-        inline DERIVED_VEC_TYPE lsh (SCALAR_UINT_TYPE b) const {
-            return EMULATED_FUNCTIONS::shiftBitsLeftScalar<DERIVED_VEC_TYPE, SCALAR_UINT_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this), b);
+        // ANDSA
+        inline DERIVED_VEC_TYPE & anda (SCALAR_TYPE b) {
+            return EMULATED_FUNCTIONS::binaryAndAssign<DERIVED_VEC_TYPE, SCALAR_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
 
-        // MLSHS
-        inline DERIVED_VEC_TYPE lsh (MASK_TYPE const & mask, SCALAR_UINT_TYPE b) const {
-            return EMULATED_FUNCTIONS::shiftBitsLeftScalar<DERIVED_VEC_TYPE, SCALAR_UINT_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
+        // MANDSA
+        inline DERIVED_VEC_TYPE & anda (MASK_TYPE const & mask, SCALAR_TYPE b) {
+            return EMULATED_FUNCTIONS::binaryAndAssign<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
 
-        // LSHVA
-        inline DERIVED_VEC_TYPE & lsha (DERIVED_VEC_UINT_TYPE const & b) {
-            return EMULATED_FUNCTIONS::shiftBitsLeftAssign<DERIVED_VEC_TYPE, DERIVED_VEC_UINT_TYPE>(static_cast<DERIVED_VEC_TYPE &>(*this), b);
+        // ORV
+        inline DERIVED_VEC_TYPE orv ( DERIVED_VEC_TYPE const & b) const {
+            return EMULATED_FUNCTIONS::binaryOr<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this), b);
+        }
+
+        inline DERIVED_VEC_TYPE operator| ( DERIVED_VEC_TYPE const & b) const {
+            return orv(b);
+        }
+
+        // MORV
+        inline DERIVED_VEC_TYPE orv ( MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) const {
+            return EMULATED_FUNCTIONS::binaryOr<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
+        }
+
+        // ORS
+        inline DERIVED_VEC_TYPE ors (SCALAR_TYPE b) const {
+            return EMULATED_FUNCTIONS::binaryOr<DERIVED_VEC_TYPE, SCALAR_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this), b);
+        }
+
+        // MORS
+        inline DERIVED_VEC_TYPE ors (MASK_TYPE const & mask, SCALAR_TYPE b) const {
+            return EMULATED_FUNCTIONS::binaryOr<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
+        }
+
+        // ORVA
+        inline DERIVED_VEC_TYPE & ora (DERIVED_VEC_TYPE const & b) {
+            return EMULATED_FUNCTIONS::binaryOrAssign<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
         
-        // MLSHVA
-        inline DERIVED_VEC_TYPE & lsha (MASK_TYPE const & mask, DERIVED_VEC_UINT_TYPE const & b) {
-            return EMULATED_FUNCTIONS::shiftBitsLeftAssign<DERIVED_VEC_TYPE, DERIVED_VEC_UINT_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE &>(*this), b);
+        inline DERIVED_VEC_TYPE & operator|= (DERIVED_VEC_TYPE const & b) {
+            return ora(b);
+        }
+
+        // MORVA
+        inline DERIVED_VEC_TYPE & ora (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) {
+            return EMULATED_FUNCTIONS::binaryOrAssign<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this), b);
+        }
+
+        // ORSA
+        inline DERIVED_VEC_TYPE & ora (SCALAR_TYPE b) {
+            return EMULATED_FUNCTIONS::binaryOrAssign<DERIVED_VEC_TYPE, SCALAR_TYPE>(static_cast<DERIVED_VEC_TYPE &>(*this), b);
+        }
+
+        // MORSA
+        inline DERIVED_VEC_TYPE & ora (MASK_TYPE const & mask, SCALAR_TYPE b) {
+            return EMULATED_FUNCTIONS::binaryOrAssign<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this), b);
+        }
+
+        // XORV
+        inline DERIVED_VEC_TYPE xorv (DERIVED_VEC_TYPE const & b) const {
+            return EMULATED_FUNCTIONS::binaryXor<DERIVED_VEC_TYPE> ( static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
         
-        // LSHSA
-        inline DERIVED_VEC_TYPE & lsha (SCALAR_UINT_TYPE b) {
-            return EMULATED_FUNCTIONS::shiftBitsLeftAssignScalar<DERIVED_VEC_TYPE, SCALAR_UINT_TYPE>(static_cast<DERIVED_VEC_TYPE &>(*this), b);
+        inline DERIVED_VEC_TYPE operator^ (DERIVED_VEC_TYPE const & b) const {
+            return xorv(b);
         }
 
-        // MLSHSA   
-        inline DERIVED_VEC_TYPE & lsha (MASK_TYPE const & mask, SCALAR_UINT_TYPE b) {
-            return EMULATED_FUNCTIONS::shiftBitsLeftAssignScalar<DERIVED_VEC_TYPE, SCALAR_UINT_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE &>(*this), b);
+        // MXORV
+        inline DERIVED_VEC_TYPE xorv (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) const {
+            return EMULATED_FUNCTIONS::binaryXor<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
+        }
+
+        // XORS
+        inline DERIVED_VEC_TYPE xors (SCALAR_TYPE b) const {
+            return EMULATED_FUNCTIONS::binaryXor<DERIVED_VEC_TYPE, SCALAR_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this), b);
+        }
+
+        // MXORS
+        inline DERIVED_VEC_TYPE xorv (MASK_TYPE const & mask, SCALAR_TYPE b) const {
+            return EMULATED_FUNCTIONS::binaryXor<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
+        }
+
+        // XORVA
+        inline DERIVED_VEC_TYPE & xora (DERIVED_VEC_TYPE const & b) {
+            return EMULATED_FUNCTIONS::binaryXorAssign<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
         
-        // RSHV 
-        inline DERIVED_VEC_TYPE rsh (DERIVED_VEC_UINT_TYPE const & b) const {
-            return EMULATED_FUNCTIONS::shiftBitsRight<DERIVED_VEC_TYPE, DERIVED_VEC_UINT_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this), b);
+        inline DERIVED_VEC_TYPE & operator^= (DERIVED_VEC_TYPE const & b) {
+            return xora(b);
         }
 
-        // MRSHV
-        inline DERIVED_VEC_TYPE rsh (MASK_TYPE const & mask, DERIVED_VEC_UINT_TYPE const & b) const {
-            return EMULATED_FUNCTIONS::shiftBitsRight<DERIVED_VEC_TYPE, DERIVED_VEC_UINT_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
+        // MXORVA
+        inline DERIVED_VEC_TYPE & xora (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) {
+            return EMULATED_FUNCTIONS::binaryXorAssign<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this), b);
+        }
+
+        // XORSA
+        inline DERIVED_VEC_TYPE & xora (SCALAR_TYPE b) {
+            return EMULATED_FUNCTIONS::binaryXorAssign<DERIVED_VEC_TYPE, SCALAR_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this), b);
+        }
+
+        // MXORSA
+        inline DERIVED_VEC_TYPE & xora (MASK_TYPE const & mask, SCALAR_TYPE b) {
+            return EMULATED_FUNCTIONS::binaryXorAssign<DERIVED_VEC_TYPE,SCALAR_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this), b);
+        }
+
+        // NOT
+        inline DERIVED_VEC_TYPE notv () const {
+            return EMULATED_FUNCTIONS::binaryNot<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this));
+        }
+    
+        inline DERIVED_VEC_TYPE operator~ () const {
+            return notv();
+        }
+
+        // MNOT
+        inline DERIVED_VEC_TYPE notv (MASK_TYPE const & mask) const {
+            return EMULATED_FUNCTIONS::binaryNot<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this));
+        }
+
+        // NOTA
+        inline DERIVED_VEC_TYPE & nota () {
+            return EMULATED_FUNCTIONS::binaryNotAssign<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this));
+        }
+
+        // MNOTA
+        inline DERIVED_VEC_TYPE & nota (MASK_TYPE const & mask) {
+            return EMULATED_FUNCTIONS::binaryNotAssign<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this));
+        }
+
+        // HAND
+        inline SCALAR_TYPE hand ()const  {
+            return EMULATED_FUNCTIONS::reduceBinaryAnd<SCALAR_TYPE, DERIVED_VEC_TYPE>( static_cast<DERIVED_VEC_TYPE const &>(*this));
+        }
+
+        // MHAND
+        inline SCALAR_TYPE hand (MASK_TYPE const & mask) const {
+            return EMULATED_FUNCTIONS::reduceBinaryAnd<SCALAR_TYPE, DERIVED_VEC_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE const &>(*this));
+        }
+
+        // HANDS
+        inline SCALAR_TYPE hand (SCALAR_TYPE a) const {
+            return EMULATED_FUNCTIONS::reduceBinaryAndScalar<SCALAR_TYPE, DERIVED_VEC_TYPE>(a, static_cast<DERIVED_VEC_TYPE const &>(*this));
+        }
+
+        // MHANDS
+        inline SCALAR_TYPE hand (MASK_TYPE const & mask, SCALAR_TYPE a) const {
+            return EMULATED_FUNCTIONS::reduceBinaryAndScalar<SCALAR_TYPE, DERIVED_VEC_TYPE, MASK_TYPE>(mask, a, static_cast<DERIVED_VEC_TYPE const &>(*this));
+        }
+
+        // HOR
+        inline SCALAR_TYPE hor () const {
+            return EMULATED_FUNCTIONS::reduceBinaryOr<SCALAR_TYPE, DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this));
+        }
+
+        // MHOR
+        inline SCALAR_TYPE hor (MASK_TYPE const & mask) const {
+            return EMULATED_FUNCTIONS::reduceBinaryOr<SCALAR_TYPE, DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this));
+        }
+
+        // HORS
+        inline SCALAR_TYPE hor (SCALAR_TYPE a) const {
+            return EMULATED_FUNCTIONS::reduceBinaryOrScalar<SCALAR_TYPE, DERIVED_VEC_TYPE> (a, static_cast<DERIVED_VEC_TYPE const &>(*this));
+        }
+
+        // MHORS
+        inline SCALAR_TYPE hor (MASK_TYPE const & mask, SCALAR_TYPE a) const {
+            return EMULATED_FUNCTIONS::reduceBinaryOrScalar<SCALAR_TYPE, DERIVED_VEC_TYPE, MASK_TYPE> (mask, a, static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
         
-        // RSHS
-        inline DERIVED_VEC_TYPE rsh (SCALAR_UINT_TYPE b) const {
-            return EMULATED_FUNCTIONS::shiftBitsRightScalar<DERIVED_VEC_TYPE, SCALAR_UINT_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this), b);
+        // HXOR
+        inline SCALAR_TYPE hxor () const {
+            return EMULATED_FUNCTIONS::reduceBinaryXor<SCALAR_TYPE, DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
-        // MRSHS
-        inline DERIVED_VEC_TYPE rsh (MASK_TYPE const & mask, SCALAR_UINT_TYPE b) const {
-            return EMULATED_FUNCTIONS::shiftBitsRightScalar<DERIVED_VEC_TYPE, SCALAR_UINT_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
+        // MHXOR
+        inline SCALAR_TYPE hxor (MASK_TYPE const & mask) const {
+            return EMULATED_FUNCTIONS::reduceBinaryXor<SCALAR_TYPE, DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
-        // RSHVA
-        inline DERIVED_VEC_TYPE & rsha (DERIVED_VEC_UINT_TYPE const & b) {
-            return EMULATED_FUNCTIONS::shiftBitsRightAssign<DERIVED_VEC_TYPE, DERIVED_VEC_UINT_TYPE>(static_cast<DERIVED_VEC_TYPE &>(*this), b);
-        }
-        
-        // MRSHVA
-        inline DERIVED_VEC_TYPE & rsha (MASK_TYPE const & mask, DERIVED_VEC_UINT_TYPE const & b) {
-            return EMULATED_FUNCTIONS::shiftBitsRightAssign<DERIVED_VEC_TYPE, DERIVED_VEC_UINT_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE &>(*this), b);
-        }
-        
-        // RSHSA
-        inline DERIVED_VEC_TYPE & rsha (SCALAR_UINT_TYPE b) {
-            return EMULATED_FUNCTIONS::shiftBitsRightAssignScalar<DERIVED_VEC_TYPE, SCALAR_UINT_TYPE>(static_cast<DERIVED_VEC_TYPE &>(*this), b);
+        // HXORS
+        inline SCALAR_TYPE hxor (SCALAR_TYPE a) const {
+            return EMULATED_FUNCTIONS::reduceBinaryXorScalar<SCALAR_TYPE, DERIVED_VEC_TYPE> (a, static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
-        // MRSHSA
-        inline DERIVED_VEC_TYPE & rsha (MASK_TYPE const & mask, SCALAR_UINT_TYPE b) {
-            return EMULATED_FUNCTIONS::shiftBitsRightAssignScalar<DERIVED_VEC_TYPE, SCALAR_UINT_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE &>(*this), b);
+        // MHXORS
+        inline SCALAR_TYPE hxor (MASK_TYPE const & mask, SCALAR_TYPE a) const {
+            return EMULATED_FUNCTIONS::reduceBinaryXorScalar<SCALAR_TYPE, DERIVED_VEC_TYPE> (mask, a, static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
-
-        // ROLV
-        inline DERIVED_VEC_TYPE rol (DERIVED_VEC_UINT_TYPE const & b) const {
-            return EMULATED_FUNCTIONS::rotateBitsLeft<DERIVED_VEC_TYPE, SCALAR_TYPE, DERIVED_VEC_UINT_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this), b);
-        }
-
-        // MROLV
-        inline DERIVED_VEC_TYPE rol (MASK_TYPE const & mask, DERIVED_VEC_UINT_TYPE const & b) const {
-            return EMULATED_FUNCTIONS::rotateBitsLeft<DERIVED_VEC_TYPE, SCALAR_TYPE, DERIVED_VEC_UINT_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
-        }
-
-        // ROLS
-        inline DERIVED_VEC_TYPE rol (SCALAR_UINT_TYPE b) const {
-            return EMULATED_FUNCTIONS::rotateBitsLeftScalar<DERIVED_VEC_TYPE, SCALAR_TYPE, SCALAR_UINT_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this), b);
-        }
-        
-        // MROLS
-        inline DERIVED_VEC_TYPE rol (MASK_TYPE const & mask, SCALAR_UINT_TYPE b) const {
-            return EMULATED_FUNCTIONS::rotateBitsLeftScalar<DERIVED_VEC_TYPE, SCALAR_TYPE, SCALAR_UINT_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
-        }
-
-        // ROLVA
-        inline DERIVED_VEC_TYPE & rola (DERIVED_VEC_UINT_TYPE const & b) {
-            return EMULATED_FUNCTIONS::rotateBitsLeftAssign<DERIVED_VEC_TYPE, SCALAR_TYPE, DERIVED_VEC_UINT_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this), b);
-        }
-
-        // MROLVA
-        inline DERIVED_VEC_TYPE & rola (MASK_TYPE const & mask, DERIVED_VEC_UINT_TYPE const & b) {
-            return EMULATED_FUNCTIONS::rotateBitsLeftAssign<DERIVED_VEC_TYPE, SCALAR_TYPE, DERIVED_VEC_UINT_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this), b);
-        }
-
-        // ROLSA
-        inline DERIVED_VEC_TYPE & rola (SCALAR_UINT_TYPE b) {
-            return EMULATED_FUNCTIONS::rotateBitsLeftAssignScalar<DERIVED_VEC_TYPE, SCALAR_TYPE, SCALAR_UINT_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this), b);
-        }
-
-        // MROLSA
-        inline DERIVED_VEC_TYPE & rola (MASK_TYPE const & mask, SCALAR_UINT_TYPE b) {
-            return EMULATED_FUNCTIONS::rotateBitsLeftAssignScalar<DERIVED_VEC_TYPE, SCALAR_TYPE, SCALAR_UINT_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this), b);
-        }        
-        
-        // RORV
-        inline DERIVED_VEC_TYPE ror (DERIVED_VEC_UINT_TYPE const & b) const {
-            return EMULATED_FUNCTIONS::rotateBitsRight<DERIVED_VEC_TYPE, SCALAR_TYPE, DERIVED_VEC_UINT_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this), b);
-        }
-
-        // MRORV
-        inline DERIVED_VEC_TYPE ror (MASK_TYPE const & mask, DERIVED_VEC_UINT_TYPE const & b) const {
-            return EMULATED_FUNCTIONS::rotateBitsRight<DERIVED_VEC_TYPE, SCALAR_TYPE, DERIVED_VEC_UINT_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
-        }
-
-        // RORS
-        inline DERIVED_VEC_TYPE ror (SCALAR_UINT_TYPE b) const {
-            return EMULATED_FUNCTIONS::rotateBitsRightScalar<DERIVED_VEC_TYPE, SCALAR_TYPE, SCALAR_UINT_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this), b);
-        }
-
-        // MRORS
-        inline DERIVED_VEC_TYPE ror (MASK_TYPE const & mask, SCALAR_UINT_TYPE b) const {
-            return EMULATED_FUNCTIONS::rotateBitsRightScalar<DERIVED_VEC_TYPE, SCALAR_TYPE, SCALAR_UINT_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
-        }
-
-        // RORVA
-        inline DERIVED_VEC_TYPE rora (DERIVED_VEC_UINT_TYPE const & b) {
-            return EMULATED_FUNCTIONS::rotateBitsRightAssign<DERIVED_VEC_TYPE, SCALAR_TYPE, DERIVED_VEC_UINT_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this), b);
-        }
-
-        // MRORVA
-        inline DERIVED_VEC_TYPE rora (MASK_TYPE const & mask, DERIVED_VEC_UINT_TYPE const & b) {
-            return EMULATED_FUNCTIONS::rotateBitsRightAssign<DERIVED_VEC_TYPE, SCALAR_TYPE, DERIVED_VEC_UINT_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this), b);
-        }
-
-        // RORSA
-        inline DERIVED_VEC_TYPE rora (SCALAR_UINT_TYPE b) {
-            return EMULATED_FUNCTIONS::rotateBitsRightAssignScalar<DERIVED_VEC_TYPE, SCALAR_TYPE, SCALAR_UINT_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this), b);
-        }
-
-        // MRORSA
-        inline DERIVED_VEC_TYPE rora (MASK_TYPE const & mask, SCALAR_UINT_TYPE b) {
-            return EMULATED_FUNCTIONS::rotateBitsRightAssignScalar<DERIVED_VEC_TYPE, SCALAR_TYPE, SCALAR_UINT_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this), b);
-        }
-
     };
-
+    
     // ***************************************************************************
     // *
-    // *    Definition of interface for vectors using SIGNED INTEGER scalar types
+    // *    Definition of Gather/Scatter interface. This interface creates
+    // *    an abstraction for gather and scatter operations. It needs to be
+    // *    separate from base interface, because it is aware of unsigned
+    // *    types (used for indexing).
     // *
     // ***************************************************************************
     template<typename DERIVED_VEC_TYPE,
-             typename DERIVED_VEC_UINT_TYPE,
-             typename SCALAR_TYPE, 
-             uint32_t VEC_LEN,
-             typename SCALAR_UINT_TYPE,
-             typename MASK_TYPE,
-             typename SWIZZLE_MASK_TYPE>
-    class SIMDVecSignedInterface : public SIMDVecUnsignedInterface<
-        DERIVED_VEC_TYPE, 
-        DERIVED_VEC_UINT_TYPE, 
-        SCALAR_TYPE, 
-        SCALAR_UINT_TYPE, 
-        VEC_LEN, 
-        MASK_TYPE,
-        SWIZZLE_MASK_TYPE>
+             typename DERIVED_UINT_VEC_TYPE,
+             typename SCALAR_TYPE,
+             typename MASK_TYPE>
+    class SIMDVecGatherScatterInterface
     {
-        // Other vector types necessary for this class
-        typedef SIMDVecSignedInterface< DERIVED_VEC_TYPE,
-                             DERIVED_VEC_UINT_TYPE,
-                             SCALAR_TYPE,
-                             VEC_LEN, 
-                             SCALAR_UINT_TYPE,
-                             MASK_TYPE,
-                             SWIZZLE_MASK_TYPE> VEC_TYPE;
+        typedef SIMDVecGatherScatterInterface< 
+            DERIVED_VEC_TYPE, 
+            DERIVED_UINT_VEC_TYPE,
+            SCALAR_TYPE,
+            MASK_TYPE> VEC_TYPE;
 
     private:
         // Forbid assignment-initialization of vector using scalar values
@@ -5259,30 +5050,282 @@ namespace SIMD
         inline VEC_TYPE & operator= (const uint64_t & x) { }
         inline VEC_TYPE & operator= (const float & x) { }
         inline VEC_TYPE & operator= (const double & x) { }
-        
-        SCALAR_TYPE operator[] (SCALAR_UINT_TYPE index) const; // Declaration only! This operator has to be implemented in derived class.
-        inline DERIVED_VEC_TYPE & insert (uint32_t index, SCALAR_TYPE value); // Declaration only! This operator has to be implemented in derived class.
-    protected:
-            
-        // Making destructor protected prohibits this class from being instantiated. Effectively this class can only be used as a base class.
-        ~SIMDVecSignedInterface() {};
+ 
     public:
-        
-        // SUBV
-        // 'operator-' needs to be overloaded again despite its' presence
-        // in base interface. This is because there is 'operator-()' declared
-        // also in this class.
-        inline DERIVED_VEC_TYPE operator- (DERIVED_VEC_TYPE const & b) {
-            return EMULATED_FUNCTIONS::sub<DERIVED_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this), b);
+        // GATHER
+        inline DERIVED_VEC_TYPE & gather (SCALAR_TYPE * baseAddr, uint64_t* indices) {
+            return EMULATED_FUNCTIONS::gather<DERIVED_VEC_TYPE, SCALAR_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this), baseAddr, indices);
         }
+
+        // MGATHER
+        inline DERIVED_VEC_TYPE & gather (MASK_TYPE const & mask, SCALAR_TYPE* baseAddr, uint64_t* indices) {
+            return EMULATED_FUNCTIONS::gather<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this), baseAddr, indices);
+        }
+
+        // GATHERV
+        inline DERIVED_VEC_TYPE gather (SCALAR_TYPE * baseAddr, DERIVED_UINT_VEC_TYPE const & indices) {
+            return EMULATED_FUNCTIONS::gather<DERIVED_VEC_TYPE, SCALAR_TYPE, DERIVED_UINT_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this), baseAddr, indices);
+        }
+        
+        // MGATHERV
+        inline DERIVED_VEC_TYPE gather (MASK_TYPE const & mask, SCALAR_TYPE* baseAddr, DERIVED_UINT_VEC_TYPE const & indices) {
+            return EMULATED_FUNCTIONS::gather<DERIVED_VEC_TYPE, SCALAR_TYPE, DERIVED_UINT_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this), baseAddr, indices);
+        }
+
+        // SCATTER
+        inline SCALAR_TYPE* scatter (SCALAR_TYPE* baseAddr, uint64_t* indices) {
+            return EMULATED_FUNCTIONS::scatter<DERIVED_VEC_TYPE, SCALAR_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this), baseAddr, indices);
+        }
+        
+        // MSCATTER
+        inline SCALAR_TYPE*  scatter (MASK_TYPE const & mask, SCALAR_TYPE* baseAddr, uint64_t* indices) {
+            return EMULATED_FUNCTIONS::scatter<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this), baseAddr, indices);
+        }       
+
+        // SCATTERV
+        inline SCALAR_TYPE*  scatter (SCALAR_TYPE* baseAddr, DERIVED_UINT_VEC_TYPE const & indices) {
+            return EMULATED_FUNCTIONS::scatter<DERIVED_VEC_TYPE, SCALAR_TYPE, DERIVED_UINT_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this), baseAddr, indices);
+        }
+        
+        // MSCATTERV
+        inline SCALAR_TYPE*  scatter (MASK_TYPE const & mask, SCALAR_TYPE* baseAddr, DERIVED_UINT_VEC_TYPE const & indices) {
+            return EMULATED_FUNCTIONS::scatter<DERIVED_VEC_TYPE, SCALAR_TYPE, DERIVED_UINT_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this), baseAddr, indices);
+        }       
+    };
+    
+    // ***************************************************************************
+    // *
+    // *    Definition of Shift/Rotate interface. This interface creates
+    // *    an abstraction for bitwise shift and rotation operations. These
+    // *    operations should only be used on signed and unsigned integer
+    // *    vector types.
+    // *
+    // ***************************************************************************
+    template<typename DERIVED_VEC_TYPE,
+             typename DERIVED_UINT_VEC_TYPE,
+             typename SCALAR_TYPE,
+             typename SCALAR_UINT_TYPE,
+             typename MASK_TYPE>
+    class SIMDVecShiftRotateInterface
+    {
+        typedef SIMDVecShiftRotateInterface< 
+            DERIVED_VEC_TYPE, 
+            DERIVED_UINT_VEC_TYPE,
+            SCALAR_TYPE,
+            SCALAR_UINT_TYPE,
+            MASK_TYPE> VEC_TYPE;
+
+    private:
+        // Forbid assignment-initialization of vector using scalar values
+        // TODO: is this necessary?
+        inline VEC_TYPE & operator= (const int8_t & x) { }
+        inline VEC_TYPE & operator= (const int16_t & x) { }
+        inline VEC_TYPE & operator= (const int32_t & x) { }
+        inline VEC_TYPE & operator= (const int64_t & x) { }
+        inline VEC_TYPE & operator= (const uint8_t & x) { }
+        inline VEC_TYPE & operator= (const uint16_t & x) { }
+        inline VEC_TYPE & operator= (const uint32_t & x) { }
+        inline VEC_TYPE & operator= (const uint64_t & x) { }
+        inline VEC_TYPE & operator= (const float & x) { }
+        inline VEC_TYPE & operator= (const double & x) { }
+ 
+    public:
+        // LSHV
+        inline DERIVED_VEC_TYPE lsh (DERIVED_UINT_VEC_TYPE const & b) const {
+            return EMULATED_FUNCTIONS::shiftBitsLeft<DERIVED_VEC_TYPE, DERIVED_UINT_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this), b);
+        }
+
+        // MLSHV
+        inline DERIVED_VEC_TYPE lsh (MASK_TYPE const & mask, DERIVED_UINT_VEC_TYPE const & b) const {
+            return EMULATED_FUNCTIONS::shiftBitsLeft<DERIVED_VEC_TYPE, DERIVED_UINT_VEC_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
+        }
+        
+        // LSHS
+        inline DERIVED_VEC_TYPE lsh (SCALAR_UINT_TYPE b) const {
+            return EMULATED_FUNCTIONS::shiftBitsLeftScalar<DERIVED_VEC_TYPE, SCALAR_UINT_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this), b);
+        }
+
+        // MLSHS
+        inline DERIVED_VEC_TYPE lsh (MASK_TYPE const & mask, SCALAR_UINT_TYPE b) const {
+            return EMULATED_FUNCTIONS::shiftBitsLeftScalar<DERIVED_VEC_TYPE, SCALAR_UINT_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
+        }
+
+        // LSHVA
+        inline DERIVED_VEC_TYPE & lsha (DERIVED_UINT_VEC_TYPE const & b) {
+            return EMULATED_FUNCTIONS::shiftBitsLeftAssign<DERIVED_VEC_TYPE, DERIVED_UINT_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE &>(*this), b);
+        }
+        
+        // MLSHVA
+        inline DERIVED_VEC_TYPE & lsha (MASK_TYPE const & mask, DERIVED_UINT_VEC_TYPE const & b) {
+            return EMULATED_FUNCTIONS::shiftBitsLeftAssign<DERIVED_VEC_TYPE, DERIVED_UINT_VEC_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE &>(*this), b);
+        }
+        
+        // LSHSA
+        inline DERIVED_VEC_TYPE & lsha (SCALAR_UINT_TYPE b) {
+            return EMULATED_FUNCTIONS::shiftBitsLeftAssignScalar<DERIVED_VEC_TYPE, SCALAR_UINT_TYPE>(static_cast<DERIVED_VEC_TYPE &>(*this), b);
+        }
+
+        // MLSHSA   
+        inline DERIVED_VEC_TYPE & lsha (MASK_TYPE const & mask, SCALAR_UINT_TYPE b) {
+            return EMULATED_FUNCTIONS::shiftBitsLeftAssignScalar<DERIVED_VEC_TYPE, SCALAR_UINT_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE &>(*this), b);
+        }
+        
+        // RSHV 
+        inline DERIVED_VEC_TYPE rsh (DERIVED_UINT_VEC_TYPE const & b) const {
+            return EMULATED_FUNCTIONS::shiftBitsRight<DERIVED_VEC_TYPE, DERIVED_UINT_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this), b);
+        }
+
+        // MRSHV
+        inline DERIVED_VEC_TYPE rsh (MASK_TYPE const & mask, DERIVED_UINT_VEC_TYPE const & b) const {
+            return EMULATED_FUNCTIONS::shiftBitsRight<DERIVED_VEC_TYPE, DERIVED_UINT_VEC_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
+        }
+        
+        // RSHS
+        inline DERIVED_VEC_TYPE rsh (SCALAR_UINT_TYPE b) const {
+            return EMULATED_FUNCTIONS::shiftBitsRightScalar<DERIVED_VEC_TYPE, SCALAR_UINT_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this), b);
+        }
+
+        // MRSHS
+        inline DERIVED_VEC_TYPE rsh (MASK_TYPE const & mask, SCALAR_UINT_TYPE b) const {
+            return EMULATED_FUNCTIONS::shiftBitsRightScalar<DERIVED_VEC_TYPE, SCALAR_UINT_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
+        }
+
+        // RSHVA
+        inline DERIVED_VEC_TYPE & rsha (DERIVED_UINT_VEC_TYPE const & b) {
+            return EMULATED_FUNCTIONS::shiftBitsRightAssign<DERIVED_VEC_TYPE, DERIVED_UINT_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE &>(*this), b);
+        }
+        
+        // MRSHVA
+        inline DERIVED_VEC_TYPE & rsha (MASK_TYPE const & mask, DERIVED_UINT_VEC_TYPE const & b) {
+            return EMULATED_FUNCTIONS::shiftBitsRightAssign<DERIVED_VEC_TYPE, DERIVED_UINT_VEC_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE &>(*this), b);
+        }
+        
+        // RSHSA
+        inline DERIVED_VEC_TYPE & rsha (SCALAR_UINT_TYPE b) {
+            return EMULATED_FUNCTIONS::shiftBitsRightAssignScalar<DERIVED_VEC_TYPE, SCALAR_UINT_TYPE>(static_cast<DERIVED_VEC_TYPE &>(*this), b);
+        }
+
+        // MRSHSA
+        inline DERIVED_VEC_TYPE & rsha (MASK_TYPE const & mask, SCALAR_UINT_TYPE b) {
+            return EMULATED_FUNCTIONS::shiftBitsRightAssignScalar<DERIVED_VEC_TYPE, SCALAR_UINT_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE &>(*this), b);
+        }
+
+        // ROLV
+        inline DERIVED_VEC_TYPE rol (DERIVED_UINT_VEC_TYPE const & b) const {
+            return EMULATED_FUNCTIONS::rotateBitsLeft<DERIVED_VEC_TYPE, SCALAR_TYPE, DERIVED_UINT_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this), b);
+        }
+
+        // MROLV
+        inline DERIVED_VEC_TYPE rol (MASK_TYPE const & mask, DERIVED_UINT_VEC_TYPE const & b) const {
+            return EMULATED_FUNCTIONS::rotateBitsLeft<DERIVED_VEC_TYPE, SCALAR_TYPE, DERIVED_UINT_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
+        }
+
+        // ROLS
+        inline DERIVED_VEC_TYPE rol (SCALAR_UINT_TYPE b) const {
+            return EMULATED_FUNCTIONS::rotateBitsLeftScalar<DERIVED_VEC_TYPE, SCALAR_TYPE, SCALAR_UINT_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this), b);
+        }
+        
+        // MROLS
+        inline DERIVED_VEC_TYPE rol (MASK_TYPE const & mask, SCALAR_UINT_TYPE b) const {
+            return EMULATED_FUNCTIONS::rotateBitsLeftScalar<DERIVED_VEC_TYPE, SCALAR_TYPE, SCALAR_UINT_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
+        }
+
+        // ROLVA
+        inline DERIVED_VEC_TYPE & rola (DERIVED_UINT_VEC_TYPE const & b) {
+            return EMULATED_FUNCTIONS::rotateBitsLeftAssign<DERIVED_VEC_TYPE, SCALAR_TYPE, DERIVED_UINT_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this), b);
+        }
+
+        // MROLVA
+        inline DERIVED_VEC_TYPE & rola (MASK_TYPE const & mask, DERIVED_UINT_VEC_TYPE const & b) {
+            return EMULATED_FUNCTIONS::rotateBitsLeftAssign<DERIVED_VEC_TYPE, SCALAR_TYPE, DERIVED_UINT_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this), b);
+        }
+
+        // ROLSA
+        inline DERIVED_VEC_TYPE & rola (SCALAR_UINT_TYPE b) {
+            return EMULATED_FUNCTIONS::rotateBitsLeftAssignScalar<DERIVED_VEC_TYPE, SCALAR_TYPE, SCALAR_UINT_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this), b);
+        }
+
+        // MROLSA
+        inline DERIVED_VEC_TYPE & rola (MASK_TYPE const & mask, SCALAR_UINT_TYPE b) {
+            return EMULATED_FUNCTIONS::rotateBitsLeftAssignScalar<DERIVED_VEC_TYPE, SCALAR_TYPE, SCALAR_UINT_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this), b);
+        }        
+        
+        // RORV
+        inline DERIVED_VEC_TYPE ror (DERIVED_UINT_VEC_TYPE const & b) const {
+            return EMULATED_FUNCTIONS::rotateBitsRight<DERIVED_VEC_TYPE, SCALAR_TYPE, DERIVED_UINT_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this), b);
+        }
+
+        // MRORV
+        inline DERIVED_VEC_TYPE ror (MASK_TYPE const & mask, DERIVED_UINT_VEC_TYPE const & b) const {
+            return EMULATED_FUNCTIONS::rotateBitsRight<DERIVED_VEC_TYPE, SCALAR_TYPE, DERIVED_UINT_VEC_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
+        }
+
+        // RORS
+        inline DERIVED_VEC_TYPE ror (SCALAR_UINT_TYPE b) const {
+            return EMULATED_FUNCTIONS::rotateBitsRightScalar<DERIVED_VEC_TYPE, SCALAR_TYPE, SCALAR_UINT_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this), b);
+        }
+
+        // MRORS
+        inline DERIVED_VEC_TYPE ror (MASK_TYPE const & mask, SCALAR_UINT_TYPE b) const {
+            return EMULATED_FUNCTIONS::rotateBitsRightScalar<DERIVED_VEC_TYPE, SCALAR_TYPE, SCALAR_UINT_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
+        }
+
+        // RORVA
+        inline DERIVED_VEC_TYPE rora (DERIVED_UINT_VEC_TYPE const & b) {
+            return EMULATED_FUNCTIONS::rotateBitsRightAssign<DERIVED_VEC_TYPE, SCALAR_TYPE, DERIVED_UINT_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this), b);
+        }
+
+        // MRORVA
+        inline DERIVED_VEC_TYPE rora (MASK_TYPE const & mask, DERIVED_UINT_VEC_TYPE const & b) {
+            return EMULATED_FUNCTIONS::rotateBitsRightAssign<DERIVED_VEC_TYPE, SCALAR_TYPE, DERIVED_UINT_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this), b);
+        }
+
+        // RORSA
+        inline DERIVED_VEC_TYPE rora (SCALAR_UINT_TYPE b) {
+            return EMULATED_FUNCTIONS::rotateBitsRightAssignScalar<DERIVED_VEC_TYPE, SCALAR_TYPE, SCALAR_UINT_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this), b);
+        }
+
+        // MRORSA
+        inline DERIVED_VEC_TYPE rora (MASK_TYPE const & mask, SCALAR_UINT_TYPE b) {
+            return EMULATED_FUNCTIONS::rotateBitsRightAssignScalar<DERIVED_VEC_TYPE, SCALAR_TYPE, SCALAR_UINT_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this), b);
+        }
+    };
+    
+    // ***************************************************************************
+    // *
+    // *    Definition of Sign interface. This interface creates
+    // *    an abstraction for operations that are aware of scalar types sign.
+    // *    this interface should be reserved for signed integer and floating
+    // *    point vector types.
+    // *
+    // ***************************************************************************
+    template<typename DERIVED_VEC_TYPE, typename MASK_TYPE>
+    class SIMDVecSignInterface
+    {        
+        // Other vector types necessary for this class
+        typedef SIMDVecSignInterface< 
+            DERIVED_VEC_TYPE,
+            MASK_TYPE> VEC_TYPE;
+
+    private:
+        // Forbid assignment-initialization of vector using scalar values
+        // TODO: is this necessary?
+        inline VEC_TYPE & operator= (const int8_t & x) { }
+        inline VEC_TYPE & operator= (const int16_t & x) { }
+        inline VEC_TYPE & operator= (const int32_t & x) { }
+        inline VEC_TYPE & operator= (const int64_t & x) { }
+        inline VEC_TYPE & operator= (const uint8_t & x) { }
+        inline VEC_TYPE & operator= (const uint16_t & x) { }
+        inline VEC_TYPE & operator= (const uint32_t & x) { }
+        inline VEC_TYPE & operator= (const uint64_t & x) { }
+        inline VEC_TYPE & operator= (const float & x) { }
+        inline VEC_TYPE & operator= (const double & x) { }
+ 
+    public:
 
         // NEG
         inline DERIVED_VEC_TYPE neg () const {
             return EMULATED_FUNCTIONS::unaryMinus<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this));
-        }
-
-        inline DERIVED_VEC_TYPE operator- () const {
-            return neg();
         }
 
         // MNEG
@@ -5319,6 +5362,240 @@ namespace SIMD
         inline DERIVED_VEC_TYPE absa (MASK_TYPE const & mask) {
             return EMULATED_FUNCTIONS::MATH::absAssign<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this));
         }
+    };
+
+    // ***************************************************************************
+    // *
+    // *    Definition of Packable Interface. Pack operations can only be 
+    // *    performed on SIMD vector with lengths higher than 1 and being
+    // *    powers of 2. Vectors of such lengths have to derive from one of type
+    // *    interfaces: signed, unsigned or float and from packable interface.
+    // *    SIMD vectors of length 1 should only use type interface.
+    // *
+    // ***************************************************************************
+    template<class DERIVED_VEC_TYPE,
+             class DERIVED_HALF_VEC_TYPE>
+    class SIMDVecPackableInterface
+    {        
+        // Other vector types necessary for this class
+        typedef SIMDVecPackableInterface< 
+            DERIVED_VEC_TYPE, 
+            DERIVED_HALF_VEC_TYPE> VEC_TYPE;
+
+    private:
+        // Forbid assignment-initialization of vector using scalar values
+        // TODO: is this necessary?
+        inline VEC_TYPE & operator= (const int8_t & x) { }
+        inline VEC_TYPE & operator= (const int16_t & x) { }
+        inline VEC_TYPE & operator= (const int32_t & x) { }
+        inline VEC_TYPE & operator= (const int64_t & x) { }
+        inline VEC_TYPE & operator= (const uint8_t & x) { }
+        inline VEC_TYPE & operator= (const uint16_t & x) { }
+        inline VEC_TYPE & operator= (const uint32_t & x) { }
+        inline VEC_TYPE & operator= (const uint64_t & x) { }
+        inline VEC_TYPE & operator= (const float & x) { }
+        inline VEC_TYPE & operator= (const double & x) { }
+ 
+    public:
+
+        // PACK
+        DERIVED_VEC_TYPE & pack(DERIVED_HALF_VEC_TYPE const & a, DERIVED_HALF_VEC_TYPE const & b) {
+            return EMULATED_FUNCTIONS::pack<DERIVED_VEC_TYPE, DERIVED_HALF_VEC_TYPE> (
+                    static_cast<DERIVED_VEC_TYPE &>(*this), 
+                    static_cast<DERIVED_HALF_VEC_TYPE const &>(a),
+                    static_cast<DERIVED_HALF_VEC_TYPE const &>(b)
+                );
+        }
+        
+        // PACKLO
+        DERIVED_VEC_TYPE & packlo(DERIVED_HALF_VEC_TYPE const & a) {
+            return EMULATED_FUNCTIONS::packLow<DERIVED_VEC_TYPE, DERIVED_HALF_VEC_TYPE> (
+                    static_cast<DERIVED_VEC_TYPE &>(*this), 
+                    static_cast<DERIVED_HALF_VEC_TYPE const &>(a)
+                );
+        }
+
+        // PACKHI
+        DERIVED_VEC_TYPE & packhi(DERIVED_HALF_VEC_TYPE const & a) {
+            return EMULATED_FUNCTIONS::packHigh<DERIVED_VEC_TYPE, DERIVED_HALF_VEC_TYPE> (
+                    static_cast<DERIVED_VEC_TYPE &>(*this), 
+                    static_cast<DERIVED_HALF_VEC_TYPE const &>(a)
+                );
+        }
+        
+        // UNPACK
+        void unpack(DERIVED_HALF_VEC_TYPE & a, DERIVED_HALF_VEC_TYPE & b) const {
+            EMULATED_FUNCTIONS::unpack<DERIVED_VEC_TYPE, DERIVED_HALF_VEC_TYPE> (
+                    static_cast<DERIVED_VEC_TYPE const &>(*this), 
+                    static_cast<DERIVED_HALF_VEC_TYPE &>(a),
+                    static_cast<DERIVED_HALF_VEC_TYPE &>(b)
+                );
+        }
+
+        // UNPACKLO
+        DERIVED_HALF_VEC_TYPE unpacklo() const {
+            return EMULATED_FUNCTIONS::unpackLow<DERIVED_VEC_TYPE, DERIVED_HALF_VEC_TYPE> (
+                        static_cast<DERIVED_VEC_TYPE const &> (*this)
+                    );
+        }
+
+        // UNPACKHI
+        DERIVED_HALF_VEC_TYPE unpackhi() const {
+            return EMULATED_FUNCTIONS::unpackHigh<DERIVED_VEC_TYPE, DERIVED_HALF_VEC_TYPE> (
+                        static_cast<DERIVED_VEC_TYPE const &> (*this)
+                    );
+        }
+    };
+    // ***************************************************************************
+    // *
+    // *    Definition of interface for vectors using UNSIGNED INTEGER scalar types
+    // *
+    // ***************************************************************************
+    template<typename DERIVED_UINT_VEC_TYPE,
+             typename SCALAR_UINT_TYPE, 
+             uint32_t VEC_LEN,
+             typename MASK_TYPE,
+             typename SWIZZLE_MASK_TYPE> 
+    class SIMDVecUnsignedInterface : 
+        public SIMDVecBaseInterface< 
+            DERIVED_UINT_VEC_TYPE,
+            SCALAR_UINT_TYPE, 
+            VEC_LEN,
+            MASK_TYPE,
+            SWIZZLE_MASK_TYPE>,
+        public SIMDVecBitwiseInterface<
+            DERIVED_UINT_VEC_TYPE,
+            SCALAR_UINT_TYPE,
+            MASK_TYPE>,
+        public SIMDVecGatherScatterInterface<
+            DERIVED_UINT_VEC_TYPE,   // DERIVED_VEC_TYPE
+            DERIVED_UINT_VEC_TYPE,
+            SCALAR_UINT_TYPE,
+            MASK_TYPE>,
+        public SIMDVecShiftRotateInterface<
+            DERIVED_UINT_VEC_TYPE,   // DERIVED_VEC_TYPE
+            DERIVED_UINT_VEC_TYPE,
+            SCALAR_UINT_TYPE,        // SCALAR_TYPE
+            SCALAR_UINT_TYPE,
+            MASK_TYPE>
+    {
+        // Other vector types necessary for this class
+        typedef SIMDVecUnsignedInterface< 
+            DERIVED_UINT_VEC_TYPE, 
+            SCALAR_UINT_TYPE,
+            VEC_LEN, 
+            MASK_TYPE,
+            SWIZZLE_MASK_TYPE> VEC_TYPE;
+    private:
+
+        // Forbid assignment-initialization of vector using scalar values
+        // TODO: is this necessary?
+        inline VEC_TYPE & operator= (const int8_t & x) { }
+        inline VEC_TYPE & operator= (const int16_t & x) { }
+        inline VEC_TYPE & operator= (const int32_t & x) { }
+        inline VEC_TYPE & operator= (const int64_t & x) { }
+        inline VEC_TYPE & operator= (const uint8_t & x) { }
+        inline VEC_TYPE & operator= (const uint16_t & x) { }
+        inline VEC_TYPE & operator= (const uint32_t & x) { }
+        inline VEC_TYPE & operator= (const uint64_t & x) { }
+        inline VEC_TYPE & operator= (const float & x) { }
+        inline VEC_TYPE & operator= (const double & x) { }
+ 
+        SCALAR_UINT_TYPE operator[] (SCALAR_UINT_TYPE index) const; // Declaration only! This operator has to be implemented in derived class.
+        inline DERIVED_UINT_VEC_TYPE & insert(uint32_t index, SCALAR_UINT_TYPE value); // Declaration only! This operator has to be implemented in derived class.
+
+    protected:
+            
+        // Making destructor protected prohibits this class from being instantiated. Effectively this class can only be used as a base class.
+        ~SIMDVecUnsignedInterface() {};
+    public:
+        // Everything already handled by other interface classes
+
+        // SUBV
+        inline DERIVED_UINT_VEC_TYPE operator- (DERIVED_UINT_VEC_TYPE const & b) const {
+            return this->sub(b);
+        }
+    };
+
+    // ***************************************************************************
+    // *
+    // *    Definition of interface for vectors using SIGNED INTEGER scalar types
+    // *
+    // ***************************************************************************
+    template<typename DERIVED_VEC_TYPE,
+             typename DERIVED_VEC_UINT_TYPE,
+             typename SCALAR_TYPE, 
+             uint32_t VEC_LEN,
+             typename SCALAR_UINT_TYPE,
+             typename MASK_TYPE,
+             typename SWIZZLE_MASK_TYPE>
+    class SIMDVecSignedInterface : 
+        public SIMDVecBaseInterface< 
+            DERIVED_VEC_TYPE,
+            SCALAR_TYPE, 
+            VEC_LEN,
+            MASK_TYPE,
+            SWIZZLE_MASK_TYPE>,
+        public SIMDVecBitwiseInterface<
+            DERIVED_VEC_TYPE,
+            SCALAR_TYPE,
+            MASK_TYPE>,
+        public SIMDVecGatherScatterInterface<
+            DERIVED_VEC_TYPE,   // DERIVED_VEC_TYPE
+            DERIVED_VEC_UINT_TYPE,   // DERIVEC_UINT_VEC_TYPE // TODO: replace this with DERIVED_VEC_TYPE when other types independant!
+            SCALAR_TYPE,
+            MASK_TYPE>,
+        public SIMDVecShiftRotateInterface<
+            DERIVED_VEC_TYPE,
+            DERIVED_VEC_UINT_TYPE,
+            SCALAR_TYPE,
+            SCALAR_UINT_TYPE,
+            MASK_TYPE>,
+        public SIMDVecSignInterface<
+            DERIVED_VEC_TYPE,
+            MASK_TYPE>
+    {
+        // Other vector types necessary for this class
+        typedef SIMDVecSignedInterface< DERIVED_VEC_TYPE,
+                             DERIVED_VEC_UINT_TYPE,
+                             SCALAR_TYPE,
+                             VEC_LEN, 
+                             SCALAR_UINT_TYPE,
+                             MASK_TYPE,
+                             SWIZZLE_MASK_TYPE> VEC_TYPE;
+
+    private:
+        // Forbid assignment-initialization of vector using scalar values
+        // TODO: is this necessary?
+        inline VEC_TYPE & operator= (const int8_t & x) { }
+        inline VEC_TYPE & operator= (const int16_t & x) { }
+        inline VEC_TYPE & operator= (const int32_t & x) { }
+        inline VEC_TYPE & operator= (const int64_t & x) { }
+        inline VEC_TYPE & operator= (const uint8_t & x) { }
+        inline VEC_TYPE & operator= (const uint16_t & x) { }
+        inline VEC_TYPE & operator= (const uint32_t & x) { }
+        inline VEC_TYPE & operator= (const uint64_t & x) { }
+        inline VEC_TYPE & operator= (const float & x) { }
+        inline VEC_TYPE & operator= (const double & x) { }
+        
+        SCALAR_TYPE operator[] (SCALAR_UINT_TYPE index) const; // Declaration only! This operator has to be implemented in derived class.
+        inline DERIVED_VEC_TYPE & insert (uint32_t index, SCALAR_TYPE value); // Declaration only! This operator has to be implemented in derived class.
+    protected:
+            
+        // Making destructor protected prohibits this class from being instantiated. Effectively this class can only be used as a base class.
+        ~SIMDVecSignedInterface() {};
+    public:
+        // Everything already handled by other interface classes
+        
+        // SUBV
+        inline DERIVED_VEC_TYPE operator- (DERIVED_VEC_TYPE const & b) const {
+            return this->sub(b);
+        }
+        
+        // NEG
+        inline DERIVED_VEC_TYPE operator- () const {
+            return this->neg();
+        }
 
     };
 
@@ -5335,14 +5612,21 @@ namespace SIMD
              typename SCALAR_UINT_TYPE,
              typename MASK_TYPE,
              typename SWIZZLE_MASK_TYPE>
-    class SIMDVecFloatInterface : public SIMDVecSignedInterface< 
-        DERIVED_VEC_TYPE, 
-        DERIVED_VEC_UINT_TYPE, 
-        SCALAR_FLOAT_TYPE,
-        VEC_LEN,
-        SCALAR_UINT_TYPE,
-        MASK_TYPE,
-        SWIZZLE_MASK_TYPE>
+    class SIMDVecFloatInterface :  
+        public SIMDVecBaseInterface< 
+            DERIVED_VEC_TYPE,
+            SCALAR_FLOAT_TYPE, 
+            VEC_LEN,
+            MASK_TYPE,
+            SWIZZLE_MASK_TYPE>,
+        public SIMDVecGatherScatterInterface<
+            DERIVED_VEC_TYPE,   // DERIVED_VEC_TYPE
+            DERIVED_VEC_UINT_TYPE,   // DERIVEC_UINT_VEC_TYPE // TODO: replace this with DERIVED_VEC_TYPE when other types independant!
+            SCALAR_FLOAT_TYPE,
+            MASK_TYPE>,
+        public SIMDVecSignInterface<
+            DERIVED_VEC_TYPE,
+            MASK_TYPE>
     {
         // Other vector types necessary for this class
         typedef SIMDVecFloatInterface< DERIVED_VEC_TYPE,
@@ -5375,6 +5659,16 @@ namespace SIMD
         SCALAR_FLOAT_TYPE operator[] (SCALAR_UINT_TYPE index) const; // Declaration only! This operator has to be implemented in derived class.
         inline DERIVED_VEC_TYPE & insert(uint32_t index, SCALAR_FLOAT_TYPE value); // Declaration only! This operator has to be implemented in derived class.
     public:
+
+        // SUBV
+        inline DERIVED_VEC_TYPE operator- (DERIVED_VEC_TYPE const & b) const {
+            return this->sub(b);
+        }
+        
+        // NEG
+        inline DERIVED_VEC_TYPE operator- () const {
+            return this->neg();
+        }
 
         // CMPEQRV
         //inline DERIVED_VEC_TYPE 
@@ -5523,6 +5817,16 @@ namespace SIMD
             return EMULATED_FUNCTIONS::MATH::iszerosub<DERIVED_VEC_TYPE, MASK_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
+        // EXP
+        inline DERIVED_VEC_TYPE exp () const {
+            return EMULATED_FUNCTIONS::MATH::exp<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this));
+        }
+
+        // MEXP
+        inline DERIVED_VEC_TYPE exp (MASK_TYPE const & mask) const {
+            return EMULATED_FUNCTIONS::MATH::exp<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this));
+        }
+
         // SIN
         inline DERIVED_VEC_TYPE sin () const {
             return EMULATED_FUNCTIONS::MATH::sin<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this));
@@ -5564,89 +5868,8 @@ namespace SIMD
         }
     };
     
-    // ***************************************************************************
-    // *
-    // *    Definition of Packable Interface. Pack operations can only be 
-    // *    performed on SIMD vector with lengths higher than 1 and being
-    // *    powers of 2. Vectors of such lengths have to derive from one of type
-    // *    interfaces: signed, unsigned or float and from packable interface.
-    // *    SIMD vectors of length 1 should only use type interface.
-    // *
-    // ***************************************************************************
-    template<class DERIVED_VEC_TYPE,
-             class DERIVED_HALF_VEC_TYPE>
-    class SIMDVecPackableInterface
-    {        
-        // Other vector types necessary for this class
-        typedef SIMDVecPackableInterface< 
-            DERIVED_VEC_TYPE, 
-            DERIVED_HALF_VEC_TYPE> VEC_TYPE;
-
-    private:
-        // Forbid assignment-initialization of vector using scalar values
-        // TODO: is this necessary?
-        inline VEC_TYPE & operator= (const int8_t & x) { }
-        inline VEC_TYPE & operator= (const int16_t & x) { }
-        inline VEC_TYPE & operator= (const int32_t & x) { }
-        inline VEC_TYPE & operator= (const int64_t & x) { }
-        inline VEC_TYPE & operator= (const uint8_t & x) { }
-        inline VEC_TYPE & operator= (const uint16_t & x) { }
-        inline VEC_TYPE & operator= (const uint32_t & x) { }
-        inline VEC_TYPE & operator= (const uint64_t & x) { }
-        inline VEC_TYPE & operator= (const float & x) { }
-        inline VEC_TYPE & operator= (const double & x) { }
- 
-    public:
-
-        // PACK
-        DERIVED_VEC_TYPE & pack(DERIVED_HALF_VEC_TYPE const & a, DERIVED_HALF_VEC_TYPE const & b) {
-            return EMULATED_FUNCTIONS::pack<DERIVED_VEC_TYPE, DERIVED_HALF_VEC_TYPE> (
-                    static_cast<DERIVED_VEC_TYPE &>(*this), 
-                    static_cast<DERIVED_HALF_VEC_TYPE const &>(a),
-                    static_cast<DERIVED_HALF_VEC_TYPE const &>(b)
-                );
-        }
-        
-        // PACKLO
-        DERIVED_VEC_TYPE & packlo(DERIVED_HALF_VEC_TYPE const & a) {
-            return EMULATED_FUNCTIONS::packLow<DERIVED_VEC_TYPE, DERIVED_HALF_VEC_TYPE> (
-                    static_cast<DERIVED_VEC_TYPE &>(*this), 
-                    static_cast<DERIVED_HALF_VEC_TYPE const &>(a)
-                );
-        }
-
-        // PACKHI
-        DERIVED_VEC_TYPE & packhi(DERIVED_HALF_VEC_TYPE const & a) {
-            return EMULATED_FUNCTIONS::packHigh<DERIVED_VEC_TYPE, DERIVED_HALF_VEC_TYPE> (
-                    static_cast<DERIVED_VEC_TYPE &>(*this), 
-                    static_cast<DERIVED_HALF_VEC_TYPE const &>(a)
-                );
-        }
-        
-        // UNPACK
-        void unpack(DERIVED_HALF_VEC_TYPE & a, DERIVED_HALF_VEC_TYPE & b) const {
-            EMULATED_FUNCTIONS::unpack<DERIVED_VEC_TYPE, DERIVED_HALF_VEC_TYPE> (
-                    static_cast<DERIVED_VEC_TYPE const &>(*this), 
-                    static_cast<DERIVED_HALF_VEC_TYPE &>(a),
-                    static_cast<DERIVED_HALF_VEC_TYPE &>(b)
-                );
-        }
-
-        // UNPACKLO
-        DERIVED_HALF_VEC_TYPE unpacklo() const {
-            return EMULATED_FUNCTIONS::unpackLow<DERIVED_VEC_TYPE, DERIVED_HALF_VEC_TYPE> (
-                        static_cast<DERIVED_VEC_TYPE const &> (*this)
-                    );
-        }
-
-        // UNPACKHI
-        DERIVED_HALF_VEC_TYPE unpackhi() const {
-            return EMULATED_FUNCTIONS::unpackHigh<DERIVED_VEC_TYPE, DERIVED_HALF_VEC_TYPE> (
-                        static_cast<DERIVED_VEC_TYPE const &> (*this)
-                    );
-        }
-    };
-
+    // This is just an experimental setup! Providing functions like this to handle interface
+    // is possible although it will be pretty extensive in number of necessary declarations.
     template<typename VEC_TYPE>
     inline VEC_TYPE addv (VEC_TYPE const & src1, VEC_TYPE const & src2) {
         return src1.add(src2);

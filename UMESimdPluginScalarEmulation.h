@@ -477,9 +477,7 @@ namespace SIMD
     class SIMDVecScalarEmu_u final : 
         public SIMDVecUnsignedInterface< 
             SIMDVecScalarEmu_u<SCALAR_UINT_TYPE, VEC_LEN>, // DERIVED_VEC_TYPE
-            SIMDVecScalarEmu_u<SCALAR_UINT_TYPE, VEC_LEN>, // DERIVED_VEC_UINT_TYPE
             SCALAR_UINT_TYPE,  // SCALAR_TYPE 
-            SCALAR_UINT_TYPE,  // SCALAR_UINT_TYPE - in this case is the same as above
             VEC_LEN,
             SIMDVecScalarEmuMask<typename SIMDVecScalarEmu_u_traits<SCALAR_UINT_TYPE, VEC_LEN>::MASK_BASE_TYPE, VEC_LEN>,
             SIMDVecScalarEmuSwizzleMask<VEC_LEN>>,
@@ -576,9 +574,7 @@ namespace SIMD
     class SIMDVecScalarEmu_u<SCALAR_UINT_TYPE, 1> : 
         public SIMDVecUnsignedInterface< 
             SIMDVecScalarEmu_u<SCALAR_UINT_TYPE, 1>, // DERIVED_VEC_TYPE
-            SIMDVecScalarEmu_u<SCALAR_UINT_TYPE, 1>, // DERIVED_VEC_UINT_TYPE
             SCALAR_UINT_TYPE,  // SCALAR_TYPE 
-            SCALAR_UINT_TYPE,  // SCALAR_UINT_TYPE - in this case is the same as above
             1,
             SIMDVecScalarEmuMask<typename SIMDVecScalarEmu_u_traits<SCALAR_UINT_TYPE, 1>::MASK_BASE_TYPE, 1>,
             SIMDVecScalarEmuSwizzleMask<1>>
