@@ -2130,7 +2130,95 @@ void genericMCEILTest()
     bool inRange = valuesInRange(values, DATA_SET::outputs::MCEIL, VEC_LEN, 0.05f);
     CHECK_CONDITION(inRange, "MCEIL");
 }
-    
+  
+template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
+void genericISFINTest()
+{
+    bool values[VEC_LEN];
+    VEC_TYPE vec0(DATA_SET::inputs::inputA);
+    MASK_TYPE mask = vec0.isfin();
+    mask.store(values);
+    bool inRange = valuesExact(values, DATA_SET::outputs::ISFIN, VEC_LEN);
+    CHECK_CONDITION(inRange, "ISFIN");
+}
+
+template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
+void genericISINFTest()
+{
+    bool values[VEC_LEN];
+    VEC_TYPE vec0(DATA_SET::inputs::inputA);
+    MASK_TYPE mask = vec0.isinf();
+    mask.store(values);
+    bool inRange = valuesExact(values, DATA_SET::outputs::ISINF, VEC_LEN);
+    CHECK_CONDITION(inRange, "ISINF");
+}
+
+template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
+void genericISANTest()
+{
+    bool values[VEC_LEN];
+    VEC_TYPE vec0(DATA_SET::inputs::inputA);
+    MASK_TYPE mask = vec0.isan();
+    mask.store(values);
+    bool inRange = valuesExact(values, DATA_SET::outputs::ISAN, VEC_LEN);
+    CHECK_CONDITION(inRange, "ISAN");
+}
+
+template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
+void genericISNANTest()
+{
+    bool values[VEC_LEN];
+    VEC_TYPE vec0(DATA_SET::inputs::inputA);
+    MASK_TYPE mask = vec0.isnan();
+    mask.store(values);
+    bool inRange = valuesExact(values, DATA_SET::outputs::ISNAN, VEC_LEN);
+    CHECK_CONDITION(inRange, "ISNAN");
+}
+
+template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
+void genericISNORMTest()
+{
+    bool values[VEC_LEN];
+    VEC_TYPE vec0(DATA_SET::inputs::inputA);
+    MASK_TYPE mask = vec0.isnorm();
+    mask.store(values);
+    bool inRange = valuesExact(values, DATA_SET::outputs::ISNORM, VEC_LEN);
+    CHECK_CONDITION(inRange, "ISNORM");
+}
+
+template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
+void genericISSUBTest()
+{
+    bool values[VEC_LEN];
+    VEC_TYPE vec0(DATA_SET::inputs::inputA);
+    MASK_TYPE mask = vec0.issub();
+    mask.store(values);
+    bool inRange = valuesExact(values, DATA_SET::outputs::ISSUB, VEC_LEN);
+    CHECK_CONDITION(inRange, "ISSUB");
+}
+
+template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
+void genericISZEROTest()
+{
+    bool values[VEC_LEN];
+    VEC_TYPE vec0(DATA_SET::inputs::inputA);
+    MASK_TYPE mask = vec0.iszero();
+    mask.store(values);
+    bool inRange = valuesExact(values, DATA_SET::outputs::ISZERO, VEC_LEN);
+    CHECK_CONDITION(inRange, "ISZERO");
+}
+
+template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
+void genericISZEROSUBTest()
+{
+    bool values[VEC_LEN];
+    VEC_TYPE vec0(DATA_SET::inputs::inputA);
+    MASK_TYPE mask = vec0.iszerosub();
+    mask.store(values);
+    bool inRange = valuesExact(values, DATA_SET::outputs::ISZEROSUB, VEC_LEN);
+    CHECK_CONDITION(inRange, "ISZEROSUB");
+}
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericSINTest()
 {
@@ -2508,16 +2596,14 @@ void genericFloatInterfaceTest()
     genericMFLOORTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
     genericCEILTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
     genericMCEILTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
-    // ISFIN
-    // ISINF
-    //    genericISINFTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
-    // ISAN
-    // ISNAN
-    // ISNORM
-    // ISSUB
-    // ISZERO
-    // ISZEROSUB
-    
+    genericISFINTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericISINFTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericISANTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericISNANTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericISNORMTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericISSUBTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericISZEROTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericISZEROSUBTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
     
     genericSQRTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
     genericMSQRTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();

@@ -232,6 +232,15 @@ struct DataSet_1_32f {
         static const float MFLOOR[32];
         static const float CEIL[32];
         static const float MCEIL[32];
+        static const bool ISFIN[32];
+        static const bool ISINF[32];
+        static const bool ISAN[32];
+        static const bool ISNAN[32];
+        static const bool ISNORM[32];
+        static const bool ISSUB[32];
+        static const bool ISZERO[32];
+        static const bool ISZEROSUB[32];
+
         static const float SIN[32];
         static const float MSIN[32];
         static const float COS[32];

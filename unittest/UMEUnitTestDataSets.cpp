@@ -1780,6 +1780,63 @@ const float DataSet_1_32f::outputs::MCEIL[32] = {
     6.1809000000E+04f,  9.8961400000E+05f,  -9.4871000000E+04f, 9.9999999990E+04f
 };
 
+const bool DataSet_1_32f::outputs::ISFIN[32] = {
+    true, true, true, true, true, true, true, true,
+    true, true, true, true, true, true, true, true,
+    true, true, true, true, true, true, true, true,
+    true, true, true, true, true, true, true, true
+};
+
+const bool DataSet_1_32f::outputs::ISINF[32] = {
+    false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false
+};
+
+
+const bool DataSet_1_32f::outputs::ISAN[32] = {
+    true, true, true, true, true, true, true, true,
+    true, true, true, true, true, true, true, true,
+    true, true, true, true, true, true, true, true,
+    true, true, true, true, true, true, true, true
+};
+
+const bool DataSet_1_32f::outputs::ISNAN[32] = {
+    false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false
+};
+
+const bool DataSet_1_32f::outputs::ISNORM[32] = {
+    true, true, true, true, true, true, true, true,
+    true, true, true, true, true, true, true, true,
+    true, true, true, true, true, true, true, true,
+    true, true, true, true, true, true, true, true
+};
+
+const bool DataSet_1_32f::outputs::ISSUB[32] = {
+    false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false
+};
+
+const bool DataSet_1_32f::outputs::ISZERO[32] = { 
+    false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false
+};
+
+const bool DataSet_1_32f::outputs::ISZEROSUB[32] = {
+    false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false
+};
+
 const float DataSet_1_32f::outputs::SIN[32] = {
     8.4147098481E-01f,  -8.7753197510E-01f, -2.7004915077E-01f, 7.0707914867E-01f,
     -9.9995647461E-01f, -2.8557105100E-01f, 4.0657309321E-01f,  1.2999996338E-03f,
