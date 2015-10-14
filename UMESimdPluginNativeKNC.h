@@ -300,18 +300,61 @@ namespace SIMD
         inline SIMDVecKNCMask & landa (SIMDVecKNCMask const & maskOp) {
             mMask &= maskOp.mMask;
             return *this;
-        };
-        
+        }        
         inline SIMDVecKNCMask & operator&= (SIMDVecKNCMask const & maskOp) {
             mMask &= maskOp.mMask;
             return *this;
-        };
+        }
         // LOR
+        inline SIMDVecKNCMask lor ( SIMDVecKNCMask const & maskOp) const {
+            __mmask8 m0 = mMask | maskOp.mMask;
+            return SIMDVecKNCMask(m0);
+        }
+        
+        inline SIMDVecKNCMask operator| ( SIMDVecKNCMask const & maskOp) const {
+            __mmask8 m0 = mMask | maskOp.mMask;
+            return SIMDVecKNCMask(m0);
+        }
         // LORA
+        inline SIMDVecKNCMask & lora (SIMDVecKNCMask const & maskOp) {
+            mMask |= maskOp.mMask;
+            return *this;
+        }
+        
+        inline SIMDVecKNCMask & operator|= (SIMDVecKNCMask const & maskOp) {
+            mMask |= maskOp.mMask;
+            return *this;
+        }
         // LXOR
+        inline SIMDVecKNCMask lxor ( SIMDVecKNCMask const & maskOp) const {
+            __mmask8 m0 = mMask ^ maskOp.mMask;
+            return SIMDVecKNCMask(m0);
+        }
+        
+        inline SIMDVecKNCMask operator^ ( SIMDVecKNCMask const & maskOp) const {
+            __mmask8 m0 = mMask ^ maskOp.mMask;
+            return SIMDVecKNCMask(m0);
+        }
         // LXORA
+        inline SIMDVecKNCMask & lxora (SIMDVecKNCMask const & maskOp) {
+            mMask ^= maskOp.mMask;
+            return *this;
+        }
+        
+        inline SIMDVecKNCMask & operator^= (SIMDVecKNCMask const & maskOp) {
+            mMask ^= maskOp.mMask;
+            return *this;
+        }
         // LNOT
+        inline SIMDVecKNCMask lnot () const {
+            __mmask8 m0 = ~mMask;
+            return SIMDVecKNCMask(m0);
+        }
         // LNOTA
+        inline SIMDVecKNCMask & lnota () {
+            mMask = ~mMask;
+            return *this;
+        }
         // HLAND
         // HLOR
         // HLXOR
@@ -387,6 +430,79 @@ namespace SIMD
         inline SIMDVecKNCMask(SIMDVecKNCMask const & mask) {
             mMask = mask.mMask;
         }
+        
+        // LAND
+        inline SIMDVecKNCMask land ( SIMDVecKNCMask const & maskOp) const {
+            __mmask16 m0 = mMask & maskOp.mMask;
+            return SIMDVecKNCMask(m0);
+        }
+        
+        inline SIMDVecKNCMask operator& ( SIMDVecKNCMask const & maskOp) const {
+            __mmask16 m0 = mMask & maskOp.mMask;
+            return SIMDVecKNCMask(m0);
+        }
+        // LANDA
+        inline SIMDVecKNCMask & landa (SIMDVecKNCMask const & maskOp) {
+            mMask &= maskOp.mMask;
+            return *this;
+        }        
+        inline SIMDVecKNCMask & operator&= (SIMDVecKNCMask const & maskOp) {
+            mMask &= maskOp.mMask;
+            return *this;
+        }
+        // LOR
+        inline SIMDVecKNCMask lor ( SIMDVecKNCMask const & maskOp) const {
+            __mmask16 m0 = mMask | maskOp.mMask;
+            return SIMDVecKNCMask(m0);
+        }
+        
+        inline SIMDVecKNCMask operator| ( SIMDVecKNCMask const & maskOp) const {
+            __mmask16 m0 = mMask | maskOp.mMask;
+            return SIMDVecKNCMask(m0);
+        }
+        // LORA
+        inline SIMDVecKNCMask & lora (SIMDVecKNCMask const & maskOp) {
+            mMask |= maskOp.mMask;
+            return *this;
+        }
+        
+        inline SIMDVecKNCMask & operator|= (SIMDVecKNCMask const & maskOp) {
+            mMask |= maskOp.mMask;
+            return *this;
+        }
+        // LXOR
+        inline SIMDVecKNCMask lxor ( SIMDVecKNCMask const & maskOp) const {
+            __mmask16 m0 = mMask ^ maskOp.mMask;
+            return SIMDVecKNCMask(m0);
+        }
+        
+        inline SIMDVecKNCMask operator^ ( SIMDVecKNCMask const & maskOp) const {
+            __mmask16 m0 = mMask ^ maskOp.mMask;
+            return SIMDVecKNCMask(m0);
+        }
+        // LXORA
+        inline SIMDVecKNCMask & lxora (SIMDVecKNCMask const & maskOp) {
+            mMask ^= maskOp.mMask;
+            return *this;
+        }
+        
+        inline SIMDVecKNCMask & operator^= (SIMDVecKNCMask const & maskOp) {
+            mMask ^= maskOp.mMask;
+            return *this;
+        }
+        // LNOT
+        inline SIMDVecKNCMask lnot () const {
+            __mmask16 m0 = ~mMask;
+            return SIMDVecKNCMask(m0);
+        }
+        // LNOTA
+        inline SIMDVecKNCMask & lnota () {
+            mMask = ~mMask;
+            return *this;
+        }
+        // HLAND
+        // HLOR
+        // HLXOR
     };
 
     
