@@ -36,6 +36,172 @@
 // inputA, inputB, inputC, scalar and mask are used as inputs.
 // Other arrays are used as model values used in comparison
 
+const bool DataSet_1_mask::inputs::maskA[128] = {
+    false,  true,   false,  false,  true,   false,  false,  false,
+    false,  true,   true,   false,  true,   true,   false,  false,
+    true,   true,   true,   false,  true,   false,  false,  false,
+    true,   false,  true,   false,  true,   true,   true,   true,
+    false,  false,  false,  false,  false,  false,  true,   false,
+    true,   false,  false,  false,  true,   true,   true,   true,
+    false,  false,  false,  true,   true,   false,  false,  true,
+    true,   true,   true,   true,   false,  false,  false,  false,
+    false,  false,  true,   false,  false,  false,  false,  false,
+    true,   false,  true,   true,   true,   false,  false,  false,
+    true,   false,  false,  true,   true,   false,  false,  false,
+    false,  false,  true,   false,  true,   true,   false,  true,
+    true,   true,   true,   true,   false,  false,  true,   true,
+    false,  false,  true,   false,  true,   false,  true,   false,
+    false,  true,   true,   true,   false,  true,   true,   false,
+    false,  true,   false,  false,  false,  true,   true,   true
+};
+
+const bool DataSet_1_mask::inputs::maskB[128] = {
+    true,   true,   true,   false,  true,   true,   false,  false,
+    false,  false,  true,   false,  true,   false,  true,   true,
+    true,   true,   false,  false,  true,   false,  true,   true,
+    false,  true,   true,   true,   true,   true,   true,   true,
+    true,   true,   false,  true,   false,  true,   true,   true,
+    false,  false,  false,  true,   true,   false,  false,  true,
+    true,   true,   true,   false,  true,   false,  true,   true,
+    false,  false,  true,   false,  false,  false,  true,   false,
+    false,  false,  true,   false,  false,  false,  false,  true,
+    false,  true,   true,   false,  true,   true,   false,  true,
+    false,  false,  true,   false,  false,  true,   false,  false,
+    false,  true,   true,   false,  false,  true,   true,   true,
+    false,  true,   false,  true,   false,  false,  true,   true,
+    false,  false,  false,  false,  false,  true,   true,   true,
+    false,  true,   false,  true,   true,   true,   true,   false,
+    true,   false,  false,  false,  false,  false,  true,   false
+};
+
+const bool DataSet_1_mask::outputs::LAND[128] = {
+    false,  true,   false,  false,  true,   false,  false,  false,
+    false,  false,  true,   false,  true,   false,  false,  false,
+    true,   true,   false,  false,  true,   false,  false,  false,
+    false,  false,  true,   false,  true,   true,   true,   true,
+    false,  false,  false,  false,  false,  false,  true,   false,
+    false,  false,  false,  false,  true,   false,  false,  true,
+    false,  false,  false,  false,  true,   false,  false,  true,
+    false,  false,  true,   false,  false,  false,  false,  false,
+    false,  false,  true,   false,  false,  false,  false,  false,
+    false,  false,  true,   false,  true,   false,  false,  false,
+    false,  false,  false,  false,  false,  false,  false,  false,
+    false,  false,  true,   false,  false,  true,   false,  true,
+    false,  true,   false,  true,   false,  false,  true,   true,
+    false,  false,  false,  false,  false,  false,  true,   false,
+    false,  true,   false,  true,   false,  true,   true,   false,
+    false,  false,  false,  false,  false,  false,  true,   false
+};
+
+const bool DataSet_1_mask::outputs::LOR[128] = {
+    true,   true,   true,   false,  true,   true,   false,  false,
+    false,  true,   true,   false,  true,   true,   true,   true,
+    true,   true,   true,   false,  true,   false,  true,   true,
+    true,   true,   true,   true,   true,   true,   true,   true,
+    true,   true,   false,  true,   false,  true,   true,   true,
+    true,   false,  false,  true,   true,   true,   true,   true,
+    true,   true,   true,   true,   true,   false,  true,   true,
+    true,   true,   true,   true,   false,  false,  true,   false,
+    false,  false,  true,   false,  false,  false,  false,  true,
+    true,   true,   true,   true,   true,   true,   false,  true,
+    true,   false,  true,   true,   true,   true,   false,  false,
+    false,  true,   true,   false,  true,   true,   true,   true,
+    true,   true,   true,   true,   false,  false,  true,   true,
+    false,  false,  true,   false,  true,   true,   true,   true,
+    false,  true,   true,   true,   true,   true,   true,   false,
+    true,   true,   false,  false,  false,  true,   true,   true
+};
+const bool DataSet_1_mask::outputs::LXOR[128] = {
+    true,   false,  true,   false,  false,  true,   false,  false,
+    false,  true,   false,  false,  false,  true,   true,   true,
+    false,  false,  true,   false,  false,  false,  true,   true,
+    true,   true,   false,  true,   false,  false,  false,  false,
+    true,   true,   false,  true,   false,  true,   false,  true,
+    true,   false,  false,  true,   false,  true,   true,   false,
+    true,   true,   true,   true,   false,  false,  true,   false,
+    true,   true,   false,  true,   false,  false,  true,   false,
+    false,  false,  false,  false,  false,  false,  false,  true,
+    true,   true,   false,  true,   false,  true,   false,  true,
+    true,   false,  true,   true,   true,   true,   false,  false,
+    false,  true,   false,  false,  true,   false,  true,   false,
+    true,   false,  true,   false,  false,  false,  false,  false,
+    false,  false,  true,   false,  true,   true,   false,  true,
+    false,  false,  true,   false,  true,   false,  false,  false,
+    true,   true,   false,  false,  false,  true,   false,  true
+};
+const bool DataSet_1_mask::outputs::LNOT[128] = {
+    true,   false,  true,   true,   false,  true,   true,   true,
+    true,   false,  false,  true,   false,  false,  true,   true,
+    false,  false,  false,  true,   false,  true,   true,   true,
+    false,  true,   false,  true,   false,  false,  false,  false,
+    true,   true,   true,   true,   true,   true,   false,  true,
+    false,  true,   true,   true,   false,  false,  false,  false,
+    true,   true,   true,   false,  false,  true,   true,   false,
+    false,  false,  false,  false,  true,   true,   true,   true,
+    true,   true,   false,  true,   true,   true,   true,   true,
+    false,  true,   false,  false,  false,  true,   true,   true,
+    false,  true,   true,   false,  false,  true,   true,   true,
+    true,   true,   false,  true,   false,  false,  true,   false,
+    false,  false,  false,  false,  true,   true,   false,  false,
+    true,   true,   false,  true,   false,  true,   false,  true,
+    true,   false,  false,  false,  true,   false,  false,  true,
+    true,   false,  true,   true,   true,   false,  false,  false
+};
+const bool DataSet_1_mask::outputs::HLAND[128] = {
+    false,  false,  false,  false,  false,  false,  false,  false,
+    false,  false,  false,  false,  false,  false,  false,  false,
+    false,  false,  false,  false,  false,  false,  false,  false,
+    false,  false,  false,  false,  false,  false,  false,  false,
+    false,  false,  false,  false,  false,  false,  false,  false,
+    false,  false,  false,  false,  false,  false,  false,  false,
+    false,  false,  false,  false,  false,  false,  false,  false,
+    false,  false,  false,  false,  false,  false,  false,  false,
+    false,  false,  false,  false,  false,  false,  false,  false,
+    false,  false,  false,  false,  false,  false,  false,  false,
+    false,  false,  false,  false,  false,  false,  false,  false,
+    false,  false,  false,  false,  false,  false,  false,  false,
+    false,  false,  false,  false,  false,  false,  false,  false,
+    false,  false,  false,  false,  false,  false,  false,  false,
+    false,  false,  false,  false,  false,  false,  false,  false,
+    false,  false,  false,  false,  false,  false,  false,  false
+};
+const bool DataSet_1_mask::outputs::HLOR[128] = {
+    false,  true,   true,   true,   true,   true,   true,   true,
+    true,   true,   true,   true,   true,   true,   true,   true,
+    true,   true,   true,   true,   true,   true,   true,   true,
+    true,   true,   true,   true,   true,   true,   true,   true,
+    true,   true,   true,   true,   true,   true,   true,   true,
+    true,   true,   true,   true,   true,   true,   true,   true,
+    true,   true,   true,   true,   true,   true,   true,   true,
+    true,   true,   true,   true,   true,   true,   true,   true,
+    true,   true,   true,   true,   true,   true,   true,   true,
+    true,   true,   true,   true,   true,   true,   true,   true,
+    true,   true,   true,   true,   true,   true,   true,   true,
+    true,   true,   true,   true,   true,   true,   true,   true,
+    true,   true,   true,   true,   true,   true,   true,   true,
+    true,   true,   true,   true,   true,   true,   true,   true,
+    true,   true,   true,   true,   true,   true,   true,   true,
+    true,   true,   true,   true,   true,   true,   true,   true
+};
+const bool DataSet_1_mask::outputs::HLXOR[128] = {
+    false,  true,   true,   true,   false,  false,  false,  false,
+    false,  true,   false,  false,  true,   false,  false,  false,
+    true,   false,  true,   true,   false,  false,  false,  false,
+    true,   true,   false,  false,  true,   false,  true,   false,
+    false,  false,  false,  false,  false,  false,  true,   true,
+    false,  false,  false,  false,  true,   false,  true,   false,
+    false,  false,  false,  true,   false,  false,  false,  true,
+    false,  true,   false,  true,   true,   true,   true,   true,
+    true,   true,   false,  false,  false,  false,  false,  false,
+    true,   true,   false,  true,   false,  false,  false,  false,
+    true,   true,   true,   false,  true,   true,   true,   true,
+    true,   true,   false,  false,  true,   false,  false,  true,
+    false,  true,   false,  true,   true,   true,   false,  true,
+    true,   true,   false,  false,  true,   true,   false,  false,
+    false,  true,   false,  true,   true,   false,  true,   true,
+    true,   false,  false,  false,  false,  true,   false,  true
+};
+
 const uint32_t DataSet_1_32u::inputs::inputA[32] = {
     2890127753, 3623131505, 3730078463, 2142934923,
     3878122330, 4195248000, 1453286364, 1634157816,

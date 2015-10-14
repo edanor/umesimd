@@ -33,6 +33,7 @@
 
 int test_UME_SIMDMasks(bool supressMessages);
 
+int test_UME_SIMDMask1(bool supressMessages);
 int test_UME_SIMDMask2(bool supressMessages);
 int test_UME_SIMDMask4(bool supressMessages);
 int test_UME_SIMDMask8(bool supressMessages);
@@ -47,7 +48,8 @@ int test_UME_SIMDMasks(bool supressMessages) {
     char header[] = "UME::SIMD::SIMDMasks test";
     INIT_TEST(header, supressMessages);
 
-    int failCount = test_UME_SIMDMask2(supressMessages);
+    int failCount = test_UME_SIMDMask1(supressMessages);
+    failCount += test_UME_SIMDMask2(supressMessages);
     failCount += test_UME_SIMDMask4(supressMessages);
     failCount += test_UME_SIMDMask8(supressMessages);
     failCount += test_UME_SIMDMask16(supressMessages);
@@ -58,6 +60,20 @@ int test_UME_SIMDMasks(bool supressMessages) {
     return failCount;
 }
 
+int test_UME_SIMDMask1(bool supressMessages) {
+    char header[] = "UME::SIMD::SIMDMask1 test";
+    INIT_TEST(header, supressMessages);
+    
+    {
+        SIMDMask1 mask;
+        CHECK_CONDITION(true, "ZERO-CONSTR()");
+    }
+    
+    genericMaskTest<SIMDMask1, 1, DataSet_1_mask>();
+
+    return g_failCount;
+}
+
 int test_UME_SIMDMask2(bool supressMessages) {
     char header[] = "UME::SIMD::SIMDMask2 test";
     INIT_TEST(header, supressMessages);
@@ -66,6 +82,9 @@ int test_UME_SIMDMask2(bool supressMessages) {
         SIMDMask2 mask;
         CHECK_CONDITION(true, "ZERO-CONSTR()");
     }
+    
+    genericMaskTest<SIMDMask2, 2, DataSet_1_mask>();
+
 
     return g_failCount;
 }
@@ -166,6 +185,8 @@ int test_UME_SIMDMask4(bool supressMessages) {
         CHECK_CONDITION(b0 == false && b1 == false && b2 == true, "HLAND");
     }
     
+    genericMaskTest<SIMDMask4, 4, DataSet_1_mask>();
+
     return g_failCount;
 }
 
@@ -207,6 +228,9 @@ int test_UME_SIMDMask8(bool supressMessages) {
         mask2 = mask0 & mask1;
         CHECK_CONDITION(mask2[0] == true && mask2[3] == false && mask2[5] == false && mask2[7] == true, "LAND(operator&)");
     }
+    
+    genericMaskTest<SIMDMask8, 8, DataSet_1_mask>();
+
     return g_failCount;
 }
 
@@ -218,17 +242,22 @@ int test_UME_SIMDMask16(bool supressMessages) {
         SIMDMask16 mask;
         CHECK_CONDITION(true, "ZERO-CONSTR()");
     }
+    
+    genericMaskTest<SIMDMask16, 16, DataSet_1_mask>();
+
     return g_failCount;
 }
 
 int test_UME_SIMDMask32(bool supressMessages) {
     char header[] = "UME::SIMD::SIMDMask32 test";
     INIT_TEST(header, supressMessages);
-    
     {
         SIMDMask32 mask;
         CHECK_CONDITION(true, "ZERO-CONSTR()");
     }
+    
+    genericMaskTest<SIMDMask32, 32, DataSet_1_mask>();
+
     return g_failCount;
 }
 
@@ -240,6 +269,9 @@ int test_UME_SIMDMask64(bool supressMessages) {
         SIMDMask64 mask;
         CHECK_CONDITION(true, "ZERO-CONSTR()");
     }
+
+    genericMaskTest<SIMDMask64, 64, DataSet_1_mask>();
+
     return g_failCount;
 }
 
@@ -251,6 +283,8 @@ int test_UME_SIMDMask128(bool supressMessages) {
         SIMDMask128 mask;
         CHECK_CONDITION(true, "ZERO-CONSTR()");
     }
+    
+    genericMaskTest<SIMDMask128, 128, DataSet_1_mask>();
 
     return g_failCount;
 }

@@ -2322,7 +2322,7 @@ namespace SIMD
             return a;
         }
 
-        // NOT
+        // BNOT
         template<typename VEC_TYPE>
         inline VEC_TYPE binaryNot (VEC_TYPE const & a) {
             UME_EMULATION_WARNING();
@@ -2335,7 +2335,7 @@ namespace SIMD
             return retval;
         }
 
-        // MNOT
+        // MBNOT
         template<typename VEC_TYPE, typename MASK_TYPE>
         inline VEC_TYPE binaryNot (MASK_TYPE const & mask, VEC_TYPE const & a) {
             UME_EMULATION_WARNING();
@@ -2346,7 +2346,7 @@ namespace SIMD
             return retval;
         }
 
-        // NOTA
+        // BNOTA
         template<typename VEC_TYPE>
         inline VEC_TYPE & binaryNotAssign (VEC_TYPE & a) {
             UME_EMULATION_WARNING();
@@ -2356,7 +2356,7 @@ namespace SIMD
             return a;
         }
         
-        // MNOTA
+        // MBNOTA
         template<typename VEC_TYPE, typename MASK_TYPE>
         inline VEC_TYPE & binaryNotAssign (MASK_TYPE const & mask, VEC_TYPE & a) {
             UME_EMULATION_WARNING();
@@ -2366,6 +2366,7 @@ namespace SIMD
             return a;
         }
 
+        // LNOT
         template<typename MASK_TYPE>
         inline MASK_TYPE logicalNot(MASK_TYPE const & mask) {
             UME_EMULATION_WARNING();
@@ -2374,6 +2375,16 @@ namespace SIMD
                 if(mask[i] == false) retval.insert(i, true);
             }
             return retval;
+        }
+        
+        // LNOTA
+        template<typename MASK_TYPE>
+        inline MASK_TYPE & logicalNotAssign(MASK_TYPE & mask) {
+            UME_EMULATION_WARNING();
+            for(uint32_t i = 0; i < MASK_TYPE::length(); i++) {
+                mask.insert(i, !mask[i]);
+            }
+            return mask;
         }
 
         // BLENDV
@@ -3848,8 +3859,8 @@ namespace SIMD
         }
 
         // LNOTA
-        inline DERIVED_MASK_TYPE lnota () {
-            return EMULATED_FUNCTIONS::binaryNotAssign<DERIVED_MASK_TYPE>(static_cast<DERIVED_MASK_TYPE &>(*this));
+        inline DERIVED_MASK_TYPE & lnota () {
+            return EMULATED_FUNCTIONS::logicalNotAssign<DERIVED_MASK_TYPE>(static_cast<DERIVED_MASK_TYPE &>(*this));
         }
 
         // TOINT
@@ -3872,8 +3883,8 @@ namespace SIMD
         }
 
         //HLXOR
-        inline bool hxor() const {
-            return EMULATED_FUNCTIONS::reduceLogicalXor<MASK_BASE_TYPE, DERIVED_MASK_TYPE>(static_cast<DERIVED_MASK_TYPE const &>(*this));
+        inline bool hlxor() const {
+            return EMULATED_FUNCTIONS::reduceLogicalXor<DERIVED_MASK_TYPE>(static_cast<DERIVED_MASK_TYPE const &>(*this));
         }
     };
 

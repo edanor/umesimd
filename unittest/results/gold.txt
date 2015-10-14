@@ -1,4 +1,41 @@
+OK   UME::SIMD::SIMDMask1 test Id: 1 - ZERO-CONSTR()
+OK   UME::SIMD::SIMDMask1 test Id: 2 - LAND
+OK   UME::SIMD::SIMDMask1 test Id: 3 - LAND(operator &)
+OK   UME::SIMD::SIMDMask1 test Id: 4 - LANDA
+OK   UME::SIMD::SIMDMask1 test Id: 5 - LANDA(operator &=)
+OK   UME::SIMD::SIMDMask1 test Id: 6 - LOR
+OK   UME::SIMD::SIMDMask1 test Id: 7 - LOR(operator |)
+OK   UME::SIMD::SIMDMask1 test Id: 8 - LORA
+OK   UME::SIMD::SIMDMask1 test Id: 9 - LORA(operator |=)
+OK   UME::SIMD::SIMDMask1 test Id: 10 - LXOR
+OK   UME::SIMD::SIMDMask1 test Id: 11 - LXOR(operator ^)
+OK   UME::SIMD::SIMDMask1 test Id: 12 - LXORA
+OK   UME::SIMD::SIMDMask1 test Id: 13 - LXORA(operator ^=)
+OK   UME::SIMD::SIMDMask1 test Id: 14 - LNOT
+OK   UME::SIMD::SIMDMask1 test Id: 15 - LNOT(operator !)
+OK   UME::SIMD::SIMDMask1 test Id: 16 - LNOTA
+OK   UME::SIMD::SIMDMask1 test Id: 17 - HLAND
+OK   UME::SIMD::SIMDMask1 test Id: 18 - HLOR
+OK   UME::SIMD::SIMDMask1 test Id: 19 - HLXOR
 OK   UME::SIMD::SIMDMask2 test Id: 1 - ZERO-CONSTR()
+OK   UME::SIMD::SIMDMask2 test Id: 2 - LAND
+OK   UME::SIMD::SIMDMask2 test Id: 3 - LAND(operator &)
+OK   UME::SIMD::SIMDMask2 test Id: 4 - LANDA
+OK   UME::SIMD::SIMDMask2 test Id: 5 - LANDA(operator &=)
+OK   UME::SIMD::SIMDMask2 test Id: 6 - LOR
+OK   UME::SIMD::SIMDMask2 test Id: 7 - LOR(operator |)
+OK   UME::SIMD::SIMDMask2 test Id: 8 - LORA
+OK   UME::SIMD::SIMDMask2 test Id: 9 - LORA(operator |=)
+OK   UME::SIMD::SIMDMask2 test Id: 10 - LXOR
+OK   UME::SIMD::SIMDMask2 test Id: 11 - LXOR(operator ^)
+OK   UME::SIMD::SIMDMask2 test Id: 12 - LXORA
+OK   UME::SIMD::SIMDMask2 test Id: 13 - LXORA(operator ^=)
+OK   UME::SIMD::SIMDMask2 test Id: 14 - LNOT
+OK   UME::SIMD::SIMDMask2 test Id: 15 - LNOT(operator !)
+OK   UME::SIMD::SIMDMask2 test Id: 16 - LNOTA
+OK   UME::SIMD::SIMDMask2 test Id: 17 - HLAND
+OK   UME::SIMD::SIMDMask2 test Id: 18 - HLOR
+OK   UME::SIMD::SIMDMask2 test Id: 19 - HLXOR
 OK   UME::SIMD::SIMDMask4 test Id: 1 - ZERO-CONSTR()
 OK   UME::SIMD::SIMDMask4 test Id: 2 - LOAD-CONSTR()
 OK   UME::SIMD::SIMDMask4 test Id: 3 - mask compatibility: 64f -> 32u
@@ -12,16 +49,124 @@ OK   UME::SIMD::SIMDMask4 test Id: 10 - ASSIGN
 OK   UME::SIMD::SIMDMask4 test Id: 11 - ASSIGN(operator=)
 OK   UME::SIMD::SIMDMask4 test Id: 12 - HLOR
 OK   UME::SIMD::SIMDMask4 test Id: 13 - HLAND
+OK   UME::SIMD::SIMDMask4 test Id: 14 - LAND
+OK   UME::SIMD::SIMDMask4 test Id: 15 - LAND(operator &)
+OK   UME::SIMD::SIMDMask4 test Id: 16 - LANDA
+OK   UME::SIMD::SIMDMask4 test Id: 17 - LANDA(operator &=)
+OK   UME::SIMD::SIMDMask4 test Id: 18 - LOR
+OK   UME::SIMD::SIMDMask4 test Id: 19 - LOR(operator |)
+OK   UME::SIMD::SIMDMask4 test Id: 20 - LORA
+OK   UME::SIMD::SIMDMask4 test Id: 21 - LORA(operator |=)
+OK   UME::SIMD::SIMDMask4 test Id: 22 - LXOR
+OK   UME::SIMD::SIMDMask4 test Id: 23 - LXOR(operator ^)
+OK   UME::SIMD::SIMDMask4 test Id: 24 - LXORA
+OK   UME::SIMD::SIMDMask4 test Id: 25 - LXORA(operator ^=)
+OK   UME::SIMD::SIMDMask4 test Id: 26 - LNOT
+OK   UME::SIMD::SIMDMask4 test Id: 27 - LNOT(operator !)
+OK   UME::SIMD::SIMDMask4 test Id: 28 - LNOTA
+OK   UME::SIMD::SIMDMask4 test Id: 29 - HLAND
+OK   UME::SIMD::SIMDMask4 test Id: 30 - HLOR
+OK   UME::SIMD::SIMDMask4 test Id: 31 - HLXOR
 OK   UME::SIMD::SIMDMask8 test Id: 1 - ZERO-CONSTR()
 OK   UME::SIMD::SIMDMask8 test Id: 2 - SET-CONSTR
 OK   UME::SIMD::SIMDMask8 test Id: 3 - FULL-CONSTR
 OK   UME::SIMD::SIMDMask8 test Id: 4 - ASSIGN
 OK   UME::SIMD::SIMDMask8 test Id: 5 - LAND
 OK   UME::SIMD::SIMDMask8 test Id: 6 - LAND(operator&)
+OK   UME::SIMD::SIMDMask8 test Id: 7 - LAND
+OK   UME::SIMD::SIMDMask8 test Id: 8 - LAND(operator &)
+OK   UME::SIMD::SIMDMask8 test Id: 9 - LANDA
+OK   UME::SIMD::SIMDMask8 test Id: 10 - LANDA(operator &=)
+OK   UME::SIMD::SIMDMask8 test Id: 11 - LOR
+OK   UME::SIMD::SIMDMask8 test Id: 12 - LOR(operator |)
+OK   UME::SIMD::SIMDMask8 test Id: 13 - LORA
+OK   UME::SIMD::SIMDMask8 test Id: 14 - LORA(operator |=)
+OK   UME::SIMD::SIMDMask8 test Id: 15 - LXOR
+OK   UME::SIMD::SIMDMask8 test Id: 16 - LXOR(operator ^)
+OK   UME::SIMD::SIMDMask8 test Id: 17 - LXORA
+OK   UME::SIMD::SIMDMask8 test Id: 18 - LXORA(operator ^=)
+OK   UME::SIMD::SIMDMask8 test Id: 19 - LNOT
+OK   UME::SIMD::SIMDMask8 test Id: 20 - LNOT(operator !)
+OK   UME::SIMD::SIMDMask8 test Id: 21 - LNOTA
+OK   UME::SIMD::SIMDMask8 test Id: 22 - HLAND
+OK   UME::SIMD::SIMDMask8 test Id: 23 - HLOR
+OK   UME::SIMD::SIMDMask8 test Id: 24 - HLXOR
 OK   UME::SIMD::SIMDMask16 test Id: 1 - ZERO-CONSTR()
+OK   UME::SIMD::SIMDMask16 test Id: 2 - LAND
+OK   UME::SIMD::SIMDMask16 test Id: 3 - LAND(operator &)
+OK   UME::SIMD::SIMDMask16 test Id: 4 - LANDA
+OK   UME::SIMD::SIMDMask16 test Id: 5 - LANDA(operator &=)
+OK   UME::SIMD::SIMDMask16 test Id: 6 - LOR
+OK   UME::SIMD::SIMDMask16 test Id: 7 - LOR(operator |)
+OK   UME::SIMD::SIMDMask16 test Id: 8 - LORA
+OK   UME::SIMD::SIMDMask16 test Id: 9 - LORA(operator |=)
+OK   UME::SIMD::SIMDMask16 test Id: 10 - LXOR
+OK   UME::SIMD::SIMDMask16 test Id: 11 - LXOR(operator ^)
+OK   UME::SIMD::SIMDMask16 test Id: 12 - LXORA
+OK   UME::SIMD::SIMDMask16 test Id: 13 - LXORA(operator ^=)
+OK   UME::SIMD::SIMDMask16 test Id: 14 - LNOT
+OK   UME::SIMD::SIMDMask16 test Id: 15 - LNOT(operator !)
+OK   UME::SIMD::SIMDMask16 test Id: 16 - LNOTA
+OK   UME::SIMD::SIMDMask16 test Id: 17 - HLAND
+OK   UME::SIMD::SIMDMask16 test Id: 18 - HLOR
+OK   UME::SIMD::SIMDMask16 test Id: 19 - HLXOR
 OK   UME::SIMD::SIMDMask32 test Id: 1 - ZERO-CONSTR()
+OK   UME::SIMD::SIMDMask32 test Id: 2 - LAND
+OK   UME::SIMD::SIMDMask32 test Id: 3 - LAND(operator &)
+OK   UME::SIMD::SIMDMask32 test Id: 4 - LANDA
+OK   UME::SIMD::SIMDMask32 test Id: 5 - LANDA(operator &=)
+OK   UME::SIMD::SIMDMask32 test Id: 6 - LOR
+OK   UME::SIMD::SIMDMask32 test Id: 7 - LOR(operator |)
+OK   UME::SIMD::SIMDMask32 test Id: 8 - LORA
+OK   UME::SIMD::SIMDMask32 test Id: 9 - LORA(operator |=)
+OK   UME::SIMD::SIMDMask32 test Id: 10 - LXOR
+OK   UME::SIMD::SIMDMask32 test Id: 11 - LXOR(operator ^)
+OK   UME::SIMD::SIMDMask32 test Id: 12 - LXORA
+OK   UME::SIMD::SIMDMask32 test Id: 13 - LXORA(operator ^=)
+OK   UME::SIMD::SIMDMask32 test Id: 14 - LNOT
+OK   UME::SIMD::SIMDMask32 test Id: 15 - LNOT(operator !)
+OK   UME::SIMD::SIMDMask32 test Id: 16 - LNOTA
+OK   UME::SIMD::SIMDMask32 test Id: 17 - HLAND
+OK   UME::SIMD::SIMDMask32 test Id: 18 - HLOR
+OK   UME::SIMD::SIMDMask32 test Id: 19 - HLXOR
 OK   UME::SIMD::SIMDMask64 test Id: 1 - ZERO-CONSTR()
+OK   UME::SIMD::SIMDMask64 test Id: 2 - LAND
+OK   UME::SIMD::SIMDMask64 test Id: 3 - LAND(operator &)
+OK   UME::SIMD::SIMDMask64 test Id: 4 - LANDA
+OK   UME::SIMD::SIMDMask64 test Id: 5 - LANDA(operator &=)
+OK   UME::SIMD::SIMDMask64 test Id: 6 - LOR
+OK   UME::SIMD::SIMDMask64 test Id: 7 - LOR(operator |)
+OK   UME::SIMD::SIMDMask64 test Id: 8 - LORA
+OK   UME::SIMD::SIMDMask64 test Id: 9 - LORA(operator |=)
+OK   UME::SIMD::SIMDMask64 test Id: 10 - LXOR
+OK   UME::SIMD::SIMDMask64 test Id: 11 - LXOR(operator ^)
+OK   UME::SIMD::SIMDMask64 test Id: 12 - LXORA
+OK   UME::SIMD::SIMDMask64 test Id: 13 - LXORA(operator ^=)
+OK   UME::SIMD::SIMDMask64 test Id: 14 - LNOT
+OK   UME::SIMD::SIMDMask64 test Id: 15 - LNOT(operator !)
+OK   UME::SIMD::SIMDMask64 test Id: 16 - LNOTA
+OK   UME::SIMD::SIMDMask64 test Id: 17 - HLAND
+OK   UME::SIMD::SIMDMask64 test Id: 18 - HLOR
+OK   UME::SIMD::SIMDMask64 test Id: 19 - HLXOR
 OK   UME::SIMD::SIMDMask128 test Id: 1 - ZERO-CONSTR()
+OK   UME::SIMD::SIMDMask128 test Id: 2 - LAND
+OK   UME::SIMD::SIMDMask128 test Id: 3 - LAND(operator &)
+OK   UME::SIMD::SIMDMask128 test Id: 4 - LANDA
+OK   UME::SIMD::SIMDMask128 test Id: 5 - LANDA(operator &=)
+OK   UME::SIMD::SIMDMask128 test Id: 6 - LOR
+OK   UME::SIMD::SIMDMask128 test Id: 7 - LOR(operator |)
+OK   UME::SIMD::SIMDMask128 test Id: 8 - LORA
+OK   UME::SIMD::SIMDMask128 test Id: 9 - LORA(operator |=)
+OK   UME::SIMD::SIMDMask128 test Id: 10 - LXOR
+OK   UME::SIMD::SIMDMask128 test Id: 11 - LXOR(operator ^)
+OK   UME::SIMD::SIMDMask128 test Id: 12 - LXORA
+OK   UME::SIMD::SIMDMask128 test Id: 13 - LXORA(operator ^=)
+OK   UME::SIMD::SIMDMask128 test Id: 14 - LNOT
+OK   UME::SIMD::SIMDMask128 test Id: 15 - LNOT(operator !)
+OK   UME::SIMD::SIMDMask128 test Id: 16 - LNOTA
+OK   UME::SIMD::SIMDMask128 test Id: 17 - HLAND
+OK   UME::SIMD::SIMDMask128 test Id: 18 - HLOR
+OK   UME::SIMD::SIMDMask128 test Id: 19 - HLXOR
 OK   UME::SIMD::SIMDSwizzle1 test Id: 1 - LENGTH
 OK   UME::SIMD::SIMDSwizzle2 test Id: 1 - LENGTH
 OK   UME::SIMD::SIMDSwizzle4 test Id: 1 - LENGTH
@@ -3119,4 +3264,4 @@ OK   UME::SIMD::SIMD16_64u test Id: 1 - ZERO-CONSTR
 OK   UME::SIMD::SIMD16_64i test Id: 1 - ZERO-CONSTR
 OK   UME::SIMD::SIMD16_64f test Id: 1 - ZERO-CONSTR
 
-Total tests failed: 6/3120
+Total tests failed: 6/3265

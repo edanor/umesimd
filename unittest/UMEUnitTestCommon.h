@@ -191,6 +191,296 @@ bool valuesInRange(int32_t const *values, int32_t const *expectedValues, unsigne
     return valuesExact(values, expectedValues, count);
 }
 
+template<typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
+void genericLANDTest()
+{
+    {
+        bool values[VEC_LEN];
+        MASK_TYPE m0(DATA_SET::inputs::maskA);
+        MASK_TYPE m1(DATA_SET::inputs::maskB);
+        MASK_TYPE m2 = m0.land(m1);
+        m2.store(values);
+        bool exact = true;
+        for(int i = 0; i < VEC_LEN; i++) {
+            if(values[i] != DATA_SET::outputs::LAND[i]) {
+                exact = false; 
+                break;
+            }
+        }
+        CHECK_CONDITION(exact, "LAND");
+    }
+    {
+        bool values[VEC_LEN];
+        MASK_TYPE m0(DATA_SET::inputs::maskA);
+        MASK_TYPE m1(DATA_SET::inputs::maskB);
+        MASK_TYPE m2 = m0 & m1;
+        m2.store(values);
+        bool exact = true;
+        for(int i = 0; i < VEC_LEN; i++) {
+            if(values[i] != DATA_SET::outputs::LAND[i]) {
+                exact = false; 
+                break;
+            }
+        }
+        CHECK_CONDITION(exact, "LAND(operator &)");
+    }
+}
+
+template<typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
+void genericLANDATest()
+{
+    {
+        bool values[VEC_LEN];
+        MASK_TYPE m0(DATA_SET::inputs::maskA);
+        MASK_TYPE m1(DATA_SET::inputs::maskB);
+        m0.landa(m1);
+        m0.store(values);
+        bool exact = true;
+        for(int i = 0; i < VEC_LEN; i++) {
+            if(values[i] != DATA_SET::outputs::LAND[i]) {
+                exact = false; 
+                break;
+            }
+        }
+        CHECK_CONDITION(exact, "LANDA");
+    }
+    {
+        bool values[VEC_LEN];
+        MASK_TYPE m0(DATA_SET::inputs::maskA);
+        MASK_TYPE m1(DATA_SET::inputs::maskB);
+        m0 &= m1;
+        m0.store(values);
+        bool exact = true;
+        for(int i = 0; i < VEC_LEN; i++) {
+            if(values[i] != DATA_SET::outputs::LAND[i]) {
+                exact = false; 
+                break;
+            }
+        }
+        CHECK_CONDITION(exact, "LANDA(operator &=)");
+    }
+}
+
+template<typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
+void genericLORTest()
+{
+    {
+        bool values[VEC_LEN];
+        MASK_TYPE m0(DATA_SET::inputs::maskA);
+        MASK_TYPE m1(DATA_SET::inputs::maskB);
+        MASK_TYPE m2 = m0.lor(m1);
+        m2.store(values);
+        bool exact = true;
+        for(int i = 0; i < VEC_LEN; i++) {
+            if(values[i] != DATA_SET::outputs::LOR[i]) {
+                exact = false; 
+                break;
+            }
+        }
+        CHECK_CONDITION(exact, "LOR");
+    }
+    {
+        bool values[VEC_LEN];
+        MASK_TYPE m0(DATA_SET::inputs::maskA);
+        MASK_TYPE m1(DATA_SET::inputs::maskB);
+        MASK_TYPE m2 = m0 | m1;
+        m2.store(values);
+        bool exact = true;
+        for(int i = 0; i < VEC_LEN; i++) {
+            if(values[i] != DATA_SET::outputs::LOR[i]) {
+                exact = false; 
+                break;
+            }
+        }
+        CHECK_CONDITION(exact, "LOR(operator |)");
+    }
+}
+
+template<typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
+void genericLORATest()
+{
+    {
+        bool values[VEC_LEN];
+        MASK_TYPE m0(DATA_SET::inputs::maskA);
+        MASK_TYPE m1(DATA_SET::inputs::maskB);
+        m0.lora(m1);
+        m0.store(values);
+        bool exact = true;
+        for(int i = 0; i < VEC_LEN; i++) {
+            if(values[i] != DATA_SET::outputs::LOR[i]) {
+                exact = false; 
+                break;
+            }
+        }
+        CHECK_CONDITION(exact, "LORA");
+    }
+    {
+        bool values[VEC_LEN];
+        MASK_TYPE m0(DATA_SET::inputs::maskA);
+        MASK_TYPE m1(DATA_SET::inputs::maskB);
+        m0 |= m1;
+        m0.store(values);
+        bool exact = true;
+        for(int i = 0; i < VEC_LEN; i++) {
+            if(values[i] != DATA_SET::outputs::LOR[i]) {
+                exact = false; 
+                break;
+            }
+        }
+        CHECK_CONDITION(exact, "LORA(operator |=)");
+    }
+}
+
+
+template<typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
+void genericLXORTest()
+{
+    {
+        bool values[VEC_LEN];
+        MASK_TYPE m0(DATA_SET::inputs::maskA);
+        MASK_TYPE m1(DATA_SET::inputs::maskB);
+        MASK_TYPE m2 = m0.lxor(m1);
+        m2.store(values);
+        bool exact = true;
+        for(int i = 0; i < VEC_LEN; i++) {
+            if(values[i] != DATA_SET::outputs::LXOR[i]) {
+                exact = false; 
+                break;
+            }
+        }
+        CHECK_CONDITION(exact, "LXOR");
+    }
+    {
+        bool values[VEC_LEN];
+        MASK_TYPE m0(DATA_SET::inputs::maskA);
+        MASK_TYPE m1(DATA_SET::inputs::maskB);
+        MASK_TYPE m2 = m0 ^ m1;
+        m2.store(values);
+        bool exact = true;
+        for(int i = 0; i < VEC_LEN; i++) {
+            if(values[i] != DATA_SET::outputs::LXOR[i]) {
+                exact = false; 
+                break;
+            }
+        }
+        CHECK_CONDITION(exact, "LXOR(operator ^)");
+    }
+}
+
+template<typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
+void genericLXORATest()
+{
+    {
+        bool values[VEC_LEN];
+        MASK_TYPE m0(DATA_SET::inputs::maskA);
+        MASK_TYPE m1(DATA_SET::inputs::maskB);
+        m0.lxora(m1);
+        m0.store(values);
+        bool exact = true;
+        for(int i = 0; i < VEC_LEN; i++) {
+            if(values[i] != DATA_SET::outputs::LXOR[i]) {
+                exact = false; 
+                break;
+            }
+        }
+        CHECK_CONDITION(exact, "LXORA");
+    }
+    {
+        bool values[VEC_LEN];
+        MASK_TYPE m0(DATA_SET::inputs::maskA);
+        MASK_TYPE m1(DATA_SET::inputs::maskB);
+        m0 ^= m1;
+        m0.store(values);
+        bool exact = true;
+        for(int i = 0; i < VEC_LEN; i++) {
+            if(values[i] != DATA_SET::outputs::LXOR[i]) {
+                exact = false; 
+                break;
+            }
+        }
+        CHECK_CONDITION(exact, "LXORA(operator ^=)");
+    }
+}
+
+template<typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
+void genericLNOTTest()
+{
+    {
+        bool values[VEC_LEN];
+        MASK_TYPE m0(DATA_SET::inputs::maskA);
+        MASK_TYPE m1 = m0.lnot();
+        m1.store(values);
+        bool exact = true;
+        for(int i = 0; i < VEC_LEN; i++) {
+            if(values[i] != DATA_SET::outputs::LNOT[i]) {
+                exact = false; 
+                break;
+            }
+        }
+        CHECK_CONDITION(exact, "LNOT");
+    }
+    {
+        bool values[VEC_LEN];
+        MASK_TYPE m0(DATA_SET::inputs::maskA);
+        MASK_TYPE m1 = !m0;
+        m1.store(values);
+        bool exact = true;
+        for(int i = 0; i < VEC_LEN; i++) {
+            if(values[i] != DATA_SET::outputs::LNOT[i]) {
+                exact = false; 
+                break;
+            }
+        }
+        CHECK_CONDITION(exact, "LNOT(operator !)");
+    }
+}
+
+template<typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
+void genericLNOTATest()
+{
+    {
+        bool values[VEC_LEN];
+        MASK_TYPE m0(DATA_SET::inputs::maskA);
+        m0.lnota();
+        m0.store(values);
+        bool exact = true;
+        for(int i = 0; i < VEC_LEN; i++) {
+            if(values[i] != DATA_SET::outputs::LNOT[i]) {
+                exact = false; 
+                break;
+            }
+        }
+        CHECK_CONDITION(exact, "LNOTA");
+    }
+}
+
+template<typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
+void genericHLANDTest()
+{
+    MASK_TYPE m0(DATA_SET::inputs::maskA);
+    bool value = m0.hland();
+    bool expected = DATA_SET::outputs::HLAND[VEC_LEN-1];
+    CHECK_CONDITION(value == expected, "HLAND");
+}
+
+template<typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
+void genericHLORTest()
+{
+    MASK_TYPE m0(DATA_SET::inputs::maskA);
+    bool value = m0.hlor();
+    bool expected = DATA_SET::outputs::HLOR[VEC_LEN-1];
+    CHECK_CONDITION(value == expected, "HLOR");
+}
+
+template<typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
+void genericHLXORTest()
+{
+    MASK_TYPE m0(DATA_SET::inputs::maskA);
+    bool value = m0.hlxor();
+    bool expected = DATA_SET::outputs::HLXOR[VEC_LEN-1];
+    CHECK_CONDITION(value == expected, "HLXOR");
+}
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericADDVTest()
 {
@@ -2632,6 +2922,21 @@ void genericFloatInterfaceTest()
     genericMTANTest<VEC_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
     genericCTANTest<VEC_TYPE, VEC_LEN, DATA_SET>();
     genericMCTANTest<VEC_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();*/
+}
+
+template<typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
+void genericMaskTest() {
+    genericLANDTest<MASK_TYPE, VEC_LEN, DATA_SET> ();
+    genericLANDATest<MASK_TYPE, VEC_LEN, DATA_SET> ();
+    genericLORTest<MASK_TYPE, VEC_LEN, DATA_SET> ();
+    genericLORATest<MASK_TYPE, VEC_LEN, DATA_SET> ();
+    genericLXORTest<MASK_TYPE, VEC_LEN, DATA_SET> ();
+    genericLXORATest<MASK_TYPE, VEC_LEN, DATA_SET> ();
+    genericLNOTTest<MASK_TYPE, VEC_LEN, DATA_SET> ();
+    genericLNOTATest<MASK_TYPE, VEC_LEN, DATA_SET> ();
+    genericHLANDTest<MASK_TYPE, VEC_LEN, DATA_SET> ();
+    genericHLORTest<MASK_TYPE, VEC_LEN, DATA_SET> ();
+    genericHLXORTest<MASK_TYPE, VEC_LEN, DATA_SET> ();
 }
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>

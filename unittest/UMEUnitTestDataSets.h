@@ -32,6 +32,23 @@
 
 #include "../UMEBasicTypes.h"
 
+struct DataSet_1_mask {
+    struct inputs {
+        static const bool maskA[128];
+        static const bool maskB[128];
+    };
+
+    struct outputs {
+        static const bool LAND[128];
+        static const bool LOR[128];
+        static const bool LXOR[128];
+        static const bool LNOT[128];
+        static const bool HLAND[128];
+        static const bool HLOR[128];
+        static const bool HLXOR[128];
+    };
+};
+
 struct DataSet_1_32u {
     struct inputs {
         static const uint32_t inputA[32];
