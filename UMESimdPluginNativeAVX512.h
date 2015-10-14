@@ -1203,6 +1203,7 @@ namespace SIMD
         inline SIMDVecAVX512_i() : mVec() {};
 
         inline explicit SIMDVecAVX512_i(SCALAR_INT_TYPE i) : mVec(i) {};
+        inline explicit SIMDVecAVX512_i(SCALAR_INT_TYPE const *p) { this->load(p); };
         
         inline SIMDVecAVX512_i(SCALAR_INT_TYPE i0, SCALAR_INT_TYPE i1) {
             mVec.insert(0, i0);  mVec.insert(1, i1);
@@ -1332,6 +1333,8 @@ namespace SIMD
 
         inline explicit SIMDVecAVX512_i(SCALAR_INT_TYPE i) : mVec(i) {};
                
+        inline explicit SIMDVecAVX512_i(SCALAR_INT_TYPE const *p) { this->load(p);};
+
         // Override Access operators
         inline SCALAR_INT_TYPE operator[] (uint32_t index) const {
             return mVec[index];
@@ -1382,6 +1385,9 @@ namespace SIMD
 
         inline explicit SIMDVecAVX512_i(int32_t i) {
             mVec = _mm256_set1_epi32(i);
+        }
+        inline explicit SIMDVecAVX512_i(int32_t const *p) {
+            mVec = _mm256_mask_load_epi32(mVec, 0xFF, (void *)p);
         }
 
         inline SIMDVecAVX512_i(int32_t i0, int32_t i1, int32_t i2, int32_t i3, 
@@ -1784,21 +1790,21 @@ namespace SIMD
                                float f2, float f3, 
                                float f4, float f5,
                                float f6, float f7) {
- 	    mVec = _mm256_set_ps(f0, f1, f2, f3, f4, f5, f6, f7);
+        mVec = _mm256_set_ps(f0, f1, f2, f3, f4, f5, f6, f7);
         }
 
         // Override Access operators
         inline float operator[] (uint32_t index) const {
-	    alignas(32) float raw[8];
-	    _mm256_store_ps(raw, mVec);
-	    return raw[index];
+        alignas(32) float raw[8];
+        _mm256_store_ps(raw, mVec);
+        return raw[index];
         }
                 
         // insert[] (scalar)
         inline SIMDVecAVX512_f & insert(uint32_t index, float value) {
-	    alignas(32) float raw[8];
-	    _mm256_store_ps(raw, mVec);
-	    raw[index] = value;
+        alignas(32) float raw[8];
+        _mm256_store_ps(raw, mVec);
+        raw[index] = value;
             mVec = _mm256_load_ps(raw);
             return *this;
         }

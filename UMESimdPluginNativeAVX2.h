@@ -1688,7 +1688,7 @@ namespace SIMD
         inline explicit SIMDVecAVX2_i(SCALAR_INT_TYPE i) : mVec(i) {};
         
         // LOAD-CONSTR - Construct by loading from memory
-        inline explicit SIMDVecAVX2_i(SCALAR_INT_TYPE const *p) { load(p); };
+        inline explicit SIMDVecAVX2_i(SCALAR_INT_TYPE const *p) { this->load(p); };
 
         inline SIMDVecAVX2_i(SCALAR_INT_TYPE i0, SCALAR_INT_TYPE i1) {
             mVec.insert(0, i0);  mVec.insert(1, i1);
@@ -1782,7 +1782,7 @@ namespace SIMD
         inline explicit SIMDVecAVX2_i(SCALAR_INT_TYPE i) : mVec(i) {};
         
         // LOAD-CONSTR - Construct by loading from memory
-        inline explicit SIMDVecAVX2_i(SCALAR_INT_TYPE const *p) { load(p); };
+        inline explicit SIMDVecAVX2_i(SCALAR_INT_TYPE const *p) { this->load(p); };
 
         // Override Access operators
         inline SCALAR_INT_TYPE operator[] (uint32_t index) const {
@@ -1837,7 +1837,7 @@ namespace SIMD
         }
         
         // LOAD-CONSTR - Construct by loading from memory
-        inline explicit SIMDVecAVX2_i(int32_t const *p) { load(p); };
+        inline explicit SIMDVecAVX2_i(int32_t const *p) { this->load(p); };
 
         inline SIMDVecAVX2_i(int32_t i0, int32_t i1, int32_t i2, int32_t i3, 
                             int32_t i4, int32_t i5, int32_t i6, int32_t i7) 

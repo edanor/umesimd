@@ -181,6 +181,7 @@ int test_UME_SIMD16_32i(bool supressMessages) {
         SIMD16_32i vec0;
         CHECK_CONDITION(true, "ZERO-CONSTR");
     }
+    genericIntTest<SIMD16_32i, int32_t, SIMDMask16, 16, DataSet_1_32i>();
 
     {
         SIMD16_32i vec0(0,  1,  2, 3,  4, 5, 6, 7,  8, 9, 10, 11,       12, 13, 14, 15);

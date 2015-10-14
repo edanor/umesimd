@@ -114,7 +114,7 @@ struct DataSet_1_32u {
 
         static const uint32_t FMULADDV[32];
         static const uint32_t MFMULADD[32];
-        static const uint32_t FMULSUB[32];
+        static const uint32_t FMULSUBV[32];
         static const uint32_t MFMULSUBV[32];
         static const uint32_t FADDMULV[32];
         static const uint32_t MFADDMULV[32];
@@ -136,6 +136,115 @@ struct DataSet_1_32u {
         static const uint32_t MSQR[32];
         static const uint32_t SQRT[32];
         static const uint32_t MSQRT[32];
+    };
+};
+
+
+struct DataSet_1_32i {
+    struct inputs {
+        static const int32_t inputA[32];
+        static const int32_t inputB[32];
+        static const int32_t inputC[32];
+        static const uint32_t inputShift[32];
+        static const int32_t scalarA;
+        static const bool  maskA[32];
+    };
+
+    struct outputs {
+        static const int32_t ADDV[32];
+        static const int32_t MADDV[32];
+        static const int32_t ADDS[32];
+        static const int32_t MADDS[32];
+        static const int32_t POSTPREFINC[32];
+        static const int32_t MPOSTPREFINC[32];
+        static const int32_t SUBV[32];
+        static const int32_t MSUBV[32];
+        static const int32_t SUBS[32];
+        static const int32_t MSUBS[32];
+        static const int32_t SUBFROMV[32];
+        static const int32_t MSUBFROMV[32];
+        static const int32_t SUBFROMS[32];
+        static const int32_t MSUBFROMS[32];
+        static const int32_t POSTPREFDEC[32];
+        static const int32_t MPOSTPREFDEC[32];
+        static const int32_t MULV[32];
+        static const int32_t MMULV[32];
+        static const int32_t MULS[32];
+        static const int32_t MMULS[32];
+        static const int32_t DIVV[32];
+        static const int32_t MDIVV[32];
+        static const int32_t DIVS[32];
+        static const int32_t MDIVS[32];
+        static const int32_t RCP[32];
+        static const int32_t MRCP[32];
+        static const int32_t RCPS[32];
+        static const int32_t MRCPS[32];
+        static const bool  CMPEQV[32];
+        static const bool  CMPEQS[32];
+        static const bool  CMPNEV[32];
+        static const bool  CMPNES[32];
+        static const bool  CMPGTV[32];
+        static const bool  CMPGTS[32];
+        static const bool  CMPLTV[32];
+        static const bool  CMPLTS[32];
+        static const bool  CMPGEV[32];
+        static const bool  CMPGES[32];
+        static const bool  CMPLEV[32];
+        static const bool  CMPLES[32];
+        static const bool  CMPEV;
+        static const bool  CMPES;
+
+        static const int32_t HADD[32];
+        static const int32_t MHADD[32];
+        static const int32_t HMUL[32];
+        static const int32_t MHMUL[32];
+
+        static const int32_t BANDV[32];
+        static const int32_t MBANDV[32];
+        static const int32_t BANDS[32];
+        static const int32_t MBANDS[32];
+        static const int32_t BORV[32];
+        static const int32_t MBORV[32];
+        static const int32_t BORS[32];
+        static const int32_t MBORS[32];
+        static const int32_t BXORV[32];
+        static const int32_t MBXORV[32];
+        static const int32_t BXORS[32];
+        static const int32_t MBXORS[32];
+        static const int32_t BNOT[32];
+        static const int32_t MBNOT[32];
+
+        static const int32_t HAND[32];
+        static const int32_t MHAND[32];
+        static const int32_t HOR[32];
+        static const int32_t MHOR[32];
+        static const int32_t HXOR[32];
+        static const int32_t MHXOR[32];
+
+        static const int32_t FMULADDV[32];
+        static const int32_t MFMULADD[32];
+        static const int32_t FMULSUBV[32];
+        static const int32_t MFMULSUBV[32];
+        static const int32_t FADDMULV[32];
+        static const int32_t MFADDMULV[32];
+        static const int32_t FSUBMULV[32];
+        static const int32_t MFSUBMULV[32];
+        static const int32_t MAXV[32];
+        static const int32_t MMAXV[32];
+        static const int32_t MAXS[32];
+        static const int32_t MMAXS[32];
+        static const int32_t MINV[32];
+        static const int32_t MMINV[32];
+        static const int32_t MINS[32];
+        static const int32_t MMINS[32];
+        static const int32_t HMAX[32];
+        static const int32_t MHMAX[32];
+        static const int32_t HMIN[32];
+        static const int32_t MHMIN[32];
+        static const int32_t SQR[32];
+        static const int32_t MSQR[32];
+        static const int32_t SQRT[32];
+        static const int32_t MSQRT[32];
     };
 };
 
@@ -199,7 +308,7 @@ struct DataSet_1_32f {
 
         static const float FMULADDV[32];
         static const float MFMULADD[32];
-        static const float FMULSUB[32];
+        static const float FMULSUBV[32];
         static const float MFMULSUBV[32];
         static const float FADDMULV[32];
         static const float MFADDMULV[32];
