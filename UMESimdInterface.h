@@ -4353,12 +4353,12 @@ namespace SIMD
         }
 
         // MULSA
-        inline DERIVED_VEC_TYPE mula (SCALAR_TYPE b) {
+        inline DERIVED_VEC_TYPE & mula (SCALAR_TYPE b) {
             return EMULATED_FUNCTIONS::multAssign<DERIVED_VEC_TYPE, SCALAR_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
 
         // MMULSA
-        inline DERIVED_VEC_TYPE mula (MASK_TYPE const & mask, SCALAR_TYPE b) {
+        inline DERIVED_VEC_TYPE & mula (MASK_TYPE const & mask, SCALAR_TYPE b) {
             return EMULATED_FUNCTIONS::multAssign<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
 
@@ -4575,7 +4575,14 @@ namespace SIMD
         }
         
         // HADDS
+        inline SCALAR_TYPE hadd (SCALAR_TYPE b) const {
+            return EMULATED_FUNCTIONS::reduceAdd<SCALAR_TYPE, DERIVED_VEC_TYPE>(b, static_cast<DERIVED_VEC_TYPE const &>(*this));
+        }
+
         // MHADDS
+        inline SCALAR_TYPE hadd (MASK_TYPE const & mask, SCALAR_TYPE b) const {
+            return EMULATED_FUNCTIONS::reduceAdd<SCALAR_TYPE, DERIVED_VEC_TYPE, MASK_TYPE> (mask, b, static_cast<DERIVED_VEC_TYPE const &> (*this));
+        }
 
         // HMUL
         inline SCALAR_TYPE hmul () const {
@@ -4694,16 +4701,6 @@ namespace SIMD
         inline DERIVED_VEC_TYPE min (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) const {
             return EMULATED_FUNCTIONS::MATH::min<DERIVED_VEC_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
-        
-        // MINVA
-        inline DERIVED_VEC_TYPE & mina (DERIVED_VEC_TYPE const & b) {
-            return EMULATED_FUNCTIONS::MATH::minAssign<DERIVED_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE &>(*this), b);
-        }
-
-        // MMINVA
-        inline DERIVED_VEC_TYPE & mina (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) {
-            return EMULATED_FUNCTIONS::MATH::minAssign<DERIVED_VEC_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE &>(*this), b);
-        }
 
         // MINS
         inline DERIVED_VEC_TYPE min (SCALAR_TYPE b) const {
@@ -4713,6 +4710,16 @@ namespace SIMD
         // MMINS
         inline DERIVED_VEC_TYPE min (MASK_TYPE const & mask, SCALAR_TYPE b) const {
             return EMULATED_FUNCTIONS::MATH::minScalar<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
+        }
+        
+        // MINVA
+        inline DERIVED_VEC_TYPE & mina (DERIVED_VEC_TYPE const & b) {
+            return EMULATED_FUNCTIONS::MATH::minAssign<DERIVED_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE &>(*this), b);
+        }
+
+        // MMINVA
+        inline DERIVED_VEC_TYPE & mina (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) {
+            return EMULATED_FUNCTIONS::MATH::minAssign<DERIVED_VEC_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
         
         // MINSA
