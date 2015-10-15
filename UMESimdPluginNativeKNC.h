@@ -2389,41 +2389,227 @@ namespace SIMD
 
         // 2. Bitwise operations
         // BANDV
+        inline SIMDVecKNC_i band (SIMDVecKNC_i const & b) const {
+            __m512i t0 = _mm512_and_epi32(mVec, b.mVec);
+            return SIMDVecKNC_i(t0);
+        }
+        inline SIMDVecKNC_i operator& (SIMDVecKNC_i const & b) const {
+            __m512i t0 = _mm512_and_epi32(mVec, b.mVec);
+            return SIMDVecKNC_i(t0);
+        }
         // MBANDV
+        inline SIMDVecKNC_i band (SIMDMask16 const & mask, SIMDVecKNC_i const & b) const {
+            __m512i t0 = _mm512_mask_and_epi32(mVec, mask.mMask, mVec, b.mVec);
+            return SIMDVecKNC_i(t0);
+        }
         // BANDS
+        inline SIMDVecKNC_i band (int32_t b) const {
+            __m512i t0 = _mm512_set1_epi32(b);
+            __m512i t1 = _mm512_and_epi32(mVec, t0);
+            return SIMDVecKNC_i(t1);
+        }
         // MBANDS
+        inline SIMDVecKNC_i band (SIMDMask16 const & mask, int32_t b) const {
+            __m512i t0 = _mm512_set1_epi32(b);
+            __m512i t1 = _mm512_mask_and_epi32(mVec, mask.mMask, mVec, t0);
+            return SIMDVecKNC_i(t1);
+        }
         // BANDVA
+        inline SIMDVecKNC_i & banda (SIMDVecKNC_i const & b) {
+            mVec = _mm512_and_epi32(mVec, b.mVec);
+            return *this;
+        }
+        inline SIMDVecKNC_i & operator&= (SIMDVecKNC_i const & b) {
+            mVec = _mm512_and_epi32(mVec, b.mVec);
+            return *this;
+        }
         // MBANDVA
+        inline SIMDVecKNC_i & banda (SIMDMask16 const & mask, SIMDVecKNC_i const & b) {
+            mVec = _mm512_mask_and_epi32(mVec, mask.mMask, mVec, b.mVec);
+            return *this;
+        }
         // BANDSA
+        inline SIMDVecKNC_i & banda (int32_t b) {
+            __m512i t0 = _mm512_set1_epi32(b);
+            mVec = _mm512_and_epi32(mVec, t0);
+            return *this;
+        }
         // MBANDSA
+        inline SIMDVecKNC_i & banda (SIMDMask16 const & mask, int32_t b) {
+            __m512i t0 = _mm512_set1_epi32(b);
+            mVec = _mm512_mask_and_epi32(mVec, mask.mMask, mVec, t0);
+            return *this;
+        }
         // BORV
+        inline SIMDVecKNC_i bor (SIMDVecKNC_i const & b) const {
+            __m512i t0 = _mm512_or_epi32(mVec, b.mVec);
+            return SIMDVecKNC_i(t0);
+        }
+        inline SIMDVecKNC_i operator| (SIMDVecKNC_i const & b) const {
+            __m512i t0 = _mm512_or_epi32(mVec, b.mVec);
+            return SIMDVecKNC_i(t0);
+        }
         // MBORV
+        inline SIMDVecKNC_i bor (SIMDMask16 const & mask, SIMDVecKNC_i const & b) const {
+            __m512i t0 = _mm512_mask_or_epi32(mVec, mask.mMask, mVec, b.mVec);
+            return SIMDVecKNC_i(t0);
+        }
         // BORS
+        inline SIMDVecKNC_i bor (int32_t b) const {
+            __m512i t0 = _mm512_set1_epi32(b);
+            __m512i t1 = _mm512_or_epi32(mVec, t0);
+            return SIMDVecKNC_i(t1);
+        }
         // MBORS
+        inline SIMDVecKNC_i bor (SIMDMask16 const & mask, int32_t b) const {
+            __m512i t0 = _mm512_set1_epi32(b);
+            __m512i t1 = _mm512_mask_or_epi32(mVec, mask.mMask, mVec, t0);
+            return SIMDVecKNC_i(t1);
+        }
         // BORVA
+        inline SIMDVecKNC_i & bora (SIMDVecKNC_i const & b) {
+            mVec = _mm512_or_epi32(mVec, b.mVec);
+            return *this;
+        }
+        inline SIMDVecKNC_i & operator|= (SIMDVecKNC_i const & b) {
+            mVec = _mm512_or_epi32(mVec, b.mVec);
+            return *this;
+        }
         // MBORVA
+        inline SIMDVecKNC_i & bora (SIMDMask16 const & mask, SIMDVecKNC_i const & b) {
+            mVec = _mm512_mask_or_epi32(mVec, mask.mMask, mVec, b.mVec);
+            return *this;
+        }
         // BORSA
+        inline SIMDVecKNC_i & bora (int32_t b) {
+            __m512i t0 = _mm512_set1_epi32(b);
+            mVec = _mm512_or_epi32(mVec, t0);
+            return *this;
+        }
         // MBORSA
+        inline SIMDVecKNC_i & bora (SIMDMask16 const & mask, int32_t b) {
+            __m512i t0 = _mm512_set1_epi32(b);
+            mVec = _mm512_mask_or_epi32(mVec, mask.mMask, mVec, t0);
+            return *this;
+        }
         // BXORV
+        inline SIMDVecKNC_i bxor (SIMDVecKNC_i const & b) const {
+            __m512i t0 = _mm512_xor_epi32(mVec, b.mVec);
+            return SIMDVecKNC_i(t0);
+        }
+        inline SIMDVecKNC_i operator^ (SIMDVecKNC_i const & b) const {
+            __m512i t0 = _mm512_xor_epi32(mVec, b.mVec);
+            return SIMDVecKNC_i(t0);
+        }
         // MBXORV
+        inline SIMDVecKNC_i bxor (SIMDMask16 const & mask, SIMDVecKNC_i const & b) const {
+            __m512i t0 = _mm512_mask_xor_epi32(mVec, mask.mMask, mVec, b.mVec);
+            return SIMDVecKNC_i(t0);
+        }
         // BXORS
+        inline SIMDVecKNC_i bxor (int32_t b) const {
+            __m512i t0 = _mm512_set1_epi32(b);
+            __m512i t1 = _mm512_xor_epi32(mVec, t0);
+            return SIMDVecKNC_i(t1);
+        }
         // MBXORS
+        inline SIMDVecKNC_i bxor (SIMDMask16 const & mask, int32_t b) const {
+            __m512i t0 = _mm512_set1_epi32(b);
+            __m512i t1 = _mm512_mask_xor_epi32(mVec, mask.mMask, mVec, t0);
+            return SIMDVecKNC_i(t1);
+        }
         // BXORVA
+        inline SIMDVecKNC_i & bxora (SIMDVecKNC_i const & b) {
+            mVec = _mm512_xor_epi32(mVec, b.mVec);
+            return *this;
+        }
+        inline SIMDVecKNC_i & operator^= (SIMDVecKNC_i const & b) {
+            mVec = _mm512_xor_epi32(mVec, b.mVec);
+            return *this;
+        }
         // MBXORVA
+        inline SIMDVecKNC_i & bxora (SIMDMask16 const & mask, SIMDVecKNC_i const & b) {
+            mVec = _mm512_mask_xor_epi32(mVec, mask.mMask, mVec, b.mVec);
+            return *this;
+        }
         // BXORSA
+        inline SIMDVecKNC_i & bxora (int32_t b) {
+            __m512i t0 = _mm512_set1_epi32(b);
+            mVec = _mm512_xor_epi32(mVec, t0);
+            return *this;
+        }
         // MBXORSA
+        inline SIMDVecKNC_i & bxora (SIMDMask16 const & mask, int32_t b) {
+            __m512i t0 = _mm512_set1_epi32(b);
+            mVec = _mm512_mask_xor_epi32(mVec, mask.mMask, mVec, t0);
+            return *this;
+        }
         // BNOT
+        inline SIMDVecKNC_i bnot () const {
+            __m512i t0 = _mm512_set1_epi32(0xFFFFFFFF);
+            __m512i t1 = _mm512_xor_epi32(mVec, t0);
+            return SIMDVecKNC_i(t1);
+        }
+        inline SIMDVecKNC_i operator~ () const {
+            __m512i t0 = _mm512_set1_epi32(0xFFFFFFFF);
+            __m512i t1 = _mm512_xor_epi32(mVec, t0);
+            return SIMDVecKNC_i(t1);
+        }
         // MBNOT
+        inline SIMDVecKNC_i bnot (SIMDMask16 const & mask) const {
+            __m512i t0 = _mm512_set1_epi32(0xFFFFFFFF);
+            __m512i t1 = _mm512_mask_xor_epi32(mVec, mask.mMask, mVec, t0);
+            return SIMDVecKNC_i(t1);
+        }
         // BNOTA
+        inline SIMDVecKNC_i & bnota () {
+            __m512i t0 = _mm512_set1_epi32(0xFFFFFFFF);
+            mVec = _mm512_xor_epi32(mVec, t0);
+            return *this;
+        }
         // MBNOTA
+        inline SIMDVecKNC_i & bnota (SIMDMask16 const & mask) {
+            __m512i t0 = _mm512_set1_epi32(0xFFFFFFFF);
+            mVec = _mm512_mask_xor_epi32(mVec, mask.mMask, mVec, t0);
+            return *this;
+        }
         // HAND
+        inline int32_t hand() const {
+            return _mm512_reduce_and_epi32(mVec);
+        }
         // MHAND
+        inline int32_t hand(SIMDMask16 const & mask) const {
+            return _mm512_mask_reduce_and_epi32(mask.mMask, mVec);
+        }
         // HANDS
+        inline int32_t hand(int32_t a) const {
+            int32_t t0 = _mm512_reduce_and_epi32(mVec);
+            return a + t0;
+        }
         // MHANDS
+        inline int32_t hand(SIMDMask16 const & mask, int32_t a) const {
+            int32_t t0 = _mm512_mask_reduce_and_epi32(mask.mMask, mVec);
+            return a + t0;
+        }
         // HOR
+        inline int32_t hor() const {
+            return _mm512_reduce_or_epi32(mVec);
+        }
         // MHOR
+        inline int32_t hor(SIMDMask16 const & mask) const {
+            return _mm512_mask_reduce_or_epi32(mask.mMask, mVec);
+        }
         // HORS
+        inline int32_t hor(int32_t a) const {
+            int32_t t0 = _mm512_reduce_or_epi32(mVec);
+            return a + t0;
+        }
         // MHORS
+        inline int32_t hor(SIMDMask16 const & mask, int32_t a) const {
+            int32_t t0 = _mm512_mask_reduce_or_epi32(mask.mMask, mVec);
+            return a + t0;
+        }
+        // Note: reduce_xor not available in IMCI
         // HXOR
         // MHXOR
         // HXORS
