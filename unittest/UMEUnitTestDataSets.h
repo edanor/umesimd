@@ -312,6 +312,11 @@ struct DataSet_1_32i {
         static const uint32_t MRORV[32];
         static const uint32_t RORS[32];
         static const uint32_t MRORS[32];
+
+        static const int32_t NEG[32];
+        static const int32_t MNEG[32];
+        static const int32_t ABS[32];
+        static const int32_t MABS[32];
     };
 };
 
@@ -393,10 +398,12 @@ struct DataSet_1_32f {
         static const float MHMAX[32];
         static const float HMIN[32];
         static const float MHMIN[32];
+
         static const float NEG[32];
         static const float MNEG[32];
         static const float ABS[32];
         static const float MABS[32];
+
         static const float SQR[32];
         static const float MSQR[32];
         static const float SQRT[32];
