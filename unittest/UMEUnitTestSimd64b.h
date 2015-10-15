@@ -172,7 +172,7 @@ int test_UME_SIMD2_32i(bool supressMessages) {
         SIMD2_32i vec0;
         CHECK_CONDITION(vec0.length() == 2, "ZERO-CONSTR");
     }
-    genericIntTest<SIMD2_32i, int32_t, SIMDMask2, 2, DataSet_1_32i>();
+    genericIntTest<SIMD2_32i, SIMD2_32u, int32_t, SIMDMask2, 2, DataSet_1_32i>();
 
     return g_failCount;
 }

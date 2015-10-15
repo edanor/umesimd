@@ -375,7 +375,7 @@ int test_UME_SIMD8_32i(bool supressMessages) {
         SIMD8_32i vec0( -1, -2, -3, -4, 1,  2,  3, 4);
         CHECK_CONDITION(vec0[0] == -1 && vec0[7] == 4, "FULL-CONSTR"); 
     }
-    genericIntTest<SIMD8_32i, int32_t, SIMDMask8, 8, DataSet_1_32i>();
+    genericIntTest<SIMD8_32i, SIMD8_32u, int32_t, SIMDMask8, 8, DataSet_1_32i>();
     {
         SIMD8_32i vec0(-42);
         SIMD8_32i vec1(999);

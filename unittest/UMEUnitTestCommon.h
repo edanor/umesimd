@@ -2289,6 +2289,389 @@ void genericHMINTest()
 
 // MHMIN
 
+template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
+void genericLSHVTest() 
+{
+    SCALAR_TYPE values[VEC_LEN];
+    VEC_TYPE vec0(DATA_SET::inputs::inputA);
+    UINT_VEC_TYPE vec1(DATA_SET::inputs::inputShiftA);
+    VEC_TYPE vec2 = vec0.lsh(vec1);
+    vec2.store(values);
+    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::LSHV, VEC_LEN, 0.01f);
+    CHECK_CONDITION(inRange, "LSHV");
+}
+    
+template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
+void genericMLSHVTest() 
+{
+    SCALAR_TYPE values[VEC_LEN];
+    VEC_TYPE vec0(DATA_SET::inputs::inputA);
+    UINT_VEC_TYPE vec1(DATA_SET::inputs::inputShiftA);
+    MASK_TYPE mask0(DATA_SET::inputs::maskA);
+    VEC_TYPE vec2 = vec0.lsh(mask0, vec1);
+    vec2.store(values);
+    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MLSHV, VEC_LEN, 0.01f);
+    CHECK_CONDITION(inRange, "MLSHV");
+}
+
+template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
+void genericLSHSTest() 
+{
+    SCALAR_TYPE values[VEC_LEN];
+    VEC_TYPE vec0(DATA_SET::inputs::inputA);
+    VEC_TYPE vec1 = vec0.lsh(DATA_SET::inputs::inputShiftScalarA);
+    vec1.store(values);
+    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::LSHS, VEC_LEN, 0.01f);
+    CHECK_CONDITION(inRange, "LSHS");
+}
+    
+template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
+void genericMLSHSTest() 
+{
+    SCALAR_TYPE values[VEC_LEN];
+    VEC_TYPE vec0(DATA_SET::inputs::inputA);
+    MASK_TYPE mask0(DATA_SET::inputs::maskA);
+    VEC_TYPE vec1 = vec0.lsh(mask0, DATA_SET::inputs::inputShiftScalarA);
+    vec1.store(values);
+    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MLSHS, VEC_LEN, 0.01f);
+    CHECK_CONDITION(inRange, "MLSHS");
+}
+
+template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
+void genericLSHVATest() 
+{
+    SCALAR_TYPE values[VEC_LEN];
+    VEC_TYPE vec0(DATA_SET::inputs::inputA);
+    UINT_VEC_TYPE vec1(DATA_SET::inputs::inputShiftA);
+    vec0.lsha(vec1);
+    vec0.store(values);
+    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::LSHV, VEC_LEN, 0.01f);
+    CHECK_CONDITION(inRange, "LSHVA");
+}
+    
+template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
+void genericMLSHVATest() 
+{
+    SCALAR_TYPE values[VEC_LEN];
+    VEC_TYPE vec0(DATA_SET::inputs::inputA);
+    UINT_VEC_TYPE vec1(DATA_SET::inputs::inputShiftA);
+    MASK_TYPE mask0(DATA_SET::inputs::maskA);
+    vec0.lsha(mask0, vec1);
+    vec0.store(values);
+    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MLSHV, VEC_LEN, 0.01f);
+    CHECK_CONDITION(inRange, "MLSHVA");
+}
+
+template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
+void genericLSHSATest() 
+{
+    SCALAR_TYPE values[VEC_LEN];
+    VEC_TYPE vec0(DATA_SET::inputs::inputA);
+    vec0.lsha(DATA_SET::inputs::inputShiftScalarA);
+    vec0.store(values);
+    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::LSHS, VEC_LEN, 0.01f);
+    CHECK_CONDITION(inRange, "LSHSA");
+}
+    
+template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
+void genericMLSHSATest() 
+{
+    SCALAR_TYPE values[VEC_LEN];
+    VEC_TYPE vec0(DATA_SET::inputs::inputA);
+    MASK_TYPE mask0(DATA_SET::inputs::maskA);
+    vec0.lsha(mask0, DATA_SET::inputs::inputShiftScalarA);
+    vec0.store(values);
+    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MLSHS, VEC_LEN, 0.01f);
+    CHECK_CONDITION(inRange, "MLSHSA");
+} 
+
+template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
+void genericRSHVTest() 
+{
+    SCALAR_TYPE values[VEC_LEN];
+    VEC_TYPE vec0(DATA_SET::inputs::inputA);
+    UINT_VEC_TYPE vec1(DATA_SET::inputs::inputShiftA);
+    VEC_TYPE vec2 = vec0.rsh(vec1);
+    vec2.store(values);
+    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::RSHV, VEC_LEN, 0.01f);
+    CHECK_CONDITION(inRange, "RSHV");
+}
+    
+template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
+void genericMRSHVTest() 
+{
+    SCALAR_TYPE values[VEC_LEN];
+    VEC_TYPE vec0(DATA_SET::inputs::inputA);
+    UINT_VEC_TYPE vec1(DATA_SET::inputs::inputShiftA);
+    MASK_TYPE mask0(DATA_SET::inputs::maskA);
+    VEC_TYPE vec2 = vec0.rsh(mask0, vec1);
+    vec2.store(values);
+    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MRSHV, VEC_LEN, 0.01f);
+    CHECK_CONDITION(inRange, "MRSHV");
+}
+
+template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
+void genericRSHSTest() 
+{
+    SCALAR_TYPE values[VEC_LEN];
+    VEC_TYPE vec0(DATA_SET::inputs::inputA);
+    VEC_TYPE vec1 = vec0.rsh(DATA_SET::inputs::inputShiftScalarA);
+    vec1.store(values);
+    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::RSHS, VEC_LEN, 0.01f);
+    CHECK_CONDITION(inRange, "RSHS");
+}
+    
+template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
+void genericMRSHSTest() 
+{
+    SCALAR_TYPE values[VEC_LEN];
+    VEC_TYPE vec0(DATA_SET::inputs::inputA);
+    MASK_TYPE mask0(DATA_SET::inputs::maskA);
+    VEC_TYPE vec1 = vec0.rsh(mask0, DATA_SET::inputs::inputShiftScalarA);
+    vec1.store(values);
+    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MRSHS, VEC_LEN, 0.01f);
+    CHECK_CONDITION(inRange, "MRSHS");
+}
+
+template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
+void genericRSHVATest() 
+{
+    SCALAR_TYPE values[VEC_LEN];
+    VEC_TYPE vec0(DATA_SET::inputs::inputA);
+    UINT_VEC_TYPE vec1(DATA_SET::inputs::inputShiftA);
+    vec0.rsha(vec1);
+    vec0.store(values);
+    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::RSHV, VEC_LEN, 0.01f);
+    CHECK_CONDITION(inRange, "RSHVA");
+}
+    
+template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
+void genericMRSHVATest() 
+{
+    SCALAR_TYPE values[VEC_LEN];
+    VEC_TYPE vec0(DATA_SET::inputs::inputA);
+    UINT_VEC_TYPE vec1(DATA_SET::inputs::inputShiftA);
+    MASK_TYPE mask0(DATA_SET::inputs::maskA);
+    vec0.rsha(mask0, vec1);
+    vec0.store(values);
+    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MRSHV, VEC_LEN, 0.01f);
+    CHECK_CONDITION(inRange, "MRSHVA");
+}
+
+template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
+void genericRSHSATest() 
+{
+    SCALAR_TYPE values[VEC_LEN];
+    VEC_TYPE vec0(DATA_SET::inputs::inputA);
+    vec0.rsha(DATA_SET::inputs::inputShiftScalarA);
+    vec0.store(values);
+    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::RSHS, VEC_LEN, 0.01f);
+    CHECK_CONDITION(inRange, "RSHSA");
+}
+    
+template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
+void genericMRSHSATest() 
+{
+    SCALAR_TYPE values[VEC_LEN];
+    VEC_TYPE vec0(DATA_SET::inputs::inputA);
+    MASK_TYPE mask0(DATA_SET::inputs::maskA);
+    vec0.rsha(mask0, DATA_SET::inputs::inputShiftScalarA);
+    vec0.store(values);
+    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MRSHS, VEC_LEN, 0.01f);
+    CHECK_CONDITION(inRange, "MRSHSA");
+} 
+
+template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
+void genericROLVTest() 
+{
+    SCALAR_TYPE values[VEC_LEN];
+    VEC_TYPE vec0(DATA_SET::inputs::inputA);
+    UINT_VEC_TYPE vec1(DATA_SET::inputs::inputShiftA);
+    VEC_TYPE vec2 = vec0.rol(vec1);
+    vec2.store(values);
+    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::ROLV, VEC_LEN, 0.01f);
+    CHECK_CONDITION(inRange, "ROLV");
+}
+    
+template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
+void genericMROLVTest() 
+{
+    SCALAR_TYPE values[VEC_LEN];
+    VEC_TYPE vec0(DATA_SET::inputs::inputA);
+    UINT_VEC_TYPE vec1(DATA_SET::inputs::inputShiftA);
+    MASK_TYPE mask0(DATA_SET::inputs::maskA);
+    VEC_TYPE vec2 = vec0.rol(mask0, vec1);
+    vec2.store(values);
+    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MROLV, VEC_LEN, 0.01f);
+    CHECK_CONDITION(inRange, "MROLV");
+}
+
+template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
+void genericROLSTest() 
+{
+    SCALAR_TYPE values[VEC_LEN];
+    VEC_TYPE vec0(DATA_SET::inputs::inputA);
+    VEC_TYPE vec1 = vec0.rol(DATA_SET::inputs::inputShiftScalarA);
+    vec1.store(values);
+    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::ROLS, VEC_LEN, 0.01f);
+    CHECK_CONDITION(inRange, "ROLS");
+}
+    
+template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
+void genericMROLSTest() 
+{
+    SCALAR_TYPE values[VEC_LEN];
+    VEC_TYPE vec0(DATA_SET::inputs::inputA);
+    MASK_TYPE mask0(DATA_SET::inputs::maskA);
+    VEC_TYPE vec1 = vec0.rol(mask0, DATA_SET::inputs::inputShiftScalarA);
+    vec1.store(values);
+    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MROLS, VEC_LEN, 0.01f);
+    CHECK_CONDITION(inRange, "MROLS");
+}
+
+template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
+void genericROLVATest() 
+{
+    SCALAR_TYPE values[VEC_LEN];
+    VEC_TYPE vec0(DATA_SET::inputs::inputA);
+    UINT_VEC_TYPE vec1(DATA_SET::inputs::inputShiftA);
+    vec0.rola(vec1);
+    vec0.store(values);
+    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::ROLV, VEC_LEN, 0.01f);
+    CHECK_CONDITION(inRange, "ROLVA");
+}
+    
+template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
+void genericMROLVATest() 
+{
+    SCALAR_TYPE values[VEC_LEN];
+    VEC_TYPE vec0(DATA_SET::inputs::inputA);
+    UINT_VEC_TYPE vec1(DATA_SET::inputs::inputShiftA);
+    MASK_TYPE mask0(DATA_SET::inputs::maskA);
+    vec0.rola(mask0, vec1);
+    vec0.store(values);
+    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MROLV, VEC_LEN, 0.01f);
+    CHECK_CONDITION(inRange, "MROLVA");
+}
+
+template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
+void genericROLSATest() 
+{
+    SCALAR_TYPE values[VEC_LEN];
+    VEC_TYPE vec0(DATA_SET::inputs::inputA);
+    vec0.rola(DATA_SET::inputs::inputShiftScalarA);
+    vec0.store(values);
+    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::ROLS, VEC_LEN, 0.01f);
+    CHECK_CONDITION(inRange, "ROLSA");
+}
+    
+template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
+void genericMROLSATest() 
+{
+    SCALAR_TYPE values[VEC_LEN];
+    VEC_TYPE vec0(DATA_SET::inputs::inputA);
+    MASK_TYPE mask0(DATA_SET::inputs::maskA);
+    vec0.rola(mask0, DATA_SET::inputs::inputShiftScalarA);
+    vec0.store(values);
+    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MROLS, VEC_LEN, 0.01f);
+    CHECK_CONDITION(inRange, "MROLSA");
+} 
+
+template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
+void genericRORVTest() 
+{
+    SCALAR_TYPE values[VEC_LEN];
+    VEC_TYPE vec0(DATA_SET::inputs::inputA);
+    UINT_VEC_TYPE vec1(DATA_SET::inputs::inputShiftA);
+    VEC_TYPE vec2 = vec0.ror(vec1);
+    vec2.store(values);
+    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::RORV, VEC_LEN, 0.01f);
+    CHECK_CONDITION(inRange, "RORV");
+}
+    
+template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
+void genericMRORVTest() 
+{
+    SCALAR_TYPE values[VEC_LEN];
+    VEC_TYPE vec0(DATA_SET::inputs::inputA);
+    UINT_VEC_TYPE vec1(DATA_SET::inputs::inputShiftA);
+    MASK_TYPE mask0(DATA_SET::inputs::maskA);
+    VEC_TYPE vec2 = vec0.ror(mask0, vec1);
+    vec2.store(values);
+    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MRORV, VEC_LEN, 0.01f);
+    CHECK_CONDITION(inRange, "MRORV");
+}
+
+template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
+void genericRORSTest() 
+{
+    SCALAR_TYPE values[VEC_LEN];
+    VEC_TYPE vec0(DATA_SET::inputs::inputA);
+    VEC_TYPE vec1 = vec0.ror(DATA_SET::inputs::inputShiftScalarA);
+    vec1.store(values);
+    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::RORS, VEC_LEN, 0.01f);
+    CHECK_CONDITION(inRange, "RORS");
+}
+    
+template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
+void genericMRORSTest() 
+{
+    SCALAR_TYPE values[VEC_LEN];
+    VEC_TYPE vec0(DATA_SET::inputs::inputA);
+    MASK_TYPE mask0(DATA_SET::inputs::maskA);
+    VEC_TYPE vec1 = vec0.ror(mask0, DATA_SET::inputs::inputShiftScalarA);
+    vec1.store(values);
+    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MRORS, VEC_LEN, 0.01f);
+    CHECK_CONDITION(inRange, "MRORS");
+}
+
+template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
+void genericRORVATest() 
+{
+    SCALAR_TYPE values[VEC_LEN];
+    VEC_TYPE vec0(DATA_SET::inputs::inputA);
+    UINT_VEC_TYPE vec1(DATA_SET::inputs::inputShiftA);
+    vec0.rora(vec1);
+    vec0.store(values);
+    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::RORV, VEC_LEN, 0.01f);
+    CHECK_CONDITION(inRange, "RORVA");
+}
+    
+template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
+void genericMRORVATest() 
+{
+    SCALAR_TYPE values[VEC_LEN];
+    VEC_TYPE vec0(DATA_SET::inputs::inputA);
+    UINT_VEC_TYPE vec1(DATA_SET::inputs::inputShiftA);
+    MASK_TYPE mask0(DATA_SET::inputs::maskA);
+    vec0.rora(mask0, vec1);
+    vec0.store(values);
+    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MRORV, VEC_LEN, 0.01f);
+    CHECK_CONDITION(inRange, "MRORVA");
+}
+
+template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
+void genericRORSATest() 
+{
+    SCALAR_TYPE values[VEC_LEN];
+    VEC_TYPE vec0(DATA_SET::inputs::inputA);
+    vec0.rora(DATA_SET::inputs::inputShiftScalarA);
+    vec0.store(values);
+    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::RORS, VEC_LEN, 0.01f);
+    CHECK_CONDITION(inRange, "RORSA");
+}
+    
+template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
+void genericMRORSATest() 
+{
+    SCALAR_TYPE values[VEC_LEN];
+    VEC_TYPE vec0(DATA_SET::inputs::inputA);
+    MASK_TYPE mask0(DATA_SET::inputs::maskA);
+    vec0.rora(mask0, DATA_SET::inputs::inputShiftScalarA);
+    vec0.store(values);
+    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MRORS, VEC_LEN, 0.01f);
+    CHECK_CONDITION(inRange, "MRORSA");
+} 
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericNEGTest()
 {
@@ -2921,41 +3304,41 @@ void genericGatherScatterInterfaceTest()
     // MSCATTERV
 }
 
-template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
+template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericShiftRotateInterfaceTest()
 {
-    // LSHV
-    // MLSHV
-    // LSHS
-    // MLSHS
-    // LSHVA
-    // MLSHVA
-    // LSHSA
-    // MLSHSA
-    // RSHV
-    // MRSHV
-    // RSHS
-    // MRSHS
-    // RSHVA
-    // MRSHVA
-    // RSHSA
-    // MRSHSA
-    // ROLV
-    // MROLV
-    // ROLS
-    // MROLS
-    // ROLVA
-    // MROLVA
-    // ROLSA
-    // MROLSA
-    // RORV
-    // MRORV
-    // RORS
-    // MRORS
-    // RORVA
-    // MRORVA
-    // RORSA
-    // MRORSA
+    genericLSHVTest<VEC_TYPE, UINT_VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
+    genericMLSHVTest<VEC_TYPE, UINT_VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericLSHSTest<VEC_TYPE, UINT_VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
+    genericMLSHSTest<VEC_TYPE, UINT_VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericLSHVATest<VEC_TYPE, UINT_VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
+    genericMLSHVATest<VEC_TYPE, UINT_VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericLSHSATest<VEC_TYPE, UINT_VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
+    genericMLSHSATest<VEC_TYPE, UINT_VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericRSHVTest<VEC_TYPE, UINT_VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
+    genericMRSHVTest<VEC_TYPE, UINT_VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericRSHSTest<VEC_TYPE, UINT_VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
+    genericMRSHSTest<VEC_TYPE, UINT_VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericRSHVATest<VEC_TYPE, UINT_VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
+    genericMRSHVATest<VEC_TYPE, UINT_VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericRSHSATest<VEC_TYPE, UINT_VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
+    genericMRSHSATest<VEC_TYPE, UINT_VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericROLVTest<VEC_TYPE, UINT_VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
+    genericMROLVTest<VEC_TYPE, UINT_VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericROLSTest<VEC_TYPE, UINT_VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
+    genericMROLSTest<VEC_TYPE, UINT_VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericROLVATest<VEC_TYPE, UINT_VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
+    genericMROLVATest<VEC_TYPE, UINT_VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericROLSATest<VEC_TYPE, UINT_VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
+    genericMROLSATest<VEC_TYPE, UINT_VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericRORVTest<VEC_TYPE, UINT_VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
+    genericMRORVTest<VEC_TYPE, UINT_VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericRORSTest<VEC_TYPE, UINT_VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
+    genericMRORSTest<VEC_TYPE, UINT_VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericRORVATest<VEC_TYPE, UINT_VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
+    genericMRORVATest<VEC_TYPE, UINT_VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericRORSATest<VEC_TYPE, UINT_VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
+    genericMRORSATest<VEC_TYPE, UINT_VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
 }
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
@@ -3030,15 +3413,15 @@ void genericUintTest() {
     genericBaseInterfaceTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET> ();
     genericBitwiseInterfaceTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET> ();
     genericGatherScatterInterfaceTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET> ();
-    genericShiftRotateInterfaceTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>(); 
+    genericShiftRotateInterfaceTest<VEC_TYPE, VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>(); 
 }
 
-template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
+template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericIntTest() {
     genericBaseInterfaceTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET> ();
     genericBitwiseInterfaceTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET> ();
     genericGatherScatterInterfaceTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET> ();
-    genericShiftRotateInterfaceTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericShiftRotateInterfaceTest<VEC_TYPE, UINT_VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
     //genericSignInterfaceTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
 }
 

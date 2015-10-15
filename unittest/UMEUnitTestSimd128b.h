@@ -1421,7 +1421,7 @@ int test_UME_SIMD4_32i(bool supressMessages)
         SIMD4_32i vec0(-3, -2, -1, 6);
         CHECK_CONDITION(vec0[0] == -3 && vec0[3] == 6, "FULL-CONSTR"); 
     }
-    genericIntTest<SIMD4_32i, int32_t, SIMDMask4, 4, DataSet_1_32i>();
+    genericIntTest<SIMD4_32i, SIMD4_32u, int32_t, SIMDMask4, 4, DataSet_1_32i>();
     {
         SIMD4_32u vec0(8);
         SIMD4_32i vec1;

@@ -234,7 +234,20 @@ const uint32_t DataSet_1_32u::inputs::inputC[32] = {
     2317880783, 2983673643, 2020558581, 2365802563,
     3332725190, 2891378317, 3720270723, 3845563885
 };
+
+const uint32_t DataSet_1_32u::inputs::inputShiftA[32] = {
+    52,     4,      29,     44,
+    7,      13,     11,     8,
+    46,     53,     13,     62,
+    39,     26,     19,     40,
+    45,     13,     47,     1008,
+    694,    529,    790,    492,
+    58,     702,    206,    761,
+    201,    8,      851,    691
+};
+
 const uint32_t DataSet_1_32u::inputs::scalarA = 636364;
+const uint32_t DataSet_1_32u::inputs::inputShiftScalarA = 27;
 
 const bool DataSet_1_32u::inputs::maskA[32] = {
     false,   false,  false,  true,   // 4
@@ -1174,6 +1187,167 @@ const uint32_t DataSet_1_32u::outputs::MSQRT[32] = {
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 };
 
+const uint32_t DataSet_1_32u::outputs::LSHV[32] = {
+    0x98900000,     0x7f499710,     0xe0000000,     0xa978b000,
+    0x93b9ad00,     0xccf00000,     0xfb1ee000,     0x6744f800,
+    0xda8b0000,     0xe3200000,     0x4d966000,     0x40000000,
+    0xbf44a580,     0x40000000,     0xac080000,     0xb54e3000,
+    0x185da000,     0x849e0000,     0xb90c8000,     0xb8130000,
+    0x85000000,     0x40060000,     0x57000000,     0xe3761000,
+    0x18000000,     0x80000000,     0xbea5c000,     0x00000000,
+    0x998c5a00,     0xdff8e000,     0x70b00000,     0xafa00000
+};
+const uint32_t DataSet_1_32u::outputs::MLSHV[32] = {
+    0xac43d989,     0xd7f49971,     0xde547aff,     0xa978b000,
+    0xe727735a,     0xccf00000,     0xfb1ee000,     0x616744f8,
+    0x230b6a2c,     0xe3200000,     0x4d966000,     0xba0279f5,
+    0xbf44a580,     0xccc40d10,     0x29eed581,     0xb54e3000,
+    0xbcb0c2ed,     0x849e0000,     0xb90c8000,     0x19b9b813,
+    0x85000000,     0x6e7fa003,     0xa071695c,     0xe3761000,
+    0x18000000,     0x8281c382,     0x0abefa97,     0x00000000,
+    0xa3ccc62d,     0xdff8e000,     0x70b00000,     0x1a9955f4
+};
+const uint32_t DataSet_1_32u::outputs::LSHS[32] = {
+    0x48000000,     0x88000000,     0xf8000000,     0x58000000,
+    0xd0000000,     0x00000000,     0xe0000000,     0xc0000000,
+    0x60000000,     0xc8000000,     0x98000000,     0xa8000000,
+    0x58000000,     0x80000000,     0x08000000,     0x80000000,
+    0x68000000,     0x80000000,     0xc8000000,     0x98000000,
+    0xa0000000,     0x18000000,     0xe0000000,     0x08000000,
+    0x30000000,     0x10000000,     0xb8000000,     0x00000000,
+    0x68000000,     0x00000000,     0xb0000000,     0xa0000000
+};
+const uint32_t DataSet_1_32u::outputs::MLSHS[32] = {
+    0xac43d989,     0xd7f49971,     0xde547aff,     0x58000000,
+    0xe727735a,     0x00000000,     0xe0000000,     0x616744f8,
+    0x230b6a2c,     0xc8000000,     0x98000000,     0xba0279f5,
+    0x58000000,     0xccc40d10,     0x29eed581,     0x80000000,
+    0xbcb0c2ed,     0x80000000,     0xc8000000,     0x19b9b813,
+    0xa0000000,     0x6e7fa003,     0xa071695c,     0x08000000,
+    0x30000000,     0x8281c382,     0x0abefa97,     0x00000000,
+    0xa3ccc62d,     0x00000000,     0xb0000000,     0x1a9955f4
+};
+const uint32_t DataSet_1_32u::outputs::RSHV[32] = {
+    0x00000ac4,     0x0d7f4997,     0x00000006,     0x0007fba9,
+    0x01ce4ee6,     0x0007d073,     0x000ad3ec,     0x00616744,
+    0x00008c2d,     0x00000625,     0x00036593,     0x00000002,
+    0x00bafd12,     0x00000033,     0x0000053d,     0x0030b54e,
+    0x0005e586,     0x00000ce1,     0x0001700a,     0x000019b9,
+    0x000003c1,     0x0000373f,     0x00000281,     0x00033be3,
+    0x00000030,     0x00000002,     0x00002afb,     0x00000049,
+    0x0051e663,     0x00fbdff8,     0x00001e12,     0x00000353
+};
+const uint32_t DataSet_1_32u::outputs::MRSHV[32] = {
+    0xac43d989,     0xd7f49971,     0xde547aff,     0x0007fba9,
+    0xe727735a,     0x0007d073,     0x000ad3ec,     0x616744f8,
+    0x230b6a2c,     0x00000625,     0x00036593,     0xba0279f5,
+    0x00bafd12,     0xccc40d10,     0x29eed581,     0x0030b54e,
+    0xbcb0c2ed,     0x00000ce1,     0x0001700a,     0x19b9b813,
+    0x000003c1,     0x6e7fa003,     0xa071695c,     0x00033be3,
+    0x00000030,     0x8281c382,     0x0abefa97,     0x00000049,
+    0xa3ccc62d,     0x00fbdff8,     0x00001e12,     0x1a9955f4
+};
+const uint32_t DataSet_1_32u::outputs::RSHS[32] = {
+    0x00000015,     0x0000001a,     0x0000001b,     0x0000000f,
+    0x0000001c,     0x0000001f,     0x0000000a,     0x0000000c,
+    0x00000004,     0x00000018,     0x0000000d,     0x00000017,
+    0x0000000b,     0x00000019,     0x00000005,     0x00000006,
+    0x00000017,     0x00000000,     0x00000017,     0x00000003,
+    0x0000001e,     0x0000000d,     0x00000014,     0x00000006,
+    0x00000018,     0x00000010,     0x00000001,     0x00000012,
+    0x00000014,     0x0000001f,     0x0000001e,     0x00000003
+};
+const uint32_t DataSet_1_32u::outputs::MRSHS[32] = {
+    0xac43d989,     0xd7f49971,     0xde547aff,     0x0000000f,
+    0xe727735a,     0x0000001f,     0x0000000a,     0x616744f8,
+    0x230b6a2c,     0x00000018,     0x0000000d,     0xba0279f5,
+    0x0000000b,     0xccc40d10,     0x29eed581,     0x00000006,
+    0xbcb0c2ed,     0x00000000,     0x00000017,     0x19b9b813,
+    0x0000001e,     0x6e7fa003,     0xa071695c,     0x00000006,
+    0x00000018,     0x8281c382,     0x0abefa97,     0x00000012,
+    0xa3ccc62d,     0x0000001f,     0x0000001e,     0x1a9955f4
+};
+const uint32_t DataSet_1_32u::outputs::ROLV[32] = {
+    0x989ac43d,     0x7f49971d,     0xfbca8f5f,     0xa978b7fb,
+    0x93b9ad73,     0xccf01f41,     0xfb1ee2b4,     0x6744f861,
+    0xda8b08c2,     0xe338962e,     0x4d966d96,     0x6e809e7d,
+    0xbf44a5ae,     0x43331034,     0xac094f76,     0xb54e3030,
+    0x185db796,     0x849e0033,     0xb90cdc02,     0xb81319b9,
+    0x853c10d5,     0x4006dcff,     0x57281c5a,     0xe376133b,
+    0x1b0a71b3,     0xa0a070e0,     0xbea5c2af,     0x01244e06,
+    0x998c5b47,     0xdff8e0fb,     0x70b78482,     0xafa0d4ca
+};
+const uint32_t DataSet_1_32u::outputs::MROLV[32] = {
+    0xac43d989,     0xd7f49971,     0xde547aff,     0xa978b7fb,
+    0xe727735a,     0xccf01f41,     0xfb1ee2b4,     0x616744f8,
+    0x230b6a2c,     0xe338962e,     0x4d966d96,     0xba0279f5,
+    0xbf44a5ae,     0xccc40d10,     0x29eed581,     0xb54e3030,
+    0xbcb0c2ed,     0x849e0033,     0xb90cdc02,     0x19b9b813,
+    0x853c10d5,     0x6e7fa003,     0xa071695c,     0xe376133b,
+    0x1b0a71b3,     0x8281c382,     0x0abefa97,     0x01244e06,
+    0xa3ccc62d,     0xdff8e0fb,     0x70b78482,     0x1a9955f4
+};
+const uint32_t DataSet_1_32u::outputs::ROLS[32] = {
+    0x4d621ecc,     0x8ebfa4cb,     0xfef2a3d7,     0x5bfdd4bc,
+    0xd7393b9a,     0x07d0733c,     0xe2b4fb1e,     0xc30b3a27,
+    0x61185b51,     0xce258bb8,     0x9b659365,     0xadd013cf,
+    0x5aebf44a,     0x86662068,     0x094f76ac,     0x8185aa71,
+    0x6de58617,     0x800ce127,     0xcdc02b90,     0x98cdcdc0,
+    0xa7821ab0,     0x1b73fd00,     0xe5038b4a,     0x099df1bb,
+    0x3614e366,     0x14140e1c,     0xb855f7d4,     0x04913818,
+    0x6d1e6631,     0x07deffc7,     0xb7848270,     0xa0d4caaf
+};
+const uint32_t DataSet_1_32u::outputs::MROLS[32] = {
+    0xac43d989,     0xd7f49971,     0xde547aff,     0x5bfdd4bc,
+    0xe727735a,     0x07d0733c,     0xe2b4fb1e,     0x616744f8,
+    0x230b6a2c,     0xce258bb8,     0x9b659365,     0xba0279f5,
+    0x5aebf44a,     0xccc40d10,     0x29eed581,     0x8185aa71,
+    0xbcb0c2ed,     0x800ce127,     0xcdc02b90,     0x19b9b813,
+    0xa7821ab0,     0x6e7fa003,     0xa071695c,     0x099df1bb,
+    0x3614e366,     0x8281c382,     0x0abefa97,     0x04913818,
+    0xa3ccc62d,     0x07deffc7,     0xb7848270,     0x1a9955f4
+};
+const uint32_t DataSet_1_32u::outputs::RORV[32] = {
+    0x3d989ac4,     0x1d7f4997,     0xf2a3d7fe,     0x78b7fba9,
+    0xb5ce4ee6,     0x3c07d073,     0x7b8ad3ec,     0xf8616744,
+    0xa8b08c2d,     0x8bb8ce25,     0x659b6593,     0xe809e7d6,
+    0x96bafd12,     0x31034433,     0xdab0253d,     0x3030b54e,
+    0x176de586,     0x27800ce1,     0xe433700a,     0xb81319b9,
+    0x0d5853c1,     0xd001b73f,     0xc5a57281,     0x76133be3,
+    0xa71b31b0,     0x0a070e0a,     0xea5c2afb,     0x13818049,
+    0x16d1e663,     0xe0fbdff8,     0x09c2de12,     0x2abe8353
+};
+const uint32_t DataSet_1_32u::outputs::MRORV[32] = {
+    0xac43d989,     0xd7f49971,     0xde547aff,     0x78b7fba9,
+    0xe727735a,     0x3c07d073,     0x7b8ad3ec,     0x616744f8,
+    0x230b6a2c,     0x8bb8ce25,     0x659b6593,     0xba0279f5,
+    0x96bafd12,     0xccc40d10,     0x29eed581,     0x3030b54e,
+    0xbcb0c2ed,     0x27800ce1,     0xe433700a,     0x19b9b813,
+    0x0d5853c1,     0x6e7fa003,     0xa071695c,     0x76133be3,
+    0xa71b31b0,     0x8281c382,     0x0abefa97,     0x13818049,
+    0xa3ccc62d,     0xe0fbdff8,     0x09c2de12,     0x1a9955f4
+};
+const uint32_t DataSet_1_32u::outputs::RORS[32] = {
+    0x887b3135,     0xfe932e3a,     0xca8f5ffb,     0xf752f16f,
+    0xe4ee6b5c,     0x41ccf01f,     0xd3ec7b8a,     0x2ce89f0c,
+    0x616d4584,     0x962ee338,     0x964d966d,     0x404f3eb7,
+    0xafd1296b,     0x9881a219,     0x3ddab025,     0x16a9c606,
+    0x96185db7,     0x33849e00,     0x00ae4337,     0x37370263,
+    0x086ac29e,     0xcff4006d,     0x0e2d2b94,     0x77c6ec26,
+    0x538d98d8,     0x50387050,     0x57df52e1,     0x44e06012,
+    0x7998c5b4,     0x7bff1c1f,     0x1209c2de,     0x532abe83
+};
+const uint32_t DataSet_1_32u::outputs::MRORS[32] = {
+    0xac43d989,     0xd7f49971,     0xde547aff,     0xf752f16f,
+    0xe727735a,     0x41ccf01f,     0xd3ec7b8a,     0x616744f8,
+    0x230b6a2c,     0x962ee338,     0x964d966d,     0xba0279f5,
+    0xafd1296b,     0xccc40d10,     0x29eed581,     0x16a9c606,
+    0xbcb0c2ed,     0x33849e00,     0x00ae4337,     0x19b9b813,
+    0x086ac29e,     0x6e7fa003,     0xa071695c,     0x77c6ec26,
+    0x538d98d8,     0x8281c382,     0x0abefa97,     0x44e06012,
+    0xa3ccc62d,     0x7bff1c1f,     0x1209c2de,     0x1a9955f4
+};
+
 const int32_t DataSet_1_32i::inputs::inputA[32] = {
     948484139,      325061806,      1092824755,     -301586865,
     -873226993,     -1181626453,    68035273,       -1934370231,
@@ -1207,14 +1381,20 @@ const int32_t DataSet_1_32i::inputs::inputC[32] = {
     -357313165,     1966155567,     1819410331,     -1064864049
 };
 
-const uint32_t DataSet_1_32i::inputs::inputShift[32] = {
-    1,  39, 4,  8,  24, 35, 27, 11,
-    18, 2,  19, 36, 19, 23, 19, 0,
-    15, 23, 7,  35, 27, 1,  36, 29,
-    11, 17, 20, 30, 7,  18, 34, 26
+const uint32_t DataSet_1_32i::inputs::inputShiftA[32] = {
+    52,     4,      29,     44,
+    7,      13,     11,     8,
+    46,     53,     13,     62,
+    39,     26,     19,     40,
+    45,     13,     47,     1008,
+    694,    529,    790,    492,
+    58,     702,    206,    761,
+    201,    8,      851,    691
 };
 
 const int32_t DataSet_1_32i::inputs::scalarA = 234123148;
+const uint32_t DataSet_1_32i::inputs::inputShiftScalarA = 27;
+
 const bool    DataSet_1_32i::inputs::maskA[32] = {
     false,   false,  false,  true,   // 4
     false,  true,   true,   false,  // 8
@@ -2135,6 +2315,169 @@ const int32_t DataSet_1_32i::outputs::MHBXORS[32] = {
     144078813,      144078813,      144078813,      -1110669485,
     -1110669485,    -673647413,     -220686662,     -220686662
 };
+
+
+const uint32_t DataSet_1_32i::outputs::LSHV[32] = {
+    0x82b00000,     0x3600cae0,     0x60000000,     0x6264f000,
+    0xf9ce8780,     0x39f56000,     0x71164800,     0xb3da4900,
+    0x535f0000,     0x86c00000,     0x3da90000,     0x80000000,
+    0x531e5a80,     0x40000000,     0xee880000,     0xaefd8700,
+    0x9c738000,     0xba054000,     0x2be68000,     0x9fe40000,
+    0x68000000,     0x681a0000,     0x87000000,     0xbc3fe000,
+    0x24000000,     0x00000000,     0x8c9b8000,     0x1c000000,
+    0xce039000,     0x14739800,     0x13880000,     0xefd80000
+};
+const uint32_t DataSet_1_32i::outputs::MLSHV[32] = {
+    0x3888b82b,     0x13600cae,     0x41232eb3,     0x6264f000,
+    0xcbf39d0f,     0x39f56000,     0x71164800,     0x8cb3da49,
+    0xcf414d7c,     0x86c00000,     0x3da90000,     0xea58e116,
+    0x531e5a80,     0xdd48b450,     0x437eddd1,     0xaefd8700,
+    0xa734e39c,     0xba054000,     0x2be68000,     0x53809fe4,
+    0x68000000,     0x7038b40d,     0x0023ca1c,     0xbc3fe000,
+    0x24000000,     0x7756fe80,     0x6c26326e,     0x1c000000,
+    0xc4e701c8,     0x14739800,     0x13880000,     0x322f7dfb
+};
+const uint32_t DataSet_1_32i::outputs::LSHS[32] = {
+    0x58000000,     0x70000000,     0x98000000,     0x78000000,
+    0x78000000,     0x58000000,     0x48000000,     0x48000000,
+    0xe0000000,     0xb0000000,     0x40000000,     0xb0000000,
+    0xa8000000,     0x80000000,     0x88000000,     0x38000000,
+    0xe0000000,     0x50000000,     0x68000000,     0x20000000,
+    0x00000000,     0x68000000,     0xe0000000,     0xf0000000,
+    0x48000000,     0x00000000,     0x70000000,     0x70000000,
+    0x40000000,     0xc0000000,     0x88000000,     0xd8000000
+};
+const uint32_t DataSet_1_32i::outputs::MLSHS[32] = {
+    0x3888b82b,     0x13600cae,     0x41232eb3,     0x78000000,
+    0xcbf39d0f,     0x58000000,     0x48000000,     0x8cb3da49,
+    0xcf414d7c,     0xb0000000,     0x40000000,     0xea58e116,
+    0xa8000000,     0xdd48b450,     0x437eddd1,     0x38000000,
+    0xa734e39c,     0x50000000,     0x68000000,     0x53809fe4,
+    0x00000000,     0x7038b40d,     0x0023ca1c,     0xf0000000,
+    0x48000000,     0x7756fe80,     0x6c26326e,     0x70000000,
+    0xc4e701c8,     0xc0000000,     0x88000000,     0x322f7dfb
+};
+const uint32_t DataSet_1_32i::outputs::RSHV[32] = {
+    0x00000388,     0x013600ca,     0x00000002,     0xfffee062,
+    0xff97e73a,     0xfffdcc8e,     0x000081c4,     0xff8cb3da,
+    0xffff3d05,     0x0000022e,     0x0003a74f,     0xffffffff,
+    0x00714c79,     0xfffffff7,     0x0000086f,     0xffd1aefd,
+    0xfffd39a7,     0xfffc5e6e,     0xffffd40c,     0x00005380,
+    0xfffffec9,     0x0000381c,     0x00000000,     0x00047dbc,
+    0x00000006,     0x00000001,     0x0001b098,     0xffffffda,
+    0xffe27380,     0x006a1473,     0x000004a0,     0x00000645
+};
+const uint32_t DataSet_1_32i::outputs::MRSHV[32] = {
+    0x3888b82b,     0x13600cae,     0x41232eb3,     0xfffee062,
+    0xcbf39d0f,     0xfffdcc8e,     0x000081c4,     0x8cb3da49,
+    0xcf414d7c,     0x0000022e,     0x0003a74f,     0xea58e116,
+    0x00714c79,     0xdd48b450,     0x437eddd1,     0xffd1aefd,
+    0xa734e39c,     0xfffc5e6e,     0xffffd40c,     0x53809fe4,
+    0xfffffec9,     0x7038b40d,     0x0023ca1c,     0x00047dbc,
+    0x00000006,     0x7756fe80,     0x6c26326e,     0xffffffda,
+    0xc4e701c8,     0x006a1473,     0x000004a0,     0x322f7dfb
+};
+const uint32_t DataSet_1_32i::outputs::RSHS[32] = {
+    0x00000007,     0x00000002,     0x00000008,     0xfffffffd,
+    0xfffffff9,     0xfffffff7,     0x00000000,     0xfffffff1,
+    0xfffffff9,     0x00000008,     0x0000000e,     0xfffffffd,
+    0x00000007,     0xfffffffb,     0x00000008,     0xfffffffa,
+    0xfffffff4,     0xfffffff1,     0xfffffffd,     0x0000000a,
+    0xfffffff6,     0x0000000e,     0x00000000,     0x00000008,
+    0x00000003,     0x0000000e,     0x0000000d,     0xfffffff6,
+    0xfffffff8,     0x0000000d,     0x00000004,     0x00000006
+};
+const uint32_t DataSet_1_32i::outputs::MRSHS[32] = {
+    0x3888b82b,     0x13600cae,     0x41232eb3,     0xfffffffd,
+    0xcbf39d0f,     0xfffffff7,     0x00000000,     0x8cb3da49,
+    0xcf414d7c,     0x00000008,     0x0000000e,     0xea58e116,
+    0x00000007,     0xdd48b450,     0x437eddd1,     0xfffffffa,
+    0xa734e39c,     0xfffffff1,     0xfffffffd,     0x53809fe4,
+    0xfffffff6,     0x7038b40d,     0x0023ca1c,     0x00000008,
+    0x00000003,     0x7756fe80,     0x6c26326e,     0xfffffff6,
+    0xc4e701c8,     0x0000000d,     0x00000004,     0x322f7dfb
+};
+const uint32_t DataSet_1_32i::outputs::ROLV[32] = {
+    0x82b3888b,     0x3600cae1,     0x682465d6,     0x6264fee0,
+    0xf9ce87e5,     0x39f57732,     0x71164820,     0xb3da498c,
+    0x535f33d0,     0x86c8b88f,     0x3da90e9d,     0xba963845,
+    0x531e5a9c,     0x437522d1,     0xee8a1bf6,     0xaefd87d1,
+    0x9c7394e6,     0xba055179,     0x2be6f503,     0x9fe45380,
+    0x682c9925,     0x681ae071,     0x870008f2,     0xbc3fe47d,
+    0x246aa94a,     0x1dd5bfa0,     0x8c9b9b09,     0x1d6ab5e1,
+    0xce039189,     0x1473986a,     0x13892803,     0xefd9917b
+};
+const uint32_t DataSet_1_32i::outputs::MROLV[32] = {
+    0x3888b82b,     0x13600cae,     0x41232eb3,     0x6264fee0,
+    0xcbf39d0f,     0x39f57732,     0x71164820,     0x8cb3da49,
+    0xcf414d7c,     0x86c8b88f,     0x3da90e9d,     0xea58e116,
+    0x531e5a9c,     0xdd48b450,     0x437eddd1,     0xaefd87d1,
+    0xa734e39c,     0xba055179,     0x2be6f503,     0x53809fe4,
+    0x682c9925,     0x7038b40d,     0x0023ca1c,     0xbc3fe47d,
+    0x246aa94a,     0x7756fe80,     0x6c26326e,     0x1d6ab5e1,
+    0xc4e701c8,     0x1473986a,     0x13892803,     0x322f7dfb
+};
+const uint32_t DataSet_1_32i::outputs::ROLS[32] = {
+    0x59c445c1,     0x709b0065,     0x9a091975,     0x7f703132,
+    0x7e5f9ce8,     0x5dcc8e7d,     0x48207116,     0x4c659ed2,
+    0xe67a0a6b,     0xb22e23e1,     0x43a74f6a,     0xb752c708,
+    0xa9c531e5,     0x86ea45a2,     0x8a1bf6ee,     0x3e8d77ec,
+    0xe539a71c,     0x545e6e81,     0x6f5032be,     0x229c04ff,
+    0x059324ad,     0x6b81c5a0,     0xe0011e50,     0xf23ede1f,
+    0x48d55294,     0x03bab7f4,     0x73613193,     0x75aad784,
+    0x4627380e,     0xc350a39c,     0x89280313,     0xd9917bef
+};
+const uint32_t DataSet_1_32i::outputs::MROLS[32] = {
+    0x3888b82b,     0x13600cae,     0x41232eb3,     0x7f703132,
+    0xcbf39d0f,     0x5dcc8e7d,     0x48207116,     0x8cb3da49,
+    0xcf414d7c,     0xb22e23e1,     0x43a74f6a,     0xea58e116,
+    0xa9c531e5,     0xdd48b450,     0x437eddd1,     0x3e8d77ec,
+    0xa734e39c,     0x545e6e81,     0x6f5032be,     0x53809fe4,
+    0x059324ad,     0x7038b40d,     0x0023ca1c,     0xf23ede1f,
+    0x48d55294,     0x7756fe80,     0x6c26326e,     0x75aad784,
+    0xc4e701c8,     0xc350a39c,     0x89280313,     0x322f7dfb
+};
+const uint32_t DataSet_1_32i::outputs::RORV[32] = {
+    0x8b82b388,     0xe13600ca,     0x0919759a,     0x64fee062,
+    0x1f97e73a,     0x7d5dcc8e,     0x592081c4,     0x498cb3da,
+    0x35f33d05,     0x23e1b22e,     0x6a43a74f,     0xa963845b,
+    0x6a714c79,     0x522d1437,     0xdbba286f,     0x87d1aefd,
+    0x1ce539a7,     0x81545e6e,     0xaf9bd40c,     0x9fe45380,
+    0x925682c9,     0x5a06b81c,     0x8f287000,     0x3fe47dbc,
+    0xaa94a246,     0xdd5bfa01,     0xc9b9b098,     0xad78475a,
+    0xe4627380,     0x986a1473,     0x0c4e24a0,     0xefbf6645
+};
+const uint32_t DataSet_1_32i::outputs::MRORV[32] = {
+    0x3888b82b,     0x13600cae,     0x41232eb3,     0x64fee062,
+    0xcbf39d0f,     0x7d5dcc8e,     0x592081c4,     0x8cb3da49,
+    0xcf414d7c,     0x23e1b22e,     0x6a43a74f,     0xea58e116,
+    0x6a714c79,     0xdd48b450,     0x437eddd1,     0x87d1aefd,
+    0xa734e39c,     0x81545e6e,     0xaf9bd40c,     0x53809fe4,
+    0x925682c9,     0x7038b40d,     0x0023ca1c,     0x3fe47dbc,
+    0xaa94a246,     0x7756fe80,     0x6c26326e,     0xad78475a,
+    0xc4e701c8,     0x986a1473,     0x0c4e24a0,     0x322f7dfb
+};
+const uint32_t DataSet_1_32i::outputs::RORS[32] = {
+    0x11170567,     0x6c0195c2,     0x2465d668,     0xc0c4c9fd,
+    0x7e73a1f9,     0x3239f577,     0x81c45920,     0x967b4931,
+    0xe829af99,     0xb88f86c8,     0x9d3da90e,     0x4b1c22dd,
+    0x14c796a7,     0xa9168a1b,     0x6fdbba28,     0x35dfb0fa,
+    0xe69c7394,     0x79ba0551,     0x40caf9bd,     0x7013fc8a,
+    0x4c92b416,     0x071681ae,     0x04794380,     0xfb787fc8,
+    0x554a5123,     0xeadfd00e,     0x84c64dcd,     0xab5e11d6,
+    0x9ce03918,     0x428e730d,     0xa00c4e24,     0x45efbf66
+};
+const uint32_t DataSet_1_32i::outputs::MRORS[32] = {
+    0x3888b82b,     0x13600cae,     0x41232eb3,     0xc0c4c9fd,
+    0xcbf39d0f,     0x3239f577,     0x81c45920,     0x8cb3da49,
+    0xcf414d7c,     0xb88f86c8,     0x9d3da90e,     0xea58e116,
+    0x14c796a7,     0xdd48b450,     0x437eddd1,     0x35dfb0fa,
+    0xa734e39c,     0x79ba0551,     0x40caf9bd,     0x53809fe4,
+    0x4c92b416,     0x7038b40d,     0x0023ca1c,     0xfb787fc8,
+    0x554a5123,     0x7756fe80,     0x6c26326e,     0xab5e11d6,
+    0xc4e701c8,     0x428e730d,     0xa00c4e24,     0x322f7dfb
+};
+
 const float DataSet_1_32f::inputs::inputA[32] = {
     1.0000000000E+00f,  1.2430000000E+03f,  -1.9123000000E+01f, -5.8198000000E+02f,
     1.4141870000E+04f,  1.0948740000E+04f,  4.1870000000E-01f,  1.3000000000E-03f,

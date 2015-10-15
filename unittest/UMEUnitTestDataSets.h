@@ -54,7 +54,9 @@ struct DataSet_1_32u {
         static const uint32_t inputA[32];
         static const uint32_t inputB[32];
         static const uint32_t inputC[32];
+        static const uint32_t inputShiftA[32];
         static const uint32_t scalarA;
+        static const uint32_t inputShiftScalarA;
         static const bool  maskA[32];
     };
 
@@ -159,6 +161,23 @@ struct DataSet_1_32u {
         static const uint32_t MSQR[32];
         static const uint32_t SQRT[32];
         static const uint32_t MSQRT[32];
+
+        static const uint32_t LSHV[32];
+        static const uint32_t MLSHV[32];
+        static const uint32_t LSHS[32];
+        static const uint32_t MLSHS[32]; 
+        static const uint32_t RSHV[32];
+        static const uint32_t MRSHV[32];
+        static const uint32_t RSHS[32];
+        static const uint32_t MRSHS[32];
+        static const uint32_t ROLV[32];
+        static const uint32_t MROLV[32];
+        static const uint32_t ROLS[32];
+        static const uint32_t MROLS[32];
+        static const uint32_t RORV[32];
+        static const uint32_t MRORV[32];
+        static const uint32_t RORS[32];
+        static const uint32_t MRORS[32];
     };
 };
 
@@ -168,8 +187,9 @@ struct DataSet_1_32i {
         static const int32_t inputA[32];
         static const int32_t inputB[32];
         static const int32_t inputC[32];
-        static const uint32_t inputShift[32];
+        static const uint32_t inputShiftA[32];
         static const int32_t scalarA;
+        static const uint32_t inputShiftScalarA;
         static const bool  maskA[32];
     };
 
@@ -274,6 +294,24 @@ struct DataSet_1_32i {
         static const int32_t MSQR[32];
         static const int32_t SQRT[32];
         static const int32_t MSQRT[32];
+
+        // define as uint32_t, but load as int32_t
+        static const uint32_t LSHV[32];
+        static const uint32_t MLSHV[32];
+        static const uint32_t LSHS[32];
+        static const uint32_t MLSHS[32];  
+        static const uint32_t RSHV[32];
+        static const uint32_t MRSHV[32];
+        static const uint32_t RSHS[32];
+        static const uint32_t MRSHS[32];
+        static const uint32_t ROLV[32];
+        static const uint32_t MROLV[32];
+        static const uint32_t ROLS[32];
+        static const uint32_t MROLS[32];
+        static const uint32_t RORV[32];
+        static const uint32_t MRORV[32];
+        static const uint32_t RORS[32];
+        static const uint32_t MRORS[32];
     };
 };
 
