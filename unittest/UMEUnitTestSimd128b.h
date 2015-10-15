@@ -1326,58 +1326,58 @@ int test_UME_SIMD4_32u(bool supressMessages)
     {
         SIMD4_32u vec0(0xF3333304, 0xFF0F3F00, 0x0FF0F000, 0x0F0F720F);
         uint32_t val1;
-        val1 = vec0.hand();
-        CHECK_CONDITION(val1 == 0x03003000, "HAND");
+        val1 = vec0.hband();
+        CHECK_CONDITION(val1 == 0x03003000, "HBAND");
     }
     {
         SIMD4_32u vec0(0xF3333304, 0xF00F0F00, 0x0FF0F000, 0x000F420F);
         SIMDMask4 mask(true, false, false, true);
         uint32_t val1;
-        val1 = vec0.hand(mask);
-        CHECK_CONDITION(val1 == 0x00030204, "MHAND");
+        val1 = vec0.hband(mask);
+        CHECK_CONDITION(val1 == 0x00030204, "MHBAND");
     }
     {
         SIMD4_32u vec0(0xF3333304, 0xFF0F3F00, 0x0FF0F000, 0x0F0F720F);
         uint32_t val1;
         uint32_t val2 = 0x03003000;
-        val1 = vec0.hand(val2);
-        CHECK_CONDITION(val1 == 0x03003000, "HANDS");
+        val1 = vec0.hband(val2);
+        CHECK_CONDITION(val1 == 0x03003000, "HBANDS");
     }
     {
         SIMD4_32u vec0(0xF3333304, 0xF00F0F00, 0x0FF0F000, 0x000F420F);
         SIMDMask4 mask(true, false, false, true);
         uint32_t val1;
         uint32_t val2 = 0x00010004;
-        val1 = vec0.hand(mask, val2);
-        CHECK_CONDITION(val1 == 0x00010004, "MHANDS");
+        val1 = vec0.hband(mask, val2);
+        CHECK_CONDITION(val1 == 0x00010004, "MHBANDS");
     }
     {
         SIMD4_32u vec0(0xF3333304, 0xF00F0F00, 0x0FF0F000, 0x000F420F);
         uint32_t val1;
-        val1 = vec0.hor();
-        CHECK_CONDITION(val1 == 0xFFFFFF0F, "HOR");
-    }
-    {
-        SIMD4_32u vec0(0xF3333304, 0xF00F0F00, 0x0FF0F000, 0x000F420F);
-        SIMDMask4 mask(false, false, true, true);
-        uint32_t val1;
-        val1 = vec0.hor(mask);
-        CHECK_CONDITION(val1 == 0x0FFFF20F, "MHOR");
-    }
-    {
-        SIMD4_32u vec0(0xF3333304, 0xF00F0F00, 0x0FF0F000, 0x000F420F);
-        uint32_t val1;
-        uint32_t val2 = 0x00000030;
-        val1 = vec0.hor(val2);
-        CHECK_CONDITION(val1 == 0xFFFFFF3F, "HORS");
+        val1 = vec0.hbor();
+        CHECK_CONDITION(val1 == 0xFFFFFF0F, "HBOR");
     }
     {
         SIMD4_32u vec0(0xF3333304, 0xF00F0F00, 0x0FF0F000, 0x000F420F);
         SIMDMask4 mask(false, false, true, true);
         uint32_t val1;
+        val1 = vec0.hbor(mask);
+        CHECK_CONDITION(val1 == 0x0FFFF20F, "MHBOR");
+    }
+    {
+        SIMD4_32u vec0(0xF3333304, 0xF00F0F00, 0x0FF0F000, 0x000F420F);
+        uint32_t val1;
         uint32_t val2 = 0x00000030;
-        val1 = vec0.hor(mask, val2);
-        CHECK_CONDITION(val1 == 0x0FFFF23F, "MHORS");
+        val1 = vec0.hbor(val2);
+        CHECK_CONDITION(val1 == 0xFFFFFF3F, "HBORS");
+    }
+    {
+        SIMD4_32u vec0(0xF3333304, 0xF00F0F00, 0x0FF0F000, 0x000F420F);
+        SIMDMask4 mask(false, false, true, true);
+        uint32_t val1;
+        uint32_t val2 = 0x00000030;
+        val1 = vec0.hbor(mask, val2);
+        CHECK_CONDITION(val1 == 0x0FFFF23F, "MHBORS");
     }
     {
         SIMD4_32u vec0(1, 2, 3, 4);
@@ -2319,86 +2319,86 @@ int test_UME_SIMD4_32i(bool supressMessages)
     {
         SIMD4_32i vec0(0xF3333304, 0xFF0F3F00, 0x0FF0F000, 0x0F0F720F);
         int32_t val1;
-        val1 = vec0.hand();
-        CHECK_CONDITION(val1 == 0x03003000, "HAND");
+        val1 = vec0.hband();
+        CHECK_CONDITION(val1 == 0x03003000, "HBAND");
     }
     {
         SIMD4_32i vec0(0xF3333304, 0xF00F0F00, 0x0FF0F000, 0x000F420F);
         SIMDMask4 mask(true, false, false, true);
         int32_t val1;
-        val1 = vec0.hand(mask);
-        CHECK_CONDITION(val1 == 0x00030204, "MHAND");
+        val1 = vec0.hband(mask);
+        CHECK_CONDITION(val1 == 0x00030204, "MHBAND");
     }
     {
         SIMD4_32i vec0(0xF3333304, 0xFF0F3F00, 0x0FF0F000, 0x0F0F720F);
         int32_t val1;
         int32_t val2 = 0x03003000;
-        val1 = vec0.hand(val2);
-        CHECK_CONDITION(val1 == 0x03003000, "HANDS");
+        val1 = vec0.hband(val2);
+        CHECK_CONDITION(val1 == 0x03003000, "HBANDS");
     }
     {
         SIMD4_32i vec0(0xF3333304, 0xF00F0F00, 0x0FF0F000, 0x000F420F);
         SIMDMask4 mask(true, false, false, true);
         int32_t val1;
         int32_t val2 = 0x00010004;
-        val1 = vec0.hand(mask, val2);
-        CHECK_CONDITION(val1 == 0x00010004, "MHANDS");
+        val1 = vec0.hband(mask, val2);
+        CHECK_CONDITION(val1 == 0x00010004, "MHBANDS");
     }
     {
         SIMD4_32i vec0(0xF3333304, 0xF00F0F00, 0x0FF0F000, 0x000F420F);
         int32_t val1;
-        val1 = vec0.hor();
+        val1 = vec0.hbor();
         CHECK_CONDITION(val1 == 0xFFFFFF0F, "HOR");
     }
     {
         SIMD4_32i vec0(0xF3333304, 0xF00F0F00, 0x0FF0F000, 0x000F420F);
         SIMDMask4 mask(false, false, true, true);
         int32_t val1;
-        val1 = vec0.hor(mask);
-        CHECK_CONDITION(val1 == 0x0FFFF20F, "MHOR");
+        val1 = vec0.hbor(mask);
+        CHECK_CONDITION(val1 == 0x0FFFF20F, "MHBOR");
     }
     {
         SIMD4_32i vec0(0xF3333304, 0xF00F0F00, 0x0FF0F000, 0x000F420F);
         int32_t val1;
         int32_t val2 = 0x00000030;
-        val1 = vec0.hor(val2);
-        CHECK_CONDITION(val1 == 0xFFFFFF3F, "HORS");
+        val1 = vec0.hbor(val2);
+        CHECK_CONDITION(val1 == 0xFFFFFF3F, "HBORS");
     }
     {
         SIMD4_32i vec0(0xF3333304, 0xF00F0F00, 0x0FF0F000, 0x000F420F);
         SIMDMask4 mask(false, false, true, true);
         int32_t val1;
         int32_t val2 = 0x00000030;
-        val1 = vec0.hor(mask, val2);
-        CHECK_CONDITION(val1 == 0x0FFFF23F, "MHORS");
+        val1 = vec0.hbor(mask, val2);
+        CHECK_CONDITION(val1 == 0x0FFFF23F, "MHBORS");
     }
     {
         SIMD4_32i vec0(0xF3333304, 0xF00F0F00, 0x0FF0F000, 0x000F420F);
         int32_t val1;
-        val1 = vec0.hxor();
-        CHECK_CONDITION(val1 == 0x0CC38E0B, "HXOR");
-    }
-    {
-        SIMD4_32i vec0(0xF3333304, 0xF00F0F00, 0x0FF0F000, 0x000F420F);
-        SIMDMask4 mask(false, false, true, true);
-        int32_t val1;
-        val1 = vec0.hxor(mask);
-        CHECK_CONDITION(val1 == 0x0FFFB20F, "MHXOR");
-    }
-    {
-        SIMD4_32i vec0(0xF3333304, 0xF00F0F00, 0x0FF0F000, 0x000F420F);
-        int32_t val1;
-        int32_t val2 = 0x00000030;
-        val1 = vec0.hxor(val2);
-        CHECK_CONDITION(val1 == 0x0CC38E3B, "HXORS");
+        val1 = vec0.hbxor();
+        CHECK_CONDITION(val1 == 0x0CC38E0B, "HBXOR");
     }
     {
         SIMD4_32i vec0(0xF3333304, 0xF00F0F00, 0x0FF0F000, 0x000F420F);
         SIMDMask4 mask(false, false, true, true);
         int32_t val1;
+        val1 = vec0.hbxor(mask);
+        CHECK_CONDITION(val1 == 0x0FFFB20F, "MHBXOR");
+    }
+    {
+        SIMD4_32i vec0(0xF3333304, 0xF00F0F00, 0x0FF0F000, 0x000F420F);
+        int32_t val1;
         int32_t val2 = 0x00000030;
-        val1 = vec0.hxor(mask, val2);
-        CHECK_CONDITION(val1 == 0x0FFFB23F, "MHXORS");
+        val1 = vec0.hbxor(val2);
+        CHECK_CONDITION(val1 == 0x0CC38E3B, "HBXORS");
+    }
+    {
+        SIMD4_32i vec0(0xF3333304, 0xF00F0F00, 0x0FF0F000, 0x000F420F);
+        SIMDMask4 mask(false, false, true, true);
+        int32_t val1;
+        int32_t val2 = 0x00000030;
+        val1 = vec0.hbxor(mask, val2);
+        CHECK_CONDITION(val1 == 0x0FFFB23F, "MHBXORS");
     }
     {
         SIMD4_32i vec0(9, -8, 7, 6);

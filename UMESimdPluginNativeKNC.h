@@ -2573,47 +2573,47 @@ namespace SIMD
             mVec = _mm512_mask_xor_epi32(mVec, mask.mMask, mVec, t0);
             return *this;
         }
-        // HAND
-        inline int32_t hand() const {
+        // HBAND
+        inline int32_t hband() const {
             return _mm512_reduce_and_epi32(mVec);
         }
-        // MHAND
-        inline int32_t hand(SIMDMask16 const & mask) const {
+        // MHBAND
+        inline int32_t hband(SIMDMask16 const & mask) const {
             return _mm512_mask_reduce_and_epi32(mask.mMask, mVec);
         }
-        // HANDS
-        inline int32_t hand(int32_t a) const {
+        // HBANDS
+        inline int32_t hband(int32_t a) const {
             int32_t t0 = _mm512_reduce_and_epi32(mVec);
-            return a + t0;
+            return a & t0;
         }
-        // MHANDS
-        inline int32_t hand(SIMDMask16 const & mask, int32_t a) const {
+        // MHBANDS
+        inline int32_t hband(SIMDMask16 const & mask, int32_t a) const {
             int32_t t0 = _mm512_mask_reduce_and_epi32(mask.mMask, mVec);
-            return a + t0;
+            return a & t0;
         }
-        // HOR
-        inline int32_t hor() const {
+        // HBOR
+        inline int32_t hbor() const {
             return _mm512_reduce_or_epi32(mVec);
         }
-        // MHOR
-        inline int32_t hor(SIMDMask16 const & mask) const {
+        // MHBOR
+        inline int32_t hbor(SIMDMask16 const & mask) const {
             return _mm512_mask_reduce_or_epi32(mask.mMask, mVec);
         }
-        // HORS
-        inline int32_t hor(int32_t a) const {
+        // HBORS
+        inline int32_t hbor(int32_t a) const {
             int32_t t0 = _mm512_reduce_or_epi32(mVec);
-            return a + t0;
+            return a | t0;
         }
-        // MHORS
-        inline int32_t hor(SIMDMask16 const & mask, int32_t a) const {
+        // MHBORS
+        inline int32_t hbor(SIMDMask16 const & mask, int32_t a) const {
             int32_t t0 = _mm512_mask_reduce_or_epi32(mask.mMask, mVec);
-            return a + t0;
+            return a | t0;
         }
         // Note: reduce_xor not available in IMCI
-        // HXOR
-        // MHXOR
-        // HXORS
-        // MHXORS
+        // HBXOR
+        // MHBXOR
+        // HBXORS
+        // MHBXORS
 
         // 3. gather/scatter
         // GATHER

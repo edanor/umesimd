@@ -4974,63 +4974,63 @@ namespace SIMD
             return EMULATED_FUNCTIONS::binaryNotAssign<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this));
         }
 
-        // HAND
-        inline SCALAR_TYPE hand ()const  {
+        // HBAND
+        inline SCALAR_TYPE hband ()const  {
             return EMULATED_FUNCTIONS::reduceBinaryAnd<SCALAR_TYPE, DERIVED_VEC_TYPE>( static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
-        // MHAND
-        inline SCALAR_TYPE hand (MASK_TYPE const & mask) const {
+        // MHBAND
+        inline SCALAR_TYPE hband (MASK_TYPE const & mask) const {
             return EMULATED_FUNCTIONS::reduceBinaryAnd<SCALAR_TYPE, DERIVED_VEC_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
-        // HANDS
-        inline SCALAR_TYPE hand (SCALAR_TYPE a) const {
+        // HBANDS
+        inline SCALAR_TYPE hband (SCALAR_TYPE a) const {
             return EMULATED_FUNCTIONS::reduceBinaryAndScalar<SCALAR_TYPE, DERIVED_VEC_TYPE>(a, static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
-        // MHANDS
-        inline SCALAR_TYPE hand (MASK_TYPE const & mask, SCALAR_TYPE a) const {
+        // MHBANDS
+        inline SCALAR_TYPE hband (MASK_TYPE const & mask, SCALAR_TYPE a) const {
             return EMULATED_FUNCTIONS::reduceBinaryAndScalar<SCALAR_TYPE, DERIVED_VEC_TYPE, MASK_TYPE>(mask, a, static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
-        // HOR
-        inline SCALAR_TYPE hor () const {
+        // HBOR
+        inline SCALAR_TYPE hbor () const {
             return EMULATED_FUNCTIONS::reduceBinaryOr<SCALAR_TYPE, DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
-        // MHOR
-        inline SCALAR_TYPE hor (MASK_TYPE const & mask) const {
+        // MHBOR
+        inline SCALAR_TYPE hbor (MASK_TYPE const & mask) const {
             return EMULATED_FUNCTIONS::reduceBinaryOr<SCALAR_TYPE, DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
-        // HORS
-        inline SCALAR_TYPE hor (SCALAR_TYPE a) const {
+        // HBORS
+        inline SCALAR_TYPE hbor (SCALAR_TYPE a) const {
             return EMULATED_FUNCTIONS::reduceBinaryOrScalar<SCALAR_TYPE, DERIVED_VEC_TYPE> (a, static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
-        // MHORS
-        inline SCALAR_TYPE hor (MASK_TYPE const & mask, SCALAR_TYPE a) const {
+        // MHBORS
+        inline SCALAR_TYPE hbor (MASK_TYPE const & mask, SCALAR_TYPE a) const {
             return EMULATED_FUNCTIONS::reduceBinaryOrScalar<SCALAR_TYPE, DERIVED_VEC_TYPE, MASK_TYPE> (mask, a, static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
         
-        // HXOR
-        inline SCALAR_TYPE hxor () const {
+        // HBXOR
+        inline SCALAR_TYPE hbxor () const {
             return EMULATED_FUNCTIONS::reduceBinaryXor<SCALAR_TYPE, DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
-        // MHXOR
-        inline SCALAR_TYPE hxor (MASK_TYPE const & mask) const {
+        // MHBXOR
+        inline SCALAR_TYPE hbxor (MASK_TYPE const & mask) const {
             return EMULATED_FUNCTIONS::reduceBinaryXor<SCALAR_TYPE, DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
-        // HXORS
-        inline SCALAR_TYPE hxor (SCALAR_TYPE a) const {
+        // HBXORS
+        inline SCALAR_TYPE hbxor (SCALAR_TYPE a) const {
             return EMULATED_FUNCTIONS::reduceBinaryXorScalar<SCALAR_TYPE, DERIVED_VEC_TYPE> (a, static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
-        // MHXORS
-        inline SCALAR_TYPE hxor (MASK_TYPE const & mask, SCALAR_TYPE a) const {
+        // MHBXORS
+        inline SCALAR_TYPE hbxor (MASK_TYPE const & mask, SCALAR_TYPE a) const {
             return EMULATED_FUNCTIONS::reduceBinaryXorScalar<SCALAR_TYPE, DERIVED_VEC_TYPE> (mask, a, static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
     };

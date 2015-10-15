@@ -122,12 +122,18 @@ struct DataSet_1_32u {
         static const uint32_t BNOT[32];
         static const uint32_t MBNOT[32];
 
-        static const uint32_t HAND[32];
-        static const uint32_t MHAND[32];
-        static const uint32_t HOR[32];
-        static const uint32_t MHOR[32];
-        static const uint32_t HXOR[32];
-        static const uint32_t MHXOR[32];
+        static const uint32_t HBAND[32];
+        static const uint32_t MHBAND[32];
+        static const uint32_t HBANDS[32];
+        static const uint32_t MHBANDS[32];
+        static const uint32_t HBOR[32];
+        static const uint32_t MHBOR[32];
+        static const uint32_t HBORS[32];
+        static const uint32_t MHBORS[32];
+        static const uint32_t HBXOR[32];
+        static const uint32_t MHBXOR[32];
+        static const uint32_t HBXORS[32];
+        static const uint32_t MHBXORS[32];
 
         static const uint32_t FMULADDV[32];
         static const uint32_t MFMULADD[32];
@@ -231,12 +237,18 @@ struct DataSet_1_32i {
         static const int32_t BNOT[32];
         static const int32_t MBNOT[32];
 
-        static const int32_t HAND[32];
-        static const int32_t MHAND[32];
-        static const int32_t HOR[32];
-        static const int32_t MHOR[32];
-        static const int32_t HXOR[32];
-        static const int32_t MHXOR[32];
+        static const int32_t HBAND[32];
+        static const int32_t MHBAND[32];
+        static const int32_t HBANDS[32];
+        static const int32_t MHBANDS[32];
+        static const int32_t HBOR[32];
+        static const int32_t MHBOR[32];
+        static const int32_t HBORS[32];
+        static const int32_t MHBORS[32];
+        static const int32_t HBXOR[32];
+        static const int32_t MHBXOR[32];
+        static const int32_t HBXORS[32];
+        static const int32_t MHBXORS[32];
 
         static const int32_t FMULADDV[32];
         static const int32_t MFMULADD[32];

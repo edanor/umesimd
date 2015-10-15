@@ -1853,32 +1853,118 @@ void genericHMULTest()
         // MHMUL - Masked multiply elements of a vector (horizontal mul)
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
-void genericHANDTest()
+void genericHBANDTest()
 {
     VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    SCALAR_TYPE value = vec0.hand();
-    bool inRange = valueInRange(value, DATA_SET::outputs::HAND[VEC_LEN-1], 0.01f);
-    CHECK_CONDITION(inRange, "HAND");
+    SCALAR_TYPE value = vec0.hband();
+    bool inRange = valueInRange(value, DATA_SET::outputs::HBAND[VEC_LEN-1], 0.01f);
+    CHECK_CONDITION(inRange, "HBAND");
 }
-        // MHAND - Masked AND of elements of a vector (horizontal AND)
+
+template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
+void genericMHBANDTest()
+{
+    VEC_TYPE vec0(DATA_SET::inputs::inputA);
+    MASK_TYPE mask0(DATA_SET::inputs::maskA);
+    SCALAR_TYPE value = vec0.hband(mask0);
+    bool inRange = valueInRange(value, DATA_SET::outputs::MHBAND[VEC_LEN-1], 0.01f);
+    CHECK_CONDITION(inRange, "MHBAND");
+}
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
-void genericHORTest()
+void genericHBANDSTest()
 {
     VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    SCALAR_TYPE value = vec0.hor();
-    bool inRange = valueInRange(value, DATA_SET::outputs::HOR[VEC_LEN-1], 0.01f);
-    CHECK_CONDITION(inRange, "HOR");
+    SCALAR_TYPE value = vec0.hband(DATA_SET::inputs::scalarA);
+    bool inRange = valueInRange(value, DATA_SET::outputs::HBANDS[VEC_LEN-1], 0.01f);
+    CHECK_CONDITION(inRange, "HBANDS");
 }
-        // MHOR  - Masked OR of elements of a vector (horizontal OR)
+template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
+void genericMHBANDSTest()
+{
+    VEC_TYPE vec0(DATA_SET::inputs::inputA);
+    MASK_TYPE mask0(DATA_SET::inputs::maskA);
+    SCALAR_TYPE value = vec0.hband(mask0, DATA_SET::inputs::scalarA);
+    bool inRange = valueInRange(value, DATA_SET::outputs::MHBANDS[VEC_LEN-1], 0.01f);
+    CHECK_CONDITION(inRange, "MHBANDS");
+}
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
-void genericHXORTest()
+void genericHBORTest()
 {
     VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    SCALAR_TYPE value = vec0.hxor();
-    bool inRange = valueInRange(value, DATA_SET::outputs::HXOR[VEC_LEN-1], 0.01f);
-    CHECK_CONDITION(inRange, "HXOR");
+    SCALAR_TYPE value = vec0.hbor();
+    bool inRange = valueInRange(value, DATA_SET::outputs::HBOR[VEC_LEN-1], 0.01f);
+    CHECK_CONDITION(inRange, "HBOR");
 }
-        // MHXOR - Masked XOR of elements of a vector (horizontal XOR)
+
+template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
+void genericMHBORTest()
+{
+    VEC_TYPE vec0(DATA_SET::inputs::inputA);
+    MASK_TYPE mask0(DATA_SET::inputs::maskA);
+    SCALAR_TYPE value = vec0.hbor(mask0);
+    bool inRange = valueInRange(value, DATA_SET::outputs::MHBOR[VEC_LEN-1], 0.01f);
+    CHECK_CONDITION(inRange, "MHBOR");
+}
+
+template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
+void genericHBORSTest()
+{
+    VEC_TYPE vec0(DATA_SET::inputs::inputA);
+    SCALAR_TYPE value = vec0.hbor(DATA_SET::inputs::scalarA);
+    bool inRange = valueInRange(value, DATA_SET::outputs::HBORS[VEC_LEN-1], 0.01f);
+    CHECK_CONDITION(inRange, "HBORS");
+}
+
+template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
+void genericMHBORSTest()
+{
+    VEC_TYPE vec0(DATA_SET::inputs::inputA);
+    MASK_TYPE mask0(DATA_SET::inputs::maskA);
+    SCALAR_TYPE value = vec0.hbor(mask0, DATA_SET::inputs::scalarA);
+    bool inRange = valueInRange(value, DATA_SET::outputs::MHBORS[VEC_LEN-1], 0.01f);
+    CHECK_CONDITION(inRange, "MHBORS");
+}
+
+template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
+void genericHBXORTest()
+{
+    VEC_TYPE vec0(DATA_SET::inputs::inputA);
+    SCALAR_TYPE value = vec0.hbxor();
+    bool inRange = valueInRange(value, DATA_SET::outputs::HBXOR[VEC_LEN-1], 0.01f);
+    CHECK_CONDITION(inRange, "HBXOR");
+}
+
+template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
+void genericMHBXORTest()
+{
+    VEC_TYPE vec0(DATA_SET::inputs::inputA);
+    MASK_TYPE mask0(DATA_SET::inputs::maskA);
+    SCALAR_TYPE value = vec0.hbxor(mask0);
+    bool inRange = valueInRange(value, DATA_SET::outputs::MHBXOR[VEC_LEN-1], 0.01f);
+    CHECK_CONDITION(inRange, "MHBXOR");
+}
+
+template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
+void genericHBXORSTest()
+{
+    VEC_TYPE vec0(DATA_SET::inputs::inputA);
+    SCALAR_TYPE value = vec0.hbxor(DATA_SET::inputs::scalarA);
+    bool inRange = valueInRange(value, DATA_SET::outputs::HBXORS[VEC_LEN-1], 0.01f);
+    CHECK_CONDITION(inRange, "HBXORS");
+}
+
+template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
+void genericMHBXORSTest()
+{
+    VEC_TYPE vec0(DATA_SET::inputs::inputA);
+    MASK_TYPE mask0(DATA_SET::inputs::maskA);
+    SCALAR_TYPE value = vec0.hbxor(mask0, DATA_SET::inputs::scalarA);
+    bool inRange = valueInRange(value, DATA_SET::outputs::MHBXORS[VEC_LEN-1], 0.01f);
+    CHECK_CONDITION(inRange, "MHBXORS");
+}
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericFMULADDVTest()
 {
@@ -2807,18 +2893,18 @@ void genericBitwiseInterfaceTest()
     genericBNOTATest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
     genericMBNOTATest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
 
-    genericHANDTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
-    // MHAND
-    // HANDS
-    // MHANDS
-    genericHORTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
-    // MHOR
-    // HORS
-    // MHORS
-    genericHXORTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
-    // MHXOR
-    // HXORS
-    // MHXORS
+    genericHBANDTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
+    genericMHBANDTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericHBANDSTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
+    genericMHBANDSTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericHBORTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
+    genericMHBORTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericHBORSTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
+    genericMHBORSTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericHBXORTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
+    genericMHBXORTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericHBXORSTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
+    genericMHBXORSTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
 
 }
 
