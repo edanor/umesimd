@@ -39,6 +39,7 @@
 #include "UMESimdPluginScalarEmulation.h"
 
 #include <immintrin.h>
+
 namespace UME
 {
 namespace SIMD
@@ -1118,6 +1119,7 @@ namespace SIMD
     public:            
         // Conversion operators require access to private members.
         friend class SIMDVecAVX_i<int32_t, 8>;
+        friend class SIMDVecAVX_f<float, 8>;
 
     private:
         __m256i mVec;
@@ -1943,6 +1945,7 @@ namespace SIMD
         }
 
         inline  operator SIMDVecAVX_u<uint32_t, 8> const ();
+        inline  operator SIMDVecAVX_f<float, 8> const ();
 
         // ABS
         SIMDVecAVX_i abs () {
@@ -2149,17 +2152,31 @@ namespace SIMD
     public:
         typedef SIMDVecEmuRegister<SCALAR_FLOAT_TYPE, VEC_LEN>                            VEC_EMU_REG;
         typedef typename SIMDVecAVX_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::MASK_TYPE       MASK_TYPE;
-        
+        typedef typename SIMDVecAVX_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::SCALAR_UINT_TYPE SCALAR_UINT_TYPE;
+        typedef typename SIMDVecAVX_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::SCALAR_INT_TYPE SCALAR_INT_TYPE;
         typedef SIMDVecAVX_f VEC_TYPE;
+
+        typedef typename SIMDVecAVX_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::VEC_UINT_TYPE VEC_UINT_TYPE;
+        typedef typename SIMDVecAVX_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::VEC_INT_TYPE VEC_INT_TYPE;
     private:
         VEC_EMU_REG mVec;
-
+            
     public:
         // ZERO-CONSTR
         inline SIMDVecAVX_f() : mVec() {};
 
         // SET-CONSTR
         inline explicit SIMDVecAVX_f(SCALAR_FLOAT_TYPE f) : mVec(f) {};
+        
+        // UTOF
+        inline explicit SIMDVecAVX_f(VEC_UINT_TYPE const & vecUint) {
+
+        }
+        
+        // ITOF
+        inline explicit SIMDVecAVX_f(VEC_INT_TYPE const & vecInt) {
+
+        }
         
         // LOAD-CONSTR - Construct by loading from memory
         inline explicit SIMDVecAVX_f(SCALAR_FLOAT_TYPE const * p) { this->load(p); };
@@ -2253,6 +2270,21 @@ namespace SIMD
             return *this;
         }
 
+        inline operator SIMDVecAVX_u<SCALAR_UINT_TYPE, VEC_LEN>() const {
+            SIMDVecAVX_u<SCALAR_UINT_TYPE, VEC_LEN> retval;
+            for(uint32_t i = 0; i < VEC_LEN; i++) {
+                retval.insert(i, (SCALAR_UINT_TYPE)mVec[i]);
+            }
+            return retval;
+        }
+
+        inline operator SIMDVecAVX_i<SCALAR_INT_TYPE, VEC_LEN>() const {
+            SIMDVecAVX_i<SCALAR_INT_TYPE, VEC_LEN> retval;
+            for(uint32_t i = 0; i < VEC_LEN; i++) {
+                retval.insert(i, (SCALAR_INT_TYPE)mVec[i]);
+            }
+            return retval;
+        }
     };
 
     // ***************************************************************************
@@ -2277,8 +2309,12 @@ namespace SIMD
     public:
         typedef SIMDVecEmuRegister<SCALAR_FLOAT_TYPE, 1>                            VEC_EMU_REG;
         typedef typename SIMDVecAVX_f_traits<SCALAR_FLOAT_TYPE, 1>::MASK_TYPE       MASK_TYPE;
+        typedef typename SIMDVecAVX_f_traits<SCALAR_FLOAT_TYPE, 1>::SCALAR_UINT_TYPE SCALAR_UINT_TYPE;
+        typedef typename SIMDVecAVX_f_traits<SCALAR_FLOAT_TYPE, 1>::SCALAR_INT_TYPE SCALAR_INT_TYPE;
         
         typedef SIMDVecAVX_f VEC_TYPE;
+        typedef typename SIMDVecAVX_f_traits<SCALAR_FLOAT_TYPE, 1>::VEC_UINT_TYPE VEC_UINT_TYPE;
+        typedef typename SIMDVecAVX_f_traits<SCALAR_FLOAT_TYPE, 1>::VEC_INT_TYPE VEC_INT_TYPE;
     private:
         VEC_EMU_REG mVec;
 
@@ -2289,6 +2325,16 @@ namespace SIMD
         // SET-CONSTR
         inline explicit SIMDVecAVX_f(SCALAR_FLOAT_TYPE f) : mVec(f) {};
         
+        // UTOF
+        inline explicit SIMDVecAVX_f(VEC_UINT_TYPE const & vecUint) {
+
+        }
+        
+        // ITOF
+        inline explicit SIMDVecAVX_f(VEC_INT_TYPE const & vecInt) {
+
+        }
+
         // LOAD-CONSTR - Construct by loading from memory
         inline explicit SIMDVecAVX_f(SCALAR_FLOAT_TYPE const * p) { this->load(p); };
         
@@ -2303,6 +2349,21 @@ namespace SIMD
             return *this;
         }
 
+        inline operator SIMDVecAVX_u<SCALAR_UINT_TYPE, 1>() const {
+            SIMDVecAVX_u<SCALAR_UINT_TYPE, 1> retval;
+            for(uint32_t i = 0; i < 1; i++) {
+                retval.insert(i, (SCALAR_UINT_TYPE)mVec[i]);
+            }
+            return retval;
+        }
+
+        inline operator SIMDVecAVX_i<SCALAR_INT_TYPE, 1>() const {
+            SIMDVecAVX_i<SCALAR_INT_TYPE, 1> retval;
+            for(uint32_t i = 0; i < 1; i++) {
+                retval.insert(i, (SCALAR_INT_TYPE)mVec[i]);
+            }
+            return retval;
+        }
     };
 
     // ********************************************************************************************
@@ -2330,7 +2391,7 @@ namespace SIMD
         inline SIMDVecAVX_f(__m128 const & x) {
             this->mVec = x; // TODO: should this be replaced with mov?
         }
-
+        
     public:
         // ZERO-CONSTR
         inline SIMDVecAVX_f() {}
@@ -2343,6 +2404,16 @@ namespace SIMD
         // LOAD-CONSTR
         inline explicit SIMDVecAVX_f(float const * p) {
             mVec = _mm_loadu_ps(p);
+        }
+        
+        // UTOF
+        inline explicit SIMDVecAVX_f(SIMDVecAVX_u<uint32_t, 4> const & vecUint) {
+
+        }
+        
+        // ITOF
+        inline explicit SIMDVecAVX_f(SIMDVecAVX_i<int32_t, 4>  const & vecInt) {
+
         }
 
         // FULL-CONSTR
@@ -2837,7 +2908,17 @@ namespace SIMD
     public:
         // ZERO-CONSTR
         inline SIMDVecAVX_f() {}
-
+        
+        // UTOF
+        inline explicit SIMDVecAVX_f(SIMDVecAVX_u<uint32_t, 8> const & uintVec) {
+            for(int i = 0; i < 8; i++) this->insert(i, (float) uintVec[i]);
+        }
+        
+        // ITOF
+        inline explicit SIMDVecAVX_f(SIMDVecAVX_i<int32_t, 8> const & intVec) {
+            for(int i = 0; i < 8; i++) this->insert(i, (float) intVec[i]);
+        }
+        
         // SET-CONSTR
         inline explicit SIMDVecAVX_f(float f) {
             mVec = _mm256_set1_ps(f);
@@ -3010,7 +3091,7 @@ namespace SIMD
  
         //(Multiplication operations)
         // MULV   - Multiplication with vector
-        inline SIMDVecAVX_f mul (SIMDVecAVX_f const & b) {
+        inline SIMDVecAVX_f mul (SIMDVecAVX_f const & b) const {
             return SIMDVecAVX_f(_mm256_mul_ps(mVec, b.mVec));
         }
         // MMULV  - Masked multiplication with vector
@@ -3019,7 +3100,7 @@ namespace SIMD
             return SIMDVecAVX_f(_mm256_blendv_ps(mVec, t0, _mm256_castsi256_ps(mask.mMask)));
         }
         // MULS   - Multiplication with scalar
-        inline SIMDVecAVX_f mul (float b) {
+        inline SIMDVecAVX_f mul (float b)  const {
             return SIMDVecAVX_f(_mm256_mul_ps(mVec, _mm256_set1_ps(b)));
         }
         // MMULS  - Masked multiplication with scalar
@@ -3313,14 +3394,25 @@ namespace SIMD
         // ISSUB     - Is subnormal
         // ISZERO    - Is zero
         // ISZEROSUB - Is zero or subnormal
-        // SIN       - Sine
-        // MSIN      - Masked sine
+        // SIN       - Sine        
+        //SIMDVecAVX_f sin() {
+        //    SIMDVecAVX_f ret = UME::SIMD::genericSin<float,SIMDVecAVX_f, SIMDVecAVX_i<int32_t, 8>, SIMDMask8>(*this);
+        //    return ret;
+        //}
+        // MSIN      - Masked sine     
+        //SIMDVecAVX_f sin(SIMDMask8 const & mask) {
+        //    SIMDVecAVX_f ret; //= UME::SIMD::genericSin<float,SIMDVecAVX_f, SIMDVecAVX_i<int32_t, 8>, SIMDMask8>(*this);
+        //    return ret;
+       // }
         // COS       - Cosine
         // MCOS      - Masked cosine
         // TAN       - Tangent
         // MTAN      - Masked tangent
         // CTAN      - Cotangent
         // MCTAN     - Masked cotangent
+
+       // inline operator SIMDVecAVX_u<uint32_t, 8> const () ;
+       // inline operator SIMDVecAVX_i<int32_t, 8> const () ;
     };
     
     template<>
@@ -3356,6 +3448,16 @@ namespace SIMD
             mVecHi = _mm256_set1_ps(f);
         }
         
+        // UTOF
+        inline explicit SIMDVecAVX_f(SIMDVecAVX_u<uint32_t, 16> const & vecUint) {
+
+        }
+        
+        // ITOF
+        inline explicit SIMDVecAVX_f(SIMDVecAVX_i<int32_t, 16>  const & vecInt) {
+
+        }
+
         // LOAD-CONSTR - Construct by loading from memory
         inline explicit SIMDVecAVX_f(float const * p) {
             mVecLo = _mm256_loadu_ps(p);
@@ -3579,13 +3681,13 @@ namespace SIMD
  
         //(Multiplication operations)
         // MULV   - Multiplication with vector
-        inline SIMDVecAVX_f mul (SIMDVecAVX_f const & b) {
+        inline SIMDVecAVX_f mul (SIMDVecAVX_f const & b) const {
             __m256 t0 = _mm256_mul_ps(this->mVecLo, b.mVecLo);
             __m256 t1 = _mm256_mul_ps(this->mVecHi, b.mVecHi);
             return SIMDVecAVX_f(t0, t1);
         }
         // MMULV  - Masked multiplication with vector
-        inline SIMDVecAVX_f mul (SIMDMask16 const & mask, SIMDVecAVX_f const & b) {
+        inline SIMDVecAVX_f mul (SIMDMask16 const & mask, SIMDVecAVX_f const & b) const {
             __m256 t0 = _mm256_mul_ps(this->mVecLo, b.mVecLo);
             __m256 t1 = _mm256_blendv_ps(mVecLo, t0, _mm256_castsi256_ps(mask.mMaskLo));
             __m256 t2 = _mm256_mul_ps(this->mVecHi, b.mVecHi);
@@ -3593,14 +3695,14 @@ namespace SIMD
             return SIMDVecAVX_f(t1, t3);
         }
         // MULS   - Multiplication with scalar
-        inline SIMDVecAVX_f mul (float b) {
+        inline SIMDVecAVX_f mul (float b) const {
             __m256 t0 = _mm256_set1_ps(b);
             __m256 t1 = _mm256_mul_ps(this->mVecLo, t0);
             __m256 t2 = _mm256_mul_ps(this->mVecHi, t0);
             return SIMDVecAVX_f(t1, t2);
         }
         // MMULS  - Masked multiplication with scalar
-        inline SIMDVecAVX_f mul (SIMDMask16 const & mask, float b) {
+        inline SIMDVecAVX_f mul (SIMDMask16 const & mask, float b) const {
             __m256 t0 = _mm256_set1_ps(b);
             __m256 t1 = _mm256_mul_ps(mVecLo, t0);
             __m256 t2 = _mm256_mul_ps(mVecHi, t0);
@@ -3943,6 +4045,16 @@ namespace SIMD
             mVecHiHi = _mm256_set1_ps(f);
         }
         
+        // UTOF
+        inline explicit SIMDVecAVX_f(SIMDVecAVX_u<uint32_t, 32> const & vecUint) {
+
+        }
+        
+        // ITOF
+        inline explicit SIMDVecAVX_f(SIMDVecAVX_i<int32_t, 32>  const & vecInt) {
+
+        }
+
         // LOAD-CONSTR - Construct by loading from memory
         inline explicit SIMDVecAVX_f(float const * p) {
             mVecLoLo = _mm256_loadu_ps(p);

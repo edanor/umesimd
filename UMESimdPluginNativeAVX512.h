@@ -1607,13 +1607,25 @@ namespace SIMD
         typedef typename SIMDVecAVX512_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::MASK_TYPE MASK_TYPE;
         
         typedef SIMDVecAVX512_f VEC_TYPE;
+        typedef typename SIMDVecAVX512_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::VEC_UINT_TYPE    VEC_UINT_TYPE;
+        typedef typename SIMDVecAVX512_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::VEC_INT_TYPE     VEC_INT_TYPE;
     private:
         VEC_EMU_REG mVec;
-
-    public:
+       
+     public:
         inline SIMDVecAVX512_f() : mVec() {};
 
         inline explicit SIMDVecAVX512_f(SCALAR_FLOAT_TYPE i) : mVec(i) {}
+        
+        // UTOF
+        inline explicit SIMDVecAVX512_f(VEC_UINT_TYPE const & vecUint) {
+
+        }
+        
+        // ITOF
+        inline explicit SIMDVecAVX512_f(VEC_INT_TYPE const & vecInt) {
+
+        }
 
         inline explicit SIMDVecAVX512_f(SCALAR_FLOAT_TYPE const *p) { this->load(p); }
         
@@ -1728,6 +1740,9 @@ namespace SIMD
         typedef typename SIMDVecAVX512_f_traits<SCALAR_FLOAT_TYPE, 1>::MASK_TYPE MASK_TYPE;
         
         typedef SIMDVecAVX512_f VEC_TYPE;
+        typedef typename SIMDVecAVX512_f_traits<SCALAR_FLOAT_TYPE, 1>::VEC_UINT_TYPE    VEC_UINT_TYPE;
+        typedef typename SIMDVecAVX512_f_traits<SCALAR_FLOAT_TYPE, 1>::VEC_INT_TYPE     VEC_INT_TYPE;
+
     private:
         VEC_EMU_REG mVec;
 
@@ -1735,6 +1750,16 @@ namespace SIMD
         inline SIMDVecAVX512_f() : mVec() {};
 
         inline explicit SIMDVecAVX512_f(SCALAR_FLOAT_TYPE f) : mVec(f) {};
+        
+        // UTOF
+        inline explicit SIMDVecAVX512_f(VEC_UINT_TYPE const & vecUint) {
+
+        }
+        
+        // ITOF
+        inline explicit SIMDVecAVX512_f(VEC_INT_TYPE const & vecInt) {
+
+        }
 
         inline explicit SIMDVecAVX512_f(SCALAR_FLOAT_TYPE const *p) { this->load(p); }
 
@@ -1769,6 +1794,9 @@ namespace SIMD
             SIMDVecAVX512_f<float, 8>,
             SIMDVecAVX512_f<float, 4>>
     {
+    public:
+        typedef typename SIMDVecAVX512_f_traits<float, 8>::VEC_UINT_TYPE    VEC_UINT_TYPE;
+        typedef typename SIMDVecAVX512_f_traits<float, 8>::VEC_INT_TYPE     VEC_INT_TYPE;
     private:
         __m256 mVec;
 
@@ -1782,6 +1810,16 @@ namespace SIMD
 
         inline explicit SIMDVecAVX512_f(float f) {
             mVec = _mm256_set1_ps(f);
+        }
+        
+        // UTOF
+        inline explicit SIMDVecAVX512_f(VEC_UINT_TYPE const & vecUint) {
+
+        }
+        
+        // ITOF
+        inline explicit SIMDVecAVX512_f(VEC_INT_TYPE const & vecInt) {
+
         }
 
         inline explicit SIMDVecAVX512_f(float const *p) { this->load(p); }

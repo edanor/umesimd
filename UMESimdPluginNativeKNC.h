@@ -2863,6 +2863,8 @@ namespace SIMD
         typedef typename SIMDVecKNC_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::MASK_TYPE       MASK_TYPE;
         
         typedef SIMDVecKNC_f VEC_TYPE;
+        typedef typename SIMDVecKNC_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::VEC_UINT_TYPE    VEC_UINT_TYPE;
+        typedef typename SIMDVecKNC_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::VEC_INT_TYPE     VEC_INT_TYPE;
     private:
         VEC_EMU_REG mVec;
 
@@ -2871,6 +2873,16 @@ namespace SIMD
 
         inline explicit SIMDVecKNC_f(SCALAR_FLOAT_TYPE f) : mVec(f) {};
         
+        // UTOF
+        inline explicit SIMDVecKNC_f(VEC_UINT_TYPE const & vecUint) {
+
+        }
+        
+        // ITOF
+        inline explicit SIMDVecKNC_f(VEC_INT_TYPE const & vecInt) {
+
+        }
+
         // LOAD-CONSTR - Construct by loading from memory
         inline explicit SIMDVecKNC_f(SCALAR_FLOAT_TYPE const * p) { this->load(p); }
 
@@ -2988,6 +3000,8 @@ template<typename SCALAR_FLOAT_TYPE>
         typedef typename SIMDVecKNC_f_traits<SCALAR_FLOAT_TYPE, 1>::MASK_TYPE       MASK_TYPE;
         
         typedef SIMDVecKNC_f VEC_TYPE;
+        typedef typename SIMDVecKNC_f_traits<SCALAR_FLOAT_TYPE, 1>::VEC_UINT_TYPE    VEC_UINT_TYPE;
+        typedef typename SIMDVecKNC_f_traits<SCALAR_FLOAT_TYPE, 1>::VEC_INT_TYPE     VEC_INT_TYPE;
     private:
         VEC_EMU_REG mVec;
 
@@ -2996,6 +3010,16 @@ template<typename SCALAR_FLOAT_TYPE>
 
         inline explicit SIMDVecKNC_f(SCALAR_FLOAT_TYPE f) : mVec(f) {};
             
+        // UTOF
+        inline explicit SIMDVecKNC_f(VEC_UINT_TYPE const & vecUint) {
+
+        }
+        
+        // ITOF
+        inline explicit SIMDVecKNC_f(VEC_INT_TYPE const & vecInt) {
+
+        }
+
         // LOAD-CONSTR - Construct by loading from memory
         inline explicit SIMDVecKNC_f(SCALAR_FLOAT_TYPE const * p) { this->load(p); }
 
@@ -3030,13 +3054,16 @@ template<typename SCALAR_FLOAT_TYPE>
             SIMDVecKNC_f<float, 8>,
             SIMDVecKNC_f<float, 4>>
     {
+    public:
+        typedef typename SIMDVecKNC_f_traits<float, 8>::VEC_UINT_TYPE    VEC_UINT_TYPE;
+        typedef typename SIMDVecKNC_f_traits<float, 8>::VEC_INT_TYPE     VEC_INT_TYPE;
     private:
         __m512 mVec;
 
         inline SIMDVecKNC_f(__m512 & x) {
             this->mVec = x;
         }
-
+        
     public:
         // ZERO-CONSTR - Zero element constructor 
         inline SIMDVecKNC_f() {}
@@ -3046,6 +3073,16 @@ template<typename SCALAR_FLOAT_TYPE>
             mVec = _mm512_set1_ps(f);
         }
         
+        // UTOF
+        inline explicit SIMDVecKNC_f(VEC_UINT_TYPE const & vecUint) {
+
+        }
+        
+        // ITOF
+        inline explicit SIMDVecKNC_f(VEC_INT_TYPE const & vecInt) {
+
+        }
+
         // LOAD-CONSTR - Construct by loading from memory
         inline explicit SIMDVecKNC_f(float const * p) { this->load(p); }
 
@@ -3563,6 +3600,9 @@ template<typename SCALAR_FLOAT_TYPE>
             SIMDVecKNC_f<float, 16>,
             SIMDVecKNC_f<float, 8>>
     {
+    public:
+        typedef typename SIMDVecKNC_f_traits<float, 16>::VEC_UINT_TYPE    VEC_UINT_TYPE;
+        typedef typename SIMDVecKNC_f_traits<float, 16>::VEC_INT_TYPE     VEC_INT_TYPE;
     private:
         __m512 mVec;
 
@@ -3579,6 +3619,16 @@ template<typename SCALAR_FLOAT_TYPE>
             mVec = _mm512_set1_ps(f);
         }
         
+        // UTOF
+        inline explicit SIMDVecKNC_f(VEC_UINT_TYPE const & vecUint) {
+
+        }
+        
+        // ITOF
+        inline explicit SIMDVecKNC_f(VEC_INT_TYPE const & vecInt) {
+
+        }
+
         // LOAD-CONSTR - Construct by loading from memory
         inline explicit SIMDVecKNC_f(float const * p) { this->load(p); }
 
@@ -4556,6 +4606,10 @@ template<typename SCALAR_FLOAT_TYPE>
             SIMDVecKNC_f<float, 32>,
             SIMDVecKNC_f<float, 16>>
     {
+    public:
+        
+        typedef typename SIMDVecKNC_f_traits<float, 32>::VEC_UINT_TYPE    VEC_UINT_TYPE;
+        typedef typename SIMDVecKNC_f_traits<float, 32>::VEC_INT_TYPE     VEC_INT_TYPE;
     private:
         __m512 mVecLo;
         __m512 mVecHi;
@@ -4574,6 +4628,17 @@ template<typename SCALAR_FLOAT_TYPE>
             mVecLo = _mm512_set1_ps(f);
             mVecHi = _mm512_set1_ps(f);
         }
+        
+        // UTOF
+        inline explicit SIMDVecKNC_f(VEC_UINT_TYPE const & vecUint) {
+
+        }
+        
+        // ITOF
+        inline explicit SIMDVecKNC_f(VEC_INT_TYPE const & vecInt) {
+
+        }
+
 
         // LOAD-CONSTR - Construct by loading from memory
         inline explicit SIMDVecKNC_f(float const * p) { this->load(p); }

@@ -263,7 +263,7 @@ namespace SIMD
         }
         
         // LOAD-CONSTR - Construct by loading from memory
-        inline explicit SIMDVecAVX2Mask( bool const * p) { load(p); }
+        inline explicit SIMDVecAVX2Mask( bool const * p) { this->load(p); }
 
         inline SIMDVecAVX2Mask( bool m0, bool m1, bool m2, bool m3 ) {
             mMask = _mm_setr_epi32(toMaskBool(m0), toMaskBool(m1), 
@@ -338,7 +338,7 @@ namespace SIMD
         }
         
         // LOAD-CONSTR - Construct by loading from memory
-        inline explicit SIMDVecAVX2Mask( bool const * p) { load(p); }
+        inline explicit SIMDVecAVX2Mask( bool const * p) { this->load(p); }
 
         
         inline SIMDVecAVX2Mask( bool m0, bool m1, bool m2, bool m3, bool m4, bool m5, bool m6, bool m7 ) {
@@ -417,7 +417,7 @@ namespace SIMD
         }
         
         // LOAD-CONSTR - Construct by loading from memory
-        inline explicit SIMDVecAVX2Mask( bool const * p) { load(p); }
+        inline explicit SIMDVecAVX2Mask( bool const * p) { this->load(p); }
                 
         inline SIMDVecAVX2Mask(bool m0,  bool m1,  bool m2,  bool m3, 
                                bool m4,  bool m5,  bool m6,  bool m7,
@@ -527,7 +527,7 @@ namespace SIMD
         }
         
         // LOAD-CONSTR - Construct by loading from memory
-        inline explicit SIMDVecAVX2Mask(bool const * p) { load(p); }
+        inline explicit SIMDVecAVX2Mask(bool const * p) { this->load(p); }
         
         inline SIMDVecAVX2Mask(  bool m0,  bool m1,  bool m2,  bool m3, 
                                  bool m4,  bool m5,  bool m6,  bool m7,
@@ -1101,7 +1101,7 @@ namespace SIMD
         }
         
         // LOAD-CONSTR - Construct by loading from memory
-        inline explicit SIMDVecAVX2_u(uint32_t const *p) { load(p); };
+        inline explicit SIMDVecAVX2_u(uint32_t const *p) { this->load(p); };
 
         inline SIMDVecAVX2_u(uint32_t i0, uint32_t i1, uint32_t i2, uint32_t i3, 
                             uint32_t i4, uint32_t i5, uint32_t i6, uint32_t i7) 
@@ -2077,6 +2077,8 @@ namespace SIMD
         typedef typename SIMDVecAVX2_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::MASK_TYPE       MASK_TYPE;
         
         typedef SIMDVecAVX2_f VEC_TYPE;
+        typedef typename SIMDVecAVX2_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::VEC_UINT_TYPE    VEC_UINT_TYPE;
+        typedef typename SIMDVecAVX2_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::VEC_INT_TYPE     VEC_INT_TYPE;
     private:
         VEC_EMU_REG mVec;
 
@@ -2085,6 +2087,16 @@ namespace SIMD
 
         inline explicit SIMDVecAVX2_f(SCALAR_FLOAT_TYPE i) : mVec(i) {};
         
+        // UTOF
+        inline explicit SIMDVecAVX2_f(VEC_UINT_TYPE const & vecUint) {
+
+        }
+        
+        // ITOF
+        inline explicit SIMDVecAVX2_f(VEC_INT_TYPE const & vecInt) {
+
+        }
+
         // LOAD-CONSTR - Construct by loading from memory
         inline explicit SIMDVecAVX2_f(SCALAR_FLOAT_TYPE const *p) { this->load(p); };
         
@@ -2162,6 +2174,8 @@ namespace SIMD
         typedef typename SIMDVecAVX2_f_traits<SCALAR_FLOAT_TYPE, 1>::MASK_TYPE MASK_TYPE;
         
         typedef SIMDVecAVX2_f VEC_TYPE;
+        typedef typename SIMDVecAVX2_f_traits<SCALAR_FLOAT_TYPE, 1>::VEC_UINT_TYPE    VEC_UINT_TYPE;
+        typedef typename SIMDVecAVX2_f_traits<SCALAR_FLOAT_TYPE, 1>::VEC_INT_TYPE     VEC_INT_TYPE;
     private:
         VEC_EMU_REG mVec;
 
@@ -2170,6 +2184,16 @@ namespace SIMD
 
         inline explicit SIMDVecAVX2_f(SCALAR_FLOAT_TYPE i) : mVec(i) {};
         
+        // UTOF
+        inline explicit SIMDVecAVX2_f(VEC_UINT_TYPE const & vecUint) {
+
+        }
+        
+        // ITOF
+        inline explicit SIMDVecAVX2_f(VEC_INT_TYPE const & vecInt) {
+
+        }
+
         // LOAD-CONSTR - Construct by loading from memory
         inline explicit SIMDVecAVX2_f(SCALAR_FLOAT_TYPE const *p) { this->load(p); }
         
@@ -2209,7 +2233,9 @@ namespace SIMD
         inline SIMDVecAVX2_f(__m128 const & x) {
             this->mVec = x;
         }
-
+        
+        typedef SIMDVecAVX2_u<uint32_t, 4>    VEC_UINT_TYPE;
+        typedef SIMDVecAVX2_i<int32_t, 4>     VEC_INT_TYPE;
     public:
         // ZERO-CONSTR - Zero element constructor 
         inline SIMDVecAVX2_f() {}
@@ -2219,8 +2245,18 @@ namespace SIMD
             mVec = _mm_set1_ps(f);
         }
         
+        // UTOF
+        inline explicit SIMDVecAVX2_f(VEC_UINT_TYPE const & vecUint) {
+
+        }
+        
+        // ITOF
+        inline explicit SIMDVecAVX2_f(VEC_INT_TYPE const & vecInt) {
+
+        }
+
         // LOAD-CONSTR - Construct by loading from memory
-        inline explicit SIMDVecAVX2_f(float const *p) { load(p); }
+        inline explicit SIMDVecAVX2_f(float const *p) { this->load(p); }
         
         // FULL-CONSTR - constructor with VEC_LEN scalar element 
         inline SIMDVecAVX2_f(float f0, float f1, float f2, float f3) {
@@ -2568,6 +2604,9 @@ namespace SIMD
         inline SIMDVecAVX2_f(__m256 const & x) {
             this->mVec = x;
         }
+        
+        typedef SIMDVecAVX2_u<uint32_t, 8>    VEC_UINT_TYPE;
+        typedef SIMDVecAVX2_i<int32_t, 8>     VEC_INT_TYPE;
 
     public:
         // ZERO-CONSTR - Zero element constructor 
@@ -2578,8 +2617,18 @@ namespace SIMD
             mVec = _mm256_set1_ps(f);
         }
         
+        // UTOF
+        inline explicit SIMDVecAVX2_f(VEC_UINT_TYPE const & vecUint) {
+
+        }
+        
+        // ITOF
+        inline explicit SIMDVecAVX2_f(VEC_INT_TYPE const & vecInt) {
+
+        }
+
         // LOAD-CONSTR - Construct by loading from memory
-        inline explicit SIMDVecAVX2_f(float const *p) { load(p); }
+        inline explicit SIMDVecAVX2_f(float const *p) { this->load(p); }
         
         // FULL-CONSTR - constructor with VEC_LEN scalar element 
         inline SIMDVecAVX2_f(float f0, float f1, float f2, float f3, float f4, float f5, float f6, float f7) {
@@ -3003,7 +3052,9 @@ namespace SIMD
             this->mVecLo = xLo;
             this->mVecHi = xHi;
         }
-
+        
+        typedef SIMDVecAVX2_u<uint32_t, 16>    VEC_UINT_TYPE;
+        typedef SIMDVecAVX2_i<int32_t, 16>     VEC_INT_TYPE;
     public:
         // ZERO-CONSTR - Zero element constructor 
         inline SIMDVecAVX2_f() {}
@@ -3014,8 +3065,18 @@ namespace SIMD
             mVecHi = _mm256_set1_ps(f);
         }
         
+        // UTOF
+        inline explicit SIMDVecAVX2_f(VEC_UINT_TYPE const & vecUint) {
+
+        }
+        
+        // ITOF
+        inline explicit SIMDVecAVX2_f(VEC_INT_TYPE const & vecInt) {
+
+        }
+
         // LOAD-CONSTR - Construct by loading from memory
-        inline explicit SIMDVecAVX2_f(float const *p) { load(p); };
+        inline explicit SIMDVecAVX2_f(float const *p) { this->load(p); };
 
         // FULL-CONSTR - constructor with VEC_LEN scalar element 
         inline SIMDVecAVX2_f(float f0, float f1, float f2, float f3, 
@@ -3461,7 +3522,9 @@ namespace SIMD
             this->mVecHiLo = xHiLo;
             this->mVecHiHi = xHiHi;
         }
-
+        
+        typedef SIMDVecAVX2_u<uint32_t, 32>    VEC_UINT_TYPE;
+        typedef SIMDVecAVX2_i<int32_t, 32>     VEC_INT_TYPE;
     public:
         // ZERO-CONSTR - Zero element constructor 
         inline SIMDVecAVX2_f() {}
@@ -3474,8 +3537,18 @@ namespace SIMD
             mVecHiHi = _mm256_set1_ps(f);
         }
         
+        // UTOF
+        inline explicit SIMDVecAVX2_f(VEC_UINT_TYPE const & vecUint) {
+
+        }
+        
+        // ITOF
+        inline explicit SIMDVecAVX2_f(VEC_INT_TYPE const & vecInt) {
+
+        }
+
         // LOAD-CONSTR - Construct by loading from memory
-        inline explicit SIMDVecAVX2_f(float const *p) { load(p); }
+        inline explicit SIMDVecAVX2_f(float const *p) { this->load(p); }
         
         // FULL-CONSTR - constructor with VEC_LEN scalar element 
         inline SIMDVecAVX2_f(float f0, float f1, float f2, float f3, 

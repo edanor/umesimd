@@ -1158,6 +1158,8 @@ namespace SIMD
     private:
         VEC_EMU_REG mVec;
 
+        typedef typename SIMDVecScalarEmu_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::VEC_UINT_TYPE VEC_UINT_TYPE;
+        typedef typename SIMDVecScalarEmu_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::VEC_INT_TYPE  VEC_INT_TYPE;
     public:
         inline SIMDVecScalarEmu_f() : mVec() {}
 
@@ -1165,6 +1167,16 @@ namespace SIMD
         
         // LOAD-CONSTR - Construct by loading from memory
         inline explicit SIMDVecScalarEmu_f(const SCALAR_FLOAT_TYPE *p) { this->load(p); }
+
+        // ITOF
+        inline explicit SIMDVecScalarEmu_f(VEC_INT_TYPE const & intVec) {
+            for(int i = 0; i < VEC_LEN; i++) mVec.insert(i, (SCALAR_FLOAT_TYPE)intVec[i]);
+        }
+
+        // UTOF
+        inline explicit SIMDVecScalarEmu_f(VEC_UINT_TYPE const & intVec) {
+            for(int i = 0; i < VEC_LEN; i++) mVec.insert(i, (SCALAR_FLOAT_TYPE)intVec[i]);
+        }
         
         inline SIMDVecScalarEmu_f(SCALAR_FLOAT_TYPE f0, SCALAR_FLOAT_TYPE f1) {
             mVec.insert(0, f0); mVec.insert(1, f1);
@@ -1238,11 +1250,23 @@ namespace SIMD
         typedef SIMDVecEmuRegister<SCALAR_FLOAT_TYPE, 1> VEC_EMU_REG;
     private:
         VEC_EMU_REG mVec;
-
+        
+        typedef typename SIMDVecScalarEmu_f_traits<SCALAR_FLOAT_TYPE, 1>::VEC_UINT_TYPE VEC_UINT_TYPE;
+        typedef typename SIMDVecScalarEmu_f_traits<SCALAR_FLOAT_TYPE, 1>::VEC_INT_TYPE  VEC_INT_TYPE;
     public:
         inline SIMDVecScalarEmu_f() : mVec() {};
 
         inline explicit SIMDVecScalarEmu_f(SCALAR_FLOAT_TYPE i) : mVec(i) {};
+        
+        // ITOF
+        inline explicit SIMDVecScalarEmu_f(VEC_INT_TYPE const & intVec) {
+            mVec.insert(0, (SCALAR_FLOAT_TYPE)intVec[0]);
+        }
+
+        // UTOF
+        inline explicit SIMDVecScalarEmu_f(VEC_UINT_TYPE const & intVec) {
+            mVec.insert(0, (SCALAR_FLOAT_TYPE)intVec[0]);
+        }
         
         // LOAD-CONSTR - Construct by loading from memory
         inline explicit SIMDVecScalarEmu_f(const SCALAR_FLOAT_TYPE *p) { this->load(p); }

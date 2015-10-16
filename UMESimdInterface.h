@@ -1270,7 +1270,7 @@ namespace SIMD
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
-                retval.insert(i, a[i] << b[i] );
+                retval.insert(i, (a[i] << b[i]) );
             }
             return retval;
         }
@@ -1292,7 +1292,7 @@ namespace SIMD
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
-                retval.insert(i, a[i]<<b );
+                retval.insert(i, (a[i] << b) );
             }
             return retval;
         }
@@ -1313,7 +1313,7 @@ namespace SIMD
         inline VEC_TYPE & shiftBitsLeftAssign(VEC_TYPE & a, UINT_VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
-                a.insert(i, a[i]<< b[i] );
+                a.insert(i, (a[i] << b[i]));
             }
             return a;
         }
@@ -1333,7 +1333,7 @@ namespace SIMD
         inline VEC_TYPE & shiftBitsLeftAssignScalar(VEC_TYPE & a, SCALAR_UINT_TYPE b) {
             UME_EMULATION_WARNING();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
-                a.insert(i, a[i]<<b );
+                a.insert(i, (a[i] << b) );
             }
             return a;
         }
@@ -1343,7 +1343,7 @@ namespace SIMD
         inline VEC_TYPE & shiftBitsLeftAssignScalar(MASK_TYPE const & mask, VEC_TYPE & a, SCALAR_UINT_TYPE b) {
             UME_EMULATION_WARNING();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
-                if(mask[i] == true) a.insert(i, a[i]<<b );
+                if(mask[i] == true) a.insert(i, (a[i] << b) );
             }
             return a;
         }
@@ -1354,7 +1354,7 @@ namespace SIMD
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
-                retval.insert(i, a[i]>>b[i] );
+                retval.insert(i, (a[i] >> b[i]));
             }
             return retval;
         }
@@ -1376,7 +1376,7 @@ namespace SIMD
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
-                retval.insert(i, a[i] >> b );
+                retval.insert(i, (a[i] >> b) );
             }
             return retval;
         }
@@ -1397,7 +1397,7 @@ namespace SIMD
         inline VEC_TYPE & shiftBitsRightAssign(VEC_TYPE & a, UINT_VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
-                a.insert(i, a[i]>>b[i] );
+                a.insert(i, (a[i] >> b[i]));
             }
             return a;
         }
@@ -1407,7 +1407,7 @@ namespace SIMD
         inline VEC_TYPE & shiftBitsRightAssign(MASK_TYPE const & mask, VEC_TYPE & a, UINT_VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
-                if(mask[i] == true) a.insert(i, a[i]>>b[i] );
+                if(mask[i] == true) a.insert(i, (a[i] >> b[i]) );
             }
             return a;
         }
@@ -1417,7 +1417,7 @@ namespace SIMD
         inline VEC_TYPE & shiftBitsRightAssignScalar(VEC_TYPE & a, SCALAR_UINT_TYPE b) {
             UME_EMULATION_WARNING();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
-                a.insert(i, a[i]>> b );
+                a.insert(i, (a[i] >> b) );
             }
             return a;
         }
@@ -1427,7 +1427,7 @@ namespace SIMD
         inline VEC_TYPE & shiftBitsRightAssignScalar(MASK_TYPE const & mask, VEC_TYPE & a, SCALAR_UINT_TYPE b) {
             UME_EMULATION_WARNING();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
-                if(mask[i] == true) a.insert(i, a[i]>> b );
+                if(mask[i] == true) a.insert(i, (a[i] >> b) );
             }
             return a;
         }
