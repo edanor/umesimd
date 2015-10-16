@@ -2450,7 +2450,7 @@ int test_UME_SIMD4_32f(bool supressMessages)
         CHECK_CONDITION(vec1[3] == 3.14f, "operator=");
     }
         
-    genericFloatTest<SIMD4_32f, float, SIMD4_32i, SIMDMask4, 4, DataSet_1_32f>();
+    genericFloatTest<SIMD4_32f, float, SIMD4_32u, SIMD4_32i, SIMDMask4, 4, DataSet_1_32f>();
 
     {
         SIMD4_32f vec0(1.0f);

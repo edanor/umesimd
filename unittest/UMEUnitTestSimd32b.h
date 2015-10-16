@@ -203,7 +203,7 @@ int test_UME_SIMD1_32f(bool supressMessages) {
 //        CHECK_CONDITION(vec0.length() == 1, "ZERO-CONSTR");
     }
     
-    genericFloatTest<SIMD1_32f, float, SIMD1_32i, SIMDMask1, 1, DataSet_1_32f>();
+    genericFloatTest<SIMD1_32f, float, SIMD1_32u, SIMD1_32i, SIMDMask1, 1, DataSet_1_32f>();
     return g_failCount;
 }
 

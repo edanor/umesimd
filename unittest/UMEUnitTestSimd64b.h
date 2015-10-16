@@ -196,7 +196,7 @@ int test_UME_SIMD2_32f(bool supressMessages) {
                          vec2[1] > 2.70f && vec2[1] < 2.72f, "PACK");
     }
 
-    genericFloatTest<SIMD2_32f, float, SIMD2_32i, SIMDMask2, 2, DataSet_1_32f>();
+    genericFloatTest<SIMD2_32f, float, SIMD2_32u, SIMD2_32i, SIMDMask2, 2, DataSet_1_32f>();
    
     return g_failCount;
 }

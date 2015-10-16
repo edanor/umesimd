@@ -2807,7 +2807,7 @@ void genericSQRATest()
     bool inRange = valuesInRange(values, DATA_SET::outputs::SQR, VEC_LEN, 0.01f);
     CHECK_CONDITION(inRange, "SQRA");
 }
-    
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMSQRATest()
 {
@@ -2821,16 +2821,78 @@ void genericMSQRATest()
 }
     
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
+void genericSQRTTest()
+{
+    SCALAR_TYPE values[VEC_LEN];
+    VEC_TYPE vec0(DATA_SET::inputs::inputA);
+    VEC_TYPE vec1 = vec0.abs();
+    VEC_TYPE vec2 = vec1.sqrt();
+    vec2.store(values);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::SQRT, VEC_LEN, 0.01f);
+    CHECK_CONDITION(inRange, "SQRT");
+}
+    
+template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
+void genericMSQRTTest()
+{
+    SCALAR_TYPE values[VEC_LEN];
+    VEC_TYPE vec0(DATA_SET::inputs::inputA);
+    MASK_TYPE mask(DATA_SET::inputs::maskA);
+    VEC_TYPE vec1 = vec0.abs(mask);
+    VEC_TYPE vec2 = vec1.sqrt(mask);
+    vec2.store(values);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::MSQRT, VEC_LEN, 0.01f);
+    CHECK_CONDITION(inRange, "MSQRT");
+}
+    
+template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
+void genericSQRTATest()
+{
+    SCALAR_TYPE values[VEC_LEN];
+    VEC_TYPE vec0(DATA_SET::inputs::inputA);
+    vec0.absa();
+    vec0.sqrta();
+    vec0.store(values);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::SQRT, VEC_LEN, 0.01f);
+    CHECK_CONDITION(inRange, "SQRTA");
+}
+
+template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
+void genericMSQRTATest()
+{
+    SCALAR_TYPE values[VEC_LEN];
+    VEC_TYPE vec0(DATA_SET::inputs::inputA);
+    MASK_TYPE mask(DATA_SET::inputs::maskA);
+    vec0.absa(mask);
+    vec0.sqrta(mask);
+    vec0.store(values);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::MSQRT, VEC_LEN, 0.01f);
+    CHECK_CONDITION(inRange, "MSQRTA");
+}
+
+template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericROUNDTest()
 {
     SCALAR_TYPE values[VEC_LEN];
     VEC_TYPE vec0(DATA_SET::inputs::inputA);
     VEC_TYPE vec1 = vec0.round();
     vec1.store(values);
-    //bool inRange = valuesInRange(values, DATA_SET::outputs::ROUND, VEC_LEN, 0.01f);
-    CHECK_CONDITION(false, "ROUND");
+    bool inRange = valuesInRange(values, DATA_SET::outputs::ROUND, VEC_LEN, 0.01f);
+    CHECK_CONDITION(inRange, "ROUND");
 }
-    
+
+template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
+void genericMROUNDTest()
+{
+    SCALAR_TYPE values[VEC_LEN];
+    VEC_TYPE vec0(DATA_SET::inputs::inputA);
+    MASK_TYPE mask(DATA_SET::inputs::maskA);
+    VEC_TYPE vec1 = vec0.round(mask); 
+    vec1.store(values);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::MROUND, VEC_LEN, 0.01f);
+    CHECK_CONDITION(inRange, "MROUND");
+}
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename VEC_INT_TYPE, int VEC_LEN, typename DATA_SET>
 void genericTRUNCTest()
 {
@@ -3079,7 +3141,28 @@ void genericMCTANTest()
     bool inRange = valuesInRange(values, DATA_SET::outputs::MCTAN, VEC_LEN, 0.1f);
     CHECK_CONDITION(inRange, "MCTAN");
 }
-
+template<typename VEC_TYPE, typename SCALAR_TYPE, typename VEC_INT_TYPE, int VEC_LEN, typename DATA_SET>
+void genericITOFTest()
+{
+    SCALAR_TYPE values[VEC_LEN];
+    VEC_INT_TYPE vec0(DATA_SET::inputs::inputIntA);
+    VEC_TYPE vec1;
+    vec1 = VEC_TYPE(vec0);
+    vec1.store(values);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::ITOF, VEC_LEN, 0.1f);
+    CHECK_CONDITION(inRange, "ITOF");
+}
+template<typename VEC_TYPE, typename SCALAR_TYPE, typename VEC_UINT_TYPE, int VEC_LEN, typename DATA_SET>
+void genericUTOFTest()
+{
+    SCALAR_TYPE values[VEC_LEN];
+    VEC_UINT_TYPE vec0(DATA_SET::inputs::inputUintA);
+    VEC_TYPE vec1;
+    vec1 = VEC_TYPE(vec0);
+    vec1.store(values);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::UTOF, VEC_LEN, 0.1f);
+    CHECK_CONDITION(inRange, "UTOF");
+}
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericBaseInterfaceTest()
 {   
@@ -3358,7 +3441,7 @@ template<typename VEC_TYPE, typename SCALAR_TYPE, typename VEC_INT_TYPE, typenam
 void genericFloatInterfaceTest()
 {
     genericROUNDTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
-    // MROUND
+    genericMROUNDTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
     genericTRUNCTest<VEC_TYPE, SCALAR_TYPE, VEC_INT_TYPE, VEC_LEN, DATA_SET>();
     genericMTRUNCTest<VEC_TYPE, SCALAR_TYPE, VEC_INT_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
     genericFLOORTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
@@ -3378,19 +3461,19 @@ void genericFloatInterfaceTest()
     genericMSQRTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
     genericSQRATest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
     genericMSQRATest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
-    /*genericSQRTTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
+    genericSQRTTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
     genericMSQRTTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
     genericSQRTATest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
     genericMSQRTATest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
     
-    genericSINTest<VEC_TYPE, VEC_LEN, DATA_SET>();
-    genericMSINTest<VEC_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
-    genericCOSTest<VEC_TYPE, VEC_LEN, DATA_SET>();
-    genericMCOSTest<VEC_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
-    genericTANTest<VEC_TYPE, VEC_LEN, DATA_SET>();
-    genericMTANTest<VEC_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
-    genericCTANTest<VEC_TYPE, VEC_LEN, DATA_SET>();
-    genericMCTANTest<VEC_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();*/
+    genericSINTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
+    genericMSINTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericCOSTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
+    genericMCOSTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericTANTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
+    genericMTANTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericCTANTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
+    genericMCTANTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
 }
 
 template<typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
@@ -3425,12 +3508,17 @@ void genericIntTest() {
     genericSignInterfaceTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
 }
 
-template<typename VEC_TYPE, typename SCALAR_TYPE, typename VEC_INT_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
+template<typename VEC_TYPE, typename SCALAR_TYPE, typename VEC_UINT_TYPE, typename VEC_INT_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericFloatTest() {
     genericBaseInterfaceTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET> ();
     genericGatherScatterInterfaceTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET> ();
     genericSignInterfaceTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
     genericFloatInterfaceTest<VEC_TYPE, SCALAR_TYPE, VEC_INT_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+
+    genericITOFTest<VEC_TYPE, SCALAR_TYPE, VEC_INT_TYPE, VEC_LEN, DATA_SET>();
+    genericUTOFTest<VEC_TYPE, SCALAR_TYPE, VEC_UINT_TYPE, VEC_LEN, DATA_SET>();
+   
+    //genericFTOITest<VEC_TYPE, SCALAR_TYPE, VEC_INT_TYPE, VEC_LEN, DATA_SET>();
 }
 
 #endif

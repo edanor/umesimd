@@ -193,7 +193,7 @@ int test_UME_SIMD32_32f(bool supressMessages) {
         CHECK_CONDITION(true, "ZERO-CONSTR");
     }
     
-    genericFloatTest<SIMD32_32f, float, SIMD32_32i, SIMDMask32, 32, DataSet_1_32f>();
+    genericFloatTest<SIMD32_32f, float, SIMD32_32u, SIMD32_32i, SIMDMask32, 32, DataSet_1_32f>();
 
     return g_failCount;
 }

@@ -325,6 +325,8 @@ struct DataSet_1_32f {
         static const float inputA[32];
         static const float inputB[32];
         static const float inputC[32];
+        static const uint32_t inputUintA[32];
+        static const int32_t inputIntA[32];
         static const float scalarA;
         static const bool  maskA[32];
     };
@@ -409,6 +411,7 @@ struct DataSet_1_32f {
         static const float SQRT[32];
         static const float MSQRT[32];
         static const float ROUND[32];
+        static const float MROUND[32];
         static const int32_t TRUNC[32];
         static const int32_t MTRUNC[32];
         static const float FLOOR[32];
@@ -432,6 +435,9 @@ struct DataSet_1_32f {
         static const float MTAN[32];
         static const float CTAN[32];
         static const float MCTAN[32];
+
+        static const float ITOF[32];
+        static const float UTOF[32];
     };
 };
 
