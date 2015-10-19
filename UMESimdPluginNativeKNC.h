@@ -4508,12 +4508,28 @@ template<typename SCALAR_FLOAT_TYPE>
  
         // (Mathematical functions)
         // SQR       - Square of vector values
+        inline SIMDVecKNC_f sqr() const {
+            __m512 t0 = _mm512_mul_ps(mVec, mVec);
+            return SIMDVecKNC_f(t0);
+        }
         // MSQR      - Masked square of vector values
+        inline SIMDVecKNC_f sqr(SIMDMask16 const & mask) const {
+            __m512 t0 = _mm512_mask_mul_ps(mVec, mask.mMask, mVec, mVec);
+            return SIMDVecKNC_f(t0);
+        }
         // SQRA      - Square of vector values and assign
+        inline SIMDVecKNC_f & sqra() {
+            mVec = _mm512_mul_ps(mVec, mVec);
+            return *this;
+        }
         // MSQRA     - Masked square of vector values and assign
+        inline SIMDVecKNC_f & sqra(SIMDMask16 const & mask) {
+            mVec = _mm512_mask_mul_ps(mVec, mask.mMask, mVec, mVec);
+            return *this;
+        }
         // SQRT      - Square root of vector values
         inline SIMDVecKNC_f sqrt() const {
-            return _mm512_sqrt_ps(mVec);
+            return SIMDVecKNC_f(_mm512_sqrt_ps(mVec));
         }
         // MSQRT     - Masked square root of vector values 
         inline SIMDVecKNC_f sqrt(SIMDMask16 const & mask) const {
@@ -4530,12 +4546,38 @@ template<typename SCALAR_FLOAT_TYPE>
             mVec = _mm512_mask_sqrt_ps(mVec, mask.mMask, mVec);
             return *this;
         }
+        // RSQRT     - Reciprocal square root
+        inline SIMDVecKNC_f rsqr() const {
+            return SIMDVecKNC_f(_mm512_rsqrt23_ps(mVec));
+        }
+        // MRSQRT    - Masked reciprocal square root
+        inline SIMDVecKNC_f rsqrt(SIMDMask16 const & mask) const {
+            return SIMDVecKNC_f(_mm512_mask_rsqrt23_ps(mVec, mask.mMask, mVec));
+        }
+        // RSQRTA    - Reciprocal square root and assign
+        inline SIMDVecKNC_f & rsqrta() {
+            mVec= _mm512_rsqrt23_ps(mVec);
+            return *this;
+        }
+        // MRSQRTA   - Masked reciprocal square root and assign
+        inline SIMDVecKNC_f & rsqrta(SIMDMask16 const & mask) {
+            mVec= _mm512_mask_rsqrt23_ps(mVec, mask.mMask, mVec);
+            return *this;
+        }
         // POWV      - Power (exponents in vector)
         // MPOWV     - Masked power (exponents in vector)
         // POWS      - Power (exponent in scalar)
         // MPOWS     - Masked power (exponent in scalar) 
         // ROUND     - Round to nearest integer
+        inline SIMDVecKNC_f round() const {
+            __m512 t0 = _mm512_round_ps(mVec, _MM_FROUND_TO_NEAREST_INT, _MM_EXPADJ_NONE);
+            return SIMDVecKNC_f(t0);
+        }
         // MROUND    - Masked round to nearest integer
+        inline SIMDVecKNC_f round(SIMDMask16 const & mask) const {
+            __m512 t0 = _mm512_mask_round_ps(mVec, mask.mMask, mVec, _MM_FROUND_TO_NEAREST_INT, _MM_EXPADJ_NONE);
+            return SIMDVecKNC_f(t0);
+        }
         // TRUNC     - Truncate to integer (returns Signed integer vector)
         // MTRUNC    - Masked truncate to integer (returns Signed integer vector)
         // FLOOR     - Floor

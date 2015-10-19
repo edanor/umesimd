@@ -37,6 +37,7 @@
 #include "UMESimdInterface.h"
 
 #include "UMESimdPluginScalarEmulation.h"
+#include "UMESimdGenericMath.h"
 
 #include <immintrin.h>
 
@@ -3395,15 +3396,15 @@ namespace SIMD
         // ISZERO    - Is zero
         // ISZEROSUB - Is zero or subnormal
         // SIN       - Sine        
-        //SIMDVecAVX_f sin() {
-        //    SIMDVecAVX_f ret = UME::SIMD::genericSin<float,SIMDVecAVX_f, SIMDVecAVX_i<int32_t, 8>, SIMDMask8>(*this);
-        //    return ret;
-        //}
+        /*SIMDVecAVX_f sin() {
+            SIMDVecAVX_f ret = UME::SIMD::genericSin<float,SIMDVecAVX_f, SIMDVecAVX_i<int32_t, 8>, SIMDMask8>(*this);
+            return ret;
+        }*/
         // MSIN      - Masked sine     
         //SIMDVecAVX_f sin(SIMDMask8 const & mask) {
         //    SIMDVecAVX_f ret; //= UME::SIMD::genericSin<float,SIMDVecAVX_f, SIMDVecAVX_i<int32_t, 8>, SIMDMask8>(*this);
         //    return ret;
-       // }
+        //}
         // COS       - Cosine
         // MCOS      - Masked cosine
         // TAN       - Tangent

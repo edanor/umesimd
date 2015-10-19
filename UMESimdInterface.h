@@ -3138,6 +3138,51 @@ namespace SIMD
                 return a;
             }
 
+            // RSQRT
+            template<typename VEC_TYPE>
+            inline VEC_TYPE rsqrt(VEC_TYPE const & a) {
+                UME_EMULATION_WARNING();
+                VEC_TYPE retval;
+                for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+                    retval.insert(i, decltype(retval[0])(1.0)/std::sqrt(a[i])); 
+                }
+                return retval;
+            }
+            // MRSQRT
+            template<typename VEC_TYPE, typename MASK_TYPE>
+            inline VEC_TYPE rsqrt(MASK_TYPE const & mask, VEC_TYPE const & a) {
+                UME_EMULATION_WARNING();
+                VEC_TYPE retval;
+                decltype(retval[0]) temp;
+                for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+                    temp = decltype(retval[0])(1.0)/std::sqrt(a[i]);
+                    retval.insert(i, (mask[i] == true) ? temp : a[i]);
+                }
+                return retval;
+            }
+            // RSQRTA
+            template<typename VEC_TYPE>
+            inline VEC_TYPE & rsqrtAssign (VEC_TYPE & a) {
+                UME_EMULATION_WARNING();
+                decltype(a[0]) temp;
+                for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+                    temp = decltype(retval[0])(1.0)/std::sqrt(a[i]);
+                    a.insert(i, temp);
+                }
+                return a;
+            }
+            // MRSQRTA
+            template<typename VEC_TYPE, typename MASK_TYPE>
+            inline VEC_TYPE & rsqrtAssign(MASK_TYPE const & mask, VEC_TYPE & a) {
+                UME_EMULATION_WARNING();
+                decltype(a[0]) temp;
+                for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+                    temp = decltype(retval[0])(1.0)/std::sqrt(a[i]);
+                    if(mask[i] == true) a.insert(i, temp);
+                }
+                return a;
+            }
+            
             // POWV
             template<typename VEC_TYPE>
             inline VEC_TYPE pow(VEC_TYPE const & a, VEC_TYPE const & b) {
@@ -5734,26 +5779,50 @@ namespace SIMD
         inline DERIVED_VEC_TYPE & sqrta (MASK_TYPE const & mask) {
             return EMULATED_FUNCTIONS::MATH::sqrtAssign<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this));
         }
+
+        // RSQRT
+        inline DERIVED_VEC_TYPE rsqrt () const {
+            return EMULATED_FUNCTIONS::MATH::rsqrt<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this));
+        }
+
+        // MRSQRT
+        inline DERIVED_VEC_TYPE rsqrt (MASK_TYPE const & mask) const {
+            return EMULATED_FUNCTIONS::MATH::rsqrt<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this));
+        }
+
+        // SQRTA
+        inline DERIVED_VEC_TYPE & rsqrta () {
+            return EMULATED_FUNCTIONS::MATH::rsqrtAssign<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this));
+        }
+
+        // MSQRTA
+        inline DERIVED_VEC_TYPE & rsqrta (MASK_TYPE const & mask) {
+            return EMULATED_FUNCTIONS::MATH::rsqrtAssign<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this));
+        }
         
         // POWV
-        inline DERIVED_VEC_TYPE pow (DERIVED_VEC_TYPE const & b) const {
-            return EMULATED_FUNCTIONS::MATH::pow<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this), b);
-        }
+        // Disabled, see Issue #10
+        //inline DERIVED_VEC_TYPE pow (DERIVED_VEC_TYPE const & b) const {
+        //    return EMULATED_FUNCTIONS::MATH::pow<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this), b);
+        // }
 
-        // MPOWV        
-        inline DERIVED_VEC_TYPE pow (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) const {
-            return EMULATED_FUNCTIONS::MATH::pow<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
-        }
+        // MPOWV    
+        // Disabled, see Issue #10    
+        //inline DERIVED_VEC_TYPE pow (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) const {
+        //    return EMULATED_FUNCTIONS::MATH::pow<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
+        //}
 
         // POWS
-        inline DERIVED_VEC_TYPE pow (SCALAR_FLOAT_TYPE b) const {
-            return EMULATED_FUNCTIONS::MATH::pows<DERIVED_VEC_TYPE, SCALAR_FLOAT_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this), b);
-        }
+        // Disabled, see Issue #10
+        //inline DERIVED_VEC_TYPE pow (SCALAR_FLOAT_TYPE b) const {
+        //    return EMULATED_FUNCTIONS::MATH::pows<DERIVED_VEC_TYPE, SCALAR_FLOAT_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this), b);
+        //}
 
         // MPOWS
-        inline DERIVED_VEC_TYPE pow (MASK_TYPE const & mask, SCALAR_FLOAT_TYPE b) const {
-            return EMULATED_FUNCTIONS::MATH::pows<DERIVED_VEC_TYPE, SCALAR_FLOAT_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
-        }
+        // Disabled, see Issue #10
+        //inline DERIVED_VEC_TYPE pow (MASK_TYPE const & mask, SCALAR_FLOAT_TYPE b) const {
+        //    return EMULATED_FUNCTIONS::MATH::pows<DERIVED_VEC_TYPE, SCALAR_FLOAT_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
+        //}
 
         // ROUND
         inline DERIVED_VEC_TYPE round () const {
