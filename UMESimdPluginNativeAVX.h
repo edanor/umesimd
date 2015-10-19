@@ -37,7 +37,6 @@
 #include "UMESimdInterface.h"
 
 #include "UMESimdPluginScalarEmulation.h"
-#include "UMESimdGenericMath.h"
 
 #include <immintrin.h>
 
