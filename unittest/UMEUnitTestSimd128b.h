@@ -2986,7 +2986,7 @@ int test_UME_SIMD4_32f(bool supressMessages)
         vec1 = vec0.sqrt();
         CHECK_CONDITION(vec1[0] > 1.99f && vec1[3] < 2.01f, "SQRT")
     }
-    {
+    /*{
         SIMD4_32f vec0(1.0f, 2.0f, -3.0f, -4.12f);
         SIMD4_32f vec1(2.15f, 3.79f, 3.00f, 2.00f);
         SIMD4_32f vec2;
@@ -3027,7 +3027,7 @@ int test_UME_SIMD4_32f(bool supressMessages)
                         vec2[1] > 1.99f   && vec2[1] < 2.01f    &&
                         vec2[2] > -27.01f && vec2[2] < -26.99f  &&
                         vec2[3] > -4.13f  && vec2[3] < -4.11f, "MPOWS");
-    }
+    }*/
     {
         SIMD4_32f vec0(3.8f);
         SIMD4_32f vec1;
