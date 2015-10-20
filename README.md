@@ -1,3 +1,6 @@
+Current stable release is: v0.1.0-stable
+
+
 UME::SIMD is an explicit vectorization library. The library defines homogeneous interface for accessing functionality of SIMD registers of AVX, AVX2, AVX512 and IMCI (KNCNI, k1om) instruction set. 
 
 This piece of code was developed as part of ICE-DIP project at CERN.
