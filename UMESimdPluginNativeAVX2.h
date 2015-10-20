@@ -406,12 +406,11 @@ namespace SIMD
 
         inline SIMDVecAVX2Mask(__m256i const & xLo, __m256i const & xHi) { mMaskLo = xLo; mMaskHi = xHi;};
     public:
-        inline SIMDVecAVX2Mask() {
-        }
+        inline SIMDVecAVX2Mask() {}
 
         // Regardless of the mask representation, the interface should only allow initialization using 
         // standard bool or using equivalent mask
-        inline SIMDVecAVX2Mask(bool m) {
+        inline explicit SIMDVecAVX2Mask(bool m) {
             mMaskLo = _mm256_set1_epi32(toMaskBool(m));
             mMaskHi = _mm256_set1_epi32(toMaskBool(m));
         }
@@ -942,9 +941,10 @@ namespace SIMD
             typename SIMDVecAVX2_u_traits<SCALAR_UINT_TYPE, VEC_LEN>::HALF_LEN_VEC_TYPE>
     {
     public:
-        typedef SIMDVecEmuRegister<SCALAR_UINT_TYPE, VEC_LEN>                                   VEC_EMU_REG;
+        typedef SIMDVecEmuRegister<SCALAR_UINT_TYPE, VEC_LEN>                               VEC_EMU_REG;
             
-        typedef typename SIMDVecAVX2_u_traits<SCALAR_UINT_TYPE, VEC_LEN>::SCALAR_INT_TYPE  SCALAR_INT_TYPE;
+        typedef typename SIMDVecAVX2_u_traits<SCALAR_UINT_TYPE, VEC_LEN>::SCALAR_INT_TYPE   SCALAR_INT_TYPE;
+        typedef typename SIMDVecAVX2_u_traits<SCALAR_UINT_TYPE, VEC_LEN>::MASK_TYPE         MASK_TYPE;
         
         // Conversion operators require access to private members.
         friend class SIMDVecAVX2_i<SCALAR_INT_TYPE, VEC_LEN>;
@@ -999,7 +999,12 @@ namespace SIMD
         inline SCALAR_UINT_TYPE operator[] (uint32_t index) const {
             return mVec[index];
         }
-                
+             
+        // Override Mask Access operators
+        inline IntermediateMask<SIMDVecAVX2_u, MASK_TYPE> operator[] (MASK_TYPE const & mask) {
+            return IntermediateMask<SIMDVecAVX2_u, MASK_TYPE>(mask, static_cast<SIMDVecAVX2_u &>(*this));
+        }
+           
         // insert[] (scalar)
         inline SIMDVecAVX2_u & insert(uint32_t index, SCALAR_UINT_TYPE value) {
             mVec.insert(index, value);
@@ -1035,7 +1040,7 @@ namespace SIMD
         typedef SIMDVecEmuRegister<SCALAR_UINT_TYPE, 1>                                   VEC_EMU_REG;
             
         typedef typename SIMDVecAVX2_u_traits<SCALAR_UINT_TYPE, 1>::SCALAR_INT_TYPE  SCALAR_INT_TYPE;
-        
+
         // Conversion operators require access to private members.
         friend class SIMDVecAVX2_i<SCALAR_INT_TYPE, 1>;
 
@@ -1054,6 +1059,11 @@ namespace SIMD
         // Override Access operators
         inline SCALAR_UINT_TYPE operator[] (uint32_t index) const {
             return mVec[index];
+        }
+             
+        // Override Mask Access operators
+        inline IntermediateMask<SIMDVecAVX2_u, SIMDMask1> operator[] (SIMDMask1 & mask) {
+            return IntermediateMask<SIMDVecAVX2_u, SIMDMask1>(mask, static_cast<SIMDVecAVX2_u &>(*this));
         }
                 
         // insert[] (scalar)
@@ -1120,7 +1130,12 @@ namespace SIMD
         inline uint32_t operator[] (uint32_t index) const {
             return extract(index);
         }
-                
+          
+        // Override Mask Access operators
+        inline IntermediateMask<SIMDVecAVX2_u, SIMDMask8> operator[] (SIMDMask8 const & mask) {
+            return IntermediateMask<SIMDVecAVX2_u, SIMDMask8>(mask, static_cast<SIMDVecAVX2_u &>(*this));
+        }
+
         // insert[] (scalar)
         inline SIMDVecAVX2_u & insert (uint32_t index, uint32_t value) {
             UME_PERFORMANCE_UNOPTIMAL_WARNING();
@@ -1675,9 +1690,10 @@ namespace SIMD
     public:
         typedef SIMDVecEmuRegister<SCALAR_INT_TYPE, VEC_LEN> VEC_EMU_REG;
             
-        typedef typename SIMDVecAVX2_i_traits<SCALAR_INT_TYPE, VEC_LEN>::SCALAR_UINT_TYPE     SCALAR_UINT_TYPE;
-        typedef typename SIMDVecAVX2_i_traits<SCALAR_INT_TYPE, VEC_LEN>::VEC_UINT             VEC_UINT;
-        
+        typedef typename SIMDVecAVX2_i_traits<SCALAR_INT_TYPE, VEC_LEN>::SCALAR_UINT_TYPE   SCALAR_UINT_TYPE;
+        typedef typename SIMDVecAVX2_i_traits<SCALAR_INT_TYPE, VEC_LEN>::VEC_UINT           VEC_UINT;
+        typedef typename SIMDVecAVX2_i_traits<SCALAR_INT_TYPE, VEC_LEN>::MASK_TYPE          MASK_TYPE;
+
         friend class SIMDVecScalarEmu_u<SCALAR_UINT_TYPE, VEC_LEN>;
     private:
         VEC_EMU_REG mVec;
@@ -1733,6 +1749,11 @@ namespace SIMD
             return mVec[index];
         }
                 
+        // Override Mask Access operators
+        inline IntermediateMask<SIMDVecAVX2_i, MASK_TYPE> operator[] (MASK_TYPE const & mask) {
+            return IntermediateMask<SIMDVecAVX2_i, MASK_TYPE>(mask, static_cast<SIMDVecAVX2_i &>(*this));
+        }
+
         // insert[] (scalar)
         inline SIMDVecAVX2_i & insert(uint32_t index, SCALAR_INT_TYPE value) {
             mVec.insert(index, value);
@@ -1789,6 +1810,11 @@ namespace SIMD
             return mVec[index];
         }
                 
+        // Override Mask Access operators
+        inline IntermediateMask<SIMDVecAVX2_i, SIMDMask1> operator[] (SIMDMask1 const & mask) {
+            return IntermediateMask<SIMDVecAVX2_i, SIMDMask1>(mask, static_cast<SIMDVecAVX2_i &>(*this));
+        }
+
         // insert[] (scalar)
         inline SIMDVecAVX2_i & insert(uint32_t index, SCALAR_INT_TYPE value) {
             mVec.insert(index, value);
@@ -1858,6 +1884,11 @@ namespace SIMD
             return extract(index);
         }
                 
+        // Override Mask Access operators
+        inline IntermediateMask<SIMDVecAVX2_i, SIMDMask8> operator[] (SIMDMask8 const & mask) {
+            return IntermediateMask<SIMDVecAVX2_i, SIMDMask8>(mask, static_cast<SIMDVecAVX2_i &>(*this));
+        }
+
         // insert[] (scalar)
         inline SIMDVecAVX2_i & insert(uint32_t index, int32_t value) {
             UME_PERFORMANCE_UNOPTIMAL_WARNING()
@@ -2074,11 +2105,11 @@ namespace SIMD
     {
     public:
         typedef SIMDVecEmuRegister<SCALAR_FLOAT_TYPE, VEC_LEN>                            VEC_EMU_REG;
-        typedef typename SIMDVecAVX2_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::MASK_TYPE       MASK_TYPE;
         
         typedef SIMDVecAVX2_f VEC_TYPE;
         typedef typename SIMDVecAVX2_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::VEC_UINT_TYPE    VEC_UINT_TYPE;
         typedef typename SIMDVecAVX2_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::VEC_INT_TYPE     VEC_INT_TYPE;
+        typedef typename SIMDVecAVX2_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::MASK_TYPE        MASK_TYPE;
     private:
         VEC_EMU_REG mVec;
 
@@ -2143,6 +2174,11 @@ namespace SIMD
             return mVec[index];
         }
                 
+        // Override Mask Access operators
+        inline IntermediateMask<SIMDVecAVX2_f, MASK_TYPE> operator[] (MASK_TYPE const & mask) {
+            return IntermediateMask<SIMDVecAVX2_f, MASK_TYPE>(mask, static_cast<SIMDVecAVX2_f &>(*this));
+        }
+
         // insert[] (scalar)
         inline SIMDVecAVX2_f & insert(uint32_t index, SCALAR_FLOAT_TYPE value) {
             mVec.insert(index, value);
@@ -2202,6 +2238,11 @@ namespace SIMD
             return mVec[index];
         }
                 
+        // Override Mask Access operators
+        inline IntermediateMask<SIMDVecAVX2_f, SIMDMask1> operator[] (SIMDMask1 const & mask) {
+            return IntermediateMask<SIMDVecAVX2_f, SIMDMask1>(mask, static_cast<SIMDVecAVX2_f &>(*this));
+        }
+
         // insert[] (scalar)
         inline SIMDVecAVX2_f & insert(uint32_t index, SCALAR_FLOAT_TYPE value) {
             mVec.insert(index, value);
@@ -2277,6 +2318,11 @@ namespace SIMD
             return extract(index);
         }
                 
+        // Override Mask Access operators
+        inline IntermediateMask<SIMDVecAVX2_f, SIMDMask4> operator[] (SIMDMask4 const & mask) {
+            return IntermediateMask<SIMDVecAVX2_f, SIMDMask4>(mask, static_cast<SIMDVecAVX2_f &>(*this));
+        }
+
         // INSERT
         inline SIMDVecAVX2_f & insert (uint32_t index, float value) {
             UME_PERFORMANCE_UNOPTIMAL_WARNING();
@@ -2461,8 +2507,6 @@ namespace SIMD
         //(Blend/Swizzle operations)
         // BLENDV   - Blend (mix) two vectors
         // BLENDS   - Blend (mix) vector with scalar (promoted to vector)
-        // BLENDVA  - Blend (mix) two vectors and assign
-        // BLENDSA  - Blend (mix) vector with scalar (promoted to vector) and
         //         assign
         // SWIZZLE  - Swizzle (reorder/permute) vector elements
         // SWIZZLEA - Swizzle (reorder/permute) vector elements and assign
@@ -2648,7 +2692,12 @@ namespace SIMD
             UME_PERFORMANCE_UNOPTIMAL_WARNING();
             return extract(index);
         }
-                
+               
+        // Override Mask Access operators
+        inline IntermediateMask<SIMDVecAVX2_f, SIMDMask8> operator[] (SIMDMask8 const & mask) {
+            return IntermediateMask<SIMDVecAVX2_f, SIMDMask8>(mask, static_cast<SIMDVecAVX2_f &>(*this));
+        }
+
         // INSERT
         inline SIMDVecAVX2_f & insert (uint32_t index, float value) {
             UME_PERFORMANCE_UNOPTIMAL_WARNING();
@@ -2872,8 +2921,6 @@ namespace SIMD
         //(Blend/Swizzle operations)
         // BLENDV   - Blend (mix) two vectors
         // BLENDS   - Blend (mix) vector with scalar (promoted to vector)
-        // BLENDVA  - Blend (mix) two vectors and assign
-        // BLENDSA  - Blend (mix) vector with scalar (promoted to vector) and
         // assign
         // SWIZZLE  - Swizzle (reorder/permute) vector elements
         // SWIZZLEA - Swizzle (reorder/permute) vector elements and assign
@@ -3107,6 +3154,11 @@ namespace SIMD
             return extract(index);
         }
                 
+        // Override Mask Access operators
+        inline IntermediateMask<SIMDVecAVX2_f, SIMDMask16> operator[] (SIMDMask16 const & mask) {
+            return IntermediateMask<SIMDVecAVX2_f, SIMDMask16>(mask, static_cast<SIMDVecAVX2_f &>(*this));
+        }
+
         // INSERT  - Insert single element into a vector
         inline SIMDVecAVX2_f & insert (uint32_t index, float value) {
             UME_PERFORMANCE_UNOPTIMAL_WARNING();
@@ -3347,8 +3399,6 @@ namespace SIMD
         //(Blend/Swizzle operations)
         // BLENDV   - Blend (mix) two vectors
         // BLENDS   - Blend (mix) vector with scalar (promoted to vector)
-        // BLENDVA  - Blend (mix) two vectors and assign
-        // BLENDSA  - Blend (mix) vector with scalar (promoted to vector) and
         // assign
         // SWIZZLE  - Swizzle (reorder/permute) vector elements
         // SWIZZLEA - Swizzle (reorder/permute) vector elements and assign
@@ -3494,7 +3544,6 @@ namespace SIMD
 
     };
 
-
     template<>
     class SIMDVecAVX2_f<float, 32> : 
         public SIMDVecFloatInterface<
@@ -3593,6 +3642,11 @@ namespace SIMD
             return extract(index);
         }
                 
+        // Override Mask Access operators
+        inline IntermediateMask<SIMDVecAVX2_f, SIMDMask32> operator[] (SIMDMask32 const & mask) {
+            return IntermediateMask<SIMDVecAVX2_f, SIMDMask32>(mask, static_cast<SIMDVecAVX2_f &>(*this));
+        }
+
         // INSERT  - Insert single element into a vector
         inline SIMDVecAVX2_f & insert (uint32_t index, float value) {
             UME_PERFORMANCE_UNOPTIMAL_WARNING();
@@ -3856,8 +3910,6 @@ namespace SIMD
         //(Blend/Swizzle operations)
         // BLENDV   - Blend (mix) two vectors
         // BLENDS   - Blend (mix) vector with scalar (promoted to vector)
-        // BLENDVA  - Blend (mix) two vectors and assign
-        // BLENDSA  - Blend (mix) vector with scalar (promoted to vector) and
         // assign
         // SWIZZLE  - Swizzle (reorder/permute) vector elements
         // SWIZZLEA - Swizzle (reorder/permute) vector elements and assign

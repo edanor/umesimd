@@ -2408,27 +2408,7 @@ namespace SIMD
             }
             return retval;
         }
-
-        // BLENDVA
-        template<typename VEC_TYPE, typename MASK_TYPE>
-        inline VEC_TYPE & blendAssign (MASK_TYPE const & mask, VEC_TYPE & a, VEC_TYPE const & b) {
-            UME_EMULATION_WARNING();
-            for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
-                if(mask[i] == true) a.insert(i, b[i]);
-            }
-            return a;
-        }
         
-        // BLENDSA
-        template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
-        inline VEC_TYPE & blendAssign (MASK_TYPE const & mask, VEC_TYPE & a, SCALAR_TYPE b) {
-            UME_EMULATION_WARNING();
-            for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
-                if(mask[i] == true) a.insert(i, b);
-            }
-            return a;
-        }
-
         // SWIZZLE
         template<typename VEC_TYPE, typename SWIZZLE_MASK_TYPE>
         inline VEC_TYPE swizzle(SWIZZLE_MASK_TYPE const & sMask, VEC_TYPE const & a) {
@@ -3166,7 +3146,7 @@ namespace SIMD
                 UME_EMULATION_WARNING();
                 decltype(a[0]) temp;
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
-                    temp = decltype(retval[0])(1.0)/std::sqrt(a[i]);
+                    temp = decltype(a[0])(1.0)/std::sqrt(a[i]);
                     a.insert(i, temp);
                 }
                 return a;
@@ -3177,7 +3157,7 @@ namespace SIMD
                 UME_EMULATION_WARNING();
                 decltype(a[0]) temp;
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
-                    temp = decltype(retval[0])(1.0)/std::sqrt(a[i]);
+                    temp = decltype(a[0])(1.0)/std::sqrt(a[i]);
                     if(mask[i] == true) a.insert(i, temp);
                 }
                 return a;
@@ -3933,6 +3913,76 @@ namespace SIMD
         }
     };
 
+    
+    // **********************************************************************
+    // *
+    // *  Declaration of IntermediateMask class 
+    // *
+    // *    This class is a helper class used in masked version of
+    // *    operator[]. This object is not copyable and can only be created
+    // *    from its vector type (VEC_TYPE) for temporary use. 
+    // *
+    // **********************************************************************
+    template<class VEC_TYPE, class MASK_TYPE>
+    class IntermediateMask {
+    public:
+        // MASSIGN
+        inline void operator=(VEC_TYPE const & vecRhs) const {
+            mVecRef.assign(mMaskRef, vecRhs);
+        }
+
+        // MADDVA
+        inline void operator+=(VEC_TYPE const & vecRhs) const {
+            mVecRef.adda(mMaskRef, vecRhs);
+        }
+        
+        // MSUBVA
+        inline void operator-= (VEC_TYPE const & vecRhs) const {
+            mVecRef.suba(mMaskRef, vecRhs);
+        }
+
+        // MMULVA
+        inline void operator*= (VEC_TYPE const & vecRhs) const {
+            mVecRef.mula(mMaskRef, vecRhs);
+        }
+
+        // MDIVVA
+        inline void operator/= (VEC_TYPE const & vecRhs) const {
+            mVecRef.diva(mMaskRef, vecRhs);
+        }
+
+        // MBANDVA
+        inline void operator&= (VEC_TYPE const & vecRhs) const {
+            mVecRef.banda(mMaskRef, vecRhs);
+        }
+
+        // MBORVA
+        inline void operator|= (VEC_TYPE const & vecRhs) const {
+            mVecRef.bora(mMaskRef, vecRhs);
+        }
+
+        // MBXORVA
+        inline void operator^= (VEC_TYPE const & vecRhs) const {
+            mVecRef.bxora(mMaskRef, vecRhs);
+        }
+
+        // This object should be only constructible by the
+        // vector type using it.
+        IntermediateMask();
+        IntermediateMask(IntermediateMask const &);
+        IntermediateMask & operator= (IntermediateMask const &); 
+
+        IntermediateMask(uint32_t);
+    private:
+        friend VEC_TYPE;
+
+        inline explicit IntermediateMask(MASK_TYPE const & mask, VEC_TYPE & vec) : mMaskRef(mask), mVecRef(vec) {}
+
+        MASK_TYPE const & mMaskRef;
+        VEC_TYPE & mVecRef;
+    };
+
+
     // **********************************************************************
     // *
     // *  Declaration of SIMDVecBaseInterface class 
@@ -3989,12 +4039,18 @@ namespace SIMD
         // Making destructor protected prohibits this class from being instantiated. Effectively this class can only be used as a base class.
         ~SIMDVecBaseInterface() {};
     public:
-    
+   
         // TODO: can be marked as constexpr?
-        static uint32_t length() { return VEC_LEN; };
+        static uint32_t length() { return VEC_LEN; }
 
-        static uint32_t alignment() { return VEC_LEN*sizeof(SCALAR_TYPE); };
+        static uint32_t alignment() { return VEC_LEN*sizeof(SCALAR_TYPE); }
         
+        // ZERO-VEC
+        static DERIVED_VEC_TYPE zero() { return DERIVED_VEC_TYPE(SCALAR_TYPE(0)); }
+
+        // ONE-VEC
+        static DERIVED_VEC_TYPE one() { return DERIVED_VEC_TYPE(SCALAR_TYPE(1)); }
+
         inline SCALAR_TYPE extract(uint32_t index)
         {
             // Extract method should be provided for all derived classes.
@@ -4081,6 +4137,16 @@ namespace SIMD
            return EMULATED_FUNCTIONS::store<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this), p);
         }
         
+        // BLENDV
+        inline DERIVED_VEC_TYPE blend (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) const {
+            return EMULATED_FUNCTIONS::blend<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
+        }
+
+        // BLENDS
+        inline DERIVED_VEC_TYPE blend (MASK_TYPE const & mask, SCALAR_TYPE b) const {
+            return EMULATED_FUNCTIONS::blend<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
+        }
+
         // SWIZZLE
         DERIVED_VEC_TYPE swizzle (SWIZZLE_MASK_TYPE const & sMask) const {
             return EMULATED_FUNCTIONS::swizzle<DERIVED_VEC_TYPE, SWIZZLE_MASK_TYPE> (sMask, static_cast<DERIVED_VEC_TYPE const &>(*this));
@@ -4099,12 +4165,12 @@ namespace SIMD
         inline DERIVED_VEC_TYPE operator+ (DERIVED_VEC_TYPE const & b) const {
             return add(b);
         }
-
+        
         // MADDV
         inline DERIVED_VEC_TYPE add (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) const {
             return EMULATED_FUNCTIONS::add<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
-
+        
         // ADDS
         inline DERIVED_VEC_TYPE add (SCALAR_TYPE b) const {
             return EMULATED_FUNCTIONS::addScalar<DERIVED_VEC_TYPE, SCALAR_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this), b);
@@ -4587,26 +4653,6 @@ namespace SIMD
         // CMPES
         inline bool cmpe (SCALAR_TYPE b) const {
             return EMULATED_FUNCTIONS::isExact<DERIVED_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this), DERIVED_VEC_TYPE(b));
-        }
-
-        // BLENDV
-        inline DERIVED_VEC_TYPE blend (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) const {
-            return EMULATED_FUNCTIONS::blend<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
-        }
-
-        // BLENDS
-        inline DERIVED_VEC_TYPE blend (MASK_TYPE const & mask, SCALAR_TYPE b) const {
-            return EMULATED_FUNCTIONS::blend<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
-        }
-
-        // BLENDVA
-        inline DERIVED_VEC_TYPE & blenda (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) {
-            return EMULATED_FUNCTIONS::blendAssign<DERIVED_VEC_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE &>(*this), b);
-        }
-
-        // BLENDSA
-        inline DERIVED_VEC_TYPE & blenda (MASK_TYPE const & mask, SCALAR_TYPE b) {
-            return EMULATED_FUNCTIONS::blendAssign<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
 
         // HADD
@@ -5509,6 +5555,7 @@ namespace SIMD
                     );
         }
     };
+    
     // ***************************************************************************
     // *
     // *    Definition of interface for vectors using UNSIGNED INTEGER scalar types
@@ -5953,6 +6000,7 @@ namespace SIMD
         inline DERIVED_VEC_TYPE ctan (MASK_TYPE const & mask) const {
             return EMULATED_FUNCTIONS::MATH::ctan<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
+
     };
     
     // This is just an experimental setup! Providing functions like this to handle interface

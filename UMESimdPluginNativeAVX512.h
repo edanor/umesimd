@@ -605,7 +605,8 @@ namespace SIMD
         typedef SIMDVecEmuRegister<SCALAR_UINT_TYPE, VEC_LEN>                                   VEC_EMU_REG;
             
         typedef typename SIMDVecAVX512_u_traits<SCALAR_UINT_TYPE, VEC_LEN>::SCALAR_INT_TYPE  SCALAR_INT_TYPE;
-        
+        typedef typename SIMDVecAVX512_u_traits<SCALAR_UINT_TYPE, VEC_LEN>::MASK_TYPE        MASK_TYPE;
+
         // Conversion operators require access to private members.
         friend class SIMDVecAVX512_i<SCALAR_INT_TYPE, VEC_LEN>;
 
@@ -696,6 +697,11 @@ namespace SIMD
             return mVec[index];
         }
                 
+        // Override Mask Access operators
+        inline IntermediateMask<SIMDVecAVX512_u, MASK_TYPE> operator[] (MASK_TYPE & mask) {
+            return IntermediateMask<SIMDVecAVX512_u, MASK_TYPE>(mask, static_cast<SIMDVecAVX512_u &>(*this));
+        }
+
         // insert[] (scalar)
         inline SIMDVecAVX512_u & insert(uint32_t index, SCALAR_UINT_TYPE value) {
             mVec.insert(index, value);
@@ -731,7 +737,7 @@ namespace SIMD
         typedef SIMDVecEmuRegister<SCALAR_UINT_TYPE, 1>                                   VEC_EMU_REG;
             
         typedef typename SIMDVecAVX512_u_traits<SCALAR_UINT_TYPE, 1>::SCALAR_INT_TYPE  SCALAR_INT_TYPE;
-        
+        typedef typename SIMDVecAVX512_u_traits<SCALAR_UINT_TYPE, 1>::MASK_TYPE        MASK_TYPE;
         // Conversion operators require access to private members.
         friend class SIMDVecAVX512_i<SCALAR_INT_TYPE, 1>;
 
@@ -750,7 +756,12 @@ namespace SIMD
         inline SCALAR_UINT_TYPE operator[] (uint32_t index) const {
             return mVec[index];
         }
-                
+         
+        // Override Mask Access operators
+        inline IntermediateMask<SIMDVecAVX512_u, MASK_TYPE> operator[] (MASK_TYPE & mask) {
+            return IntermediateMask<SIMDVecAVX512_u, MASK_TYPE>(mask, static_cast<SIMDVecAVX512_u &>(*this));
+        }
+
         // insert[] (scalar)
         inline SIMDVecAVX512_u & insert(uint32_t index, SCALAR_UINT_TYPE value) {
             mVec.insert(index, value);
@@ -815,6 +826,11 @@ namespace SIMD
             return extract(index);
         }
                 
+        // Override Mask Access operators
+        inline IntermediateMask<SIMDVecAVX512_u, SIMDMask8> operator[] (SIMDMask8 & mask) {
+            return IntermediateMask<SIMDVecAVX512_u, SIMDMask8>(mask, static_cast<SIMDVecAVX512_u &>(*this));
+        }
+
         // insert[] (scalar)
         inline SIMDVecAVX512_u & insert (uint32_t index, uint32_t value) {
             UME_PERFORMANCE_UNOPTIMAL_WARNING();
@@ -1194,7 +1210,8 @@ namespace SIMD
             
         typedef typename SIMDVecAVX512_i_traits<SCALAR_INT_TYPE, VEC_LEN>::SCALAR_UINT_TYPE SCALAR_UINT_TYPE;
         typedef typename SIMDVecAVX512_i_traits<SCALAR_INT_TYPE, VEC_LEN>::VEC_UINT         VEC_UINT;
-        
+        typedef typename SIMDVecAVX512_i_traits<SCALAR_INT_TYPE, VEC_LEN>::MASK_TYPE        MASK_TYPE;
+
         friend class SIMDVecScalarEmu_u<SCALAR_UINT_TYPE, VEC_LEN>;
     private:
         VEC_EMU_REG mVec;
@@ -1285,6 +1302,11 @@ namespace SIMD
             return mVec[index];
         }
                 
+        // Override Mask Access operators
+        inline IntermediateMask<SIMDVecAVX512_i, MASK_TYPE> operator[] (MASK_TYPE & mask) {
+            return IntermediateMask<SIMDVecAVX512_i, MASK_TYPE>(mask, static_cast<SIMDVecAVX512_i &>(*this));
+        }
+
         // insert[] (scalar)
         inline SIMDVecAVX512_i & insert(uint32_t index, SCALAR_INT_TYPE value) {
             mVec.insert(index, value);
@@ -1338,6 +1360,11 @@ namespace SIMD
         // Override Access operators
         inline SCALAR_INT_TYPE operator[] (uint32_t index) const {
             return mVec[index];
+        }
+
+        // Override Mask Access operators
+        inline IntermediateMask<SIMDVecAVX512_i, SIMDMask1> operator[] (SIMDMask1 & mask) {
+            return IntermediateMask<SIMDVecAVX512_i, SIMDMask1>(mask, static_cast<SIMDVecAVX512_i &>(*this));
         }
                 
         // insert[] (scalar)
@@ -1409,6 +1436,11 @@ namespace SIMD
             return extract(index);
         }
                 
+        // Override Mask Access operators
+        inline IntermediateMask<SIMDVecAVX512_i, SIMDMask8> operator[] (SIMDMask8 & mask) {
+            return IntermediateMask<SIMDVecAVX512_i, SIMDMask8>(mask, static_cast<SIMDVecAVX512_i &>(*this));
+        }
+
         // insert[] (scalar)
         inline SIMDVecAVX512_i & insert(uint32_t index, int32_t value) {
             UME_PERFORMANCE_UNOPTIMAL_WARNING()
@@ -1604,11 +1636,11 @@ namespace SIMD
     {
     public:
         typedef SIMDVecEmuRegister<SCALAR_FLOAT_TYPE, VEC_LEN>                         VEC_EMU_REG;
-        typedef typename SIMDVecAVX512_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::MASK_TYPE MASK_TYPE;
         
         typedef SIMDVecAVX512_f VEC_TYPE;
         typedef typename SIMDVecAVX512_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::VEC_UINT_TYPE    VEC_UINT_TYPE;
         typedef typename SIMDVecAVX512_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::VEC_INT_TYPE     VEC_INT_TYPE;
+        typedef typename SIMDVecAVX512_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::MASK_TYPE MASK_TYPE;
     private:
         VEC_EMU_REG mVec;
        
@@ -1709,6 +1741,11 @@ namespace SIMD
             return mVec[index];
         }
 
+        // Override Mask Access operators
+        inline IntermediateMask<SIMDVecAVX512_f, MASK_TYPE> operator[] (MASK_TYPE & mask) {
+            return IntermediateMask<SIMDVecAVX512_f, MASK_TYPE>(mask, static_cast<SIMDVecAVX512_f &>(*this));
+        }
+
         // insert[] (scalar)
         inline SIMDVecAVX512_f & insert(uint32_t index, SCALAR_FLOAT_TYPE value) {
             mVec.insert(index, value);
@@ -1766,6 +1803,11 @@ namespace SIMD
         // Override Access operators
         inline SCALAR_FLOAT_TYPE operator[] (uint32_t index) const {
             return mVec[index];
+        }
+
+        // Override Mask Access operators
+        inline IntermediateMask<SIMDVecAVX512_f, SIMDMask1> operator[] (SIMDMask1 & mask) {
+            return IntermediateMask<SIMDVecAVX512_f, SIMDMask1>(mask, static_cast<SIMDVecAVX512_f &>(*this));
         }
                 
         // insert[] (scalar)
@@ -1836,6 +1878,11 @@ namespace SIMD
         alignas(32) float raw[8];
         _mm256_store_ps(raw, mVec);
         return raw[index];
+        }
+
+        // Override Mask Access operators
+        inline IntermediateMask<SIMDVecAVX512_f, SIMDMask8> operator[] (SIMDMask8 & mask) {
+            return IntermediateMask<SIMDVecAVX512_f, SIMDMask8>(mask, static_cast<SIMDVecAVX512_f &>(*this));
         }
                 
         // insert[] (scalar)

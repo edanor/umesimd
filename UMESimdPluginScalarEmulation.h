@@ -547,9 +547,14 @@ namespace SIMD
             SCALAR_UINT_TYPE temp = mVec[index];
             return temp;
         }
+        
+        // Override Mask Access operators
+        inline IntermediateMask<SIMDVecScalarEmu_u, MASK_TYPE> operator[] (MASK_TYPE const & mask) {
+            return IntermediateMask<SIMDVecScalarEmu_u, MASK_TYPE>(mask, static_cast<SIMDVecScalarEmu_u &>(*this));
+        }
                 
         // insert[] (scalar)
-        inline SIMDVecScalarEmu_u & insert(uint32_t index, SCALAR_UINT_TYPE value) {
+       inline SIMDVecScalarEmu_u & insert(uint32_t index, SCALAR_UINT_TYPE value) {
             mVec.insert(index, value);
             return *this;
         }
@@ -608,6 +613,11 @@ namespace SIMD
             return temp;
         }
                 
+        // Override Mask Access operators
+        inline IntermediateMask<SIMDVecScalarEmu_u, MASK_TYPE> operator[] (MASK_TYPE const & mask) {
+            return IntermediateMask<SIMDVecScalarEmu_u, MASK_TYPE>(mask, static_cast<SIMDVecScalarEmu_u &>(*this));
+        }
+
         // insert[] (scalar)
         inline SIMDVecScalarEmu_u & insert(uint32_t index, SCALAR_UINT_TYPE value) {
             mVec.insert(index, value);
@@ -925,21 +935,17 @@ namespace SIMD
         inline SCALAR_INT_TYPE operator[] (uint32_t index) const {
             return mVec[index];
         }
-                
+          
+        // Override Mask Access operators
+        inline IntermediateMask<SIMDVecScalarEmu_i, MASK_TYPE> operator[] (MASK_TYPE const & mask) {
+            return IntermediateMask<SIMDVecScalarEmu_i, MASK_TYPE>(mask, static_cast<SIMDVecScalarEmu_i &>(*this));
+        }
+
         // insert[] (scalar)
         inline SIMDVecScalarEmu_i & insert(uint32_t index, SCALAR_INT_TYPE value) {
             mVec.insert(index, value);
             return *this;
         }
-
-        // Conversion to unsigned integer
-        /*operator VEC_UINT() const { 
-            VEC_UINT retvec;
-            for(uint32_t i = 0; i < VEC_LEN; i++) {
-                retvec.mVec.insert(i, (SCALAR_UINT_TYPE) mVec[i]);
-            }
-            return retvec;
-        }*/
 
         inline  operator SIMDVecScalarEmu_u<SCALAR_UINT_TYPE, VEC_LEN>() const {
             SIMDVecScalarEmu_u<SCALAR_UINT_TYPE, VEC_LEN> retval;
@@ -997,7 +1003,12 @@ namespace SIMD
         inline SCALAR_INT_TYPE operator[] (uint32_t index) const {
             return mVec[index];
         }
-                
+        
+        // Override Mask Access operators
+        inline IntermediateMask<SIMDVecScalarEmu_i, MASK_TYPE> operator[] (MASK_TYPE const & mask) {
+            return IntermediateMask<SIMDVecScalarEmu_i, MASK_TYPE>(mask, static_cast<SIMDVecScalarEmu_i &>(*this));
+        }
+
         // insert[] (scalar)
         inline SIMDVecScalarEmu_i & insert(uint32_t index, SCALAR_INT_TYPE value) {
             mVec.insert(index, value);
@@ -1160,6 +1171,7 @@ namespace SIMD
 
         typedef typename SIMDVecScalarEmu_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::VEC_UINT_TYPE VEC_UINT_TYPE;
         typedef typename SIMDVecScalarEmu_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::VEC_INT_TYPE  VEC_INT_TYPE;
+        typedef typename SIMDVecScalarEmu_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::MASK_TYPE     MASK_TYPE;
     public:
         inline SIMDVecScalarEmu_f() : mVec() {}
 
@@ -1220,7 +1232,12 @@ namespace SIMD
         inline SCALAR_FLOAT_TYPE operator[] (uint32_t index) const {
             return mVec[index];
         }
-                
+           
+        // Override Mask Access operators
+        inline IntermediateMask<SIMDVecScalarEmu_f, MASK_TYPE> operator[] (MASK_TYPE const & mask) {
+            return IntermediateMask<SIMDVecScalarEmu_f, MASK_TYPE>(mask, static_cast<SIMDVecScalarEmu_f &>(*this));
+        }
+
         // insert[] (scalar)
         inline SIMDVecScalarEmu_f & insert(uint32_t index, SCALAR_FLOAT_TYPE value) {
             mVec.insert(index, value);
@@ -1253,6 +1270,7 @@ namespace SIMD
         
         typedef typename SIMDVecScalarEmu_f_traits<SCALAR_FLOAT_TYPE, 1>::VEC_UINT_TYPE VEC_UINT_TYPE;
         typedef typename SIMDVecScalarEmu_f_traits<SCALAR_FLOAT_TYPE, 1>::VEC_INT_TYPE  VEC_INT_TYPE;
+        typedef typename SIMDVecScalarEmu_f_traits<SCALAR_FLOAT_TYPE, 1>::MASK_TYPE     MASK_TYPE;
     public:
         inline SIMDVecScalarEmu_f() : mVec() {};
 
@@ -1274,6 +1292,11 @@ namespace SIMD
         // Override Access operators
         inline SCALAR_FLOAT_TYPE operator[] (uint32_t index) const {
             return mVec[index];
+        }
+
+        // Override Mask Access operators
+        inline IntermediateMask<SIMDVecScalarEmu_f, MASK_TYPE> operator[] (MASK_TYPE const & mask) {
+            return IntermediateMask<SIMDVecScalarEmu_f, MASK_TYPE>(mask, static_cast<SIMDVecScalarEmu_f &>(*this));
         }
 
         // insert[] (scalar)

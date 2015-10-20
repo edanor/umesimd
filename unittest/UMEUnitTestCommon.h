@@ -507,14 +507,16 @@ void genericADDVTest()
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMADDVTest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    VEC_TYPE vec1(DATA_SET::inputs::inputB);
-    MASK_TYPE mask(DATA_SET::inputs::maskA);
-    VEC_TYPE vec2 = vec0.add(mask, vec1);
-    vec2.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MADDV, VEC_LEN, 0.01f);
-    CHECK_CONDITION(inRange, "MADDV");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        VEC_TYPE vec2 = vec0.add(mask, vec1);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MADDV, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "MADDV");
+    }
 }
     
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
@@ -565,15 +567,27 @@ void genericADDVATest()
     
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMADDVATest()
-{
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    VEC_TYPE vec1(DATA_SET::inputs::inputB);
-    MASK_TYPE mask(DATA_SET::inputs::maskA);
-    vec0.adda(mask, vec1);
-    vec0.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MADDV, VEC_LEN, 0.01f);
-    CHECK_CONDITION(inRange, "MADDVA");
+    {
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        vec0.adda(mask, vec1);
+        vec0.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MADDV, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "MADDVA");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        vec0[mask] += vec1;
+        vec0.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MADDV, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "MADDVA(vec[mask] +=)");
+    }
 }
     
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
@@ -771,16 +785,27 @@ void genericSUBVATest()
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMSUBVATest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    VEC_TYPE vec1(DATA_SET::inputs::inputB);
-    MASK_TYPE mask(DATA_SET::inputs::maskA);
-    vec0.suba(mask, vec1);
-    vec0.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MSUBV, VEC_LEN, 0.01f);
-    CHECK_CONDITION(inRange, "MSUBVA");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        vec0.suba(mask, vec1);
+        vec0.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MSUBV, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "MSUBVA");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        vec0[mask] -= vec1;
+        vec0.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MSUBV, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "MSUBVA(vec[mask] -=)");
+    }
 }
-
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericSUBSATest()
 {
@@ -1070,14 +1095,26 @@ void genericMULVATest()
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMMULVATest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    VEC_TYPE vec1(DATA_SET::inputs::inputB);
-    MASK_TYPE mask(DATA_SET::inputs::maskA);
-    vec0.mula(mask, vec1);
-    vec0.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MMULV, VEC_LEN, 0.01f);
-    CHECK_CONDITION(inRange, "MMULVA");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        vec0.mula(mask, vec1);
+        vec0.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MMULV, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "MMULVA");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        vec0[mask] *=  vec1;
+        vec0.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MMULV, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "MMULVA(vec[mask] /=)");
+    }
 }
     
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
@@ -1189,16 +1226,28 @@ void genericDIVVATest()
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMDIVVATest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    VEC_TYPE vec1(DATA_SET::inputs::inputB);
-    MASK_TYPE mask(DATA_SET::inputs::maskA);
-    vec0.diva(mask, vec1);
-    vec0.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MDIVV, VEC_LEN, 0.01f);
-    CHECK_CONDITION(inRange, "MDIVVA");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        vec0.diva(mask, vec1);
+        vec0.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MDIVV, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "MDIVVA");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        vec0[mask] /= vec1;
+        vec0.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MDIVV, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "MDIVVA(vec[mask] /=)");
+    }
 }
-    
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericDIVSATest()
 {
@@ -1544,14 +1593,26 @@ void genericBANDVATest()
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMBANDVATest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    VEC_TYPE vec1(DATA_SET::inputs::inputB);
-    MASK_TYPE mask(DATA_SET::inputs::maskA);
-    vec0.banda(mask, vec1);
-    vec0.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MBANDV, VEC_LEN, 0.01f);
-    CHECK_CONDITION(inRange, "MBANDVA");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        vec0.banda(mask, vec1);
+        vec0.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MBANDV, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "MBANDVA");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        vec0[mask] &= vec1;
+        vec0.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MBANDV, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "MBANDVA(vec[mask] &=)");
+    }
 }
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
@@ -1640,14 +1701,26 @@ void genericBORVATest()
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMBORVATest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    VEC_TYPE vec1(DATA_SET::inputs::inputB);
-    MASK_TYPE mask(DATA_SET::inputs::maskA);
-    vec0.bora(mask, vec1);
-    vec0.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MBORV, VEC_LEN, 0.01f);
-    CHECK_CONDITION(inRange, "MBORVA");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        vec0.bora(mask, vec1);
+        vec0.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MBORV, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "MBORVA");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        vec0[mask] |= vec1;
+        vec0.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MBORV, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "MBORVA(vec[mask] |=)");
+    }
 }
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
@@ -1736,14 +1809,26 @@ void genericBXORVATest()
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMBXORVATest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    VEC_TYPE vec1(DATA_SET::inputs::inputB);
-    MASK_TYPE mask(DATA_SET::inputs::maskA);
-    vec0.bxora(mask, vec1);
-    vec0.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MBXORV, VEC_LEN, 0.01f);
-    CHECK_CONDITION(inRange, "MBXORVA");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        vec0.bxora(mask, vec1);
+        vec0.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MBXORV, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "MBXORVA");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        vec0[mask] ^= vec1;
+        vec0.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MBXORV, VEC_LEN, 0.01f);
+        CHECK_CONDITION(inRange, "MBXORVA(vec[mask] ^=)");
+    }
 }
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
@@ -1826,8 +1911,6 @@ void genericMBNOTATest()
         //(Blend/Swizzle operations)
         // BLENDV   - Blend (mix) two vectors
         // BLENDS   - Blend (mix) vector with scalar (promoted to vector)
-        // BLENDVA  - Blend (mix) two vectors and assign
-        // BLENDSA  - Blend (mix) vector with scalar (promoted to vector) and
         // assign
         // SWIZZLE  - Swizzle (reorder/permute) vector elements
         // SWIZZLEA - Swizzle (reorder/permute) vector elements and assign
@@ -3273,9 +3356,6 @@ void genericBaseInterfaceTest()
 
     // BLENDV
     // BLENDS
-    // BLENDVA
-    // BLENDSA
-
     
     genericHADDTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
     // MHADD
@@ -3324,7 +3404,6 @@ void genericBaseInterfaceTest()
     // MPOWV
     // POWS
     // MPOWS
-
 }
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
@@ -3371,13 +3450,11 @@ void genericBitwiseInterfaceTest()
     genericMHBXORTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
     genericHBXORSTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
     genericMHBXORSTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
-
 }
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericGatherScatterInterfaceTest()
 {
-    
     // GATHER
     // MGATHER
     // MGATHERV
@@ -3494,9 +3571,9 @@ void genericMaskTest() {
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericUintTest() {
     genericBaseInterfaceTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET> ();
-    genericBitwiseInterfaceTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET> ();
-    genericGatherScatterInterfaceTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET> ();
-    genericShiftRotateInterfaceTest<VEC_TYPE, VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>(); 
+    //genericBitwiseInterfaceTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET> ();
+    //genericGatherScatterInterfaceTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET> ();
+    //genericShiftRotateInterfaceTest<VEC_TYPE, VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>(); 
 }
 
 template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>

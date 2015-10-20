@@ -38,6 +38,7 @@
 #include "UMESimdPluginScalarEmulation.h"
 
 #include <immintrin.h>
+
 namespace UME
 {
 namespace SIMD
@@ -1012,11 +1013,12 @@ namespace SIMD
     {
     public:
         typedef SIMDVecEmuRegister<SCALAR_UINT_TYPE, VEC_LEN> VEC_EMU_REG;
+
         typedef typename SIMDVecKNC_u_traits<SCALAR_UINT_TYPE, VEC_LEN>::SCALAR_INT_TYPE  SCALAR_INT_TYPE;
-        
+        typedef typename SIMDVecKNC_u_traits<SCALAR_UINT_TYPE, VEC_LEN>::MASK_TYPE        MASK_TYPE;
+
         // Conversion operators require access to private members.
         friend class SIMDVecKNC_i<SCALAR_INT_TYPE, VEC_LEN>;
-
     private:
         // This is the only data member and it is a low level representation of vector register.
         VEC_EMU_REG mVec; 
@@ -1072,6 +1074,11 @@ namespace SIMD
             return mVec[index];
         }
                 
+        // Override Mask Access operators
+        inline IntermediateMask<SIMDVecKNC_u, MASK_TYPE> operator[] (MASK_TYPE & mask) {
+            return IntermediateMask<SIMDVecKNC_u, MASK_TYPE>(mask, static_cast<SIMDVecKNC_u &>(*this));
+        }
+
         // insert[] (scalar)
         inline SIMDVecKNC_u & insert(uint32_t index, SCALAR_UINT_TYPE value) {
             mVec.insert(index, value);
@@ -1126,6 +1133,11 @@ namespace SIMD
         // Override Access operators
         inline SCALAR_UINT_TYPE operator[] (uint32_t index) const {
             return mVec[index];
+        }
+
+        // Override Mask Access operators
+        inline IntermediateMask<SIMDVecKNC_u, SIMDMask1> operator[] (SIMDMask1 & mask) {
+            return IntermediateMask<SIMDVecKNC_u, SIMDMask1>(mask, static_cast<SIMDVecKNC_u &>(*this));
         }
                 
         // insert[] (scalar)
@@ -1201,6 +1213,11 @@ namespace SIMD
             return extract(index);
         }
                 
+        // Override Mask Access operators
+        inline IntermediateMask<SIMDVecKNC_u, SIMDMask16> operator[] (SIMDMask16 & mask) {
+            return IntermediateMask<SIMDVecKNC_u, SIMDMask16>(mask, static_cast<SIMDVecKNC_u &>(*this));
+        }
+
         // insert[] (scalar)
         inline SIMDVecKNC_u & insert(uint32_t index, uint32_t value) {
             UME_PERFORMANCE_UNOPTIMAL_WARNING();
@@ -1487,9 +1504,10 @@ namespace SIMD
     public:
         typedef SIMDVecEmuRegister<SCALAR_INT_TYPE, VEC_LEN>                            VEC_EMU_REG;
             
-        typedef typename SIMDVecKNC_i_traits<SCALAR_INT_TYPE, VEC_LEN>::SCALAR_UINT_TYPE     SCALAR_UINT_TYPE;
-        typedef typename SIMDVecKNC_i_traits<SCALAR_INT_TYPE, VEC_LEN>::VEC_UINT             VEC_UINT;
-        
+        typedef typename SIMDVecKNC_i_traits<SCALAR_INT_TYPE, VEC_LEN>::SCALAR_UINT_TYPE    SCALAR_UINT_TYPE;
+        typedef typename SIMDVecKNC_i_traits<SCALAR_INT_TYPE, VEC_LEN>::VEC_UINT            VEC_UINT;
+        typedef typename SIMDVecKNC_i_traits<SCALAR_INT_TYPE, VEC_LEN>::MASK_TYPE           MASK_TYPE;
+
         friend class SIMDVecScalarEmu_u<SCALAR_UINT_TYPE, VEC_LEN>;
     private:
         VEC_EMU_REG mVec;
@@ -1545,6 +1563,11 @@ namespace SIMD
             return mVec[index];
         }
                 
+        // Override Mask Access operators
+        inline IntermediateMask<SIMDVecKNC_i, MASK_TYPE> operator[] (MASK_TYPE & mask) {
+            return IntermediateMask<SIMDVecKNC_i, MASK_TYPE>(mask, static_cast<SIMDVecKNC_i &>(*this));
+        }
+
         // insert[] (scalar)
         inline SIMDVecKNC_i & insert(uint32_t index, SCALAR_INT_TYPE value) {
             mVec.insert(index, value);
@@ -1601,6 +1624,11 @@ namespace SIMD
             return mVec[index];
         }
                 
+        // Override Mask Access operators
+        inline IntermediateMask<SIMDVecKNC_i, SIMDMask1> operator[] (SIMDMask1 & mask) {
+            return IntermediateMask<SIMDVecKNC_i, SIMDMask1>(mask, static_cast<SIMDVecKNC_i &>(*this));
+        }
+
         // insert[] (scalar)
         inline SIMDVecKNC_i & insert(uint32_t index, SCALAR_INT_TYPE value) {
             mVec.insert(index, value);
@@ -1671,6 +1699,11 @@ namespace SIMD
         // Override Access operators
         inline int32_t operator[] (uint32_t index) const {
             return extract(index);
+        }
+
+        // Override Mask Access operators
+        inline IntermediateMask<SIMDVecKNC_i, SIMDMask16> operator[] (SIMDMask16 & mask) {
+            return IntermediateMask<SIMDVecKNC_i, SIMDMask16>(mask, static_cast<SIMDVecKNC_i &>(*this));
         }
                 
         // insert[] (scalar)
@@ -2192,8 +2225,6 @@ namespace SIMD
         }
         // BLENDV
         // BLENDS
-        // BLENDVA
-        // BLENDSA
         // HADD
         inline int32_t hadd () const {
             return _mm512_reduce_add_epi32(mVec);
@@ -2860,11 +2891,11 @@ namespace SIMD
     {
     public:
         typedef SIMDVecEmuRegister<SCALAR_FLOAT_TYPE, VEC_LEN>                            VEC_EMU_REG;
-        typedef typename SIMDVecKNC_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::MASK_TYPE       MASK_TYPE;
-        
+
         typedef SIMDVecKNC_f VEC_TYPE;
         typedef typename SIMDVecKNC_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::VEC_UINT_TYPE    VEC_UINT_TYPE;
         typedef typename SIMDVecKNC_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::VEC_INT_TYPE     VEC_INT_TYPE;
+        typedef typename SIMDVecKNC_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::MASK_TYPE       MASK_TYPE;        
     private:
         VEC_EMU_REG mVec;
 
@@ -2969,6 +3000,11 @@ namespace SIMD
             return mVec[index];
         }
                 
+        // Override Mask Access operators
+        inline IntermediateMask<SIMDVecKNC_f, MASK_TYPE> operator[] (MASK_TYPE & mask) {
+            return IntermediateMask<SIMDVecKNC_f, MASK_TYPE>(mask, static_cast<SIMDVecKNC_f &>(*this));
+        }
+
         // insert[] (scalar)
         inline SIMDVecKNC_f & insert(uint32_t index, SCALAR_FLOAT_TYPE value) {
             mVec.insert(index, value);
@@ -2997,11 +3033,12 @@ template<typename SCALAR_FLOAT_TYPE>
     {
     public:
         typedef SIMDVecEmuRegister<SCALAR_FLOAT_TYPE, 1>                            VEC_EMU_REG;
-        typedef typename SIMDVecKNC_f_traits<SCALAR_FLOAT_TYPE, 1>::MASK_TYPE       MASK_TYPE;
         
         typedef SIMDVecKNC_f VEC_TYPE;
         typedef typename SIMDVecKNC_f_traits<SCALAR_FLOAT_TYPE, 1>::VEC_UINT_TYPE    VEC_UINT_TYPE;
         typedef typename SIMDVecKNC_f_traits<SCALAR_FLOAT_TYPE, 1>::VEC_INT_TYPE     VEC_INT_TYPE;
+        typedef typename SIMDVecKNC_f_traits<SCALAR_FLOAT_TYPE, 1>::MASK_TYPE       MASK_TYPE;
+
     private:
         VEC_EMU_REG mVec;
 
@@ -3026,6 +3063,11 @@ template<typename SCALAR_FLOAT_TYPE>
         // Override Access operators
         inline SCALAR_FLOAT_TYPE operator[] (uint32_t index) const {
             return mVec[index];
+        }
+                
+        // Override Mask Access operators
+        inline IntermediateMask<SIMDVecKNC_f, MASK_TYPE> operator[] (MASK_TYPE & mask) {
+            return IntermediateMask<SIMDVecKNC_f, MASK_TYPE>(mask, static_cast<SIMDVecKNC_f &>(*this));
         }
                 
         // insert[] (scalar)
@@ -3057,6 +3099,8 @@ template<typename SCALAR_FLOAT_TYPE>
     public:
         typedef typename SIMDVecKNC_f_traits<float, 8>::VEC_UINT_TYPE    VEC_UINT_TYPE;
         typedef typename SIMDVecKNC_f_traits<float, 8>::VEC_INT_TYPE     VEC_INT_TYPE;
+        typedef typename SIMDVecKNC_f_traits<float, 8>::MASK_TYPE        MASK_TYPE;
+
     private:
         __m512 mVec;
 
@@ -3107,6 +3151,11 @@ template<typename SCALAR_FLOAT_TYPE>
         inline float operator[] (uint32_t index) const {
             UME_PERFORMANCE_UNOPTIMAL_WARNING();
             return extract(index);
+        }
+
+        // Override Mask Access operators
+        inline IntermediateMask<SIMDVecKNC_f, MASK_TYPE> operator[] (MASK_TYPE & mask) {
+            return IntermediateMask<SIMDVecKNC_f, MASK_TYPE>(mask, static_cast<SIMDVecKNC_f &>(*this));
         }
                 
         // INSERT  - Insert single element into a vector
@@ -3455,8 +3504,6 @@ template<typename SCALAR_FLOAT_TYPE>
         //(Blend/Swizzle operations)
         // BLENDV   - Blend (mix) two vectors
         // BLENDS   - Blend (mix) vector with scalar (promoted to vector)
-        // BLENDVA  - Blend (mix) two vectors and assign
-        // BLENDSA  - Blend (mix) vector with scalar (promoted to vector) and
         // assign
         // SWIZZLE  - Swizzle (reorder/permute) vector elements
         // SWIZZLEA - Swizzle (reorder/permute) vector elements and assign
@@ -3601,8 +3648,10 @@ template<typename SCALAR_FLOAT_TYPE>
             SIMDVecKNC_f<float, 8>>
     {
     public:
-        typedef typename SIMDVecKNC_f_traits<float, 16>::VEC_UINT_TYPE    VEC_UINT_TYPE;
-        typedef typename SIMDVecKNC_f_traits<float, 16>::VEC_INT_TYPE     VEC_INT_TYPE;
+        typedef typename SIMDVecKNC_f_traits<float, 16>::VEC_UINT_TYPE  VEC_UINT_TYPE;
+        typedef typename SIMDVecKNC_f_traits<float, 16>::VEC_INT_TYPE   VEC_INT_TYPE;
+        typedef typename SIMDVecKNC_f_traits<float, 16>::MASK_TYPE      MASK_TYPE;
+   
     private:
         __m512 mVec;
 
@@ -3650,6 +3699,11 @@ template<typename SCALAR_FLOAT_TYPE>
         inline float operator[] (uint32_t index) const {
             UME_PERFORMANCE_UNOPTIMAL_WARNING();
             return extract(index);
+        }
+                
+        // Override Mask Access operators
+        inline IntermediateMask<SIMDVecKNC_f, MASK_TYPE> operator[] (MASK_TYPE & mask) {
+            return IntermediateMask<SIMDVecKNC_f, MASK_TYPE>(mask, static_cast<SIMDVecKNC_f &>(*this));
         }
                 
         // INSERT  - Insert single element into a vector
@@ -4238,8 +4292,6 @@ template<typename SCALAR_FLOAT_TYPE>
         //(Blend/Swizzle operations)
         // BLENDV   - Blend (mix) two vectors
         // BLENDS   - Blend (mix) vector with scalar (promoted to vector)
-        // BLENDVA  - Blend (mix) two vectors and assign
-        // BLENDSA  - Blend (mix) vector with scalar (promoted to vector) and
         // assign
         // SWIZZLE  - Swizzle (reorder/permute) vector elements
         // SWIZZLEA - Swizzle (reorder/permute) vector elements and assign
@@ -4649,9 +4701,10 @@ template<typename SCALAR_FLOAT_TYPE>
             SIMDVecKNC_f<float, 16>>
     {
     public:
-        
-        typedef typename SIMDVecKNC_f_traits<float, 32>::VEC_UINT_TYPE    VEC_UINT_TYPE;
-        typedef typename SIMDVecKNC_f_traits<float, 32>::VEC_INT_TYPE     VEC_INT_TYPE;
+        typedef typename SIMDVecKNC_f_traits<float, 32>::VEC_UINT_TYPE  VEC_UINT_TYPE;
+        typedef typename SIMDVecKNC_f_traits<float, 32>::VEC_INT_TYPE   VEC_INT_TYPE;
+        typedef typename SIMDVecKNC_f_traits<float, 32>::MASK_TYPE      MASK_TYPE;
+
     private:
         __m512 mVecLo;
         __m512 mVecHi;
@@ -4723,6 +4776,11 @@ template<typename SCALAR_FLOAT_TYPE>
         inline float operator[] (uint32_t index) const {
             UME_PERFORMANCE_UNOPTIMAL_WARNING();
             return extract(index);
+        }
+        
+        // Override Mask Access operators
+        inline IntermediateMask<SIMDVecKNC_f, MASK_TYPE> operator[] (MASK_TYPE & mask) {
+            return IntermediateMask<SIMDVecKNC_f, MASK_TYPE>(mask, static_cast<SIMDVecKNC_f &>(*this));
         }
                 
         // INSERT  - Insert single element into a vector
@@ -4971,8 +5029,6 @@ template<typename SCALAR_FLOAT_TYPE>
         //(Blend/Swizzle operations)
         // BLENDV   - Blend (mix) two vectors
         // BLENDS   - Blend (mix) vector with scalar (promoted to vector)
-        // BLENDVA  - Blend (mix) two vectors and assign
-        // BLENDSA  - Blend (mix) vector with scalar (promoted to vector) and
         // assign
         // SWIZZLE  - Swizzle (reorder/permute) vector elements
         // SWIZZLEA - Swizzle (reorder/permute) vector elements and assign

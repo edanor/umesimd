@@ -340,14 +340,14 @@ int test_UME_SIMD8_16u(bool supressMessages)
         SIMD8_16u vec1(0x2314);
         vec0 = vec1.bnot();
         CHECK_CONDITION(vec0[0] == 0xDCEB, "BNOT");
-    }
+    }/*
     {
         SIMD8_16u vec0(7);
         SIMD8_16u vec1(24);
         SIMDMask8 mask2(false, false, false, false, true, true, true, true);
         SIMD8_16u vec3 = vec0.blend(mask2, vec1);
         CHECK_CONDITION(vec3[0] == 24 && vec3[4] == 7, "MBLENDV");
-    }
+    }*/
     {
         SIMD8_16u vec0(10, 20, 30, 40, 50, 60, 70, 80);
         uint32_t swizzleMask[8] = {1, 6, 7, 4, 7, 6, 7, 0};
@@ -1307,7 +1307,7 @@ int test_UME_SIMD4_32u(bool supressMessages)
         CHECK_CONDITION(
             vec0[0] == 0x0CCCCCCB && vec0[1] == 0xF00F0F10 && vec0[2] == 0xF00F0F0F && vec0[3] == 0x000F423F, 
             "MBNOTA");
-    }
+    }/*
     {
         SIMD4_32u vec0(3), vec1(5);
         SIMD4_32u vec2(2);
@@ -1322,7 +1322,7 @@ int test_UME_SIMD4_32u(bool supressMessages)
         SIMDMask4 mask(true, false, false, true);
         vec2 = vec0.blend(mask, val1);
         CHECK_CONDITION(vec2[0] == 3 && vec2[1] == 5 && vec2[2] == 5 && vec2[3] == 3, "MBLENDS");
-    }
+    }*/
     {
         SIMD4_32u vec0(0xF3333304, 0xFF0F3F00, 0x0FF0F000, 0x0F0F720F);
         uint32_t val1;
@@ -2272,7 +2272,7 @@ int test_UME_SIMD4_32i(bool supressMessages)
         CHECK_CONDITION(
             vec0[0] == 0x0CCCCCCB && vec0[1] == 0xF00F0F10 && vec0[2] == 0xF00F0F0F && vec0[3] == 0x000F423F, 
             "MBNOTA");
-    }
+    }/*
     {
         SIMD4_32i vec0(3), vec1(-5);
         SIMD4_32i vec2(-2);
@@ -2287,7 +2287,7 @@ int test_UME_SIMD4_32i(bool supressMessages)
         SIMDMask4       mask(true, false, false, true);
         vec2 = vec0.blend(mask, val1);
         CHECK_CONDITION(vec2[0] == 3 && vec2[1] == -5 && vec2[2] == -5 && vec2[3] == 3, "MBLENDS");
-    }
+    }*/
     {
         SIMD4_32i vec0(1, -2, 3, 4);
         int32_t val1 = 0;
