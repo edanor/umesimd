@@ -226,8 +226,6 @@ namespace SIMD
     // ********************************************************************************************
     // MASK VECTOR SPECIALIZATION
     // ********************************************************************************************
-
-    
     template<>
     class SIMDVecAVX2Mask<uint32_t, 4> : 
         public SIMDMaskBaseInterface< 
@@ -295,7 +293,7 @@ namespace SIMD
             raw[index] = toMaskBool(x);
             mMask = _mm_load_si128((__m128i*)raw);
         }
-
+        
         inline SIMDVecAVX2Mask<uint32_t, 4> & operator= (SIMDVecAVX2Mask<uint32_t, 4> const & x) {
             //mMask = x.mMask;
             mMask = _mm_load_si128(&x.mMask);
@@ -1011,6 +1009,7 @@ namespace SIMD
             return *this;
         }
 
+        // UTOI
         inline  operator SIMDVecAVX2_i<SCALAR_INT_TYPE, VEC_LEN>() const {
             SIMDVecAVX2_i<SCALAR_INT_TYPE, VEC_LEN> retval;
             for(uint32_t i = 0; i < VEC_LEN; i++) {
@@ -1076,11 +1075,195 @@ namespace SIMD
             SIMDVecAVX2_i<SCALAR_INT_TYPE, 1> retval(mVec[0]);
             return retval;
         }
+
+        // UNIQUE
+        bool unique() const {
+            return true;
+        }
     };                 
 
     // ********************************************************************************************
     // UNSIGNED INTEGER VECTORS specialization
     // ********************************************************************************************
+    template<>
+    class SIMDVecAVX2_u<uint32_t, 4> :
+        public SIMDVecUnsignedInterface<
+        SIMDVecAVX2_u<uint32_t, 4>,
+        uint32_t,
+        4,
+        SIMDMask4,
+        SIMDSwizzle4>,
+        public SIMDVecPackableInterface<
+        SIMDVecAVX2_u<uint32_t, 4>,
+        SIMDVecAVX2_u<uint32_t, 2 >>
+    {
+    public:
+        // Conversion operators require access to private members.
+        friend class SIMDVecAVX2_i<int32_t, 4>;
+
+    private:
+        __m128i mVec;
+
+        inline SIMDVecAVX2_u(__m128i & x) { this->mVec = x; }
+    public:
+        inline SIMDVecAVX2_u() {}
+
+        inline explicit SIMDVecAVX2_u(uint32_t i) {
+            mVec = _mm_set1_epi32(i);
+        }
+
+        // LOAD-CONSTR - Construct by loading from memory
+        inline explicit SIMDVecAVX2_u(uint32_t const *p) { this->load(p); };
+
+        inline SIMDVecAVX2_u(uint32_t i0, uint32_t i1, uint32_t i2, uint32_t i3)
+        {
+            mVec = _mm_set_epi32(i3, i2, i1, i0);
+        }
+
+        inline uint32_t extract(uint32_t index) const {
+            alignas(16) uint32_t raw[4];
+            _mm_store_si128((__m128i*) raw, mVec);
+            return raw[index];
+        }
+
+        // Override Access operators
+        inline uint32_t operator[] (uint32_t index) const {
+            return extract(index);
+        }
+
+        // Override Mask Access operators
+        inline IntermediateMask<SIMDVecAVX2_u, SIMDMask4> operator[] (SIMDMask4 const & mask) {
+            return IntermediateMask<SIMDVecAVX2_u, SIMDMask4>(mask, static_cast<SIMDVecAVX2_u &>(*this));
+        }
+
+        // insert[] (scalar)
+        inline SIMDVecAVX2_u & insert(uint32_t index, uint32_t value) {
+            alignas(16) uint32_t raw[4];
+            _mm_store_si128((__m128i*)raw, mVec);
+            raw[index] = value;
+            mVec = _mm_load_si128((__m128i*)raw);
+            return *this;
+        }
+
+        // PREFINC
+        inline SIMDVecAVX2_u & prefinc() {
+            __m128i t0 = _mm_set1_epi32(1);
+            mVec = _mm_add_epi32(mVec, t0);
+            return *this;
+        }
+
+        // MPREFINC
+        inline SIMDVecAVX2_u & prefinc(SIMDMask4 const & mask) {
+            __m128i t0 = _mm_set1_epi32(1);
+            __m128i t1 = _mm_add_epi32(mVec, t0);
+            mVec = _mm_blendv_epi8(mVec, t1, mask.mMask);
+            return *this;
+        }
+        
+        // UNIQUE
+        inline bool unique() const {
+            alignas(16) uint32_t raw[4];
+            _mm_store_si128((__m128i*)raw, mVec);
+            for (unsigned int i = 0; i < 3; i++) {
+                for (unsigned int j = i + 1; j < 4; j++) {
+                    if (raw[i] == raw[j]) return false;
+                }
+            }
+            return true;
+        }
+
+        // GATHERS
+        SIMDVecAVX2_u & gather(uint32_t* baseAddr, uint64_t* indices) {
+            alignas(16) uint32_t raw[4] = { baseAddr[indices[0]], baseAddr[indices[1]], baseAddr[indices[2]], baseAddr[indices[3]]};
+            mVec = _mm_load_si128((__m128i*)raw);
+            return *this;
+        }
+        // MGATHERS
+        SIMDVecAVX2_u & gather(SIMDMask4 const & mask, uint32_t* baseAddr, uint64_t* indices) {
+            alignas(16) uint32_t raw[4] = { baseAddr[indices[0]], baseAddr[indices[1]], baseAddr[indices[2]], baseAddr[indices[3]]};
+            __m128i t0 = _mm_load_si128((__m128i*)raw);
+            mVec = _mm_blendv_epi8(mVec, t0, mask.mMask);
+            return *this;
+        }
+        // GATHERV
+        SIMDVecAVX2_u & gather(uint32_t* baseAddr, SIMDVecAVX2_u const & indices) {
+            alignas(16) uint32_t rawInd[4];
+            alignas(16) uint32_t raw[4];
+
+            _mm_store_si128((__m128i*) rawInd, indices.mVec);
+            for (int i = 0; i < 4; i++) { raw[i] = baseAddr[rawInd[i]]; }
+            mVec = _mm_load_si128((__m128i*)raw);
+            return *this;
+        }
+        // MGATHERV
+        SIMDVecAVX2_u & gather(SIMDMask4 const & mask, uint32_t* baseAddr, SIMDVecAVX2_u const & indices) {
+            alignas(16) uint32_t rawInd[4];
+            alignas(16) uint32_t raw[4];
+            
+            _mm_store_si128((__m128i*) rawInd, indices.mVec);
+            for (int i = 0; i < 4; i++) { raw[i] = baseAddr[rawInd[i]]; }
+            __m128i t0 = _mm_load_si128((__m128i*)&raw[0]);
+            mVec = _mm_blendv_epi8(mVec, t0, mask.mMask);
+            return *this;
+        }
+        // SCATTERS
+        uint32_t* scatter(uint32_t* baseAddr, uint64_t* indices) {
+            alignas(16) uint32_t raw[4];
+            _mm_store_si128((__m128i*) raw, mVec);
+            for (int i = 0; i < 4; i++) { baseAddr[indices[i]] = raw[i]; };
+            return baseAddr;
+        }
+        // MSCATTERS
+        uint32_t* scatter(SIMDMask4 const & mask, uint32_t* baseAddr, uint64_t* indices) {
+            alignas(16) uint32_t raw[4];
+            alignas(16) uint32_t rawMask[4];
+            _mm_store_si128((__m128i*) raw, mVec);
+            _mm_store_si128((__m128i*) rawMask, mask.mMask);
+            for (int i = 0; i < 4; i++) { if (rawMask[i] == SIMDMask4::TRUE()) baseAddr[indices[i]] = raw[i]; };
+            return baseAddr;
+        }
+        // SCATTERV
+        uint32_t* scatter(uint32_t* baseAddr, SIMDVecAVX2_u const & indices) {
+            alignas(16) uint32_t raw[4];
+            alignas(16) uint32_t rawIndices[4];
+            _mm_store_si128((__m128i*) raw, mVec);
+            _mm_store_si128((__m128i*) rawIndices, indices.mVec);
+            for (int i = 0; i < 4; i++) { baseAddr[rawIndices[i]] = raw[i]; };
+            return baseAddr;
+        }
+        // MSCATTERV
+        uint32_t* scatter(SIMDMask4 const & mask, uint32_t* baseAddr, SIMDVecAVX2_u const & indices) {
+            alignas(16) uint32_t raw[4];
+            alignas(16) uint32_t rawIndices[4];
+            alignas(16) uint32_t rawMask[4];
+            _mm_store_si128((__m128i*) raw, mVec);
+            _mm_store_si128((__m128i*) rawIndices, indices.mVec);
+            _mm_store_si128((__m128i*) rawMask, mask.mMask);
+            for (int i = 0; i < 4; i++) {
+                if (rawMask[i] == SIMDMask4::TRUE())
+                    baseAddr[rawIndices[i]] = raw[i];
+            };
+            return baseAddr;
+        }
+
+        // PACK
+        // PACKLO
+        // PACKHI
+        // UNPACK
+        void unpack(SIMDVecAVX2_u<uint32_t, 2> & a, SIMDVecAVX2_u<uint32_t, 2> & b) const {
+            UME_PERFORMANCE_UNOPTIMAL_WARNING(); // This routine can be optimized
+            alignas(16) uint32_t raw[4];
+            _mm_store_si128((__m128i *)raw, mVec);
+            a.loada(raw);
+            b.loada(raw + 2);
+        }
+        // UNPACKLO
+        // UNPACKHI
+
+        // UTOI
+        inline  operator SIMDVecAVX2_i<int32_t, 4> const ();
+    };
+
     template<>
     class SIMDVecAVX2_u<uint32_t, 8> : 
         public SIMDVecUnsignedInterface< 
@@ -1120,7 +1303,6 @@ namespace SIMD
         }
 
         inline uint32_t extract (uint32_t index) const {
-            UME_PERFORMANCE_UNOPTIMAL_WARNING(); // This routine can be optimized
             alignas(32) uint32_t raw[8];
             _mm256_store_si256 ((__m256i*)raw, mVec);
             return raw[index];
@@ -1145,6 +1327,32 @@ namespace SIMD
             mVec = _mm256_load_si256((__m256i*)raw);
             return *this;
         }
+
+        // ASSIGNV
+        inline SIMDVecAVX2_u & assign(SIMDVecAVX2_u const & b) {
+            mVec = b.mVec;
+            return *this;
+        }
+        // MASSIGNV
+        inline SIMDVecAVX2_u & assign(SIMDMask8 const & mask, SIMDVecAVX2_u const & b) {
+            mVec = _mm256_blendv_epi8(mVec, b.mVec, mask.mMask);
+            return *this;
+        }
+        // ASSIGNS
+        // MASSIGNS
+
+        // LOAD
+        // MLOAD
+        // LOADA
+        inline SIMDVecAVX2_u & loada(uint32_t const * p) {
+            _mm256_load_si256((__m256i *)p);
+        }
+        // MLOADA
+        inline SIMDVecAVX2_u & loada(SIMDMask8 const & mask, uint32_t const * p) {
+            _mm256_maskload_epi32((int *)p, mask.mMask);
+            _mm256_load_si256((__m256i *)p);
+        }
+
         // STOREA
         inline uint32_t * storea (uint32_t * addrAligned) {
             _mm256_store_si256((__m256i*)addrAligned, mVec);
@@ -1226,6 +1434,39 @@ namespace SIMD
             mVec = _mm256_insertf128_si256(mVec, r_high, 1);
             return *this;            
         }
+
+        // POSTINC
+        inline SIMDVecAVX2_u postinc() {
+            __m256i t0 = _mm256_set1_epi32(1);
+            __m256i t1 = mVec;
+            mVec = _mm256_add_epi32(mVec, t0);
+            return SIMDVecAVX2_u(t1);
+        }
+
+        // MPOSTINC
+        inline SIMDVecAVX2_u postinc(SIMDMask8 const & mask) {
+            __m256i t0 = _mm256_set1_epi32(1);
+            __m256i t1 = mVec;
+            __m256i t2 = _mm256_add_epi32(mVec, t0);
+            mVec = _mm256_blendv_epi8(mVec, t2, mask.mMask);
+            return SIMDVecAVX2_u(t1);
+        }
+
+        // PREFINC
+        inline SIMDVecAVX2_u & prefinc() {
+            __m256i t0 = _mm256_set1_epi32(1);
+            mVec = _mm256_add_epi32(mVec, t0);
+            return *this;
+        }
+
+        // MPREFINC
+        inline SIMDVecAVX2_u & prefinc(SIMDMask8 const & mask) {
+            __m256i t0 = _mm256_set1_epi32(1);
+            __m256i t1 = _mm256_add_epi32(mVec, t0);
+            mVec = _mm256_blendv_epi8(mVec, t1, mask.mMask);
+            return *this;
+        }
+
         // MULV
         inline SIMDVecAVX2_u mul (SIMDVecAVX2_u const & b) {
             __m128i a_low = _mm256_extractf128_si256 (mVec, 0);
@@ -1312,6 +1553,20 @@ namespace SIMD
             ret = _mm256_insertf128_si256 (ret, r_low, 0);
             ret = _mm256_insertf128_si256 (ret, r_high, 1);
             return SIMDMask8(ret);
+        }
+
+        // UNIQUE
+        bool unique() const {
+            alignas(32) uint32_t raw[8];
+            _mm256_store_si256((__m256i *)raw, mVec);
+            for (unsigned int i = 0; i < 7; i++) {
+                for (unsigned int j = i + 1; j < 8; j++) {
+                    if (raw[i] == raw[j]) {
+                        return false;
+                    }
+                }
+            }
+            return true;
         }
 
         // GATHERS
@@ -1414,6 +1669,20 @@ namespace SIMD
             return baseAddr;
         }
         
+        // PACK
+        // PACKLO
+        // PACKHI
+        // UNPACK
+        void unpack(SIMDVecAVX2_u<uint32_t, 4> & a, SIMDVecAVX2_u<uint32_t, 4> & b) const {
+            UME_PERFORMANCE_UNOPTIMAL_WARNING(); // This routine can be optimized
+            alignas(32) uint32_t raw[8];
+            _mm256_store_si256((__m256i *)raw, mVec);
+            a.loada(raw);
+            b.loada(raw + 4);
+        }
+        // UNPACKLO
+        // UNPACKHI
+
         inline  operator SIMDVecAVX2_i<int32_t, 8> const ();
     };
                         
@@ -1825,11 +2094,110 @@ namespace SIMD
             SIMDVecAVX2_u<SCALAR_UINT_TYPE, 1> retval(mVec[0]);
             return retval;
         }
+
+        // UNIQUE
+        bool unique() const {
+            return true;
+        }
     };
 
     // ********************************************************************************************
     // SIGNED INTEGER VECTOR specializations
     // ********************************************************************************************
+
+    template<>
+    class SIMDVecAVX2_i<int32_t, 4> :
+        public SIMDVecSignedInterface<
+        SIMDVecAVX2_i<int32_t, 4>,
+        SIMDVecAVX2_u<uint32_t, 4>,
+        int32_t,
+        4,
+        uint32_t,
+        SIMDMask4,
+        SIMDSwizzle4>,
+        public SIMDVecPackableInterface<
+        SIMDVecAVX2_i<int32_t, 4>,
+        SIMDVecAVX2_i<int32_t, 2 >>
+    {
+        friend class SIMDVecAVX2_u<uint32_t, 4>;
+        friend class SIMDVecAVX2_f<float, 4>;
+        friend class SIMDVecAVX2_f<double, 4>;
+
+    private:
+        __m128i mVec;
+
+        inline explicit SIMDVecAVX2_i(__m128i & x) {
+            this->mVec = x;
+        }
+    public:
+        inline SIMDVecAVX2_i() {};
+
+        inline explicit SIMDVecAVX2_i(int32_t i) {
+            mVec = _mm_set1_epi32(i);
+        }
+
+        // LOAD-CONSTR - Construct by loading from memory
+        inline explicit SIMDVecAVX2_i(int32_t const *p) { this->load(p); };
+
+        inline SIMDVecAVX2_i(int32_t i0, int32_t i1, int32_t i2, int32_t i3)
+        {
+            mVec = _mm_setr_epi32(i0, i1, i2, i3);
+        }
+
+        inline int32_t extract(uint32_t index) const {
+            //return _mm256_extract_epi32(mVec, index); // TODO: this can be implemented in ICC
+            alignas(32) int32_t raw[4];
+            _mm_store_si128((__m128i *)raw, mVec);
+            return raw[index];
+        }
+
+        // Override Access operators
+        inline int32_t operator[] (uint32_t index) const {
+            return extract(index);
+        }
+
+        // Override Mask Access operators
+        inline IntermediateMask<SIMDVecAVX2_i, SIMDMask4> operator[] (SIMDMask4 const & mask) {
+            return IntermediateMask<SIMDVecAVX2_i, SIMDMask4>(mask, static_cast<SIMDVecAVX2_i &>(*this));
+        }
+
+        // insert[] (scalar)
+        inline SIMDVecAVX2_i & insert(uint32_t index, int32_t value) {
+            alignas(32) int32_t raw[4];
+            _mm_store_si128((__m128i*)raw, mVec);
+            raw[index] = value;
+            mVec = _mm_load_si128((__m128i*)raw);
+            return *this;
+        }
+
+        // UNIQUE
+        bool unique() const {
+            alignas(32) int32_t raw[4];
+            _mm_store_si128((__m128i *)raw, mVec);
+            for (unsigned int i = 0; i < 3; i++) {
+                for (unsigned int j = i + 1; j < 4; j++) {
+                    if (raw[i] == raw[j]) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        // ITOU
+        SIMDVecAVX2_u<uint32_t, 4> itou() {
+            return SIMDVecAVX2_u<uint32_t, 4>(mVec);
+        }
+        inline  operator SIMDVecAVX2_u<uint32_t, 4> const ();
+    };
+
+    inline SIMDVecAVX2_i<int32_t, 4>::operator const SIMDVecAVX2_u<uint32_t, 4>() {
+        return SIMDVecAVX2_u<uint32_t, 4>(this->mVec);
+    }
+
+    inline SIMDVecAVX2_u<uint32_t, 4>::operator const SIMDVecAVX2_i<int32_t, 4>() {
+        return SIMDVecAVX2_i<int32_t, 4>(this->mVec);
+    }
 
     template<>
     class SIMDVecAVX2_i<int32_t, 8>: 
@@ -1902,7 +2270,7 @@ namespace SIMD
         inline  operator SIMDVecAVX2_u<uint32_t, 8> const ();
 
         // ABS
-        SIMDVecAVX2_i abs () {
+        SIMDVecAVX2_i abs () const {
             __m128i a_low  = _mm256_extractf128_si256(mVec, 0);
             __m128i a_high = _mm256_extractf128_si256(mVec, 1);
             __m256i ret = _mm256_setzero_si256();
@@ -1911,7 +2279,7 @@ namespace SIMD
             return SIMDVecAVX2_i(ret);
         }
         // MABS
-        SIMDVecAVX2_i abs (SIMDMask8 const & mask) {
+        SIMDVecAVX2_i abs (SIMDMask8 const & mask) const {
             __m128i a_low  = _mm256_extractf128_si256(mVec, 0);
             __m128i a_high = _mm256_extractf128_si256(mVec, 1);
             __m128i m_low  = _mm256_extractf128_si256(mask.mMask, 0);
@@ -1923,6 +2291,25 @@ namespace SIMD
             ret = _mm256_insertf128_si256(ret, r_low, 0);
             ret = _mm256_insertf128_si256(ret, r_high, 1);
             return SIMDVecAVX2_i(ret);
+        }
+
+        // UNIQUE
+        bool unique() const {
+            alignas(32) int32_t raw[8];
+            _mm256_store_si256((__m256i *)raw, mVec);
+            for (unsigned int i = 0; i < 7; i++) {
+                for (unsigned int j = i + 1; j < 8; j++) {
+                    if (raw[i] == raw[j]) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        // ITOU
+        SIMDVecAVX2_u<uint32_t, 8> itou() {
+            return SIMDVecAVX2_u<uint32_t, 8>(mVec);
         }
     };
 
@@ -2660,12 +3047,12 @@ namespace SIMD
         inline explicit SIMDVecAVX2_f(float f) {
             mVec = _mm256_set1_ps(f);
         }
-        
+
         // UTOF
         inline explicit SIMDVecAVX2_f(VEC_UINT_TYPE const & vecUint) {
 
         }
-        
+
         // ITOF
         inline explicit SIMDVecAVX2_f(VEC_INT_TYPE const & vecInt) {
 

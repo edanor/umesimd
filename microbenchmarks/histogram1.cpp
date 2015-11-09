@@ -127,7 +127,7 @@ inline void test_UME_SIMD_float_recursive_helper(UINT_VEC_T const & index_vec, u
     if (index_vec.unique()) {
         UINT_VEC_T bin_vec;
         bin_vec.gather(hist, index_vec);
-        bin_vec.postinc();
+        bin_vec.prefinc();
         bin_vec.scatter(hist, index_vec);
     }
     else {
@@ -190,7 +190,6 @@ TIMING_RES test_UME_SIMD()
 
         INT_VEC_T t1;
         UINT_VEC_T index_vec;
-
         
         unsigned int bin;
 
@@ -198,7 +197,7 @@ TIMING_RES test_UME_SIMD()
 
 		for (uint32_t i = 0; i < PEEL_COUNT; i++) {
             // Calculate indices
-			data_vec.load(&data[i*VEC_LEN]);
+			data_vec.loada(&data[i*VEC_LEN]);
 			t0 = data_vec.mul(coeff_vec);
 			t1 = t0.trunc();
 			index_vec.assign(t1.itou());
@@ -213,7 +212,6 @@ TIMING_RES test_UME_SIMD()
         }
 
 		end = __rdtsc();
-
 		// Verify results
 		for (int i = 0; i < INPUT_SIZE; i++)
 		{
@@ -281,8 +279,8 @@ int main()
 	std::cout << "The result is amount of time it takes to calculate histogram of: " << INPUT_SIZE << " elements with " << HIST_SIZE << "-bin histogram.\n"
 		"All timing results in clock cycles. \n"
 		"Speedup calculated with scalar floating point result as reference.\n\n"
-		"SIMD version uses following operations: \n"
-		" LOAD, MUL, TRUNC, ASSIGN, UNIQUE, GATHER, SCATTER, POSTINC, UNPACK\n";
+		"SIMD versions use following operations: \n"
+		" LOADA, MULV, TRUNC, ASSIGNV, UNIQUE, GATHER, SCATTER, POSTINC, UNPACK\n\n";
 
 	std::cout << "Scalar code (float): " << (long)t_scalar_f_avg
 		<< " (speedup: 1.0x)"
