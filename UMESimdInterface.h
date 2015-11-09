@@ -2048,6 +2048,26 @@ namespace SIMD
             return retval;
         }
 
+        // UNIQUE
+        template<typename VEC_TYPE>
+        inline bool unique(VEC_TYPE const & a) {
+            UME_EMULATION_WARNING();
+            bool retval = true;
+            for (uint32_t i = 0; i < VEC_TYPE::length()-1; i++) {
+                for (uint32_t j = i + 1; j < VEC_TYPE::length(); j++) {
+                    if (a[i] == a[j])
+                    {
+                        // Break earlier from innermost loop
+                        retval = false;
+                        break;
+                    }
+                }
+                // Break earlier from outermost loop
+                if (retval == false) break;
+            }
+            return retval;
+        }
+
         // ANDV
         template<typename VEC_TYPE>
         inline VEC_TYPE binaryAnd (VEC_TYPE const & a, VEC_TYPE const & b) {
@@ -2683,6 +2703,19 @@ namespace SIMD
             }
             return retval;
         }
+
+		// xTOy (UTOI, ITOU, UTOF, FTOU)
+		template<typename UINT_VEC_TYPE, typename INT_VEC_TYPE>
+		inline UINT_VEC_TYPE xtoy(INT_VEC_TYPE const & a) {
+			UME_EMULATION_WARNING();
+			static_assert(UINT_VEC_TYPE::length() == INT_VEC_TYPE::length(),
+				"Cannot cast between vectors of different lengths");
+			UINT_VEC_TYPE retval;
+			for (uint32_t i = 0; i < INT_VEC_TYPE::length();i++) {
+				retval.insert(i, decltype(retval[0])(a[i]));
+			}
+			return retval;
+		}
 
         // ******************************************************************
         // * MATH FUNCTIONS                                                 
@@ -3602,6 +3635,7 @@ namespace SIMD
                 }
                 return retval;
             }
+
         } // UME::SIMD::EMULATED_FUNCTIONS::MATH
     } // namespace UME::SIMD::EMULATED_FUNCTIONS
     
@@ -3663,7 +3697,7 @@ namespace SIMD
 
     public:
         // LENGTH
-        static uint32_t length () { return SMASK_LEN; };
+        constexpr static uint32_t length () { return SMASK_LEN; };
 
         // ALIGNMENT
         static int alignment () { return SMASK_LEN*sizeof(uint32_t); };
@@ -3786,10 +3820,10 @@ namespace SIMD
 
     public:
         // LENGTH
-        static uint32_t length () { return MASK_LEN; };
+        constexpr static uint32_t length () { return MASK_LEN; };
 
         // ALIGNMENT
-        static int alignment () { return MASK_LEN*sizeof(MASK_BASE_TYPE); };
+        constexpr static int alignment () { return MASK_LEN*sizeof(MASK_BASE_TYPE); };
         
         // LOAD
         inline DERIVED_MASK_TYPE & load (bool const * addr) {
@@ -4041,9 +4075,9 @@ namespace SIMD
     public:
    
         // TODO: can be marked as constexpr?
-        static uint32_t length() { return VEC_LEN; }
+        constexpr static uint32_t length() { return VEC_LEN; }
 
-        static uint32_t alignment() { return VEC_LEN*sizeof(SCALAR_TYPE); }
+        constexpr static uint32_t alignment() { return VEC_LEN*sizeof(SCALAR_TYPE); }
         
         // ZERO-VEC
         static DERIVED_VEC_TYPE zero() { return DERIVED_VEC_TYPE(SCALAR_TYPE(0)); }
@@ -4653,6 +4687,11 @@ namespace SIMD
         // CMPES
         inline bool cmpe (SCALAR_TYPE b) const {
             return EMULATED_FUNCTIONS::isExact<DERIVED_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this), DERIVED_VEC_TYPE(b));
+        }
+
+        // UNIQUE
+        inline bool unique() const {
+            return EMULATED_FUNCTIONS::unique<DERIVED_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // HADD
@@ -5706,7 +5745,11 @@ namespace SIMD
         inline DERIVED_VEC_TYPE operator- () const {
             return this->neg();
         }
-
+		
+		// ITOU
+		inline DERIVED_VEC_UINT_TYPE itou () const {
+			return EMULATED_FUNCTIONS::xtoy<DERIVED_VEC_UINT_TYPE, DERIVED_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this));
+		}
     };
 
     // ***************************************************************************
