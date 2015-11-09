@@ -139,6 +139,108 @@ namespace SIMD
 #include "UMESimdPluginScalarEmulation.h"
 #endif
 
+namespace UME {
+namespace SIMD {
+
+	/*******************************************************
+	* SIMDTraits class gathers all types related to given SIMD_TYPE
+	* This class is useful for function templates requiring additional
+	* type information. Instead of passing multiple SIMD types as 
+	* template parameters, one can use SIMDTraits class to deduce
+	* actual type at compile-time. 
+	*
+	* SIMDTraits class needs to be explicitly specialized for any
+	* SIMD type to carry type relation between different types
+	*******************************************************/
+	 
+	template<typename SIMD_TYPE>
+	class SIMDTraits {
+		// Nothing here. This template should be specialized for any SIMD type.
+	};
+
+	template<>
+	class SIMDTraits<SIMD1_32f>
+	{
+    public:
+        typedef float        SCALAR_T;
+		typedef SIMD1_32u    UINT_VEC_T;
+		typedef SIMD1_32i    INT_VEC_T;
+		typedef SIMDMask1    MASK_T;
+		typedef SIMDSwizzle1 SWIZZLE_T;
+	};
+
+    template<>
+    class SIMDTraits<SIMD2_32f>
+    {
+    public:
+        typedef float         SCALAR_T;
+        typedef SIMD2_32u    UINT_VEC_T;
+        typedef SIMD2_32i    INT_VEC_T;
+        typedef SIMDMask2    MASK_T;
+        typedef SIMDSwizzle2 SWIZZLE_T;
+
+        typedef SIMD1_32f     HALF_LEN_VEC_T;
+        typedef SIMD4_32f    DOUBLE_LEN_VEC_T;
+    };
+
+    template<>
+    class SIMDTraits<SIMD4_32f>
+    {
+    public:
+        typedef float         SCALAR_T;
+        typedef SIMD4_32u    UINT_VEC_T;
+        typedef SIMD4_32i    INT_VEC_T;
+        typedef SIMDMask4    MASK_T;
+        typedef SIMDSwizzle4 SWIZZLE_T;
+
+        typedef SIMD2_32f     HALF_LEN_VEC_T;
+        typedef SIMD8_32f    DOUBLE_LEN_VEC_T;
+    };
+
+    template<>
+    class SIMDTraits<SIMD8_32f>
+    {
+    public:
+        typedef float         SCALAR_T;
+        typedef SIMD8_32u    UINT_VEC_T;
+        typedef SIMD8_32i    INT_VEC_T;
+        typedef SIMDMask8    MASK_T;
+        typedef SIMDSwizzle8 SWIZZLE_T;
+
+        typedef SIMD4_32f     HALF_LEN_VEC_T;
+        typedef SIMD16_32f    DOUBLE_LEN_VEC_T;
+    };
+
+	template<>
+	class SIMDTraits<SIMD16_32f>
+	{
+    public:
+        typedef float         SCALAR_T;
+		typedef SIMD16_32u    UINT_VEC_T;
+		typedef SIMD16_32i    INT_VEC_T;
+		typedef SIMDMask16    MASK_T;
+		typedef SIMDSwizzle16 SWIZZLE_T;
+
+		typedef SIMD8_32f     HALF_LEN_VEC_T;
+		typedef SIMD32_32f    DOUBLE_LEN_VEC_T;
+	};
+
+    template<>
+    class SIMDTraits<SIMD32_32f>
+    {
+    public:
+        typedef float         SCALAR_T;
+        typedef SIMD32_32u    UINT_VEC_T;
+        typedef SIMD32_32i    INT_VEC_T;
+        typedef SIMDMask32    MASK_T;
+        typedef SIMDSwizzle32 SWIZZLE_T;
+
+        typedef SIMD16_32f     HALF_LEN_VEC_T;
+    };
+}
+}
+
+
 /**************************************************************************************************/
 /* Define basic data structures useful for vector operations                                      */
 /**************************************************************************************************/
