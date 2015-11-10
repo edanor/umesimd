@@ -34,7 +34,7 @@
 
 #include <type_traits>
 
-#include "UMESimdInterface.h"
+#include "../UMESimdInterface.h"
 
 #include "UMESimdPluginScalarEmulation.h"
 
@@ -53,11 +53,11 @@ namespace SIMD
 }
 }
 
-#include "plugins/avx2/UMESimdMaskAVX2.h"
-#include "plugins/avx2/UMESimdSwizzleAVX2.h"
-#include "plugins/avx2/UMESimdVecUintAVX2.h"
-#include "plugins/avx2/UMESimdVecIntAVX2.h"
-#include "plugins/avx2/UMESimdVecFloatAVX2.h"
+#include "avx2/UMESimdMaskAVX2.h"
+#include "avx2/UMESimdSwizzleAVX2.h"
+#include "avx2/UMESimdVecUintAVX2.h"
+#include "avx2/UMESimdVecIntAVX2.h"
+#include "avx2/UMESimdVecFloatAVX2.h"
 
 namespace UME
 {

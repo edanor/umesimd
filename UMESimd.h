@@ -123,20 +123,20 @@ namespace SIMD
 // Just fall through. We are including this emulation regardless of library selected.
 #if UME_SIMD == UME_SIMD_NATIVE 
     #if defined __AVX512F__
-        #include "UMESimdPluginNativeAVX512.h"
+        #include "plugins/UMESimdPluginNativeAVX512.h"
     #elif defined (__MIC__)
-        #include "UMESimdPluginNativeKNC.h"
+        #include "plugins/UMESimdPluginNativeKNC.h"
     #elif defined __AVX2__
-        #include "UMESimdPluginNativeAVX2.h"
+        #include "plugins/UMESimdPluginNativeAVX2.h"
     #elif defined __AVX__
-        #include "UMESimdPluginNativeAVX.h"
+        #include "plugins/UMESimdPluginNativeAVX.h"
     #else
         // Use scalar emulation if not specializing
         #define USE_EMULATED_TYPES 1
-        #include "UMESimdPluginScalarEmulation.h"
+    #include "plugins/UMESimdPluginScalarEmulation.h"
     #endif // INSTRUCTION SET
 #define USE_EMULATED_TYPES 1
-#include "UMESimdPluginScalarEmulation.h"
+#include "plugins/UMESimdPluginScalarEmulation.h"
 #endif
 
 // Traits need to be defined after all SIMD vectors are defined. 
