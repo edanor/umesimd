@@ -28,9 +28,8 @@
 //  7th Framework programme Marie Curie Actions under grant PITN-GA-2012-316596".
 //
 
-#ifndef UME_SIMD_PLUGIN_NATIVE_AVX2_H_
-#define UME_SIMD_PLUGIN_NATIVE_AVX2_H_
-
+#ifndef UME_SIMD_PLUGIN_AVX2_H_
+#define UME_SIMD_PLUGIN_AVX2_H_
 
 #include <type_traits>
 
