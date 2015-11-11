@@ -385,7 +385,7 @@ namespace UME {
             typedef SIMDVecAVX2_i<int32_t, 2>     VEC_INT_TYPE;
         public:
 
-            constexpr static float alignment() {
+            constexpr static uint32_t alignment() {
                 return 4;
             }
 
@@ -451,12 +451,23 @@ namespace UME {
 
             //(Memory access)
             // LOAD    - Load from memory (either aligned or unaligned) to vector 
+            inline SIMDVecAVX2_f & load(float const * p) {
+                mVec[0] = p[0];
+                mVec[1] = p[1];
+                return *this;
+            }
             // MLOAD   - Masked load from memory (either aligned or unaligned) to
             //        vector
+            inline SIMDVecAVX2_f & load(SIMDMask2 const & mask, float const * p) {
+                if(mask.mMask[0] == true) mVec[0] = p[0];
+                if(mask.mMask[1] == true) mVec[1] = p[1];
+                return *this;
+            }
             // LOADA   - Load from aligned memory to vector
             inline SIMDVecAVX2_f & loada(float const * p) {
                 mVec[0] = p[0];
                 mVec[1] = p[1];
+                return *this;
             }
 
             // MLOADA  - Masked load from aligned memory to vector
@@ -467,10 +478,30 @@ namespace UME {
             }
 
             // STORE   - Store vector content into memory (either aligned or unaligned)
+            inline float* store(float * p) const {
+                p[0] = mVec[0];
+                p[1] = mVec[1];
+                return p;
+            }
             // MSTORE  - Masked store vector content into memory (either aligned or
             //        unaligned)
+            inline float* store(SIMDMask2 const & mask, float * p) const {
+                if(mask.mMask[0] == true) p[0] = mVec[0];
+                if(mask.mMask[1] == true) p[1] = mVec[1];
+                return p;
+            }
             // STOREA  - Store vector content into aligned memory
+            inline float* storea(float * p) const {
+                p[0] = mVec[0];
+                p[1] = mVec[1];
+                return p;
+            }
             // MSTOREA - Masked store vector content into aligned memory
+            inline float* storea(SIMDMask2 const & mask, float * p) const {
+                if (mask.mMask[0] == true) p[0] = mVec[0];
+                if (mask.mMask[1] == true) p[1] = mVec[1];
+                return p;
+            }
 
             //(Addition operations)
             // ADDV     - Add with vector 
@@ -663,7 +694,17 @@ namespace UME {
 
             //(Fused arithmetics)
             // FMULADDV  - Fused multiply and add (A*B + C) with vectors
+            inline SIMDVecAVX2_f fmuladd(SIMDVecAVX2_f const & b, SIMDVecAVX2_f const & c) {
+                float t0 = mVec[0] * b.mVec[0] + c.mVec[0];
+                float t1 = mVec[1] * b.mVec[1] + c.mVec[1];
+                return SIMDVecAVX2_f(t0, t1);
+            }
             // MFMULADDV - Masked fused multiply and add (A*B + C) with vectors
+            inline SIMDVecAVX2_f fmuladd(SIMDMask2 const & mask, SIMDVecAVX2_f const & b, SIMDVecAVX2_f const & c) {
+                float t0 = (mask.mMask[0] == true) ? (mVec[0] * b.mVec[0] + c.mVec[0]) : mVec[0];
+                float t1 = (mask.mMask[1] == true) ? (mVec[1] * b.mVec[1] + c.mVec[1]) : mVec[1];
+                return SIMDVecAVX2_f(t0, t1);
+            }
             // FMULSUBV  - Fused multiply and sub (A*B - C) with vectors
             // MFMULSUBV - Masked fused multiply and sub (A*B - C) with vectors
             // FADDMULV  - Fused add and multiply ((A + B)*C) with vectors
@@ -872,8 +913,17 @@ namespace UME {
 
             //(Memory access)
             // LOAD    - Load from memory (either aligned or unaligned) to vector 
+            inline SIMDVecAVX2_f & load(float const * p) {
+                mVec = _mm_loadu_ps(p);
+                return *this;
+            }
             // MLOAD   - Masked load from memory (either aligned or unaligned) to
             //        vector
+            inline SIMDVecAVX2_f & load(SIMDMask4 const & mask, float const * p) {
+                __m128 t0 = _mm_loadu_ps(p);
+                mVec = _mm_blendv_ps(mVec, t0, _mm_castsi128_ps(mask.mMask));
+                return *this;
+            }
             // LOADA   - Load from aligned memory to vector
             inline SIMDVecAVX2_f & loada(float const * p) {
                 mVec = _mm_load_ps(p);
@@ -887,8 +937,16 @@ namespace UME {
             }
 
             // STORE   - Store vector content into memory (either aligned or unaligned)
+            inline float * store(float * p) const {
+                _mm_storeu_ps(p, mVec);
+                return p;
+            }
             // MSTORE  - Masked store vector content into memory (either aligned or
             //        unaligned)
+            inline float * store(SIMDMask4 const & mask, float * p) const {
+                _mm_maskstore_ps(p, mask.mMask, mVec);
+                return p;
+            }
             // STOREA  - Store vector content into aligned memory
             // MSTOREA - Masked store vector content into aligned memory
 
@@ -1067,8 +1125,26 @@ namespace UME {
             // MHMUL - Masked multiply elements of a vector (horizontal mul)
 
             //(Fused arithmetics)
-            // FMULADDV  - Fused multiply and add (A*B + C) with vectors
-            // MFMULADDV - Masked fused multiply and add (A*B + C) with vectors
+            // FMULADDV  - Fused multiply and add (A*B + C) with vectors     
+            inline SIMDVecAVX2_f fmuladd(SIMDVecAVX2_f const & b, SIMDVecAVX2_f const & c) {
+#ifdef FMA
+                __m128 t0 = _mm_fmadd_ps(mVec, b.mVec, c.mVec);
+#else
+                __m128 t0 = _mm_add_ps(_mm_mul_ps(mVec, b.mVec), c.mVec);
+#endif
+                return SIMDVecAVX2_f(t0);
+            }
+
+            // MFMULADDV
+            inline SIMDVecAVX2_f fmuladd(SIMDMask4 const & mask, SIMDVecAVX2_f const & b, SIMDVecAVX2_f const & c) {
+#ifdef FMA
+                __m128 t0 = _mm_fmadd_ps(mVec, b.mVec, c.mVec);
+#else
+                __m128 t0 = _mm_add_ps(_mm_mul_ps(mVec, b.mVec), c.mVec);
+#endif
+                __m128 t1 = _mm_blendv_ps(mVec, t0, _mm_cvtepi32_ps(mask.mMask));
+                return SIMDVecAVX2_f(t1);
+            }
             // FMULSUBV  - Fused multiply and sub (A*B - C) with vectors
             // MFMULSUBV - Masked fused multiply and sub (A*B - C) with vectors
             // FADDMULV  - Fused add and multiply ((A + B)*C) with vectors
@@ -1492,21 +1568,21 @@ namespace UME {
 
             //(Fused arithmetics)
             // FMULADDV  - Fused multiply and add (A*B + C) with vectors        
-            inline SIMDVecAVX2_f fmuladd(SIMDVecAVX2_f const & a, SIMDVecAVX2_f const & b) {
+            inline SIMDVecAVX2_f fmuladd(SIMDVecAVX2_f const & b, SIMDVecAVX2_f const & c) {
 #ifdef FMA
                 return _mm256_fmadd_ps(this->mVec, a.mVec, b.mVec);
 #else
-                return _mm256_add_ps(_mm256_mul_ps(this->mVec, a.mVec), b.mVec);
+                return _mm256_add_ps(_mm256_mul_ps(this->mVec, b.mVec), c.mVec);
 #endif
             }
 
             // MFMULADDV
-            inline SIMDVecAVX2_f fmuladd(SIMDMask8 const & mask, SIMDVecAVX2_f const & a, SIMDVecAVX2_f const & b) {
+            inline SIMDVecAVX2_f fmuladd(SIMDMask8 const & mask, SIMDVecAVX2_f const & b, SIMDVecAVX2_f const & c) {
 #ifdef FMA
-                __m256 t0 = _mm256_fmadd_ps(this->mVec, a.mVec, b.mVec);
+                __m256 t0 = _mm256_fmadd_ps(this->mVec, b.mVec, c.mVec);
                 return _mm256_blendv_ps(this->mVec, t0, _mm256_cvtepi32_ps(mask.mMask));
 #else
-                __m256 t0 = _mm256_add_ps(_mm256_mul_ps(this->mVec, a.mVec), b.mVec);
+                __m256 t0 = _mm256_add_ps(_mm256_mul_ps(this->mVec, b.mVec), c.mVec);
                 return _mm256_blendv_ps(this->mVec, t0, _mm256_cvtepi32_ps(mask.mMask));
 #endif
             }
@@ -2100,7 +2176,6 @@ namespace UME {
             // MTAN      - Masked tangent
             // CTAN      - Cotangent
             // MCTAN     - Masked cotangent
-
         };
 
         template<>

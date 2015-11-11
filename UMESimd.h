@@ -119,25 +119,21 @@ namespace SIMD
     #define UME_ALIGNMENT_CHECK(ptr, alignment)
 #endif
 
-#define UME_SIMD UME_SIMD_NATIVE
-// Just fall through. We are including this emulation regardless of library selected.
-#if UME_SIMD == UME_SIMD_NATIVE 
-    #if defined __AVX512F__
-        #include "plugins/UMESimdPluginNativeAVX512.h"
-    #elif defined (__MIC__)
-        #include "plugins/UMESimdPluginNativeKNC.h"
-    #elif defined __AVX2__
-        #include "plugins/UMESimdPluginNativeAVX2.h"
-    #elif defined __AVX__
-        #include "plugins/UMESimdPluginNativeAVX.h"
-    #else
-        // Use scalar emulation if not specializing
-        #define USE_EMULATED_TYPES 1
-    #include "plugins/UMESimdPluginScalarEmulation.h"
-    #endif // INSTRUCTION SET
+#if defined __AVX512F__
+    #include "plugins/UMESimdPluginAVX512.h"
+#elif defined (__MIC__)
+    #include "plugins/UMESimdPluginKNC.h"
+#elif defined __AVX2__
+    #include "plugins/UMESimdPluginAVX2.h"
+#elif defined __AVX__
+    #include "plugins/UMESimdPluginAVX.h"
+#else
+    // Use scalar emulation if not specializing
+    #define USE_EMULATED_TYPES 1
+#include "plugins/UMESimdPluginScalarEmulation.h"
+#endif // INSTRUCTION SET
 #define USE_EMULATED_TYPES 1
 #include "plugins/UMESimdPluginScalarEmulation.h"
-#endif
 
 // Traits need to be defined after all SIMD vectors are defined. 
 #include "UMESimdTraits.h"

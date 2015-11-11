@@ -131,6 +131,7 @@ inline void test_UME_SIMD_float_recursive_helper(UINT_VEC_T const & index_vec, u
         bin_vec.scatter(hist, index_vec);
     }
     else {
+        //std::cout << "unpacking: " << index_vec[0] << " " << index_vec[1] << std::endl;
         HALF_LEN_UINT_VEC_T vec_l, vec_h;
         index_vec.unpack(vec_l, vec_h);
         test_UME_SIMD_float_recursive_helper<HALF_LEN_VEC_T, HALF_LEN_UINT_VEC_T>(vec_l, hist);
@@ -190,7 +191,7 @@ TIMING_RES test_UME_SIMD()
 
         INT_VEC_T t1;
         UINT_VEC_T index_vec;
-        
+
         unsigned int bin;
 
 		start = __rdtsc();
@@ -202,7 +203,7 @@ TIMING_RES test_UME_SIMD()
 			t1 = t0.trunc();
 			index_vec.assign(t1.itou());
             // Perform histogram update
-            test_UME_SIMD_float_recursive_helper<FLOAT_VEC_T>(index_vec, hist);
+            test_UME_SIMD_float_recursive_helper<FLOAT_VEC_T, UINT_VEC_T>(index_vec, hist);
 		}
         
         // Calculate reminder elements using scalar code
@@ -221,7 +222,7 @@ TIMING_RES test_UME_SIMD()
 
 		for (int i = 0; i < HIST_SIZE; i++) {
 			if (hist[i] != verify_hist[i]) {
-				std::cout << "Invalid result at index " << i << " expected: " << verify_hist[i] << ", actual: " << hist[i] << "\n";
+			std::cout << "Invalid result at index " << i << " expected: " << verify_hist[i] << ", actual: " << hist[i] << "\n";
 			}
 		}
 	}
@@ -252,17 +253,17 @@ int main()
 
     
     srand ((unsigned int)time(NULL));
-	for (int i = 0; i < 10; i++)
+	for (int i = 0; i < 1; i++)
 	{
-		t_scalar_f = test_scalar<float>();
+        t_scalar_f = test_scalar<float>();
 		t_scalar_f_avg = 1.0f / (1.0f + float(i)) * (float(t_scalar_f) - t_scalar_f_avg);
-
+        
 		t_UME_SIMD1_32f = test_UME_SIMD<UME::SIMD::SIMD1_32f>();
 		t_UME_SIMD1_32f_avg = 1.0f / (1.0f + float(i)) * (float(t_UME_SIMD1_32f) - t_UME_SIMD1_32f_avg);
-
+        
         t_UME_SIMD2_32f = test_UME_SIMD<UME::SIMD::SIMD2_32f>();
         t_UME_SIMD2_32f_avg = 1.0f / (1.0f + float(i)) * (float(t_UME_SIMD2_32f) - t_UME_SIMD2_32f_avg);
-
+        
         t_UME_SIMD4_32f = test_UME_SIMD<UME::SIMD::SIMD4_32f>();
         t_UME_SIMD4_32f_avg = 1.0f / (1.0f + float(i)) * (float(t_UME_SIMD4_32f) - t_UME_SIMD4_32f_avg);
 
@@ -280,7 +281,9 @@ int main()
 		"All timing results in clock cycles. \n"
 		"Speedup calculated with scalar floating point result as reference.\n\n"
 		"SIMD versions use following operations: \n"
-		" LOADA, MULV, TRUNC, ASSIGNV, UNIQUE, GATHER, SCATTER, POSTINC, UNPACK\n\n";
+		"float 32b: LOADA, MULV, TRUNC\n"
+        "int   32b:  ITOU\n"
+        "uint  32b:  ASSIGNV, UNIQUE, GATHER, SCATTER, POSTINC, UNPACK\n\n";
 
 	std::cout << "Scalar code (float): " << (long)t_scalar_f_avg
 		<< " (speedup: 1.0x)"
