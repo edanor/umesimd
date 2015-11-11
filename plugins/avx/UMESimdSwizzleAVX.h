@@ -28,28 +28,31 @@
 //  7th Framework programme Marie Curie Actions under grant PITN-GA-2012-316596".
 //
 
-#ifndef UME_SIMD_SWIZZLE_AVX_H_
-#define UME_SIMD_SWIZZLE_AVX_H_
+#ifndef UME_SIMD_SWIZZLE_H_
+#define UME_SIMD_SWIZZLE_H_
 
-namespace UME
-{
-namespace SIMD
-{
+#include <type_traits>
+#include "../../UMESimdInterface.h"
+#include "../UMESimdPluginScalarEmulation.h"
+#include <immintrin.h>
+
+namespace UME {
+namespace SIMD {
     // ********************************************************************************************
     // SWIZZLE MASKS
     // ********************************************************************************************
     template<uint32_t SMASK_LEN>
-    class SIMDVecAVXSwizzleMask :
+    class SIMDVecSwizzle :
         public SIMDSwizzleMaskBaseInterface<
-        SIMDVecAVXSwizzleMask<SMASK_LEN>,
+        SIMDVecSwizzle<SMASK_LEN>,
         SMASK_LEN>
     {
     private:
         uint32_t mMaskElements[SMASK_LEN];
     public:
-        inline SIMDVecAVXSwizzleMask() { };
+        inline SIMDVecSwizzle() { };
 
-        inline explicit SIMDVecAVXSwizzleMask(uint32_t m0) {
+        inline explicit SIMDVecSwizzle(uint32_t m0) {
             UME_EMULATION_WARNING();
             for (int i = 0; i < SMASK_LEN; i++) {
                 mMaskElements[i] = m0;
@@ -57,7 +60,7 @@ namespace SIMD
         }
 
         // LOAD-CONSTR - Construct by loading from memory
-        inline explicit SIMDVecAVXSwizzleMask(uint32_t const *p) {
+        inline explicit SIMDVecSwizzle(uint32_t const *p) {
             UME_EMULATION_WARNING();
             for (int i = 0; i < SMASK_LEN; i++) {
                 mMaskElements[i] = p[i];
@@ -76,12 +79,12 @@ namespace SIMD
         }
 
         // Element-wise modification operator
-        inline void insert(uint32_t index, uint32_t x) {
+        inline void insert(uint32_t index, uint32_t value) {
             UME_EMULATION_WARNING();
-            mMaskElements[index] = x;
+            mMaskElements[index] = value;
         }
 
-        SIMDVecAVXSwizzleMask(SIMDVecAVXSwizzleMask const & mask) {
+        inline SIMDVecSwizzle(SIMDVecSwizzle const & mask) {
             UME_EMULATION_WARNING();
             for (int i = 0; i < SMASK_LEN; i++)
             {
@@ -89,16 +92,6 @@ namespace SIMD
             }
         }
     };
-
-    typedef SIMDVecAVXSwizzleMask<1>   SIMDSwizzle1;
-    typedef SIMDVecAVXSwizzleMask<2>   SIMDSwizzle2;
-    typedef SIMDVecAVXSwizzleMask<4>   SIMDSwizzle4;
-    typedef SIMDVecAVXSwizzleMask<8>   SIMDSwizzle8;
-    typedef SIMDVecAVXSwizzleMask<16>  SIMDSwizzle16;
-    typedef SIMDVecAVXSwizzleMask<32>  SIMDSwizzle32;
-    typedef SIMDVecAVXSwizzleMask<64>  SIMDSwizzle64;
-    typedef SIMDVecAVXSwizzleMask<128> SIMDSwizzle128;
 }
 }
-
 #endif

@@ -28,8 +28,8 @@
 //  7th Framework programme Marie Curie Actions under grant PITN-GA-2012-316596".
 //
 
-#ifndef UME_SIMD_VEC_UINT_AVX_H_
-#define UME_SIMD_VEC_UINT_AVX_H_
+#ifndef UME_SIMD_VEC_UINT_H_
+#define UME_SIMD_VEC_UINT_H_
 
 #include <type_traits>
 #include "../../UMESimdInterface.h"
@@ -46,221 +46,221 @@ namespace SIMD {
     // UNSIGNED INTEGER VECTORS
     // ********************************************************************************************
     template<typename VEC_TYPE, uint32_t VEC_LEN>
-    struct SIMDVecAVX_u_traits {
+    struct SIMDVec_u_traits {
         // Generic trait class not containing type definition so that only correct explicit
         // type definitions are compiled correctly
     };
 
     // 8b vectors
     template<>
-    struct SIMDVecAVX_u_traits<uint8_t, 1> {
-        typedef int8_t       SCALAR_INT_TYPE;
-        typedef SIMDMask1    MASK_TYPE;
-        typedef SIMDSwizzle1 SWIZZLE_MASK_TYPE;
+    struct SIMDVec_u_traits<uint8_t, 1> {
+        typedef int8_t            SCALAR_INT_TYPE;
+        typedef SIMDVecMask<1>    MASK_TYPE;
+        typedef SIMDVecSwizzle<1> SWIZZLE_MASK_TYPE;
     };
 
     // 16b vectors
     template<>
-    struct SIMDVecAVX_u_traits<uint8_t, 2> {
-        typedef SIMDVecAVX_u<uint8_t, 1> HALF_LEN_VEC_TYPE;
-        typedef int8_t                   SCALAR_INT_TYPE;
-        typedef SIMDMask2                MASK_TYPE;
-        typedef SIMDSwizzle2             SWIZZLE_MASK_TYPE;
+    struct SIMDVec_u_traits<uint8_t, 2> {
+        typedef SIMDVec_u<uint8_t, 1> HALF_LEN_VEC_TYPE;
+        typedef int8_t                SCALAR_INT_TYPE;
+        typedef SIMDVecMask<2>        MASK_TYPE;
+        typedef SIMDVecSwizzle<2>     SWIZZLE_MASK_TYPE;
     };
 
     template<>
-    struct SIMDVecAVX_u_traits<uint16_t, 1> {
-        typedef int16_t      SCALAR_INT_TYPE;
-        typedef SIMDMask1    MASK_TYPE;
-        typedef SIMDSwizzle1 SWIZZLE_MASK_TYPE;
+    struct SIMDVec_u_traits<uint16_t, 1> {
+        typedef int16_t             SCALAR_INT_TYPE;
+        typedef SIMDVecMask<1>      MASK_TYPE;
+        typedef SIMDVecSwizzle<1>   SWIZZLE_MASK_TYPE;
     };
 
     // 32b vectors
     template<>
-    struct SIMDVecAVX_u_traits<uint8_t, 4> {
-        typedef SIMDVecAVX_u<uint8_t, 2> HALF_LEN_VEC_TYPE;
-        typedef int8_t                   SCALAR_INT_TYPE;
-        typedef SIMDMask4                MASK_TYPE;
-        typedef SIMDSwizzle4             SWIZZLE_MASK_TYPE;
+    struct SIMDVec_u_traits<uint8_t, 4> {
+        typedef SIMDVec_u<uint8_t, 2> HALF_LEN_VEC_TYPE;
+        typedef int8_t                SCALAR_INT_TYPE;
+        typedef SIMDVecMask<4>        MASK_TYPE;
+        typedef SIMDVecSwizzle<4>     SWIZZLE_MASK_TYPE;
     };
 
     template<>
-    struct SIMDVecAVX_u_traits<uint16_t, 2> {
-        typedef SIMDVecAVX_u<uint16_t, 2> HALF_LEN_VEC_TYPE;
-        typedef int16_t                   SCALAR_INT_TYPE;
-        typedef SIMDMask2                 MASK_TYPE;
-        typedef SIMDSwizzle2              SWIZZLE_MASK_TYPE;
+    struct SIMDVec_u_traits<uint16_t, 2> {
+        typedef SIMDVec_u<uint16_t, 1> HALF_LEN_VEC_TYPE;
+        typedef int16_t                SCALAR_INT_TYPE;
+        typedef SIMDVecMask<2>         MASK_TYPE;
+        typedef SIMDVecSwizzle<2>      SWIZZLE_MASK_TYPE;
     };
 
     template<>
-    struct SIMDVecAVX_u_traits<uint32_t, 1> {
-        typedef int32_t      SCALAR_INT_TYPE;
-        typedef SIMDMask1    MASK_TYPE;
-        typedef SIMDSwizzle1 SWIZZLE_MASK_TYPE;
+    struct SIMDVec_u_traits<uint32_t, 1> {
+        typedef int32_t             SCALAR_INT_TYPE;
+        typedef SIMDVecMask<1>      MASK_TYPE;
+        typedef SIMDVecSwizzle<1>   SWIZZLE_MASK_TYPE;
     };
 
     // 64b vectors
     template<>
-    struct SIMDVecAVX_u_traits<uint8_t, 8> {
-        typedef SIMDVecAVX_u<uint8_t, 4> HALF_LEN_VEC_TYPE;
-        typedef int8_t                   SCALAR_INT_TYPE;
-        typedef SIMDMask8                MASK_TYPE;
-        typedef SIMDSwizzle8             SWIZZLE_MASK_TYPE;
+    struct SIMDVec_u_traits<uint8_t, 8> {
+        typedef SIMDVec_u<uint8_t, 4> HALF_LEN_VEC_TYPE;
+        typedef int8_t                SCALAR_INT_TYPE;
+        typedef SIMDVecMask<8>        MASK_TYPE;
+        typedef SIMDVecSwizzle<8>     SWIZZLE_MASK_TYPE;
     };
 
     template<>
-    struct SIMDVecAVX_u_traits<uint16_t, 4> {
-        typedef SIMDVecAVX_u<uint16_t, 2> HALF_LEN_VEC_TYPE;
-        typedef int16_t                   SCALAR_INT_TYPE;
-        typedef SIMDMask4                 MASK_TYPE;
-        typedef SIMDSwizzle4              SWIZZLE_MASK_TYPE;
+    struct SIMDVec_u_traits<uint16_t, 4> {
+        typedef SIMDVec_u<uint16_t, 2> HALF_LEN_VEC_TYPE;
+        typedef int16_t                SCALAR_INT_TYPE;
+        typedef SIMDVecMask<4>         MASK_TYPE;
+        typedef SIMDVecSwizzle<4>      SWIZZLE_MASK_TYPE;
     };
 
     template<>
-    struct SIMDVecAVX_u_traits<uint32_t, 2> {
-        typedef SIMDVecAVX_u<uint32_t, 1> HALF_LEN_VEC_TYPE;
-        typedef int32_t                   SCALAR_INT_TYPE;
-        typedef SIMDMask2                 MASK_TYPE;
-        typedef SIMDSwizzle2              SWIZZLE_MASK_TYPE;
+    struct SIMDVec_u_traits<uint32_t, 2> {
+        typedef SIMDVec_u<uint32_t, 1> HALF_LEN_VEC_TYPE;
+        typedef int32_t                SCALAR_INT_TYPE;
+        typedef SIMDVecMask<2>         MASK_TYPE;
+        typedef SIMDVecSwizzle<2>      SWIZZLE_MASK_TYPE;
     };
 
     template<>
-    struct SIMDVecAVX_u_traits<uint64_t, 1> {
-        typedef int64_t      SCALAR_INT_TYPE;
-        typedef SIMDMask1    MASK_TYPE;
-        typedef SIMDSwizzle1 SWIZZLE_MASK_TYPE;
+    struct SIMDVec_u_traits<uint64_t, 1> {
+        typedef int64_t             SCALAR_INT_TYPE;
+        typedef SIMDVecMask<1>      MASK_TYPE;
+        typedef SIMDVecSwizzle<1>   SWIZZLE_MASK_TYPE;
     };
 
     // 128b vectors
     template<>
-    struct SIMDVecAVX_u_traits<uint8_t, 16> {
-        typedef SIMDVecAVX_u<uint8_t, 8>  HALF_LEN_VEC_TYPE;
-        typedef int8_t                    SCALAR_INT_TYPE;
-        typedef SIMDMask16                MASK_TYPE;
-        typedef SIMDSwizzle16             SWIZZLE_MASK_TYPE;
+    struct SIMDVec_u_traits<uint8_t, 16> {
+        typedef SIMDVec_u<uint8_t, 8> HALF_LEN_VEC_TYPE;
+        typedef int8_t                SCALAR_INT_TYPE;
+        typedef SIMDVecMask<16>       MASK_TYPE;
+        typedef SIMDVecSwizzle<16>    SWIZZLE_MASK_TYPE;
     };
 
     template<>
-    struct SIMDVecAVX_u_traits<uint16_t, 8> {
-        typedef SIMDVecAVX_u<uint16_t, 4> HALF_LEN_VEC_TYPE;
-        typedef int16_t                   SCALAR_INT_TYPE;
-        typedef SIMDMask8                 MASK_TYPE;
-        typedef SIMDSwizzle8              SWIZZLE_MASK_TYPE;
+    struct SIMDVec_u_traits<uint16_t, 8> {
+        typedef SIMDVec_u<uint16_t, 4> HALF_LEN_VEC_TYPE;
+        typedef int16_t                SCALAR_INT_TYPE;
+        typedef SIMDVecMask<8>         MASK_TYPE;
+        typedef SIMDVecSwizzle<8>      SWIZZLE_MASK_TYPE;
     };
 
     template<>
-    struct SIMDVecAVX_u_traits<uint32_t, 4> {
-        typedef SIMDVecAVX_u<uint32_t, 2> HALF_LEN_VEC_TYPE;
-        typedef int32_t                   SCALAR_INT_TYPE;
-        typedef SIMDMask4                 MASK_TYPE;
-        typedef SIMDSwizzle4              SWIZZLE_MASK_TYPE;
+    struct SIMDVec_u_traits<uint32_t, 4> {
+        typedef SIMDVec_u<uint32_t, 2> HALF_LEN_VEC_TYPE;
+        typedef int32_t                SCALAR_INT_TYPE;
+        typedef SIMDVecMask<4>         MASK_TYPE;
+        typedef SIMDVecSwizzle<4>      SWIZZLE_MASK_TYPE;
     };
 
     template<>
-    struct SIMDVecAVX_u_traits<uint64_t, 2> {
-        typedef SIMDVecAVX_u<uint64_t, 1> HALF_LEN_VEC_TYPE;
-        typedef int64_t                   SCALAR_INT_TYPE;
-        typedef SIMDMask2                 MASK_TYPE;
-        typedef SIMDSwizzle2              SWIZZLE_MASK_TYPE;
+    struct SIMDVec_u_traits<uint64_t, 2> {
+        typedef SIMDVec_u<uint64_t, 1> HALF_LEN_VEC_TYPE;
+        typedef int64_t                SCALAR_INT_TYPE;
+        typedef SIMDVecMask<2>         MASK_TYPE;
+        typedef SIMDVecSwizzle<2>      SWIZZLE_MASK_TYPE;
     };
 
     // 256b vectors
     template<>
-    struct SIMDVecAVX_u_traits<uint8_t, 32> {
-        typedef SIMDVecAVX_u<uint8_t, 16> HALF_LEN_VEC_TYPE;
-        typedef int8_t                    SCALAR_INT_TYPE;
-        typedef SIMDMask32                MASK_TYPE;
-        typedef SIMDSwizzle32             SWIZZLE_MASK_TYPE;
+    struct SIMDVec_u_traits<uint8_t, 32> {
+        typedef SIMDVec_u<uint8_t, 16> HALF_LEN_VEC_TYPE;
+        typedef int8_t                 SCALAR_INT_TYPE;
+        typedef SIMDVecMask<32>        MASK_TYPE;
+        typedef SIMDVecSwizzle<32>     SWIZZLE_MASK_TYPE;
     };
 
     template<>
-    struct SIMDVecAVX_u_traits<uint16_t, 16> {
-        typedef SIMDVecAVX_u<uint16_t, 8> HALF_LEN_VEC_TYPE;
-        typedef int16_t                   SCALAR_INT_TYPE;
-        typedef SIMDMask16                MASK_TYPE;
-        typedef SIMDSwizzle16             SWIZZLE_MASK_TYPE;
+    struct SIMDVec_u_traits<uint16_t, 16> {
+        typedef SIMDVec_u<uint16_t, 8> HALF_LEN_VEC_TYPE;
+        typedef int16_t                SCALAR_INT_TYPE;
+        typedef SIMDVecMask<16>        MASK_TYPE;
+        typedef SIMDVecSwizzle<16>     SWIZZLE_MASK_TYPE;
     };
 
     template<>
-    struct SIMDVecAVX_u_traits<uint32_t, 8> {
-        typedef SIMDVecAVX_u<uint32_t, 4> HALF_LEN_VEC_TYPE;
-        typedef int32_t                   SCALAR_INT_TYPE;
-        typedef SIMDMask8                 MASK_TYPE;
-        typedef SIMDSwizzle8              SWIZZLE_MASK_TYPE;
+    struct SIMDVec_u_traits<uint32_t, 8> {
+        typedef SIMDVec_u<uint32_t, 4> HALF_LEN_VEC_TYPE;
+        typedef int32_t                SCALAR_INT_TYPE;
+        typedef SIMDVecMask<8>         MASK_TYPE;
+        typedef SIMDVecSwizzle<8>      SWIZZLE_MASK_TYPE;
     };
 
     template<>
-    struct SIMDVecAVX_u_traits<uint64_t, 4> {
-        typedef SIMDVecAVX_u<uint64_t, 2> HALF_LEN_VEC_TYPE;
-        typedef int64_t                   SCALAR_INT_TYPE;
-        typedef SIMDMask4                 MASK_TYPE;
-        typedef SIMDSwizzle4             SWIZZLE_MASK_TYPE;
+    struct SIMDVec_u_traits<uint64_t, 4> {
+        typedef SIMDVec_u<uint64_t, 2> HALF_LEN_VEC_TYPE;
+        typedef int64_t                SCALAR_INT_TYPE;
+        typedef SIMDVecMask<4>         MASK_TYPE;
+        typedef SIMDVecSwizzle<4>      SWIZZLE_MASK_TYPE;
     };
 
     // 512b vectors
     template<>
-    struct SIMDVecAVX_u_traits<uint8_t, 64> {
-        typedef SIMDVecAVX_u<uint8_t, 32> HALF_LEN_VEC_TYPE;
-        typedef int8_t                    SCALAR_INT_TYPE;
-        typedef SIMDMask64                MASK_TYPE;
-        typedef SIMDSwizzle64             SWIZZLE_MASK_TYPE;
+    struct SIMDVec_u_traits<uint8_t, 64> {
+        typedef SIMDVec_u<uint8_t, 32> HALF_LEN_VEC_TYPE;
+        typedef int8_t                 SCALAR_INT_TYPE;
+        typedef SIMDVecMask<64>        MASK_TYPE;
+        typedef SIMDVecSwizzle<64>     SWIZZLE_MASK_TYPE;
     };
 
     template<>
-    struct SIMDVecAVX_u_traits<uint16_t, 32> {
-        typedef SIMDVecAVX_u<uint16_t, 16> HALF_LEN_VEC_TYPE;
-        typedef int16_t                    SCALAR_INT_TYPE;
-        typedef SIMDMask32                 MASK_TYPE;
-        typedef SIMDSwizzle32              SWIZZLE_MASK_TYPE;
+    struct SIMDVec_u_traits<uint16_t, 32> {
+        typedef SIMDVec_u<uint16_t, 16> HALF_LEN_VEC_TYPE;
+        typedef int16_t                 SCALAR_INT_TYPE;
+        typedef SIMDVecMask<32>         MASK_TYPE;
+        typedef SIMDVecSwizzle<32>      SWIZZLE_MASK_TYPE;
     };
 
     template<>
-    struct SIMDVecAVX_u_traits<uint32_t, 16> {
-        typedef SIMDVecAVX_u<uint32_t, 8> HALF_LEN_VEC_TYPE;
-        typedef int32_t                   SCALAR_INT_TYPE;
-        typedef SIMDMask16                MASK_TYPE;
-        typedef SIMDSwizzle16             SWIZZLE_MASK_TYPE;
+    struct SIMDVec_u_traits<uint32_t, 16> {
+        typedef SIMDVec_u<uint32_t, 8> HALF_LEN_VEC_TYPE;
+        typedef int32_t                SCALAR_INT_TYPE;
+        typedef SIMDVecMask<16>        MASK_TYPE;
+        typedef SIMDVecSwizzle<16>     SWIZZLE_MASK_TYPE;
     };
 
     template<>
-    struct SIMDVecAVX_u_traits<uint64_t, 8> {
-        typedef SIMDVecAVX_u<uint64_t, 4> HALF_LEN_VEC_TYPE;
-        typedef int64_t                   SCALAR_INT_TYPE;
-        typedef SIMDMask8                 MASK_TYPE;
-        typedef SIMDSwizzle8              SWIZZLE_MASK_TYPE;
+    struct SIMDVec_u_traits<uint64_t, 8> {
+        typedef SIMDVec_u<uint64_t, 4> HALF_LEN_VEC_TYPE;
+        typedef int64_t                SCALAR_INT_TYPE;
+        typedef SIMDVecMask<8>         MASK_TYPE;
+        typedef SIMDVecSwizzle<8>      SWIZZLE_MASK_TYPE;
     };
 
     // 1024b vectors
     template<>
-    struct SIMDVecAVX_u_traits<uint8_t, 128> {
-        typedef SIMDVecAVX_u<uint8_t, 128> HALF_LEN_VEC_TYPE;
-        typedef int8_t                     SCALAR_INT_TYPE;
-        typedef SIMDMask128                MASK_TYPE;
-        typedef SIMDSwizzle128             SWIZZLE_MASK_TYPE;
+    struct SIMDVec_u_traits<uint8_t, 128> {
+        typedef SIMDVec_u<uint8_t, 64> HALF_LEN_VEC_TYPE;
+        typedef int8_t                 SCALAR_INT_TYPE;
+        typedef SIMDVecMask<128>       MASK_TYPE;
+        typedef SIMDVecSwizzle<128>    SWIZZLE_MASK_TYPE;
     };
 
     template<>
-    struct SIMDVecAVX_u_traits<uint16_t, 64> {
-        typedef SIMDVecAVX_u<uint16_t, 32> HALF_LEN_VEC_TYPE;
-        typedef int16_t                    SCALAR_INT_TYPE;
-        typedef SIMDMask64                 MASK_TYPE;
-        typedef SIMDSwizzle64              SWIZZLE_MASK_TYPE;
+    struct SIMDVec_u_traits<uint16_t, 64> {
+        typedef SIMDVec_u<uint16_t, 32> HALF_LEN_VEC_TYPE;
+        typedef int16_t                 SCALAR_INT_TYPE;
+        typedef SIMDVecMask<64>         MASK_TYPE;
+        typedef SIMDVecSwizzle<64>      SWIZZLE_MASK_TYPE;
     };
 
     template<>
-    struct SIMDVecAVX_u_traits<uint32_t, 32> {
-        typedef SIMDVecAVX_u<uint32_t, 16> HALF_LEN_VEC_TYPE;
-        typedef int32_t                    SCALAR_INT_TYPE;
-        typedef SIMDMask32                 MASK_TYPE;
-        typedef SIMDSwizzle32              SWIZZLE_MASK_TYPE;
+    struct SIMDVec_u_traits<uint32_t, 32> {
+        typedef SIMDVec_u<uint32_t, 16> HALF_LEN_VEC_TYPE;
+        typedef int32_t                 SCALAR_INT_TYPE;
+        typedef SIMDVecMask<32>         MASK_TYPE;
+        typedef SIMDVecSwizzle<32>      SWIZZLE_MASK_TYPE;
     };
 
     template<>
-    struct SIMDVecAVX_u_traits<uint64_t, 16> {
-        typedef SIMDVecAVX_u<uint64_t, 8> HALF_LEN_VEC_TYPE;
-        typedef int64_t                   SCALAR_INT_TYPE;
-        typedef SIMDMask16                MASK_TYPE;
-        typedef SIMDSwizzle16             SWIZZLE_MASK_TYPE;
+    struct SIMDVec_u_traits<uint64_t, 16> {
+        typedef SIMDVec_u<uint64_t, 8> HALF_LEN_VEC_TYPE;
+        typedef int64_t                SCALAR_INT_TYPE;
+        typedef SIMDVecMask<16>        MASK_TYPE;
+        typedef SIMDVecSwizzle<16>     SWIZZLE_MASK_TYPE;
     };
 
     // ***************************************************************************
@@ -273,25 +273,25 @@ namespace SIMD {
     // *
     // ***************************************************************************
     template<typename SCALAR_UINT_TYPE, uint32_t VEC_LEN>
-    class SIMDVecAVX_u final :
-        public SIMDVecUnsignedInterface<
-        SIMDVecAVX_u<SCALAR_UINT_TYPE, VEC_LEN>, // DERIVED_UINT_VEC_TYPE
-        SCALAR_UINT_TYPE,                        // SCALAR_UINT_TYPE
-        VEC_LEN,
-        typename SIMDVecAVX_u_traits<SCALAR_UINT_TYPE, VEC_LEN>::MASK_TYPE,
-        typename SIMDVecAVX_u_traits<SCALAR_UINT_TYPE, VEC_LEN>::SWIZZLE_MASK_TYPE>,
+    class SIMDVec_u final :
+            public SIMDVecUnsignedInterface<
+            SIMDVec_u<SCALAR_UINT_TYPE, VEC_LEN>, // DERIVED_UINT_VEC_TYPE
+            SCALAR_UINT_TYPE,                        // SCALAR_UINT_TYPE
+            VEC_LEN,
+            typename SIMDVec_u_traits<SCALAR_UINT_TYPE, VEC_LEN>::MASK_TYPE,
+            typename SIMDVec_u_traits<SCALAR_UINT_TYPE, VEC_LEN>::SWIZZLE_MASK_TYPE>,
         public SIMDVecPackableInterface<
-        SIMDVecAVX_u<SCALAR_UINT_TYPE, VEC_LEN>,        // DERIVED_VEC_TYPE
-        typename SIMDVecAVX_u_traits<SCALAR_UINT_TYPE, VEC_LEN>::HALF_LEN_VEC_TYPE> // DERIVED_HALF_VEC_TYPE
+           SIMDVec_u<SCALAR_UINT_TYPE, VEC_LEN>,        // DERIVED_VEC_TYPE
+           typename SIMDVec_u_traits<SCALAR_UINT_TYPE, VEC_LEN>::HALF_LEN_VEC_TYPE> // DERIVED_HALF_VEC_TYPE
     {
     public:
-        typedef SIMDVecEmuRegister<SCALAR_UINT_TYPE, VEC_LEN>                                   VEC_EMU_REG;
+        typedef SIMDVecEmuRegister<SCALAR_UINT_TYPE, VEC_LEN>   VEC_EMU_REG;
 
-        typedef typename SIMDVecAVX_u_traits<SCALAR_UINT_TYPE, VEC_LEN>::SCALAR_INT_TYPE  SCALAR_INT_TYPE;
-        typedef typename SIMDVecAVX_u_traits<SCALAR_UINT_TYPE, VEC_LEN>::MASK_TYPE        MASK_TYPE;
+        typedef typename SIMDVec_u_traits<SCALAR_UINT_TYPE, VEC_LEN>::SCALAR_INT_TYPE  SCALAR_INT_TYPE;
+        typedef typename SIMDVec_u_traits<SCALAR_UINT_TYPE, VEC_LEN>::MASK_TYPE        MASK_TYPE;
 
         // Conversion operators require access to private members.
-        friend class SIMDVecAVX_i<SCALAR_INT_TYPE, VEC_LEN>;
+        friend class SIMDVec_i<SCALAR_INT_TYPE, VEC_LEN>;
 
     private:
         // This is the only data member and it is a low level representation of vector register.
@@ -299,29 +299,29 @@ namespace SIMD {
 
     public:
         // ZERO-CONSTR
-        inline SIMDVecAVX_u() : mVec() {};
+        inline SIMDVec_u() : mVec() {};
 
         // SET-CONSTR
-        inline explicit SIMDVecAVX_u(SCALAR_UINT_TYPE i) : mVec(i) {};
+        inline explicit SIMDVec_u(SCALAR_UINT_TYPE i) : mVec(i) {};
 
         // LOAD-CONSTR - Construct by loading from memory
-        inline explicit SIMDVecAVX_u(SCALAR_UINT_TYPE const *p) { this->load(p); };
+        inline explicit SIMDVec_u(SCALAR_UINT_TYPE const *p) { this->load(p); };
 
-        inline SIMDVecAVX_u(SCALAR_UINT_TYPE i0, SCALAR_UINT_TYPE i1) {
+        inline SIMDVec_u(SCALAR_UINT_TYPE i0, SCALAR_UINT_TYPE i1) {
             mVec.insert(0, i0);  mVec.insert(1, i1);
         }
 
-        inline SIMDVecAVX_u(SCALAR_UINT_TYPE i0, SCALAR_UINT_TYPE i1, SCALAR_UINT_TYPE i2, SCALAR_UINT_TYPE i3) {
+        inline SIMDVec_u(SCALAR_UINT_TYPE i0, SCALAR_UINT_TYPE i1, SCALAR_UINT_TYPE i2, SCALAR_UINT_TYPE i3) {
             mVec.insert(0, i0);  mVec.insert(1, i1);  mVec.insert(2, i2);  mVec.insert(3, i3);
         }
 
-        inline SIMDVecAVX_u(SCALAR_UINT_TYPE i0, SCALAR_UINT_TYPE i1, SCALAR_UINT_TYPE i2, SCALAR_UINT_TYPE i3, SCALAR_UINT_TYPE i4, SCALAR_UINT_TYPE i5, SCALAR_UINT_TYPE i6, SCALAR_UINT_TYPE i7)
+        inline SIMDVec_u(SCALAR_UINT_TYPE i0, SCALAR_UINT_TYPE i1, SCALAR_UINT_TYPE i2, SCALAR_UINT_TYPE i3, SCALAR_UINT_TYPE i4, SCALAR_UINT_TYPE i5, SCALAR_UINT_TYPE i6, SCALAR_UINT_TYPE i7)
         {
             mVec.insert(0, i0);  mVec.insert(1, i1);  mVec.insert(2, i2);  mVec.insert(3, i3);
             mVec.insert(4, i4);  mVec.insert(5, i5);  mVec.insert(6, i6);  mVec.insert(7, i7);
         }
 
-        inline SIMDVecAVX_u(SCALAR_UINT_TYPE i0, SCALAR_UINT_TYPE i1, SCALAR_UINT_TYPE i2, SCALAR_UINT_TYPE i3, SCALAR_UINT_TYPE i4, SCALAR_UINT_TYPE i5, SCALAR_UINT_TYPE i6, SCALAR_UINT_TYPE i7,
+        inline SIMDVec_u(SCALAR_UINT_TYPE i0, SCALAR_UINT_TYPE i1, SCALAR_UINT_TYPE i2, SCALAR_UINT_TYPE i3, SCALAR_UINT_TYPE i4, SCALAR_UINT_TYPE i5, SCALAR_UINT_TYPE i6, SCALAR_UINT_TYPE i7,
             SCALAR_UINT_TYPE i8, SCALAR_UINT_TYPE i9, SCALAR_UINT_TYPE i10, SCALAR_UINT_TYPE i11, SCALAR_UINT_TYPE i12, SCALAR_UINT_TYPE i13, SCALAR_UINT_TYPE i14, SCALAR_UINT_TYPE i15)
         {
             mVec.insert(0, i0);    mVec.insert(1, i1);    mVec.insert(2, i2);    mVec.insert(3, i3);
@@ -330,7 +330,7 @@ namespace SIMD {
             mVec.insert(12, i12);  mVec.insert(13, i13);  mVec.insert(14, i14);  mVec.insert(15, i15);
         }
 
-        inline SIMDVecAVX_u(SCALAR_UINT_TYPE i0, SCALAR_UINT_TYPE i1, SCALAR_UINT_TYPE i2, SCALAR_UINT_TYPE i3, SCALAR_UINT_TYPE i4, SCALAR_UINT_TYPE i5, SCALAR_UINT_TYPE i6, SCALAR_UINT_TYPE i7,
+        inline SIMDVec_u(SCALAR_UINT_TYPE i0, SCALAR_UINT_TYPE i1, SCALAR_UINT_TYPE i2, SCALAR_UINT_TYPE i3, SCALAR_UINT_TYPE i4, SCALAR_UINT_TYPE i5, SCALAR_UINT_TYPE i6, SCALAR_UINT_TYPE i7,
             SCALAR_UINT_TYPE i8, SCALAR_UINT_TYPE i9, SCALAR_UINT_TYPE i10, SCALAR_UINT_TYPE i11, SCALAR_UINT_TYPE i12, SCALAR_UINT_TYPE i13, SCALAR_UINT_TYPE i14, SCALAR_UINT_TYPE i15,
             SCALAR_UINT_TYPE i16, SCALAR_UINT_TYPE i17, SCALAR_UINT_TYPE i18, SCALAR_UINT_TYPE i19, SCALAR_UINT_TYPE i20, SCALAR_UINT_TYPE i21, SCALAR_UINT_TYPE i22, SCALAR_UINT_TYPE i23,
             SCALAR_UINT_TYPE i24, SCALAR_UINT_TYPE i25, SCALAR_UINT_TYPE i26, SCALAR_UINT_TYPE i27, SCALAR_UINT_TYPE i28, SCALAR_UINT_TYPE i29, SCALAR_UINT_TYPE i30, SCALAR_UINT_TYPE i31)
@@ -351,18 +351,19 @@ namespace SIMD {
         }
 
         // Override Mask Access operators
-        inline IntermediateMask<SIMDVecAVX_u, MASK_TYPE> operator[] (MASK_TYPE const & mask) {
-            return IntermediateMask<SIMDVecAVX_u, MASK_TYPE>(mask, static_cast<SIMDVecAVX_u &>(*this));
+        inline IntermediateMask<SIMDVec_u, MASK_TYPE> operator[] (MASK_TYPE const & mask) {
+            return IntermediateMask<SIMDVec_u, MASK_TYPE>(mask, static_cast<SIMDVec_u &>(*this));
         }
 
         // insert[] (scalar)
-        inline SIMDVecAVX_u & insert(uint32_t index, SCALAR_UINT_TYPE value) {
+        inline SIMDVec_u & insert(uint32_t index, SCALAR_UINT_TYPE value) {
             mVec.insert(index, value);
             return *this;
         }
 
-        inline  operator SIMDVecAVX_i<SCALAR_INT_TYPE, VEC_LEN>() const {
-            SIMDVecAVX_i<SCALAR_INT_TYPE, VEC_LEN> retval;
+        // UTOI
+        inline  operator SIMDVec_i<SCALAR_INT_TYPE, VEC_LEN>() const {
+            SIMDVec_i<SCALAR_INT_TYPE, VEC_LEN> retval;
             for (uint32_t i = 0; i < VEC_LEN; i++) {
                 retval.insert(i, (SCALAR_INT_TYPE)mVec[i]);
             }
@@ -378,22 +379,21 @@ namespace SIMD {
     // *
     // ***************************************************************************
     template<typename SCALAR_UINT_TYPE>
-    class SIMDVecAVX_u<SCALAR_UINT_TYPE, 1> :
+    class SIMDVec_u<SCALAR_UINT_TYPE, 1> final :
         public SIMDVecUnsignedInterface<
-        SIMDVecAVX_u<SCALAR_UINT_TYPE, 1>, // DERIVED_UINT_VEC_TYPE
-        SCALAR_UINT_TYPE,                  // SCALAR_UINT_TYPE
-        1,
-        typename SIMDVecAVX_u_traits<SCALAR_UINT_TYPE, 1>::MASK_TYPE,
-        typename SIMDVecAVX_u_traits<SCALAR_UINT_TYPE, 1>::SWIZZLE_MASK_TYPE>
+            SIMDVec_u<SCALAR_UINT_TYPE, 1>, // DERIVED_UINT_VEC_TYPE
+            SCALAR_UINT_TYPE,               // SCALAR_UINT_TYPE
+            1,
+            typename SIMDVec_u_traits<SCALAR_UINT_TYPE, 1>::MASK_TYPE,
+            typename SIMDVec_u_traits<SCALAR_UINT_TYPE, 1>::SWIZZLE_MASK_TYPE>
     {
     public:
         typedef SIMDVecEmuRegister<SCALAR_UINT_TYPE, 1>                                   VEC_EMU_REG;
 
-        typedef typename SIMDVecAVX_u_traits<SCALAR_UINT_TYPE, 1>::SCALAR_INT_TYPE  SCALAR_INT_TYPE;
-        typedef typename SIMDVecAVX_u_traits<SCALAR_UINT_TYPE, 1>::MASK_TYPE        MASK_TYPE;
+        typedef typename SIMDVec_u_traits<SCALAR_UINT_TYPE, 1>::SCALAR_INT_TYPE  SCALAR_INT_TYPE;
 
         // Conversion operators require access to private members.
-        friend class SIMDVecAVX_i<SCALAR_INT_TYPE, 1>;
+        friend class SIMDVec_i<SCALAR_INT_TYPE, 1>;
 
     private:
         // This is the only data member and it is a low level representation of vector register.
@@ -401,13 +401,13 @@ namespace SIMD {
 
     public:
         // ZERO-CONSTR
-        inline SIMDVecAVX_u() : mVec() {};
+        inline SIMDVec_u() : mVec() {};
 
         // SET-CONSTR
-        inline explicit SIMDVecAVX_u(SCALAR_UINT_TYPE i) : mVec(i) {};
+        inline explicit SIMDVec_u(SCALAR_UINT_TYPE i) : mVec(i) {};
 
         // LOAD-CONSTR - Construct by loading from memory
-        inline explicit SIMDVecAVX_u(SCALAR_UINT_TYPE const *p) { this->load(p); };
+        inline explicit SIMDVec_u(SCALAR_UINT_TYPE const *p) { this->load(p); };
 
         // Override Access operators
         inline SCALAR_UINT_TYPE operator[] (uint32_t index) const {
@@ -415,19 +415,24 @@ namespace SIMD {
         }
 
         // Override Mask Access operators
-        inline IntermediateMask<SIMDVecAVX_u, MASK_TYPE> operator[] (MASK_TYPE const & mask) {
-            return IntermediateMask<SIMDVecAVX_u, MASK_TYPE>(mask, static_cast<SIMDVecAVX_u &>(*this));
+        inline IntermediateMask<SIMDVec_u, SIMDVecMask<1>> operator[] (SIMDVecMask<1> & mask) {
+            return IntermediateMask<SIMDVec_u, SIMDVecMask<1>>(mask, static_cast<SIMDVec_u &>(*this));
         }
 
         // insert[] (scalar)
-        inline SIMDVecAVX_u & insert(uint32_t index, SCALAR_UINT_TYPE value) {
+        inline SIMDVec_u & insert(uint32_t index, SCALAR_UINT_TYPE value) {
             mVec.insert(index, value);
             return *this;
         }
 
-        inline  operator SIMDVecAVX_i<SCALAR_INT_TYPE, 1>() const {
-            SIMDVecAVX_i<SCALAR_INT_TYPE, 1> retval(mVec[0]);
+        inline  operator SIMDVec_i<SCALAR_INT_TYPE, 1>() const {
+            SIMDVec_i<SCALAR_INT_TYPE, 1> retval(mVec[0]);
             return retval;
+        }
+
+        // UNIQUE
+        inline bool unique() const {
+            return true;
         }
     };
 
@@ -435,51 +440,50 @@ namespace SIMD {
     // UNSIGNED INTEGER VECTORS specialization
     // ********************************************************************************************
     template<>
-    class SIMDVecAVX_u<uint32_t, 8> :
+    class SIMDVec_u<uint32_t, 8> :
         public SIMDVecUnsignedInterface<
-        SIMDVecAVX_u<uint32_t, 8>,
+        SIMDVec_u<uint32_t, 8>,
         uint32_t,
         8,
-        SIMDMask8,
-        SIMDSwizzle8>,
+        SIMDVecMask<8>,
+        SIMDVecSwizzle<8>>,
         public SIMDVecPackableInterface<
-        SIMDVecAVX_u<uint32_t, 8>,
-        SIMDVecAVX_u<uint32_t, 4 >>
+        SIMDVec_u<uint32_t, 8>,
+        SIMDVec_u<uint32_t, 4 >>
     {
     public:
         // Conversion operators require access to private members.
-        friend class SIMDVecAVX_i<int32_t, 8>;
-        friend class SIMDVecAVX_f<float, 8>;
+        friend class SIMDVec_i<int32_t, 8>;
+        friend class SIMDVec_f<float, 8>;
 
     private:
         __m256i mVec;
 
-        inline SIMDVecAVX_u(__m256i & x) { this->mVec = x; }
+        inline SIMDVec_u(__m256i & x) { this->mVec = x; }
     public:
 
         // ZERO-CONSTR
-        inline SIMDVecAVX_u() {
+        inline SIMDVec_u() {
             mVec = _mm256_setzero_si256();
         }
 
         // SET-CONSTR
-        inline explicit SIMDVecAVX_u(uint32_t i) {
+        inline explicit SIMDVec_u(uint32_t i) {
             mVec = _mm256_set1_epi32(i);
         }
 
         // LOAD-CONSTR
-        inline explicit SIMDVecAVX_u(uint32_t const * p) {
+        inline explicit SIMDVec_u(uint32_t const * p) {
             mVec = _mm256_loadu_si256((__m256i*)p);
         }
 
-        inline SIMDVecAVX_u(uint32_t i0, uint32_t i1, uint32_t i2, uint32_t i3,
+        inline SIMDVec_u(uint32_t i0, uint32_t i1, uint32_t i2, uint32_t i3,
             uint32_t i4, uint32_t i5, uint32_t i6, uint32_t i7)
         {
             mVec = _mm256_setr_epi32(i0, i1, i2, i3, i4, i5, i6, i7);
         }
 
         inline uint32_t extract(uint32_t index) const {
-            //UME_PERFORMANCE_UNOPTIMAL_WARNING(); // This routine can be optimized
             alignas(32) uint32_t raw[8];
             _mm256_store_si256((__m256i*)raw, mVec);
             return raw[index];
@@ -491,13 +495,12 @@ namespace SIMD {
         }
 
         // Override Mask Access operators
-        inline IntermediateMask<SIMDVecAVX_u, SIMDMask8> operator[] (SIMDMask8 const & mask) {
-            return IntermediateMask<SIMDVecAVX_u, SIMDMask8>(mask, static_cast<SIMDVecAVX_u &>(*this));
+        inline IntermediateMask<SIMDVec_u, SIMDVecMask<8>> operator[] (SIMDVecMask<8> const & mask) {
+            return IntermediateMask<SIMDVec_u, SIMDVecMask<8>>(mask, static_cast<SIMDVec_u &>(*this));
         }
 
         // insert[] (scalar)
-        inline SIMDVecAVX_u & insert(uint32_t index, uint32_t value) {
-            //UME_PERFORMANCE_UNOPTIMAL_WARNING();
+        inline SIMDVec_u & insert(uint32_t index, uint32_t value) {
             alignas(32) uint32_t raw[8];
             _mm256_store_si256((__m256i*)raw, mVec);
             raw[index] = value;
@@ -511,7 +514,7 @@ namespace SIMD {
         }
 
         // ADDV
-        inline SIMDVecAVX_u add(SIMDVecAVX_u const & b) const {
+        inline SIMDVec_u add(SIMDVec_u const & b) const {
             __m128i t0 = _mm256_extractf128_si256(b.mVec, 0);
             __m128i t1 = _mm256_extractf128_si256(mVec, 0);
             __m128i t2 = _mm_add_epi32(t0, t1);
@@ -519,15 +522,14 @@ namespace SIMD {
             __m128i t4 = _mm256_extractf128_si256(mVec, 1);
             __m128i t5 = _mm_add_epi32(t3, t4);
             __m256i t6 = _mm256_insertf128_si256(_mm256_castsi128_si256(t2), (t5), 0x1);
-            return SIMDVecAVX_u(t6);
+            return SIMDVec_u(t6);
         }
 
-        inline SIMDVecAVX_u operator+ (SIMDVecAVX_u const & b) const {
+        inline SIMDVec_u operator+ (SIMDVec_u const & b) const {
             return add(b);
         }
-
         // MADDV
-        inline SIMDVecAVX_u add(SIMDMask8 const & mask, SIMDVecAVX_u const & b) const {
+        inline SIMDVec_u add(SIMDVecMask<8> const & mask, SIMDVec_u const & b) const {
             __m128i t0 = _mm256_extractf128_si256(b.mVec, 0);
             __m128i t1 = _mm256_extractf128_si256(mVec, 0);
             __m128i t2 = _mm_add_epi32(t0, t1);
@@ -537,22 +539,20 @@ namespace SIMD {
             __m128i t6 = _mm_add_epi32(t4, t5);
             __m128i t7 = _mm_blendv_epi8(t5, t6, _mm256_extractf128_si256(mask.mMask, 1));
             __m256i t8 = _mm256_insertf128_si256(_mm256_castsi128_si256(t3), (t7), 0x1);
-            return SIMDVecAVX_u(t8);
+            return SIMDVec_u(t8);
         }
-
         // ADDS
-        inline SIMDVecAVX_u add(uint32_t b) const {
+        inline SIMDVec_u add(uint32_t b) const {
             __m128i t0 = _mm_set1_epi32(b);
             __m128i t1 = _mm256_extractf128_si256(mVec, 0);
             __m128i t2 = _mm_add_epi32(t0, t1);
             __m128i t3 = _mm256_extractf128_si256(mVec, 1);
             __m128i t4 = _mm_add_epi32(t0, t3);
             __m256i t5 = _mm256_insertf128_si256(_mm256_castsi128_si256(t2), (t4), 0x1);
-            return SIMDVecAVX_u(t5);
+            return SIMDVec_u(t5);
         }
-
         // MADDS
-        inline SIMDVecAVX_u add(SIMDMask8 const & mask, uint32_t b) const {
+        inline SIMDVec_u add(SIMDVecMask<8> const & mask, uint32_t b) const {
             __m128i t0 = _mm_set1_epi32(b);
             __m128i t1 = _mm256_extractf128_si256(mVec, 0);
             __m128i t2 = _mm_add_epi32(t0, t1);
@@ -561,11 +561,10 @@ namespace SIMD {
             __m128i t5 = _mm_add_epi32(t0, t4);
             __m128i t6 = _mm_blendv_epi8(t4, t5, _mm256_extractf128_si256(mask.mMask, 1));
             __m256i t7 = _mm256_insertf128_si256(_mm256_castsi128_si256(t3), (t6), 0x1);
-            return SIMDVecAVX_u(t7);
+            return SIMDVec_u(t7);
         }
-
         // ADDVA
-        inline SIMDVecAVX_u & adda(SIMDVecAVX_u const & b) {
+        inline SIMDVec_u & adda(SIMDVec_u const & b) {
             __m128i t0 = _mm256_extractf128_si256(b.mVec, 0);
             __m128i t1 = _mm256_extractf128_si256(mVec, 0);
             __m128i t2 = _mm_add_epi32(t0, t1);
@@ -575,9 +574,8 @@ namespace SIMD {
             mVec = _mm256_insertf128_si256(_mm256_castsi128_si256(t2), (t5), 0x1);
             return *this;
         }
-
         // MADDVA
-        inline SIMDVecAVX_u & adda(SIMDMask8 const & mask, SIMDVecAVX_u const & b) {
+        inline SIMDVec_u & adda(SIMDVecMask<8> const & mask, SIMDVec_u const & b) {
             __m128i t0 = _mm256_extractf128_si256(b.mVec, 0);
             __m128i t1 = _mm256_extractf128_si256(mVec, 0);
             __m128i t2 = _mm_add_epi32(t0, t1);
@@ -589,9 +587,8 @@ namespace SIMD {
             mVec = _mm256_insertf128_si256(_mm256_castsi128_si256(t3), (t7), 0x1);
             return *this;
         }
-
         // ADDSA 
-        inline SIMDVecAVX_u & adda(uint32_t b) {
+        inline SIMDVec_u & adda(uint32_t b) {
             __m128i t0 = _mm_set1_epi32(b);
             __m128i t1 = _mm256_extractf128_si256(mVec, 0);
             __m128i t2 = _mm_add_epi32(t0, t1);
@@ -600,9 +597,8 @@ namespace SIMD {
             mVec = _mm256_insertf128_si256(_mm256_castsi128_si256(t2), (t4), 0x1);
             return *this;
         }
-
         // MADDSA
-        inline SIMDVecAVX_u & adda(SIMDMask8 const & mask, uint32_t b) {
+        inline SIMDVec_u & adda(SIMDVecMask<8> const & mask, uint32_t b) {
             __m128i t0 = _mm_set1_epi32(b);
             __m128i t1 = _mm256_extractf128_si256(mVec, 0);
             __m128i t2 = _mm_add_epi32(t0, t1);
@@ -615,7 +611,7 @@ namespace SIMD {
         }
 
         // MULV
-        inline SIMDVecAVX_u mul(SIMDVecAVX_u const & b) {
+        inline SIMDVec_u mul(SIMDVec_u const & b) {
             __m128i a_low = _mm256_extractf128_si256(mVec, 0);
             __m128i a_high = _mm256_extractf128_si256(mVec, 1);
             __m128i b_low = _mm256_extractf128_si256(b.mVec, 0);
@@ -625,10 +621,10 @@ namespace SIMD {
             __m256i ret = _mm256_setzero_si256();
             ret = _mm256_insertf128_si256(ret, r_low, 0);
             ret = _mm256_insertf128_si256(ret, r_high, 1);
-            return SIMDVecAVX_u(ret);
+            return SIMDVec_u(ret);
         }
         // MMULV
-        inline SIMDVecAVX_u mul(SIMDMask8 const & mask, SIMDVecAVX_u const & b) {
+        inline SIMDVec_u mul(SIMDVecMask<8> const & mask, SIMDVec_u const & b) {
             __m128i a_low = _mm256_extractf128_si256(mVec, 0);
             __m128i a_high = _mm256_extractf128_si256(mVec, 1);
             __m128i b_low = _mm256_extractf128_si256(b.mVec, 0);
@@ -642,10 +638,10 @@ namespace SIMD {
             __m256i ret = _mm256_setzero_si256();
             ret = _mm256_insertf128_si256(ret, r_low, 0);
             ret = _mm256_insertf128_si256(ret, r_high, 1);
-            return SIMDVecAVX_u(ret);
+            return SIMDVec_u(ret);
         }
         // MULS
-        inline SIMDVecAVX_u mul(uint32_t b) {
+        inline SIMDVec_u mul(uint32_t b) {
             __m128i a_low = _mm256_extractf128_si256(mVec, 0);
             __m128i a_high = _mm256_extractf128_si256(mVec, 1);
             __m128i b_vec = _mm_set1_epi32(b);
@@ -654,10 +650,10 @@ namespace SIMD {
             __m256i ret = _mm256_setzero_si256();
             ret = _mm256_insertf128_si256(ret, r_low, 0);
             ret = _mm256_insertf128_si256(ret, r_high, 1);
-            return SIMDVecAVX_u(ret);
+            return SIMDVec_u(ret);
         }
         // MMULS
-        inline SIMDVecAVX_u mul(SIMDMask8 const & mask, uint32_t b) {
+        inline SIMDVec_u mul(SIMDVecMask<8> const & mask, uint32_t b) {
             __m128i a_low = _mm256_extractf128_si256(mVec, 0);
             __m128i a_high = _mm256_extractf128_si256(mVec, 1);
             __m128i b_vec = _mm_set1_epi32(b);
@@ -670,10 +666,10 @@ namespace SIMD {
             __m256i ret = _mm256_setzero_si256();
             ret = _mm256_insertf128_si256(ret, r_low, 0);
             ret = _mm256_insertf128_si256(ret, r_high, 1);
-            return SIMDVecAVX_u(ret);
+            return SIMDVec_u(ret);
         }
         // CMPEQV
-        inline SIMDMask8 cmpeq(SIMDVecAVX_u const & b) {
+        inline SIMDVecMask<8> cmpeq(SIMDVec_u const & b) {
             __m128i a_low = _mm256_extractf128_si256(mVec, 0);
             __m128i a_high = _mm256_extractf128_si256(mVec, 1);
             __m128i b_low = _mm256_extractf128_si256(b.mVec, 0);
@@ -685,10 +681,10 @@ namespace SIMD {
             __m256i ret = _mm256_setzero_si256();
             ret = _mm256_insertf128_si256(ret, r_low, 0);
             ret = _mm256_insertf128_si256(ret, r_high, 1);
-            return SIMDMask8(ret);
+            return SIMDVecMask<8>(ret);
         }
         // CMPEQS
-        inline SIMDMask8 cmpeq(uint32_t b) {
+        inline SIMDVecMask<8> cmpeq(uint32_t b) {
             __m128i b_vec = _mm_set1_epi32(b);
             __m128i a_low = _mm256_extractf128_si256(mVec, 0);
             __m128i a_high = _mm256_extractf128_si256(mVec, 1);
@@ -699,20 +695,32 @@ namespace SIMD {
             __m256i ret = _mm256_setzero_si256();
             ret = _mm256_insertf128_si256(ret, r_low, 0);
             ret = _mm256_insertf128_si256(ret, r_high, 1);
-            return SIMDMask8(ret);
+            return SIMDVecMask<8>(ret);
+        }
+
+        // UNIQUE
+        inline bool unique() const {
+            alignas(32) uint32_t raw[8];
+            _mm256_store_si256((__m256i *)raw, mVec);
+            for (unsigned int i = 0; i < 7; i++) {
+                for (unsigned int j = i + 1; j < 8; j++) {
+                    if (raw[i] == raw[j]) {
+                        return false;
+                    }
+                }
+            }
+            return true;
         }
 
         // GATHERS
-        SIMDVecAVX_u & gather(uint32_t* baseAddr, uint64_t* indices) {
-            UME_PERFORMANCE_UNOPTIMAL_WARNING();
+        inline SIMDVec_u & gather(uint32_t* baseAddr, uint64_t* indices) {
             alignas(32) uint32_t raw[8] = { baseAddr[indices[0]], baseAddr[indices[1]], baseAddr[indices[2]], baseAddr[indices[3]],
                 baseAddr[indices[4]], baseAddr[indices[5]], baseAddr[indices[6]], baseAddr[indices[7]] };
             mVec = _mm256_load_si256((__m256i*)raw);
             return *this;
         }
         // MGATHERS
-        SIMDVecAVX_u & gather(SIMDMask8 const & mask, uint32_t* baseAddr, uint64_t* indices) {
-            UME_PERFORMANCE_UNOPTIMAL_WARNING();
+        inline SIMDVec_u & gather(SIMDVecMask<8> const & mask, uint32_t* baseAddr, uint64_t* indices) {
             alignas(32) uint32_t raw[8] = { baseAddr[indices[0]], baseAddr[indices[1]], baseAddr[indices[2]], baseAddr[indices[3]],
                 baseAddr[indices[4]], baseAddr[indices[5]], baseAddr[indices[6]], baseAddr[indices[7]] };
             __m128i a_low = _mm256_extractf128_si256(mVec, 0);
@@ -728,8 +736,7 @@ namespace SIMD {
             return *this;
         }
         // GATHERV
-        SIMDVecAVX_u & gather(uint32_t* baseAddr, SIMDVecAVX_u const & indices) {
-            UME_PERFORMANCE_UNOPTIMAL_WARNING();
+        inline SIMDVec_u & gather(uint32_t* baseAddr, SIMDVec_u const & indices) {
             alignas(32) uint32_t rawInd[8];
             alignas(32) uint32_t raw[8];
 
@@ -739,8 +746,7 @@ namespace SIMD {
             return *this;
         }
         // MGATHERV
-        SIMDVecAVX_u & gather(SIMDMask8 const & mask, uint32_t* baseAddr, SIMDVecAVX_u const & indices) {
-            UME_PERFORMANCE_UNOPTIMAL_WARNING();
+        inline SIMDVec_u & gather(SIMDVecMask<8> const & mask, uint32_t* baseAddr, SIMDVec_u const & indices) {
             alignas(32) uint32_t rawInd[8];
             alignas(32) uint32_t raw[8];
 
@@ -759,26 +765,23 @@ namespace SIMD {
             return *this;
         }
         // SCATTERS
-        uint32_t* scatter(uint32_t* baseAddr, uint64_t* indices) {
-            UME_PERFORMANCE_UNOPTIMAL_WARNING();
+        inline uint32_t* scatter(uint32_t* baseAddr, uint64_t* indices) {
             alignas(32) uint32_t raw[8];
             _mm256_store_si256((__m256i*) raw, mVec);
             for (int i = 0; i < 8; i++) { baseAddr[indices[i]] = raw[i]; };
             return baseAddr;
         }
         // MSCATTERS
-        uint32_t* scatter(SIMDMask8 const & mask, uint32_t* baseAddr, uint64_t* indices) {
-            UME_PERFORMANCE_UNOPTIMAL_WARNING();
+        inline uint32_t* scatter(SIMDVecMask<8> const & mask, uint32_t* baseAddr, uint64_t* indices) {
             alignas(32) uint32_t raw[8];
             alignas(32) uint32_t rawMask[8];
             _mm256_store_si256((__m256i*) raw, mVec);
             _mm256_store_si256((__m256i*) rawMask, mask.mMask);
-            for (int i = 0; i < 8; i++) { if (rawMask[i] == SIMDMask8::TRUE()) baseAddr[indices[i]] = raw[i]; };
+            for (int i = 0; i < 8; i++) { if (rawMask[i] == SIMDVecMask<8>::TRUE()) baseAddr[indices[i]] = raw[i]; };
             return baseAddr;
         }
         // SCATTERV
-        uint32_t* scatter(uint32_t* baseAddr, SIMDVecAVX_u const & indices) {
-            UME_PERFORMANCE_UNOPTIMAL_WARNING();
+        inline uint32_t* scatter(uint32_t* baseAddr, SIMDVec_u const & indices) {
             alignas(32) uint32_t raw[8];
             alignas(32) uint32_t rawIndices[8];
             _mm256_store_si256((__m256i*) raw, mVec);
@@ -787,8 +790,7 @@ namespace SIMD {
             return baseAddr;
         }
         // MSCATTERV
-        uint32_t* scatter(SIMDMask8 const & mask, uint32_t* baseAddr, SIMDVecAVX_u const & indices) {
-            UME_PERFORMANCE_UNOPTIMAL_WARNING();
+        inline uint32_t* scatter(SIMDVecMask<8> const & mask, uint32_t* baseAddr, SIMDVec_u const & indices) {
             alignas(32) uint32_t raw[8];
             alignas(32) uint32_t rawIndices[8];
             alignas(32) uint32_t rawMask[8];
@@ -796,61 +798,61 @@ namespace SIMD {
             _mm256_store_si256((__m256i*) rawIndices, indices.mVec);
             _mm256_store_si256((__m256i*) rawMask, mask.mMask);
             for (int i = 0; i < 8; i++) {
-                if (rawMask[i] == SIMDMask8::TRUE())
+                if (rawMask[i] == SIMDVecMask<8>::TRUE())
                     baseAddr[rawIndices[i]] = raw[i];
             };
             return baseAddr;
         }
 
-        inline  operator SIMDVecAVX_i<int32_t, 8> const ();
+        inline  operator SIMDVec_i<int32_t, 8> const ();
     };
 
     template<>
-    class SIMDVecAVX_u<uint32_t, 16> :
+    class SIMDVec_u<uint32_t, 16> :
         public SIMDVecUnsignedInterface<
-        SIMDVecAVX_u<uint32_t, 16>,
+        SIMDVec_u<uint32_t, 16>,
         uint32_t,
         16,
-        SIMDMask16,
-        SIMDSwizzle16>,
+        SIMDVecMask<16>,
+        SIMDVecSwizzle<16>>,
         public SIMDVecPackableInterface<
-        SIMDVecAVX_u<uint32_t, 16>,
-        SIMDVecAVX_u<uint32_t, 8 >>
+        SIMDVec_u<uint32_t, 16>,
+        SIMDVec_u<uint32_t, 8 >>
     {
     public:
         // Conversion operators require access to private members.
-        friend class SIMDVecAVX_i<int32_t, 16>;
-        friend class SIMDVecAVX_f<float, 16>;
+        friend class SIMDVec_i<int32_t, 16>;
+        friend class SIMDVec_f<float, 16>;
 
     private:
         __m256i mVecLo;
         __m256i mVecHi;
 
-        inline SIMDVecAVX_u(__m256i & x_lo, __m256i & x_hi) {
+        inline SIMDVec_u(__m256i & x_lo, __m256i & x_hi) {
             this->mVecLo = x_lo;
             this->mVecHi = x_hi;
         }
     public:
 
         // ZERO-CONSTR
-        inline SIMDVecAVX_u() {
+        inline SIMDVec_u() {
             mVecLo = _mm256_setzero_si256();
             mVecHi = mVecLo;
         }
 
         // SET-CONSTR
-        inline explicit SIMDVecAVX_u(uint32_t i) {
+        inline explicit SIMDVec_u(uint32_t i) {
             mVecLo = _mm256_set1_epi32(i);
             mVecHi = mVecLo;
         }
 
         // LOAD-CONSTR
-        inline explicit SIMDVecAVX_u(uint32_t const * p) {
+        inline explicit SIMDVec_u(uint32_t const * p) {
             mVecLo = _mm256_loadu_si256((__m256i*)p);
             mVecHi = _mm256_loadu_si256((__m256i*)(p + 8));
         }
 
-        inline SIMDVecAVX_u(uint32_t i0, uint32_t i1, uint32_t i2, uint32_t i3,
+        inline SIMDVec_u(uint32_t i0, uint32_t i1, uint32_t i2, uint32_t i3,
             uint32_t i4, uint32_t i5, uint32_t i6, uint32_t i7,
             uint32_t i8, uint32_t i9, uint32_t i10, uint32_t i11,
             uint32_t i12, uint32_t i13, uint32_t i14, uint32_t i15)
@@ -880,12 +882,12 @@ namespace SIMD {
         }
 
         // Override Mask Access operators
-        inline IntermediateMask<SIMDVecAVX_u, SIMDMask16> operator[] (SIMDMask16 const & mask) {
-            return IntermediateMask<SIMDVecAVX_u, SIMDMask16>(mask, static_cast<SIMDVecAVX_u &>(*this));
+        inline IntermediateMask<SIMDVec_u, SIMDVecMask<16>> operator[] (SIMDVecMask<16> const & mask) {
+            return IntermediateMask<SIMDVec_u, SIMDVecMask<16>>(mask, static_cast<SIMDVec_u &>(*this));
         }
 
         // insert[] (scalar)
-        inline SIMDVecAVX_u & insert(uint32_t index, uint32_t value) {
+        inline SIMDVec_u & insert(uint32_t index, uint32_t value) {
             //UME_PERFORMANCE_UNOPTIMAL_WARNING();
             alignas(32) uint32_t raw[8];
             if (index < 8) {
@@ -925,7 +927,7 @@ namespace SIMD {
         // SCATTERV
         // MSCATTERV
 
-        inline  operator SIMDVecAVX_i<int32_t, 16> const ();
+        inline  operator SIMDVec_i<int32_t, 16> const ();
     };
 
 }
