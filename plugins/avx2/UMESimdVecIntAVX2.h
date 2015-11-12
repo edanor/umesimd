@@ -540,6 +540,14 @@ namespace SIMD {
         inline  operator SIMDVec_u<uint32_t, 2> const ();
     };
 
+    SIMDVec_i<int32_t, 2>::operator UME::SIMD::SIMDVec_u<uint32_t, 2> const () {
+        return SIMDVec_u<uint32_t, 2>(uint32_t(mVec[0]), uint32_t(mVec[1]));
+    }
+
+    SIMDVec_u<uint32_t, 2>::operator UME::SIMD::SIMDVec_i<int32_t, 2> const () {
+        return SIMDVec_i<int32_t, 2>(int32_t(mVec[0]), int32_t(mVec[1]));
+    }
+
     template<>
     class SIMDVec_i<int32_t, 4> :
         public SIMDVecSignedInterface<

@@ -170,6 +170,58 @@ namespace SIMD {
     // MASK VECTOR SPECIALIZATION
     // ********************************************************************************************
     template<>
+    class SIMDVecMask<1> :
+        public SIMDMaskBaseInterface<
+        SIMDVecMask<1>,
+        uint32_t,
+        1>
+    {
+        friend class SIMDVec_u<uint32_t, 1>;
+        friend class SIMDVec_i<int32_t, 1>;
+        friend class SIMDVec_f<float, 1>;
+        friend class SIMDVec_f<double, 1>;
+    private:
+        bool mMask;
+
+    public:
+        inline SIMDVecMask() {}
+
+        // Regardless of the mask representation, the interface should only allow initialization using 
+        // standard bool or using equivalent mask
+        inline explicit SIMDVecMask(bool m) {
+            mMask = m;
+        }
+
+        // LOAD-CONSTR - Construct by loading from memory
+        inline explicit SIMDVecMask(bool const * p) {
+            mMask = p[0];
+        }
+
+        inline SIMDVecMask(SIMDVecMask const & mask) {
+            mMask = mask.mMask;
+        }
+
+        inline bool extract(uint32_t index) const {
+            return mMask;
+        }
+
+        // A non-modifying element-wise access operator
+        inline bool operator[] (uint32_t index) const {
+            return mMask;
+        }
+
+        // Element-wise modification operator
+        inline void insert(uint32_t index, bool x) {
+            mMask = x;
+        }
+
+        inline SIMDVecMask & operator= (SIMDVecMask const & mask) {
+            mMask = mask.mMask;
+            return *this;
+        }
+    };
+
+    template<>
     class SIMDVecMask<2> :
         public SIMDMaskBaseInterface<
         SIMDVecMask<2>,

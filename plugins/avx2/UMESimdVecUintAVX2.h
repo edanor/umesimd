@@ -579,7 +579,7 @@ namespace SIMD {
         // UNPACKHI
 
         // UTOI
-        inline  operator SIMDVec_i<int32_t, 2> const ();
+        inline  operator SIMDVec_i<int32_t, 2> const (); // Definition is deferred until SIMDVec_i<int32_t,2> is defined
     };
 
     template<>
