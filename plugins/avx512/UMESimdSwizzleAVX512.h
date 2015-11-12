@@ -42,24 +42,24 @@ namespace SIMD {
     // SWIZZLE MASKS
     // ********************************************************************************************
     template<uint32_t SMASK_LEN>
-    class SIMDVecAVX512SwizzleMask :
+    class SIMDVecSwizzle :
         public SIMDSwizzleMaskBaseInterface<
-        SIMDVecAVX512SwizzleMask<SMASK_LEN>,
+        SIMDVecSwizzle<SMASK_LEN>,
         SMASK_LEN>
     {
     private:
         uint32_t mMaskElements[SMASK_LEN];
     public:
-        SIMDVecAVX512SwizzleMask() { };
+        SIMDVecSwizzle() { };
 
-        explicit SIMDVecAVX512SwizzleMask(uint32_t m0) {
+        explicit SIMDVecSwizzle(uint32_t m0) {
             UME_EMULATION_WARNING();
             for (int i = 0; i < SMASK_LEN; i++) {
                 mMaskElements[i] = m0;
             }
         }
 
-        explicit SIMDVecAVX512SwizzleMask(uint32_t *m) {
+        explicit SIMDVecSwizzle(uint32_t *m) {
             UME_EMULATION_WARNING();
             for (int i = 0; i < SMASK_LEN; i++) {
                 mMaskElements[i] = m[i];
@@ -84,7 +84,7 @@ namespace SIMD {
             mMaskElements[index] = x;
         }
 
-        SIMDVecAVX512SwizzleMask(SIMDVecAVX512SwizzleMask const & mask) {
+        SIMDVecSwizzle(SIMDVecSwizzle const & mask) {
             UME_EMULATION_WARNING();
             for (int i = 0; i < SMASK_LEN; i++)
             {
@@ -93,14 +93,6 @@ namespace SIMD {
         }
     };
 
-    typedef SIMDVecAVX512SwizzleMask<1>   SIMDSwizzle1;
-    typedef SIMDVecAVX512SwizzleMask<2>   SIMDSwizzle2;
-    typedef SIMDVecAVX512SwizzleMask<4>   SIMDSwizzle4;
-    typedef SIMDVecAVX512SwizzleMask<8>   SIMDSwizzle8;
-    typedef SIMDVecAVX512SwizzleMask<16>  SIMDSwizzle16;
-    typedef SIMDVecAVX512SwizzleMask<32>  SIMDSwizzle32;
-    typedef SIMDVecAVX512SwizzleMask<64>  SIMDSwizzle64;
-    typedef SIMDVecAVX512SwizzleMask<128> SIMDSwizzle128;
 }
 }
 
