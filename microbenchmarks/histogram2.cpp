@@ -62,7 +62,7 @@ static __inline__ unsigned long long __rdtsc(void)
 typedef unsigned long long TIMING_RES;
 
 const int INPUT_SIZE = 600000; // Number of data samples
-const int HIST_SIZE = 100;     // Number of histogram bins
+const int HIST_SIZE = 10000;     // Number of histogram bins
 //alignas(32) float x[ARRAY_SIZE];
 
 template<typename FLOAT_T>
