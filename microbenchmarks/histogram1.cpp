@@ -283,7 +283,7 @@ int main()
 		"SIMD versions use following operations: \n"
 		"float 32b: LOADA, MULV, TRUNC\n"
         "int   32b:  ITOU\n"
-        "uint  32b:  ASSIGNV, UNIQUE, GATHER, SCATTER, POSTINC, UNPACK\n\n";
+        "uint  32b:  ASSIGNV, UNIQUE, GATHER, SCATTER, PREFINC, UNPACK\n\n";
 
 	std::cout << "Scalar code (float): " << (long)t_scalar_f_avg
 		<< " (speedup: 1.0x)"
