@@ -33,7 +33,6 @@
 
 #include <type_traits>
 #include "../../UMESimdInterface.h"
-#include "../UMESimdPluginScalarEmulation.h"
 #include <immintrin.h>
 
 #include "UMESimdMaskAVX512.h"
@@ -47,6 +46,7 @@
 // ********************************************************************************************
 // UNSIGNED INTEGER VECTOR SPECIALIZATIONS
 // ********************************************************************************************
+#include "uint/UMESimdVecUint32_1.h"
 #include "uint/UMESimdVecUint32_8.h"
 
 #endif

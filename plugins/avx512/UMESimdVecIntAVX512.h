@@ -33,7 +33,6 @@
 
 #include <type_traits>
 #include "../../UMESimdInterface.h"
-#include "../UMESimdPluginScalarEmulation.h"
 #include <immintrin.h>
 
 #include "UMESimdMaskAVX512.h"
@@ -48,10 +47,22 @@
 // ********************************************************************************************
 // SIGNED INTEGER VECTOR SPECIALIZATIONS
 // ********************************************************************************************
+#include "int/UMESimdVecInt32_1.h"
 #include "int/UMESimdVecInt32_8.h"
 
 namespace UME {
 namespace SIMD {
+    // Also provide definitions for Signed/Unsigned vector cast operators.
+    // Each definition depends strictly on specializations of vectors!
+
+    inline SIMDVec_i<int32_t, 1>::operator UME::SIMD::SIMDVec_u<uint32_t, 1>() const {
+        return SIMDVec_u<uint32_t, 1>(uint32_t(mVec));
+    }
+
+    inline SIMDVec_u<uint32_t, 1>::operator UME::SIMD::SIMDVec_i<int32_t, 1>() const {
+        return SIMDVec_i<int32_t, 1>(int32_t(mVec));
+    }
+
     inline SIMDVec_i<int32_t, 8>::operator const SIMDVec_u<uint32_t, 8>() {
         return SIMDVec_u<uint32_t, 8>(this->mVec);
     }
