@@ -62,56 +62,45 @@ namespace SIMD {
         constexpr static uint32_t alignment() {
             return 4;
         }
-
         // ZERO-CONSTR - Zero element constructor 
         inline SIMDVec_f() {}
-
         // SET-CONSTR  - One element constructor
         // FULL-CONSTR - constructor with VEC_LEN scalar element 
         inline explicit SIMDVec_f(float f) {
             mVec = f;
         }
-
         // UTOF
         inline explicit SIMDVec_f(VEC_UINT_TYPE const & vecUint) {
             mVec = float(vecUint[0]);
         }
-
         // FTOU
         inline VEC_UINT_TYPE ftou() const {
             return VEC_UINT_TYPE(uint32_t(mVec));
         }
-
         // ITOF
         inline explicit SIMDVec_f(VEC_INT_TYPE const & vecInt) {
             mVec = float(vecInt[0]);
         }
-
         // FTOI
         inline VEC_INT_TYPE ftoi() const {
             return VEC_UINT_TYPE(int32_t(mVec));
         }
-
         // LOAD-CONSTR - Construct by loading from memory
         inline explicit SIMDVec_f(float const *p) {
             mVec = p[0];
         }
-
         // EXTRACT
         inline float extract(uint32_t index) const {
             return mVec;
         }
-
         // EXTRACT
         inline float operator[] (uint32_t index) const {
             return mVec;
         }
-
         // Override Mask Access operators
         inline IntermediateMask<SIMDVec_f, SIMDVecMask<1>> operator[] (SIMDVecMask<1> const & mask) {
             return IntermediateMask<SIMDVec_f, SIMDVecMask<1>>(mask, static_cast<SIMDVec_f &>(*this));
         }
-
         // INSERT
         inline SIMDVec_f & insert(uint32_t index, float value) {
             mVec = value;
@@ -120,7 +109,6 @@ namespace SIMD {
         // ****************************************************************************************
         // Overloading Interface functions starts here!
         // ****************************************************************************************
-
         //(Initialization)
         // ASSIGNV     - Assignment with another vector
         inline SIMDVec_f & assign(SIMDVec_f const & b) {
@@ -159,13 +147,11 @@ namespace SIMD {
             mVec = p[0];
             return *this;
         }
-
         // MLOADA  - Masked load from aligned memory to vector
         inline SIMDVec_f & loada(SIMDVecMask<1> const & mask, float const * p) {
             if (mask.mMask == true) mVec = p[0];
             return *this;
         }
-
         // STORE   - Store vector content into memory (either aligned or unaligned)
         inline float* store(float * p) const {
             p[0] = mVec;

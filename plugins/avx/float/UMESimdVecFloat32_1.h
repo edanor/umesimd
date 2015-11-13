@@ -89,7 +89,6 @@ namespace SIMD {
         inline explicit SIMDVec_f(float const *p) {
             mVec = p[0];
         }
-
         // EXTRACT
         inline float extract(uint32_t index) const {
             return mVec;
@@ -902,6 +901,7 @@ namespace SIMD {
         // CTAN      - Cotangent
         // MCTAN     - Masked cotangent
     };
+
 }
 }
 

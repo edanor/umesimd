@@ -46,7 +46,7 @@
 #include "int/UMESimdVecIntPrototype.h"
 
 // ********************************************************************************************
-// SIGNED INTEGER VECTOR specializations
+// SIGNED INTEGER VECTOR SPECIALIZATIONS
 // ********************************************************************************************
 #include "int/UMESimdVecInt32_1.h"
 #include "int/UMESimdVecInt32_2.h"

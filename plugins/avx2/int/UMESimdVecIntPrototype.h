@@ -42,6 +42,10 @@
 
 namespace UME {
 namespace SIMD {
+
+    // ********************************************************************************************
+    // SIGNED INTEGER VECTORS
+    // ********************************************************************************************
     template<typename SCALAR_INT_TYPE, uint32_t VEC_LEN>
     struct SIMDVec_i_traits {
         // Generic trait class not containing type definition so that only correct explicit

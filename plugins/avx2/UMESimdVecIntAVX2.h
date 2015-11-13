@@ -53,8 +53,11 @@
 #include "int/UMESimdVecInt32_4.h"
 #include "int/UMESimdVecInt32_8.h"
 
+// Also provide definitions for Signed/Unsigned vector cast operators.
+// Each definition depends strictly on specializations of vectors!
 namespace UME {
 namespace SIMD {
+
     inline SIMDVec_i<int32_t, 1>::operator UME::SIMD::SIMDVec_u<uint32_t, 1>() const {
         return SIMDVec_u<uint32_t, 1>(uint32_t(mVec));
     }
