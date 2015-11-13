@@ -28,8 +28,8 @@
 //  7th Framework programme Marie Curie Actions under grant PITN-GA-2012-316596".
 //
 
-#ifndef UME_SIMD_VEC_INT_AVX512_H_
-#define UME_SIMD_VEC_INT_AVX512_H_
+#ifndef UME_SIMD_VEC_INT_H_
+#define UME_SIMD_VEC_INT_H_
 
 #include <type_traits>
 #include "../../UMESimdInterface.h"
@@ -48,6 +48,8 @@
 // SIGNED INTEGER VECTOR SPECIALIZATIONS
 // ********************************************************************************************
 #include "int/UMESimdVecInt32_1.h"
+#include "int/UMESimdVecInt32_2.h"
+
 #include "int/UMESimdVecInt32_8.h"
 
 namespace UME {
@@ -61,6 +63,14 @@ namespace SIMD {
 
     inline SIMDVec_u<uint32_t, 1>::operator UME::SIMD::SIMDVec_i<int32_t, 1>() const {
         return SIMDVec_i<int32_t, 1>(int32_t(mVec));
+    }
+
+    inline SIMDVec_i<int32_t, 2>::operator UME::SIMD::SIMDVec_u<uint32_t, 2> () const {
+        return SIMDVec_u<uint32_t, 2>(uint32_t(mVec[0]), uint32_t(mVec[1]));
+    }
+
+    inline SIMDVec_u<uint32_t, 2>::operator UME::SIMD::SIMDVec_i<int32_t, 2> () const {
+        return SIMDVec_i<int32_t, 2>(int32_t(mVec[0]), int32_t(mVec[1]));
     }
 
     inline SIMDVec_i<int32_t, 8>::operator SIMDVec_u<uint32_t, 8>() const {

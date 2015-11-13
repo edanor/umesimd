@@ -28,12 +28,11 @@
 //  7th Framework programme Marie Curie Actions under grant PITN-GA-2012-316596".
 //
 
-#ifndef UME_SIMD_VEC_FLOAT_AVX512_H_
-#define UME_SIMD_VEC_FLOAT_AVX512_H_
+#ifndef UME_SIMD_VEC_FLOAT_H_
+#define UME_SIMD_VEC_FLOAT_H_
 
 #include <type_traits>
 #include "../../UMESimdInterface.h"
-#include "../UMESimdPluginScalarEmulation.h"
 #include <immintrin.h>
 
 #include "UMESimdMaskAVX512.h"
@@ -50,6 +49,7 @@
 // FLOATING POINT VECTOR SPECIALIZATIONS
 // ********************************************************************************************
 #include "float/UMESimdVecFloat32_1.h"
+#include "float/UMESimdVecFloat32_2.h"
 #include "float/UMESimdVecFloat32_8.h"
 
 #endif
