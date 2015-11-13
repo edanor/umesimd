@@ -57,7 +57,8 @@ namespace SIMD {
     private:
         __m256i mVec;
 
-        inline SIMDVec_u(__m256i & x) { this->mVec = x; }
+        inline explicit SIMDVec_u(__m256i & x) { mVec = x; }
+        inline explicit SIMDVec_u(const __m256i & x) { mVec = x; }
     public:
         inline SIMDVec_u() {
             mVec = _mm256_setzero_si256();
@@ -202,7 +203,7 @@ namespace SIMD {
         // SCATTERV
         // MSCATTERV
 
-        inline  operator SIMDVec_i<int32_t, 8> const ();
+        inline  operator SIMDVec_i<int32_t, 8> () const;
     };
 
 }

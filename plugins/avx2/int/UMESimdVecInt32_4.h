@@ -60,9 +60,8 @@ namespace SIMD {
     private:
         __m128i mVec;
 
-        inline explicit SIMDVec_i(__m128i & x) {
-            this->mVec = x;
-        }
+        inline explicit SIMDVec_i(__m128i & x) { mVec = x; }
+        inline explicit SIMDVec_i(const __m128i & x) { mVec = x; }
     public:
         inline SIMDVec_i() {};
 
@@ -123,7 +122,7 @@ namespace SIMD {
             return SIMDVec_u<uint32_t, 4>(mVec);
         }
 
-        inline  operator SIMDVec_u<uint32_t, 4> const ();
+        inline  operator SIMDVec_u<uint32_t, 4> () const;
     };
 
 }

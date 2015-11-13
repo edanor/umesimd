@@ -41,7 +41,9 @@
 
 namespace UME {
 namespace SIMD {
-
+    // ********************************************************************************************
+    // UNSIGNED INTEGER VECTORS
+    // ********************************************************************************************
     template<typename VEC_TYPE, uint32_t VEC_LEN>
     struct SIMDVec_u_traits {
         // Generic trait class not containing type definition so that only correct explicit
@@ -432,6 +434,7 @@ namespace SIMD {
             return true;
         }
     };
+
 }
 }
 

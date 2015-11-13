@@ -33,7 +33,6 @@
 
 #include <type_traits>
 #include "../../UMESimdInterface.h"
-#include "../UMESimdPluginScalarEmulation.h"
 #include <immintrin.h>
 
 #include "UMESimdMaskAVX2.h"
@@ -53,10 +52,10 @@
 #include "int/UMESimdVecInt32_4.h"
 #include "int/UMESimdVecInt32_8.h"
 
-// Also provide definitions for Signed/Unsigned vector cast operators.
-// Each definition depends strictly on specializations of vectors!
 namespace UME {
 namespace SIMD {
+    // Also provide definitions for Signed/Unsigned vector cast operators.
+    // Each definition depends strictly on specializations of vectors!
 
     inline SIMDVec_i<int32_t, 1>::operator UME::SIMD::SIMDVec_u<uint32_t, 1>() const {
         return SIMDVec_u<uint32_t, 1>(uint32_t(mVec));
@@ -66,27 +65,27 @@ namespace SIMD {
         return SIMDVec_i<int32_t, 1>(int32_t(mVec));
     }
 
-    SIMDVec_i<int32_t, 2>::operator UME::SIMD::SIMDVec_u<uint32_t, 2> const () {
+    SIMDVec_i<int32_t, 2>::operator UME::SIMD::SIMDVec_u<uint32_t, 2> () const {
         return SIMDVec_u<uint32_t, 2>(uint32_t(mVec[0]), uint32_t(mVec[1]));
     }
 
-    SIMDVec_u<uint32_t, 2>::operator UME::SIMD::SIMDVec_i<int32_t, 2> const () {
+    SIMDVec_u<uint32_t, 2>::operator UME::SIMD::SIMDVec_i<int32_t, 2> () const {
         return SIMDVec_i<int32_t, 2>(int32_t(mVec[0]), int32_t(mVec[1]));
     }
 
-    inline SIMDVec_i<int32_t, 4>::operator const SIMDVec_u<uint32_t, 4>() {
+    inline SIMDVec_i<int32_t, 4>::operator SIMDVec_u<uint32_t, 4>() const {
         return SIMDVec_u<uint32_t, 4>(this->mVec);
     }
 
-    inline SIMDVec_u<uint32_t, 4>::operator const SIMDVec_i<int32_t, 4>() {
+    inline SIMDVec_u<uint32_t, 4>::operator SIMDVec_i<int32_t, 4>() const {
         return SIMDVec_i<int32_t, 4>(this->mVec);
     }
 
-    inline SIMDVec_i<int32_t, 8>::operator const SIMDVec_u<uint32_t, 8>() {
+    inline SIMDVec_i<int32_t, 8>::operator SIMDVec_u<uint32_t, 8>() const {
         return SIMDVec_u<uint32_t, 8>(this->mVec);
     }
 
-    inline SIMDVec_u<uint32_t, 8>::operator const SIMDVec_i<int32_t, 8>() {
+    inline SIMDVec_u<uint32_t, 8>::operator SIMDVec_i<int32_t, 8>() const {
         return SIMDVec_i<int32_t, 8>(this->mVec);
     }
 }

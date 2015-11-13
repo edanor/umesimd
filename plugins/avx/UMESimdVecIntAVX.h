@@ -79,19 +79,19 @@ namespace SIMD {
         return SIMDVec_i<int32_t, 2>(t0, t1);
     }
 
-    inline SIMDVec_i<int32_t, 8>::operator const SIMDVec_u<uint32_t, 8>() {
+    inline SIMDVec_i<int32_t, 8>::operator SIMDVec_u<uint32_t, 8>() const {
         return SIMDVec_u<uint32_t, 8>(this->mVec);
     }
 
-    inline SIMDVec_u<uint32_t, 8>::operator const SIMDVec_i<int32_t, 8>() {
+    inline SIMDVec_u<uint32_t, 8>::operator SIMDVec_i<int32_t, 8>() const {
         return SIMDVec_i<int32_t, 8>(this->mVec);
     }
 
-    inline SIMDVec_i<int32_t, 16>::operator const SIMDVec_u<uint32_t, 16>() {
+    inline SIMDVec_i<int32_t, 16>::operator SIMDVec_u<uint32_t, 16>() const {
         return SIMDVec_i<int32_t, 16>(this->mVecLo, this->mVecHi);
     }
 
-    inline SIMDVec_u<uint32_t, 16>::operator const SIMDVec_i<int32_t, 16>() {
+    inline SIMDVec_u<uint32_t, 16>::operator SIMDVec_i<int32_t, 16>() const {
         return SIMDVec_u<uint32_t, 16>(this->mVecLo, this->mVecHi);
     }
 }

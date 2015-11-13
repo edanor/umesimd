@@ -59,9 +59,8 @@ namespace SIMD {
     private:
         __m256i mVec;
 
-        inline explicit SIMDVec_i(__m256i & x) {
-            this->mVec = x;
-        }
+        inline explicit SIMDVec_i(__m256i & x) { mVec = x; }
+        inline explicit SIMDVec_i(const __m256i & x) { mVec = x; }
     public:
         inline SIMDVec_i() {};
 
@@ -71,13 +70,11 @@ namespace SIMD {
         inline explicit SIMDVec_i(int32_t const *p) {
             mVec = _mm256_mask_load_epi32(mVec, 0xFF, (void *)p);
         }
-
         inline SIMDVec_i(int32_t i0, int32_t i1, int32_t i2, int32_t i3,
             int32_t i4, int32_t i5, int32_t i6, int32_t i7)
         {
             mVec = _mm256_setr_epi32(i0, i1, i2, i3, i4, i5, i6, i7);
         }
-
         inline int32_t extract(uint32_t index) const {
             UME_PERFORMANCE_UNOPTIMAL_WARNING();
             //return _mm256_extract_epi32(mVec, index); // TODO: this can be implemented in ICC
@@ -85,17 +82,14 @@ namespace SIMD {
             _mm256_store_si256((__m256i *)raw, mVec);
             return raw[index];
         }
-
         // Override Access operators
         inline int32_t operator[] (uint32_t index) const {
             return extract(index);
         }
-
         // Override Mask Access operators
         inline IntermediateMask<SIMDVec_i, SIMDVecMask<8>> operator[] (SIMDVecMask<8> & mask) {
             return IntermediateMask<SIMDVec_i, SIMDVecMask<8>>(mask, static_cast<SIMDVec_i &>(*this));
         }
-
         // insert[] (scalar)
         inline SIMDVec_i & insert(uint32_t index, int32_t value) {
             UME_PERFORMANCE_UNOPTIMAL_WARNING()
@@ -105,9 +99,6 @@ namespace SIMD {
             mVec = _mm256_load_si256((__m256i *)raw);
             return *this;
         }
-
-        inline  operator SIMDVec_u<uint32_t, 8> const ();
-
         // ABS
         SIMDVec_i abs() {
             __m256i t0 = _mm256_abs_epi32(mVec);
@@ -118,8 +109,9 @@ namespace SIMD {
             __m256i t0 = _mm256_mask_abs_epi32(mVec, mask.mMask, mVec);
             return SIMDVec_i(t0);
         }
+        // ITOU
+        inline  operator SIMDVec_u<uint32_t, 8>() const;
     };
-
 }
 }
 

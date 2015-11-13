@@ -192,4 +192,4 @@ namespace UME
 } // SIMD
 } // UME
 
-#endif // UME_SIMD_PLUGIN_NATIVE_AVX
+#endif

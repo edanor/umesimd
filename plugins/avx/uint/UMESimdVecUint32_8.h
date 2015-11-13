@@ -59,7 +59,8 @@ namespace SIMD {
     private:
         __m256i mVec;
 
-        inline SIMDVec_u(__m256i & x) { this->mVec = x; }
+        inline explicit SIMDVec_u(__m256i & x) { this->mVec = x; }
+        inline explicit SIMDVec_u(const __m256i & x) { this->mVec = x; }
     public:
 
         // ZERO-CONSTR
@@ -404,7 +405,7 @@ namespace SIMD {
             return baseAddr;
         }
 
-        inline  operator SIMDVec_i<int32_t, 8> const ();
+        inline  operator SIMDVec_i<int32_t, 8> () const;
     };
 
 }

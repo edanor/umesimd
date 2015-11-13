@@ -32,9 +32,9 @@
 #define UME_SIMD_VEC_INT32_2_H_
 
 #include <type_traits>
-#include "../../../UMESimdInterface.h"
-#include "../../UMESimdPluginScalarEmulation.h"
 #include <immintrin.h>
+
+#include "../../../UMESimdInterface.h"
 
 namespace UME {
 namespace SIMD {
@@ -42,51 +42,56 @@ namespace SIMD {
     template<>
     class SIMDVec_i<int32_t, 2> final :
         public SIMDVecSignedInterface<
-        SIMDVec_i<int32_t, 2>, // DERIVED_UINT_VEC_TYPE
+        SIMDVec_i<int32_t, 2>,
         SIMDVec_u<uint32_t, 2>,
-        int32_t,                        // SCALAR_UINT_TYPE
+        int32_t,
         2,
-        typename SIMDVec_i_traits<int32_t, 2>::SCALAR_UINT_TYPE,
-        typename SIMDVec_i_traits<int32_t, 2>::MASK_TYPE,
-        typename SIMDVec_i_traits<int32_t, 2>::SWIZZLE_MASK_TYPE>,
+        uint32_t,
+        SIMDVecMask<2>,
+        SIMDVecSwizzle<2 >> ,
         public SIMDVecPackableInterface<
-        SIMDVec_i<int32_t, 2>,        // DERIVED_VEC_TYPE
-        typename SIMDVec_i_traits<int32_t, 2>::HALF_LEN_VEC_TYPE> // DERIVED_HALF_VEC_TYPE
+        SIMDVec_i<int32_t, 2>,
+        SIMDVec_i<int32_t, 1 >>
     {
+        friend class SIMDVec_u<uint32_t, 2>;
+        friend class SIMDVec_f<float, 2>;
+        friend class SIMDVec_f<double, 2>;
+
     private:
-        // This is the only data member and it is a low level representation of vector register.
         int32_t mVec[2];
 
     public:
         // ZERO-CONSTR
-        inline SIMDVec_i() : mVec() {};
-
+        inline SIMDVec_i() {};
         // SET-CONSTR
         inline explicit SIMDVec_i(int32_t i) {
             mVec[0] = i;
             mVec[1] = i;
-        };
-
-        // LOAD-CONSTR - Construct by loading from memory
-        inline explicit SIMDVec_i(int32_t const *p) { this->load(p); };
-
+        }
+        // LOAD-CONSTR
+        inline explicit SIMDVec_i(int32_t const *p) {
+            mVec[0] = p[0];
+            mVec[1] = p[1];
+        }
+        // FULL-CONSTR
         inline SIMDVec_i(int32_t i0, int32_t i1) {
             mVec[0] = i0;
             mVec[1] = i1;
         }
-
+        // EXTRACT
+        inline int32_t extract(uint32_t index) const {
+            return mVec[index & 1];
+        }
         // Override Access operators
         inline int32_t operator[] (uint32_t index) const {
             return mVec[index];
         }
-
         // Override Mask Access operators
         inline IntermediateMask<SIMDVec_i, SIMDVecMask<2>> operator[] (SIMDVecMask<2> const & mask) {
             return IntermediateMask<SIMDVec_i, SIMDVecMask<2>>(mask, static_cast<SIMDVec_i &>(*this));
         }
-
         // INSERT
-        inline SIMDVec_i & insert(uint32_t index, uint32_t value) {
+        inline SIMDVec_i & insert(uint32_t index, int32_t value) {
             mVec[index] = value;
             return *this;
         }
@@ -420,8 +425,7 @@ namespace SIMD {
             uint32_t t1 = uint32_t(mVec[1]);
             return SIMDVec_u<uint32_t, 2>(t0, t1);
         }
-
-        inline operator SIMDVec_u<uint32_t, 2>() const;
+        inline  operator SIMDVec_u<uint32_t, 2> () const;
     };
 
 }

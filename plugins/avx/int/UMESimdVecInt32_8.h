@@ -59,9 +59,8 @@ namespace SIMD {
     private:
         __m256i mVec;
 
-        inline explicit SIMDVec_i(__m256i & x) {
-            this->mVec = x;
-        }
+        inline explicit SIMDVec_i(__m256i & x) { mVec = x;}
+        inline explicit SIMDVec_i(const __m256i & x) { mVec = x; }
     public:
         // ZERO-CONSTR
         inline SIMDVec_i() {};
@@ -110,9 +109,6 @@ namespace SIMD {
             return *this;
         }
 
-        inline  operator SIMDVec_u<uint32_t, 8> const ();
-        inline  operator SIMDVec_f<float, 8> const ();
-
         // ABS
         SIMDVec_i abs() {
             __m128i a_low = _mm256_extractf128_si256(mVec, 0);
@@ -136,6 +132,10 @@ namespace SIMD {
             ret = _mm256_insertf128_si256(ret, r_high, 1);
             return SIMDVec_i(ret);
         }
+        // ITOU
+        inline  operator SIMDVec_u<uint32_t, 8>() const;
+        // ITOF
+        inline  operator SIMDVec_f<float, 8>() const;
     };
 
 }
