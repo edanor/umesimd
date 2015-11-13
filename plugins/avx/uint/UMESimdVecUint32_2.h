@@ -42,49 +42,42 @@ namespace SIMD {
     template<>
     class SIMDVec_u<uint32_t, 2> final :
         public SIMDVecUnsignedInterface<
-        SIMDVec_u<uint32_t, 2>, // DERIVED_UINT_VEC_TYPE
-        uint32_t,                        // SCALAR_UINT_TYPE
-        2,
-        typename SIMDVec_u_traits<uint32_t, 2>::MASK_TYPE,
-        typename SIMDVec_u_traits<uint32_t, 2>::SWIZZLE_MASK_TYPE>,
+            SIMDVec_u<uint32_t, 2>,
+            uint32_t,
+            2,
+            SIMDVecMask<2>,
+            SIMDVecSwizzle<2>> ,
         public SIMDVecPackableInterface<
-        SIMDVec_u<uint32_t, 2>,        // DERIVED_VEC_TYPE
-        SIMDVec_u<uint32_t, 1 >>
+            SIMDVec_u<uint32_t, 2>,
+            SIMDVec_u<uint32_t, 1>>
     {
     private:
-        // This is the only data member and it is a low level representation of vector register.
         uint32_t mVec[2];
 
         friend class SIMDVec_i<int32_t, 2>;
         friend class SIMDVec_f<float, 2>;
     public:
         // ZERO-CONSTR
-        inline SIMDVec_u() : mVec() {};
-
+        inline SIMDVec_u() {};
         // SET-CONSTR
         inline explicit SIMDVec_u(uint32_t i) {
             mVec[0] = i;
             mVec[1] = i;
-        };
-
-        // LOAD-CONSTR - Construct by loading from memory
-        inline explicit SIMDVec_u(uint32_t const *p) { this->load(p); };
-
+        }
+        // LOAD-CONSTR
+        inline explicit SIMDVec_u(uint32_t const *p) {
+            mVec[0] = p[0];
+            mVec[1] = p[1];
+        }
+        // FULL-CONSTR
         inline SIMDVec_u(uint32_t i0, uint32_t i1) {
             mVec[0] = i0;
             mVec[1] = i1;
         }
-
-        // Override Access operators
-        inline uint32_t operator[] (uint32_t index) const {
-            return mVec[index];
-        }
-
         // Override Mask Access operators
         inline IntermediateMask<SIMDVec_u, SIMDVecMask<2>> operator[] (SIMDVecMask<2> const & mask) {
             return IntermediateMask<SIMDVec_u, SIMDVecMask<2>>(mask, static_cast<SIMDVec_u &>(*this));
         }
-
         // INSERT
         inline SIMDVec_u & insert(uint32_t index, uint32_t value) {
             mVec[index] = value;
@@ -92,6 +85,12 @@ namespace SIMD {
         }
 
         // EXTRACT
+        inline uint32_t extract(uint32_t index) const {
+            return mVec[index];
+        }
+        inline uint32_t operator[] (uint32_t index) const {
+            return mVec[index];
+        }
 
         // ASSIGNV
         inline SIMDVec_u & assign(SIMDVec_u const & src) {
@@ -316,44 +315,44 @@ namespace SIMD {
             mVec[1] = baseAddr[indices[1]];
             return *this;
         }
-        // MGATHER
+        // MGATHERS
         inline SIMDVec_u & gather(SIMDVecMask<2> const & mask, uint32_t* baseAddr, uint64_t* indices) {
             if (mask.mMask[0] == true) mVec[0] = baseAddr[indices[0]];
             if (mask.mMask[1] == true) mVec[1] = baseAddr[indices[1]];
             return *this;
         }
         // GATHERV
-        inline SIMDVec_u gather(uint32_t * baseAddr, SIMDVec_u const & indices) {
+        inline SIMDVec_u & gather(uint32_t * baseAddr, SIMDVec_u const & indices) {
             mVec[0] = baseAddr[indices.mVec[0]];
             mVec[1] = baseAddr[indices.mVec[1]];
             return *this;
         }
         // MGATHERV
-        inline SIMDVec_u gather(SIMDVecMask<2> const & mask, uint32_t* baseAddr, SIMDVec_u const & indices) {
+        inline SIMDVec_u & gather(SIMDVecMask<2> const & mask, uint32_t* baseAddr, SIMDVec_u const & indices) {
             if (mask.mMask[0] == true) mVec[0] = baseAddr[indices.mVec[0]];
             if (mask.mMask[1] == true) mVec[1] = baseAddr[indices.mVec[1]];
             return *this;
         }
-        // SCATTER
+        // SCATTERS
         inline uint32_t* scatter(uint32_t* baseAddr, uint64_t* indices) const {
             baseAddr[indices[0]] = mVec[0];
             baseAddr[indices[1]] = mVec[1];
             return baseAddr;
         }
-        // MSCATTER
-        inline uint32_t*  scatter(SIMDVecMask<2> const & mask, uint32_t* baseAddr, uint64_t* indices) const {
+        // MSCATTERS
+        inline uint32_t* scatter(SIMDVecMask<2> const & mask, uint32_t* baseAddr, uint64_t* indices) const {
             if (mask.mMask[0] == true) baseAddr[indices[0]] = mVec[0];
             if (mask.mMask[1] == true) baseAddr[indices[1]] = mVec[1];
             return baseAddr;
         }
         // SCATTERV
-        inline uint32_t*  scatter(uint32_t* baseAddr, SIMDVec_u const & indices) const {
+        inline uint32_t* scatter(uint32_t* baseAddr, SIMDVec_u const & indices) const {
             baseAddr[indices.mVec[0]] = mVec[0];
             baseAddr[indices.mVec[1]] = mVec[1];
             return baseAddr;
         }
         // MSCATTERV
-        inline uint32_t*  scatter(SIMDVecMask<2> const & mask, uint32_t* baseAddr, SIMDVec_u const & indices) const {
+        inline uint32_t* scatter(SIMDVecMask<2> const & mask, uint32_t* baseAddr, SIMDVec_u const & indices) const {
             if (mask.mMask[0] == true) baseAddr[indices.mVec[0]] = mVec[0];
             if (mask.mMask[1] == true) baseAddr[indices.mVec[1]] = mVec[1];
             return baseAddr;
@@ -403,9 +402,8 @@ namespace SIMD {
         // UNPACKLO
         // UNPACKHI
 
-
         // UTOI
-        inline  operator SIMDVec_i<int32_t, 2>() const; // deferr definition until SIMDVec_i<int32_t, 2> is defined
+        inline operator SIMDVec_i<int32_t, 2>() const; // deferr definition until SIMDVec_i<int32_t, 2> is defined
     };
 
 }

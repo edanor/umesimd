@@ -33,7 +33,6 @@
 
 #include <type_traits>
 #include "../../UMESimdInterface.h"
-#include "../UMESimdPluginScalarEmulation.h"
 #include <immintrin.h>
 
 #include "UMESimdMaskAVX.h"
@@ -44,7 +43,7 @@
 // ********************************************************************************************
 // FLOATING POINT VECTOR TEMPLATE
 // ********************************************************************************************
-#include "float/UMESimdFloatPrototype.h"
+#include "float/UMESimdVecFloatPrototype.h"
 
 // ********************************************************************************************
 // FLOATING POINT VECTOR SPECIALIZATIONS

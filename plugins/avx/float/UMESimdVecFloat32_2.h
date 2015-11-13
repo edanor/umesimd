@@ -32,9 +32,9 @@
 #define UME_SIMD_VEC_FLOAT32_2_H_
 
 #include <type_traits>
-#include "../../../UMESimdInterface.h"
-#include "../../UMESimdPluginScalarEmulation.h"
 #include <immintrin.h>
+
+#include "../../../UMESimdInterface.h"
 
 namespace UME {
 namespace SIMD {
@@ -65,65 +65,52 @@ namespace SIMD {
         constexpr static uint32_t alignment() {
             return 4;
         }
-
         // ZERO-CONSTR - Zero element constructor 
         inline SIMDVec_f() {}
-
         // SET-CONSTR  - One element constructor
         inline explicit SIMDVec_f(float f) {
             mVec[0] = f;
             mVec[1] = f;
         }
-
         // UTOF
         inline explicit SIMDVec_f(VEC_UINT_TYPE const & vecUint) {
             mVec[0] = float(vecUint[0]);
             mVec[1] = float(vecUint[1]);
         }
-
         // FTOU
         inline VEC_UINT_TYPE ftou() const {
             return VEC_UINT_TYPE(uint32_t(mVec[0]), uint32_t(mVec[1]));
         }
-
         // ITOF
         inline explicit SIMDVec_f(VEC_INT_TYPE const & vecInt) {
             mVec[0] = float(vecInt[0]);
             mVec[1] = float(vecInt[1]);
         }
-
         // FTOI
         inline VEC_INT_TYPE ftoi() const {
             return VEC_UINT_TYPE(int32_t(mVec[0]), int32_t(mVec[1]));
         }
-
         // LOAD-CONSTR - Construct by loading from memory
         inline explicit SIMDVec_f(float const *p) {
             mVec[0] = p[0];
             mVec[1] = p[1];
         }
-
         // FULL-CONSTR - constructor with VEC_LEN scalar element 
         inline SIMDVec_f(float x_lo, float x_hi) {
             mVec[0] = x_lo;
             mVec[1] = x_hi;
         }
-
         // EXTRACT
         inline float extract(uint32_t index) const {
             return mVec[index & 1];
         }
-
-        // EXTRACT
         inline float operator[] (uint32_t index) const {
             return mVec[index & 1];
         }
-
         // Override Mask Access operators
         inline IntermediateMask<SIMDVec_f, SIMDVecMask<2>> operator[] (SIMDVecMask<2> const & mask) {
             return IntermediateMask<SIMDVec_f, SIMDVecMask<2>>(mask, static_cast<SIMDVec_f &>(*this));
         }
-
         // INSERT
         inline SIMDVec_f & insert(uint32_t index, float value) {
             mVec[index & 1] = value;
@@ -178,14 +165,12 @@ namespace SIMD {
             mVec[1] = p[1];
             return *this;
         }
-
         // MLOADA  - Masked load from aligned memory to vector
         inline SIMDVec_f & loada(SIMDVecMask<2> const & mask, float const * p) {
             if (mask.mMask[0] == true) mVec[0] = p[0];
             if (mask.mMask[1] == true) mVec[1] = p[1];
             return *this;
         }
-
         // STORE   - Store vector content into memory (either aligned or unaligned)
         inline float* store(float * p) const {
             p[0] = mVec[0];
@@ -662,6 +647,7 @@ namespace SIMD {
             bool t0 = (b.mVec[0] == mVec[0]) && (b.mVec[1] == mVec[1]);
             return t0;
         }
+
         // (Pack/Unpack operations - not available for SIMD1)
         // PACK     - assign vector with two half-length vectors
         inline SIMDVec_f & pack(HALF_LEN_VEC_TYPE const & a, HALF_LEN_VEC_TYPE const & b) {
@@ -1131,6 +1117,7 @@ namespace SIMD {
         // CTAN      - Cotangent
         // MCTAN     - Masked cotangent
     };
+
 }
 }
 

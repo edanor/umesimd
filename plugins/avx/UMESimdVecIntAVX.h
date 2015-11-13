@@ -33,7 +33,6 @@
 
 #include <type_traits>
 #include "../../UMESimdInterface.h"
-#include "../UMESimdPluginScalarEmulation.h"
 #include <immintrin.h>
 
 #include "UMESimdMaskAVX.h"
@@ -54,10 +53,10 @@
 #include "int/UMESimdVecInt32_8.h"
 #include "int/UMESimdVecInt32_16.h"
 
-// Also provide definitions for Signed/Unsigned vector cast operators.
-// Each definition depends strictly on specializations of vectors!
 namespace UME {
 namespace SIMD {
+    // Also provide definitions for Signed/Unsigned vector cast operators.
+    // Each definition depends strictly on specializations of vectors!
 
     inline SIMDVec_i<int32_t, 1>::operator UME::SIMD::SIMDVec_u<uint32_t, 1>() const {
         return SIMDVec_u<uint32_t, 1>(uint32_t(mVec));
@@ -67,16 +66,12 @@ namespace SIMD {
         return SIMDVec_i<int32_t, 1>(int32_t(mVec));
     }
 
-    inline SIMDVec_i<int32_t, 2>::operator UME::SIMD::SIMDVec_u<uint32_t, 2>() const {
-        uint32_t t0 = uint32_t(mVec[0]);
-        uint32_t t1 = uint32_t(mVec[1]);
-        return SIMDVec_u<uint32_t, 2>(t0, t1);
+    inline SIMDVec_i<int32_t, 2>::operator UME::SIMD::SIMDVec_u<uint32_t, 2> () const {
+        return SIMDVec_u<uint32_t, 2>(uint32_t(mVec[0]), uint32_t(mVec[1]));
     }
 
-    inline SIMDVec_u<uint32_t, 2>::operator UME::SIMD::SIMDVec_i<int32_t, 2>() const {
-        int32_t t0 = int32_t(mVec[0]);
-        int32_t t1 = int32_t(mVec[1]);
-        return SIMDVec_i<int32_t, 2>(t0, t1);
+    inline SIMDVec_u<uint32_t, 2>::operator UME::SIMD::SIMDVec_i<int32_t, 2> () const {
+        return SIMDVec_i<int32_t, 2>(int32_t(mVec[0]), int32_t(mVec[1]));
     }
 
     inline SIMDVec_i<int32_t, 8>::operator SIMDVec_u<uint32_t, 8>() const {
@@ -96,4 +91,5 @@ namespace SIMD {
     }
 }
 }
+
 #endif
