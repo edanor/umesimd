@@ -36,49 +36,6 @@
 
 #include "UMEBasicTypes.h"
 
-
-#if defined (_MSC_VER)
-// WORKAROUND: Visual studio 2012 does not provide implementation for c++ 11 std::trunc, but VS2013 already has it.
-#if _MSC_VER < 1800
-
-namespace std
-{
-    #include <math.h>
-
-    inline float       trunc( float f ) { return (f>0) ? floor(f) : ceil(f); }
-    inline double      trunc( double d ) { return (d>0) ? floor(d) : ceil(d); }
-    inline long double trunc( long double ld ) { return (ld>0) ? floor(ld) : ceil(ld); }
-    float round(float d) { return static_cast<float>(static_cast<int>(d + 0.5f)); }
-    double round(double d) { return static_cast<double>(static_cast<long>(d + 0.5)); }
-    //double      trunc( Integral arg );
-    inline bool       isnan( float f ) { return _isnan((double)f) != 0 ? true : false; }
-    inline bool       isnan( double d ) { return _isnan(d) != 0 ? true : false; }
-    inline bool       isfinite( float f ) { return _finite((double)f) != 0 ? true : false; }
-    inline bool       isfinite( double d ) { return _finite(d) != 0 ? true : false; }
-    inline bool       isinf( float f ) { return !isfinite(f) && !isnan(f); }
-    inline bool       isinf( double d) { return !isfinite(d) && !isnan(d); }
-    inline bool       isnormal( float f) {
-        uint32_t temp0 = *reinterpret_cast<uint32_t*>(&f);
-        uint32_t temp1 = temp0 << 1; // remove sign bit
-        uint32_t temp2 = 0xFF000000; 
-        uint32_t exponent = temp1 & temp2;    // retrieve exponent
-        uint32_t mantisse = temp1 & (~temp2); // retrieve mantisse
-        bool issubnormal = (exponent == 0) && (mantisse != 0);
-        return (f != 0.0f) && (!issubnormal) && (isfinite(f)) && (!std::isnan(f));
-    }
-    inline bool       isnormal( double d) {
-        uint64_t temp0 = *reinterpret_cast<uint64_t*>(&d);
-        uint64_t temp1 = temp0 << 1; // remove sign bit
-        uint64_t temp2 = 0xFFE0000000000000ll;
-        uint64_t exponent = temp1 & temp2;    // retrieve exponent
-        uint64_t mantisse = temp1 & (~temp2); // retrive mantisse
-        bool issubnormal = (exponent == 0) && (mantisse != 0);
-        return (d != 0.0) && (!issubnormal) && (!std::isnan(d));
-    }
-}
-#endif
-#endif
-
 namespace UME
 {
 namespace SIMD
