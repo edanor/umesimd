@@ -118,6 +118,8 @@ namespace SIMD {
             return *this;
         }
     };
+
 }
 }
+
 #endif

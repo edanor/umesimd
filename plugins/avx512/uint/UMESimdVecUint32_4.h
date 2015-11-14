@@ -32,9 +32,9 @@
 #define UME_SIMD_VEC_UINT32_4_H_
 
 #include <type_traits>
-#include "../../../UMESimdInterface.h"
-#include "../../UMESimdPluginScalarEmulation.h"
 #include <immintrin.h>
+
+#include "../../../UMESimdInterface.h"
 
 namespace UME {
 namespace SIMD {
@@ -58,40 +58,40 @@ namespace SIMD {
     private:
         __m128i mVec;
 
-        inline explicit SIMDVec_u(__m128i & x) { this->mVec = x; }
-        inline explicit SIMDVec_u(const __m128i & x) { this->mVec = x; }
+        inline explicit SIMDVec_u(__m128i & x) { mVec = x; }
+        inline explicit SIMDVec_u(const __m128i & x) { mVec = x; }
     public:
-        inline SIMDVec_u() {}
 
+        constexpr static uint32_t length() { return 4; }
+        constexpr static uint32_t alignment() { return 16; }
+
+        // ZERO-CONSTR
+        inline SIMDVec_u() {}
+        // SET-CONSTR
         inline explicit SIMDVec_u(uint32_t i) {
             mVec = _mm_set1_epi32(i);
         }
-
-        // LOAD-CONSTR - Construct by loading from memory
+        // LOAD-CONSTR
         inline explicit SIMDVec_u(uint32_t const *p) { this->load(p); };
-
+        // FULL-CONSTR
         inline SIMDVec_u(uint32_t i0, uint32_t i1, uint32_t i2, uint32_t i3)
         {
             mVec = _mm_set_epi32(i3, i2, i1, i0);
         }
-
+        // EXTRACT
         inline uint32_t extract(uint32_t index) const {
             alignas(16) uint32_t raw[4];
             _mm_store_si128((__m128i*) raw, mVec);
             return raw[index];
         }
-
-        // Override Access operators
         inline uint32_t operator[] (uint32_t index) const {
             return extract(index);
         }
-
         // Override Mask Access operators
         inline IntermediateMask<SIMDVec_u, SIMDVecMask<4>> operator[] (SIMDVecMask<4> const & mask) {
             return IntermediateMask<SIMDVec_u, SIMDVecMask<4>>(mask, static_cast<SIMDVec_u &>(*this));
         }
-
-        // insert[] (scalar)
+        // INSERT
         inline SIMDVec_u & insert(uint32_t index, uint32_t value) {
             alignas(16) uint32_t raw[4];
             _mm_store_si128((__m128i*)raw, mVec);
@@ -105,24 +105,124 @@ namespace SIMD {
             mVec = b.mVec;
             return *this;
         }
-
+        // ASSIGNV
+        // MASSIGNV
+        // ASSIGNS
+        // MASSIGNS
+        // PREFETCH0
+        // PREFETCH1
+        // PREFETCH2
+        // LOAD
+        // MLOAD
+        // LOADA
+        // MLOADA
+        // STORE
+        // MSTORE
+        // STOREA
+        // MSTOREA
+        // BLENDV
+        // BLENDS
+        // SWIZZLE
+        // SWIZZLEA
+        // ADDV
+        // MADDV
+        // ADDS
+        // MADDS
+        // ADDVA
+        // MADDVA
+        // ADDSA
+        // MADDSA
+        // SADDV
+        // MSADDV
+        // SADDS
+        // MSADDS
+        // SADDVA
+        // MSADDVA
+        // SADDSA
+        // MSADDSA
+        // POSTINC
+        // MPOSTINC
         // PREFINC
         inline SIMDVec_u & prefinc() {
             __m128i t0 = _mm_set1_epi32(1);
             mVec = _mm_add_epi32(mVec, t0);
             return *this;
         }
-
         // MPREFINC
         inline SIMDVec_u & prefinc(SIMDVecMask<4> const & mask) {
             __m128i t0 = _mm_set1_epi32(1);
-            __m128i t1 = _mm_add_epi32(mVec, t0);
-            mVec = _mm_blendv_epi8(mVec, t1, mask.mMask);
+            mVec = _mm_mask_add_epi32(mVec, mask.mMask, mVec, t0);
             return *this;
         }
-
+        // SUBV
+        // MSUBV
+        // SUBS
+        // MSUBS
+        // SUBVA
+        // MSUBVA
+        // SUBSA
+        // MSUBSA
+        // SSUBV
+        // MSSUBV
+        // SSUBS
+        // MSSUBS
+        // SSUBVA
+        // MSSUBVA
+        // SSUBSA
+        // MSSUBSA
+        // SUBFROMV
+        // MSUBFROMV
+        // SUBFROMS
+        // MSUBFROMS
+        // SUBFROMVA
+        // MSUBFROMVA
+        // SUBFROMSA
+        // MSUBFROMSA
+        // POSTDEC
+        // MPOSTDEC
+        // PREFDEC
+        // MPREFDEC
+        // MULV
+        // MMULV
+        // MULS
+        // MMULS
+        // MULVA
+        // MMULVA
+        // MULSA
+        // MMULSA
+        // DIVV
+        // MDIVV
+        // DIVS
+        // MDIVS
+        // DIVVA
+        // MDIVVA
+        // DIVSA
+        // MDIVSA
+        // RCP
+        // MRCP
+        // RCPS
+        // MRCPS
+        // RCPA
+        // MRCPA
+        // RCPSA
+        // MRCPSA
+        // CMPEQV
+        // CMPEQS
+        // CMPNEV
+        // CMPNES
+        // CMPGTV
+        // CMPGTS
+        // CMPLTV
+        // CMPLTS
+        // CMPGEV
+        // CMPGES
+        // CMPLEV
+        // CMPLES
+        // CMPEV
+        // CMPES
         // UNIQUE
         inline bool unique() const {
+            // TODO: Use vpconflictd instruction. This would require checks for AVX512CD instructions
             alignas(16) uint32_t raw[4];
             _mm_store_si128((__m128i*)raw, mVec);
             for (unsigned int i = 0; i < 3; i++) {
@@ -132,6 +232,88 @@ namespace SIMD {
             }
             return true;
         }
+        // HADD
+        // MHADD
+        // HADDS
+        // MHADDS
+        // HMUL
+        // MHMUL
+        // HMULS
+        // MHMULS
+
+        // FMULADDV
+        // MFMULADDV
+        // FMULSUBV
+        // MFMULSUBV
+        // FADDMULV
+        // MFADDMULV
+        // FSUBMULV
+        // MFSUBMULV
+
+        // MAXV
+        // MMAXV
+        // MAXS
+        // MMAXS
+        // MAXVA
+        // MMAXVA
+        // MAXSA
+        // MMAXSA
+        // MINV
+        // MMINV
+        // MINS
+        // MMINS
+        // MINVA
+        // MMINVA
+        // MINSA
+        // MMINSA
+        // HMAX
+        // MHMAX
+        // IMAX
+        // MIMAX
+        // HMIN
+        // MHMIN
+        // IMIN
+        // MIMIN
+
+        // BANDV
+        // MBANDV
+        // BANDS
+        // MBANDS
+        // BANDVA
+        // MBANDVA
+        // BANDSA
+        // BORV
+        // MBORV
+        // BORS
+        // MBORS
+        // BORVA
+        // MBORVA
+        // BORSA
+        // MBORSA
+        // BXORV
+        // MBXORV
+        // BXORS
+        // MBXORS
+        // BXORVA
+        // MBXORVA
+        // BXORSA
+        // MBXORSA
+        // BNOT
+        // MBNOT
+        // BNOTA
+        // MBNOTA
+        // HBAND
+        // MHBAND
+        // HBANDS
+        // MHBANDS
+        // HBOR
+        // MHBOR
+        // HBORS
+        // MHBORS
+        // HBXOR
+        // MHBXOR
+        // HBXORS
+        // MHBXORS
 
         // GATHERS
         inline SIMDVec_u & gather(uint32_t* baseAddr, uint64_t* indices) {
@@ -142,70 +324,74 @@ namespace SIMD {
         // MGATHERS
         inline SIMDVec_u & gather(SIMDVecMask<4> const & mask, uint32_t* baseAddr, uint64_t* indices) {
             alignas(16) uint32_t raw[4] = { baseAddr[indices[0]], baseAddr[indices[1]], baseAddr[indices[2]], baseAddr[indices[3]] };
-            __m128i t0 = _mm_load_si128((__m128i*)raw);
-            mVec = _mm_blendv_epi8(mVec, t0, mask.mMask);
+            mVec = _mm_mask_load_epi32(mVec, mask.mMask, raw);
             return *this;
         }
         // GATHERV
         inline SIMDVec_u & gather(uint32_t* baseAddr, SIMDVec_u const & indices) {
-            alignas(16) uint32_t rawInd[4];
-            alignas(16) uint32_t raw[4];
-
-            _mm_store_si128((__m128i*) rawInd, indices.mVec);
-            for (int i = 0; i < 4; i++) { raw[i] = baseAddr[rawInd[i]]; }
-            mVec = _mm_load_si128((__m128i*)raw);
+            mVec = _mm_mmask_i32gather_epi32(mVec, 0xF, indices.mVec, baseAddr, 1);
             return *this;
         }
         // MGATHERV
         inline SIMDVec_u & gather(SIMDVecMask<4> const & mask, uint32_t* baseAddr, SIMDVec_u const & indices) {
-            alignas(16) uint32_t rawInd[4];
-            alignas(16) uint32_t raw[4];
-
-            _mm_store_si128((__m128i*) rawInd, indices.mVec);
-            for (int i = 0; i < 4; i++) { raw[i] = baseAddr[rawInd[i]]; }
-            __m128i t0 = _mm_load_si128((__m128i*)&raw[0]);
-            mVec = _mm_blendv_epi8(mVec, t0, mask.mMask);
+            mVec = _mm_mmask_i32gather_epi32(mVec, mask.mMask, indices.mVec, baseAddr, 1);
             return *this;
         }
         // SCATTERS
         inline uint32_t* scatter(uint32_t* baseAddr, uint64_t* indices) {
-            alignas(16) uint32_t raw[4];
-            _mm_store_si128((__m128i*) raw, mVec);
-            for (int i = 0; i < 4; i++) { baseAddr[indices[i]] = raw[i]; };
+            __m128i t0 = _mm_load_si128((__m128i *) indices);
+            _mm_i32scatter_epi32(baseAddr, t0, mVec, 1);
             return baseAddr;
         }
         // MSCATTERS
         inline uint32_t* scatter(SIMDVecMask<4> const & mask, uint32_t* baseAddr, uint64_t* indices) {
-            alignas(16) uint32_t raw[4];
-            alignas(16) uint32_t rawMask[4];
-            _mm_store_si128((__m128i*) raw, mVec);
-            _mm_store_si128((__m128i*) rawMask, mask.mMask);
-            for (int i = 0; i < 4; i++) { if (rawMask[i] == SIMDVecMask<4>::TRUE()) baseAddr[indices[i]] = raw[i]; };
+            __m128i t0 = _mm_load_si128((__m128i *) indices);
+            _mm_i32scatter_epi32(baseAddr, t0, mVec, 1);
             return baseAddr;
         }
         // SCATTERV
         inline uint32_t* scatter(uint32_t* baseAddr, SIMDVec_u const & indices) {
-            alignas(16) uint32_t raw[4];
-            alignas(16) uint32_t rawIndices[4];
-            _mm_store_si128((__m128i*) raw, mVec);
-            _mm_store_si128((__m128i*) rawIndices, indices.mVec);
-            for (int i = 0; i < 4; i++) { baseAddr[rawIndices[i]] = raw[i]; };
+            _mm_i32scatter_epi32(baseAddr, indices.mVec, mVec, 1);
             return baseAddr;
         }
         // MSCATTERV
         inline uint32_t* scatter(SIMDVecMask<4> const & mask, uint32_t* baseAddr, SIMDVec_u const & indices) {
-            alignas(16) uint32_t raw[4];
-            alignas(16) uint32_t rawIndices[4];
-            alignas(16) uint32_t rawMask[4];
-            _mm_store_si128((__m128i*) raw, mVec);
-            _mm_store_si128((__m128i*) rawIndices, indices.mVec);
-            _mm_store_si128((__m128i*) rawMask, mask.mMask);
-            for (int i = 0; i < 4; i++) {
-                if (rawMask[i] == SIMDVecMask<4>::TRUE())
-                    baseAddr[rawIndices[i]] = raw[i];
-            };
+            _mm_mask_i32scatter_epi32(baseAddr, mask.mMask, indices.mVec, mVec, 1);
             return baseAddr;
         }
+
+        // LSHV
+        // MLSHV
+        // LSHS
+        // MLSHS
+        // LSHVA
+        // MLSHVA
+        // LSHSA
+        // MLSHSA
+        // RSHV
+        // MRSHV
+        // RSHS
+        // MRSHS
+        // RSHVA
+        // MRSHVA
+        // RSHSA
+        // MRSHSA
+        // ROLV
+        // MROLV
+        // ROLS
+        // MROLS
+        // ROLVA
+        // MROLVA
+        // ROLSA
+        // MROLSA
+        // RORV
+        // MRORV
+        // RORS
+        // MRORS
+        // RORVA
+        // MRORVA
+        // RORSA
+        // MRORSA
 
         // PACK
         // PACKLO
@@ -225,7 +411,10 @@ namespace SIMD {
 
         // UTOI
         inline  operator SIMDVec_i<int32_t, 4> () const;
+        // UTOF
+        inline  operator SIMDVec_f<float, 4>() const;
     };
+
 }
 }
 

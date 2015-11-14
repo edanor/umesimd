@@ -32,9 +32,9 @@
 #define UME_SIMD_VEC_FLOAT32_4_H_
 
 #include <type_traits>
-#include "../../../UMESimdInterface.h"
-#include "../../UMESimdPluginScalarEmulation.h"
 #include <immintrin.h>
+
+#include "../../../UMESimdInterface.h"
 
 namespace UME {
 namespace SIMD {
@@ -373,27 +373,26 @@ namespace SIMD {
         // HXOR  - XOR of elements of a vector (horizontal XOR)
         // MHXOR - Masked XOR of elements of a vector (horizontal XOR)
 
-        //(Fused arithmetics)
-        // FMULADDV  - Fused multiply and add (A*B + C) with vectors
-        inline SIMDVec_f fmuladd(SIMDVec_f const & a, SIMDVec_f const & b) {
+        //(Fused arithmetics)
+        // FMULADDV  - Fused multiply and add (A*B + C) with vectors     
+        inline SIMDVec_f fmuladd(SIMDVec_f const & b, SIMDVec_f const & c) {
 #ifdef FMA
-            return _mm_fmadd_ps(this->mVec, a.mVec, b.mVec);
+            __m128 t0 = _mm_fmadd_ps(mVec, b.mVec, c.mVec);
 #else
-            return _mm_add_ps(_mm_mul_ps(this->mVec, a.mVec), b.mVec);
+            __m128 t0 = _mm_add_ps(_mm_mul_ps(mVec, b.mVec), c.mVec);
 #endif
+            return SIMDVec_f(t0);
         }
 
-        // MFMULADDV - Masked fused multiply and add (A*B + C) with vectors
-        inline SIMDVec_f fmuladd(SIMDVecMask<4> const & mask, SIMDVec_f const & a, SIMDVec_f const & b) {
+        // MFMULADDV
+        inline SIMDVec_f fmuladd(SIMDVecMask<4> const & mask, SIMDVec_f const & b, SIMDVec_f const & c) {
 #ifdef FMA
-            __m128 temp = _mm_fmadd_ps(this->mVec, a.mVec, b.mVec);
-            return _mm_blendv_ps(temp, this->mVec, mask.mMask);
+            __m128 t0 = _mm_fmadd_ps(mVec, b.mVec, c.mVec);
 #else
-
-
-            __m128 temp = _mm_add_ps(_mm_mul_ps(this->mVec, a.mVec), b.mVec);
-            return _mm_blendv_ps(this->mVec, temp, _mm_cvtepi32_ps(mask.mMask));
+            __m128 t0 = _mm_add_ps(_mm_mul_ps(mVec, b.mVec), c.mVec);
 #endif
+            __m128 t1 = _mm_blendv_ps(mVec, t0, _mm_cvtepi32_ps(mask.mMask));
+            return SIMDVec_f(t1);
         }
 
         // FMULSUBV  - Fused multiply and sub (A*B - C) with vectors
@@ -524,27 +523,27 @@ namespace SIMD {
         // MPOWS     - Masked power (exponent in scalar) 
         // ROUND     - Round to nearest integer
         // MROUND    - Masked round to nearest integer
-        // TRUNC     - Truncate to integer (returns Signed integer vector)
+        // TRUNC     - Truncate to integer (returns Signed integer vector)
         // MTRUNC    - Masked truncate to integer (returns Signed integer vector)
-        // FLOOR     - Floor
-        // MFLOOR    - Masked floor
-        // CEIL      - Ceil
-        // MCEIL     - Masked ceil
-        // ISFIN     - Is finite
-        // ISINF     - Is infinite (INF)
-        // ISAN      - Is a number
-        // ISNAN     - Is 'Not a Number (NaN)'
-        // ISSUB     - Is subnormal
-        // ISZERO    - Is zero
-        // ISZEROSUB - Is zero or subnormal
-        // SIN       - Sine
-        // MSIN      - Masked sine
-        // COS       - Cosine
-        // MCOS      - Masked cosine
-        // TAN       - Tangent
-        // MTAN      - Masked tangent
-        // CTAN      - Cotangent
-        // MCTAN     - Masked cotangent
+        // FLOOR     - Floor
+        // MFLOOR    - Masked floor
+        // CEIL      - Ceil
+        // MCEIL     - Masked ceil
+        // ISFIN     - Is finite
+        // ISINF     - Is infinite (INF)
+        // ISAN      - Is a number
+        // ISNAN     - Is 'Not a Number (NaN)'
+        // ISSUB     - Is subnormal
+        // ISZERO    - Is zero
+        // ISZEROSUB - Is zero or subnormal
+        // SIN       - Sine
+        // MSIN      - Masked sine
+        // COS       - Cosine
+        // MCOS      - Masked cosine
+        // TAN       - Tangent
+        // MTAN      - Masked tangent
+        // CTAN      - Cotangent
+        // MCTAN     - Masked cotangent
     };
 }
 }
