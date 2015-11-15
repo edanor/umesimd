@@ -37,13 +37,9 @@
 
 namespace UME {
 namespace SIMD {
-    // ********************************************************************************************
-    // MASK VECTORS
-    // ********************************************************************************************
+
     template<uint32_t VEC_LEN>
     struct SIMDVecMask_traits {};
-
-    // No specialized traits
 
     // MASK_BASE_TYPE is the type of element that will represent single entry in
     //                mask register. This can be for examle a 'bool' or 'unsigned int' or 'float'
@@ -53,21 +49,20 @@ namespace SIMD {
     //                for the compiler to implicitly cast it to integer. To forbid this casting operations from
     //                happening the default type has to be wrapped into a class. 
     template<uint32_t VEC_LEN>
-    class SIMDVecMask final : public SIMDMaskBaseInterface<
+    class SIMDVecMask : public SIMDMaskBaseInterface<
         SIMDVecMask<VEC_LEN>,
         bool,
         VEC_LEN>
     {
+        typedef SIMDVecMask_traits<VEC_LEN> MASK_TRAITS;
     private:
         bool mMask[VEC_LEN]; // each entry represents single mask element. For real SIMD vectors, mMask will be of mask intrinsic type.
-
     public:
         inline SIMDVecMask() {}
 
         // Regardless of the mask representation, the interface should only allow initialization using 
         // standard bool or using equivalent mask
         inline explicit SIMDVecMask(bool m) {
-            UME_EMULATION_WARNING();
             for (int i = 0; i < VEC_LEN; i++)
             {
                 mMask[i] = m;
@@ -106,11 +101,11 @@ namespace SIMD {
             bool m8, bool m9, bool m10, bool m11,
             bool m12, bool m13, bool m14, bool m15)
         {
-            mMask[0] = m0;  mMask[1] = m1;
-            mMask[2] = m2;  mMask[3] = m3;
-            mMask[4] = m4;  mMask[5] = m5;
-            mMask[6] = m6;  mMask[7] = m7;
-            mMask[8] = m8;  mMask[9] = m9;
+            mMask[0] = m0;   mMask[1] = m1;
+            mMask[2] = m2;   mMask[3] = m3;
+            mMask[4] = m4;   mMask[5] = m5;
+            mMask[6] = m6;   mMask[7] = m7;
+            mMask[8] = m8;   mMask[9] = m9;
             mMask[10] = m10; mMask[11] = m11;
             mMask[12] = m12; mMask[13] = m13;
             mMask[14] = m14; mMask[15] = m15;
@@ -157,14 +152,12 @@ namespace SIMD {
         }
 
         inline SIMDVecMask(SIMDVecMask const & mask) {
-            UME_EMULATION_WARNING();
             for (int i = 0; i < VEC_LEN; i++)
             {
                 mMask[i] = mask.mMask[i];
             }
         }
     };
-
 }
 }
 

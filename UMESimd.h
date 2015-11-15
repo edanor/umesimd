@@ -129,11 +129,9 @@ namespace SIMD
     #include "plugins/UMESimdPluginAVX.h"
 #else
     // Use scalar emulation if not specializing
-    #define USE_EMULATED_TYPES 1
-#include "plugins/UMESimdPluginScalarEmulation.h"
+    #define USING_EMULATED_TYPES 1
+    #include "plugins/UMESimdPluginScalarEmulation.h"
 #endif // INSTRUCTION SET
-#define USE_EMULATED_TYPES 1
-#include "plugins/UMESimdPluginScalarEmulation.h"
 
 // Traits need to be defined after all SIMD vectors are defined. 
 #include "UMESimdTraits.h"

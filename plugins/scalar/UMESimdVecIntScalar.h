@@ -28,24 +28,24 @@
 //  7th Framework programme Marie Curie Actions under grant PITN-GA-2012-316596".
 //
 
-#ifndef UME_SIMD_VEC_UINT_H_
-#define UME_SIMD_VEC_UINT_H_
+#ifndef UME_SIMD_VEC_INT_H_
+#define UME_SIMD_VEC_INT_H_
 
 #include <type_traits>
 #include "../../UMESimdInterface.h"
 #include <immintrin.h>
 
-#include "UMESimdMaskKNC.h"
-#include "UMESimdSwizzleKNC.h"
+#include "UMESimdMaskScalar.h"
+#include "UMESimdSwizzleScalar.h"
+#include "UMESimdVecUintScalar.h"
 
 // ********************************************************************************************
-// UNSIGNED INTEGER VECTOR TEMPLATE
+// SIGNED INTEGER VECTOR TEMPLATE
 // ********************************************************************************************
-#include "uint/UMESimdVecUintPrototype.h"
+#include "int/UMESimdVecIntPrototype.h"
 
 // ********************************************************************************************
-// UNSIGNED INTEGER VECTOR SPECIALIZATIONS
+// SIGNED INTEGER VECTOR SPECIALIZATIONS
 // ********************************************************************************************
-#include "uint/UMESimdVecUint32_16.h"
 
 #endif

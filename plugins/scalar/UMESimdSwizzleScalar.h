@@ -33,13 +33,12 @@
 
 #include <type_traits>
 #include "../../UMESimdInterface.h"
+#include "../UMESimdPluginScalarEmulation.h"
 #include <immintrin.h>
 
 namespace UME {
 namespace SIMD {
-    // ********************************************************************************************
-    // SWIZZLE MASKS
-    // ********************************************************************************************
+
     template<uint32_t SMASK_LEN>
     class SIMDVecSwizzle :
         public SIMDSwizzleMaskBaseInterface<
@@ -58,11 +57,10 @@ namespace SIMD {
             }
         }
 
-        // LOAD-CONSTR - Construct by loading from memory
-        inline explicit SIMDVecSwizzle(uint32_t const *p) {
+        inline explicit SIMDVecSwizzle(uint32_t *m) {
             UME_EMULATION_WARNING();
             for (int i = 0; i < SMASK_LEN; i++) {
-                mMaskElements[i] = p[i];
+                mMaskElements[i] = m[i];
             }
         }
 
@@ -78,12 +76,12 @@ namespace SIMD {
         }
 
         // Element-wise modification operator
-        inline void insert(uint32_t index, uint32_t value) {
+        inline void insert(uint32_t index, uint32_t x) {
             UME_EMULATION_WARNING();
-            mMaskElements[index] = value;
+            mMaskElements[index] = x;
         }
 
-        inline SIMDVecSwizzle(SIMDVecSwizzle const & mask) {
+        SIMDVecSwizzle(SIMDVecSwizzle const & mask) {
             UME_EMULATION_WARNING();
             for (int i = 0; i < SMASK_LEN; i++)
             {
@@ -91,6 +89,7 @@ namespace SIMD {
             }
         }
     };
+
 }
 }
 

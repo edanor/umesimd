@@ -32,11 +32,7 @@
 #define UME_SIMD_PLUGIN_AVX2_H_
 
 #include <type_traits>
-
 #include "../UMESimdInterface.h"
-
-#include "UMESimdPluginScalarEmulation.h"
-
 #include <immintrin.h>
 
 namespace UME

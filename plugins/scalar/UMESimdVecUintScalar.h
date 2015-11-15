@@ -33,10 +33,11 @@
 
 #include <type_traits>
 #include "../../UMESimdInterface.h"
+#include "../UMESimdPluginScalarEmulation.h"
 #include <immintrin.h>
 
-#include "UMESimdMaskKNC.h"
-#include "UMESimdSwizzleKNC.h"
+#include "UMESimdMaskScalar.h"
+#include "UMESimdSwizzleScalar.h"
 
 // ********************************************************************************************
 // UNSIGNED INTEGER VECTOR TEMPLATE
@@ -46,6 +47,5 @@
 // ********************************************************************************************
 // UNSIGNED INTEGER VECTOR SPECIALIZATIONS
 // ********************************************************************************************
-#include "uint/UMESimdVecUint32_16.h"
 
 #endif

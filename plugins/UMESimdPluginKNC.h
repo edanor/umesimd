@@ -34,7 +34,6 @@
 #include <type_traits>
 
 #include "../UMESimdInterface.h"
-#include "UMESimdPluginScalarEmulation.h"
 
 #include <immintrin.h>
 

@@ -33,7 +33,6 @@
 
 #include <type_traits>
 #include "../../../UMESimdInterface.h"
-#include "../../UMESimdPluginScalarEmulation.h"
 #include <immintrin.h>
 
 #include "../UMESimdMaskAVX.h"
@@ -320,7 +319,6 @@ namespace SIMD {
         typedef typename SIMDVec_i_traits<SCALAR_INT_TYPE, VEC_LEN>::VEC_UINT           VEC_UINT;
         typedef typename SIMDVec_i_traits<SCALAR_INT_TYPE, VEC_LEN>::MASK_TYPE          MASK_TYPE;
 
-        friend class SIMDVecScalarEmu_u<SCALAR_UINT_TYPE, VEC_LEN>;
     private:
         VEC_EMU_REG mVec;
 
@@ -421,7 +419,6 @@ namespace SIMD {
         typedef typename SIMDVec_i_traits<SCALAR_INT_TYPE, 1>::SCALAR_UINT_TYPE     SCALAR_UINT_TYPE;
         typedef typename SIMDVec_i_traits<SCALAR_INT_TYPE, 1>::VEC_UINT             VEC_UINT;
 
-        friend class SIMDVecScalarEmu_u<SCALAR_UINT_TYPE, 1>;
     private:
         VEC_EMU_REG mVec;
 
