@@ -36,9 +36,9 @@
 #include "../../UMESimdPluginScalarEmulation.h"
 #include <immintrin.h>
 
-#include "../UMESimdMaskAVX.h"
-#include "../UMESimdSwizzleAVX.h"
-#include "../UMESimdVecUintAVX.h"
+#include "../UMESimdMaskKNC.h"
+#include "../UMESimdSwizzleKNC.h"
+#include "../UMESimdVecUintKNC.h"
 
 namespace UME {
 namespace SIMD {
@@ -302,16 +302,16 @@ namespace SIMD {
     template<typename SCALAR_INT_TYPE, uint32_t VEC_LEN>
     class SIMDVec_i final :
         public SIMDVecSignedInterface<
-        SIMDVec_i<SCALAR_INT_TYPE, VEC_LEN>,
-        typename SIMDVec_i_traits<SCALAR_INT_TYPE, VEC_LEN>::VEC_UINT,
-        SCALAR_INT_TYPE,
-        VEC_LEN,
-        typename SIMDVec_i_traits<SCALAR_INT_TYPE, VEC_LEN>::SCALAR_UINT_TYPE,
-        typename SIMDVec_i_traits<SCALAR_INT_TYPE, VEC_LEN>::MASK_TYPE,
-        typename SIMDVec_i_traits<SCALAR_INT_TYPE, VEC_LEN>::SWIZZLE_MASK_TYPE>,
+            SIMDVec_i<SCALAR_INT_TYPE, VEC_LEN>,
+            typename SIMDVec_i_traits<SCALAR_INT_TYPE, VEC_LEN>::VEC_UINT,
+            SCALAR_INT_TYPE,
+            VEC_LEN,
+            typename SIMDVec_i_traits<SCALAR_INT_TYPE, VEC_LEN>::SCALAR_UINT_TYPE,
+            typename SIMDVec_i_traits<SCALAR_INT_TYPE, VEC_LEN>::MASK_TYPE,
+            typename SIMDVec_i_traits<SCALAR_INT_TYPE, VEC_LEN>::SWIZZLE_MASK_TYPE>,
         public SIMDVecPackableInterface<
-        SIMDVec_i<SCALAR_INT_TYPE, VEC_LEN>,
-        typename SIMDVec_i_traits<SCALAR_INT_TYPE, VEC_LEN>::HALF_LEN_VEC_TYPE>
+            SIMDVec_i<SCALAR_INT_TYPE, VEC_LEN>,
+            typename SIMDVec_i_traits<SCALAR_INT_TYPE, VEC_LEN>::HALF_LEN_VEC_TYPE>
     {
     public:
         typedef SIMDVecEmuRegister<SCALAR_INT_TYPE, VEC_LEN> VEC_EMU_REG;

@@ -182,8 +182,8 @@ TIMING_RES test_UME_SIMD()
     // This is the actual binning code
     {
         // Calculate loop-peeling division
-        uint32_t PEEL_COUNT = INPUT_SIZE / VEC_LEN;           // Divide array size by vector length.
-        uint32_t REM_COUNT = INPUT_SIZE - PEEL_COUNT*VEC_LEN; // 
+        uint32_t PEEL_COUNT = INPUT_SIZE / VEC_LEN;
+        uint32_t REM_COUNT = INPUT_SIZE - PEEL_COUNT*VEC_LEN;
 
         FLOAT_VEC_T data_vec;
         FLOAT_VEC_T t0;

@@ -154,6 +154,9 @@ TIMING_RES test_UME_SIMD()
     typedef typename UME::SIMD::SIMDTraits<FLOAT_VEC_T>::INT_VEC_T  INT_VEC_T;
     typedef typename UME::SIMD::SIMDTraits<FLOAT_VEC_T>::UINT_VEC_T UINT_VEC_T;
 
+    typedef typename UME::SIMD::SIMDTraits<FLOAT_VEC_T>::SCALAR_INT_T INT_T;
+    typedef typename UME::SIMD::SIMDTraits<FLOAT_VEC_T>::SCALAR_UINT_T UINT_T;
+
     const uint32_t VEC_LEN = FLOAT_VEC_T::length();
     const int ALIGNMENT = FLOAT_VEC_T::alignment();
     unsigned long long start, end;    // Time measurements
@@ -191,6 +194,8 @@ TIMING_RES test_UME_SIMD()
 
         INT_VEC_T t1;
         UINT_VEC_T index_vec;
+        UINT_VEC_T bin_vec;
+        alignas(ALIGNMENT) UINT_T indices[VEC_LEN];
 
         unsigned int bin;
 
@@ -203,7 +208,18 @@ TIMING_RES test_UME_SIMD()
             t1 = t0.trunc();
             index_vec.assign(t1.itou());
             // Perform histogram update
-            test_UME_SIMD_float_recursive_helper<FLOAT_VEC_T, UINT_VEC_T>(index_vec, hist);
+            // test_UME_SIMD_float_recursive_helper<FLOAT_VEC_T, UINT_VEC_T>(index_vec, hist);
+            if (index_vec.unique()) {
+                bin_vec.gather(hist, index_vec);
+                bin_vec.prefinc();
+                bin_vec.scatter(hist, index_vec);
+            }
+            else {
+                index_vec.storea(indices);
+                for (int i = 0; i < VEC_LEN; i++) {
+                    hist[indices[i]]++;
+                }
+            }
         }
         
         // Calculate reminder elements using scalar code

@@ -94,4 +94,5 @@ namespace SIMD {
     };
 }
 }
+
 #endif

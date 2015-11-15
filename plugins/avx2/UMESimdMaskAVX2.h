@@ -42,7 +42,7 @@
 #include "mask/UMESimdMaskPrototype.h"
 
 // ********************************************************************************************
-// MASK VECTOR SPECIALIZATIONs
+// MASK VECTOR SPECIALIZATIONS
 // ********************************************************************************************
 #include "mask/UMESimdMask1.h"
 #include "mask/UMESimdMask2.h"

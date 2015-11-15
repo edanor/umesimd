@@ -135,7 +135,7 @@ namespace SIMD
 
         // MSTORE
         template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
-        inline SCALAR_TYPE* store(MASK_TYPE const & mask, VEC_TYPE & src, SCALAR_TYPE * p) {
+        inline SCALAR_TYPE* store(MASK_TYPE const & mask, VEC_TYPE const & src, SCALAR_TYPE * p) {
             UME_EMULATION_WARNING();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++)
             {
@@ -146,14 +146,14 @@ namespace SIMD
 
         // STOREA
         template<typename VEC_TYPE, typename SCALAR_TYPE>
-        inline SCALAR_TYPE* storeAligned(VEC_TYPE & src, SCALAR_TYPE *p) {
+        inline SCALAR_TYPE* storeAligned(VEC_TYPE const & src, SCALAR_TYPE *p) {
             UME_ALIGNMENT_CHECK(p, VEC_TYPE::alignment());
             return store<VEC_TYPE, SCALAR_TYPE>(src, p); 
         }
 
         // MSTOREA
         template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
-        inline SCALAR_TYPE* storeAligned(MASK_TYPE const & mask, VEC_TYPE & src, SCALAR_TYPE *p) {
+        inline SCALAR_TYPE* storeAligned(MASK_TYPE const & mask, VEC_TYPE const & src, SCALAR_TYPE *p) {
             UME_ALIGNMENT_CHECK(p, VEC_TYPE::alignment());
             return store<MASK_TYPE, VEC_TYPE, SCALAR_TYPE>(mask, src, p);
         }
@@ -4109,23 +4109,23 @@ namespace SIMD
         }
 
         // STORE
-        inline SCALAR_TYPE* store (SCALAR_TYPE* p) {
-            return EMULATED_FUNCTIONS::store<DERIVED_VEC_TYPE, SCALAR_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this), p);
+        inline SCALAR_TYPE* store (SCALAR_TYPE* p) const {
+            return EMULATED_FUNCTIONS::store<DERIVED_VEC_TYPE, SCALAR_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this), p);
         }
 
         // MSTORE
-        inline SCALAR_TYPE* store (MASK_TYPE const & mask, SCALAR_TYPE* p) {
-            return EMULATED_FUNCTIONS::store<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this), p);
+        inline SCALAR_TYPE* store (MASK_TYPE const & mask, SCALAR_TYPE* p) const {
+            return EMULATED_FUNCTIONS::store<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this), p);
         }
 
         // STOREA
-        inline SCALAR_TYPE* storea (SCALAR_TYPE* p) {
-            return EMULATED_FUNCTIONS::store<DERIVED_VEC_TYPE, SCALAR_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this), p);
+        inline SCALAR_TYPE* storea (SCALAR_TYPE* p) const {
+            return EMULATED_FUNCTIONS::store<DERIVED_VEC_TYPE, SCALAR_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this), p);
         }
 
         // MSTOREA
-        inline SCALAR_TYPE* storea (MASK_TYPE const & mask, SCALAR_TYPE* p) {
-           return EMULATED_FUNCTIONS::store<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this), p);
+        inline SCALAR_TYPE* storea (MASK_TYPE const & mask, SCALAR_TYPE* p) const {
+           return EMULATED_FUNCTIONS::store<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this), p);
         }
 
         // BLENDV

@@ -43,11 +43,11 @@ namespace UME
 namespace SIMD
 {
     // forward declarations of simd types classes;
-    template<typename SCALAR_TYPE, uint32_t VEC_LEN>       class SIMDVecKNCMask;
-    template<typename SCALAR_UINT_TYPE, uint32_t VEC_LEN>  class SIMDVecKNC_u;
-    template<typename SCALAR_INT_TYPE, uint32_t VEC_LEN>   class SIMDVecKNC_i;
-    template<typename SCALAR_FLOAT_TYPE, uint32_t VEC_LEN> class SIMDVecKNC_f;
-
+    template<uint32_t VEC_LEN> class SIMDVecMask;
+    template<uint32_t SMASK_LEN>                           class SIMDVecSwizzle;
+    template<typename SCALAR_UINT_TYPE, uint32_t VEC_LEN>  class SIMDVec_u;
+    template<typename SCALAR_INT_TYPE, uint32_t VEC_LEN>   class SIMDVec_i;
+    template<typename SCALAR_FLOAT_TYPE, uint32_t VEC_LEN> class SIMDVec_f;
 }
 }
 
@@ -61,113 +61,133 @@ namespace UME
 {
     namespace SIMD
     {
+    // Mask types
+    typedef SIMDVecMask<1>      SIMDMask1;
+    typedef SIMDVecMask<2>      SIMDMask2;
+    typedef SIMDVecMask<4>      SIMDMask4;
+    typedef SIMDVecMask<8>      SIMDMask8;
+    typedef SIMDVecMask<16>     SIMDMask16;
+    typedef SIMDVecMask<32>     SIMDMask32;
+    typedef SIMDVecMask<64>     SIMDMask64;
+    typedef SIMDVecMask<128>    SIMDMask128;
+    
+    // Swizzle mask types
+    typedef SIMDVecSwizzle<1>   SIMDSwizzle1;
+    typedef SIMDVecSwizzle<2>   SIMDSwizzle2;
+    typedef SIMDVecSwizzle<4>   SIMDSwizzle4;
+    typedef SIMDVecSwizzle<8>   SIMDSwizzle8;
+    typedef SIMDVecSwizzle<16>  SIMDSwizzle16;
+    typedef SIMDVecSwizzle<32>  SIMDSwizzle32;
+    typedef SIMDVecSwizzle<64>  SIMDSwizzle64;
+    typedef SIMDVecSwizzle<128> SIMDSwizzle128;
+
     // 8b uint vectors
-    typedef SIMDVecKNC_u<uint8_t,  1>   SIMD1_8u;
+    typedef SIMDVec_u<uint8_t,  1>   SIMD1_8u;
 
     // 16b uint vectors
-    typedef SIMDVecKNC_u<uint8_t,  2>   SIMD2_8u;
-    typedef SIMDVecKNC_u<uint16_t, 1>   SIMD1_16u;
+    typedef SIMDVec_u<uint8_t,  2>   SIMD2_8u;
+    typedef SIMDVec_u<uint16_t, 1>   SIMD1_16u;
 
     // 32b uint vectors
-    typedef SIMDVecKNC_u<uint8_t,  4>   SIMD4_8u;
-    typedef SIMDVecKNC_u<uint16_t, 2>   SIMD2_16u;
-    typedef SIMDVecKNC_u<uint32_t, 1>   SIMD1_32u; 
+    typedef SIMDVec_u<uint8_t,  4>   SIMD4_8u;
+    typedef SIMDVec_u<uint16_t, 2>   SIMD2_16u;
+    typedef SIMDVec_u<uint32_t, 1>   SIMD1_32u;
 
     // 64b uint vectors
-    typedef SIMDVecKNC_u<uint8_t,  8>   SIMD8_8u;
-    typedef SIMDVecKNC_u<uint16_t, 4>   SIMD4_16u;
-    typedef SIMDVecKNC_u<uint32_t, 2>   SIMD2_32u; 
-    typedef SIMDVecKNC_u<uint64_t, 1>   SIMD1_64u;
+    typedef SIMDVec_u<uint8_t,  8>   SIMD8_8u;
+    typedef SIMDVec_u<uint16_t, 4>   SIMD4_16u;
+    typedef SIMDVec_u<uint32_t, 2>   SIMD2_32u; 
+    typedef SIMDVec_u<uint64_t, 1>   SIMD1_64u;
 
     // 128b uint vectors
-    typedef SIMDVecKNC_u<uint8_t,  16>  SIMD16_8u;
-    typedef SIMDVecKNC_u<uint16_t, 8>   SIMD8_16u;
-    typedef SIMDVecKNC_u<uint32_t, 4>   SIMD4_32u;
-    typedef SIMDVecKNC_u<uint64_t, 2>   SIMD2_64u;
+    typedef SIMDVec_u<uint8_t,  16>  SIMD16_8u;
+    typedef SIMDVec_u<uint16_t, 8>   SIMD8_16u;
+    typedef SIMDVec_u<uint32_t, 4>   SIMD4_32u;
+    typedef SIMDVec_u<uint64_t, 2>   SIMD2_64u;
     
     // 256b uint vectors
-    typedef SIMDVecKNC_u<uint8_t,  32>  SIMD32_8u;
-    typedef SIMDVecKNC_u<uint16_t, 16>  SIMD16_16u;
-    typedef SIMDVecKNC_u<uint32_t, 8>   SIMD8_32u;
-    typedef SIMDVecKNC_u<uint64_t, 4>   SIMD4_64u;
+    typedef SIMDVec_u<uint8_t,  32>  SIMD32_8u;
+    typedef SIMDVec_u<uint16_t, 16>  SIMD16_16u;
+    typedef SIMDVec_u<uint32_t, 8>   SIMD8_32u;
+    typedef SIMDVec_u<uint64_t, 4>   SIMD4_64u;
     
     // 512b uint vectors
-    typedef SIMDVecKNC_u<uint8_t,  64>  SIMD64_8u;
-    typedef SIMDVecKNC_u<uint16_t, 32>  SIMD32_16u;
-    typedef SIMDVecKNC_u<uint32_t, 16>  SIMD16_32u;
-    typedef SIMDVecKNC_u<uint64_t, 8>   SIMD8_64u;
+    typedef SIMDVec_u<uint8_t,  64>  SIMD64_8u;
+    typedef SIMDVec_u<uint16_t, 32>  SIMD32_16u;
+    typedef SIMDVec_u<uint32_t, 16>  SIMD16_32u;
+    typedef SIMDVec_u<uint64_t, 8>   SIMD8_64u;
 
     // 1024b uint vectors
-    typedef SIMDVecKNC_u<uint8_t,  128> SIMD128_8u;
-    typedef SIMDVecKNC_u<uint16_t, 64>  SIMD64_16u;
-    typedef SIMDVecKNC_u<uint32_t, 32>  SIMD32_32u;
-    typedef SIMDVecKNC_u<uint64_t, 16>  SIMD16_64u;
+    typedef SIMDVec_u<uint8_t, 128>  SIMD128_8u;
+    typedef SIMDVec_u<uint16_t, 64>  SIMD64_16u;
+    typedef SIMDVec_u<uint32_t, 32>  SIMD32_32u;
+    typedef SIMDVec_u<uint64_t, 16>  SIMD16_64u;
 
     // 8b int vectors
-    typedef SIMDVecKNC_i<int8_t,   1>   SIMD1_8i; 
-    
+    typedef SIMDVec_i<int8_t,   1>   SIMD1_8i;
+
     // 16b int vectors
-    typedef SIMDVecKNC_i<int8_t,   2>   SIMD2_8i; 
-    typedef SIMDVecKNC_i<int16_t,  1>   SIMD1_16i;
+    typedef SIMDVec_i<int8_t,   2>   SIMD2_8i;
+    typedef SIMDVec_i<int16_t,  1>   SIMD1_16i;
 
     // 32b int vectors
-    typedef SIMDVecKNC_i<int8_t,   4>   SIMD4_8i; 
-    typedef SIMDVecKNC_i<int16_t,  2>   SIMD2_16i;
-    typedef SIMDVecKNC_i<int32_t,  1>   SIMD1_32i;
+    typedef SIMDVec_i<int8_t,   4>   SIMD4_8i;
+    typedef SIMDVec_i<int16_t,  2>   SIMD2_16i;
+    typedef SIMDVec_i<int32_t,  1>   SIMD1_32i;
 
     // 64b int vectors
-    typedef SIMDVecKNC_i<int8_t,   8>   SIMD8_8i; 
-    typedef SIMDVecKNC_i<int16_t,  4>   SIMD4_16i;
-    typedef SIMDVecKNC_i<int32_t,  2>   SIMD2_32i;
-    typedef SIMDVecKNC_i<int64_t,  1>   SIMD1_64i;
+    typedef SIMDVec_i<int8_t,   8>   SIMD8_8i; 
+    typedef SIMDVec_i<int16_t,  4>   SIMD4_16i;
+    typedef SIMDVec_i<int32_t,  2>   SIMD2_32i;
+    typedef SIMDVec_i<int64_t,  1>   SIMD1_64i;
 
     // 128b int vectors
-    typedef SIMDVecKNC_i<int8_t,   16>  SIMD16_8i; 
-    typedef SIMDVecKNC_i<int16_t,  8>   SIMD8_16i;
-    typedef SIMDVecKNC_i<int32_t,  4>   SIMD4_32i;
-    typedef SIMDVecKNC_i<int64_t,  2>   SIMD2_64i;
+    typedef SIMDVec_i<int8_t,   16>  SIMD16_8i; 
+    typedef SIMDVec_i<int16_t,  8>   SIMD8_16i;
+    typedef SIMDVec_i<int32_t,  4>   SIMD4_32i;
+    typedef SIMDVec_i<int64_t,  2>   SIMD2_64i;
 
     // 256b int vectors
-    typedef SIMDVecKNC_i<int8_t,   32>  SIMD32_8i;
-    typedef SIMDVecKNC_i<int16_t,  16>  SIMD16_16i;
-    typedef SIMDVecKNC_i<int32_t,  8>   SIMD8_32i;
-    typedef SIMDVecKNC_i<int64_t,  4>   SIMD4_64i;
-    
+    typedef SIMDVec_i<int8_t,   32>  SIMD32_8i;
+    typedef SIMDVec_i<int16_t,  16>  SIMD16_16i;
+    typedef SIMDVec_i<int32_t,  8>   SIMD8_32i;
+    typedef SIMDVec_i<int64_t,  4>   SIMD4_64i;
+
     // 512b int vectors
-    typedef SIMDVecKNC_i<int8_t,   64>  SIMD64_8i;
-    typedef SIMDVecKNC_i<int16_t,  32>  SIMD32_16i;
-    typedef SIMDVecKNC_i<int32_t,  16>  SIMD16_32i;
-    typedef SIMDVecKNC_i<int64_t,  8>   SIMD8_64i;
+    typedef SIMDVec_i<int8_t,   64>  SIMD64_8i;
+    typedef SIMDVec_i<int16_t,  32>  SIMD32_16i;
+    typedef SIMDVec_i<int32_t,  16>  SIMD16_32i;
+    typedef SIMDVec_i<int64_t,  8>   SIMD8_64i;
 
     // 1024b int vectors
-    typedef SIMDVecKNC_i<int8_t,   128> SIMD128_8i;
-    typedef SIMDVecKNC_i<int16_t,  64>  SIMD64_16i;
-    typedef SIMDVecKNC_i<int32_t,  32>  SIMD32_32i;
-    typedef SIMDVecKNC_i<int64_t,  16>  SIMD16_64i;
+    typedef SIMDVec_i<int8_t,  128>  SIMD128_8i;
+    typedef SIMDVec_i<int16_t,  64>  SIMD64_16i;
+    typedef SIMDVec_i<int32_t,  32>  SIMD32_32i;
+    typedef SIMDVec_i<int64_t,  16>  SIMD16_64i;
 
     // 32b float vectors
-    typedef SIMDVecKNC_f<float, 1>      SIMD1_32f;
+    typedef SIMDVec_f<float, 1>      SIMD1_32f;
 
     // 64b float vectors
-    typedef SIMDVecKNC_f<float, 2>      SIMD2_32f;
-    typedef SIMDVecKNC_f<double, 1>     SIMD1_64f;
+    typedef SIMDVec_f<float, 2>      SIMD2_32f;
+    typedef SIMDVec_f<double, 1>     SIMD1_64f;
 
     // 128b float vectors
-    typedef SIMDVecKNC_f<float,  4>     SIMD4_32f;
-    typedef SIMDVecKNC_f<double, 2>     SIMD2_64f;
+    typedef SIMDVec_f<float,  4>     SIMD4_32f;
+    typedef SIMDVec_f<double, 2>     SIMD2_64f;
 
     // 256b float vectors
-    typedef SIMDVecKNC_f<float,  8>     SIMD8_32f;
-    typedef SIMDVecKNC_f<double, 4>     SIMD4_64f;
+    typedef SIMDVec_f<float,  8>     SIMD8_32f;
+    typedef SIMDVec_f<double, 4>     SIMD4_64f;
 
     // 512b float vectors
-    typedef SIMDVecKNC_f<float,  16>    SIMD16_32f;
-    typedef SIMDVecKNC_f<double, 8>     SIMD8_64f;
-
+    typedef SIMDVec_f<float,  16>    SIMD16_32f;
+    typedef SIMDVec_f<double, 8>     SIMD8_64f;
+    
     // 1024b float vectors
-    typedef SIMDVecKNC_f<float, 32>     SIMD32_32f;
-    typedef SIMDVecKNC_f<double, 16>    SIMD16_64f;
+    typedef SIMDVec_f<float,  32>    SIMD32_32f;
+    typedef SIMDVec_f<double, 16>    SIMD16_64f;
 } // SIMD
 } // UME
 
-#endif // UME_SIMD_PLUGIN_NATIVE_KNC_H_
+#endif

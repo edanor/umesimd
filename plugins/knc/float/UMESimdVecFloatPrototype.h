@@ -36,9 +36,9 @@
 #include "../../UMESimdPluginScalarEmulation.h"
 #include <immintrin.h>
 
-#include "../UMESimdMaskAVX.h"
-#include "../UMESimdSwizzleAVX.h"
-#include "../UMESimdVecUintAVX.h"
+#include "../UMESimdMaskKNC.h"
+#include "../UMESimdSwizzleKNC.h"
+#include "../UMESimdVecUintKNC.h"
 
 namespace UME {
 namespace SIMD {
