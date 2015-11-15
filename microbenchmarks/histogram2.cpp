@@ -158,7 +158,7 @@ TIMING_RES test_UME_SIMD()
     typedef typename UME::SIMD::SIMDTraits<FLOAT_VEC_T>::SCALAR_UINT_T UINT_T;
 
     const uint32_t VEC_LEN = FLOAT_VEC_T::length();
-    const int ALIGNMENT = FLOAT_VEC_T::alignment();
+    const uint32_t ALIGNMENT = FLOAT_VEC_T::alignment();
     unsigned long long start, end;    // Time measurements
 
     FLOAT_T *data;
@@ -195,7 +195,7 @@ TIMING_RES test_UME_SIMD()
         INT_VEC_T t1;
         UINT_VEC_T index_vec;
         UINT_VEC_T bin_vec;
-        alignas(ALIGNMENT) UINT_T indices[VEC_LEN];
+        alignas(FLOAT_VEC_T::alignment()) UINT_T indices[VEC_LEN];
 
         unsigned int bin;
 

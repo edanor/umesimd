@@ -41,6 +41,8 @@ namespace SIMD {
     template<uint32_t VEC_LEN>
     struct SIMDVecMask_traits {};
 
+    // No specialized traits
+
     // MASK_BASE_TYPE is the type of element that will represent single entry in
     //                mask register. This can be for examle a 'bool' or 'unsigned int' or 'float'
     //                The actual representation depends on how the underlying instruction
@@ -49,14 +51,15 @@ namespace SIMD {
     //                for the compiler to implicitly cast it to integer. To forbid this casting operations from
     //                happening the default type has to be wrapped into a class. 
     template<uint32_t VEC_LEN>
-    class SIMDVecMask : public SIMDMaskBaseInterface<
-        SIMDVecMask<VEC_LEN>,
-        bool,
-        VEC_LEN>
+    class SIMDVecMask final :
+        public SIMDMaskBaseInterface<
+            SIMDVecMask<VEC_LEN>,
+            bool,
+            VEC_LEN>
     {
-        typedef SIMDVecMask_traits<VEC_LEN> MASK_TRAITS;
     private:
         bool mMask[VEC_LEN]; // each entry represents single mask element. For real SIMD vectors, mMask will be of mask intrinsic type.
+
     public:
         inline SIMDVecMask() {}
 
@@ -158,6 +161,7 @@ namespace SIMD {
             }
         }
     };
+
 }
 }
 
