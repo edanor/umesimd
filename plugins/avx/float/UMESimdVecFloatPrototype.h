@@ -394,6 +394,10 @@ namespace SIMD {
         inline operator SIMDVec_i<SCALAR_INT_TYPE, 1>() const;
     };
 
+    template<uint32_t VEC_LEN>
+    class SIMDVec_f<DummyFloat, VEC_LEN> final
+    {
+    };
 }
 }
 
