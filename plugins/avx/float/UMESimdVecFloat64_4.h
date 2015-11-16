@@ -28,8 +28,8 @@
 //  7th Framework programme Marie Curie Actions under grant PITN-GA-2012-316596".
 //
 
-#ifndef UME_SIMD_VEC_FLOAT64_8_H_
-#define UME_SIMD_VEC_FLOAT64_8_H_
+#ifndef UME_SIMD_VEC_FLOAT64_4_H_
+#define UME_SIMD_VEC_FLOAT64_4_H_
 
 #include <type_traits>
 #include "../../../UMESimdInterface.h"
@@ -39,62 +39,53 @@ namespace UME {
 namespace SIMD {
 
     template<>
-    class SIMDVec_f<double, 8> :
+    class SIMDVec_f<double, 4> :
         public SIMDVecFloatInterface<
-        SIMDVec_f<double, 8>,
-        SIMDVec_u<uint64_t, 8>,
-        SIMDVec_i<int64_t, 8>,
+        SIMDVec_f<double, 4>,
+        SIMDVec_u<uint64_t, 4>,
+        SIMDVec_i<int64_t, 4>,
         double,
-        8,
+        4,
         uint64_t,
-        SIMDVecMask<8>, // Using non-standard mask!
+        SIMDVecMask<4>, // Using non-standard mask!
         SIMDVecSwizzle<4 >> ,
         public SIMDVecPackableInterface<
-        SIMDVec_f<double, 8>,
-        SIMDVec_f<double, 4 >>
+        SIMDVec_f<float, 4>,
+        SIMDVec_f<float, 2 >>
     {
     private:
-        __m256d mVecLo;
-        __m256d mVecHi;
+        __m256d mVec;
 
-        inline SIMDVec_f(__m256d const & xLo, __m256d const & xHi) {
-            this->mVecLo = xLo;
-            this->mVecHi = xHi;
+        inline SIMDVec_f(__m256d const & x) {
+            this->mVec = x;
         }
 
     public:
+
         // ZERO-CONSTR - Zero element constructor 
         inline SIMDVec_f() {}
 
-        // LOAD-CONSTR - Construct by loading from memory
-        inline explicit SIMDVec_f(const double *p) { this->load(p); }
-
         // SET-CONSTR  - One element constructor
         inline explicit SIMDVec_f(double d) {
-            mVecLo = _mm256_set1_pd(d);
-            mVecHi = _mm256_set1_pd(d);
+            mVec = _mm256_set1_pd(d);
+        }
+
+        // LOAD-CONSTR - Construct by loading from memory
+        inline explicit SIMDVec_f(double const * d) {
+            mVec = _mm256_loadu_pd(d);
         }
 
         // FULL-CONSTR - constructor with VEC_LEN scalar element 
-        inline SIMDVec_f(double d0, double d1, double d2, double d3,
-            double d4, double d5, double d6, double d7) {
-            mVecLo = _mm256_setr_pd(d0, d1, d2, d3);
-            mVecHi = _mm256_setr_pd(d4, d5, d6, d7);
+        inline SIMDVec_f(double d0, double d1, double d2, double d3) {
+            mVec = _mm256_setr_pd(d0, d1, d2, d3);
         }
 
         // EXTRACT - Extract single element from a vector
         inline double extract(uint32_t index) const {
             //UME_PERFORMANCE_UNOPTIMAL_WARNING();
             alignas(32) double raw[4];
-
-            if (index < 4) {
-                _mm256_store_pd(raw, mVecLo);
-                return raw[index];
-            }
-            else {
-                _mm256_store_pd(raw, mVecHi);
-                return raw[index - 4];
-            }
+            _mm256_store_pd(raw, mVec);
+            return raw[index];
         }
 
         // EXTRACT - Extract single element from a vector
@@ -104,24 +95,17 @@ namespace SIMD {
         }
 
         // Override Mask Access operators
-        inline IntermediateMask<SIMDVec_f, SIMDVecMask<8>> operator[] (SIMDVecMask<8> const & mask) {
-            return IntermediateMask<SIMDVec_f, SIMDVecMask<8>>(mask, static_cast<SIMDVec_f &>(*this));
+        inline IntermediateMask<SIMDVec_f, SIMDVecMask<4>> operator[] (SIMDVecMask<4> const & mask) {
+            return IntermediateMask<SIMDVec_f, SIMDVecMask<4>>(mask, static_cast<SIMDVec_f &>(*this));
         }
 
         // INSERT  - Insert single element into a vector
         inline SIMDVec_f & insert(uint32_t index, double value) {
             //UME_PERFORMANCE_UNOPTIMAL_WARNING();
             alignas(32) double raw[4];
-            if (index < 4) {
-                _mm256_store_pd(raw, mVecLo);
-                raw[index] = value;
-                mVecLo = _mm256_load_pd(raw);
-            }
-            else {
-                _mm256_store_pd(raw, mVecHi);
-                raw[index - 4] = value;
-                mVecHi = _mm256_load_pd(raw);
-            }
+            _mm256_store_pd(raw, mVec);
+            raw[index] = value;
+            mVec = _mm256_load_pd(raw);
             return *this;
         }
 
@@ -138,61 +122,44 @@ namespace SIMD {
         //(Memory access)
         // LOAD    - Load from memory (either aligned or unaligned) to vector 
         inline SIMDVec_f & load(double const * p) {
-            mVecLo = _mm256_loadu_pd(p);
-            mVecHi = _mm256_loadu_pd(p + 4);
+            mVec = _mm256_loadu_pd(p);
             return *this;
         }
         // MLOAD   - Masked load from memory (either aligned or unaligned) to
         //           vector
         // LOADA   - Load from aligned memory to vector
         inline SIMDVec_f & loada(double const * p) {
-            mVecLo = _mm256_load_pd(p);
-            mVecHi = _mm256_load_pd(p + 4);
+            mVec = _mm256_load_pd(p);
             return *this;
         }
         // MLOADA  - Masked load from aligned memory to vector
-        inline SIMDVec_f & loada(SIMDVecMask<8> const & mask, double const * p) {
+        inline SIMDVec_f & loada(SIMDVecMask<4> const & mask, double const * p) {
             __m256d t0 = _mm256_load_pd(p);
-            __m256d t1 = _mm256_load_pd(p + 4);
-
-            __m128i t2 = _mm256_extractf128_si256(mask.mMask, 0);
-            __m128i t3 = _mm256_extractf128_si256(mask.mMask, 1);
-
-            __m256d mask_pd_lo = _mm256_cvtepi32_pd(t2);
-            __m256d mask_pd_hi = _mm256_cvtepi32_pd(t3);
-            mVecLo = _mm256_blendv_pd(mVecLo, t0, mask_pd_lo);
-            mVecHi = _mm256_blendv_pd(mVecHi, t1, mask_pd_hi);
+            __m256d mask_pd = _mm256_cvtepi32_pd(mask.mMask);
+            mVec = _mm256_blendv_pd(mVec, t0, mask_pd);
             return *this;
         }
         // STORE   - Store vector content into memory (either aligned or unaligned)
         inline double* store(double* p) {
-            _mm256_storeu_pd(p, mVecLo);
-            _mm256_storeu_pd(p + 4, mVecHi);
+            _mm256_store_pd(p, mVec);
             return p;
         }
         // MSTORE  - Masked store vector content into memory (either aligned or
         //           unaligned)
         // STOREA  - Store vector content into aligned memory
         inline double* storea(double* p) {
-            _mm256_store_pd(p, mVecLo);
-            _mm256_store_pd(p + 4, mVecHi);
+            _mm256_store_pd(p, mVec);
             return p;
         }
         // MSTOREA - Masked store vector content into aligned memory
-        inline double* storea(SIMDVecMask<8> const & mask, double* p) {
+        inline double* storea(SIMDVecMask<4> const & mask, double* p) {
             union {
                 __m256d pd;
                 __m256i epi64;
             }x;
+            x.pd = _mm256_cvtepi32_pd(mask.mMask);
 
-            __m128i t0 = _mm256_extractf128_si256(mask.mMask, 0);
-            x.pd = _mm256_cvtepi32_pd(t0);
-            _mm256_maskstore_pd(p, x.epi64, mVecLo);
-
-            __m128i t1 = _mm256_extractf128_si256(mask.mMask, 1);
-            x.pd = _mm256_cvtepi32_pd(t1);
-            _mm256_maskstore_pd(p + 4, x.epi64, mVecHi);
-
+            _mm256_maskstore_pd(p, x.epi64, mVec);
             return p;
         }
         //(Addition operations)
@@ -202,15 +169,13 @@ namespace SIMD {
         // MADDS    - Masked add with scalar
         // ADDVA    - Add with vector and assign
         inline SIMDVec_f & adda(SIMDVec_f const & b) {
-            mVecLo = _mm256_add_pd(this->mVecLo, b.mVecLo);
-            mVecHi = _mm256_add_pd(this->mVecHi, b.mVecHi);
+            mVec = _mm256_add_pd(this->mVec, b.mVec);
             return *this;
         }
         // MADDVA   - Masked add with vector and assign
         // ADDSA    - Add with scalar and assign
         inline SIMDVec_f & adda(double b) {
-            mVecLo = _mm256_add_pd(this->mVecLo, _mm256_set1_pd(b));
-            mVecHi = _mm256_add_pd(this->mVecHi, _mm256_set1_pd(b));
+            mVec = _mm256_add_pd(this->mVec, _mm256_set1_pd(b));
             return *this;
         }
         // MADDSA   - Masked add with scalar and assign
@@ -300,36 +265,6 @@ namespace SIMD {
         // CMPLES - Element-wise 'less than or equal' with scalar
         // CMPEX  - Check if vectors are exact (returns scalar 'bool')
 
-        //(Bitwise operations)
-        // ANDV   - AND with vector
-        // MANDV  - Masked AND with vector
-        // ANDS   - AND with scalar
-        // MANDS  - Masked AND with scalar
-        // ANDVA  - AND with vector and assign
-        // MANDVA - Masked AND with vector and assign
-        // ANDSA  - AND with scalar and assign
-        // MANDSA - Masked AND with scalar and assign
-        // ORV    - OR with vector
-        // MORV   - Masked OR with vector
-        // ORS    - OR with scalar
-        // MORS   - Masked OR with scalar
-        // ORVA   - OR with vector and assign
-        // MORVA  - Masked OR with vector and assign
-        // ORSA   - OR with scalar and assign
-        // MORSA  - Masked OR with scalar and assign
-        // XORV   - XOR with vector
-        // MXORV  - Masked XOR with vector
-        // XORS   - XOR with scalar
-        // MXORS  - Masked XOR with scalar
-        // XORVA  - XOR with vector and assign
-        // MXORVA - Masked XOR with vector and assign
-        // XORSA  - XOR with scalar and assign
-        // MXORSA - Masked XOR with scalar and assign
-        // NOT    - Negation of bits
-        // MNOT   - Masked negation of bits
-        // NOTA   - Negation of bits and assign
-        // MNOTA  - Masked negation of bits and assign
-
         // (Pack/Unpack operations - not available for SIMD1)
         // PACK     - assign vector with two half-length vectors
         // PACKLO   - assign lower half of a vector with a half-length vector
@@ -350,12 +285,6 @@ namespace SIMD {
         // MHADD - Masked add elements of a vector (horizontal add)
         // HMUL  - Multiply elements of a vector (horizontal mul)
         // MHMUL - Masked multiply elements of a vector (horizontal mul)
-        // HAND  - AND of elements of a vector (horizontal AND)
-        // MHAND - Masked AND of elements of a vector (horizontal AND)
-        // HOR   - OR of elements of a vector (horizontal OR)
-        // MHOR  - Masked OR of elements of a vector (horizontal OR)
-        // HXOR  - XOR of elements of a vector (horizontal XOR)
-        // MHXOR - Masked XOR of elements of a vector (horizontal XOR)
 
         //(Fused arithmetics)
         // FMULADDV  - Fused multiply and add (A*B + C) with vectors
@@ -402,14 +331,7 @@ namespace SIMD {
         // SCATTERV  - Scatter to memory using indices from vector
         // MSCATTERV - Masked scatter to memory using indices from vector
 
-        // 3) Operations available for Signed integer and Unsigned integer 
-        // data types:
-
-        //(Signed/Unsigned cast)
-        // UTOI - Cast unsigned vector to signed vector
-        // ITOU - Cast signed vector to unsigned vector
-
-        // 4) Operations available for Signed integer and floating point SIMD types:
+        // 3) Operations available for Signed integer and floating point SIMD types:
 
         // (Sign modification)
         // NEG   - Negate signed values
@@ -423,7 +345,7 @@ namespace SIMD {
         // ABSA  - Absolute value and assign
         // MABSA - Masked absolute value and assign
 
-        // 5) Operations available for floating point SIMD types:
+        // 4) Operations available for floating point SIMD types:
 
         // (Comparison operations)
         // CMPEQRV - Compare 'Equal within range' with margins from vector
@@ -467,11 +389,10 @@ namespace SIMD {
         // MCTAN     - Masked cotangent
 
         // FTOU
-        inline operator SIMDVec_u<uint64_t, 8>() const;
+        inline operator SIMDVec_u<uint64_t, 4>() const;
         // FTOI
-        inline operator SIMDVec_i<int64_t, 8>() const;
+        inline operator SIMDVec_i<int64_t, 4>() const;
     };
-
 }
 }
 

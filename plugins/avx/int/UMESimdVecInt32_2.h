@@ -419,13 +419,11 @@ namespace SIMD {
 
         // SUBV
         // NEG
+
         // ITOU
-        inline SIMDVec_u<uint32_t, 2> itou() const {
-            uint32_t t0 = uint32_t(mVec[0]);
-            uint32_t t1 = uint32_t(mVec[1]);
-            return SIMDVec_u<uint32_t, 2>(t0, t1);
-        }
-        inline  operator SIMDVec_u<uint32_t, 2> () const;
+        inline operator SIMDVec_u<uint32_t, 2>() const;
+        // ITOF
+        inline operator SIMDVec_f<float, 2>() const;
     };
 
 }

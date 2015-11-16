@@ -131,8 +131,8 @@ namespace SIMD {
             ret = _mm256_insertf128_si256(ret, r_high, 1);
             return SIMDVec_i(ret);
         }
+
         // ITOU
-        inline SIMDVec_u<uint32_t, 8> itou() const;
         inline  operator SIMDVec_u<uint32_t, 8>() const;
         // ITOF
         inline  operator SIMDVec_f<float, 8>() const;

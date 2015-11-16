@@ -162,7 +162,10 @@ namespace SIMD {
         // SCATTERV
         // MSCATTERV
 
-        inline  operator SIMDVec_i<int32_t, 16> () const;
+        // UTOI
+        inline operator SIMDVec_i<int32_t, 16>() const;
+        // UTOF
+        inline operator SIMDVec_f<float, 16>() const;
     };
 }
 }

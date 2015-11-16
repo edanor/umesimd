@@ -71,16 +71,6 @@ namespace SIMD {
             mVecHi = _mm256_set1_ps(f);
         }
 
-        // UTOF
-        inline explicit SIMDVec_f(SIMDVec_u<uint32_t, 16> const & vecUint) {
-
-        }
-
-        // ITOF
-        inline explicit SIMDVec_f(SIMDVec_i<int32_t, 16>  const & vecInt) {
-
-        }
-
         // LOAD-CONSTR - Construct by loading from memory
         inline explicit SIMDVec_f(float const * p) {
             mVecLo = _mm256_loadu_ps(p);
@@ -646,6 +636,11 @@ namespace SIMD {
         // MTAN      - Masked tangent
         // CTAN      - Cotangent
         // MCTAN     - Masked cotangent
+
+        // FTOU
+        inline operator SIMDVec_u<uint32_t, 16>() const;
+        // FTOI
+        inline operator SIMDVec_i<int32_t, 16>() const;
     };
 }
 }

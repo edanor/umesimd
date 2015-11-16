@@ -28,35 +28,26 @@
 //  7th Framework programme Marie Curie Actions under grant PITN-GA-2012-316596".
 //
 
-#ifndef UME_SIMD_VEC_FLOAT_H_
-#define UME_SIMD_VEC_FLOAT_H_
+#ifndef UME_SIMD_MIMIC_SCALAR_TYPES_H_
+#define UME_SIMD_MIMIC_SCALAR_TYPES_H_
 
-#include <type_traits>
-#include "../../UMESimdInterface.h"
-#include <immintrin.h>
+// This file is a workaround for one very important fact: there are no 
+// float types of 8 and 16b precision. These are necessary to use template
+// generated int->float and uint->float conversion operators. 
 
-#include "UMESimdMaskAVX.h"
-#include "UMESimdSwizzleAVX.h"
-#include "UMESimdVecUintAVX.h"
-#include "UMESimdVecIntAVX.h"
+// This file defines a set of scalar-mimicking types to provide to the 
+// templates through traits classes. Since the library assumes that there 
+// are no 8 and 16b floating point types, such conversions are unlikely to
+// ever be called.
 
-// ********************************************************************************************
-// FLOATING POINT VECTOR TEMPLATE
-// ********************************************************************************************
-#include "float/UMESimdVecFloatPrototype.h"
+class DummyFloat {
+private:
+    DummyFloat() {};  // This type should never be allowed to be created
+    ~DummyFloat() {}; // or destroyed
 
-// ********************************************************************************************
-// FLOATING POINT VECTOR SPECIALIZATIONS
-// ********************************************************************************************
-#include "float/UMESimdVecFloat32_1.h"
-#include "float/UMESimdVecFloat32_2.h"
-#include "float/UMESimdVecFloat32_4.h"
-#include "float/UMESimdVecFloat32_8.h"
-#include "float/UMESimdVecFloat32_16.h"
-#include "float/UMESimdVecFloat32_32.h"
+};
 
-#include "float/UMESimdVecFloat64_4.h"
-#include "float/UMESimdVecFloat64_8.h"
-#include "float/UMESimdVecFloat64_16.h"
+typedef DummyFloat float8_t;
+typedef DummyFloat float16_t;
 
 #endif

@@ -178,6 +178,7 @@ namespace SIMD {
 
             return SIMDVec_i(ret_lo, ret_hi);
         }
+
         // ITOU
         inline  operator SIMDVec_u<uint32_t, 16> () const;
         // ITOF

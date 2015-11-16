@@ -492,6 +492,11 @@ namespace SIMD {
         // MTAN      - Masked tangent
         // CTAN      - Cotangent
         // MCTAN     - Masked cotangent
+
+        // FTOU
+        inline operator SIMDVec_u<uint64_t, 16>() const;
+        // FTOI
+        inline operator SIMDVec_i<int64_t, 16>() const;
     };
 }
 }
