@@ -359,13 +359,7 @@ namespace SIMD {
         }
 
         // UTOI
-        inline  operator SIMDVec_i<SCALAR_INT_TYPE, VEC_LEN>() const {
-            SIMDVec_i<SCALAR_INT_TYPE, VEC_LEN> retval;
-            for (uint32_t i = 0; i < VEC_LEN; i++) {
-                retval.insert(i, (SCALAR_INT_TYPE)mVec[i]);
-            }
-            return retval;
-        }
+        inline operator SIMDVec_i<SCALAR_INT_TYPE, VEC_LEN>() const;
     };
 
     // ***************************************************************************
@@ -421,16 +415,18 @@ namespace SIMD {
             mVec.insert(index, value);
             return *this;
         }
-
+/*
         inline  operator SIMDVec_i<SCALAR_INT_TYPE, 1>() const {
             SIMDVec_i<SCALAR_INT_TYPE, 1> retval(mVec[0]);
             return retval;
         }
-
+        */
         // UNIQUE
         inline bool unique() const {
             return true;
         }
+
+        inline operator SIMDVec_i<SCALAR_INT_TYPE, 1>() const;
     };
 
 }

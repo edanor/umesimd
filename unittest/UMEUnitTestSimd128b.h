@@ -446,7 +446,7 @@ int test_UME_SIMD8_16i(bool supressMessages)
     }
     {
         SIMD8_16i vec0(1, 2, 3, 4, 5, 6, 7, 8);
-        SIMD8_16i vec1(3, 4, 5, 6, 12, 14, 16, 18);
+        SIMD8_16u vec1(3, 4, 5, 6, 12, 14, 16, 18);
         SIMD8_16i vec2;
         vec2 = vec0.rol(vec1);
         
@@ -454,7 +454,7 @@ int test_UME_SIMD8_16i(bool supressMessages)
     }
     {
         SIMD8_16i vec0(1, 2, 3, 4, 5, 6, 7, 8);
-        SIMD8_16i vec1(3, 4, 5, 6, 12, 14, 16, 18);
+        SIMD8_16u vec1(3, 4, 5, 6, 12, 14, 16, 18);
         SIMD8_16i vec2;
         SIMDMask8 mask = SIMDMask8(true, true, false, false, false, false, false, true);
         vec2 = vec0.rol(mask, vec1);
@@ -478,14 +478,14 @@ int test_UME_SIMD8_16i(bool supressMessages)
     }
     {
         SIMD8_16i vec0(1, 2, 3, 4, 5, 6, 7, 8);
-        SIMD8_16i vec1(3, 4, 5, 6, 12, 14, 16, 18);
+        SIMD8_16u vec1(3, 4, 5, 6, 12, 14, 16, 18);
         vec0.rola(vec1);
         
         CHECK_CONDITION(vec0[0] == 8 && vec0[1] == 32 && vec0[5] == -32767 && vec0[7] == 32, "ROLVA");
     }
     {
         SIMD8_16i vec0(1, 2, 3, 4, 5, 6, 7, 8);
-        SIMD8_16i vec1(3, 4, 5, 6, 12, 14, 16, 18);
+        SIMD8_16u vec1(3, 4, 5, 6, 12, 14, 16, 18);
         SIMDMask8 mask = SIMDMask8(true, true, false, false, false, false, false, true);
         vec0.rola(mask, vec1);
         
@@ -539,7 +539,7 @@ int test_UME_SIMD4_32u(bool supressMessages)
         SIMD4_32u vec1;
 
         vec1 = SIMD4_32u(vec0);
-        CHECK_CONDITION(vec1[2] == 8, "ITOU");
+        CHECK_CONDITION(vec1[2] == 8, "ITOU operator uint_vec()");
     }
     {
         CHECK_CONDITION(SIMD4_32u::length() == 4, "LENGTH");

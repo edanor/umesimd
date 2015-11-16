@@ -375,7 +375,7 @@ namespace SIMD {
         // MRORSA
 
         // UTOI
-        inline  operator SIMDVec_i<int32_t, 1>() const; // deferr definition until SIMDVec_i<int32_t, 2> is defined
+        inline operator SIMDVec_i<int32_t, 1>() const; // deferr definition until SIMDVec_i<int32_t, 2> is defined
     };
 
 }

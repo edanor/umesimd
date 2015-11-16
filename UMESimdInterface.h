@@ -96,7 +96,7 @@ namespace SIMD
             }
             return dst;
         }
-            
+
         // MLOAD
         template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
         inline VEC_TYPE & load(MASK_TYPE const & mask, VEC_TYPE & dst, SCALAR_TYPE const * p) {
@@ -107,14 +107,14 @@ namespace SIMD
             }
             return dst;
         }
-        
+
         // LOADA
         template<typename VEC_TYPE, typename SCALAR_TYPE>
         inline VEC_TYPE & loadAligned(VEC_TYPE & dst, SCALAR_TYPE const * p) {
             UME_ALIGNMENT_CHECK(p, VEC_TYPE::alignment());
             return EMULATED_FUNCTIONS::load<VEC_TYPE, SCALAR_TYPE>(dst, p);
         }
-        
+
         // MLOADA
         template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
         inline VEC_TYPE & loadAligned(MASK_TYPE const & mask, VEC_TYPE & dst, SCALAR_TYPE const * p) {
@@ -167,7 +167,7 @@ namespace SIMD
             }
             return dst;
         }
-        
+
         // MGATHERS
         template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
         inline VEC_TYPE & gather(MASK_TYPE const & mask, VEC_TYPE & dst, SCALAR_TYPE* base, uint64_t* indices) {
@@ -207,7 +207,7 @@ namespace SIMD
             }
             return base;
         }
-        
+
         // MSCATTERS
         template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
         inline SCALAR_TYPE* scatter(MASK_TYPE const & mask, VEC_TYPE const & src, SCALAR_TYPE* base, uint64_t* indices) {
@@ -217,7 +217,7 @@ namespace SIMD
             }
             return base;
         }
-        
+
         // SCATTERV
         template<typename VEC_TYPE, typename SCALAR_TYPE, typename UINT_VEC_TYPE>
         inline SCALAR_TYPE* scatter(VEC_TYPE const & src, SCALAR_TYPE* base, UINT_VEC_TYPE const & indices) {
@@ -347,7 +347,7 @@ namespace SIMD
             }
             return retval;
         }
-            
+
         // ADDVA
         template<typename VEC_TYPE>
         inline VEC_TYPE & addAssign (VEC_TYPE & a, VEC_TYPE const & b) {
@@ -1050,7 +1050,7 @@ namespace SIMD
             }
             return retval;
         }
-        
+
         // DIVS
         template<typename VEC_TYPE, typename SCALAR_TYPE>
         inline VEC_TYPE div (VEC_TYPE const & a, SCALAR_TYPE b) {
@@ -1094,7 +1094,7 @@ namespace SIMD
             }
             return retval;
         }
-         
+
         // DIVVA
         template<typename VEC_TYPE>
         inline VEC_TYPE & divAssign(VEC_TYPE & a, VEC_TYPE const & b) {
@@ -1145,7 +1145,7 @@ namespace SIMD
             }
             return retval;
         }
-        
+
         // MRCP
         template<typename VEC_TYPE, typename MASK_TYPE>
         inline VEC_TYPE rcp(MASK_TYPE const & mask, VEC_TYPE const & b) {
@@ -1157,7 +1157,7 @@ namespace SIMD
             }
             return retval;
         }
-        
+
         // RCPS
         template<typename VEC_TYPE, typename SCALAR_TYPE>
         inline VEC_TYPE rcpScalar(SCALAR_TYPE a, VEC_TYPE const & b) {
@@ -1190,7 +1190,7 @@ namespace SIMD
             }
             return b;
         }
-        
+
         // MRCPA
         template<typename VEC_TYPE, typename MASK_TYPE>
         inline VEC_TYPE & rcpAssign(MASK_TYPE const & mask, VEC_TYPE & b) {
@@ -1231,7 +1231,7 @@ namespace SIMD
             }
             return retval;
         }
-            
+
         // MLSHV
         template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename MASK_TYPE>
         inline VEC_TYPE shiftBitsLeft(MASK_TYPE const & mask, VEC_TYPE const & a, UINT_VEC_TYPE const & b) {
@@ -1242,7 +1242,7 @@ namespace SIMD
             }
             return retval;
         }
-        
+
         // LSHS
         template<typename VEC_TYPE, typename SCALAR_UINT_TYPE>
         inline VEC_TYPE shiftBitsLeftScalar(VEC_TYPE const & a, SCALAR_UINT_TYPE b) {
@@ -1253,7 +1253,7 @@ namespace SIMD
             }
             return retval;
         }
-        
+
         // MLSHS
         template<typename VEC_TYPE, typename SCALAR_UINT_TYPE, typename MASK_TYPE>
         inline VEC_TYPE shiftBitsLeftScalar(MASK_TYPE const & mask, VEC_TYPE const & a, SCALAR_UINT_TYPE b) {
@@ -1284,7 +1284,7 @@ namespace SIMD
             }
             return a;
         }
-    
+
         // LSHSA
         template<typename VEC_TYPE, typename SCALAR_UINT_TYPE>
         inline VEC_TYPE & shiftBitsLeftAssignScalar(VEC_TYPE & a, SCALAR_UINT_TYPE b) {
@@ -1304,7 +1304,7 @@ namespace SIMD
             }
             return a;
         }
-            
+
         // RSHV
         template<typename VEC_TYPE, typename UINT_VEC_TYPE>
         inline VEC_TYPE shiftBitsRight(VEC_TYPE const & a, UINT_VEC_TYPE const & b) {
@@ -1348,7 +1348,7 @@ namespace SIMD
             }
             return retval;
         }
-                        
+
         // RSHVA
         template<typename VEC_TYPE, typename UINT_VEC_TYPE>
         inline VEC_TYPE & shiftBitsRightAssign(VEC_TYPE & a, UINT_VEC_TYPE const & b) {
@@ -1358,7 +1358,7 @@ namespace SIMD
             }
             return a;
         }
-            
+
         // MRSHVA
         template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename MASK_TYPE>
         inline VEC_TYPE & shiftBitsRightAssign(MASK_TYPE const & mask, VEC_TYPE & a, UINT_VEC_TYPE const & b) {
@@ -1368,7 +1368,7 @@ namespace SIMD
             }
             return a;
         }
-            
+
         // RSHSA
         template<typename VEC_TYPE, typename SCALAR_UINT_TYPE>
         inline VEC_TYPE & shiftBitsRightAssignScalar(VEC_TYPE & a, SCALAR_UINT_TYPE b) {
@@ -1378,7 +1378,7 @@ namespace SIMD
             }
             return a;
         }
-                
+
         // MSRHSA
         template<typename VEC_TYPE, typename SCALAR_UINT_TYPE, typename MASK_TYPE>
         inline VEC_TYPE & shiftBitsRightAssignScalar(MASK_TYPE const & mask, VEC_TYPE & a, SCALAR_UINT_TYPE b) {
@@ -1388,7 +1388,7 @@ namespace SIMD
             }
             return a;
         }
-            
+
         // ROLV
         template<typename VEC_TYPE, typename SCALAR_TYPE, typename UINT_VEC_TYPE>
         inline VEC_TYPE rotateBitsLeft(VEC_TYPE const & a, UINT_VEC_TYPE const & b) {
@@ -1559,7 +1559,7 @@ namespace SIMD
             }
             return a;
         }
-        
+
         // ROLSA
         template<typename VEC_TYPE, typename SCALAR_TYPE, typename SCALAR_UINT_TYPE>
         inline VEC_TYPE & rotateBitsLeftAssignScalar(VEC_TYPE & a, SCALAR_UINT_TYPE b) {
@@ -1614,7 +1614,7 @@ namespace SIMD
             }
             return a;
         }
-    
+
         // RORV
         template<typename VEC_TYPE, typename SCALAR_TYPE, typename UINT_VEC_TYPE>
         inline VEC_TYPE rotateBitsRight(VEC_TYPE const & a, UINT_VEC_TYPE const & b) {
@@ -1669,7 +1669,7 @@ namespace SIMD
             }
             return retval;
         }
-        
+
         // RORS
         template<typename VEC_TYPE, typename SCALAR_TYPE, typename SCALAR_UINT_TYPE>
         inline VEC_TYPE rotateBitsRightScalar(VEC_TYPE const & a, SCALAR_UINT_TYPE b) {
@@ -1695,7 +1695,7 @@ namespace SIMD
             }
             return retval;
         }
-        
+
         // MRORS
         template<typename VEC_TYPE, typename SCALAR_TYPE, typename SCALAR_UINT_TYPE, typename MASK_TYPE>
         inline VEC_TYPE rotateBitsRightScalar(MASK_TYPE const & mask, VEC_TYPE const & a, SCALAR_UINT_TYPE b) {
@@ -1841,7 +1841,7 @@ namespace SIMD
             }
             return retval;
         }
-        
+
         // CMPEQS
         template<typename MASK_TYPE, typename VEC_TYPE, typename SCALAR_TYPE>
         inline MASK_TYPE isEqual(VEC_TYPE const & a, SCALAR_TYPE b) {
@@ -1852,7 +1852,7 @@ namespace SIMD
             }
             return retval;
         }
-        
+
         // CMPNEV
         template<typename MASK_TYPE, typename VEC_TYPE>
         inline MASK_TYPE isNotEqual (VEC_TYPE const & a, VEC_TYPE const & b) {
@@ -1951,7 +1951,7 @@ namespace SIMD
             }
             return retval;
         }
-        
+
         // CMPLES
         template<typename MASK_TYPE, typename VEC_TYPE, typename SCALAR_TYPE>
         inline MASK_TYPE isLesserEqual(VEC_TYPE const & a, SCALAR_TYPE b) {
@@ -1976,7 +1976,7 @@ namespace SIMD
             }
             return retval;
         }
-        
+
         // CMPEQRV
         template<typename MASK_TYPE, typename VEC_TYPE>
         inline MASK_TYPE isEqualInRange(VEC_TYPE const & a, VEC_TYPE const & b, VEC_TYPE const & margin) {
@@ -2057,7 +2057,7 @@ namespace SIMD
             }
             return retval;
         }
-            
+
         // MANDS
         template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
         inline VEC_TYPE binaryAnd (MASK_TYPE const & mask, VEC_TYPE const & a, SCALAR_TYPE b) {
@@ -2120,16 +2120,16 @@ namespace SIMD
             }
             return a;
         }
-            
+
         // MANDSA 
         template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
-        inline VEC_TYPE & binaryAndAssign (MASK_TYPE const & mask, VEC_TYPE & a, SCALAR_TYPE b) {
+        inline VEC_TYPE & binaryAndAssign(MASK_TYPE const & mask, VEC_TYPE & a, SCALAR_TYPE b) {
             UME_EMULATION_WARNING();
-            for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
-                if(mask[i] == true) a.insert(i, a[i] & b);
+            for (uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+                if (mask[i] == true) a.insert(i, a[i] & b);
             }
             return a;
-        }         
+        }
 
         // ORV
         template<typename VEC_TYPE>
@@ -2174,7 +2174,7 @@ namespace SIMD
             }
             return retval;
         }
-        
+
         // ORVA
         template<typename VEC_TYPE>
         inline VEC_TYPE & binaryOrAssign (VEC_TYPE & a, VEC_TYPE const & b) {
@@ -2332,7 +2332,7 @@ namespace SIMD
             }
             return a;
         }
-        
+
         // MBNOTA
         template<typename VEC_TYPE, typename MASK_TYPE>
         inline VEC_TYPE & binaryNotAssign (MASK_TYPE const & mask, VEC_TYPE & a) {
@@ -2353,7 +2353,7 @@ namespace SIMD
             }
             return retval;
         }
-        
+
         // LNOTA
         template<typename MASK_TYPE>
         inline MASK_TYPE & logicalNotAssign(MASK_TYPE & mask) {
@@ -2385,7 +2385,7 @@ namespace SIMD
             }
             return retval;
         }
-        
+
         // SWIZZLE
         template<typename VEC_TYPE, typename SWIZZLE_MASK_TYPE>
         inline VEC_TYPE swizzle(SWIZZLE_MASK_TYPE const & sMask, VEC_TYPE const & a) {
@@ -2495,7 +2495,7 @@ namespace SIMD
             }
             return retval;
         }
-        
+
         // HLAND
         template<typename MASK_TYPE>
         inline bool reduceLogicalAnd(MASK_TYPE const & a) {
@@ -2517,7 +2517,7 @@ namespace SIMD
             }
             return retval;
         }
-        
+
         // HLXOR
         template<typename MASK_TYPE>
         inline bool reduceLogicalXor(MASK_TYPE const & a) {
@@ -2712,7 +2712,7 @@ namespace SIMD
                 }
                 return retval;
             }
-        
+
             // MMAXS
             template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
             inline VEC_TYPE maxScalar(MASK_TYPE const & mask, VEC_TYPE const & a, SCALAR_TYPE b) {
@@ -2724,7 +2724,7 @@ namespace SIMD
                 }
                 return retval;
             }
-            
+
             // MAXVA
             template<typename VEC_TYPE>
             inline VEC_TYPE & maxAssign(VEC_TYPE & a, VEC_TYPE const & b) {
@@ -2830,7 +2830,7 @@ namespace SIMD
                 }
                 return a;
             }
-            
+
             // MINVA
             template<typename VEC_TYPE>
             inline VEC_TYPE & minAssign(VEC_TYPE & a, VEC_TYPE const & b) {
@@ -2861,7 +2861,7 @@ namespace SIMD
                 }
                 return retval;
             }
-            
+
             // MHMAX
             template<typename SCALAR_TYPE, typename VEC_TYPE, typename MASK_TYPE>
             inline SCALAR_TYPE reduceMax(MASK_TYPE const & mask, VEC_TYPE const & a) {
@@ -5692,21 +5692,16 @@ namespace SIMD
         ~SIMDVecSignedInterface() {};
     public:
         // Everything already handled by other interface classes
-        
+
         // SUBV
         inline DERIVED_VEC_TYPE operator- (DERIVED_VEC_TYPE const & b) const {
             return this->sub(b);
         }
-        
+
         // NEG
         inline DERIVED_VEC_TYPE operator- () const {
             return this->neg();
         }
-
-        // ITOU
-        inline DERIVED_VEC_UINT_TYPE itou () const {
-            return EMULATED_FUNCTIONS::xtoy<DERIVED_VEC_UINT_TYPE, DERIVED_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this));
-    }
     };
 
     // ***************************************************************************

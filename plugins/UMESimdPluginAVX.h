@@ -56,6 +56,7 @@ namespace SIMD
 #include "avx/UMESimdVecUintAVX.h"
 #include "avx/UMESimdVecIntAVX.h"
 #include "avx/UMESimdVecFloatAVX.h"
+#include "avx/UMESimdCastOperatorsAVX.h"
 
 namespace UME
 {

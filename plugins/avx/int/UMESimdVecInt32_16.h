@@ -183,7 +183,6 @@ namespace SIMD {
         // ITOF
         inline  operator SIMDVec_f<float, 16> () const;
     };
-
 }
 }
 

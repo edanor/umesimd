@@ -132,10 +132,12 @@ namespace SIMD {
             return SIMDVec_i(ret);
         }
         // ITOU
+        inline SIMDVec_u<uint32_t, 8> itou() const;
         inline  operator SIMDVec_u<uint32_t, 8>() const;
         // ITOF
         inline  operator SIMDVec_f<float, 8>() const;
     };
+
 
 }
 }

@@ -53,43 +53,4 @@
 #include "int/UMESimdVecInt32_8.h"
 #include "int/UMESimdVecInt32_16.h"
 
-namespace UME {
-namespace SIMD {
-    // Also provide definitions for Signed/Unsigned vector cast operators.
-    // Each definition depends strictly on specializations of vectors!
-
-    inline SIMDVec_i<int32_t, 1>::operator UME::SIMD::SIMDVec_u<uint32_t, 1>() const {
-        return SIMDVec_u<uint32_t, 1>(uint32_t(mVec));
-    }
-
-    inline SIMDVec_u<uint32_t, 1>::operator UME::SIMD::SIMDVec_i<int32_t, 1>() const {
-        return SIMDVec_i<int32_t, 1>(int32_t(mVec));
-    }
-
-    inline SIMDVec_i<int32_t, 2>::operator UME::SIMD::SIMDVec_u<uint32_t, 2> () const {
-        return SIMDVec_u<uint32_t, 2>(uint32_t(mVec[0]), uint32_t(mVec[1]));
-    }
-
-    inline SIMDVec_u<uint32_t, 2>::operator UME::SIMD::SIMDVec_i<int32_t, 2> () const {
-        return SIMDVec_i<int32_t, 2>(int32_t(mVec[0]), int32_t(mVec[1]));
-    }
-
-    inline SIMDVec_i<int32_t, 8>::operator SIMDVec_u<uint32_t, 8>() const {
-        return SIMDVec_u<uint32_t, 8>(this->mVec);
-    }
-
-    inline SIMDVec_u<uint32_t, 8>::operator SIMDVec_i<int32_t, 8>() const {
-        return SIMDVec_i<int32_t, 8>(this->mVec);
-    }
-
-    inline SIMDVec_i<int32_t, 16>::operator SIMDVec_u<uint32_t, 16>() const {
-        return SIMDVec_i<int32_t, 16>(this->mVecLo, this->mVecHi);
-    }
-
-    inline SIMDVec_u<uint32_t, 16>::operator SIMDVec_i<int32_t, 16>() const {
-        return SIMDVec_u<uint32_t, 16>(this->mVecLo, this->mVecHi);
-    }
-}
-}
-
 #endif

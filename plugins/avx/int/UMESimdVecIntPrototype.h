@@ -386,13 +386,8 @@ namespace SIMD {
             return *this;
         }
 
-        inline  operator SIMDVec_u<SCALAR_UINT_TYPE, VEC_LEN>() const {
-            SIMDVec_u<SCALAR_UINT_TYPE, VEC_LEN> retval;
-            for (uint32_t i = 0; i < VEC_LEN; i++) {
-                retval.insert(i, (SCALAR_UINT_TYPE)mVec[i]);
-            }
-            return retval;
-        }
+        // ITOU
+        inline operator SIMDVec_u<SCALAR_UINT_TYPE, VEC_LEN>() const;
     };
 
     // ***************************************************************************
@@ -448,15 +443,13 @@ namespace SIMD {
             return *this;
         }
 
-        inline operator SIMDVec_u<SCALAR_UINT_TYPE, 1>() const {
-            SIMDVec_u<SCALAR_UINT_TYPE, 1> retval(mVec[0]);
-            return retval;
-        }
-
         // UNIQUE
         inline bool unique() const {
             return true;
         }
+
+        // ITOU
+        inline operator SIMDVec_u<SCALAR_UINT_TYPE, 1>  () const;
     };
 
 }
