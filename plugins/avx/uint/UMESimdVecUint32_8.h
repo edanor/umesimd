@@ -41,14 +41,14 @@ namespace SIMD {
     template<>
     class SIMDVec_u<uint32_t, 8> :
         public SIMDVecUnsignedInterface<
-        SIMDVec_u<uint32_t, 8>,
-        uint32_t,
-        8,
-        SIMDVecMask<8>,
-        SIMDVecSwizzle<8 >> ,
+            SIMDVec_u<uint32_t, 8>,
+            uint32_t,
+            8,
+            SIMDVecMask<8>,
+            SIMDVecSwizzle<8 >> ,
         public SIMDVecPackableInterface<
-        SIMDVec_u<uint32_t, 8>,
-        SIMDVec_u<uint32_t, 4 >>
+            SIMDVec_u<uint32_t, 8>,
+            SIMDVec_u<uint32_t, 4 >>
     {
     public:
         // Conversion operators require access to private members.

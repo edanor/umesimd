@@ -69,22 +69,6 @@ namespace SIMD {
         inline explicit SIMDVec_f(float f) {
             mVec = f;
         }
-        // UTOF
-        inline explicit SIMDVec_f(VEC_UINT_TYPE const & vecUint) {
-            mVec = float(vecUint[0]);
-        }
-        // FTOU
-        inline VEC_UINT_TYPE ftou() const {
-            return VEC_UINT_TYPE(uint32_t(mVec));
-        }
-        // ITOF
-        inline explicit SIMDVec_f(VEC_INT_TYPE const & vecInt) {
-            mVec = float(vecInt[0]);
-        }
-        // FTOI
-        inline VEC_INT_TYPE ftoi() const {
-            return VEC_UINT_TYPE(int32_t(mVec));
-        }
         // LOAD-CONSTR - Construct by loading from memory
         inline explicit SIMDVec_f(float const *p) {
             mVec = p[0];
@@ -900,6 +884,11 @@ namespace SIMD {
         // MTAN      - Masked tangent
         // CTAN      - Cotangent
         // MCTAN     - Masked cotangent
+
+        // FTOU
+        inline operator SIMDVec_u<uint32_t, 1>() const;
+        // FTOI
+        inline operator SIMDVec_i<int32_t, 1>() const;
     };
 
 }

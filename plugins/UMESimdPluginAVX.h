@@ -33,10 +33,10 @@
 
 
 #include <type_traits>
+#include <immintrin.h>
 
 #include "../UMESimdInterface.h"
 
-#include <immintrin.h>
 
 namespace UME
 {

@@ -73,8 +73,7 @@ namespace SIMD {
         inline explicit SIMDVecMask(bool m) {
             mMask = _mm_set1_epi32(toMaskBool(m));
         }
-
-        // LOAD-CONSTR - Construct by loading from memory
+        // LOAD-CONSTR
         inline explicit SIMDVecMask(bool const *p) {
             alignas(32) uint32_t raw[4];
             for (int i = 0; i < 4; i++) {
@@ -82,7 +81,7 @@ namespace SIMD {
             }
             mMask = _mm_load_si128((__m128i*)raw);
         }
-
+        // FULL-CONSTR
         inline SIMDVecMask(bool m0, bool m1, bool m2, bool m3) {
             mMask = _mm_setr_epi32(toMaskBool(m0), toMaskBool(m1),
                 toMaskBool(m2), toMaskBool(m3));
@@ -91,20 +90,17 @@ namespace SIMD {
         inline SIMDVecMask(SIMDVecMask const & mask) {
             this->mMask = mask.mMask;
         }
-
+        // EXTRACT
         inline bool extract(uint32_t index) const {
             UME_PERFORMANCE_UNOPTIMAL_WARNING()
                 alignas(16) uint32_t raw[4];
             _mm_store_si128((__m128i*)raw, mMask);
             return raw[index] == TRUE();
         }
-
-        // A non-modifying element-wise access operator
         inline bool operator[] (uint32_t index) const {
             return extract(index);
         }
-
-        // Element-wise modification operator
+        // INSERT
         inline void insert(uint32_t index, bool x) {
             UME_PERFORMANCE_UNOPTIMAL_WARNING()
                 alignas(16) static uint32_t raw[4] = { 0, 0, 0, 0 };

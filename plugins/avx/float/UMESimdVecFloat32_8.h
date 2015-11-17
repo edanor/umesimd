@@ -41,45 +41,35 @@ namespace SIMD {
     template<>
     class SIMDVec_f<float, 8> :
         public SIMDVecFloatInterface<
-        SIMDVec_f<float, 8>,
-        SIMDVec_u<uint32_t, 8>,
-        SIMDVec_i<int32_t, 8>,
-        float,
-        8,
-        uint32_t,
-        SIMDVecMask<8>,
-        SIMDVecSwizzle<8 >> ,
+            SIMDVec_f<float, 8>,
+            SIMDVec_u<uint32_t, 8>,
+            SIMDVec_i<int32_t, 8>,
+            float,
+            8,
+            uint32_t,
+            SIMDVecMask<8>,
+            SIMDVecSwizzle<8 >> ,
         public SIMDVecPackableInterface<
-        SIMDVec_f<float, 8>,
-        SIMDVec_f<float, 4 >>
+            SIMDVec_f<float, 8>,
+            SIMDVec_f<float, 4 >>
     {
     private:
         __m256 mVec;
 
         inline SIMDVec_f(__m256 const & x) {
-            this->mVec = x; // TODO: should this be replaced with mov?
+            this->mVec = x;
         }
 
     public:
         // ZERO-CONSTR
         inline SIMDVec_f() {}
 
-        // UTOF
-        inline explicit SIMDVec_f(SIMDVec_u<uint32_t, 8> const & uintVec) {
-            for (int i = 0; i < 8; i++) this->insert(i, (float)uintVec[i]);
-        }
-
-        // ITOF
-        inline explicit SIMDVec_f(SIMDVec_i<int32_t, 8> const & intVec) {
-            for (int i = 0; i < 8; i++) this->insert(i, (float)intVec[i]);
-        }
-
         // SET-CONSTR
         inline explicit SIMDVec_f(float f) {
             mVec = _mm256_set1_ps(f);
         }
 
-        // LOAD-CONSTR - Construct by loading from memory
+        // LOAD-CONSTR
         inline explicit SIMDVec_f(float const * p) {
             mVec = _mm256_loadu_ps(p);
         }
@@ -91,15 +81,11 @@ namespace SIMD {
 
         // EXTRACT
         inline float extract(uint32_t index) const {
-            //UME_PERFORMANCE_UNOPTIMAL_WARNING();
             alignas(32) float raw[8];
             _mm256_store_ps(raw, mVec);
             return raw[index];
         }
-
-        // EXTRACT
         inline float operator[] (uint32_t index) const {
-            //UME_PERFORMANCE_UNOPTIMAL_WARNING();
             return extract(index);
         }
 
@@ -110,7 +96,6 @@ namespace SIMD {
 
         // INSERT
         inline SIMDVec_f & insert(uint32_t index, float value) {
-            //UME_PERFORMANCE_UNOPTIMAL_WARNING();
             alignas(32) float raw[8];
             _mm256_store_ps(raw, mVec);
             raw[index] = value;

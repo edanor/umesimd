@@ -40,49 +40,39 @@ namespace SIMD {
 
     template<>
     class SIMDVec_f<float, 8> :
-        public SIMDVecFloatInterface <
-        SIMDVec_f<float, 8>,
-        SIMDVec_u<uint32_t, 8>,
-        SIMDVec_i<int32_t, 8>,
-        float,
-        8,
-        uint32_t,
-        SIMDVecMask<8>,
-        SIMDVecSwizzle < 1 >> ,
-        public SIMDVecPackableInterface <
-        SIMDVec_f<float, 8>,
-        SIMDVec_f<float, 4 >>
+        public SIMDVecFloatInterface<
+            SIMDVec_f<float, 8>,
+            SIMDVec_u<uint32_t, 8>,
+            SIMDVec_i<int32_t, 8>,
+            float,
+            8,
+            uint32_t,
+            SIMDVecMask<8>,
+            SIMDVecSwizzle<8 >> ,
+        public SIMDVecPackableInterface<
+            SIMDVec_f<float, 8>,
+            SIMDVec_f<float, 4 >>
     {
-    public:
-        typedef typename SIMDVec_f_traits<float, 8>::VEC_UINT_TYPE    VEC_UINT_TYPE;
-        typedef typename SIMDVec_f_traits<float, 8>::VEC_INT_TYPE     VEC_INT_TYPE;
     private:
         __m256 mVec;
 
-        inline SIMDVec_f(__m256 & x) {
+        inline SIMDVec_f(__m256 const & x) {
             this->mVec = x;
         }
 
     public:
-        inline SIMDVec_f() {
-        }
+        // ZERO-CONSTR
+        inline SIMDVec_f() {}
 
+        // SET-CONSTR
         inline explicit SIMDVec_f(float f) {
             mVec = _mm256_set1_ps(f);
         }
 
-        // UTOF
-        inline explicit SIMDVec_f(VEC_UINT_TYPE const & vecUint) {
-
-        }
-
-        // ITOF
-        inline explicit SIMDVec_f(VEC_INT_TYPE const & vecInt) {
-
-        }
-
+        // LOAD-CONSTR
         inline explicit SIMDVec_f(float const *p) { this->load(p); }
 
+        // FULL-CONSTR
         inline SIMDVec_f(float f0, float f1,
             float f2, float f3,
             float f4, float f5,
@@ -90,19 +80,22 @@ namespace SIMD {
             mVec = _mm256_set_ps(f0, f1, f2, f3, f4, f5, f6, f7);
         }
 
-        // Override Access operators
-        inline float operator[] (uint32_t index) const {
+        // EXTRACT
+        inline float extract(uint32_t index) const {
             alignas(32) float raw[8];
             _mm256_store_ps(raw, mVec);
             return raw[index];
         }
+        inline float operator[] (uint32_t index) const {
+            return extract(index);
+        }
 
         // Override Mask Access operators
-        inline IntermediateMask<SIMDVec_f, SIMDVecMask<8>> operator[] (SIMDVecMask<8> & mask) {
+        inline IntermediateMask<SIMDVec_f, SIMDVecMask<8>> operator[] (SIMDVecMask<8> const & mask) {
             return IntermediateMask<SIMDVec_f, SIMDVecMask<8>>(mask, static_cast<SIMDVec_f &>(*this));
         }
 
-        // insert[] (scalar)
+        // INSERT
         inline SIMDVec_f & insert(uint32_t index, float value) {
             alignas(32) float raw[8];
             _mm256_store_ps(raw, mVec);
@@ -110,6 +103,11 @@ namespace SIMD {
             mVec = _mm256_load_ps(raw);
             return *this;
         }
+
+        // FTOU
+        inline operator SIMDVec_u<uint32_t, 8>() const;
+        // FTOI
+        inline operator SIMDVec_i<int32_t, 8>() const;
     };
 }
 }

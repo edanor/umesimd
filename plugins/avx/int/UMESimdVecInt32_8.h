@@ -58,7 +58,7 @@ namespace SIMD {
     private:
         __m256i mVec;
 
-        inline explicit SIMDVec_i(__m256i & x) { mVec = x;}
+        inline explicit SIMDVec_i(__m256i & x) { mVec = x; }
         inline explicit SIMDVec_i(const __m256i & x) { mVec = x; }
     public:
         // ZERO-CONSTR
@@ -81,7 +81,6 @@ namespace SIMD {
         }
 
         inline int32_t extract(uint32_t index) const {
-            //UME_PERFORMANCE_UNOPTIMAL_WARNING();
             //return _mm256_extract_epi32(mVec, index); // TODO: this can be implemented in ICC
             alignas(32) int32_t raw[8];
             _mm256_store_si256((__m256i *)raw, mVec);
@@ -137,7 +136,6 @@ namespace SIMD {
         // ITOF
         inline  operator SIMDVec_f<float, 8>() const;
     };
-
 
 }
 }

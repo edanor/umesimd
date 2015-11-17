@@ -32,18 +32,23 @@
 #define UME_SIMD_PLUGIN_AVX512_H_
 
 #include <type_traits>
-#include "../UMESimdInterface.h"
 #include <immintrin.h>
+
+#include "../UMESimdInterface.h"
+
 
 namespace UME
 {
 namespace SIMD
 {
+
     // forward declarations of simd types classes;
-    template<uint32_t VEC_LEN>       class SIMDVecMask;
+    template<uint32_t VEC_LEN>                             class SIMDVecMask;
+    template<uint32_t SMASK_LEN>                           class SIMDVecSwizzle;
     template<typename SCALAR_UINT_TYPE, uint32_t VEC_LEN>  class SIMDVec_u;
     template<typename SCALAR_INT_TYPE, uint32_t VEC_LEN>   class SIMDVec_i;
     template<typename SCALAR_FLOAT_TYPE, uint32_t VEC_LEN> class SIMDVec_f;
+
 }
 }
 
@@ -52,6 +57,7 @@ namespace SIMD
 #include "avx512/UMESimdVecUintAVX512.h"
 #include "avx512/UMESimdVecIntAVX512.h"
 #include "avx512/UMESimdVecFloatAVX512.h"
+#include "avx512/UMESimdCastOperatorsAVX512.h"
 
 namespace UME
 {
@@ -93,7 +99,7 @@ namespace UME
     typedef SIMDVec_u<uint8_t,  8>   SIMD8_8u;
     typedef SIMDVec_u<uint16_t, 4>   SIMD4_16u;
     typedef SIMDVec_u<uint32_t, 2>   SIMD2_32u; 
-    typedef SIMDVec_u<uint64_t, 1>   SIMD1_64u; 
+    typedef SIMDVec_u<uint64_t, 1>   SIMD1_64u;
 
     // 128b uint vectors
     typedef SIMDVec_u<uint8_t,  16>  SIMD16_8u;
@@ -112,31 +118,31 @@ namespace UME
     typedef SIMDVec_u<uint16_t, 32>  SIMD32_16u;
     typedef SIMDVec_u<uint32_t, 16>  SIMD16_32u;
     typedef SIMDVec_u<uint64_t, 8>   SIMD8_64u;
-    
+
     // 1024b uint vectors
-    typedef SIMDVec_u<uint8_t,  128> SIMD128_8u;
+    typedef SIMDVec_u<uint8_t, 128>  SIMD128_8u;
     typedef SIMDVec_u<uint16_t, 64>  SIMD64_16u;
     typedef SIMDVec_u<uint32_t, 32>  SIMD32_32u;
     typedef SIMDVec_u<uint64_t, 16>  SIMD16_64u;
-    
+
     // 8b int vectors
-    typedef SIMDVec_i<int8_t,  1>   SIMD1_8i;
+    typedef SIMDVec_i<int8_t,   1>   SIMD1_8i;
 
     // 16b int vectors
-    typedef SIMDVec_i<int8_t,  2>   SIMD2_8i;
-    typedef SIMDVec_i<int16_t, 1>   SIMD1_16i;
+    typedef SIMDVec_i<int8_t,   2>   SIMD2_8i;
+    typedef SIMDVec_i<int16_t,  1>   SIMD1_16i;
 
     // 32b int vectors
-    typedef SIMDVec_i<int8_t,  4>   SIMD4_8i;
-    typedef SIMDVec_i<int16_t, 2>   SIMD2_16i;
-    typedef SIMDVec_i<int32_t, 1>   SIMD1_32i;
-    
+    typedef SIMDVec_i<int8_t,   4>   SIMD4_8i;
+    typedef SIMDVec_i<int16_t,  2>   SIMD2_16i;
+    typedef SIMDVec_i<int32_t,  1>   SIMD1_32i;
+
     // 64b int vectors
     typedef SIMDVec_i<int8_t,   8>   SIMD8_8i; 
     typedef SIMDVec_i<int16_t,  4>   SIMD4_16i;
     typedef SIMDVec_i<int32_t,  2>   SIMD2_32i;
-    typedef SIMDVec_i<int64_t,  1>   SIMD1_64i; 
-    
+    typedef SIMDVec_i<int64_t,  1>   SIMD1_64i;
+
     // 128b int vectors
     typedef SIMDVec_i<int8_t,   16>  SIMD16_8i; 
     typedef SIMDVec_i<int16_t,  8>   SIMD8_16i;
@@ -148,7 +154,7 @@ namespace UME
     typedef SIMDVec_i<int16_t,  16>  SIMD16_16i;
     typedef SIMDVec_i<int32_t,  8>   SIMD8_32i;
     typedef SIMDVec_i<int64_t,  4>   SIMD4_64i;
-    
+
     // 512b int vectors
     typedef SIMDVec_i<int8_t,   64>  SIMD64_8i;
     typedef SIMDVec_i<int16_t,  32>  SIMD32_16i;
@@ -156,7 +162,7 @@ namespace UME
     typedef SIMDVec_i<int64_t,  8>   SIMD8_64i;
 
     // 1024b int vectors
-    typedef SIMDVec_i<int8_t,   128> SIMD128_8i;
+    typedef SIMDVec_i<int8_t,  128>  SIMD128_8i;
     typedef SIMDVec_i<int16_t,  64>  SIMD64_16i;
     typedef SIMDVec_i<int32_t,  32>  SIMD32_32i;
     typedef SIMDVec_i<int64_t,  16>  SIMD16_64i;
@@ -165,7 +171,7 @@ namespace UME
     typedef SIMDVec_f<float, 1>      SIMD1_32f;
 
     // 64b float vectors
-    typedef SIMDVec_f<float,  2>     SIMD2_32f;
+    typedef SIMDVec_f<float, 2>      SIMD2_32f;
     typedef SIMDVec_f<double, 1>     SIMD1_64f;
 
     // 128b float vectors
@@ -179,9 +185,9 @@ namespace UME
     // 512b float vectors
     typedef SIMDVec_f<float,  16>    SIMD16_32f;
     typedef SIMDVec_f<double, 8>     SIMD8_64f;
-
+    
     // 1024b float vectors
-    typedef SIMDVec_f<float, 32>     SIMD32_32f;
+    typedef SIMDVec_f<float,  32>    SIMD32_32f;
     typedef SIMDVec_f<double, 16>    SIMD16_64f;
 } // SIMD
 } // UME

@@ -41,13 +41,13 @@ namespace SIMD {
     template<>
     class SIMDVec_i<int32_t, 1> final :
         public SIMDVecSignedInterface<
-        SIMDVec_i<int32_t, 1>, // DERIVED_UINT_VEC_TYPE
-        SIMDVec_u<uint32_t, 1>,
-        int32_t,                        // SCALAR_UINT_TYPE
-        1,
-        typename SIMDVec_i_traits<int32_t, 1>::SCALAR_UINT_TYPE,
-        typename SIMDVec_i_traits<int32_t, 1>::MASK_TYPE,
-        typename SIMDVec_i_traits<int32_t, 1>::SWIZZLE_MASK_TYPE>
+            SIMDVec_i<int32_t, 1>,
+            SIMDVec_u<uint32_t, 1>,
+            int32_t,
+            1,
+            uint32_t,
+            SIMDVecMask<1>,
+            SIMDVecSwizzle<1>>
     {
     private:
         // This is the only data member and it is a low level representation of vector register.
@@ -391,13 +391,13 @@ namespace SIMD {
 
         // SUBV
         // NEG
-        // ITOU
-        inline SIMDVec_u<uint32_t, 1> itou() const {
-            return SIMDVec_u<uint32_t, 1>(uint32_t(mVec));
-        }
 
+        // ITOU
         inline operator SIMDVec_u<uint32_t, 1>() const;
+        // ITOF
+        inline operator SIMDVec_f<float, 1>() const;
     };
+
 }
 }
 

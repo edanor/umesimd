@@ -40,19 +40,20 @@ namespace SIMD {
 
     template<>
     class SIMDVec_u<uint32_t, 8> :
-        public SIMDVecUnsignedInterface <
-        SIMDVec_u<uint32_t, 8>,
-        uint32_t,
-        8,
-        SIMDVecMask<8>,
-        SIMDVecSwizzle < 8 >> ,
-        public SIMDVecPackableInterface <
-        SIMDVec_u<uint32_t, 8>,
-        SIMDVec_u < uint32_t, 4 >>
+        public SIMDVecUnsignedInterface<
+            SIMDVec_u<uint32_t, 8>,
+            uint32_t,
+            8,
+            SIMDVecMask<8>,
+            SIMDVecSwizzle<8 >> ,
+        public SIMDVecPackableInterface<
+            SIMDVec_u<uint32_t, 8>,
+            SIMDVec_u<uint32_t, 4 >>
     {
     public:
         // Conversion operators require access to private members.
         friend class SIMDVec_i<int32_t, 8>;
+        friend class SIMDVec_f<float, 8>;
 
     private:
         __m256i mVec;
@@ -60,14 +61,18 @@ namespace SIMD {
         inline explicit SIMDVec_u(__m256i & x) { mVec = x; }
         inline explicit SIMDVec_u(const __m256i & x) { mVec = x; }
     public:
+
+        // ZERO-CONSTR
         inline SIMDVec_u() {
             mVec = _mm256_setzero_si256();
         }
 
+        // SET-CONSTR
         inline explicit SIMDVec_u(uint32_t i) {
             mVec = _mm256_set1_epi32(i);
         }
 
+        // LOAD-CONSTR
         inline explicit SIMDVec_u(uint32_t const *p) { this->load(p); }
 
         inline SIMDVec_u(uint32_t i0, uint32_t i1, uint32_t i2, uint32_t i3,
@@ -77,7 +82,6 @@ namespace SIMD {
         }
 
         inline uint32_t extract(uint32_t index) const {
-            UME_PERFORMANCE_UNOPTIMAL_WARNING(); // This routine can be optimized
             alignas(32) uint32_t raw[8];
             _mm256_store_si256((__m256i*)raw, mVec);
             return raw[index];
@@ -89,13 +93,12 @@ namespace SIMD {
         }
 
         // Override Mask Access operators
-        inline IntermediateMask<SIMDVec_u, SIMDVecMask<8>> operator[] (SIMDVecMask<8> & mask) {
+        inline IntermediateMask<SIMDVec_u, SIMDVecMask<8>> operator[] (SIMDVecMask<8> const & mask) {
             return IntermediateMask<SIMDVec_u, SIMDVecMask<8>>(mask, static_cast<SIMDVec_u &>(*this));
         }
 
         // insert[] (scalar)
         inline SIMDVec_u & insert(uint32_t index, uint32_t value) {
-            UME_PERFORMANCE_UNOPTIMAL_WARNING();
             alignas(32) uint32_t raw[8];
             _mm256_store_si256((__m256i*)raw, mVec);
             raw[index] = value;
@@ -109,37 +112,33 @@ namespace SIMD {
         }
 
         // ADDV
-        inline SIMDVec_u add(SIMDVec_u const & b) {
+        inline SIMDVec_u add(SIMDVec_u const & b) const {
             __m256i t0 = _mm256_add_epi32(mVec, b.mVec);
             return SIMDVec_u(t0);
         }
 
-        inline SIMDVec_u operator+ (SIMDVec_u const & b) {
+        inline SIMDVec_u operator+ (SIMDVec_u const & b) const {
             return add(b);
         }
-
         // MADDV
-        inline SIMDVec_u add(SIMDVecMask<8> const & mask, SIMDVec_u const & b) {
+        inline SIMDVec_u add(SIMDVecMask<8> const & mask, SIMDVec_u const & b) const {
             __m256i t0 = _mm256_mask_add_epi32(mVec, mask.mMask, mVec, b.mVec);
             return SIMDVec_u(t0);
         }
-
         // ADDS
-        inline SIMDVec_u add(uint32_t b) {
+        inline SIMDVec_u add(uint32_t b) const {
             __m256i t0 = _mm256_set1_epi32(b);
             __m256i t1 = _mm256_add_epi32(mVec, t0);
             return SIMDVec_u(t1);
         }
-
         // MADDS
-        inline SIMDVec_u add(SIMDVecMask<8> const & mask, uint32_t b) {
+        inline SIMDVec_u add(SIMDVecMask<8> const & mask, uint32_t b) const {
             __m256i t0 = _mm256_set1_epi32(b);
             __m256i t1 = _mm256_mask_add_epi32(mVec, mask.mMask, mVec, t0);
             return SIMDVec_u(t1);
         }
-
         // ADDVA
-        inline SIMDVec_u adda(SIMDVec_u const & b) {
+        inline SIMDVec_u & adda(SIMDVec_u const & b) {
             mVec = _mm256_add_epi32(mVec, b.mVec);
             return *this;
         }
@@ -160,6 +159,7 @@ namespace SIMD {
             mVec = _mm256_mask_add_epi32(mVec, mask.mMask, mVec, t0);
             return *this;
         }
+
         // MULV
         inline SIMDVec_u mul(SIMDVec_u const & b) {
             __m256i t0 = _mm256_mul_epi32(mVec, b.mVec);
@@ -187,7 +187,7 @@ namespace SIMD {
             __mmask8 m0 = _mm256_cmpeq_epi32_mask(mVec, b.mVec);
             return SIMDVecMask<8>(m0);
         }
-        // MCMPEQ
+        // CMPEQS
         inline SIMDVecMask<8> cmpeq(uint32_t b) {
             __m256i t0 = _mm256_set1_epi32(b);
             __mmask8 m0 = _mm256_cmpeq_epi32_mask(mVec, t0);
@@ -203,7 +203,11 @@ namespace SIMD {
         // SCATTERV
         // MSCATTERV
 
-        inline  operator SIMDVec_i<int32_t, 8> () const;
+        // UTOI
+        inline operator SIMDVec_i<int32_t, 8> () const;
+        // UTOF
+        inline operator SIMDVec_f<float, 8>() const;
+
     };
 
 }
