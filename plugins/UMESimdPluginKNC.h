@@ -41,12 +41,14 @@ namespace UME
 {
 namespace SIMD
 {
+
     // forward declarations of simd types classes;
-    template<uint32_t VEC_LEN> class SIMDVecMask;
+    template<uint32_t VEC_LEN>                             class SIMDVecMask;
     template<uint32_t SMASK_LEN>                           class SIMDVecSwizzle;
     template<typename SCALAR_UINT_TYPE, uint32_t VEC_LEN>  class SIMDVec_u;
     template<typename SCALAR_INT_TYPE, uint32_t VEC_LEN>   class SIMDVec_i;
     template<typename SCALAR_FLOAT_TYPE, uint32_t VEC_LEN> class SIMDVec_f;
+
 }
 }
 
@@ -55,6 +57,7 @@ namespace SIMD
 #include "knc/UMESimdVecUintKNC.h"
 #include "knc/UMESimdVecIntKNC.h"
 #include "knc/UMESimdVecFloatKNC.h"
+#include "knc/UMESimdCastOperatorsKNC.h"
 
 namespace UME
 {

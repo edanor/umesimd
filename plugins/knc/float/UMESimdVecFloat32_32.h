@@ -28,8 +28,8 @@
 //  7th Framework programme Marie Curie Actions under grant PITN-GA-2012-316596".
 //
 
-#ifndef UME_SIMD_VEC_FLOAT32_16_H_
-#define UME_SIMD_VEC_FLOAT32_16_H_
+#ifndef UME_SIMD_VEC_FLOAT32_32_H_
+#define UME_SIMD_VEC_FLOAT32_32_H_
 
 #include <type_traits>
 #include "../../../UMESimdInterface.h"
@@ -76,17 +76,6 @@ namespace SIMD {
             mVecLo = _mm512_set1_ps(f);
             mVecHi = _mm512_set1_ps(f);
         }
-
-        // UTOF
-        inline explicit SIMDVec_f(VEC_UINT_TYPE const & vecUint) {
-
-        }
-
-        // ITOF
-        inline explicit SIMDVec_f(VEC_INT_TYPE const & vecInt) {
-
-        }
-
 
         // LOAD-CONSTR - Construct by loading from memory
         inline explicit SIMDVec_f(float const * p) { this->load(p); }
@@ -510,6 +499,11 @@ namespace SIMD {
         // MTAN      - Masked tangent
         // CTAN      - Cotangent
         // MCTAN     - Masked cotangent
+
+        // FTOU
+        inline operator SIMDVec_u<uint32_t, 32>() const;
+        // FTOI
+        inline operator SIMDVec_i<int32_t, 32>() const;
     };
 
 }

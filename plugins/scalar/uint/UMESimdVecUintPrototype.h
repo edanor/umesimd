@@ -32,9 +32,9 @@
 #define UME_SIMD_VEC_UINT_PROTOTYPE_H_
 
 #include <type_traits>
+
 #include "../../../UMESimdInterface.h"
 #include "../../scalar/UMESimdMimicScalarTypes.h"
-#include <immintrin.h>
 
 #include "../UMESimdMaskScalar.h"
 #include "../UMESimdSwizzleScalar.h"

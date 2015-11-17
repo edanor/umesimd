@@ -28,8 +28,8 @@
 //  7th Framework programme Marie Curie Actions under grant PITN-GA-2012-316596".
 //
 
-#ifndef UME_SIMD_VEC_UINT32_16_H_
-#define UME_SIMD_VEC_UINT32_16_H_
+#ifndef UME_SIMD_VEC_INT32_16_H_
+#define UME_SIMD_VEC_INT32_16_H_
 
 #include <type_traits>
 #include "../../../UMESimdInterface.h"
@@ -47,15 +47,14 @@ namespace SIMD {
         16,
         uint32_t,
         SIMDVecMask<16>,
-        SIMDSwizzle16>,
+        SIMDVecSwizzle<16 >> ,
         public SIMDVecPackableInterface<
         SIMDVec_i<int32_t, 16>,
-        typename SIMDVec_i_traits<int32_t, 16>::HALF_LEN_VEC_TYPE>
+        SIMDVec_i<int32_t, 8 >>
     {
         friend class SIMDVec_u<uint32_t, 16>;
-        friend class SIMDVecKNC_f<float, 16>;
-        friend class SIMDVecKNC_f<double, 16>;
-
+        friend class SIMDVec_f<float, 16>;
+        friend class SIMDVec_f<double, 16>;
     private:
         __m512i mVec;
 
@@ -63,13 +62,15 @@ namespace SIMD {
             this->mVec = x;
         }
     public:
+        // ZERO-CONSTR
         inline SIMDVec_i() {};
 
+        // SET-CONSTR
         inline explicit SIMDVec_i(int32_t i) {
             mVec = _mm512_set1_epi32(i);
         }
 
-        // LOAD-CONSTR - Construct by loading from memory
+        // LOAD-CONSTR
         inline explicit SIMDVec_i(int32_t const * p) { this->load(p); }
 
 
@@ -95,7 +96,7 @@ namespace SIMD {
         }
 
         // Override Mask Access operators
-        inline IntermediateMask<SIMDVec_i, SIMDVecMask<16>> operator[] (SIMDVecMask<16> & mask) {
+        inline IntermediateMask<SIMDVec_i, SIMDVecMask<16>> operator[] (SIMDVecMask<16> const & mask) {
             return IntermediateMask<SIMDVec_i, SIMDVecMask<16>>(mask, static_cast<SIMDVec_i &>(*this));
         }
 
@@ -1100,18 +1101,11 @@ namespace SIMD {
         // UNPACK
         // UNPACKLO
         // UNPACKHI
-
-        inline  operator SIMDVec_u<uint32_t, 16> const ();
-
+        // ITOU
+        inline  operator SIMDVec_u<uint32_t, 16> () const;
+        // ITOF
+        inline  operator SIMDVec_f<float, 16> () const;
     };
-
-    inline SIMDVec_i<int32_t, 16>::operator const SIMDVec_u<uint32_t, 16>() {
-        return SIMDVec_u<uint32_t, 16>(this->mVec);
-    }
-
-    inline SIMDVec_u<uint32_t, 16>::operator const SIMDVec_i<int32_t, 16>() {
-        return SIMDVec_i<int32_t, 16>(this->mVec);
-    }
 }
 }
 

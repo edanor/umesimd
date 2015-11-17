@@ -74,16 +74,6 @@ namespace SIMD {
             mVec = _mm512_set1_ps(f);
         }
 
-        // UTOF
-        inline explicit SIMDVec_f(VEC_UINT_TYPE const & vecUint) {
-
-        }
-
-        // ITOF
-        inline explicit SIMDVec_f(VEC_INT_TYPE const & vecInt) {
-
-        }
-
         // LOAD-CONSTR - Construct by loading from memory
         inline explicit SIMDVec_f(float const * p) { this->load(p); }
 
@@ -919,14 +909,7 @@ namespace SIMD {
         // SCATTERV  - Scatter to memory using indices from vector
         // MSCATTERV - Masked scatter to memory using indices from vector
 
-        // 3) Operations available for Signed integer and Unsigned integer 
-        // data types:
-
-        //(Signed/Unsigned cast)
-        // UTOI - Cast unsigned vector to signed vector
-        // ITOU - Cast signed vector to unsigned vector
-
-        // 4) Operations available for Signed integer and floating point SIMD types:
+        // 3) Operations available for Signed integer and floating point SIMD types:
 
         // (Sign modification)
         // NEG   - Negate signed values
@@ -958,7 +941,7 @@ namespace SIMD {
             return *this;
         }
 
-        // 5) Operations available for floating point SIMD types:
+        // 4) Operations available for floating point SIMD types:
 
         // (Comparison operations)
         // CMPEQRV - Compare 'Equal within range' with margins from vector
@@ -1089,6 +1072,11 @@ namespace SIMD {
         // MTAN      - Masked tangent
         // CTAN      - Cotangent
         // MCTAN     - Masked cotangent
+
+        // FTOU
+        inline operator SIMDVec_u<uint32_t, 16>() const;
+        // FTOI
+        inline operator SIMDVec_i<int32_t, 16>() const;
     };
 
 }
