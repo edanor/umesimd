@@ -41,9 +41,9 @@ namespace SIMD {
     template<>
     class SIMDVec_i<int32_t, 1> final :
         public SIMDVecSignedInterface<
-            SIMDVec_i<int32_t, 1>, // DERIVED_UINT_VEC_TYPE
+            SIMDVec_i<int32_t, 1>,
             SIMDVec_u<uint32_t, 1>,
-            int32_t,                        // SCALAR_UINT_TYPE
+            int32_t,
             1,
             uint32_t,
             SIMDVecMask<1>,
@@ -391,12 +391,11 @@ namespace SIMD {
 
         // SUBV
         // NEG
-        // ITOU
-        inline SIMDVec_u<uint32_t, 1> itou() const {
-            return SIMDVec_u<uint32_t, 1>(uint32_t(mVec));
-        }
 
+        // ITOU
         inline operator SIMDVec_u<uint32_t, 1>() const;
+        // ITOF
+        inline operator SIMDVec_f<float, 1>() const;
     };
 
 }

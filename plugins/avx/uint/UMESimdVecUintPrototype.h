@@ -388,7 +388,6 @@ namespace SIMD {
 
         // UTOI
         inline operator SIMDVec_i<SCALAR_INT_TYPE, VEC_LEN>() const;
-
         // UTOF
         inline operator SIMDVec_f<SCALAR_FLOAT_TYPE, VEC_LEN>() const;
     };

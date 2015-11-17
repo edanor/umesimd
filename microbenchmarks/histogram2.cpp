@@ -206,7 +206,7 @@ TIMING_RES test_UME_SIMD()
             data_vec.loada(&data[i*VEC_LEN]);
             t0 = data_vec.mul(coeff_vec);
             t1 = t0.trunc();
-            index_vec.assign(t1.itou());
+            index_vec.assign(UINT_VEC_T(t1));
             // Perform histogram update
             // test_UME_SIMD_float_recursive_helper<FLOAT_VEC_T, UINT_VEC_T>(index_vec, hist);
             if (index_vec.unique()) {

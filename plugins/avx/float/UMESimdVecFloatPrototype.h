@@ -398,6 +398,7 @@ namespace SIMD {
     class SIMDVec_f<DummyFloat, VEC_LEN> final
     {
     };
+
 }
 }
 
