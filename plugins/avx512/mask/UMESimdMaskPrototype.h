@@ -142,7 +142,7 @@ namespace SIMD {
         }
 
         // A non-modifying element-wise access operator
-        inline bool operator[] (uint32_t index) const { return mMask[index]; }
+        inline bool operator[] (int32_t index) const { return mMask[index]; }
 
         inline bool extract(uint32_t index)
         {
