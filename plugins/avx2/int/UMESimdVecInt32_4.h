@@ -118,11 +118,9 @@ namespace SIMD {
         }
 
         // ITOU
-        inline SIMDVec_u<uint32_t, 4> itou() {
-            return SIMDVec_u<uint32_t, 4>(mVec);
-        }
-
-        inline  operator SIMDVec_u<uint32_t, 4> () const;
+        inline operator SIMDVec_u<uint32_t, 4>() const;
+        // ITOF
+        inline operator SIMDVec_f<float, 4>() const;
     };
 
 }

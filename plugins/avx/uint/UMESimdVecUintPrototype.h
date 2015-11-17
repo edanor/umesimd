@@ -446,12 +446,7 @@ namespace SIMD {
             mVec.insert(index, value);
             return *this;
         }
-/*
-        inline  operator SIMDVec_i<SCALAR_INT_TYPE, 1>() const {
-            SIMDVec_i<SCALAR_INT_TYPE, 1> retval(mVec[0]);
-            return retval;
-        }
-        */
+
         // UNIQUE
         inline bool unique() const {
             return true;

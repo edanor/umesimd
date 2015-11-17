@@ -223,7 +223,9 @@ namespace SIMD {
         // UNPACKHI
 
         // UTOI
-        inline  operator SIMDVec_i<int32_t, 4> () const;
+        inline operator SIMDVec_i<int32_t, 4>() const;
+        // UTOF
+        inline operator SIMDVec_f<float, 4>() const;
     };
 }
 }

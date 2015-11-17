@@ -43,10 +43,6 @@
 namespace UME {
 namespace SIMD {
 
-    // ********************************************************************************************
-    // FLOATING POINT VECTORS
-    // ********************************************************************************************
-
     template<typename SCALAR_FLOAT_TYPE, uint32_t VEC_LEN>
     struct SIMDVec_f_traits {
         // Generic trait class not containing type definition so that only correct explicit
@@ -200,17 +196,17 @@ namespace SIMD {
     template<typename SCALAR_FLOAT_TYPE, uint32_t VEC_LEN>
     class SIMDVec_f final :
         public SIMDVecFloatInterface<
-        SIMDVec_f<SCALAR_FLOAT_TYPE, VEC_LEN>,
-        typename SIMDVec_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::VEC_UINT_TYPE,
-        typename SIMDVec_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::VEC_INT_TYPE,
-        SCALAR_FLOAT_TYPE,
-        VEC_LEN,
-        typename SIMDVec_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::SCALAR_UINT_TYPE,
-        typename SIMDVec_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::MASK_TYPE,
-        typename SIMDVec_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::SWIZZLE_MASK_TYPE>,
+            SIMDVec_f<SCALAR_FLOAT_TYPE, VEC_LEN>,
+            typename SIMDVec_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::VEC_UINT_TYPE,
+            typename SIMDVec_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::VEC_INT_TYPE,
+            SCALAR_FLOAT_TYPE,
+            VEC_LEN,
+            typename SIMDVec_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::SCALAR_UINT_TYPE,
+            typename SIMDVec_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::MASK_TYPE,
+            typename SIMDVec_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::SWIZZLE_MASK_TYPE>,
         public SIMDVecPackableInterface<
-        SIMDVec_f<SCALAR_FLOAT_TYPE, VEC_LEN>,
-        typename SIMDVec_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::HALF_LEN_VEC_TYPE>
+            SIMDVec_f<SCALAR_FLOAT_TYPE, VEC_LEN>,
+            typename SIMDVec_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::HALF_LEN_VEC_TYPE>
     {
     public:
         typedef SIMDVecEmuRegister<SCALAR_FLOAT_TYPE, VEC_LEN> VEC_EMU_REG;
@@ -233,26 +229,8 @@ namespace SIMD {
         // SET-CONSTR
         inline explicit SIMDVec_f(SCALAR_FLOAT_TYPE f) : mVec(f) {};
 
-        // UTOF
-        inline explicit SIMDVec_f(VEC_UINT_TYPE const & vecUint) {
-            alignas(alignment()) SCALAR_UINT_TYPE raw[VEC_LEN];
-            vecUint.storea(raw);
-            for (int i = 0; i < VEC_LEN; i++) {
-                mVec[i] = SCALAR_FLOAT_TYPE(raw[i]);
-            }
-        }
-
-        // ITOF
-        inline explicit SIMDVec_f(VEC_INT_TYPE const & vecInt) {
-            alignas(alignment()) SCALAR_INT_TYPE raw[VEC_LEN];
-            vecInt.storea(raw);
-            for (int i = 0; i < VEC_LEN; i++) {
-                mVec[i] = SCALAR_FLOAT_TYPE(raw[i]);
-            }
-        }
-
         // LOAD-CONSTR - Construct by loading from memory
-        inline explicit SIMDVec_f(SCALAR_FLOAT_TYPE const *p) { this->load(p); };
+        inline explicit SIMDVec_f(SCALAR_FLOAT_TYPE const * p) { this->load(p); }
 
         inline SIMDVec_f(SCALAR_FLOAT_TYPE f0, SCALAR_FLOAT_TYPE f1) {
             mVec.insert(0, f0); mVec.insert(1, f1);
@@ -348,21 +326,10 @@ namespace SIMD {
             return *this;
         }
 
-        inline operator SIMDVec_u<SCALAR_UINT_TYPE, VEC_LEN>() const {
-            SIMDVec_u<SCALAR_UINT_TYPE, VEC_LEN> retval;
-            for (uint32_t i = 0; i < VEC_LEN; i++) {
-                retval.insert(i, (SCALAR_UINT_TYPE)mVec[i]);
-            }
-            return retval;
-        }
-
-        inline operator SIMDVec_i<SCALAR_INT_TYPE, VEC_LEN>() const {
-            SIMDVec_i<SCALAR_INT_TYPE, VEC_LEN> retval;
-            for (uint32_t i = 0; i < VEC_LEN; i++) {
-                retval.insert(i, (SCALAR_INT_TYPE)mVec[i]);
-            }
-            return retval;
-        }
+        // FTOU
+        inline operator SIMDVec_u<SCALAR_UINT_TYPE, VEC_LEN>() const;
+        // FTOI
+        inline operator SIMDVec_i<SCALAR_INT_TYPE, VEC_LEN>() const;
     };
 
     // ***************************************************************************
@@ -375,14 +342,14 @@ namespace SIMD {
     template<typename SCALAR_FLOAT_TYPE>
     class SIMDVec_f<SCALAR_FLOAT_TYPE, 1> final :
         public SIMDVecFloatInterface<
-        SIMDVec_f<SCALAR_FLOAT_TYPE, 1>,
-        typename SIMDVec_f_traits<SCALAR_FLOAT_TYPE, 1>::VEC_UINT_TYPE,
-        typename SIMDVec_f_traits<SCALAR_FLOAT_TYPE, 1>::VEC_INT_TYPE,
-        SCALAR_FLOAT_TYPE,
-        1,
-        typename SIMDVec_f_traits<SCALAR_FLOAT_TYPE, 1>::SCALAR_UINT_TYPE,
-        typename SIMDVec_f_traits<SCALAR_FLOAT_TYPE, 1>::MASK_TYPE,
-        typename SIMDVec_f_traits<SCALAR_FLOAT_TYPE, 1>::SWIZZLE_MASK_TYPE>
+            SIMDVec_f<SCALAR_FLOAT_TYPE, 1>,
+            typename SIMDVec_f_traits<SCALAR_FLOAT_TYPE, 1>::VEC_UINT_TYPE,
+            typename SIMDVec_f_traits<SCALAR_FLOAT_TYPE, 1>::VEC_INT_TYPE,
+            SCALAR_FLOAT_TYPE,
+            1,
+            typename SIMDVec_f_traits<SCALAR_FLOAT_TYPE, 1>::SCALAR_UINT_TYPE,
+            typename SIMDVec_f_traits<SCALAR_FLOAT_TYPE, 1>::MASK_TYPE,
+            typename SIMDVec_f_traits<SCALAR_FLOAT_TYPE, 1>::SWIZZLE_MASK_TYPE>
     {
     public:
         typedef SIMDVecEmuRegister<SCALAR_FLOAT_TYPE, 1> VEC_EMU_REG;
@@ -403,16 +370,6 @@ namespace SIMD {
         // SET-CONSTR
         inline explicit SIMDVec_f(SCALAR_FLOAT_TYPE f) : mVec(f) {};
 
-        // UTOF
-        inline explicit SIMDVec_f(VEC_UINT_TYPE const & vecUint) {
-            mVec.insert(0, SCALAR_FLOAT_TYPE(vecUint[0]));
-        }
-
-        // ITOF
-        inline explicit SIMDVec_f(VEC_INT_TYPE const & vecInt) {
-            mVec.insert(0, SCALAR_FLOAT_TYPE(vecInt[0]));
-        }
-
         // LOAD-CONSTR - Construct by loading from memory
         inline explicit SIMDVec_f(SCALAR_FLOAT_TYPE const *p) { this->load(p); }
 
@@ -432,21 +389,15 @@ namespace SIMD {
             return *this;
         }
 
-        inline operator SIMDVec_u<SCALAR_UINT_TYPE, 1>() const {
-            SIMDVec_u<SCALAR_UINT_TYPE, 1> retval;
-            for (uint32_t i = 0; i < 1; i++) {
-                retval.insert(i, (SCALAR_UINT_TYPE)mVec[i]);
-            }
-            return retval;
-        }
+        // FTOU
+        inline operator SIMDVec_u<SCALAR_UINT_TYPE, 1>() const;
+        // FTOI
+        inline operator SIMDVec_i<SCALAR_INT_TYPE, 1>() const;
+    };
 
-        inline operator SIMDVec_i<SCALAR_INT_TYPE, 1>() const {
-            SIMDVec_i<SCALAR_INT_TYPE, 1> retval;
-            for (uint32_t i = 0; i < 1; i++) {
-                retval.insert(i, (SCALAR_INT_TYPE)mVec[i]);
-            }
-            return retval;
-        }
+    template<uint32_t VEC_LEN>
+    class SIMDVec_f<DummyFloat, VEC_LEN> final
+    {
     };
 
 }

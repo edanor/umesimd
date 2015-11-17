@@ -44,8 +44,8 @@ namespace SIMD {
         SIMDVec_u<uint32_t, 1>, // DERIVED_UINT_VEC_TYPE
         uint32_t,                        // SCALAR_UINT_TYPE
         1,
-        typename SIMDVec_u_traits<uint32_t, 1>::MASK_TYPE,
-        typename SIMDVec_u_traits<uint32_t, 1>::SWIZZLE_MASK_TYPE>
+        SIMDVecMask<1>,
+        SIMDVecSwizzle<1>>
     {
     private:
         // This is the only data member and it is a low level representation of vector register.
@@ -375,7 +375,9 @@ namespace SIMD {
         // MRORSA
 
         // UTOI
-        inline  operator SIMDVec_i<int32_t, 1>() const; // deferr definition until SIMDVec_i<int32_t, 2> is defined
+        inline operator SIMDVec_i<int32_t, 1>() const;
+        // UTOF
+        inline operator SIMDVec_f<float, 1>() const;
     };
 
 }

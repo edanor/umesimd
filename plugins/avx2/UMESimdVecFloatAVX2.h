@@ -47,7 +47,7 @@
 #include "float/UMESimdVecFloatPrototype.h"
 
 // ********************************************************************************************
-// FLOATING POINT VECTOR SPECIALIZATION
+// FLOATING POINT VECTOR SPECIALIZATIONS
 // ********************************************************************************************
 #include "float/UMESimdVecFloat32_1.h"
 #include "float/UMESimdVecFloat32_2.h"

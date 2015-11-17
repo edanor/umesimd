@@ -32,6 +32,7 @@
 #define UME_SIMD_PLUGIN_AVX2_H_
 
 #include <type_traits>
+
 #include "../UMESimdInterface.h"
 #include <immintrin.h>
 
@@ -39,12 +40,14 @@ namespace UME
 {
 namespace SIMD
 {
+
     // forward declarations of simd types classes;
-    template<uint32_t VEC_LEN> class SIMDVecMask;
+    template<uint32_t VEC_LEN>                             class SIMDVecMask;
     template<uint32_t SMASK_LEN>                           class SIMDVecSwizzle;
     template<typename SCALAR_UINT_TYPE, uint32_t VEC_LEN>  class SIMDVec_u;
     template<typename SCALAR_INT_TYPE, uint32_t VEC_LEN>   class SIMDVec_i;
     template<typename SCALAR_FLOAT_TYPE, uint32_t VEC_LEN> class SIMDVec_f;
+
 }
 }
 
@@ -53,6 +56,7 @@ namespace SIMD
 #include "avx2/UMESimdVecUintAVX2.h"
 #include "avx2/UMESimdVecIntAVX2.h"
 #include "avx2/UMESimdVecFloatAVX2.h"
+#include "avx2/UMESimdCastOperatorsAVX2.h"
 
 namespace UME
 {
