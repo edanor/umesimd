@@ -37,11 +37,11 @@ namespace UME {
 namespace SIMD {
 
     template<>
-    class SIMDVecMask<4> :
+    class SIMDVecMask<4> final :
         public SIMDMaskBaseInterface<
-        SIMDVecMask<4>,
-        bool,
-        4>
+            SIMDVecMask<4>,
+            bool,
+            4>
     {
         friend class SIMDVec_u<uint8_t, 4>;
         friend class SIMDVec_u<uint16_t, 4>;
@@ -190,7 +190,6 @@ namespace SIMD {
             bool t4 = t0 ^ t1 ^ t2 ^ t3;
             return t4;
         }
-
     };
 
 }

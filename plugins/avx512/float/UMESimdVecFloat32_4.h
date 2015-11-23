@@ -40,7 +40,7 @@ namespace UME {
 namespace SIMD {
 
     template<>
-    class SIMDVec_f<float, 4> :
+    class SIMDVec_f<float, 4> final :
         public SIMDVecFloatInterface<
             SIMDVec_f<float, 4>,
             SIMDVec_u<uint32_t, 4>,
@@ -57,7 +57,7 @@ namespace SIMD {
         friend class SIMDVec_u<uint32_t, 4>;
         friend class SIMDVec_i<int32_t, 4>;
 
-
+        friend class SIMDVec_f<float, 8>;
     private:
         __m128 mVec;
 
@@ -68,22 +68,18 @@ namespace SIMD {
     public:
         // ZERO-CONSTR
         inline SIMDVec_f() {}
-
         // SET-CONSTR
         inline explicit SIMDVec_f(float f) {
             mVec = _mm_set1_ps(f);
         }
-
         // LOAD-CONSTR
         inline explicit SIMDVec_f(float const * p) {
             mVec = _mm_loadu_ps(p);
         }
-
         // FULL-CONSTR
         inline SIMDVec_f(float f0, float f1, float f2, float f3) {
             mVec = _mm_setr_ps(f0, f1, f2, f3);
         }
-
         // EXTRACT
         inline float extract(uint32_t index) const {
             alignas(16) float raw[4];
@@ -95,12 +91,10 @@ namespace SIMD {
         inline float operator[] (uint32_t index) const {
             return extract(index);
         }
-
         // Override Mask Access operators
         inline IntermediateMask<SIMDVec_f, SIMDVecMask<4>> operator[] (SIMDVecMask<4> const & mask) {
             return IntermediateMask<SIMDVec_f, SIMDVecMask<4>>(mask, static_cast<SIMDVec_f &>(*this));
         }
-
         // INSERT
         inline SIMDVec_f & insert(uint32_t index, float value) {
             alignas(16) float raw[4];
@@ -109,7 +103,6 @@ namespace SIMD {
             mVec = _mm_load_ps(raw);
             return *this;
         }
-
         // ****************************************************************************************
         // Overloading Interface functions starts here!
         // ****************************************************************************************

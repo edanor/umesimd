@@ -57,6 +57,7 @@ namespace SIMD {
         friend class SIMDVec_f<float, 4>;
         friend class SIMDVec_f<double, 4>;
 
+        friend class SIMDVec_i<int32_t, 8>;
     private:
         __m128i mVec;
 
@@ -376,13 +377,48 @@ namespace SIMD {
         }
 
         // MULV
+        inline SIMDVec_i mul(SIMDVec_i const & b) const {
+            __m128i t0 = _mm_mullo_epi32(mVec, b.mVec);
+            return SIMDVec_i(t0);
+        }
         // MMULV
+        inline SIMDVec_i mul(SIMDVecMask<4> const & mask, SIMDVec_i const & b) const {
+            __m128i t0 = _mm_mask_mullo_epi32(mVec, mask.mMask, mVec, b.mVec);
+            return SIMDVec_i(t0);
+        }
         // MULS
+        inline SIMDVec_i mul(int32_t b) const {
+            __m128i t0 = _mm_mullo_epi32(mVec, _mm_set1_epi32(b));
+            return SIMDVec_i(t0);
+        }
         // MMULS
+        inline SIMDVec_i mul(SIMDVecMask<4> const & mask, int32_t b) const {
+            __m128i t0 = _mm_set1_epi32(b);
+            __m128i t1 = _mm_mask_mullo_epi32(mVec, mask.mMask, mVec, t0);
+            return SIMDVec_i(t1);
+        }
         // MULVA
+        inline SIMDVec_i & mula(SIMDVec_i const & b) {
+            mVec = _mm_mullo_epi32(mVec, b.mVec);
+            return *this;
+        }
         // MMULVA
+        inline SIMDVec_i & mula(SIMDVecMask<4> const & mask, SIMDVec_i const & b) {
+            mVec = _mm_mask_mullo_epi32(mVec, mask.mMask, mVec, b.mVec);
+            return *this;
+        }
         // MULSA
+        inline SIMDVec_i & mula(int32_t b) {
+            mVec = _mm_mullo_epi32(mVec, _mm_set1_epi32(b));
+            return *this;
+        }
         // MMULSA
+        inline SIMDVec_i & mula(SIMDVecMask<4> const & mask, int32_t b) {
+            __m128i t0 = _mm_set1_epi32(b);
+            mVec = _mm_mask_mullo_epi32(mVec, mask.mMask, mVec, t0);
+            return *this;
+        }
+
         // DIVV
         // MDIVV
         // DIVS
@@ -543,7 +579,6 @@ namespace SIMD {
             if (mask.mMask & 0x08) t0 *= raw[3];
             return b * t0;
         }
-
         // FMULADDV
         // MFMULADDV
         // FMULSUBV
@@ -552,7 +587,6 @@ namespace SIMD {
         // MFADDMULV
         // FSUBMULV
         // MFSUBMULV
-
         // MAXV
         inline SIMDVec_i max(SIMDVec_i const & b) const {
             __m128i t0 = _mm_max_epi32(mVec, b.mVec);

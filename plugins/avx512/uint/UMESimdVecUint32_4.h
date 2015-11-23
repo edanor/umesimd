@@ -40,7 +40,7 @@ namespace UME {
 namespace SIMD {
 
     template<>
-    class SIMDVec_u<uint32_t, 4> :
+    class SIMDVec_u<uint32_t, 4> final :
         public SIMDVecUnsignedInterface<
             SIMDVec_u<uint32_t, 4>,
             uint32_t,
@@ -53,6 +53,8 @@ namespace SIMD {
     {
         friend class SIMDVec_i<int32_t, 4>;
         friend class SIMDVec_f<float, 4>;
+
+        friend class SIMDVec_u<uint32_t, 8>;
 
     private:
         __m128i mVec;
@@ -178,6 +180,11 @@ namespace SIMD {
         // SWIZZLEA
         // ADDV
         inline SIMDVec_u add(SIMDVec_u const & b) const {
+            __m128i t0 = _mm_add_epi32(mVec, b.mVec);
+            return SIMDVec_u(t0);
+        }
+
+        inline SIMDVec_u operator+ (SIMDVec_u const & b) const {
             __m128i t0 = _mm_add_epi32(mVec, b.mVec);
             return SIMDVec_u(t0);
         }
@@ -373,47 +380,47 @@ namespace SIMD {
         }
 
         // MULV
-        /*inline SIMDVec_u mul(SIMDVec_u const & b) const {
-            __m128i t0 = _mm_mul_epi32(mVec, b.mVec);
+        inline SIMDVec_u mul(SIMDVec_u const & b) const {
+            __m128i t0 = _mm_mullo_epi32(mVec, b.mVec);
             return SIMDVec_u(t0);
-        }*/
+        }
         // MMULV
-        /*inline SIMDVec_u mul(SIMDVecMask<4> const & mask, SIMDVec_u const & b) const {
-            __m128i t0 = _mm_mask_mul_epi32(mVec, mask.mMask, mVec, b.mVec);
+        inline SIMDVec_u mul(SIMDVecMask<4> const & mask, SIMDVec_u const & b) const {
+            __m128i t0 = _mm_mask_mullo_epi32(mVec, mask.mMask, mVec, b.mVec);
             return SIMDVec_u(t0);
-        }*/
+        }
         // MULS
-        /*inline SIMDVec_u mul(uint32_t b) const {
-            __m128i t0 = _mm_mul_epi32(mVec, _mm_set1_epi32(b));
+        inline SIMDVec_u mul(uint32_t b) const {
+            __m128i t0 = _mm_mullo_epi32(mVec, _mm_set1_epi32(b));
             return SIMDVec_u(t0);
-        }*/
+        }
         // MMULS
-        /*inline SIMDVec_u mul(SIMDVecMask<4> const & mask, uint32_t b) const {
+        inline SIMDVec_u mul(SIMDVecMask<4> const & mask, uint32_t b) const {
             __m128i t0 = _mm_set1_epi32(b);
-            __m128i t1 = _mm_mask_mul_epi32(mVec, mask.mMask, mVec, t0);
+            __m128i t1 = _mm_mask_mullo_epi32(mVec, mask.mMask, mVec, t0);
             return SIMDVec_u(t1);
-        }*/
+        }
         // MULVA
-        /*inline SIMDVec_u & mula(SIMDVec_u const & b) {
-            mVec = _mm_mul_epi32(mVec, b.mVec);
+        inline SIMDVec_u & mula(SIMDVec_u const & b) {
+            mVec = _mm_mullo_epi32(mVec, b.mVec);
             return *this;
-        }*/
+        }
         // MMULVA
-        /*inline SIMDVec_u & mula(SIMDVecMask<4> const & mask, SIMDVec_u const & b) {
-            mVec = _mm_mask_mul_epi32(mVec, mask.mMask, mVec, b.mVec);
+        inline SIMDVec_u & mula(SIMDVecMask<4> const & mask, SIMDVec_u const & b) {
+            mVec = _mm_mask_mullo_epi32(mVec, mask.mMask, mVec, b.mVec);
             return *this;
-        }*/
+        }
         // MULSA
-        /*inline SIMDVec_u & mula(uint32_t b) {
-            mVec = _mm_mul_epi32(mVec, _mm_set1_epi32(b));
+        inline SIMDVec_u & mula(uint32_t b) {
+            mVec = _mm_mullo_epi32(mVec, _mm_set1_epi32(b));
             return *this;
-        }*/
+        }
         // MMULSA
-        /*inline SIMDVec_u & mula(SIMDVecMask<4> const & mask, uint32_t b) {
+        inline SIMDVec_u & mula(SIMDVecMask<4> const & mask, uint32_t b) {
             __m128i t0 = _mm_set1_epi32(b);
-            mVec = _mm_mask_mul_epi32(mVec, mask.mMask, mVec, t0);
+            mVec = _mm_mask_mullo_epi32(mVec, mask.mMask, mVec, t0);
             return *this;
-        }*/
+        }
 
         // DIVV
         // MDIVV

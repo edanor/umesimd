@@ -37,38 +37,37 @@ namespace UME {
 namespace SIMD {
 
     template<>
-    class SIMDVecMask<8> :
+    class SIMDVecMask<8> final :
         public SIMDMaskBaseInterface<
-        SIMDVecMask<8>,
-        uint32_t,
-        8>
+           SIMDVecMask<8>,
+           uint32_t,
+           8>
     {
-        static uint32_t TRUE() { return 0x1; };
-        static uint32_t FALSE() { return 0x0; };
-
-        // This function returns internal representation of boolean value based on bool input
-        static inline uint32_t toMaskBool(bool m) { if (m == true) return TRUE(); else return FALSE(); }
-        // This function returns a boolean value based on internal representation
-        static inline bool toBool(uint32_t m) { if (m != 0) return true; else return false; }
-
+        friend class SIMDVec_u<uint8_t, 8>;
+        friend class SIMDVec_u<uint16_t, 8>;
         friend class SIMDVec_u<uint32_t, 8>;
+        friend class SIMDVec_u<uint64_t, 8>;
+        friend class SIMDVec_i<int8_t, 8>;
+        friend class SIMDVec_i<int16_t, 8>;
         friend class SIMDVec_i<int32_t, 8>;
+        friend class SIMDVec_i<int64_t, 8>;
         friend class SIMDVec_f<float, 8>;
         friend class SIMDVec_f<double, 8>;
-
     private:
         __mmask8 mMask;
 
         inline explicit SIMDVecMask(__mmask8 const & x) { mMask = x; };
     public:
-        SIMDVecMask() {}
+        inline SIMDVecMask() {}
 
         // Regardless of the mask representation, the interface should only allow initialization using 
         // standard bool or using equivalent mask
         // SET-CONSTR
         inline explicit SIMDVecMask(bool m) {
-            mMask = m ? 0xFF : 0x00;
+            if (m == true) mMask = 0xFF;
+            else mMask = 0x00;
         }
+
         // LOAD-CONSTR
         inline explicit SIMDVecMask(bool const *p) {
             mMask = 0x0;
@@ -103,18 +102,118 @@ namespace SIMD {
         }
         // INSERT
         inline void insert(uint32_t index, bool x) {
-            if (x) {
-                mMask |= (1 << index);
-            }
-            else
-            {
-                mMask &= (0xFF & ~(1 << index));
-            }
+            if (x == true) mMask |= 1 << index;
+            else mMask &= (0xFF & ~(1 << index));
         }
-
-        inline SIMDVecMask<8> & operator= (SIMDVecMask<8> const & x) {
+        // LOAD
+        inline SIMDVecMask & load(bool const * p) {
+            mMask = 0x00;
+            if (p[0] == true) mMask |= 0x1;
+            if (p[1] == true) mMask |= 0x2;
+            if (p[2] == true) mMask |= 0x4;
+            if (p[3] == true) mMask |= 0x8;
+        }
+        // LOADA
+        inline SIMDVecMask & loada(bool const * p) {
+            mMask = 0x00;
+            if (p[0] == true) mMask |= 0x1;
+            if (p[1] == true) mMask |= 0x2;
+            if (p[2] == true) mMask |= 0x4;
+            if (p[3] == true) mMask |= 0x8;
+            if (p[4] == true) mMask |= 0x10;
+            if (p[5] == true) mMask |= 0x20;
+            if (p[6] == true) mMask |= 0x40;
+            if (p[7] == true) mMask |= 0x80;
+        }
+        // STORE
+        inline bool* store(bool * p) const {
+            p[0] = ((mMask & 0x1) != 0);
+            p[1] = ((mMask & 0x2) != 0);
+            p[2] = ((mMask & 0x4) != 0);
+            p[3] = ((mMask & 0x8) != 0);
+            p[4] = ((mMask & 0x10) != 0);
+            p[5] = ((mMask & 0x20) != 0);
+            p[6] = ((mMask & 0x40) != 0);
+            p[7] = ((mMask & 0x80) != 0);
+            return p;
+        }
+        // STOREA
+        inline bool* storea(bool * p) const {
+            p[0] = ((mMask & 0x1) != 0);
+            p[1] = ((mMask & 0x2) != 0);
+            p[2] = ((mMask & 0x4) != 0);
+            p[3] = ((mMask & 0x8) != 0);
+            p[4] = ((mMask & 0x10) != 0);
+            p[5] = ((mMask & 0x20) != 0);
+            p[6] = ((mMask & 0x40) != 0);
+            p[7] = ((mMask & 0x80) != 0);
+            return p;
+        }
+        // ASSIGN
+        inline SIMDVecMask & operator= (SIMDVecMask const & x) {
             mMask = x.mMask;
             return *this;
+        }
+        // LAND
+        inline SIMDVecMask land(SIMDVecMask const & b) const {
+            __mmask8 t0 = mMask & b.mMask;
+            return SIMDVecMask(t0);
+        }
+        // LANDA
+        inline SIMDVecMask & landa(SIMDVecMask const & b) {
+            mMask &= b.mMask;
+            return *this;
+        }
+        // LOR
+        inline SIMDVecMask lor(SIMDVecMask const & b) const {
+            __mmask8 t0 = mMask | b.mMask;
+            return SIMDVecMask(t0);
+        }
+        // LORA
+        inline SIMDVecMask & lora(SIMDVecMask const & b) {
+            mMask |= b.mMask;
+            return *this;
+        }
+        // LXOR
+        inline SIMDVecMask lxor(SIMDVecMask const & b) const {
+            __mmask8 t0 = mMask ^ b.mMask;
+            return SIMDVecMask(t0);
+        }
+        // LXORA
+        inline SIMDVecMask & lxora(SIMDVecMask const & b) {
+            mMask ^= b.mMask;
+            return *this;
+        }
+        // LNOT
+        inline SIMDVecMask lnot() const {
+            __mmask8 t0 = ((~mMask) & 0xFF);
+            return SIMDVecMask(t0);
+        }
+        // LNOTA
+        inline SIMDVecMask & lnota() {
+            mMask = ((~mMask) & 0xFF);
+            return *this;
+        }
+        // HLAND
+        inline bool hland() const {
+            return ((mMask & 0xF) == 0xF);
+        }
+        // HLOR
+        inline bool hlor() const {
+            return ((mMask & 0xF) != 0x0);
+        }
+        // HLXOR
+        inline bool hlxor() const {
+            bool t0 = ((mMask & 0x1) != 0);
+            bool t1 = ((mMask & 0x2) != 0);
+            bool t2 = ((mMask & 0x4) != 0);
+            bool t3 = ((mMask & 0x8) != 0);
+            bool t4 = ((mMask & 0x10) != 0);
+            bool t5 = ((mMask & 0x20) != 0);
+            bool t6 = ((mMask & 0x40) != 0);
+            bool t7 = ((mMask & 0x80) != 0);
+            bool t8 = t0 ^ t1 ^ t2 ^ t3 ^ t4 ^ t5 ^ t6 ^ t7;
+            return t8;
         }
     };
 
