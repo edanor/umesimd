@@ -60,6 +60,8 @@ namespace SIMD {
         typedef SIMDVec_u<uint32_t, 2>    VEC_UINT_TYPE;
         typedef SIMDVec_i<int32_t, 2>     VEC_INT_TYPE;
         typedef SIMDVec_f<float, 1>       HALF_LEN_VEC_TYPE;
+
+        friend class SIMDVec_f<float, 4>;
     public:
 
         constexpr static uint32_t alignment() {

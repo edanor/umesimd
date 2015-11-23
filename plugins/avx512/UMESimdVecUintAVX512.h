@@ -32,8 +32,9 @@
 #define UME_SIMD_VEC_UINT_AVX512_H_
 
 #include <type_traits>
-#include "../../UMESimdInterface.h"
 #include <immintrin.h>
+
+#include "../../UMESimdInterface.h"
 
 #include "UMESimdMaskAVX512.h"
 #include "UMESimdSwizzleAVX512.h"

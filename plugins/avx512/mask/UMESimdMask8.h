@@ -65,38 +65,50 @@ namespace SIMD {
 
         // Regardless of the mask representation, the interface should only allow initialization using 
         // standard bool or using equivalent mask
+        // SET-CONSTR
         inline explicit SIMDVecMask(bool m) {
             mMask = m ? 0xFF : 0x00;
         }
-
-        SIMDVecMask(bool m0, bool m1, bool m2, bool m3,
-            bool m4, bool m5, bool m6, bool m7) {
-            mMask = m0 | (m1 << 1) | (m2 << 2) | (m3 << 3) |
-                (m4 << 4) | (m5 << 5) | (m6 << 6) | (m7 << 7);
+        // LOAD-CONSTR
+        inline explicit SIMDVecMask(bool const *p) {
+            mMask = 0x0;
+            if (p[0] == true) mMask |= 0x1;
+            if (p[1] == true) mMask |= 0x2;
+            if (p[2] == true) mMask |= 0x4;
+            if (p[3] == true) mMask |= 0x8;
+            if (p[4] == true) mMask |= 0x10;
+            if (p[5] == true) mMask |= 0x20;
+            if (p[6] == true) mMask |= 0x40;
+            if (p[7] == true) mMask |= 0x80;
         }
-
-        SIMDVecMask(SIMDVecMask const & mask) {
-            UME_EMULATION_WARNING();
-            this->mMask = mask.mMask;
+        // FULL-CONSTR
+        inline explicit SIMDVecMask(bool m0, bool m1, bool m2, bool m3,
+                                    bool m4, bool m5, bool m6, bool m7) {
+            mMask = m0 ?  0x1  : 0x0;
+            mMask |= m1 ? 0x2  : 0x0;
+            mMask |= m2 ? 0x4  : 0x0;
+            mMask |= m3 ? 0x8  : 0x0;
+            mMask |= m4 ? 0x10 : 0x0;
+            mMask |= m5 ? 0x20 : 0x0;
+            mMask |= m6 ? 0x40 : 0x0;
+            mMask |= m7 ? 0x80 : 0x0;
         }
-
+        // EXTRACT
         inline bool extract(uint32_t index) const {
-            return mMask & (1 << index) != 0;
+            bool t0 = ((mMask & (1 << index)) != 0);
+            return t0;
         }
-
-        // A non-modifying element-wise access operator
         inline bool operator[] (uint32_t index) const {
             return extract(index);
         }
-
-        // Element-wise modification operator
+        // INSERT
         inline void insert(uint32_t index, bool x) {
             if (x) {
                 mMask |= (1 << index);
             }
             else
             {
-                mMask &= ~(1 << index);
+                mMask &= (0xFF & ~(1 << index));
             }
         }
 

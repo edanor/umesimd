@@ -62,10 +62,12 @@ namespace SIMD {
 
         // Regardless of the mask representation, the interface should only allow initialization using 
         // standard bool or using equivalent mask
+        // SET-CONSTR
         inline explicit SIMDVecMask(bool m) {
             if (m == true) mMask = 0xF;
             else mMask = 0x00;
         }
+
         // LOAD-CONSTR
         inline explicit SIMDVecMask(bool const *p) {
             mMask = 0x0;
@@ -113,17 +115,17 @@ namespace SIMD {
         // STORE
         inline bool* store(bool * p) const {
             p[0] = ((mMask & 1) != 0);
-            p[2] = ((mMask & 2) != 0);
-            p[4] = ((mMask & 4) != 0);
-            p[8] = ((mMask & 8) != 0);
+            p[1] = ((mMask & 2) != 0);
+            p[2] = ((mMask & 4) != 0);
+            p[3] = ((mMask & 8) != 0);
             return p;
         }
         // STOREA
         inline bool* storea(bool * p) const {
             p[0] = ((mMask & 1) != 0);
-            p[2] = ((mMask & 2) != 0);
-            p[4] = ((mMask & 4) != 0);
-            p[8] = ((mMask & 8) != 0);
+            p[1] = ((mMask & 2) != 0);
+            p[2] = ((mMask & 4) != 0);
+            p[3] = ((mMask & 8) != 0);
             return p;
         }
         // ASSIGN

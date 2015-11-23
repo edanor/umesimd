@@ -144,7 +144,7 @@ namespace SIMD {
         }
         // MADDVA
         inline SIMDVec_u & adda(SIMDVecMask<8> const & mask, SIMDVec_u const & b) {
-            __m256i t0 = _mm256_mask_add_epi32(mVec, mask.mMask, mVec, b.mVec);
+            mVec = _mm256_mask_add_epi32(mVec, mask.mMask, mVec, b.mVec);
             return *this;
         }
         // ADDSA 
@@ -168,7 +168,7 @@ namespace SIMD {
         // MMULV
         inline SIMDVec_u mul(SIMDVecMask<8> const & mask, SIMDVec_u const & b) {
             __m256i t0 = _mm256_mask_mul_epi32(mVec, mask.mMask, mVec, b.mVec);
-            return SIMDVec_u();
+            return SIMDVec_u(t0);
         }
         // MULS
         inline SIMDVec_u mul(uint32_t b) {

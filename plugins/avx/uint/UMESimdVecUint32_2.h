@@ -55,6 +55,7 @@ namespace SIMD {
 
         friend class SIMDVec_i<int32_t, 2>;
         friend class SIMDVec_f<float, 2>;
+
     public:
         // ZERO-CONSTR
         inline SIMDVec_u() {};

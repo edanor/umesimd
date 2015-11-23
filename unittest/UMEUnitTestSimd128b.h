@@ -891,7 +891,7 @@ int test_UME_SIMD4_32u(bool supressMessages)
         uint64_t indices[] = {1, 3, 8, 5};
         SIMD4_32u vec0(1);
         vec0.gather(arr, indices);
-        CHECK_CONDITION(vec0[0] == 2 && vec0[1] == 4 && vec0[2] == 9 && vec0[3] == 6, "GATHER");
+        CHECK_CONDITION(vec0[0] == 2 && vec0[1] == 4 && vec0[2] == 9 && vec0[3] == 6, "GATHERS");
     }
     {
         alignas(16) uint32_t arr[10] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
@@ -899,7 +899,7 @@ int test_UME_SIMD4_32u(bool supressMessages)
         SIMD4_32u vec0(1);
         SIMDMask4 mask(true, false, true, false);
         vec0.gather(mask, arr, indices);
-        CHECK_CONDITION(vec0[0] == 2 && vec0[1] == 1 && vec0[2] == 9 && vec0[3] == 1, "MGATHER");
+        CHECK_CONDITION(vec0[0] == 2 && vec0[1] == 1 && vec0[2] == 9 && vec0[3] == 1, "MGATHERS");
     }
     {
         alignas(16) uint32_t arr[10] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
@@ -921,7 +921,7 @@ int test_UME_SIMD4_32u(bool supressMessages)
         uint64_t indices[] = {1, 3, 8, 5};
         SIMD4_32u vec0(9, 8, 7, 6);
         vec0.scatter(arr, indices);
-        CHECK_CONDITION(arr[1] == 9 && arr[3] == 8 && arr[8] == 7 && arr[9] == 10, "SCATTER");
+        CHECK_CONDITION(arr[1] == 9 && arr[3] == 8 && arr[8] == 7 && arr[9] == 10, "SCATTERS");
     }
     {
         alignas(16) uint32_t arr[10] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
@@ -940,7 +940,7 @@ int test_UME_SIMD4_32u(bool supressMessages)
     }
     {
         SIMD4_32u vec0(9, 8, 7, 6);
-        SIMD4_32u vec1(1, 2, 3, 4);
+        SIMD4_32u vec1(1, 0, 3, 4);
         SIMD4_32u vec2;
         vec2 = vec0.lsh(vec1);
         CHECK_CONDITION(vec2[0] == 18 && vec2[1] == 32 && vec2[2] == 56 && vec2[3] == 96, "LSHV");

@@ -73,10 +73,8 @@ namespace SIMD {
         inline explicit SIMDVec_f(float const *p) { this->load(p); }
 
         // FULL-CONSTR
-        inline SIMDVec_f(float f0, float f1,
-            float f2, float f3,
-            float f4, float f5,
-            float f6, float f7) {
+        inline SIMDVec_f(float f0, float f1, float f2, float f3,
+                         float f4, float f5, float f6, float f7) {
             mVec = _mm256_set_ps(f0, f1, f2, f3, f4, f5, f6, f7);
         }
 
