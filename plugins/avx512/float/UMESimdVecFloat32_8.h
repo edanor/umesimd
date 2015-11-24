@@ -57,7 +57,7 @@ namespace SIMD {
         friend class SIMDVec_u<uint32_t, 8>;
         friend class SIMDVec_i<int32_t, 8>;
 
-
+        friend class SIMDVec_f<float, 16>;
     private:
         __m256 mVec;
 
@@ -131,44 +131,42 @@ namespace SIMD {
         }
 
         //(Memory access)
-        // LOAD    - Load from memory (either aligned or unaligned) to vector 
+        // LOAD
         inline SIMDVec_f & load(float const * p) {
             mVec = _mm256_loadu_ps(p);
             return *this;
         }
-        // MLOAD   - Masked load from memory (either aligned or unaligned) to
-        //        vector
+        // MLOAD
         inline SIMDVec_f & load(SIMDVecMask<8> const & mask, float const * p) {
             mVec = _mm256_mask_loadu_ps(mVec, mask.mMask, p);
             return *this;
         }
-        // LOADA   - Load from aligned memory to vector
+        // LOADA
         inline SIMDVec_f & loada(float const * p) {
             mVec = _mm256_load_ps(p);
             return *this;
         }
-        // MLOADA  - Masked load from aligned memory to vector
+        // MLOADA
         inline SIMDVec_f & loada(SIMDVecMask<8> const & mask, float const * p) {
             mVec = _mm256_mask_loadu_ps(mVec, mask.mMask, p);
             return *this;
         }
-        // STORE   - Store vector content into memory (either aligned or unaligned)
+        // STORE
         inline float* store(float * p) const {
             _mm256_storeu_ps(p, mVec);
             return p;
         }
-        // MSTORE  - Masked store vector content into memory (either aligned or
-        //        unaligned)
+        // MSTORE
         inline float * store(SIMDVecMask<8> const & mask, float * p) const {
             _mm256_mask_storeu_ps(p, mask.mMask, mVec);
             return p;
         }
-        // STOREA  - Store vector content into aligned memory
+        // STOREA
         inline float* storea(float * p) const {
             _mm256_store_ps(p, mVec);
             return p;
         }
-        // MSTOREA - Masked store vector content into aligned memory
+        // MSTOREA
         inline float* storea(SIMDVecMask<8> const & mask, float * p) const {
             _mm256_mask_store_ps(p, mask.mMask, mVec);
             return p;
@@ -604,7 +602,7 @@ namespace SIMD {
         // HADD
         inline float hadd() const {
             __m512 t0 = _mm512_castps256_ps512(mVec);
-            float retval = _mm512_reduce_add_ps(t0);
+            float retval = _mm512_mask_reduce_add_ps(0xFF, t0);
             return retval;
         }
         // MHADD
@@ -617,7 +615,7 @@ namespace SIMD {
         // HADDS
         inline float hadd(float b) const {
             __m512 t0 = _mm512_castps256_ps512(mVec);
-            float retval = _mm512_reduce_add_ps(t0);
+            float retval = _mm512_mask_reduce_add_ps(0xFF, t0);
             return retval + b;
         }
         // MHADDS
@@ -644,7 +642,7 @@ namespace SIMD {
         inline float hmul(float b) const {
             __m512 t0 = _mm512_castps256_ps512(mVec);
             float retval = b;
-            retval *= _mm512_reduce_mul_ps(t0);
+            retval *= _mm512_mask_reduce_mul_ps(0xFF, t0);
             return retval;
         }
         // MHMULS
@@ -655,7 +653,6 @@ namespace SIMD {
             retval *= _mm512_mask_reduce_mul_ps(t1, t0);
             return retval;
         }
-
         // FMULADDV
         inline SIMDVec_f fmuladd(SIMDVec_f const & b, SIMDVec_f const & c) {
             __m256 t0 = _mm256_mask_fmadd_ps(mVec, 0xFF, b.mVec, c.mVec);
@@ -789,10 +786,30 @@ namespace SIMD {
             return *this;
         }
         // HMAX
+        inline float hmax() const {
+            __m512 t0 = _mm512_castps256_ps512(mVec);
+            float retval = _mm512_mask_reduce_max_ps(0xFF, t0);
+            return retval;
+        }
         // MHMAX
+        inline float hmax(SIMDVecMask<8> const & mask) const {
+            __m512 t0 = _mm512_castps256_ps512(mVec);
+            float retval = _mm512_mask_reduce_max_ps(mask.mMask, t0);
+            return retval;
+        }
         // IMAX
         // HMIN
+        inline float hmin() const {
+            __m512 t0 = _mm512_castps256_ps512(mVec);
+            float retval = _mm512_mask_reduce_min_ps(0xFF, t0);
+            return retval;
+        }
         // MHMIN
+        inline float hmin(SIMDVecMask<8> const & mask) const {
+            __m512 t0 = _mm512_castps256_ps512(mVec);
+            float retval = _mm512_mask_reduce_min_ps(mask.mMask, t0);
+            return retval;
+        }
         // IMIN
         // MIMIN
         // GATHERS

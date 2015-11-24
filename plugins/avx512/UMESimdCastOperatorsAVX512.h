@@ -134,9 +134,8 @@ namespace SIMD {
         return SIMDVec_i<int32_t, 8>(mVec);
     }
 
-    template<>
     inline SIMDVec_u<uint32_t, 16>::operator SIMDVec_i<int32_t, 16>() const {
-        return EMULATED_FUNCTIONS::xtoy <SIMDVec_i<int32_t, 16>, SIMDVec_u<uint32_t, 16>>(*this);
+        return SIMDVec_i<int32_t, 16>(mVec);
     }
 
     template<>
@@ -192,9 +191,9 @@ namespace SIMD {
         return SIMDVec_f<float, 8>(t2);
     }
 
-    template<>
     inline SIMDVec_u<uint32_t, 16>::operator SIMDVec_f<float, 16>() const {
-        return EMULATED_FUNCTIONS::xtoy <SIMDVec_f<float, 16>, SIMDVec_u<uint32_t, 16>>(*this);
+        __m512 t0 = _mm512_cvtepu32_ps(mVec);
+        return SIMDVec_f<float, 16>(t0);
     }
 
     template<>
@@ -316,12 +315,11 @@ namespace SIMD {
     }
 
     inline SIMDVec_i<int32_t, 8>::operator SIMDVec_u<uint32_t, 8>() const {
-        return SIMDVec_u<uint32_t, 8>(this->mVec);
+        return SIMDVec_u<uint32_t, 8>(mVec);
     }
 
-    template<>
     inline SIMDVec_i<int32_t, 16>::operator SIMDVec_u<uint32_t, 16>() const {
-        return EMULATED_FUNCTIONS::xtoy < SIMDVec_u<uint32_t, 16>, SIMDVec_i<int32_t, 16>>(*this);
+        return SIMDVec_u<uint32_t, 16>(mVec);
     }
 
     template<>
@@ -373,9 +371,9 @@ namespace SIMD {
         return SIMDVec_f<float, 8>(t0);
     }
 
-    template<>
     inline SIMDVec_i<int32_t, 16>::operator SIMDVec_f<float, 16>() const {
-        return EMULATED_FUNCTIONS::xtoy < SIMDVec_f<float, 16>, SIMDVec_i<int32_t, 16>>(*this);
+        __m512 t0 = _mm512_cvtepi32_ps(mVec);
+        return SIMDVec_f<float, 16>(t0);
     }
 
     template<>
@@ -427,9 +425,9 @@ namespace SIMD {
         return SIMDVec_u<uint32_t, 8>(t0);
     }
 
-    template<>
     inline SIMDVec_f<float, 16>::operator SIMDVec_u<uint32_t, 16>() const {
-        return EMULATED_FUNCTIONS::xtoy < SIMDVec_u<uint32_t, 16>, SIMDVec_f<float, 16>>(*this);
+        __m512i t0 = _mm512_castps_si512(mVec);
+        return SIMDVec_u<uint32_t, 16>(t0);
     }
 
     template<>
@@ -481,9 +479,9 @@ namespace SIMD {
         return SIMDVec_i<int32_t, 8>(t0);
     }
 
-    template<>
     inline SIMDVec_f<float, 16>::operator SIMDVec_i<int32_t, 16>() const {
-        return EMULATED_FUNCTIONS::xtoy < SIMDVec_i<int32_t, 16>, SIMDVec_f<float, 16>>(*this);
+        __m512i t0 = _mm512_cvtps_epi32(mVec);
+        return SIMDVec_i<int32_t, 16>(t0);
     }
 
     template<>

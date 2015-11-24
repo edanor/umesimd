@@ -79,7 +79,7 @@ namespace SIMD {
 
         inline int32_t extract(uint32_t index) const {
             //return _mm256_extract_epi32(mVec, index); // TODO: this can be implemented in ICC
-            alignas(32) int32_t raw[4];
+            alignas(16) int32_t raw[4];
             _mm_store_si128((__m128i *)raw, mVec);
             return raw[index];
         }
@@ -96,7 +96,7 @@ namespace SIMD {
 
         // insert[] (scalar)
         inline SIMDVec_i & insert(uint32_t index, int32_t value) {
-            alignas(32) int32_t raw[4];
+            alignas(16) int32_t raw[4];
             _mm_store_si128((__m128i*)raw, mVec);
             raw[index] = value;
             mVec = _mm_load_si128((__m128i*)raw);
@@ -105,7 +105,7 @@ namespace SIMD {
 
         // UNIQUE
         inline bool unique() const {
-            alignas(32) int32_t raw[4];
+            alignas(16) int32_t raw[4];
             _mm_store_si128((__m128i *)raw, mVec);
             for (unsigned int i = 0; i < 3; i++) {
                 for (unsigned int j = i + 1; j < 4; j++) {

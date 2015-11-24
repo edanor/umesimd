@@ -76,7 +76,7 @@ namespace SIMD {
 
         // LOAD-CONSTR - Construct by loading from memory
         inline explicit SIMDVecMask(bool const *p) {
-            alignas(32) uint32_t raw[4];
+            alignas(16) uint32_t raw[4];
             for (int i = 0; i < 4; i++) {
                 raw[i] = p[i] ? TRUE() : FALSE();
             }
