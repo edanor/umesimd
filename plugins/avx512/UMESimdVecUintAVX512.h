@@ -52,5 +52,6 @@
 #include "uint/UMESimdVecUint32_4.h"
 #include "uint/UMESimdVecUint32_8.h"
 #include "uint/UMESimdVecUint32_16.h"
+#include "uint/UMESimdVecUint32_32.h"
 
 #endif

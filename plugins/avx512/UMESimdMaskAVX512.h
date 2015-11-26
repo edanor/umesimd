@@ -48,5 +48,6 @@
 #include "mask/UMESimdMask4.h"
 #include "mask/UMESimdMask8.h"
 #include "mask/UMESimdMask16.h"
+#include "mask/UMESimdMask32.h"
 
 #endif
