@@ -57,7 +57,7 @@ namespace SIMD {
         friend class SIMDVec_u<uint32_t, 16>;
         friend class SIMDVec_i<int32_t, 16>;
 
-
+        friend class SIMDVec_f<float, 32>;
     private:
         __m512 mVec;
 
@@ -582,12 +582,12 @@ namespace SIMD {
         // CMPEV
         inline bool cmpe(SIMDVec_f const & b) const {
             __mmask16 t0 = _mm512_cmp_ps_mask(mVec, b.mVec, 0);
-            return (t0 == 0x0F);
+            return (t0 == 0xFFFF);
         }
         // CMPES
         inline bool cmpe(float b) const {
             __mmask16 t0 = _mm512_cmp_ps_mask(mVec, _mm512_set1_ps(b), 0);
-            return (t0 == 0x0F);
+            return (t0 == 0xFFFF);
         }
         // BLENDV
         inline SIMDVec_f blend(SIMDVecMask<16> const & mask, SIMDVec_f const & b) const {
