@@ -163,10 +163,36 @@ namespace SIMD {
             return p;
         }
         //(Addition operations)
-        // ADDV     - Add with vector 
+        // ADDV     - Add with vector
+        inline SIMDVec_f add(SIMDVec_f const & b) const {
+            __m256d t0 = _mm256_add_pd(mVec, b.mVec);
+            return SIMDVec_f(t0);
+        }
+        inline SIMDVec_f operator+ (SIMDVec_f const & b) const {
+            __m256d t0 = _mm256_add_pd(mVec, b.mVec);
+            return SIMDVec_f(t0);
+        }
         // MADDV    - Masked add with vector
+        inline SIMDVec_f add(SIMDVecMask<4> const & mask, SIMDVec_f const & b) const {
+            __m256d t0 = _mm256_add_pd(mVec, b.mVec);
+            __m256d m0 = _mm256_cvtepi32_pd(mask.mMask);
+            __m256d t1 = _mm256_blendv_pd(mVec, t0, m0);
+            return SIMDVec_f(t1);
+        }
         // ADDS     - Add with scalar
+        inline SIMDVec_f add(double b) const {
+            __m256d t0 = _mm256_set1_pd(b);
+            __m256d t1 = _mm256_add_pd(mVec, t0);
+            return SIMDVec_f(t1);
+        }
         // MADDS    - Masked add with scalar
+        inline SIMDVec_f add(SIMDVecMask<4> const & mask, double b) const {
+            __m256d t0 = _mm256_set1_pd(b);
+            __m256d t1 = _mm256_add_pd(mVec, t0);
+            __m256d m0 = _mm256_cvtepi32_pd(mask.mMask);
+            __m256d t2 = _mm256_blendv_pd(mVec, t1, m0);
+            return SIMDVec_f(t2);
+        }
         // ADDVA    - Add with vector and assign
         inline SIMDVec_f & adda(SIMDVec_f const & b) {
             mVec = _mm256_add_pd(this->mVec, b.mVec);
@@ -224,9 +250,40 @@ namespace SIMD {
 
         //(Multiplication operations)
         // MULV   - Multiplication with vector
+        inline SIMDVec_f mul(SIMDVec_f const & b) const {
+            __m256d t0 = _mm256_mul_pd(mVec, b.mVec);
+            return SIMDVec_f(t0);
+        }
+        inline SIMDVec_f operator* (SIMDVec_f const & b) const {
+            __m256d t0 = _mm256_mul_pd(mVec, b.mVec);
+            return SIMDVec_f(t0);
+        }
         // MMULV  - Masked multiplication with vector
+        inline SIMDVec_f mul(SIMDVecMask<4> const & mask, SIMDVec_f const & b) const {
+            __m256d t0 = _mm256_mul_pd(mVec, b.mVec);
+            __m256d m0 = _mm256_cvtepi32_pd(mask.mMask);
+            __m256d t1 = _mm256_blendv_pd(mVec, t0, m0);
+            return SIMDVec_f(t1);
+        }
         // MULS   - Multiplication with scalar
+        inline SIMDVec_f mul(double b) const {
+            __m256d t0 = _mm256_set1_pd(b);
+            __m256d t1 = _mm256_mul_pd(mVec, t0);
+            return SIMDVec_f(t1);
+        }
+        inline SIMDVec_f operator* (double b) const {
+            __m256d t0 = _mm256_set1_pd(b);
+            __m256d t1 = _mm256_mul_pd(mVec, t0);
+            return SIMDVec_f(t1);
+        }
         // MMULS  - Masked multiplication with scalar
+        inline SIMDVec_f mul(SIMDVecMask<4> const & mask, double b) const {
+            __m256d t0 = _mm256_set1_pd(b);
+            __m256d t1 = _mm256_mul_pd(mVec, t0);
+            __m256d m0 = _mm256_cvtepi32_pd(mask.mMask);
+            __m256d t2 = _mm256_blendv_pd(mVec, t1, m0);
+            return SIMDVec_f(t2);
+        }
         // MULVA  - Multiplication with vector and assign
         // MMULVA - Masked multiplication with vector and assign
         // MULSA  - Multiplication with scalar and assign
@@ -288,7 +345,24 @@ namespace SIMD {
 
         //(Fused arithmetics)
         // FMULADDV  - Fused multiply and add (A*B + C) with vectors
+        inline SIMDVec_f fmuladd(SIMDVec_f const & b, SIMDVec_f const & c) const {
+#ifdef FMA
+            __m256d t0 = _mm256_fmadd_pd(mVec, b.mVec, c.mVec);
+#else
+            __m256d t0 = _mm256_add_pd(_mm256_mul_pd(mVec, b.mVec), c.mVec);
+#endif
+            return SIMDVec_f(t0);
+        }
         // MFMULADDV - Masked fused multiply and add (A*B + C) with vectors
+        inline SIMDVec_f fmuladd(SIMDVecMask<4> const & mask, SIMDVec_f const & b, SIMDVec_f const & c) {
+#ifdef FMA
+            __m256d t0 = _mm256_fmadd_pd(mVec, b.mVec, c.mVec);
+#else
+            __m256d t0 = _mm256_add_pd(_mm256_mul_pd(mVec, b.mVec), c.mVec);
+#endif
+            __m256d t1 = _mm256_blendv_pd(mVec, t0, _mm256_cvtepi32_pd(mask.mMask));
+            return SIMDVec_f(t1);
+        }
         // FMULSUBV  - Fused multiply and sub (A*B - C) with vectors
         // MFMULSUBV - Masked fused multiply and sub (A*B - C) with vectors
         // FADDMULV  - Fused add and multiply ((A + B)*C) with vectors

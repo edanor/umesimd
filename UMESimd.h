@@ -31,6 +31,8 @@
 #ifndef UME_SIMD_H_
 #define UME_SIMD_H_
 
+#include <iostream>
+
 #include "UMEBasicTypes.h"
 #include "UMEMemory.h"
 
