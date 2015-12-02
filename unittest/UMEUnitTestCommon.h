@@ -3571,9 +3571,9 @@ void genericMaskTest() {
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericUintTest() {
     genericBaseInterfaceTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET> ();
-    //genericBitwiseInterfaceTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET> ();
-    //genericGatherScatterInterfaceTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET> ();
-    //genericShiftRotateInterfaceTest<VEC_TYPE, VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>(); 
+    genericBitwiseInterfaceTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET> ();
+    genericGatherScatterInterfaceTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET> ();
+    genericShiftRotateInterfaceTest<VEC_TYPE, VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>(); 
 }
 
 template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>

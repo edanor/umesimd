@@ -66,6 +66,9 @@ namespace SIMD {
         }
 
     public:
+        constexpr static uint32_t length() { return 16; }
+        constexpr static uint32_t alignment() { return 64; }
+
         // ZERO-CONSTR
         inline SIMDVec_f() {}
         // SET-CONSTR

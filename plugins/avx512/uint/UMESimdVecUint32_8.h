@@ -505,11 +505,13 @@ namespace SIMD {
             return (t0 == 0x0F);
         }
         // UNIQUE
+#if defined(__AVX512VL__) && defined(__AVX512CD__)
         inline bool unique() const {
             __m256i t0 = _mm256_conflict_epi32(mVec);
-            __mmask8 t1 = _mm256_cmpeq_epu32_mask(t0, _mm256_set1_epi32(1));
-            return (t1 == 0x00);
+            __mmask8 t1 = _mm256_cmpeq_epu32_mask(t0, _mm256_setzero_si256());
+            return (t1 == 0xFF);
         }
+#endif
         // HADD
         inline uint32_t hadd() const {
             __m512i t0 = _mm512_castsi256_si512(mVec);
@@ -1035,33 +1037,33 @@ namespace SIMD {
             return *this;
         }
         // SCATTERS
-        inline uint32_t* scatter(uint32_t* baseAddr, uint64_t* indices) {
+        /*inline uint32_t* scatter(uint32_t* baseAddr, uint64_t* indices) {
             alignas(32) uint32_t rawIndices[8] = { 
                 indices[0], indices[1], indices[2], indices[3],
                 indices[4], indices[5], indices[6], indices[7] };
             __m256i t0 = _mm256_load_si256((__m256i *) rawIndices);
             _mm256_i32scatter_epi32(baseAddr, t0, mVec, 1);
             return baseAddr;
-        }
+        }*/
         // MSCATTERS
-        inline uint32_t* scatter(SIMDVecMask<8> const & mask, uint32_t* baseAddr, uint64_t* indices) {
+        /*inline uint32_t* scatter(SIMDVecMask<8> const & mask, uint32_t* baseAddr, uint64_t* indices) {
             alignas(32) uint32_t rawIndices[8] = { 
                 indices[0], indices[1], indices[2], indices[3],
                 indices[4], indices[5], indices[6], indices[7] };
             __m256i t0 = _mm256_mask_load_epi32(_mm256_set1_epi32(0), mask.mMask, (__m256i *) rawIndices);
             _mm256_mask_i32scatter_epi32(baseAddr, mask.mMask, t0, mVec, 1);
             return baseAddr;
-        }
+        }*/
         // SCATTERV
-        inline uint32_t* scatter(uint32_t* baseAddr, SIMDVec_u const & indices) {
+        /*inline uint32_t* scatter(uint32_t* baseAddr, SIMDVec_u const & indices) {
             _mm256_i32scatter_epi32(baseAddr, indices.mVec, mVec, 1);
             return baseAddr;
-        }
+        }*/
         // MSCATTERV
-        inline uint32_t* scatter(SIMDVecMask<8> const & mask, uint32_t* baseAddr, SIMDVec_u const & indices) {
+        /*inline uint32_t* scatter(SIMDVecMask<8> const & mask, uint32_t* baseAddr, SIMDVec_u const & indices) {
             _mm256_mask_i32scatter_epi32(baseAddr, mask.mMask, indices.mVec, mVec, 1);
             return baseAddr;
-        }
+        }*/
         // LSHV
         // MLSHV
         // LSHS

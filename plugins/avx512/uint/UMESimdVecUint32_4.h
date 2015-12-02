@@ -40,8 +40,8 @@ namespace UME {
 namespace SIMD {
 
     template<>
-    class SIMDVec_u<uint32_t, 4> final :
-        public SIMDVecUnsignedInterface<
+    class SIMDVec_u<uint32_t, 4> :
+        public SIMDVecUnsignedInterface<    
             SIMDVec_u<uint32_t, 4>,
             uint32_t,
             4,
@@ -61,6 +61,31 @@ namespace SIMD {
 
         inline explicit SIMDVec_u(__m128i & x) { mVec = x; }
         inline explicit SIMDVec_u(const __m128i & x) { mVec = x; }
+
+#if !defined(__AVX512VL__)
+        // This function converts between mask representation and integer vector register representation
+        // for 4x32b vectors. This is necessary for platforms that don't support AVX512VL instructions.
+        inline __m128i mask8_to_m128i(__mmask8 mask) const {
+            __m128i vmask = _mm_set1_epi8(mask);
+            __m128i bitmask = _mm_set_epi32(0xF7F7F7F7, 0xFBFBFBFB, 0xFDFDFDFD, 0xFEFEFEFE);
+            vmask = _mm_or_si128(vmask, bitmask);
+            return _mm_cmpeq_epi32(vmask, _mm_set1_epi32(0xFFFFFFFF));
+        }
+        // This function converts between integer vector register representation and mask representation
+        // for 4x32b vectors. This is necessary for platforms that don't support AVX512VL instructions.
+        inline __mmask8 m128i_to_mask8(__m128i vec) const {
+            __m128i shuffle = _mm_setr_epi8(
+                0x03, 0x07, 0x0B, 0x0F, // Select first byte of every dword
+                0x80, 0x80, 0x80, 0x80,
+                0x80, 0x80, 0x80, 0x80,
+                0x80, 0x80, 0x80, 0x80);
+
+            __m128i vmask = _mm_shuffle_epi8(vec, shuffle);
+            int bitmask = _mm_movemask_epi8(vmask);
+            return __mmask8(bitmask & 0xF);
+        }
+#endif
+
     public:
 
         constexpr static uint32_t length() { return 4; }
@@ -126,12 +151,22 @@ namespace SIMD {
         // PREFETCH2
         // LOAD
         inline SIMDVec_u & load(uint32_t const * p) {
+#if defined(__AVX512VL__)
             mVec = _mm_mask_loadu_epi32(mVec, 0xFF, p);
+#else
+            mVec = _mm_loadu_si128((__m128i*)p);
+#endif
             return *this;
         }
         // MLOAD
         inline SIMDVec_u & load(SIMDVecMask<4> const & mask, uint32_t const * p) {
+#if defined(__AVX512VL__)
             mVec = _mm_mask_loadu_epi32(mVec, mask.mMask, p);
+#else
+            __m128i t0 = _mm_loadu_si128((__m128i*)p);
+            __m128i m0 = mask8_to_m128i(mask.mMask);
+            mVec = _mm_blendv_epi8(mVec, t0, m0);
+#endif
             return *this;
         }
         // LOADA
@@ -146,7 +181,11 @@ namespace SIMD {
         }
         // STORE
         inline uint32_t * store(uint32_t * p) const {
+#if defined(__AVX512VL__)
             _mm_mask_storeu_epi32(p, 0xFF, mVec);
+#else
+            _mm_storeu_si128((__m128i*) p, mVec);
+#endif
             return p;
         }
         // MSTORE
@@ -188,7 +227,13 @@ namespace SIMD {
         }
         // MADDV
         inline SIMDVec_u add(SIMDVecMask<4> const & mask, SIMDVec_u const & b) const {
+#if defined(__AVX512VL__)
             __m128i t0 = _mm_mask_add_epi32(mVec, mask.mMask, mVec, b.mVec);
+#else
+            __m128i t1 = _mm_add_epi32(mVec, b.mVec);
+            __m128i m0 = mask8_to_m128i(mask.mMask);
+            __m128i t0 = _mm_blendv_epi8(mVec, t1, m0);
+#endif
             return SIMDVec_u(t0);
         }
         // ADDS
@@ -199,7 +244,13 @@ namespace SIMD {
         // MADDS
         inline SIMDVec_u add(SIMDVecMask<4> const & mask, uint32_t b) const {
             __m128i t0 = _mm_set1_epi32(b);
+#if defined(__AVX512VL__)
             __m128i t1 = _mm_mask_add_epi32(mVec, mask.mMask, mVec, t0);
+#else
+            __m128i t2 = _mm_add_epi32(mVec, t0);
+            __m128i m0 = mask8_to_m128i(mask.mMask);
+            __m128i t1 = _mm_blendv_epi8(mVec, t2, m0);
+#endif
             return SIMDVec_u(t1);
         }
         // ADDVA
@@ -209,7 +260,13 @@ namespace SIMD {
         }
         // MADDVA
         inline SIMDVec_u & adda(SIMDVecMask<4> const & mask, SIMDVec_u const & b) {
+#if defined(__AVX512VL__)
             mVec = _mm_mask_add_epi32(mVec, mask.mMask, mVec, b.mVec);
+#else
+            __m128i t0 = _mm_add_epi32(mVec, b.mVec);
+            __m128i m0 = mask8_to_m128i(mask.mMask);
+            mVec = _mm_blendv_epi8(mVec, t0, m0);
+#endif
             return *this;
         }
         // ADDSA
@@ -220,7 +277,13 @@ namespace SIMD {
         // MADDSA
         inline SIMDVec_u & adda(SIMDVecMask<4> const & mask, uint32_t b) {
             __m128i t0 = _mm_set1_epi32(b);
+#if defined(__AVX512VL__)
             mVec = _mm_mask_add_epi32(mVec, mask.mMask, mVec, t0);
+#else
+            __m128i t1 = _mm_add_epi32(mVec, t0);
+            __m128i m0 = mask8_to_m128i(mask.mMask);
+            mVec = _mm_blendv_epi8(mVec, t1, m0);
+#endif
             return *this;
         }
         // SADDV
@@ -242,7 +305,13 @@ namespace SIMD {
         inline SIMDVec_u postinc(SIMDVecMask<4> const & mask) {
             __m128i t0 = _mm_set1_epi32(1);
             __m128i t1 = mVec;
+#if defined(__AVX512VL__)
             mVec = _mm_mask_add_epi32(mVec, mask.mMask, mVec, t0);
+#else
+            __m128i t2 = _mm_add_epi32(mVec, t0);
+            __m128i m0 = mask8_to_m128i(mask.mMask);
+            mVec = _mm_blendv_epi8(mVec, t2, m0);
+#endif
             return SIMDVec_u(t1);
         }
         // PREFINC
@@ -254,7 +323,13 @@ namespace SIMD {
         // MPREFINC
         inline SIMDVec_u & prefinc(SIMDVecMask<4> const & mask) {
             __m128i t0 = _mm_set1_epi32(1);
+#if defined(__AVX512VL__)
             mVec = _mm_mask_add_epi32(mVec, mask.mMask, mVec, t0);
+#else
+            __m128i t1 = _mm_add_epi32(mVec, t0);
+            __m128i m0 = mask8_to_m128i(mask.mMask);
+            mVec = _mm_blendv_epi8(mVec, t1, m0);
+#endif
             return *this;
         }
         // SUBV
@@ -264,7 +339,13 @@ namespace SIMD {
         }
         // MSUBV
         inline SIMDVec_u sub(SIMDVecMask<4> const & mask, SIMDVec_u const & b) const {
+#if defined(__AVX512VL__)
             __m128i t0 = _mm_mask_sub_epi32(mVec, mask.mMask, mVec, b.mVec);
+#else
+            __m128i t1 = _mm_sub_epi32(mVec, b.mVec);
+            __m128i m0 = mask8_to_m128i(mask.mMask);
+            __m128i t0 = _mm_blendv_epi8(mVec, t1, m0);
+#endif
             return SIMDVec_u(t0);
         }
         // SUBS
@@ -275,7 +356,13 @@ namespace SIMD {
         // MSUBS
         inline SIMDVec_u sub(SIMDVecMask<4> const & mask, uint32_t b) const {
             __m128i t0 = _mm_set1_epi32(b);
+#if defined(__AVX512VL__)
             __m128i t1 = _mm_mask_sub_epi32(mVec, mask.mMask, mVec, t0);
+#else
+            __m128i t2 = _mm_sub_epi32(mVec, t0);
+            __m128i m0 = mask8_to_m128i(mask.mMask);
+            __m128i t1 = _mm_blendv_epi8(mVec, t2, m0);
+#endif
             return SIMDVec_u(t1);
         }
         // SUBVA
@@ -285,7 +372,13 @@ namespace SIMD {
         }
         // MSUBVA
         inline SIMDVec_u & suba(SIMDVecMask<4> const & mask, SIMDVec_u const & b) {
+#if defined(__AVX512VL__)
             mVec = _mm_mask_sub_epi32(mVec, mask.mMask, mVec, b.mVec);
+#else
+            __m128i t0 = _mm_sub_epi32(mVec, b.mVec);
+            __m128i m0 = mask8_to_m128i(mask.mMask);
+            mVec = _mm_blendv_epi8(mVec, t0, m0);
+#endif
             return *this;
         }
         // SUBSA
@@ -296,7 +389,13 @@ namespace SIMD {
         // MSUBSA
         inline SIMDVec_u & suba(SIMDVecMask<4> const & mask, uint32_t b) {
             __m128i t0 = _mm_set1_epi32(b);
+#if defined(__AVX512VL__)
             mVec = _mm_mask_sub_epi32(mVec, mask.mMask, mVec, t0);
+#else
+            __m128i t1 = _mm_sub_epi32(mVec, t0);
+            __m128i m0 = mask8_to_m128i(mask.mMask);
+            mVec = _mm_blendv_epi8(mVec, t1, m0);
+#endif
             return *this;
         }
         // SSUBV
@@ -314,7 +413,13 @@ namespace SIMD {
         }
         // MSUBFROMV
         inline SIMDVec_u subfrom(SIMDVecMask<4> const & mask, SIMDVec_u const & b) const {
+#if defined(__AVX512VL__)
             __m128i t0 = _mm_mask_sub_epi32(b.mVec, mask.mMask, b.mVec, mVec);
+#else
+            __m128i t1 = _mm_sub_epi32(b.mVec, mVec);
+            __m128i m0 = mask8_to_m128i(mask.mMask);
+            __m128i t0 = _mm_blendv_epi8(b.mVec, t1, m0);
+#endif
             return SIMDVec_u(t0);
         }
         // SUBFROMS
@@ -325,7 +430,13 @@ namespace SIMD {
         // MSUBFROMS
         inline SIMDVec_u subfrom(SIMDVecMask<4> const & mask, uint32_t b) const {
             __m128i t0 = _mm_set1_epi32(b);
+#if defined(__AVX512VL__)
             __m128i t1 = _mm_mask_sub_epi32(t0, mask.mMask, t0, mVec);
+#else
+            __m128i t2 = _mm_sub_epi32(t0, mVec);
+            __m128i m0 = mask8_to_m128i(mask.mMask);
+            __m128i t1 = _mm_blendv_epi8(t0, t2, m0);
+#endif
             return SIMDVec_u(t1);
         }
         // SUBFROMVA
@@ -335,7 +446,13 @@ namespace SIMD {
         }
         // MSUBFROMVA
         inline SIMDVec_u & subfroma(SIMDVecMask<4> const & mask, SIMDVec_u const & b) {
+#if defined(__AVX512VL__)
             mVec = _mm_mask_sub_epi32(b.mVec, mask.mMask, b.mVec, mVec);
+#else
+            __m128i t1 = _mm_sub_epi32(b.mVec, mVec);
+            __m128i m0 = mask8_to_m128i(mask.mMask);
+            mVec = _mm_blendv_epi8(b.mVec, t1, m0);
+#endif
             return *this;
         }
         // SUBFROMSA
@@ -346,7 +463,13 @@ namespace SIMD {
         // MSUBFROMSA
         inline SIMDVec_u subfroma(SIMDVecMask<4> const & mask, uint32_t b) {
             __m128i t0 = _mm_set1_epi32(b);
+#if defined(__AVX512VL__)
             mVec = _mm_mask_sub_epi32(t0, mask.mMask, t0, mVec);
+#else
+            __m128i t2 = _mm_sub_epi32(t0, mVec);
+            __m128i m0 = mask8_to_m128i(mask.mMask);
+            mVec = _mm_blendv_epi8(t0, t2, m0);
+#endif
             return *this;
         }
         // POSTDEC
@@ -360,7 +483,13 @@ namespace SIMD {
         inline SIMDVec_u postdec(SIMDVecMask<4> const & mask) {
             __m128i t0 = _mm_set1_epi32(1);
             __m128i t1 = mVec;
+#if defined(__AVX512VL__)
             mVec = _mm_mask_sub_epi32(mVec, mask.mMask, mVec, t0);
+#else
+            __m128i t2 = _mm_sub_epi32(mVec, t0);
+            __m128i m0 = mask8_to_m128i(mask.mMask);
+            mVec = _mm_blendv_epi8(mVec, t2, m0);
+#endif
             return SIMDVec_u(t1);
         }
         // PREFDEC
@@ -372,7 +501,13 @@ namespace SIMD {
         // MPREFDEC
         inline SIMDVec_u & prefdec(SIMDVecMask<4> const & mask) {
             __m128i t0 = _mm_set1_epi32(1);
+#if defined(__AVX512VL__)
             mVec = _mm_mask_sub_epi32(mVec, mask.mMask, mVec, t0);
+#else
+            __m128i t2 = _mm_sub_epi32(mVec, t0);
+            __m128i m0 = mask8_to_m128i(mask.mMask);
+            mVec = _mm_blendv_epi8(mVec, t2, m0);
+#endif
             return *this;
         }
         // MULV
@@ -382,7 +517,13 @@ namespace SIMD {
         }
         // MMULV
         inline SIMDVec_u mul(SIMDVecMask<4> const & mask, SIMDVec_u const & b) const {
+#if defined(__AVX512VL__)
             __m128i t0 = _mm_mask_mullo_epi32(mVec, mask.mMask, mVec, b.mVec);
+#else
+            __m128i t1 = _mm_mullo_epi32(mVec, b.mVec);
+            __m128i m0 = mask8_to_m128i(mask.mMask);
+            __m128i t0 = _mm_blendv_epi8(mVec, t1, m0);
+#endif
             return SIMDVec_u(t0);
         }
         // MULS
@@ -393,7 +534,13 @@ namespace SIMD {
         // MMULS
         inline SIMDVec_u mul(SIMDVecMask<4> const & mask, uint32_t b) const {
             __m128i t0 = _mm_set1_epi32(b);
+#if defined(__AVX512VL__)
             __m128i t1 = _mm_mask_mullo_epi32(mVec, mask.mMask, mVec, t0);
+#else
+            __m128i t2 = _mm_mullo_epi32(mVec, t0);
+            __m128i m0 = mask8_to_m128i(mask.mMask);
+            __m128i t1 = _mm_blendv_epi8(mVec, t2, m0);
+#endif
             return SIMDVec_u(t1);
         }
         // MULVA
@@ -403,7 +550,13 @@ namespace SIMD {
         }
         // MMULVA
         inline SIMDVec_u & mula(SIMDVecMask<4> const & mask, SIMDVec_u const & b) {
+#if defined(__AVX512VL__)
             mVec = _mm_mask_mullo_epi32(mVec, mask.mMask, mVec, b.mVec);
+#else
+            __m128i t0 = _mm_mullo_epi32(mVec, b.mVec);
+            __m128i m0 = mask8_to_m128i(mask.mMask);
+            mVec = _mm_blendv_epi8(mVec, t0, m0);
+#endif
             return *this;
         }
         // MULSA
@@ -414,7 +567,13 @@ namespace SIMD {
         // MMULSA
         inline SIMDVec_u & mula(SIMDVecMask<4> const & mask, uint32_t b) {
             __m128i t0 = _mm_set1_epi32(b);
+#if defined(__AVX512VL__)
             mVec = _mm_mask_mullo_epi32(mVec, mask.mMask, mVec, t0);
+#else
+            __m128i t1 = _mm_mullo_epi32(mVec, t0);
+            __m128i m0 = mask8_to_m128i(mask.mMask);
+            mVec = _mm_blendv_epi8(mVec, t1, m0);
+#endif
             return *this;
         }
         // DIVV
@@ -435,80 +594,186 @@ namespace SIMD {
         // MRCPSA
         // CMPEQV
         inline SIMDVecMask<4> cmpeq(SIMDVec_u const & b) const {
-            __mmask8 t0 = _mm_cmpeq_epu32_mask(mVec, b.mVec);
-            return SIMDVecMask<4>(t0);
+#if defined(__AVX512VL__)
+            __mmask8 m0 = _mm_cmpeq_epu32_mask(mVec, b.mVec);
+#else
+            // TODO: This can be implemented using cast to 512b vectors, but I am interested
+            // in what is the performance of this method. This should be updated after
+            // instruction microbenchmarks are defined.
+            __m128i t0 = _mm_cmpeq_epi32(mVec, b.mVec);
+            __mmask8 m0 = m128i_to_mask8(t0);
+#endif
+            return SIMDVecMask<4>(m0);
         }
         // CMPEQS
         inline SIMDVecMask<4> cmpeq(uint32_t b) const {
-            __mmask8 t0 = _mm_cmpeq_epu32_mask(mVec, _mm_set1_epi32(b)) & 0xF;
-            return SIMDVecMask<4>(t0);
+#if defined(__AVX512VL__)
+            __mmask8 m0 = _mm_cmpeq_epu32_mask(mVec, _mm_set1_epi32(b)) & 0xF;
+#else
+            __m128i t0 = _mm_set1_epi32(b);
+            __m128i t1 = _mm_cmpeq_epi32(mVec, t0);
+            __mmask8 m0 = m128i_to_mask8(t1);
+#endif
+            return SIMDVecMask<4>(m0);
         }
         // CMPNEV
         inline SIMDVecMask<4> cmpne(SIMDVec_u const & b) const {
-            __mmask8 t0 = _mm_cmpneq_epu32_mask(mVec, b.mVec);
-            return SIMDVecMask<4>(t0);
+#if defined(__AVX512VL__)
+            __mmask8 m0 = _mm_cmpneq_epu32_mask(mVec, b.mVec);
+#else
+            __m512i t0 = _mm512_castsi128_si512(mVec);
+            __m512i t1 = _mm512_castsi128_si512(b.mVec);
+            __mmask16 m1 = _mm512_cmpneq_epu32_mask(t0, t1);
+            __mmask8 m0 = m1 & 0x000F;
+#endif
+            return SIMDVecMask<4>(m0);
         }
         // CMPNES
         inline SIMDVecMask<4> cmpne(uint32_t b) const {
-            __mmask8 t0 = _mm_cmpneq_epu32_mask(mVec, _mm_set1_epi32(b));
-            return SIMDVecMask<4>(t0);
+            __m128i t0 = _mm_set1_epi32(b);
+#if defined(__AVX512VL__)
+            __mmask8 m0 = _mm_cmpneq_epu32_mask(mVec, t0);
+#else
+            __m512i t1 = _mm512_castsi128_si512(mVec);
+            __m512i t2 = _mm512_castsi128_si512(t0);
+            __mmask16 m1 = _mm512_cmpneq_epu32_mask(t1, t2);
+            __mmask8 m0 = m1 & 0x000F;
+#endif
+            return SIMDVecMask<4>(m0);
         }
         // CMPGTV
         inline SIMDVecMask<4> cmpgt(SIMDVec_u const & b) const {
-            __mmask8 t0 = _mm_cmpgt_epu32_mask(mVec, b.mVec);
-            return SIMDVecMask<4>(t0);
+#if defined(__AVX512VL__)
+            __mmask8 m0 = _mm_cmpgt_epu32_mask(mVec, b.mVec);
+#else
+            __m512i t0 = _mm512_castsi128_si512(mVec);
+            __m512i t1 = _mm512_castsi128_si512(b.mVec);
+            __mmask16 m1 = _mm512_cmpgt_epu32_mask(t0, t1);
+            __mmask8 m0 = m1 & 0x000F;
+#endif
+            return SIMDVecMask<4>(m0);
         }
         // CMPGTS
         inline SIMDVecMask<4> cmpgt(uint32_t b) const {
-            __mmask8 t0 = _mm_cmpgt_epu32_mask(mVec, _mm_set1_epi32(b));
-            return SIMDVecMask<4>(t0);
+            __m128i t0 = _mm_set1_epi32(b);
+#if defined(__AVX512VL__)
+            __mmask8 m0 = _mm_cmpgt_epu32_mask(mVec, t0);
+#else
+            __m512i t1 = _mm512_castsi128_si512(mVec);
+            __m512i t2 = _mm512_castsi128_si512(t0);
+            __mmask16 m1 = _mm512_cmpgt_epu32_mask(t1, t2);
+            __mmask8 m0 = m1 & 0x000F;
+#endif
+            return SIMDVecMask<4>(m0);
         }
         // CMPLTV
         inline SIMDVecMask<4> cmplt(SIMDVec_u const & b) const {
-            __mmask8 t0 = _mm_cmplt_epu32_mask(mVec, b.mVec);
-            return SIMDVecMask<4>(t0);
+#if defined(__AVX512VL__)
+            __mmask8 m0 = _mm_cmplt_epu32_mask(mVec, b.mVec);
+#else
+            __m512i t0 = _mm512_castsi128_si512(mVec);
+            __m512i t1 = _mm512_castsi128_si512(b.mVec);
+            __mmask16 m1 = _mm512_cmplt_epu32_mask(t0, t1);
+            __mmask8 m0 = m1 & 0x000F;
+#endif
+            return SIMDVecMask<4>(m0);
         }
         // CMPLTS
         inline SIMDVecMask<4> cmplt(uint32_t b) const {
-            __mmask8 t0 = _mm_cmplt_epu32_mask(mVec, _mm_set1_epi32(b));
-            return SIMDVecMask<4>(t0);
+            __m128i t0 = _mm_set1_epi32(b);
+#if defined(__AVX512VL__)
+            __mmask8 m0 = _mm_cmplt_epu32_mask(mVec, t0);
+#else
+            __m512i t1 = _mm512_castsi128_si512(mVec);
+            __m512i t2 = _mm512_castsi128_si512(t0);
+            __mmask16 m1 = _mm512_cmplt_epu32_mask(t1, t2);
+            __mmask8 m0 = m1 & 0x000F;
+#endif
+            return SIMDVecMask<4>(m0);
         }
         // CMPGEV
         inline SIMDVecMask<4> cmpge(SIMDVec_u const & b) const {
-            __mmask8 t0 = _mm_cmpge_epu32_mask(mVec, b.mVec);
-            return SIMDVecMask<4>(t0);
+#if defined(__AVX512VL__)
+            __mmask8 m0 = _mm_cmpge_epu32_mask(mVec, b.mVec);
+#else
+            __m512i t0 = _mm512_castsi128_si512(mVec);
+            __m512i t1 = _mm512_castsi128_si512(b.mVec);
+            __mmask16 m1 = _mm512_cmpge_epu32_mask(t0, t1);
+            __mmask8 m0 = m1 & 0x000F;
+#endif
+            return SIMDVecMask<4>(m0);
         }
         // CMPGES
         inline SIMDVecMask<4> cmpge(uint32_t b) const {
-            __mmask8 t0 = _mm_cmpge_epu32_mask(mVec, _mm_set1_epi32(b));
-            return SIMDVecMask<4>(t0);
+            __m128i t0 = _mm_set1_epi32(b);
+#if defined(__AVX512VL__)
+            __mmask8 m0 = _mm_cmpge_epu32_mask(mVec, t0);
+#else
+            __m512i t1 = _mm512_castsi128_si512(mVec);
+            __m512i t2 = _mm512_castsi128_si512(t0);
+            __mmask16 m1 = _mm512_cmpge_epu32_mask(t1, t2);
+            __mmask8 m0 = m1 & 0x000F;
+#endif
+            return SIMDVecMask<4>(m0);
         }
         // CMPLEV
         inline SIMDVecMask<4> cmple(SIMDVec_u const & b) const {
-            __mmask8 t0 = _mm_cmple_epu32_mask(mVec, b.mVec);
-            return SIMDVecMask<4>(t0);
+#if defined(__AVX512VL__)
+            __mmask8 m0 = _mm_cmple_epu32_mask(mVec, b.mVec);
+#else
+            __m512i t0 = _mm512_castsi128_si512(mVec);
+            __m512i t1 = _mm512_castsi128_si512(b.mVec);
+            __mmask16 m1 = _mm512_cmple_epu32_mask(t0, t1);
+            __mmask8 m0 = m1 & 0x000F;
+#endif
+            return SIMDVecMask<4>(m0);
         }
         // CMPLES
         inline SIMDVecMask<4> cmple(uint32_t b) const {
-            __mmask8 t0 = _mm_cmple_epu32_mask(mVec, _mm_set1_epi32(b));
-            return SIMDVecMask<4>(t0);
+            __m128i t0 = _mm_set1_epi32(b);
+#if defined(__AVX512VL__)
+            __mmask8 m0 = _mm_cmple_epu32_mask(mVec, t0);
+#else
+            __m512i t1 = _mm512_castsi128_si512(mVec);
+            __m512i t2 = _mm512_castsi128_si512(t0);
+            __mmask16 m1 = _mm512_cmple_epu32_mask(t1, t2);
+            __mmask8 m0 = m1 & 0x000F;
+#endif
+            return SIMDVecMask<4>(m0);
         }
         // CMPEV
         inline bool cmpe(SIMDVec_u const & b) const {
-            __mmask8 t0 = _mm_cmple_epu32_mask(mVec, b.mVec);
-            return (t0 == 0x0F);
+#if defined(__AVX512VL__)
+            __mmask8 m0 = _mm_cmpeq_epu32_mask(mVec, b.mVec);
+#else
+            __m512i t0 = _mm512_castsi128_si512(mVec);
+            __m512i t1 = _mm512_castsi128_si512(b.mVec);
+            __mmask16 m1 = _mm512_cmpeq_epu32_mask(t0, t1);
+            __mmask8 m0 = m1 & 0x000F;
+#endif
+            return (m0 == 0x0F);
         }
         // CMPES
         inline bool cmpe(uint32_t b) const {
-            __mmask8 t0 = _mm_cmpeq_epu32_mask(mVec, _mm_set1_epi32(b));
-            return (t0 == 0x0F);
+            __m128i t0 = _mm_set1_epi32(b);
+#if defined(__AVX512VL__)
+            __mmask8 m0 = _mm_cmpeq_epu32_mask(mVec, _mm_set1_epi32(b));
+#else
+            __m512i t1 = _mm512_castsi128_si512(mVec);
+            __m512i t2 = _mm512_castsi128_si512(t0);
+            __mmask16 m1 = _mm512_cmpeq_epu32_mask(t1, t2);
+            __mmask8 m0 = m1 & 0x000F;
+#endif
+            return (m0 == 0x0F);
         }
         // UNIQUE
+#if defined(__AVX512VL__) && defined(__AVX512CD__)
         inline bool unique() const {
             __m128i t0 = _mm_conflict_epi32(mVec);
-            __mmask8 t1 = _mm_cmpeq_epu32_mask(t0, _mm_set1_epi32(1));
-            return (t1 == 0x00);
+            __mmask8 m0 = _mm_cmpeq_epu32_mask(t0, _mm_setzero_si128());
+            return (m0 == 0xF);
         }
+#endif
         // HADD
         inline uint32_t hadd() const {
             __m512i t0 = _mm512_castsi128_si512(mVec);
@@ -571,8 +836,15 @@ namespace SIMD {
         }
         // MFMULADDV
         inline SIMDVec_u fmuladd(SIMDVecMask<4> const & mask, SIMDVec_u const & b, SIMDVec_u const & c) const {
+#if defined(__AVX512VL__)
             __m128i t0 = _mm_mask_mullo_epi32(mVec, mask.mMask, mVec, b.mVec);
             __m128i t1 = _mm_mask_add_epi32(t0, mask.mMask, t0, c.mVec);
+#else
+            __m128i t0 = _mm_mullo_epi32(mVec, b.mVec);
+            __m128i t1 = _mm_add_epi32(t0, c.mVec);
+            __m128i m0 = mask8_to_m128i(mask.mMask);
+            t1 = _mm_blendv_epi8(mVec, t1, m0);
+#endif
             return SIMDVec_u(t1);
         }
         // FMULSUBV
@@ -583,8 +855,15 @@ namespace SIMD {
         }
         // MFMULSUBV
         inline SIMDVec_u fmulsub(SIMDVecMask<4> const & mask, SIMDVec_u const & b, SIMDVec_u const & c) const {
+#if defined(__AVX512VL__)
             __m128i t0 = _mm_mask_mullo_epi32(mVec, mask.mMask, mVec, b.mVec);
             __m128i t1 = _mm_mask_sub_epi32(t0, mask.mMask, t0, c.mVec);
+#else
+            __m128i t0 = _mm_mullo_epi32(mVec, b.mVec);
+            __m128i t1 = _mm_sub_epi32(t0, c.mVec);
+            __m128i m0 = mask8_to_m128i(mask.mMask);
+            t1 = _mm_blendv_epi8(mVec, t1, m0);
+#endif
             return SIMDVec_u(t1);
         }
         // FADDMULV
@@ -595,8 +874,15 @@ namespace SIMD {
         }
         // MFADDMULV
         inline SIMDVec_u faddmul(SIMDVecMask<4> const & mask, SIMDVec_u const & b, SIMDVec_u const & c) const {
+#if defined(__AVX512VL__)
             __m128i t0 = _mm_mask_add_epi32(mVec, mask.mMask, mVec, b.mVec);
             __m128i t1 = _mm_mask_mullo_epi32(t0, mask.mMask, t0, c.mVec);
+#else
+            __m128i t0 = _mm_add_epi32(mVec, b.mVec);
+            __m128i t1 = _mm_mullo_epi32(t0, c.mVec);
+            __m128i m0 = mask8_to_m128i(mask.mMask);
+            t1 = _mm_blendv_epi8(mVec, t1, m0);
+#endif
             return SIMDVec_u(t1);
         }
         // FSUBMULV
@@ -607,8 +893,15 @@ namespace SIMD {
         }
         // MFSUBMULV
         inline SIMDVec_u fsubmul(SIMDVecMask<4> const & mask, SIMDVec_u const & b, SIMDVec_u const & c) const {
+#if defined(__AVX512VL__)
             __m128i t0 = _mm_mask_sub_epi32(mVec, mask.mMask, mVec, b.mVec);
             __m128i t1 = _mm_mask_mullo_epi32(t0, mask.mMask, t0, c.mVec);
+#else
+            __m128i t0 = _mm_sub_epi32(mVec, b.mVec);
+            __m128i t1 = _mm_mullo_epi32(t0, c.mVec);
+            __m128i m0 = mask8_to_m128i(mask.mMask);
+            t1 = _mm_blendv_epi8(mVec, t1, m0);
+#endif
             return SIMDVec_u(t1);
         }
         // MAXV
@@ -618,7 +911,13 @@ namespace SIMD {
         }
         // MMAXV
         inline SIMDVec_u max(SIMDVecMask<4> const & mask, SIMDVec_u const & b) const {
+#if defined(__AVX512VL__)
             __m128i t0 = _mm_mask_max_epu32(mVec, mask.mMask, mVec, b.mVec);
+#else
+            __m128i t1 = _mm_max_epu32(mVec, b.mVec);
+            __m128i m0 = mask8_to_m128i(mask.mMask);
+            __m128i t0 = _mm_blendv_epi8(mVec, t1, m0);
+#endif
             return SIMDVec_u(t0);
         }
         // MAXS
@@ -630,7 +929,13 @@ namespace SIMD {
         // MMAXS
         inline SIMDVec_u max(SIMDVecMask<4> const & mask, uint32_t b) const {
             __m128i t0 = _mm_set1_epi32(b);
+#if defined(__AVX512VL__)
             __m128i t1 = _mm_mask_max_epu32(mVec, mask.mMask, mVec, t0);
+#else
+            __m128i t2 = _mm_max_epu32(mVec, t0);
+            __m128i m0 = mask8_to_m128i(mask.mMask);
+            __m128i t1 = _mm_blendv_epi8(mVec, t2, m0);
+#endif
             return SIMDVec_u(t1);
         }
         // MAXVA
@@ -640,7 +945,13 @@ namespace SIMD {
         }
         // MMAXVA
         inline SIMDVec_u & maxa(SIMDVecMask<4> const & mask, SIMDVec_u const & b) {
+#if defined(__AVX512VL__)
             mVec = _mm_mask_max_epu32(mVec, mask.mMask, mVec, b.mVec);
+#else
+            __m128i t1 = _mm_max_epu32(mVec, b.mVec);
+            __m128i m0 = mask8_to_m128i(mask.mMask);
+            mVec = _mm_blendv_epi8(mVec, t1, m0);
+#endif
             return *this;
         }
         // MAXSA
@@ -652,7 +963,13 @@ namespace SIMD {
         // MMAXSA
         inline SIMDVec_u & maxa(SIMDVecMask<4> const & mask, uint32_t b) {
             __m128i t0 = _mm_set1_epi32(b);
+#if defined(__AVX512VL__)
             mVec = _mm_mask_max_epu32(mVec, mask.mMask, mVec, t0);
+#else
+            __m128i t1 = _mm_max_epu32(mVec, t0);
+            __m128i m0 = mask8_to_m128i(mask.mMask);
+            mVec = _mm_blendv_epi8(mVec, t1, m0);
+#endif
             return *this;
         }
         // MINV
@@ -662,7 +979,14 @@ namespace SIMD {
         }
         // MMINV
         inline SIMDVec_u min(SIMDVecMask<4> const & mask, SIMDVec_u const & b) const {
+#if defined(__AVX512VL__)
             __m128i t0 = _mm_mask_min_epu32(mVec, mask.mMask, mVec, b.mVec);
+#else
+            __m512i t1 = _mm512_castsi128_si512(mVec);
+            __m512i t2 = _mm512_castsi128_si512(b.mVec);
+            __m512i t3 = _mm512_mask_min_epu32(t1, __mmask16(mask.mMask), t1, t2);
+            __m128i t0 = _mm512_castsi512_si128(t3);
+#endif
             return SIMDVec_u(t0);
         }
         // MINS
@@ -673,8 +997,15 @@ namespace SIMD {
         }
         // MMINS
         inline SIMDVec_u min(SIMDVecMask<4> const & mask, uint32_t b) const {
+#if defined(__AVX512VL__)
             __m128i t0 = _mm_set1_epi32(b);
             __m128i t1 = _mm_mask_min_epu32(mVec, mask.mMask, mVec, t0);
+#else
+            __m512i t0 = _mm512_set1_epi32(b);
+            __m512i t2 = _mm512_castsi128_si512(mVec);
+            __m512i t3 = _mm512_mask_min_epu32(t2, __mmask16(mask.mMask), t0, t2);
+            __m128i t1 = _mm512_castsi512_si128(t3);
+#endif
             return SIMDVec_u(t1);
         }
         // MINVA
@@ -684,7 +1015,14 @@ namespace SIMD {
         }
         // MMINVA
         inline SIMDVec_u & mina(SIMDVecMask<4> const & mask, SIMDVec_u const & b) {
+#if defined(__AVX512VL__)
             mVec = _mm_mask_min_epu32(mVec, mask.mMask, mVec, b.mVec);
+#else
+            __m512i t1 = _mm512_castsi128_si512(mVec);
+            __m512i t2 = _mm512_castsi128_si512(b.mVec);
+            __m512i t3 = _mm512_mask_min_epu32(t1, __mmask16(mask.mMask), t1, t2);
+            mVec = _mm512_castsi512_si128(t3);
+#endif
             return *this;
         }
         // MINSA
@@ -695,8 +1033,15 @@ namespace SIMD {
         }
         // MMINSA
         inline SIMDVec_u & mina(SIMDVecMask<4> const & mask, uint32_t b) {
+#if defined(__AVX512VL__)
             __m128i t0 = _mm_set1_epi32(b);
             mVec = _mm_mask_min_epu32(mVec, mask.mMask, mVec, t0);
+#else
+            __m512i t0 = _mm512_set1_epi32(b);
+            __m512i t2 = _mm512_castsi128_si512(mVec);
+            __m512i t3 = _mm512_mask_min_epu32(t2, __mmask16(mask.mMask), t0, t2);
+            mVec = _mm512_castsi512_si128(t3);
+#endif
             return *this;
         }
         // HMAX
@@ -730,158 +1075,272 @@ namespace SIMD {
 
         // BANDV
         inline SIMDVec_u band(SIMDVec_u const & b) const {
-            __m128i t0 = _mm_mask_and_epi32(mVec, 0x0F, mVec, b.mVec);
+            __m128i t0 = _mm_and_si128(mVec, b.mVec);
             return SIMDVec_u(t0);
         }
         // MBANDV
         inline SIMDVec_u band(SIMDVecMask<4> const & mask, SIMDVec_u const & b) const {
+#if defined(__AVX512VL__)
             __m128i t0 = _mm_mask_and_epi32(mVec, mask.mMask, mVec, b.mVec);
+#else
+            __m512i t1 = _mm512_castsi128_si512(mVec);
+            __m512i t2 = _mm512_castsi128_si512(b.mVec);
+            __mmask16 m0 = __mmask16(mask.mMask);
+            __m512i t3 = _mm512_mask_and_epi32(t1, m0, t1, t2);
+            __m128i t0 = _mm512_castsi512_si128(t3);
+#endif
             return SIMDVec_u(t0);
         }
         // BANDS
         inline SIMDVec_u band(uint32_t b) const {
             __m128i t0 = _mm_set1_epi32(b);
-            __m128i t1 = _mm_mask_and_epi32(mVec, 0x0F, mVec, t0);
+            __m128i t1 = _mm_and_si128(mVec, t0);
             return SIMDVec_u(t1);
         }
         // MBANDS
         inline SIMDVec_u band(SIMDVecMask<4> const & mask, uint32_t b) const {
+#if defined(__AVX512VL__)
             __m128i t0 = _mm_set1_epi32(b);
             __m128i t1 = _mm_mask_and_epi32(mVec, mask.mMask, mVec, t0);
+#else
+            __m512i t0 = _mm512_castsi128_si512(mVec);
+            __m512i t2 = _mm512_set1_epi32(b);
+            __m512i t3 = _mm512_mask_and_epi32(t0, mask.mMask, t0, t2);
+            __m128i t1 = _mm512_castsi512_si128(t3);
+#endif
             return SIMDVec_u(t1);
         }
         // BANDVA
         inline SIMDVec_u & banda(SIMDVec_u const & b) {
-            mVec = _mm_mask_and_epi32(mVec, 0x0F, mVec, b.mVec);
+            mVec = _mm_and_si128(mVec, b.mVec);
             return *this;
         }
         // MBANDVA
         inline SIMDVec_u & banda(SIMDVecMask<4> const & mask, SIMDVec_u const & b) {
+#if defined(__AVX512VL__)
             mVec = _mm_mask_and_epi32(mVec, mask.mMask, mVec, b.mVec);
+#else
+            __m512i t1 = _mm512_castsi128_si512(mVec);
+            __m512i t2 = _mm512_castsi128_si512(b.mVec);
+            __mmask16 m0 = __mmask16(mask.mMask);
+            __m512i t3 = _mm512_mask_and_epi32(t1, m0, t1, t2);
+            mVec = _mm512_castsi512_si128(t3);
+#endif
             return *this;
         }
         // BANDSA
         inline SIMDVec_u & banda(uint32_t b) {
             __m128i t0 = _mm_set1_epi32(b);
-            mVec = _mm_mask_and_epi32(mVec, 0x0F, mVec, t0);
+            mVec = _mm_and_si128(mVec, t0);
             return *this;
         }
         // MBANDSA
         inline SIMDVec_u & banda(SIMDVecMask<4> const & mask, uint32_t b) {
+#if defined(__AVX512VL__)
             __m128i t0 = _mm_set1_epi32(b);
             mVec = _mm_mask_and_epi32(mVec, mask.mMask, mVec, t0);
+#else
+            __m512i t0 = _mm512_castsi128_si512(mVec);
+            __m512i t2 = _mm512_set1_epi32(b);
+            __m512i t3 = _mm512_mask_and_epi32(t0, mask.mMask, t0, t2);
+            mVec = _mm512_castsi512_si128(t3);
+#endif
             return *this;
         }
         // BORV
         inline SIMDVec_u bor(SIMDVec_u const & b) const {
-            __m128i t0 = _mm_mask_or_epi32(mVec, 0x0F, mVec, b.mVec);
+            __m128i t0 = _mm_or_si128(mVec, b.mVec);
             return SIMDVec_u(t0);
         }
         // MBORV
         inline SIMDVec_u bor(SIMDVecMask<4> const & mask, SIMDVec_u const & b) const {
+#if defined(__AVX512VL__)
             __m128i t0 = _mm_mask_or_epi32(mVec, mask.mMask, mVec, b.mVec);
+#else
+            __m512i t1 = _mm512_castsi128_si512(mVec);
+            __m512i t2 = _mm512_castsi128_si512(b.mVec);
+            __m512i t3 = _mm512_mask_or_epi32(t1, mask.mMask, t1, t2);
+            __m128i t0 = _mm512_castsi512_si128(t3);
+#endif
             return SIMDVec_u(t0);
         }
         // BORS
         inline SIMDVec_u bor(uint32_t b) const {
             __m128i t0 = _mm_set1_epi32(b);
-            __m128i t1 = _mm_mask_or_epi32(mVec, 0x0F, mVec, t0);
+            __m128i t1 = _mm_or_si128(mVec, t0);
             return SIMDVec_u(t1);
         }
         // MBORS
         inline SIMDVec_u bor(SIMDVecMask<4> const & mask, uint32_t b) const {
+#if defined(__AVX512VL__)
             __m128i t0 = _mm_set1_epi32(b);
             __m128i t1 = _mm_mask_or_epi32(mVec, mask.mMask, mVec, t0);
+#else
+            __m512i t0 = _mm512_set1_epi32(b);
+            __m512i t2 = _mm512_castsi128_si512(mVec);
+            __m512i t3 = _mm512_mask_or_epi32(t2, mask.mMask, t2, t0);
+            __m128i t1 = _mm512_castsi512_si128(t3);
+#endif
             return SIMDVec_u(t1);
         }
         // BORVA
         inline SIMDVec_u & bora(SIMDVec_u const & b) {
-            mVec = _mm_mask_or_epi32(mVec, 0x0F, mVec, b.mVec);
+            mVec = _mm_or_si128(mVec, b.mVec);
             return *this;
         }
         // MBORVA
         inline SIMDVec_u & bora(SIMDVecMask<4> const & mask, SIMDVec_u const & b) {
+#if defined(__AVX512VL__)
             mVec = _mm_mask_or_epi32(mVec, mask.mMask, mVec, b.mVec);
+#else
+            __m512i t0 = _mm512_castsi128_si512(b.mVec);
+            __m512i t1 = _mm512_castsi128_si512(mVec);
+            __m512i t2 = _mm512_mask_or_epi32(t1, mask.mMask, t1, t0);
+            mVec = _mm512_castsi512_si128(t2);
+#endif
             return *this;
         }
         // BORSA
         inline SIMDVec_u & bora(uint32_t b) {
             __m128i t0 = _mm_set1_epi32(b);
-            mVec = _mm_mask_or_epi32(mVec, 0x0F, mVec, t0);
+            mVec = _mm_or_si128(mVec, t0);
             return *this;
         }
         // MBORSA
         inline SIMDVec_u & bora(SIMDVecMask<4> const & mask, uint32_t b) {
+#if defined(__AVX512VL__)
             __m128i t0 = _mm_set1_epi32(b);
             mVec = _mm_mask_or_epi32(mVec, mask.mMask, mVec, t0);
+#else
+            __m512i t0 = _mm512_set1_epi32(b);
+            __m512i t1 = _mm512_castsi128_si512(mVec);
+            __m512i t2 = _mm512_mask_or_epi32(t1, mask.mMask, t1, t0);
+            mVec = _mm512_castsi512_si128(t2);
+#endif
             return *this;
         }
         // BXORV
         inline SIMDVec_u bxor(SIMDVec_u const & b) const {
-            __m128i t0 = _mm_mask_xor_epi32(mVec, 0x0F, mVec, b.mVec);
+            __m128i t0 = _mm_xor_si128(mVec, b.mVec);
             return SIMDVec_u(t0);
         }
         // MBXORV
         inline SIMDVec_u bxor(SIMDVecMask<4> const & mask, SIMDVec_u const & b) const {
+#if defined(__AVX512VL__)
             __m128i t0 = _mm_mask_xor_epi32(mVec, mask.mMask, mVec, b.mVec);
-            return SIMDVec_u(t0);
+#else
+            __m512i t1 = _mm512_castsi128_si512(mVec);
+            __m512i t2 = _mm512_castsi128_si512(b.mVec);
+            __m512i t3 = _mm512_mask_xor_epi32(t1, mask.mMask, t1, t2);
+            __m128i t0 = _mm512_castsi512_si128(t3);
+#endif
+       return SIMDVec_u(t0);
         }
         // BXORS
         inline SIMDVec_u bxor(uint32_t b) const {
             __m128i t0 = _mm_set1_epi32(b);
-            __m128i t1 = _mm_mask_xor_epi32(mVec, 0x0F, mVec, t0);
+            __m128i t1 = _mm_xor_si128(mVec, t0);
             return SIMDVec_u(t1);
         }
         // MBXORS
         inline SIMDVec_u bxor(SIMDVecMask<4> const & mask, uint32_t b) const {
+#if defined(__AVX512VL__)
             __m128i t0 = _mm_set1_epi32(b);
-            __m128i t1 = _mm_mask_xor_epi32(mVec, mask.mMask, mVec, t0);
+            __m128i t1 = _mm_mask_xor_epi32(mVec, mask.mMask, mVec, b.mVec);
+#else
+            __m512i t0 = _mm512_castsi128_si512(mVec);
+            __m512i t2 = _mm512_set1_epi32(b);
+            __m512i t3 = _mm512_mask_xor_epi32(t0, mask.mMask, t0, t2);
+            __m128i t1 = _mm512_castsi512_si128(t3);
+#endif
             return SIMDVec_u(t1);
         }
         // BXORVA
         inline SIMDVec_u & bxora(SIMDVec_u const & b) {
-            mVec = _mm_mask_xor_epi32(mVec, 0x0F, mVec, b.mVec);
+            mVec = _mm_xor_si128(mVec, b.mVec);
             return *this;
         }
         // MBXORVA
         inline SIMDVec_u & bxora(SIMDVecMask<4> const & mask, SIMDVec_u const & b) {
+#if defined(__AVX512VL__)
             mVec = _mm_mask_xor_epi32(mVec, mask.mMask, mVec, b.mVec);
+#else
+            __m512i t0 = _mm512_castsi128_si512(b.mVec);
+            __m512i t1 = _mm512_castsi128_si512(mVec);
+            __m512i t2 = _mm512_mask_xor_epi32(t1, mask.mMask, t1, t0);
+            mVec = _mm512_castsi512_si128(t2);
+#endif
             return *this;
         }
         // BXORSA
         inline SIMDVec_u & bxora(uint32_t b) {
             __m128i t0 = _mm_set1_epi32(b);
-            mVec = _mm_mask_xor_epi32(mVec, 0x0F, mVec, t0);
+            mVec = _mm_xor_si128(mVec, t0);
             return *this;
         }
         // MBXORSA
         inline SIMDVec_u & bxora(SIMDVecMask<4> const & mask, uint32_t b) {
+#if defined(__AVX512VL__)
             __m128i t0 = _mm_set1_epi32(b);
             mVec = _mm_mask_xor_epi32(mVec, mask.mMask, mVec, t0);
+#else
+            __m512i t0 = _mm512_set1_epi32(b);
+            __m512i t1 = _mm512_castsi128_si512(mVec);
+            __m512i t2 = _mm512_mask_xor_epi32(t1, mask.mMask, t1, t0);
+            mVec = _mm512_castsi512_si128(t2);
+#endif
             return *this;
         }
         // BNOT
         inline SIMDVec_u bnot() const {
+#if defined(__AVX512VL__)
             __m128i t0 = _mm_set1_epi32(0xFFFFFFFF);
             __m128i t1 = _mm_mask_andnot_epi32(mVec, 0xFF, mVec, t0);
+#else
+            __m512i t0 = _mm512_set1_epi32(0xFFFFFFFF);
+            __m512i t2 = _mm512_castsi128_si512(mVec);
+            __m512i t3 = _mm512_andnot_epi32(t2, t0);
+            __m128i t1 = _mm512_castsi512_si128(t3);
+#endif
             return SIMDVec_u(t1);
         }
         // MBNOT
         inline SIMDVec_u bnot(SIMDVecMask<4> const & mask) const {
+#if defined(__AVX512VL__)
             __m128i t0 = _mm_set1_epi32(0xFFFFFFFF);
             __m128i t1 = _mm_mask_andnot_epi32(mVec, mask.mMask, mVec, t0);
+#else
+            __m512i t0 = _mm512_set1_epi32(0xFFFFFFFF);
+            __m512i t2 = _mm512_castsi128_si512(mVec);
+            __m512i t3 = _mm512_mask_andnot_epi32(t2, mask.mMask, t2, t0);
+            __m128i t1 = _mm512_castsi512_si128(t3);
+#endif
             return SIMDVec_u(t1);
         }
         // BNOTA
         inline SIMDVec_u & bnota() {
+#if defined(__AVX512VL__)
             __m128i t0 = _mm_set1_epi32(0xFFFFFFFF);
             mVec = _mm_mask_andnot_epi32(mVec, 0xFF, mVec, t0);
+#else
+            __m512i t0 = _mm512_set1_epi32(0xFFFFFFFF);
+            __m512i t1 = _mm512_castsi128_si512(mVec);
+            __m512i t2 = _mm512_andnot_epi32(t1, t0);
+            mVec = _mm512_castsi512_si128(t2);
+#endif
             return *this;
         }
         // MBNOTA
         inline SIMDVec_u bnota(SIMDVecMask<4> const & mask) {
+#if defined(__AVX512VL__)
             __m128i t0 = _mm_set1_epi32(0xFFFFFFFF);
             mVec = _mm_mask_andnot_epi32(mVec, mask.mMask, mVec, t0);
+#else
+            __m512i t0 = _mm512_set1_epi32(0xFFFFFFFF);
+            __m512i t1 = _mm512_castsi128_si512(mVec);
+            __m512i t2 = _mm512_mask_andnot_epi32(t1, mask.mMask, t1, t0);
+            mVec = _mm512_castsi512_si128(t2);
+#endif
             return *this;
         }
         // HBAND
@@ -980,7 +1439,13 @@ namespace SIMD {
         // MGATHERS
         inline SIMDVec_u & gather(SIMDVecMask<4> const & mask, uint32_t* baseAddr, uint64_t* indices) {
             alignas(16) uint32_t raw[4] = { baseAddr[indices[0]], baseAddr[indices[1]], baseAddr[indices[2]], baseAddr[indices[3]] };
+#if defined(__AVX512VL__)
             mVec = _mm_mask_load_epi32(mVec, mask.mMask, raw);
+#else
+            __m128i t0 = _mm_loadu_si128((__m128i*)raw);
+            __m128i m0 = mask8_to_m128i(mask.mMask);
+            mVec = _mm_blendv_epi8(mVec, t0, m0);
+#endif
             return *this;
         }
         // GATHERV
@@ -1004,31 +1469,69 @@ namespace SIMD {
             rawData[1] = baseAddr[rawIndices[1]];
             rawData[2] = baseAddr[rawIndices[2]];
             rawData[3] = baseAddr[rawIndices[3]];
+#if defined(__AVX512VL__)
             mVec = _mm_mask_load_epi32(mVec, mask.mMask, rawData);
+#else
+            __m128i t0 = _mm_loadu_si128((__m128i*)rawData);
+            __m128i m0 = mask8_to_m128i(mask.mMask);
+            mVec = _mm_blendv_epi8(mVec, t0, m0);
+#endif
             return *this;
         }
         // SCATTERS
         inline uint32_t* scatter(uint32_t* baseAddr, uint64_t* indices) {
             alignas(16) uint32_t rawIndices[4] = { indices[0], indices[1], indices[2], indices[3] };
             __m128i t0 = _mm_load_si128((__m128i *) rawIndices);
-            _mm_i32scatter_epi32(baseAddr, t0, mVec, 1);
+#if defined(__AVX512VL__)
+            _mm_i32scatter_epi32(baseAddr, t0, mVec, 4);
+#else
+            __m512i t1 = _mm512_castsi128_si512(t0);
+            __m512i t2 = _mm512_castsi128_si512(mVec);
+            _mm512_mask_i32scatter_epi32(baseAddr, 0xF, t1, t2, 4);
+#endif
             return baseAddr;
         }
         // MSCATTERS
         inline uint32_t* scatter(SIMDVecMask<4> const & mask, uint32_t* baseAddr, uint64_t* indices) {
             alignas(16) uint32_t rawIndices[4] = { indices[0], indices[1], indices[2], indices[3] };
+#if defined(__AVX512VL__)
             __m128i t0 = _mm_mask_load_epi32(_mm_set1_epi32(0), mask.mMask, (__m128i *) rawIndices);
             _mm_mask_i32scatter_epi32(baseAddr, mask.mMask, t0, mVec, 1);
+#else
+            __m128i t0 = _mm_load_si128((__m128i *) rawIndices);
+            __m128i m0 = mask8_to_m128i(mask.mMask);
+            __m128i t1 = _mm_blendv_epi8(mVec, t0, m0);
+            __m512i t2 = _mm512_castsi128_si512(t1);
+            __m512i t3 = _mm512_castsi128_si512(mVec);
+            _mm512_mask_i32scatter_epi32(baseAddr, 0xF, t2, t3, 1);
+#endif
             return baseAddr;
         }
         // SCATTERV
         inline uint32_t* scatter(uint32_t* baseAddr, SIMDVec_u const & indices) {
+#if defined(__AVX512VL__)
             _mm_i32scatter_epi32(baseAddr, indices.mVec, mVec, 1);
+#else
+            alignas(16) uint32_t rawIndices[4];
+            alignas(16) uint32_t rawValues[4];
+            _mm_store_si128((__m128i*) rawIndices, indices.mVec);
+            _mm_store_si128((__m128i*) rawValues, mVec);
+            baseAddr[rawIndices[0]] = rawValues[0];
+            baseAddr[rawIndices[1]] = rawValues[1];
+            baseAddr[rawIndices[2]] = rawValues[2];
+            baseAddr[rawIndices[3]] = rawValues[3];
+#endif
             return baseAddr;
         }
         // MSCATTERV
         inline uint32_t* scatter(SIMDVecMask<4> const & mask, uint32_t* baseAddr, SIMDVec_u const & indices) {
+#if defined(__AVX512VL__)
             _mm_mask_i32scatter_epi32(baseAddr, mask.mMask, indices.mVec, mVec, 1);
+#else
+            __m512i t0 = _mm512_castsi128_si512(mVec);
+            __m512i t1 = _mm512_castsi128_si512(indices.mVec);
+            _mm512_mask_i32scatter_epi32(baseAddr, mask.mMask & 0xF, t1, t0, 4);
+#endif
             return baseAddr;
         }
 
@@ -1055,6 +1558,7 @@ namespace SIMD {
             return SIMDVec_u(t1);
         }*/
         // LSHVA
+        /*
         inline SIMDVec_u & lsha(SIMDVec_u const & b) {
             mVec = _mm_sll_epi32(mVec, b.mVec);
             return *this;
@@ -1119,91 +1623,203 @@ namespace SIMD {
             __m128i t0 = _mm_cvtsi32_si128(b);
             mVec = _mm_mask_srl_epi32(mVec, mask.mMask, mVec, t0);
             return *this;
-        }
+        }*/
         // ROLV
         inline SIMDVec_u rol(SIMDVec_u const & b) const {
+#if defined(__AVX512VL__)
             __m128i t0 = _mm_rolv_epi32(mVec, b.mVec);
+#else
+            __m512i t1 = _mm512_castsi128_si512(mVec);
+            __m512i t2 = _mm512_castsi128_si512(b.mVec);
+            __m512i t3 = _mm512_rolv_epi32(t1, t2);
+            __m128i t0 = _mm512_castsi512_si128(t3);
+#endif
             return SIMDVec_u(t0);
         }
         // MROLV
         inline SIMDVec_u rol(SIMDVecMask<4> const & mask, SIMDVec_u const & b) const {
+#if defined(__AVX512VL__)
             __m128i t0 = _mm_mask_rolv_epi32(mVec, mask.mMask, mVec, b.mVec);
+#else
+            __m512i t1 = _mm512_castsi128_si512(mVec);
+            __m512i t2 = _mm512_castsi128_si512(b.mVec);
+            __m512i t3 = _mm512_mask_rolv_epi32(t1, __mmask16(mask.mMask), t1, t2);
+            __m128i t0 = _mm512_castsi512_si128(t3);
+#endif
             return SIMDVec_u(t0);
         }
         // ROLS
         inline SIMDVec_u rol(uint32_t b) const {
+#if defined(__AVX512VL__)
             __m128i t0 = _mm_set1_epi32(b);
             __m128i t1 = _mm_rolv_epi32(mVec, t0);
+#else
+            __m512i t0 = _mm512_castsi128_si512(mVec);
+            __m512i t2 = _mm512_set1_epi32(b);
+            __m512i t3 = _mm512_rolv_epi32(t0, t2);
+            __m128i t1 = _mm512_castsi512_si128(t3);
+#endif
             return SIMDVec_u(t1);
         }
         // MROLS
         inline SIMDVec_u rol(SIMDVecMask<4> const & mask, uint32_t b) const {
+#if defined(__AVX512VL__)
             __m128i t0 = _mm_set1_epi32(b);
             __m128i t1 = _mm_mask_rolv_epi32(mVec, mask.mMask, mVec, t0);
+#else            
+            __m512i t0 = _mm512_castsi128_si512(mVec);
+            __m512i t2 = _mm512_set1_epi32(b);
+            __m512i t3 = _mm512_mask_rolv_epi32(t0, __mmask16(mask.mMask), t0, t2);
+            __m128i t1 = _mm512_castsi512_si128(t3);
+#endif
             return SIMDVec_u(t1);
         }
         // ROLVA
         inline SIMDVec_u & rola(SIMDVec_u const & b) {
+#if defined(__AVX512VL__)
             mVec = _mm_rolv_epi32(mVec, b.mVec);
+#else
+            __m512i t0 = _mm512_castsi128_si512(mVec);
+            __m512i t1 = _mm512_castsi128_si512(b.mVec);
+            __m512i t2 = _mm512_rolv_epi32(t0, t1);
+            mVec = _mm512_castsi512_si128(t2);
+#endif
             return *this;
         }
         // MROLVA
         inline SIMDVec_u & rola(SIMDVecMask<4> const & mask, SIMDVec_u const & b) {
+#if defined(__AVX512VL__)
             mVec = _mm_mask_rolv_epi32(mVec, mask.mMask, mVec, b.mVec);
+#else
+            __m512i t0 = _mm512_castsi128_si512(mVec);
+            __m512i t1 = _mm512_castsi128_si512(b.mVec);
+            __m512i t2 = _mm512_mask_rolv_epi32(t0, __mmask16(mask.mMask), t0, t1);
+            mVec = _mm512_castsi512_si128(t2);
+#endif
             return *this;
         }
         // ROLSA
         inline SIMDVec_u & rola(uint32_t b) {
+#if defined(__AVX512VL__)
             mVec = _mm_rolv_epi32(mVec, _mm_set1_epi32(b));
+#else
+            __m512i t1 = _mm512_castsi128_si512(mVec);
+            __m512i t2 = _mm512_set1_epi32(b);
+            __m512i t3 = _mm512_rolv_epi32(t1, t2);
+            mVec = _mm512_castsi512_si128(t3);
+#endif
             return *this;
         }
         // MROLSA
         inline SIMDVec_u & rola(SIMDVecMask<4> const & mask, uint32_t b) {
+#if defined(__AVX512VL__)
             __m128i t0 = _mm_set1_epi32(b);
             mVec = _mm_mask_rolv_epi32(mVec, mask.mMask, mVec, t0);
+#else
+            __m512i t1 = _mm512_castsi128_si512(mVec);
+            __m512i t2 = _mm512_set1_epi32(b);
+            __m512i t3 = _mm512_mask_rolv_epi32(t1, mask.mMask, t1, t2);
+            mVec = _mm512_castsi512_si128(t3);
+#endif
             return *this;
         }
         // RORV
         inline SIMDVec_u ror(SIMDVec_u const & b) const {
+#if defined(__AVX512VL__)
             __m128i t0 = _mm_rorv_epi32(mVec, b.mVec);
+#else
+            __m512i t1 = _mm512_castsi128_si512(mVec);
+            __m512i t2 = _mm512_castsi128_si512(b.mVec);
+            __m512i t3 = _mm512_rorv_epi32(t1, t2);
+            __m128i t0 = _mm512_castsi512_si128(t3);
+#endif
             return SIMDVec_u(t0);
         }
         // MRORV
         inline SIMDVec_u ror(SIMDVecMask<4> const & mask, SIMDVec_u const & b) const {
+#if defined(__AVX512VL__)
             __m128i t0 = _mm_mask_rorv_epi32(mVec, mask.mMask, mVec, b.mVec);
+#else
+            __m512i t1 = _mm512_castsi128_si512(mVec);
+            __m512i t2 = _mm512_castsi128_si512(b.mVec);
+            __m512i t3 = _mm512_mask_rorv_epi32(t1, __mmask16(mask.mMask), t1, t2);
+            __m128i t0 = _mm512_castsi512_si128(t3);
+#endif
             return SIMDVec_u(t0);
         }
         // RORS
         inline SIMDVec_u ror(uint32_t b) const {
+#if defined(__AVX512VL__)
             __m128i t0 = _mm_set1_epi32(b);
             __m128i t1 = _mm_rorv_epi32(mVec, t0);
+#else
+            __m512i t0 = _mm512_castsi128_si512(mVec);
+            __m512i t2 = _mm512_set1_epi32(b);
+            __m512i t3 = _mm512_rorv_epi32(t0, t2);
+            __m128i t1 = _mm512_castsi512_si128(t3);
+#endif
             return SIMDVec_u(t1);
         }
         // MRORS
         inline SIMDVec_u ror(SIMDVecMask<4> const & mask, uint32_t b) const {
+#if defined(__AVX512VL__)
             __m128i t0 = _mm_set1_epi32(b);
             __m128i t1 = _mm_mask_rorv_epi32(mVec, mask.mMask, mVec, t0);
+#else            
+            __m512i t0 = _mm512_castsi128_si512(mVec);
+            __m512i t2 = _mm512_set1_epi32(b);
+            __m512i t3 = _mm512_mask_rorv_epi32(t0, __mmask16(mask.mMask), t0, t2);
+            __m128i t1 = _mm512_castsi512_si128(t3);
+#endif
             return SIMDVec_u(t1);
         }
         // RORVA
         inline SIMDVec_u & rora(SIMDVec_u const & b) {
+#if defined(__AVX512VL__)
             mVec = _mm_rorv_epi32(mVec, b.mVec);
+#else
+            __m512i t0 = _mm512_castsi128_si512(mVec);
+            __m512i t1 = _mm512_castsi128_si512(b.mVec);
+            __m512i t2 = _mm512_rorv_epi32(t0, t1);
+            mVec = _mm512_castsi512_si128(t2);
+#endif
             return *this;
         }
         // MRORVA
         inline SIMDVec_u & rora(SIMDVecMask<4> const & mask, SIMDVec_u const & b) {
+#if defined(__AVX512VL__)
             mVec = _mm_mask_rorv_epi32(mVec, mask.mMask, mVec, b.mVec);
+#else
+            __m512i t0 = _mm512_castsi128_si512(mVec);
+            __m512i t1 = _mm512_castsi128_si512(b.mVec);
+            __m512i t2 = _mm512_mask_rorv_epi32(t0, __mmask16(mask.mMask), t0, t1);
+            mVec = _mm512_castsi512_si128(t2);
+#endif
             return *this;
         }
         // RORSA
         inline SIMDVec_u & rora(uint32_t b) {
+#if defined(__AVX512VL__)
             mVec = _mm_rorv_epi32(mVec, _mm_set1_epi32(b));
+#else
+            __m512i t1 = _mm512_castsi128_si512(mVec);
+            __m512i t2 = _mm512_set1_epi32(b);
+            __m512i t3 = _mm512_rorv_epi32(t1, t2);
+            mVec = _mm512_castsi512_si128(t3);
+#endif
             return *this;
         }
         // MRORSA
         inline SIMDVec_u & rora(SIMDVecMask<4> const & mask, uint32_t b) {
+#if defined(__AVX512VL__)
             __m128i t0 = _mm_set1_epi32(b);
             mVec = _mm_mask_rorv_epi32(mVec, mask.mMask, mVec, t0);
+#else
+            __m512i t1 = _mm512_castsi128_si512(mVec);
+            __m512i t2 = _mm512_set1_epi32(b);
+            __m512i t3 = _mm512_mask_rorv_epi32(t1, mask.mMask, t1, t2);
+            mVec = _mm512_castsi512_si128(t3);
+#endif
             return *this;
         }
 

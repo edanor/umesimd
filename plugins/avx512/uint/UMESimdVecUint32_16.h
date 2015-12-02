@@ -513,8 +513,8 @@ namespace SIMD {
         // UNIQUE
         inline bool unique() const {
             __m512i t0 = _mm512_conflict_epi32(mVec);
-            __mmask16 t1 = _mm512_cmpeq_epu32_mask(t0, _mm512_set1_epi32(1));
-            return (t1 == 0x0000);
+            __mmask16 t1 = _mm512_cmpeq_epu32_mask(t0, _mm512_setzero_epi32());
+            return (t1 == 0xFFFF);
         }
         // HADD
         inline uint32_t hadd() const {
@@ -1202,27 +1202,58 @@ namespace SIMD {
         }
         // PACKLO
         inline SIMDVec_u & packlo(SIMDVec_u<uint32_t, 8> const & a) {
+#if defined(__AVX512DQ__)
             mVec = _mm512_inserti32x8(mVec, a.mVec, 0);
+#else
+            alignas(64) uint32_t raw[16];
+            _mm256_store_si256((__m256i*)raw, a.mVec);
+            mVec = _mm512_mask_load_epi32(mVec, 0x00FF, raw);
+#endif
             return *this;
         }
         // PACKHI
         inline SIMDVec_u & packhi(SIMDVec_u<uint32_t, 8> const & b) {
+#if defined(__AVX512DQ__)
             mVec = _mm512_inserti32x8(mVec, b.mVec, 1);
+#else
+            alignas(64) uint32_t raw[16];
+            _mm256_store_si256((__m256i*)(raw + 8), b.mVec);
+            mVec = _mm512_mask_load_epi32(mVec, 0xFF00, raw);
+#endif
             return *this;
         }
         // UNPACK
         inline void unpack(SIMDVec_u<uint32_t, 8> & a, SIMDVec_u<uint32_t, 8> & b) const {
+#if defined(__AVX512DQ__)
             a.mVec = _mm512_extracti32x8_epi32(mVec, 0);
             b.mVec = _mm512_extracti32x8_epi32(mVec, 1);
+#else
+            alignas(64) uint32_t raw[16];
+            _mm512_store_epi32(raw, mVec);
+            a.mVec = _mm256_load_si256((__m256i *)raw);
+            b.mVec = _mm256_load_si256((__m256i *)(raw + 8));
+#endif
         }
         // UNPACKLO
         inline SIMDVec_u<uint32_t, 8> unpacklo() const {
+#if defined(__AVX512DQ__)
             __m256i t0 = _mm512_extracti32x8_epi32(mVec, 0);
+#else
+            alignas(64) uint32_t raw[16];
+            _mm512_store_epi32(raw, mVec);
+            __m256i t0 = _mm256_load_si256((__m256i *)raw);
+#endif
             return SIMDVec_u<uint32_t, 8>(t0);
         }
         // UNPACKHI
         inline SIMDVec_u<uint32_t, 8> unpackhi() const {
+#if defined(__AVX512DQ__)
             __m256i t0 = _mm512_extracti32x8_epi32(mVec, 1);
+#else
+            alignas(64) uint32_t raw[16];
+            _mm512_store_epi32(raw, mVec);
+            __m256i t0 = _mm256_load_si256((__m256i *)(raw + 8));
+#endif
             return SIMDVec_u<uint32_t, 8>(t0);
         }
 
