@@ -1318,6 +1318,7 @@ namespace SIMD {
         }
         // ISFIN
         inline SIMDVecMask<32> isfin() const {
+#if defined(__AVX512DQ__)
             __mmask16 m0 = _mm512_fpclass_ps_mask(mVec[0], 0x08);
             __mmask16 m1 = _mm512_fpclass_ps_mask(mVec[1], 0x08);
             __mmask16 m2 = _mm512_fpclass_ps_mask(mVec[0], 0x10);
@@ -1325,10 +1326,15 @@ namespace SIMD {
             __mmask16 m4 = (~m0) & (~m1);
             __mmask16 m5 = (~m2) & (~m3);
             __mmask32 m6 = m4 | (m5 << 16);
+#else
+            // TODO: KNL/SKX implementations
+            __mmask32 m6;
+#endif
             return SIMDVecMask<32>(m6);
         }
         // ISINF
         inline SIMDVecMask<32> isinf() const {
+#if defined(__AVX512DQ__)
             __mmask16 m0 = _mm512_fpclass_ps_mask(mVec[0], 0x08);
             __mmask16 m1 = _mm512_fpclass_ps_mask(mVec[1], 0x08);
             __mmask16 m2 = _mm512_fpclass_ps_mask(mVec[0], 0x10);
@@ -1336,10 +1342,15 @@ namespace SIMD {
             __mmask16 m4 = m0 | m1;
             __mmask16 m5 = m2 | m3;
             __mmask32 m6 = m4 | (m5 << 16);
+#else
+            // TODO: KNL/SKX implementations
+            __mmask32 m6;
+#endif
             return SIMDVecMask<32>(m6);
         }
         // ISAN
         inline SIMDVecMask<32> isan() const {
+#if defined(__AVX512DQ__)
             __mmask16 m0 = _mm512_fpclass_ps_mask(mVec[0], 0x01);
             __mmask16 m1 = _mm512_fpclass_ps_mask(mVec[1], 0x01);
             __mmask16 m2 = _mm512_fpclass_ps_mask(mVec[0], 0x80);
@@ -1347,10 +1358,15 @@ namespace SIMD {
             __mmask16 m4 = (~m0) & (~m2);
             __mmask16 m5 = (~m1) & (~m3);
             __mmask32 m6 = m4 | (m5 << 16);
+#else
+            // TODO: KNL/SKX implementations
+            __mmask32 m6;
+#endif
             return SIMDVecMask<32>(m6);
         }
         // ISNAN
         inline SIMDVecMask<32> isnan() const {
+#if defined(__AVX512DQ__)
             __mmask16 m0 = _mm512_fpclass_ps_mask(mVec[0], 0x01);
             __mmask16 m1 = _mm512_fpclass_ps_mask(mVec[1], 0x01);
             __mmask16 m2 = _mm512_fpclass_ps_mask(mVec[0], 0x80);
@@ -1358,10 +1374,15 @@ namespace SIMD {
             __mmask16 m4 = m0 | m2;
             __mmask16 m5 = m1 | m3;
             __mmask32 m6 = m4 | (m5 << 16);
+#else
+            // TODO: KNL/SKX implementations
+            __mmask32 m6;
+#endif
             return SIMDVecMask<32>(m6);
         }
         // ISNORM
         inline SIMDVecMask<32> isnorm() const {
+#if defined(__AVX512DQ__)
             __mmask16 m0 = ~_mm512_fpclass_ps_mask(mVec[0], 0x01);
             __mmask16 m1 = ~_mm512_fpclass_ps_mask(mVec[0], 0x02);
             __mmask16 m2 = ~_mm512_fpclass_ps_mask(mVec[0], 0x04);
@@ -1379,17 +1400,27 @@ namespace SIMD {
             m6 = ~_mm512_fpclass_ps_mask(mVec[1], 0x80);
             __mmask16 m8 = m0 & m1 & m2 & m3 & m4 & m5 & m6;
             __mmask32 m9 = m7 | (m8 << 16);
+#else
+            // TODO: KNL/SKX implementations
+            __mmask32 m9;
+#endif
             return SIMDVecMask<32>(m9);
         }
         // ISSUB
         inline SIMDVecMask<32> issub() const {
+#if defined(__AVX512DQ__)
             __mmask16 m0 = _mm512_fpclass_ps_mask(mVec[0], 0x20);
             __mmask16 m1 = _mm512_fpclass_ps_mask(mVec[1], 0x20);
             __mmask32 m2 = m0 | (m1 << 16);
+#else
+            // TODO: KNL/SKX implementations
+            __mmask32 m2;
+#endif
             return SIMDVecMask<32>(m2);
         }
         // ISZERO
         inline SIMDVecMask<32> iszero() const {
+#if defined(__AVX512DQ__)
             __mmask16 m0 = _mm512_fpclass_ps_mask(mVec[0], 0x02);
             __mmask16 m1 = _mm512_fpclass_ps_mask(mVec[1], 0x02);
             __mmask16 m2 = _mm512_fpclass_ps_mask(mVec[0], 0x04);
@@ -1397,10 +1428,15 @@ namespace SIMD {
             __mmask16 m4 = m0 | m2;
             __mmask16 m5 = m1 | m3;
             __mmask32 m6 = m4 | (m5 << 16);
+#else
+            // TODO: KNL/SKX implementations
+            __mmask32 m6;
+#endif
             return SIMDVecMask<32>(m6);
         }
         // ISZEROSUB
         inline SIMDVecMask<32> iszerosub() const {
+#if defined(__AVX512DQ__)
             __mmask16 m0 = _mm512_fpclass_ps_mask(mVec[0], 0x02);
             __mmask16 m1 = _mm512_fpclass_ps_mask(mVec[0], 0x04);
             __mmask16 m2 = _mm512_fpclass_ps_mask(mVec[0], 0x20);
@@ -1410,6 +1446,10 @@ namespace SIMD {
             m2 = _mm512_fpclass_ps_mask(mVec[1], 0x20);
             __mmask16 m4 = m0 | m1 | m2;
             __mmask32 m5 = m3 | (m4 << 16);
+#else
+            // TODO: KNL/SKX implementations
+            __mmask32 m5;
+#endif
             return SIMDVecMask<32>(m5);
         }
         // SIN

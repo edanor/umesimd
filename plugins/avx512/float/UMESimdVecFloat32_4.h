@@ -198,7 +198,7 @@ namespace SIMD {
         // MADDS
         inline SIMDVec_f add(SIMDVecMask<4> const & mask, float b) const {
 #if defined(__AVX512VL__)
-            __m128 t0 = _mm_mask_add_ps(mVec, mask.mMask, mVec, _m512_set1_ps(b));
+            __m128 t0 = _mm_mask_add_ps(mVec, mask.mMask, mVec, _mm_set1_ps(b));
 #else
             __m512 t1 = _mm512_castps128_ps512(mVec);
             __m512 t2 = _mm512_set1_ps(b);
@@ -232,7 +232,7 @@ namespace SIMD {
         // MADDSA
         inline SIMDVec_f & adda(SIMDVecMask<4> const & mask, float b) {
 #if defined(__AVX512VL__)
-            mVec = _mm_mask_add_ps(mVec, mask.mMask, mVec, _m512_set1_ps(b));
+            mVec = _mm_mask_add_ps(mVec, mask.mMask, mVec, _mm_set1_ps(b));
 #else
             __m512 t0 = _mm512_castps128_ps512(mVec);
             __m512 t1 = _mm512_set1_ps(b);
@@ -264,7 +264,7 @@ namespace SIMD {
         inline SIMDVec_f postinc(SIMDVecMask<4> const & mask) {
             __m128 t0 = mVec;
 #if defined(__AVX512VL__)
-            mVec = _mm_mask_add_ps(mVec, mask.mMask, mVec, _m512_set1_ps(1.0f));
+            mVec = _mm_mask_add_ps(mVec, mask.mMask, mVec, _mm_set1_ps(1.0f));
 #else
             __m512 t1 = _mm512_castps128_ps512(mVec);
             __m512 t2 = _mm512_set1_ps(1.0f);
@@ -285,7 +285,7 @@ namespace SIMD {
         // MPREFINC
         inline SIMDVec_f & prefinc(SIMDVecMask<4> const & mask) {
 #if defined(__AVX512VL__)
-            mVec = _mm_mask_add_ps(mVec, mask.mMask, mVec, _m512_set1_ps(1.0f));
+            mVec = _mm_mask_add_ps(mVec, mask.mMask, mVec, _mm_set1_ps(1.0f));
 #else
             __m512 t0 = _mm512_castps128_ps512(mVec);
             __m512 t1 = _mm512_set1_ps(1.0f);
@@ -717,7 +717,7 @@ namespace SIMD {
 #if defined(__AVX512VL__)
             __m128 t0 = _mm_set1_ps(b);
             __m128 t1 = _mm_mask_rcp14_ps(mVec, mask.mMask, mVec);
-            mVec = _mm_mask_mul_ps(t0, t1);
+            mVec = _mm_mask_mul_ps(t1, mask.mMask, t0, t1);
             return *this;
 #else
             __m512 t0 = _mm512_set1_ps(b);
@@ -986,7 +986,7 @@ namespace SIMD {
         // FMULSUBV
         inline SIMDVec_f fmulsub(SIMDVec_f const & b, SIMDVec_f const & c) {
 #if defined(__AVX512VL__)
-            __m128 t0 = _mm_mask_fmsub_ps(mVec, mask.mMask, b.mVec, c.mVec);
+            __m128 t0 = _mm_fmsub_ps(mVec, b.mVec, c.mVec);
 #else
             __m512 t1 = _mm512_castps128_ps512(mVec);
             __m512 t2 = _mm512_castps128_ps512(b.mVec);
@@ -1556,7 +1556,7 @@ namespace SIMD {
         // ISSUB
         inline SIMDVecMask<4> issub() const {
 #if defined (__AVX512VL__) && defined (__AVX512DQ__)
-            __mmask8 t0 = 0xF & _mm_fpclass_ps_mask(mVec, 0x20);
+            __mmask8 m0 = 0xF & _mm_fpclass_ps_mask(mVec, 0x20);
 #elif defined (__AVX512DQ__)
             __m512 t0 = _mm512_castps128_ps512(mVec);
             __mmask8 m0 = 0xF & _mm512_fpclass_ps_mask(t0, 0x20);

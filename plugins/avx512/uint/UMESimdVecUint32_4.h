@@ -597,9 +597,6 @@ namespace SIMD {
 #if defined(__AVX512VL__)
             __mmask8 m0 = _mm_cmpeq_epu32_mask(mVec, b.mVec);
 #else
-            // TODO: This can be implemented using cast to 512b vectors, but I am interested
-            // in what is the performance of this method. This should be updated after
-            // instruction microbenchmarks are defined.
             __m128i t0 = _mm_cmpeq_epi32(mVec, b.mVec);
             __mmask8 m0 = m128i_to_mask8(t0);
 #endif
@@ -1246,7 +1243,7 @@ namespace SIMD {
         inline SIMDVec_u bxor(SIMDVecMask<4> const & mask, uint32_t b) const {
 #if defined(__AVX512VL__)
             __m128i t0 = _mm_set1_epi32(b);
-            __m128i t1 = _mm_mask_xor_epi32(mVec, mask.mMask, mVec, b.mVec);
+            __m128i t1 = _mm_mask_xor_epi32(mVec, mask.mMask, mVec, t0);
 #else
             __m512i t0 = _mm512_castsi128_si512(mVec);
             __m512i t2 = _mm512_set1_epi32(b);
@@ -1293,32 +1290,26 @@ namespace SIMD {
         }
         // BNOT
         inline SIMDVec_u bnot() const {
-#if defined(__AVX512VL__)
             __m128i t0 = _mm_set1_epi32(0xFFFFFFFF);
-            __m128i t1 = _mm_mask_andnot_epi32(mVec, 0xFF, mVec, t0);
-#else
-            __m512i t0 = _mm512_set1_epi32(0xFFFFFFFF);
-            __m512i t2 = _mm512_castsi128_si512(mVec);
-            __m512i t3 = _mm512_andnot_epi32(t2, t0);
-            __m128i t1 = _mm512_castsi512_si128(t3);
-#endif
+            __m128i t1 = _mm_xor_si128(mVec, t0);
             return SIMDVec_u(t1);
         }
         // MBNOT
         inline SIMDVec_u bnot(SIMDVecMask<4> const & mask) const {
 #if defined(__AVX512VL__)
             __m128i t0 = _mm_set1_epi32(0xFFFFFFFF);
-            __m128i t1 = _mm_mask_andnot_epi32(mVec, mask.mMask, mVec, t0);
+            __m128i t1 = _mm_mask_xor_epi32(mVec, mask.mMask, mVec, t0);
 #else
             __m512i t0 = _mm512_set1_epi32(0xFFFFFFFF);
             __m512i t2 = _mm512_castsi128_si512(mVec);
-            __m512i t3 = _mm512_mask_andnot_epi32(t2, mask.mMask, t2, t0);
+            __m512i t3 = _mm512_mask_xor_epi32(t2, mask.mMask, t2, t0);
             __m128i t1 = _mm512_castsi512_si128(t3);
 #endif
             return SIMDVec_u(t1);
         }
         // BNOTA
         inline SIMDVec_u & bnota() {
+//TODO: replace with XOR
 #if defined(__AVX512VL__)
             __m128i t0 = _mm_set1_epi32(0xFFFFFFFF);
             mVec = _mm_mask_andnot_epi32(mVec, 0xFF, mVec, t0);
@@ -1432,17 +1423,21 @@ namespace SIMD {
 
         // GATHERS
         inline SIMDVec_u & gather(uint32_t* baseAddr, uint64_t* indices) {
-            alignas(16) uint32_t raw[4] = { baseAddr[indices[0]], baseAddr[indices[1]], baseAddr[indices[2]], baseAddr[indices[3]] };
+            alignas(16) uint32_t raw[4] = { 
+                baseAddr[indices[0]], baseAddr[indices[1]], 
+                baseAddr[indices[2]], baseAddr[indices[3]] };
             mVec = _mm_load_si128((__m128i*)raw);
             return *this;
         }
         // MGATHERS
         inline SIMDVec_u & gather(SIMDVecMask<4> const & mask, uint32_t* baseAddr, uint64_t* indices) {
-            alignas(16) uint32_t raw[4] = { baseAddr[indices[0]], baseAddr[indices[1]], baseAddr[indices[2]], baseAddr[indices[3]] };
+            alignas(16) uint32_t raw[4] = { 
+                baseAddr[indices[0]], baseAddr[indices[1]], 
+                baseAddr[indices[2]], baseAddr[indices[3]] };
 #if defined(__AVX512VL__)
             mVec = _mm_mask_load_epi32(mVec, mask.mMask, raw);
 #else
-            __m128i t0 = _mm_loadu_si128((__m128i*)raw);
+            __m128i t0 = _mm_load_si128((__m128i*)raw);
             __m128i m0 = mask8_to_m128i(mask.mMask);
             mVec = _mm_blendv_epi8(mVec, t0, m0);
 #endif
@@ -1510,7 +1505,7 @@ namespace SIMD {
         // SCATTERV
         inline uint32_t* scatter(uint32_t* baseAddr, SIMDVec_u const & indices) {
 #if defined(__AVX512VL__)
-            _mm_i32scatter_epi32(baseAddr, indices.mVec, mVec, 1);
+            _mm_i32scatter_epi32(baseAddr, indices.mVec, mVec, 4);
 #else
             alignas(16) uint32_t rawIndices[4];
             alignas(16) uint32_t rawValues[4];
