@@ -80,6 +80,13 @@ int test_UME_SIMD2_8u(bool supressMessages) {
         CHECK_CONDITION(vec0.length() == 2, "ZERO-CONSTR");
     }
 
+    genericUintTest<
+        SIMD2_8u, uint8_t,
+        SIMD2_8i, int8_t,
+        SIMDMask2,
+        2,
+        DataSet_1_8u>();
+
     return g_failCount;
 }
 
@@ -105,6 +112,13 @@ int test_UME_SIMD2_8i(bool supressMessages) {
         CHECK_CONDITION(vec2[1] == -121, "ADDV(operator+)");
     }
 
+    genericIntTest<
+        SIMD2_8i, int8_t,
+        SIMD2_8u, uint8_t,
+        SIMDMask2,
+        2,
+        DataSet_1_8i>();
+
     return g_failCount;
 }
 
@@ -117,6 +131,13 @@ int test_UME_SIMD1_16u(bool supressMessages) {
         SIMD1_16u vec0;
         CHECK_CONDITION(vec0.length() == 1, "ZERO-CONSTR");
     }
+
+    genericUintTest<
+        SIMD1_16u, uint16_t,
+        SIMD1_16i, int16_t,
+        SIMDMask1,
+        1,
+        DataSet_1_16u>();
 
     return g_failCount;
 }
@@ -141,6 +162,13 @@ int test_UME_SIMD1_16i(bool supressMessages) {
         SIMD1_16i vec2 = vec0 + vec1;
         CHECK_CONDITION(vec2[0] == -5118, "ADDV(operator+)");
     }
+
+    genericIntTest<
+        SIMD1_16i, int16_t,
+        SIMD1_16u, uint16_t,
+        SIMDMask1,
+        1,
+        DataSet_1_16i>();
 
     return g_failCount;
 }

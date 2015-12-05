@@ -33,7 +33,9 @@
 
 #include <iostream>
 #include "../UMEBasicTypes.h"
-#include "UMEUnitTestDataSets.h"
+#include "UMEUnitTestDataSets8.h"
+#include "UMEUnitTestDataSets16.h"
+#include "UMEUnitTestDataSets32.h"
 
 int g_totalTests = 0;
 int g_totalFailed = 0;
@@ -114,6 +116,58 @@ bool valueInRange(int32_t value, int32_t expectedValue, float errMargin) {
     return valueInRange((float)value, (float)expectedValue, errMargin);
 }
 
+bool valuesExact(uint8_t const *values, uint8_t const *expectedValues, unsigned int count)
+{
+    bool retval = true;
+    for (unsigned int i = 0; i < count; i++) {
+        if (values[i] != expectedValues[i])
+        {
+            retval = false;
+            break;
+        }
+    }
+    return retval;
+}
+
+bool valuesExact(int8_t const *values, int8_t const *expectedValues, unsigned int count)
+{
+    bool retval = true;
+    for (unsigned int i = 0; i < count; i++) {
+        if (values[i] != expectedValues[i])
+        {
+            retval = false;
+            break;
+        }
+    }
+    return retval;
+}
+
+bool valuesExact(uint16_t const *values, uint16_t const *expectedValues, unsigned int count)
+{
+    bool retval = true;
+    for (unsigned int i = 0; i < count; i++) {
+        if (values[i] != expectedValues[i])
+        {
+            retval = false;
+            break;
+        }
+    }
+    return retval;
+}
+
+bool valuesExact(int16_t const *values, int16_t const *expectedValues, unsigned int count)
+{
+    bool retval = true;
+    for (unsigned int i = 0; i < count; i++) {
+        if (values[i] != expectedValues[i])
+        {
+            retval = false;
+            break;
+        }
+    }
+    return retval;
+}
+
 bool valuesExact(int32_t const *values, int32_t const *expectedValues, unsigned int count) 
 {
     bool retval = true;
@@ -180,6 +234,26 @@ bool valuesInRange(double const *values, double const *expectedValues, unsigned 
 }
 
 // This is a dirty hack to use the same testing function for both int and float types... 
+bool valuesInRange(uint8_t const *values, uint8_t const *expectedValues, unsigned int count, double errMargin)
+{
+    return valuesExact(values, expectedValues, count);
+}
+
+bool valuesInRange(int8_t const *values, int8_t const *expectedValues, unsigned int count, double errMargin)
+{
+    return valuesExact(values, expectedValues, count);
+}
+
+bool valuesInRange(uint16_t const *values, uint16_t const *expectedValues, unsigned int count, double errMargin)
+{
+    return valuesExact(values, expectedValues, count);
+}
+
+bool valuesInRange(int16_t const *values, int16_t const *expectedValues, unsigned int count, double errMargin)
+{
+    return valuesExact(values, expectedValues, count);
+}
+
 bool valuesInRange(uint32_t const *values, uint32_t const *expectedValues, unsigned int count, double errMargin)
 {
     return valuesExact(values, expectedValues, count);
@@ -2071,7 +2145,7 @@ void genericMFMULADDVTest()
     MASK_TYPE mask(DATA_SET::inputs::maskA);
     VEC_TYPE vec3 = vec0.fmuladd(mask, vec1, vec2);
     vec3.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MFMULADD, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::MFMULADDV, VEC_LEN, 0.01f);
     CHECK_CONDITION(inRange, "MFMULADDV");
 }
     
@@ -3224,28 +3298,79 @@ void genericMCTANTest()
     bool inRange = valuesInRange(values, DATA_SET::outputs::MCTAN, VEC_LEN, 0.1f);
     CHECK_CONDITION(inRange, "MCTAN");
 }
-template<typename VEC_TYPE, typename SCALAR_TYPE, typename VEC_INT_TYPE, int VEC_LEN, typename DATA_SET>
-void genericITOFTest()
+
+template<typename UINT_VEC_TYPE, typename INT_VEC_TYPE, typename INT_SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
+void genericUTOITest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_INT_TYPE vec0(DATA_SET::inputs::inputIntA);
-    VEC_TYPE vec1;
-    vec1 = VEC_TYPE(vec0);
-    vec1.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::ITOF, VEC_LEN, 0.1f);
-    CHECK_CONDITION(inRange, "ITOF");
+    INT_SCALAR_TYPE intValues[VEC_LEN];
+    UINT_VEC_TYPE vec0(DATA_SET::inputs::inputA);
+    INT_VEC_TYPE vec1;
+    vec1 = INT_VEC_TYPE(vec0);
+    vec1.store(intValues);
+    bool inRange = valuesInRange(intValues, DATA_SET::outputs::UTOI, VEC_LEN, 0.1f);
+    CHECK_CONDITION(inRange, "UTOI");
 }
-template<typename VEC_TYPE, typename SCALAR_TYPE, typename VEC_UINT_TYPE, int VEC_LEN, typename DATA_SET>
+
+template<typename UINT_VEC_TYPE, typename FLOAT_VEC_TYPE, typename FLOAT_SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericUTOFTest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_UINT_TYPE vec0(DATA_SET::inputs::inputUintA);
-    VEC_TYPE vec1;
-    vec1 = VEC_TYPE(vec0);
-    vec1.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::UTOF, VEC_LEN, 0.1f);
+    FLOAT_SCALAR_TYPE floatValues[VEC_LEN];
+    UINT_VEC_TYPE vec0(DATA_SET::inputs::inputA);
+    FLOAT_VEC_TYPE vec1;
+    vec1 = FLOAT_VEC_TYPE(vec0);
+    vec1.store(floatValues);
+    bool inRange = valuesInRange(floatValues, DATA_SET::outputs::UTOF, VEC_LEN, 0.1f);
     CHECK_CONDITION(inRange, "UTOF");
 }
+
+template<typename INT_VEC_TYPE, typename UINT_VEC_TYPE, typename UINT_SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
+void genericITOUTest()
+{
+    UINT_SCALAR_TYPE uintValues[VEC_LEN];
+    INT_VEC_TYPE vec0(DATA_SET::inputs::inputA);
+    UINT_VEC_TYPE vec1;
+    vec1 = UINT_VEC_TYPE(vec0);
+    vec1.store(uintValues);
+    bool inRange = valuesInRange(uintValues, DATA_SET::outputs::ITOU, VEC_LEN, 0.1f);
+    CHECK_CONDITION(inRange, "ITOU");
+}
+
+template<typename INT_VEC_TYPE, typename FLOAT_VEC_TYPE, typename FLOAT_SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
+void genericITOFTest()
+{
+    FLOAT_SCALAR_TYPE floatValues[VEC_LEN];
+    INT_VEC_TYPE vec0(DATA_SET::inputs::inputA);
+    FLOAT_VEC_TYPE vec1;
+    vec1 = FLOAT_VEC_TYPE(vec0);
+    vec1.store(floatValues);
+    bool inRange = valuesInRange(floatValues, DATA_SET::outputs::ITOF, VEC_LEN, 0.1f);
+    CHECK_CONDITION(inRange, "ITOF");
+}
+
+template<typename FLOAT_VEC_TYPE, typename UINT_VEC_TYPE, typename UINT_SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
+void genericFTOUTest()
+{
+    UINT_SCALAR_TYPE uintValues[VEC_LEN];
+    FLOAT_VEC_TYPE vec0(DATA_SET::inputs::inputA);
+    UINT_VEC_TYPE vec1;
+    vec1 = UINT_VEC_TYPE(vec0);
+    vec1.store(uintValues);
+    bool inRange = valuesInRange(uintValues, DATA_SET::outputs::FTOU, VEC_LEN, 0.1f);
+    CHECK_CONDITION(inRange, "FTOU");
+}
+
+template<typename FLOAT_VEC_TYPE, typename INT_VEC_TYPE, typename INT_SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
+void genericFTOITest()
+{
+    INT_SCALAR_TYPE intValues[VEC_LEN];
+    FLOAT_VEC_TYPE vec0(DATA_SET::inputs::inputA);
+    INT_VEC_TYPE vec1;
+    vec1 = INT_VEC_TYPE(vec0);
+    vec1.store(intValues);
+    bool inRange = valuesInRange(intValues, DATA_SET::outputs::FTOI, VEC_LEN, 0.1f);
+    CHECK_CONDITION(inRange, "FTOI");
+}
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericBaseInterfaceTest()
 {   
@@ -3568,34 +3693,96 @@ void genericMaskTest() {
     genericHLXORTest<MASK_TYPE, VEC_LEN, DATA_SET> ();
 }
 
-template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
+template<
+        typename UINT_VEC_TYPE,
+        typename UINT_SCALAR_TYPE,
+        typename INT_VEC_TYPE,
+        typename INT_SCALAR_TYPE,
+        typename FLOAT_VEC_TYPE,
+        typename FLOAT_SCALAR_TYPE,
+        typename MASK_TYPE,
+        int VEC_LEN,
+        typename DATA_SET>
 void genericUintTest() {
-    genericBaseInterfaceTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET> ();
-    genericBitwiseInterfaceTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET> ();
-    genericGatherScatterInterfaceTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET> ();
-    genericShiftRotateInterfaceTest<VEC_TYPE, VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>(); 
+    genericBaseInterfaceTest<UINT_VEC_TYPE, UINT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET> ();
+    genericBitwiseInterfaceTest<UINT_VEC_TYPE, UINT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET> ();
+    genericGatherScatterInterfaceTest<UINT_VEC_TYPE, UINT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET> ();
+    genericShiftRotateInterfaceTest<UINT_VEC_TYPE, UINT_VEC_TYPE, UINT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericUTOITest<UINT_VEC_TYPE, INT_VEC_TYPE, INT_SCALAR_TYPE, VEC_LEN, DATA_SET> ();
+    genericUTOFTest<UINT_VEC_TYPE, FLOAT_VEC_TYPE, FLOAT_SCALAR_TYPE, VEC_LEN, DATA_SET> ();
 }
 
-template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
+// Special version for scalars that don't have corresponding float scalar (e.g. uint8_t)
+template<
+    typename UINT_VEC_TYPE,
+    typename UINT_SCALAR_TYPE,
+    typename INT_VEC_TYPE,
+    typename INT_SCALAR_TYPE,
+    typename MASK_TYPE,
+    int VEC_LEN,
+    typename DATA_SET>
+    void genericUintTest() {
+    genericBaseInterfaceTest<UINT_VEC_TYPE, UINT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericBitwiseInterfaceTest<UINT_VEC_TYPE, UINT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericGatherScatterInterfaceTest<UINT_VEC_TYPE, UINT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericShiftRotateInterfaceTest<UINT_VEC_TYPE, UINT_VEC_TYPE, UINT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericUTOITest<UINT_VEC_TYPE, INT_VEC_TYPE, INT_SCALAR_TYPE, VEC_LEN, DATA_SET>();
+}
+
+template<
+        typename INT_VEC_TYPE,
+        typename INT_SCALAR_TYPE,
+        typename UINT_VEC_TYPE,
+        typename UINT_SCALAR_TYPE,
+        typename FLOAT_VEC_TYPE,
+        typename FLOAT_SCALAR_TYPE,
+        typename MASK_TYPE,
+        int VEC_LEN,
+        typename DATA_SET>
 void genericIntTest() {
-    genericBaseInterfaceTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET> ();
-    genericBitwiseInterfaceTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET> ();
-    genericGatherScatterInterfaceTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET> ();
-    genericShiftRotateInterfaceTest<VEC_TYPE, UINT_VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
-    genericSignInterfaceTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericBaseInterfaceTest<INT_VEC_TYPE, INT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET> ();
+    genericBitwiseInterfaceTest<INT_VEC_TYPE, INT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET> ();
+    genericGatherScatterInterfaceTest<INT_VEC_TYPE, INT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET> ();
+    genericShiftRotateInterfaceTest<INT_VEC_TYPE, UINT_VEC_TYPE, INT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericSignInterfaceTest<INT_VEC_TYPE, INT_SCALAR_TYPE  , MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericITOUTest<INT_VEC_TYPE, UINT_VEC_TYPE, UINT_SCALAR_TYPE, VEC_LEN, DATA_SET>();
+    genericITOFTest<INT_VEC_TYPE, FLOAT_VEC_TYPE, FLOAT_SCALAR_TYPE, VEC_LEN, DATA_SET>();
 }
 
-template<typename VEC_TYPE, typename SCALAR_TYPE, typename VEC_UINT_TYPE, typename VEC_INT_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
-void genericFloatTest() {
-    genericBaseInterfaceTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET> ();
-    genericGatherScatterInterfaceTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET> ();
-    genericSignInterfaceTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
-    genericFloatInterfaceTest<VEC_TYPE, SCALAR_TYPE, VEC_INT_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+template<
+    typename INT_VEC_TYPE,
+    typename INT_SCALAR_TYPE,
+    typename UINT_VEC_TYPE,
+    typename UINT_SCALAR_TYPE,
+    typename MASK_TYPE,
+    int VEC_LEN,
+    typename DATA_SET>
+void genericIntTest() {
+    genericBaseInterfaceTest<INT_VEC_TYPE, INT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericBitwiseInterfaceTest<INT_VEC_TYPE, INT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericGatherScatterInterfaceTest<INT_VEC_TYPE, INT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericShiftRotateInterfaceTest<INT_VEC_TYPE, UINT_VEC_TYPE, INT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericSignInterfaceTest<INT_VEC_TYPE, INT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericITOUTest<INT_VEC_TYPE, UINT_VEC_TYPE, UINT_SCALAR_TYPE, VEC_LEN, DATA_SET>();
+}
 
-    genericITOFTest<VEC_TYPE, SCALAR_TYPE, VEC_INT_TYPE, VEC_LEN, DATA_SET>();
-    genericUTOFTest<VEC_TYPE, SCALAR_TYPE, VEC_UINT_TYPE, VEC_LEN, DATA_SET>();
-   
-    //genericFTOITest<VEC_TYPE, SCALAR_TYPE, VEC_INT_TYPE, VEC_LEN, DATA_SET>();
+template<
+        typename FLOAT_VEC_TYPE, 
+        typename FLOAT_SCALAR_TYPE,
+        typename UINT_VEC_TYPE,
+        typename UINT_SCALAR_TYPE,
+        typename INT_VEC_TYPE,
+        typename INT_SCALAR_TYPE,
+        typename MASK_TYPE,
+        int VEC_LEN,
+        typename DATA_SET>
+void genericFloatTest() {
+    genericBaseInterfaceTest<FLOAT_VEC_TYPE, FLOAT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET> ();
+    genericGatherScatterInterfaceTest<FLOAT_VEC_TYPE, FLOAT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET> ();
+    genericSignInterfaceTest<FLOAT_VEC_TYPE, FLOAT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericFloatInterfaceTest<FLOAT_VEC_TYPE, FLOAT_SCALAR_TYPE, INT_VEC_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericFTOUTest<FLOAT_VEC_TYPE, UINT_VEC_TYPE, UINT_SCALAR_TYPE, VEC_LEN, DATA_SET>();
+    genericFTOITest<FLOAT_VEC_TYPE, INT_VEC_TYPE, INT_SCALAR_TYPE, VEC_LEN, DATA_SET>();
 }
 
 #endif

@@ -119,6 +119,13 @@ int test_UME_SIMD32_8u(bool supressMessages)
         CHECK_CONDITION(a == 29 && b == 19, "SET-CONSTR");
     }
 
+    genericUintTest<
+        SIMD32_8u, uint8_t,
+        SIMD32_8i, int8_t,
+        SIMDMask32,
+        32,
+        DataSet_1_8u>();
+
     return g_failCount;
 }
 
@@ -132,6 +139,13 @@ int test_UME_SIMD32_8i(bool supressMessages)
         CHECK_CONDITION(true, "ZERO-CONSTR"); 
     }
 
+    genericIntTest<
+        SIMD32_8i, int8_t,
+        SIMD32_8u, uint8_t,
+        SIMDMask32,
+        32,
+        DataSet_1_8i>();
+
     return g_failCount;
 }
 
@@ -144,6 +158,13 @@ int test_UME_SIMD16_16u(bool supressMessages)
         SIMD16_16u vec0;
         CHECK_CONDITION(true, "ZERO-CONSTR"); 
     }
+
+    genericUintTest<
+        SIMD16_16u, uint16_t,
+        SIMD16_16i, int16_t,
+        SIMDMask16,
+        16,
+        DataSet_1_16u>();
 
     return g_failCount;
 }
@@ -191,6 +212,14 @@ int test_UME_SIMD16_16i(bool supressMessages)
         }
         CHECK_CONDITION(res, "LOADA");
     }
+
+    genericIntTest<
+        SIMD16_16i, int16_t,
+        SIMD16_16u, uint16_t,
+        SIMDMask16,
+        16,
+        DataSet_1_16i>();
+
     return g_failCount;
 }
 
@@ -199,7 +228,14 @@ int test_UME_SIMD8_32u(bool supressMessages)
     char header[] = "UME::SIMD::SIMD8_32u test";
     INIT_TEST(header, supressMessages);
     
-    genericUintTest<SIMD8_32u, uint32_t, SIMDMask8, 8, DataSet_1_32u>();
+    genericUintTest<
+        SIMD8_32u, uint32_t,
+        SIMD8_32i, int32_t,
+        SIMD8_32f, float,
+        SIMDMask8,
+        8,
+        DataSet_1_32u>();
+
     {
         SIMD8_32u vec0;
         CHECK_CONDITION(true, "ZERO-CONSTR"); 
@@ -367,6 +403,14 @@ int test_UME_SIMD8_32i(bool supressMessages) {
     char header[] = "UME::SIMD::SIMD8_32i test";
     INIT_TEST(header, supressMessages);
 
+    genericIntTest<
+        SIMD8_32i, int32_t,
+        SIMD8_32u, uint32_t,
+        SIMD8_32f, float,
+        SIMDMask8,
+        8,
+        DataSet_1_32i>();
+
     {
         SIMD8_32i vec12;
         CHECK_CONDITION(true, "ZERO-CONSTR()"); 
@@ -375,7 +419,6 @@ int test_UME_SIMD8_32i(bool supressMessages) {
         SIMD8_32i vec0( -1, -2, -3, -4, 1,  2,  3, 4);
         CHECK_CONDITION(vec0[0] == -1 && vec0[7] == 4, "FULL-CONSTR"); 
     }
-    genericIntTest<SIMD8_32i, SIMD8_32u, int32_t, SIMDMask8, 8, DataSet_1_32i>();
     {
         SIMD8_32i vec0(-42);
         SIMD8_32i vec1(999);
@@ -444,7 +487,13 @@ int test_UME_SIMD8_32f(bool supressMessages)
         CHECK_CONDITION(vec1[0] == -1.0f && vec1[6] == 7.0f, "operator=");
     }
     
-    genericFloatTest<SIMD8_32f, float, SIMD8_32u, SIMD8_32i, SIMDMask8, 8, DataSet_1_32f>();
+    genericFloatTest<
+        SIMD8_32f, float,
+        SIMD8_32u, uint32_t,
+        SIMD8_32i, int32_t,
+        SIMDMask8,
+        8,
+        DataSet_1_32f>();
 
     {
         SIMD8_32f vec0(-4.23f);

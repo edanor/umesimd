@@ -111,6 +111,13 @@ int test_UME_SIMD128_8u(bool supressMessages) {
         CHECK_CONDITION(true, "ZERO-CONSTR");
     }
 
+    genericUintTest<
+        SIMD128_8u, uint8_t,
+        SIMD128_8i, int8_t,
+        SIMDMask128,
+        128,
+        DataSet_1_8u>();
+
     return g_failCount;
 }
 
@@ -123,6 +130,13 @@ int test_UME_SIMD128_8i(bool supressMessages) {
         SIMD128_8i vec0;
         CHECK_CONDITION(true, "ZERO-CONSTR");
     }
+
+    genericIntTest<
+        SIMD128_8i, int8_t,
+        SIMD128_8u, uint8_t,
+        SIMDMask128,
+        128,
+        DataSet_1_8i>();
 
     return g_failCount;
 }
@@ -137,6 +151,13 @@ int test_UME_SIMD64_16u(bool supressMessages) {
         CHECK_CONDITION(true, "ZERO-CONSTR");
     }
 
+    genericUintTest<
+        SIMD64_16u, uint16_t,
+        SIMD64_16i, int16_t,
+        SIMDMask64,
+        64,
+        DataSet_1_16u>();
+
     return g_failCount;
 }
 
@@ -150,6 +171,13 @@ int test_UME_SIMD64_16i(bool supressMessages) {
         CHECK_CONDITION(true, "ZERO-CONSTR");
     }
 
+    genericIntTest<
+        SIMD64_16i, int16_t,
+        SIMD64_16u, uint16_t,
+        SIMDMask64,
+        64,
+        DataSet_1_16i>();
+
     return g_failCount;
 }
 
@@ -157,12 +185,19 @@ int test_UME_SIMD32_32u(bool supressMessages) {
     
     char header[] = "UME::SIMD::SIMD32_32u test";
     INIT_TEST(header, supressMessages);
-    
+
+    genericUintTest<
+        SIMD32_32u, uint32_t,
+        SIMD32_32i, int32_t,
+        SIMD32_32f, float,
+        SIMDMask32,
+        32,
+        DataSet_1_32u>();
+
     {
         SIMD32_32u vec0;
         CHECK_CONDITION(true, "ZERO-CONSTR");
     }
-    genericUintTest<SIMD32_32u, uint32_t, SIMDMask32, 32, DataSet_1_32u>();
 
 
     return g_failCount;
@@ -172,13 +207,21 @@ int test_UME_SIMD32_32i(bool supressMessages) {
     
     char header[] = "UME::SIMD::SIMD32_32i test";
     INIT_TEST(header, supressMessages);
-    
+
+    genericIntTest<
+        SIMD32_32i, int32_t,
+        SIMD32_32u, uint32_t,
+        SIMD32_32f, float,
+        SIMDMask32,
+        32,
+        DataSet_1_32i>();
+
     {
         SIMD32_32i vec0;
         CHECK_CONDITION(true, "ZERO-CONSTR");
     }
 
-    genericIntTest<SIMD32_32i, SIMD32_32u, int32_t, SIMDMask32, 32, DataSet_1_32i>();
+
 
     return g_failCount;
 }
@@ -193,7 +236,13 @@ int test_UME_SIMD32_32f(bool supressMessages) {
         CHECK_CONDITION(true, "ZERO-CONSTR");
     }
     
-    genericFloatTest<SIMD32_32f, float, SIMD32_32u, SIMD32_32i, SIMDMask32, 32, DataSet_1_32f>();
+    genericFloatTest<
+        SIMD32_32f, float,
+        SIMD32_32u, uint32_t,
+        SIMD32_32i, int32_t,
+        SIMDMask32,
+        32,
+        DataSet_1_32f>();
 
     return g_failCount;
 }

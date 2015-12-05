@@ -27,8 +27,8 @@
 //  "ICE-DIP is a European Industrial Doctorate project funded by the European Community's 
 //  7th Framework programme Marie Curie Actions under grant PITN-GA-2012-316596".
 //
-#ifndef UME_UNIT_TEST_DATA_SETS_H_
-#define UME_UNIT_TEST_DATA_SETS_H_
+#ifndef UME_UNIT_TEST_DATA_SETS_32_H_
+#define UME_UNIT_TEST_DATA_SETS_32_H_
 
 #include "../UMEBasicTypes.h"
 
@@ -138,7 +138,7 @@ struct DataSet_1_32u {
         static const uint32_t MHBXORS[32];
 
         static const uint32_t FMULADDV[32];
-        static const uint32_t MFMULADD[32];
+        static const uint32_t MFMULADDV[32];
         static const uint32_t FMULSUBV[32];
         static const uint32_t MFMULSUBV[32];
         static const uint32_t FADDMULV[32];
@@ -178,6 +178,9 @@ struct DataSet_1_32u {
         static const uint32_t MRORV[32];
         static const uint32_t RORS[32];
         static const uint32_t MRORS[32];
+
+        static const int32_t UTOI[32];
+        static const float   UTOF[32];
     };
 };
 
@@ -271,7 +274,7 @@ struct DataSet_1_32i {
         static const int32_t MHBXORS[32];
 
         static const int32_t FMULADDV[32];
-        static const int32_t MFMULADD[32];
+        static const int32_t MFMULADDV[32];
         static const int32_t FMULSUBV[32];
         static const int32_t MFMULSUBV[32];
         static const int32_t FADDMULV[32];
@@ -317,6 +320,9 @@ struct DataSet_1_32i {
         static const int32_t MNEG[32];
         static const int32_t ABS[32];
         static const int32_t MABS[32];
+
+        static const uint32_t ITOU[32];
+        static const float    ITOF[32];
     };
 };
 
@@ -381,7 +387,7 @@ struct DataSet_1_32f {
         static const float MHMUL[32];
 
         static const float FMULADDV[32];
-        static const float MFMULADD[32];
+        static const float MFMULADDV[32];
         static const float FMULSUBV[32];
         static const float MFMULSUBV[32];
         static const float FADDMULV[32];
@@ -436,8 +442,8 @@ struct DataSet_1_32f {
         static const float CTAN[32];
         static const float MCTAN[32];
 
-        static const float ITOF[32];
-        static const float UTOF[32];
+        static const uint32_t FTOU[32];
+        static const int32_t  FTOI[32];
     };
 };
 
