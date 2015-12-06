@@ -464,6 +464,13 @@ int test_UME_SIMD8_64u(bool supressMessages) {
         CHECK_CONDITION(true, "ZERO-CONSTR");
     }
 
+    genericUintTest<
+        SIMD8_64u, uint64_t,
+        SIMD8_64i, int64_t,
+        SIMD8_64f, double,
+        SIMDMask8,
+        8,
+        DataSet_1_64u>();
 
     return g_failCount;
 }
@@ -604,6 +611,14 @@ int test_UME_SIMD8_64i(bool supressMessages) {
                         vec0[6] == 24 &&
                         vec0[7] == 69805794224242688, "MRORSA");
     }
+
+    genericIntTest<
+        SIMD8_64i, int64_t,
+        SIMD8_64u, uint64_t,
+        SIMDMask8,
+        8,
+        DataSet_1_64i>();
+
     return g_failCount;
 }
 

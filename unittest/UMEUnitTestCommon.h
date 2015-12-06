@@ -36,6 +36,7 @@
 #include "UMEUnitTestDataSets8.h"
 #include "UMEUnitTestDataSets16.h"
 #include "UMEUnitTestDataSets32.h"
+#include "UMEUnitTestDataSets64.h"
 
 int g_totalTests = 0;
 int g_totalFailed = 0;
@@ -113,6 +114,14 @@ bool valueInRange(uint32_t value, uint32_t expectedValue, float errMargin) {
 }
 
 bool valueInRange(int32_t value, int32_t expectedValue, float errMargin) {
+    return valueInRange((float)value, (float)expectedValue, errMargin);
+}
+
+bool valueInRange(uint64_t value, uint64_t expectedValue, float errMargin) {
+    return valueInRange((float)value, (float)expectedValue, errMargin);
+}
+
+bool valueInRange(int64_t value, int64_t expectedValue, float errMargin) {
     return valueInRange((float)value, (float)expectedValue, errMargin);
 }
 
@@ -194,6 +203,32 @@ bool valuesExact(uint32_t const *values, uint32_t const *expectedValues, unsigne
     return retval;
 }
 
+bool valuesExact(int64_t const *values, int64_t const *expectedValues, unsigned int count)
+{
+    bool retval = true;
+    for (unsigned int i = 0; i < count; i++) {
+        if (values[i] != expectedValues[i])
+        {
+            retval = false;
+            break;
+        }
+    }
+    return retval;
+}
+
+bool valuesExact(uint64_t const *values, uint64_t const *expectedValues, unsigned int count)
+{
+    bool retval = true;
+    for (unsigned int i = 0; i < count; i++) {
+        if (values[i] != expectedValues[i])
+        {
+            retval = false;
+            break;
+        }
+    }
+    return retval;
+}
+
 bool valuesExact(bool const *values, bool const *expectedValues, unsigned int count)
 {
     bool retval = true;
@@ -259,8 +294,17 @@ bool valuesInRange(uint32_t const *values, uint32_t const *expectedValues, unsig
     return valuesExact(values, expectedValues, count);
 }
 
-// This is a dirty hack to use the same testing function for both int and float types... 
+bool valuesInRange(uint64_t const *values, uint64_t const *expectedValues, unsigned int count, double errMargin)
+{
+    return valuesExact(values, expectedValues, count);
+}
+
 bool valuesInRange(int32_t const *values, int32_t const *expectedValues, unsigned int count, double errMargin)
+{
+    return valuesExact(values, expectedValues, count);
+}
+
+bool valuesInRange(int64_t const *values, int64_t const *expectedValues, unsigned int count, double errMargin)
 {
     return valuesExact(values, expectedValues, count);
 }

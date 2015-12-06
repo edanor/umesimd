@@ -257,6 +257,14 @@ int test_UME_SIMD1_64u(bool supressMessages) {
         CHECK_CONDITION(vec0.length() == 1, "ZERO-CONSTR");
     }
 
+    genericUintTest<
+        SIMD1_64u, uint64_t,
+        SIMD1_64i, int64_t,
+        SIMD1_64f, double,
+        SIMDMask1,
+        1,
+        DataSet_1_64u>();
+
     return g_failCount;
 }
 
@@ -269,6 +277,13 @@ int test_UME_SIMD1_64i(bool supressMessages) {
         SIMD1_64i vec0;
         CHECK_CONDITION(vec0.length() == 1, "ZERO-CONSTR");
     }
+
+    genericIntTest<
+        SIMD1_64i, int64_t,
+        SIMD1_64u, uint64_t,
+        SIMDMask1,
+        1,
+        DataSet_1_64i>();
 
     return g_failCount;
 }
