@@ -207,6 +207,19 @@ namespace SIMD {
             return *this;
         }
         // MADDVA   - Masked add with vector and assign
+        inline SIMDVec_f & adda(SIMDVecMask<8> const & mask, SIMDVec_f const & b) {
+            __m256d t0 = _mm256_add_pd(mVecLo, b.mVecLo);
+            __m128i t1 = _mm256_extractf128_si256(mask.mMask, 0);
+            __m256d m0 = _mm256_cvtepi32_pd(t1);
+            mVecLo = _mm256_blendv_pd(mVecLo, t0, m0);
+
+            t0 = _mm256_add_pd(mVecHi, b.mVecHi);
+            t1 = _mm256_extractf128_si256(mask.mMask, 1);
+            m0 = _mm256_cvtepi32_pd(t1);
+            mVecHi = _mm256_blendv_pd(mVecLo, t0, m0);
+
+            return *this;
+        }
         // ADDSA    - Add with scalar and assign
         inline SIMDVec_f & adda(double b) {
             mVecLo = _mm256_add_pd(this->mVecLo, _mm256_set1_pd(b));
@@ -214,6 +227,19 @@ namespace SIMD {
             return *this;
         }
         // MADDSA   - Masked add with scalar and assign
+        inline SIMDVec_f & adda(SIMDVecMask<8> const & mask, double b) {
+            __m256d t0 = _mm256_add_pd(mVecLo, _mm256_set1_pd(b));
+            __m128i t1 = _mm256_extractf128_si256(mask.mMask, 0);
+            __m256d m0 = _mm256_cvtepi32_pd(t1);
+            mVecLo = _mm256_blendv_pd(mVecLo, t0, m0);
+
+            t0 = _mm256_add_pd(mVecHi, _mm256_set1_pd(b));
+            t1 = _mm256_extractf128_si256(mask.mMask, 1);
+            m0 = _mm256_cvtepi32_pd(t1);
+            mVecHi = _mm256_blendv_pd(mVecLo, t0, m0);
+
+            return *this;
+        }
         // SADDV    - Saturated add with vector
         // MSADDV   - Masked saturated add with vector
         // SADDS    - Saturated add with scalar

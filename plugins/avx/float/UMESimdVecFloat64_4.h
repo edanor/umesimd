@@ -141,7 +141,7 @@ namespace SIMD {
         }
         // STORE   - Store vector content into memory (either aligned or unaligned)
         inline double* store(double* p) {
-            _mm256_store_pd(p, mVec);
+            _mm256_storeu_pd(p, mVec);
             return p;
         }
         // MSTORE  - Masked store vector content into memory (either aligned or
@@ -199,12 +199,25 @@ namespace SIMD {
             return *this;
         }
         // MADDVA   - Masked add with vector and assign
+        inline SIMDVec_f & adda(SIMDVecMask<4> const & mask, SIMDVec_f const & b) {
+            __m256d t0 = _mm256_add_pd(mVec, b.mVec);
+            __m256d m0 = _mm256_cvtepi32_pd(mask.mMask);
+            mVec = _mm256_blendv_pd(mVec, t0, m0);
+            return *this;
+        }
         // ADDSA    - Add with scalar and assign
         inline SIMDVec_f & adda(double b) {
             mVec = _mm256_add_pd(this->mVec, _mm256_set1_pd(b));
             return *this;
         }
         // MADDSA   - Masked add with scalar and assign
+        inline SIMDVec_f & adda(SIMDVecMask<4> const & mask, double b) {
+            __m256d t0 = _mm256_set1_pd(b);
+            __m256d t1 = _mm256_add_pd(mVec, t0);
+            __m256d m0 = _mm256_cvtepi32_pd(mask.mMask);
+            mVec = _mm256_blendv_pd(mVec, t1, m0);
+            return *this;
+        }
         // SADDV    - Saturated add with vector
         // MSADDV   - Masked saturated add with vector
         // SADDS    - Saturated add with scalar

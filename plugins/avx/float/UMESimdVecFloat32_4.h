@@ -249,6 +249,10 @@ namespace SIMD {
             __m128 t0 = _mm_mul_ps(mVec, b.mVec);
             return SIMDVec_f(t0);
         }
+        inline SIMDVec_f operator*(SIMDVec_f const & b) {
+            __m128 t0 = _mm_mul_ps(mVec, b.mVec);
+            return SIMDVec_f(t0);
+        }
         // MMULV  - Masked multiplication with vector
         inline SIMDVec_f mul(SIMDVecMask<4> const & mask, SIMDVec_f const & b) const {
             __m128 t0 = _mm_mul_ps(mVec, b.mVec);
@@ -256,6 +260,9 @@ namespace SIMD {
         }
         // MULS   - Multiplication with scalar
         inline SIMDVec_f mul(float b) {
+            return SIMDVec_f(_mm_mul_ps(mVec, _mm_set1_ps(b)));
+        }
+        inline SIMDVec_f operator* (float b) {
             return SIMDVec_f(_mm_mul_ps(mVec, _mm_set1_ps(b)));
         }
         // MMULS  - Masked multiplication with scalar
