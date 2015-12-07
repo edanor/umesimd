@@ -136,7 +136,7 @@ namespace SIMD {
     }
 
     inline SIMDVec_u<uint32_t, 16>::operator SIMDVec_i<int32_t, 16>() const {
-        return SIMDVec_u<uint32_t, 16>(this->mVecLo, this->mVecHi);
+        return SIMDVec_i<int32_t, 16>(this->mVecLo, this->mVecHi);
     }
 
     template<>

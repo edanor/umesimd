@@ -39,5 +39,26 @@
 #include <inttypes.h>
 #endif //_MSC_VER
 
+// Templates require a terminating symbol that can be passed as parameter when behaviour
+// is invalid/unfefined or a type doesn't exist. NullType creates a way of handling boundary
+// values without a need to re-define existing templates. This type should never be initialized
+// but it might be used for specifying special template cases.
+class NullType {
+private:
+    NullType() {};  // This type should never be allowed to be created
+    ~NullType() {}; // or destroyed
+};
+
+// Typedefs for non-existing data types will prove useful for removing potential
+// coding errors.
+typedef NullType float8_t;
+typedef NullType float16_t;
+typedef NullType float128_t;
+
+typedef NullType uint4_t;
+typedef NullType uint128_t;
+
+typedef NullType int4_t;
+typedef NullType int128_t;
 
 #endif

@@ -394,11 +394,69 @@ namespace SIMD {
         inline operator SIMDVec_i<SCALAR_INT_TYPE, 1>() const;
     };
 
-    template<uint32_t VEC_LEN>
-    class SIMDVec_f<DummyFloat, VEC_LEN> final
+    template<>
+    class SIMDVec_f<NullType, 1> final
     {
+    private:
+        SIMDVec_f() {}
+        ~SIMDVec_f() {}
     };
 
+    template<>
+    class SIMDVec_f<NullType, 2> final
+    {
+    private:
+        SIMDVec_f() {}
+        ~SIMDVec_f() {}
+    };
+
+    template<>
+    class SIMDVec_f<NullType, 4> final
+    {
+    private:
+        SIMDVec_f() {}
+        ~SIMDVec_f() {}
+    };
+
+    template<>
+    class SIMDVec_f<NullType, 8> final
+    {
+    private:
+        SIMDVec_f() {}
+        ~SIMDVec_f() {}
+    };
+
+    template<>
+    class SIMDVec_f<NullType, 16> final
+    {
+    private:
+        SIMDVec_f() {}
+        ~SIMDVec_f() {}
+    };
+
+    template<>
+    class SIMDVec_f<NullType, 32> final
+    {
+    private:
+        SIMDVec_f() {}
+        ~SIMDVec_f() {}
+    };
+
+    template<>
+    class SIMDVec_f<NullType, 64> final
+    {
+    private:
+        SIMDVec_f() {}
+        ~SIMDVec_f() {}
+    };
+
+    template<>
+    class SIMDVec_f<NullType, 128> final
+    {
+    private:
+        SIMDVec_f() {}
+        ~SIMDVec_f() {}
+    };
 }
 }
 

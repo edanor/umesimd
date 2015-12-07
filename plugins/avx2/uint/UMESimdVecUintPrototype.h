@@ -33,7 +33,6 @@
 
 #include <type_traits>
 #include "../../../UMESimdInterface.h"
-#include "../../scalar/UMESimdMimicScalarTypes.h"
 #include <immintrin.h>
 
 #include "../UMESimdMaskAVX2.h"

@@ -35,7 +35,6 @@
 #include <immintrin.h>
 
 #include "../../../UMESimdInterface.h"
-#include "../../scalar/UMESimdMimicScalarTypes.h"
 
 #include "../UMESimdMaskKNC.h"
 #include "../UMESimdSwizzleKNC.h"

@@ -34,7 +34,6 @@
 #include <type_traits>
 #include <immintrin.h>
 #include "../../../UMESimdInterface.h"
-#include "../../scalar/UMESimdMimicScalarTypes.h"
 
 #include "../UMESimdMaskAVX512.h"
 #include "../UMESimdSwizzleAVX512.h"

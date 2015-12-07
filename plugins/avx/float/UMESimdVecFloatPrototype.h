@@ -395,9 +395,10 @@ namespace SIMD {
     };
 
     template<uint32_t VEC_LEN>
-    class SIMDVec_f<DummyFloat, VEC_LEN> final
-    {
-    };
+    class SIMDVec_f<NullType, VEC_LEN> {};
+
+    template<>
+    class SIMDVec_f<NullType, 1> {};
 
 }
 }

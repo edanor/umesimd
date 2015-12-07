@@ -34,7 +34,6 @@
 #include <type_traits>
 
 #include "../../../UMESimdInterface.h"
-#include "../../scalar/UMESimdMimicScalarTypes.h"
 
 #include "../UMESimdMaskScalar.h"
 #include "../UMESimdSwizzleScalar.h"
@@ -57,6 +56,8 @@ namespace SIMD {
         typedef float8_t          SCALAR_FLOAT_TYPE;
         typedef SIMDVecMask<1>    MASK_TYPE;
         typedef SIMDVecSwizzle<1> SWIZZLE_MASK_TYPE;
+        typedef uint4_t           SCALAR_UINT_LOWER_PRECISION;
+        typedef uint16_t          SCALAR_UINT_HIGHER_PRECISION;
     };
 
     // 16b vectors
@@ -75,6 +76,9 @@ namespace SIMD {
         typedef float16_t           SCALAR_FLOAT_TYPE;
         typedef SIMDVecMask<1>      MASK_TYPE;
         typedef SIMDVecSwizzle<1>   SWIZZLE_MASK_TYPE;
+
+        typedef uint8_t             SCALAR_UINT_LOWER_PRECISION;
+        typedef uint32_t            SCALAR_UINT_HIGHER_PRECISION;
     };
 
     // 32b vectors
@@ -102,6 +106,9 @@ namespace SIMD {
         typedef float               SCALAR_FLOAT_TYPE;
         typedef SIMDVecMask<1>      MASK_TYPE;
         typedef SIMDVecSwizzle<1>   SWIZZLE_MASK_TYPE;
+
+        typedef uint16_t            SCALAR_UINT_LOWER_PRECISION;
+        typedef uint64_t            SCALAR_UINT_HIGHER_PRECISION;
     };
 
     // 64b vectors
@@ -138,6 +145,9 @@ namespace SIMD {
         typedef double              SCALAR_FLOAT_TYPE;
         typedef SIMDVecMask<1>      MASK_TYPE;
         typedef SIMDVecSwizzle<1>   SWIZZLE_MASK_TYPE;
+
+        typedef uint32_t            SCALAR_UINT_LOWER_PRECISION;
+        typedef uint128_t           SCALAR_UINT_HIGHER_PRECISION;
     };
 
     // 128b vectors
@@ -265,7 +275,7 @@ namespace SIMD {
     struct SIMDVec_u_traits<uint16_t, 64> {
         typedef SIMDVec_u<uint16_t, 32> HALF_LEN_VEC_TYPE;
         typedef int16_t                 SCALAR_INT_TYPE;
-        typedef float16_t              SCALAR_FLOAT_TYPE;
+        typedef float16_t               SCALAR_FLOAT_TYPE;
         typedef SIMDVecMask<64>         MASK_TYPE;
         typedef SIMDVecSwizzle<64>      SWIZZLE_MASK_TYPE;
     };
@@ -315,6 +325,9 @@ namespace SIMD {
         typedef typename SIMDVec_u_traits<SCALAR_UINT_TYPE, VEC_LEN>::SCALAR_INT_TYPE    SCALAR_INT_TYPE;
         typedef typename SIMDVec_u_traits<SCALAR_UINT_TYPE, VEC_LEN>::SCALAR_FLOAT_TYPE  SCALAR_FLOAT_TYPE;
         typedef typename SIMDVec_u_traits<SCALAR_UINT_TYPE, VEC_LEN>::MASK_TYPE          MASK_TYPE;
+
+      //  typedef typename SIMDVec_u_traits<SCALAR_UINT_TYPE, VEC_LEN>::SCALAR_UINT_LOWER_PRECISION  SCALAR_UINT_LOWER_PRECISION;
+      //  typedef typename SIMDVec_u_traits<SCALAR_UINT_TYPE, VEC_LEN>::SCALAR_UINT_HIGHER_PRECISION SCALAR_UINT_HIGHER_PRECISION;
 
         // Conversion operators require access to private members.
         friend class SIMDVec_i<SCALAR_INT_TYPE, VEC_LEN>;
@@ -414,6 +427,9 @@ namespace SIMD {
         typedef typename SIMDVec_u_traits<SCALAR_UINT_TYPE, 1>::SCALAR_INT_TYPE   SCALAR_INT_TYPE;
         typedef typename SIMDVec_u_traits<SCALAR_UINT_TYPE, 1>::SCALAR_FLOAT_TYPE SCALAR_FLOAT_TYPE;
 
+        typedef typename SIMDVec_u_traits<SCALAR_UINT_TYPE, 1>::SCALAR_UINT_LOWER_PRECISION  SCALAR_UINT_LOWER_PRECISION;
+        typedef typename SIMDVec_u_traits<SCALAR_UINT_TYPE, 1>::SCALAR_UINT_HIGHER_PRECISION SCALAR_UINT_HIGHER_PRECISION;
+
         // Conversion operators require access to private members.
         friend class SIMDVec_i<SCALAR_INT_TYPE, 1>;
 
@@ -452,6 +468,11 @@ namespace SIMD {
             return true;
         }
 
+        // DEGRADE
+        inline operator SIMDVec_u<SCALAR_UINT_LOWER_PRECISION, 1>() const;
+        // PROMOTE
+        inline operator SIMDVec_u<SCALAR_UINT_HIGHER_PRECISION, 1>() const;
+
         // UTOI
         inline operator SIMDVec_i<SCALAR_INT_TYPE, 1>() const;
 
@@ -459,6 +480,69 @@ namespace SIMD {
         inline operator SIMDVec_f<SCALAR_FLOAT_TYPE, 1>() const;
     };
 
+    template<>
+    class SIMDVec_u<NullType, 1> final
+    {
+    private:
+        SIMDVec_u() {}
+        ~SIMDVec_u() {}
+    };
+
+    template<>
+    class SIMDVec_u<NullType, 2> final
+    {
+    private:
+        SIMDVec_u() {}
+        ~SIMDVec_u() {}
+    };
+
+    template<>
+    class SIMDVec_u<NullType, 4> final
+    {
+    private:
+        SIMDVec_u() {}
+        ~SIMDVec_u() {}
+    };
+
+    template<>
+    class SIMDVec_u<NullType, 8> final
+    {
+    private:
+        SIMDVec_u() {}
+        ~SIMDVec_u() {}
+    };
+
+    template<>
+    class SIMDVec_u<NullType, 16> final
+    {
+    private:
+        SIMDVec_u() {}
+        ~SIMDVec_u() {}
+    };
+
+    template<>
+    class SIMDVec_u<NullType, 32> final
+    {
+    private:
+        SIMDVec_u() {}
+        ~SIMDVec_u() {}
+    };
+
+    template<>
+    class SIMDVec_u<NullType, 64> final
+    {
+    private:
+        SIMDVec_u() {}
+        ~SIMDVec_u() {}
+    };
+
+    template<>
+    class SIMDVec_u<NullType, 128> final
+    {
+    private:
+        SIMDVec_u() {}
+        ~SIMDVec_u() {}
+    };
 }
 }
 

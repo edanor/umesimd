@@ -33,7 +33,6 @@
 
 #include <type_traits>
 #include "../../../UMESimdInterface.h"
-#include "../../scalar/UMESimdMimicScalarTypes.h"
 
 #include "../UMESimdMaskScalar.h"
 #include "../UMESimdSwizzleScalar.h"
@@ -485,6 +484,69 @@ namespace SIMD {
         inline operator SIMDVec_f<SCALAR_FLOAT_TYPE, 1>() const;
     };
 
+    template<>
+    class SIMDVec_i<NullType, 1> final
+    {
+    private:
+        SIMDVec_i() {}
+        ~SIMDVec_i() {}
+    };
+
+    template<>
+    class SIMDVec_i<NullType, 2> final
+    {
+    private:
+        SIMDVec_i() {}
+        ~SIMDVec_i() {}
+    };
+
+    template<>
+    class SIMDVec_i<NullType, 4> final
+    {
+    private:
+        SIMDVec_i() {}
+        ~SIMDVec_i() {}
+    };
+
+    template<>
+    class SIMDVec_i<NullType, 8> final
+    {
+    private:
+        SIMDVec_i() {}
+        ~SIMDVec_i() {}
+    };
+
+    template<>
+    class SIMDVec_i<NullType, 16> final
+    {
+    private:
+        SIMDVec_i() {}
+        ~SIMDVec_i() {}
+    };
+
+    template<>
+    class SIMDVec_i<NullType, 32> final
+    {
+    private:
+        SIMDVec_i() {}
+        ~SIMDVec_i() {}
+    };
+
+    template<>
+    class SIMDVec_i<NullType, 64> final
+    {
+    private:
+        SIMDVec_i() {}
+        ~SIMDVec_i() {}
+    };
+
+    template<>
+    class SIMDVec_i<NullType, 128> final
+    {
+    private:
+        SIMDVec_i() {}
+        ~SIMDVec_i() {}
+    };
 }
 }
 
