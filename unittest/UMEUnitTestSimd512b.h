@@ -655,6 +655,14 @@ int test_UME_SIMD8_64f(bool supressMessages) {
         CHECK_CONDITION(valuesInRange(values, expected, 8, 0.1), "ADDVA(operator+=)");
     }
 
+    genericFloatTest<
+        SIMD8_64f, double,
+        SIMD8_64u, uint64_t,
+        SIMD8_64i, int64_t,
+        SIMDMask8,
+        8,
+        DataSet_1_64f>();
+
     return g_failCount;
 }
 

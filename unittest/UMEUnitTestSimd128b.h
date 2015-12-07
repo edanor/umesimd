@@ -3291,6 +3291,14 @@ int test_UME_SIMD2_64f(bool supressMessages)
         CHECK_CONDITION(true, "ZERO-CONSTR"); 
     }
 
+    genericFloatTest<
+        SIMD2_64f, double,
+        SIMD2_64u, uint64_t,
+        SIMD2_64i, int64_t,
+        SIMDMask2,
+        2,
+        DataSet_1_64f>();
+
     return g_failCount;
 }
 

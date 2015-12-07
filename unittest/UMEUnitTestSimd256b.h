@@ -712,6 +712,14 @@ int test_UME_SIMD4_64f(bool supressMessages)
         CHECK_CONDITION(valuesInRange(values, expected, 4, 0.1), "MSTOREA");
     }
 
+    genericFloatTest<
+        SIMD4_64f, double,
+        SIMD4_64u, uint64_t,
+        SIMD4_64i, int64_t,
+        SIMDMask4,
+        4,
+        DataSet_1_64f>();
+
     return g_failCount;
 }
 

@@ -298,6 +298,14 @@ int test_UME_SIMD16_64f(bool supressMessages) {
         CHECK_CONDITION(true, "ZERO-CONSTR");
     }
 
+    genericFloatTest<
+        SIMD16_64f, double,
+        SIMD16_64u, uint64_t,
+        SIMD16_64i, int64_t,
+        SIMDMask16,
+        16,
+        DataSet_1_64f>();
+
 
     return g_failCount;
 }

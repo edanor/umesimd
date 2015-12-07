@@ -608,7 +608,7 @@ void genericADDVTest()
         VEC_TYPE vec1(DATA_SET::inputs::inputB);
         VEC_TYPE vec2 = vec0.add(vec1);
         vec2.store(values);
-        bool inRange = valuesInRange(values, DATA_SET::outputs::ADDV, VEC_LEN, 0.01f);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::ADDV, VEC_LEN, SCALAR_TYPE(0.01f));
         CHECK_CONDITION(inRange, "ADDV");
     }
     {
@@ -617,7 +617,7 @@ void genericADDVTest()
         VEC_TYPE vec1(DATA_SET::inputs::inputB);
         VEC_TYPE vec2 = vec0 + vec1;
         vec2.store(values);
-        bool inRange = valuesInRange(values, DATA_SET::outputs::ADDV, VEC_LEN, 0.01f);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::ADDV, VEC_LEN, SCALAR_TYPE(0.01f));
         CHECK_CONDITION(inRange, "ADDV(operator+)");
     }   
 }
@@ -632,7 +632,7 @@ void genericMADDVTest()
         MASK_TYPE mask(DATA_SET::inputs::maskA);
         VEC_TYPE vec2 = vec0.add(mask, vec1);
         vec2.store(values);
-        bool inRange = valuesInRange(values, DATA_SET::outputs::MADDV, VEC_LEN, 0.01f);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MADDV, VEC_LEN, SCALAR_TYPE(0.01f));
         CHECK_CONDITION(inRange, "MADDV");
     }
 }
@@ -644,7 +644,7 @@ void genericADDSTest()
     VEC_TYPE vec0(DATA_SET::inputs::inputA);
     VEC_TYPE vec1 = vec0.add(DATA_SET::inputs::scalarA);
     vec1.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::ADDS, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::ADDS, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "ADDS");
 }
     
@@ -656,7 +656,7 @@ void genericMADDSTest()
     MASK_TYPE mask(DATA_SET::inputs::maskA);
     VEC_TYPE vec2 = vec0.add(mask, DATA_SET::inputs::scalarA);
     vec2.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MADDS, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::MADDS, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MADDS");
 }
     
@@ -669,7 +669,7 @@ void genericADDVATest()
         VEC_TYPE vec1(DATA_SET::inputs::inputB);
         vec0.adda(vec1);
         vec0.store(values);
-        bool inRange = valuesInRange(values, DATA_SET::outputs::ADDV, VEC_LEN, 0.01f);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::ADDV, VEC_LEN, SCALAR_TYPE(0.01f));
         CHECK_CONDITION(inRange, "ADDVA");
     }
     {
@@ -678,7 +678,7 @@ void genericADDVATest()
         VEC_TYPE vec1(DATA_SET::inputs::inputB);
         vec0 += vec1;
         vec0.store(values);
-        bool inRange = valuesInRange(values, DATA_SET::outputs::ADDV, VEC_LEN, 0.01f);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::ADDV, VEC_LEN, SCALAR_TYPE(0.01f));
         CHECK_CONDITION(inRange, "ADDVA(operator+=)");
     }
 }
@@ -693,7 +693,7 @@ void genericMADDVATest()
         MASK_TYPE mask(DATA_SET::inputs::maskA);
         vec0.adda(mask, vec1);
         vec0.store(values);
-        bool inRange = valuesInRange(values, DATA_SET::outputs::MADDV, VEC_LEN, 0.01f);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MADDV, VEC_LEN, SCALAR_TYPE(0.01f));
         CHECK_CONDITION(inRange, "MADDVA");
     }
     {
@@ -703,7 +703,7 @@ void genericMADDVATest()
         MASK_TYPE mask(DATA_SET::inputs::maskA);
         vec0[mask] += vec1;
         vec0.store(values);
-        bool inRange = valuesInRange(values, DATA_SET::outputs::MADDV, VEC_LEN, 0.01f);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MADDV, VEC_LEN, SCALAR_TYPE(0.01f));
         CHECK_CONDITION(inRange, "MADDVA(vec[mask] +=)");
     }
 }
@@ -715,7 +715,7 @@ void genericADDSATest()
     VEC_TYPE vec0(DATA_SET::inputs::inputA);
     vec0.adda(DATA_SET::inputs::scalarA);
     vec0.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::ADDS, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::ADDS, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "ADDSA");
 }
 
@@ -727,7 +727,7 @@ void genericMADDSATest()
     MASK_TYPE mask(DATA_SET::inputs::maskA);
     vec0.adda(mask, DATA_SET::inputs::scalarA);
     vec0.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MADDS, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::MADDS, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MADDSA");
 }
     
@@ -741,8 +741,8 @@ void genericPOSTINCTest()
         VEC_TYPE vec1 = vec0.postinc();
         vec0.store(values0);
         vec1.store(values1);
-        bool inRange0 = valuesInRange(values0, DATA_SET::outputs::POSTPREFINC, VEC_LEN, 0.01f);
-        bool inRange1 = valuesInRange(values1, DATA_SET::inputs::inputA, VEC_LEN, 0.01f);
+        bool inRange0 = valuesInRange(values0, DATA_SET::outputs::POSTPREFINC, VEC_LEN, SCALAR_TYPE(0.01f));
+        bool inRange1 = valuesInRange(values1, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
         CHECK_CONDITION(inRange0 && inRange1, "POSTINC");
     }
     {
@@ -752,8 +752,8 @@ void genericPOSTINCTest()
         VEC_TYPE vec1 = vec0++;
         vec0.store(values0);
         vec1.store(values1);
-        bool inRange0 = valuesInRange(values0, DATA_SET::outputs::POSTPREFINC, VEC_LEN, 0.01f);
-        bool inRange1 = valuesInRange(values1, DATA_SET::inputs::inputA, VEC_LEN, 0.01f);
+        bool inRange0 = valuesInRange(values0, DATA_SET::outputs::POSTPREFINC, VEC_LEN, SCALAR_TYPE(0.01f));
+        bool inRange1 = valuesInRange(values1, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
         CHECK_CONDITION(inRange0 && inRange1, "POSTINC(operator++(int))");
     }
 }
@@ -768,8 +768,8 @@ void genericMPOSTINCTest()
     VEC_TYPE vec1 = vec0.postinc(mask);
     vec0.store(values0);
     vec1.store(values1);
-    bool inRange0 = valuesInRange(values0, DATA_SET::outputs::MPOSTPREFINC, VEC_LEN, 0.01f);
-    bool inRange1 = valuesInRange(values1, DATA_SET::inputs::inputA, VEC_LEN, 0.01f);
+    bool inRange0 = valuesInRange(values0, DATA_SET::outputs::MPOSTPREFINC, VEC_LEN, SCALAR_TYPE(0.01f));
+    bool inRange1 = valuesInRange(values1, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange0 && inRange1, "MPOSTINC");
 }
     
@@ -783,8 +783,8 @@ void genericPREFINCTest()
         VEC_TYPE vec1 = vec0.prefinc();
         vec0.store(values0);
         vec1.store(values1);
-        bool inRange0 = valuesInRange(values0, DATA_SET::outputs::POSTPREFINC, VEC_LEN, 0.01f);
-        bool inRange1 = valuesInRange(values1, DATA_SET::outputs::POSTPREFINC, VEC_LEN, 0.01f);
+        bool inRange0 = valuesInRange(values0, DATA_SET::outputs::POSTPREFINC, VEC_LEN, SCALAR_TYPE(0.01f));
+        bool inRange1 = valuesInRange(values1, DATA_SET::outputs::POSTPREFINC, VEC_LEN, SCALAR_TYPE(0.01f));
         CHECK_CONDITION(inRange0 && inRange1, "PREFINC");
     }
     {
@@ -794,8 +794,8 @@ void genericPREFINCTest()
         VEC_TYPE vec1 = ++vec0;
         vec0.store(values0);
         vec1.store(values1);
-        bool inRange0 = valuesInRange(values0, DATA_SET::outputs::POSTPREFINC, VEC_LEN, 0.01f);
-        bool inRange1 = valuesInRange(values1, DATA_SET::outputs::POSTPREFINC, VEC_LEN, 0.01f);
+        bool inRange0 = valuesInRange(values0, DATA_SET::outputs::POSTPREFINC, VEC_LEN, SCALAR_TYPE(0.01f));
+        bool inRange1 = valuesInRange(values1, DATA_SET::outputs::POSTPREFINC, VEC_LEN, SCALAR_TYPE(0.01f));
         CHECK_CONDITION(inRange0 && inRange1, "PREFINC(operator++())");
     }
 }
@@ -811,8 +811,8 @@ void genericMPREFINCTest()
         VEC_TYPE vec1 = vec0.prefinc(mask);
         vec0.store(values0);
         vec1.store(values1);
-        bool inRange0 = valuesInRange(values0, DATA_SET::outputs::MPOSTPREFINC, VEC_LEN, 0.01f);
-        bool inRange1 = valuesInRange(values1, DATA_SET::outputs::MPOSTPREFINC, VEC_LEN, 0.01f);
+        bool inRange0 = valuesInRange(values0, DATA_SET::outputs::MPOSTPREFINC, VEC_LEN, SCALAR_TYPE(0.01f));
+        bool inRange1 = valuesInRange(values1, DATA_SET::outputs::MPOSTPREFINC, VEC_LEN, SCALAR_TYPE(0.01f));
         CHECK_CONDITION(inRange0 && inRange1, "MPREFINC");
     }
 }
@@ -826,7 +826,7 @@ void genericSUBVTest()
         VEC_TYPE vec1(DATA_SET::inputs::inputB);
         VEC_TYPE vec2 = vec0.sub(vec1);
         vec2.store(values);
-        bool inRange = valuesInRange(values, DATA_SET::outputs::SUBV, VEC_LEN, 0.01f);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::SUBV, VEC_LEN, SCALAR_TYPE(0.01f));
         CHECK_CONDITION(inRange, "SUBV");
     }
     {
@@ -835,7 +835,7 @@ void genericSUBVTest()
         VEC_TYPE vec1(DATA_SET::inputs::inputB);
         VEC_TYPE vec2 = vec0 - vec1;
         vec2.store(values);
-        bool inRange = valuesInRange(values, DATA_SET::outputs::SUBV, VEC_LEN, 0.01f);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::SUBV, VEC_LEN, SCALAR_TYPE(0.01f));
         CHECK_CONDITION(inRange, "SUBV(operator-)");
     }
 }
@@ -849,7 +849,7 @@ void genericMSUBVTest()
     MASK_TYPE mask(DATA_SET::inputs::maskA);
     VEC_TYPE vec2 = vec0.sub(mask, vec1);
     vec2.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MSUBV, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::MSUBV, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MSUBV");
 }
     
@@ -860,7 +860,7 @@ void genericSUBSTest()
     VEC_TYPE vec0(DATA_SET::inputs::inputA);
     VEC_TYPE vec1 = vec0.sub(DATA_SET::inputs::scalarA);
     vec1.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::SUBS, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::SUBS, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "SUBS");
 }
     
@@ -872,7 +872,7 @@ void genericMSUBSTest()
     MASK_TYPE mask(DATA_SET::inputs::maskA);
     VEC_TYPE vec1 = vec0.sub(mask, DATA_SET::inputs::scalarA);
     vec1.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MSUBS, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::MSUBS, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MSUBS");
 }
     
@@ -885,7 +885,7 @@ void genericSUBVATest()
         VEC_TYPE vec1(DATA_SET::inputs::inputB);
         vec0.suba(vec1);
         vec0.store(values);
-        bool inRange = valuesInRange(values, DATA_SET::outputs::SUBV, VEC_LEN, 0.01f);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::SUBV, VEC_LEN, SCALAR_TYPE(0.01f));
         CHECK_CONDITION(inRange, "SUBVA");
     }
     
@@ -895,7 +895,7 @@ void genericSUBVATest()
         VEC_TYPE vec1(DATA_SET::inputs::inputB);
         vec0 -= vec1;
         vec0.store(values);
-        bool inRange = valuesInRange(values, DATA_SET::outputs::SUBV, VEC_LEN, 0.01f);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::SUBV, VEC_LEN, SCALAR_TYPE(0.01f));
         CHECK_CONDITION(inRange, "SUBVA(operator-=)");
     }
 }
@@ -910,7 +910,7 @@ void genericMSUBVATest()
         MASK_TYPE mask(DATA_SET::inputs::maskA);
         vec0.suba(mask, vec1);
         vec0.store(values);
-        bool inRange = valuesInRange(values, DATA_SET::outputs::MSUBV, VEC_LEN, 0.01f);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MSUBV, VEC_LEN, SCALAR_TYPE(0.01f));
         CHECK_CONDITION(inRange, "MSUBVA");
     }
     {
@@ -920,7 +920,7 @@ void genericMSUBVATest()
         MASK_TYPE mask(DATA_SET::inputs::maskA);
         vec0[mask] -= vec1;
         vec0.store(values);
-        bool inRange = valuesInRange(values, DATA_SET::outputs::MSUBV, VEC_LEN, 0.01f);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MSUBV, VEC_LEN, SCALAR_TYPE(0.01f));
         CHECK_CONDITION(inRange, "MSUBVA(vec[mask] -=)");
     }
 }
@@ -931,7 +931,7 @@ void genericSUBSATest()
     VEC_TYPE vec0(DATA_SET::inputs::inputA);
     vec0.suba(DATA_SET::inputs::scalarA);
     vec0.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::SUBS, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::SUBS, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "SUBSA");
 }
     
@@ -943,7 +943,7 @@ void genericMSUBSATest()
     MASK_TYPE mask(DATA_SET::inputs::maskA);
     vec0.suba(mask, DATA_SET::inputs::scalarA);
     vec0.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MSUBS, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::MSUBS, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MSUBSA");
 }
     
@@ -955,7 +955,7 @@ void genericSUBFROMVTest()
     VEC_TYPE vec1(DATA_SET::inputs::inputB);
     VEC_TYPE vec2 = vec0.subfrom(vec1);
     vec2.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::SUBFROMV, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::SUBFROMV, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "SUBFROMV");
 }
     
@@ -968,7 +968,7 @@ void genericMSUBFROMVTest()
     MASK_TYPE mask(DATA_SET::inputs::maskA);
     VEC_TYPE vec2 = vec0.subfrom(mask, vec1);
     vec2.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MSUBFROMV, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::MSUBFROMV, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MSUBFROMV");
 }
     
@@ -979,7 +979,7 @@ void genericSUBFROMSTest()
     VEC_TYPE vec0(DATA_SET::inputs::inputA);
     VEC_TYPE vec2 = vec0.subfrom(DATA_SET::inputs::scalarA);
     vec2.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::SUBFROMS, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::SUBFROMS, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "SUBFROMS");
 }
     
@@ -991,7 +991,7 @@ void genericMSUBFROMSTest()
     MASK_TYPE mask(DATA_SET::inputs::maskA);
     VEC_TYPE vec1 = vec0.subfrom(mask, DATA_SET::inputs::scalarA);
     vec1.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MSUBFROMS, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::MSUBFROMS, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MSUBFROMS");
 }
     
@@ -1003,7 +1003,7 @@ void genericSUBFROMVATest()
     VEC_TYPE vec1(DATA_SET::inputs::inputB);
     vec0.subfroma(vec1);
     vec0.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::SUBFROMV, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::SUBFROMV, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "SUBFROMVA");
 }
     
@@ -1016,7 +1016,7 @@ void genericMSUBFROMVATest()
     MASK_TYPE mask(DATA_SET::inputs::maskA);
     vec0.subfroma(mask, vec1);
     vec0.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MSUBFROMV, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::MSUBFROMV, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MSUBFROMVA");
 }
     
@@ -1027,7 +1027,7 @@ void genericSUBFROMSATest()
     VEC_TYPE vec0(DATA_SET::inputs::inputA);
     vec0.subfroma(DATA_SET::inputs::scalarA);
     vec0.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::SUBFROMS, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::SUBFROMS, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "SUBFROMSA");
 }
     
@@ -1039,7 +1039,7 @@ void genericMSUBFROMSATest()
     MASK_TYPE mask(DATA_SET::inputs::maskA);
     vec0.subfroma(mask, DATA_SET::inputs::scalarA);
     vec0.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MSUBFROMS, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::MSUBFROMS, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MSUBFROMSA");
 }
     
@@ -1053,8 +1053,8 @@ void genericPOSTDECTest()
         VEC_TYPE vec1 = vec0.postdec();
         vec0.store(values0);
         vec1.store(values1);
-        bool inRange0 = valuesInRange(values0, DATA_SET::outputs::POSTPREFDEC, VEC_LEN, 0.01f);
-        bool inRange1 = valuesInRange(values1, DATA_SET::inputs::inputA, VEC_LEN, 0.01f);
+        bool inRange0 = valuesInRange(values0, DATA_SET::outputs::POSTPREFDEC, VEC_LEN, SCALAR_TYPE(0.01f));
+        bool inRange1 = valuesInRange(values1, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
         CHECK_CONDITION(inRange0 && inRange1, "POSTDEC");
     }
     {
@@ -1064,8 +1064,8 @@ void genericPOSTDECTest()
         VEC_TYPE vec1 = vec0--;
         vec0.store(values0);
         vec1.store(values1);
-        bool inRange0 = valuesInRange(values0, DATA_SET::outputs::POSTPREFDEC, VEC_LEN, 0.01f);
-        bool inRange1 = valuesInRange(values1, DATA_SET::inputs::inputA, VEC_LEN, 0.01f);
+        bool inRange0 = valuesInRange(values0, DATA_SET::outputs::POSTPREFDEC, VEC_LEN, SCALAR_TYPE(0.01f));
+        bool inRange1 = valuesInRange(values1, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
         CHECK_CONDITION(inRange0 && inRange1, "POSTDEC(operator--(int))");
     }
 }
@@ -1080,8 +1080,8 @@ void genericMPOSTDECTest()
     VEC_TYPE vec1 = vec0.postdec(mask);
     vec0.store(values0);
     vec1.store(values1);
-    bool inRange0 = valuesInRange(values0, DATA_SET::outputs::MPOSTPREFDEC, VEC_LEN, 0.01f);
-    bool inRange1 = valuesInRange(values1, DATA_SET::inputs::inputA, VEC_LEN, 0.01f);
+    bool inRange0 = valuesInRange(values0, DATA_SET::outputs::MPOSTPREFDEC, VEC_LEN, SCALAR_TYPE(0.01f));
+    bool inRange1 = valuesInRange(values1, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange0 && inRange1, "MPOSTDEC");
 }
     
@@ -1095,8 +1095,8 @@ void genericPREFDECTest()
         VEC_TYPE vec1 = vec0.prefdec();
         vec0.store(values0);
         vec1.store(values1);
-        bool inRange0 = valuesInRange(values0, DATA_SET::outputs::POSTPREFDEC, VEC_LEN, 0.01f);
-        bool inRange1 = valuesInRange(values1, DATA_SET::outputs::POSTPREFDEC, VEC_LEN, 0.01f);
+        bool inRange0 = valuesInRange(values0, DATA_SET::outputs::POSTPREFDEC, VEC_LEN, SCALAR_TYPE(0.01f));
+        bool inRange1 = valuesInRange(values1, DATA_SET::outputs::POSTPREFDEC, VEC_LEN, SCALAR_TYPE(0.01f));
         CHECK_CONDITION(inRange0 && inRange1, "PREFDEC");
     }
     {
@@ -1106,8 +1106,8 @@ void genericPREFDECTest()
         VEC_TYPE vec1 = --vec0;
         vec0.store(values0);
         vec1.store(values1);
-        bool inRange0 = valuesInRange(values0, DATA_SET::outputs::POSTPREFDEC, VEC_LEN, 0.01f);
-        bool inRange1 = valuesInRange(values1, DATA_SET::outputs::POSTPREFDEC, VEC_LEN, 0.01f);
+        bool inRange0 = valuesInRange(values0, DATA_SET::outputs::POSTPREFDEC, VEC_LEN, SCALAR_TYPE(0.01f));
+        bool inRange1 = valuesInRange(values1, DATA_SET::outputs::POSTPREFDEC, VEC_LEN, SCALAR_TYPE(0.01f));
         CHECK_CONDITION(inRange0 && inRange1, "PREFDEC(operator--())");
     }
 }
@@ -1122,8 +1122,8 @@ void genericMPREFDECTest()
     VEC_TYPE vec1 = vec0.prefdec(mask);
     vec0.store(values0);
     vec1.store(values1);
-    bool inRange0 = valuesInRange(values0, DATA_SET::outputs::MPOSTPREFDEC, VEC_LEN, 0.01f);
-    bool inRange1 = valuesInRange(values1, DATA_SET::outputs::MPOSTPREFDEC, VEC_LEN, 0.01f);
+    bool inRange0 = valuesInRange(values0, DATA_SET::outputs::MPOSTPREFDEC, VEC_LEN, SCALAR_TYPE(0.01f));
+    bool inRange1 = valuesInRange(values1, DATA_SET::outputs::MPOSTPREFDEC, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange0 && inRange1, "MPREFDEC");
 }
 
@@ -1136,7 +1136,7 @@ void genericMULVTest()
         VEC_TYPE vec1(DATA_SET::inputs::inputB);
         VEC_TYPE vec2 = vec0.mul(vec1);
         vec2.store(values);
-        bool inRange = valuesInRange(values, DATA_SET::outputs::MULV, VEC_LEN, 0.01f);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MULV, VEC_LEN, SCALAR_TYPE(0.01f));
         CHECK_CONDITION(inRange, "MULV");
     }
     {
@@ -1145,7 +1145,7 @@ void genericMULVTest()
         VEC_TYPE vec1(DATA_SET::inputs::inputB);
         VEC_TYPE vec2 = vec0 * vec1;
         vec2.store(values);
-        bool inRange = valuesInRange(values, DATA_SET::outputs::MULV, VEC_LEN, 0.01f);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MULV, VEC_LEN, SCALAR_TYPE(0.01f));
         CHECK_CONDITION(inRange, "MULV(operator*)");
     }
 }
@@ -1159,7 +1159,7 @@ void genericMMULVTest()
     MASK_TYPE mask(DATA_SET::inputs::maskA);
     VEC_TYPE vec2 = vec0.mul(mask, vec1);
     vec2.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MMULV, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::MMULV, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MMULV");
 }
     
@@ -1170,7 +1170,7 @@ void genericMULSTest()
     VEC_TYPE vec0(DATA_SET::inputs::inputA);
     VEC_TYPE vec1 = vec0.mul(DATA_SET::inputs::scalarA);
     vec1.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MULS, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::MULS, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MULS");
 }
     
@@ -1182,7 +1182,7 @@ void genericMMULSTest()
     MASK_TYPE mask(DATA_SET::inputs::maskA);
     VEC_TYPE vec2 = vec0.mul(mask, DATA_SET::inputs::scalarA);
     vec2.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MMULS, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::MMULS, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MMULS");
 }
         
@@ -1195,7 +1195,7 @@ void genericMULVATest()
         VEC_TYPE vec1(DATA_SET::inputs::inputB);
         vec0.mula(vec1);
         vec0.store(values);
-        bool inRange = valuesInRange(values, DATA_SET::outputs::MULV, VEC_LEN, 0.01f);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MULV, VEC_LEN, SCALAR_TYPE(0.01f));
         CHECK_CONDITION(inRange, "MULVA");
     }
     
@@ -1205,7 +1205,7 @@ void genericMULVATest()
         VEC_TYPE vec1(DATA_SET::inputs::inputB);
         vec0 *= vec1;
         vec0.store(values);
-        bool inRange = valuesInRange(values, DATA_SET::outputs::MULV, VEC_LEN, 0.01f);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MULV, VEC_LEN, SCALAR_TYPE(0.01f));
         CHECK_CONDITION(inRange, "MULVA(operator*)");
     }
 }
@@ -1220,7 +1220,7 @@ void genericMMULVATest()
         MASK_TYPE mask(DATA_SET::inputs::maskA);
         vec0.mula(mask, vec1);
         vec0.store(values);
-        bool inRange = valuesInRange(values, DATA_SET::outputs::MMULV, VEC_LEN, 0.01f);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MMULV, VEC_LEN, SCALAR_TYPE(0.01f));
         CHECK_CONDITION(inRange, "MMULVA");
     }
     {
@@ -1230,7 +1230,7 @@ void genericMMULVATest()
         MASK_TYPE mask(DATA_SET::inputs::maskA);
         vec0[mask] *=  vec1;
         vec0.store(values);
-        bool inRange = valuesInRange(values, DATA_SET::outputs::MMULV, VEC_LEN, 0.01f);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MMULV, VEC_LEN, SCALAR_TYPE(0.01f));
         CHECK_CONDITION(inRange, "MMULVA(vec[mask] /=)");
     }
 }
@@ -1242,7 +1242,7 @@ void genericMULSATest()
     VEC_TYPE vec0(DATA_SET::inputs::inputA);
     vec0.mula(DATA_SET::inputs::scalarA);
     vec0.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MULS, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::MULS, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MULSA");
 }
     
@@ -1254,7 +1254,7 @@ void genericMMULSATest()
     MASK_TYPE mask(DATA_SET::inputs::maskA);
     vec0.mula(mask, DATA_SET::inputs::scalarA);
     vec0.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MMULS, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::MMULS, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MMULSA");
 }
     
@@ -1267,7 +1267,7 @@ void genericDIVVTest()
         VEC_TYPE vec1(DATA_SET::inputs::inputB);
         VEC_TYPE vec2 = vec0.div(vec1);
         vec2.store(values);
-        bool inRange = valuesInRange(values, DATA_SET::outputs::DIVV, VEC_LEN, 0.01f);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::DIVV, VEC_LEN, SCALAR_TYPE(0.01f));
         CHECK_CONDITION(inRange, "DIVV");
     }
     {
@@ -1276,7 +1276,7 @@ void genericDIVVTest()
         VEC_TYPE vec1(DATA_SET::inputs::inputB);
         VEC_TYPE vec2 = vec0 / vec1;
         vec2.store(values);
-        bool inRange = valuesInRange(values, DATA_SET::outputs::DIVV, VEC_LEN, 0.01f);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::DIVV, VEC_LEN, SCALAR_TYPE(0.01f));
         CHECK_CONDITION(inRange, "DIVV(operator/)");
     }
 }
@@ -1290,7 +1290,7 @@ void genericMDIVVTest()
     MASK_TYPE mask(DATA_SET::inputs::maskA);
     VEC_TYPE vec2 = vec0.div(mask, vec1);
     vec2.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MDIVV, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::MDIVV, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MDIVV");
 }
     
@@ -1301,7 +1301,7 @@ void genericDIVSTest()
     VEC_TYPE vec0(DATA_SET::inputs::inputA);
     VEC_TYPE vec1 = vec0.div(DATA_SET::inputs::scalarA);
     vec1.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::DIVS, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::DIVS, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "DIVS");
 }
 
@@ -1314,7 +1314,7 @@ void genericMDIVSTest()
     MASK_TYPE mask(DATA_SET::inputs::maskA);
     VEC_TYPE vec1 = vec0.div(mask, DATA_SET::inputs::scalarA);
     vec1.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MDIVS, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::MDIVS, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MDIVS");
 }
     
@@ -1327,7 +1327,7 @@ void genericDIVVATest()
         VEC_TYPE vec1(DATA_SET::inputs::inputB);
         vec0.diva(vec1);
         vec0.store(values);
-        bool inRange = valuesInRange(values, DATA_SET::outputs::DIVV, VEC_LEN, 0.01f);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::DIVV, VEC_LEN, SCALAR_TYPE(0.01f));
         CHECK_CONDITION(inRange, "DIVVA");
     }
     {
@@ -1336,7 +1336,7 @@ void genericDIVVATest()
         VEC_TYPE vec1(DATA_SET::inputs::inputB);
         vec0 /= vec1;
         vec0.store(values);
-        bool inRange = valuesInRange(values, DATA_SET::outputs::DIVV, VEC_LEN, 0.01f);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::DIVV, VEC_LEN, SCALAR_TYPE(0.01f));
         CHECK_CONDITION(inRange, "DIVVA(operator/)");
     }
 }
@@ -1351,7 +1351,7 @@ void genericMDIVVATest()
         MASK_TYPE mask(DATA_SET::inputs::maskA);
         vec0.diva(mask, vec1);
         vec0.store(values);
-        bool inRange = valuesInRange(values, DATA_SET::outputs::MDIVV, VEC_LEN, 0.01f);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MDIVV, VEC_LEN, SCALAR_TYPE(0.01f));
         CHECK_CONDITION(inRange, "MDIVVA");
     }
     {
@@ -1361,7 +1361,7 @@ void genericMDIVVATest()
         MASK_TYPE mask(DATA_SET::inputs::maskA);
         vec0[mask] /= vec1;
         vec0.store(values);
-        bool inRange = valuesInRange(values, DATA_SET::outputs::MDIVV, VEC_LEN, 0.01f);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MDIVV, VEC_LEN, SCALAR_TYPE(0.01f));
         CHECK_CONDITION(inRange, "MDIVVA(vec[mask] /=)");
     }
 }
@@ -1373,7 +1373,7 @@ void genericDIVSATest()
     VEC_TYPE vec0(DATA_SET::inputs::inputA);
     vec0.diva(DATA_SET::inputs::scalarA);
     vec0.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::DIVS, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::DIVS, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "DIVSA");
 }
     
@@ -1385,7 +1385,7 @@ void genericMDIVSATest()
     MASK_TYPE mask(DATA_SET::inputs::maskA);
     vec0.diva(mask, DATA_SET::inputs::scalarA);
     vec0.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MDIVS, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::MDIVS, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MDIVSA");
 }
     
@@ -1396,7 +1396,7 @@ void genericRCPTest()
     VEC_TYPE vec0(DATA_SET::inputs::inputA);
     VEC_TYPE vec1 = vec0.rcp();
     vec1.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::RCP, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::RCP, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "RCP");
 }
     
@@ -1408,7 +1408,7 @@ void genericMRCPTest()
     MASK_TYPE mask(DATA_SET::inputs::maskA);
     VEC_TYPE vec1 = vec0.rcp(mask);
     vec1.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MRCP, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::MRCP, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MRCP");
 }
     
@@ -1419,7 +1419,7 @@ void genericRCPSTest()
     VEC_TYPE vec0(DATA_SET::inputs::inputA);
     VEC_TYPE vec1 = vec0.rcp(DATA_SET::inputs::scalarA);
     vec1.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::RCPS, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::RCPS, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "RCPS");
 }
     
@@ -1431,7 +1431,7 @@ void genericMRCPSTest()
     MASK_TYPE mask(DATA_SET::inputs::maskA);
     VEC_TYPE vec1 = vec0.rcp(mask, DATA_SET::inputs::scalarA);
     vec1.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MRCPS, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::MRCPS, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MRCPS");
 }
     
@@ -1442,7 +1442,7 @@ void genericRCPATest()
     VEC_TYPE vec0(DATA_SET::inputs::inputA);
     vec0.rcpa();
     vec0.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::RCP, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::RCP, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "RCPA");
 }
     
@@ -1454,7 +1454,7 @@ void genericMRCPATest()
     MASK_TYPE mask(DATA_SET::inputs::maskA);
     vec0.rcpa(mask);
     vec0.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MRCP, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::MRCP, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MRCPA");
 }
     
@@ -1465,7 +1465,7 @@ void genericRCPSATest()
     VEC_TYPE vec0(DATA_SET::inputs::inputA);
     vec0.rcpa(DATA_SET::inputs::scalarA);
     vec0.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::RCPS, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::RCPS, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "RCPSA");
 }
     
@@ -1477,7 +1477,7 @@ void genericMRCPSATest()
     MASK_TYPE mask(DATA_SET::inputs::maskA);
     vec0.rcpa(mask, DATA_SET::inputs::scalarA);
     vec0.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MRCPS, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::MRCPS, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MRCPSA");
 }
     
@@ -1656,7 +1656,7 @@ void genericBANDVTest()
     VEC_TYPE vec1(DATA_SET::inputs::inputB);
     VEC_TYPE vec2 = vec0.band(vec1);
     vec2.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::BANDV, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::BANDV, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "BANDV");
 }
 
@@ -1669,7 +1669,7 @@ void genericMBANDVTest()
     MASK_TYPE mask(DATA_SET::inputs::maskA);
     VEC_TYPE vec2 = vec0.band(mask, vec1);
     vec2.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MBANDV, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::MBANDV, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MBANDV");
 }
 
@@ -1680,7 +1680,7 @@ void genericBANDSTest()
     VEC_TYPE vec0(DATA_SET::inputs::inputA);
     VEC_TYPE vec2 = vec0.band(DATA_SET::inputs::scalarA);
     vec2.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::BANDS, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::BANDS, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "BANDS");
 }
 
@@ -1692,7 +1692,7 @@ void genericMBANDSTest()
     MASK_TYPE mask(DATA_SET::inputs::maskA);
     VEC_TYPE vec2 = vec0.band(mask, DATA_SET::inputs::scalarA);
     vec2.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MBANDS, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::MBANDS, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MBANDS");
 }
 
@@ -1704,7 +1704,7 @@ void genericBANDVATest()
     VEC_TYPE vec1(DATA_SET::inputs::inputB);
     vec0.banda(vec1);
     vec0.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::BANDV, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::BANDV, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "BANDVA");
 }
 
@@ -1718,7 +1718,7 @@ void genericMBANDVATest()
         MASK_TYPE mask(DATA_SET::inputs::maskA);
         vec0.banda(mask, vec1);
         vec0.store(values);
-        bool inRange = valuesInRange(values, DATA_SET::outputs::MBANDV, VEC_LEN, 0.01f);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MBANDV, VEC_LEN, SCALAR_TYPE(0.01f));
         CHECK_CONDITION(inRange, "MBANDVA");
     }
     {
@@ -1728,7 +1728,7 @@ void genericMBANDVATest()
         MASK_TYPE mask(DATA_SET::inputs::maskA);
         vec0[mask] &= vec1;
         vec0.store(values);
-        bool inRange = valuesInRange(values, DATA_SET::outputs::MBANDV, VEC_LEN, 0.01f);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MBANDV, VEC_LEN, SCALAR_TYPE(0.01f));
         CHECK_CONDITION(inRange, "MBANDVA(vec[mask] &=)");
     }
 }
@@ -1740,7 +1740,7 @@ void genericBANDSATest()
     VEC_TYPE vec0(DATA_SET::inputs::inputA);
     vec0.banda(DATA_SET::inputs::scalarA);
     vec0.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::BANDS, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::BANDS, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "BANDSA");
 }
 
@@ -1752,7 +1752,7 @@ void genericMBANDSATest()
     MASK_TYPE mask(DATA_SET::inputs::maskA);
     vec0.banda(mask, DATA_SET::inputs::scalarA);
     vec0.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MBANDS, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::MBANDS, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MBANDSA");
 }
 
@@ -1764,7 +1764,7 @@ void genericBORVTest()
     VEC_TYPE vec1(DATA_SET::inputs::inputB);
     VEC_TYPE vec2 = vec0.bor(vec1);
     vec2.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::BORV, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::BORV, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "BORV");
 }
 
@@ -1777,7 +1777,7 @@ void genericMBORVTest()
     MASK_TYPE mask(DATA_SET::inputs::maskA);
     VEC_TYPE vec2 = vec0.bor(mask, vec1);
     vec2.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MBORV, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::MBORV, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MBORV");
 }
 
@@ -1788,7 +1788,7 @@ void genericBORSTest()
     VEC_TYPE vec0(DATA_SET::inputs::inputA);
     VEC_TYPE vec2 = vec0.bor(DATA_SET::inputs::scalarA);
     vec2.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::BORS, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::BORS, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "BORS");
 }
 
@@ -1800,7 +1800,7 @@ void genericMBORSTest()
     MASK_TYPE mask(DATA_SET::inputs::maskA);
     VEC_TYPE vec2 = vec0.bor(mask, DATA_SET::inputs::scalarA);
     vec2.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MBORS, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::MBORS, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MBORS");
 }
 
@@ -1812,7 +1812,7 @@ void genericBORVATest()
     VEC_TYPE vec1(DATA_SET::inputs::inputB);
     vec0.bora(vec1);
     vec0.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::BORV, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::BORV, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "BORVA");
 }
 
@@ -1826,7 +1826,7 @@ void genericMBORVATest()
         MASK_TYPE mask(DATA_SET::inputs::maskA);
         vec0.bora(mask, vec1);
         vec0.store(values);
-        bool inRange = valuesInRange(values, DATA_SET::outputs::MBORV, VEC_LEN, 0.01f);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MBORV, VEC_LEN, SCALAR_TYPE(0.01f));
         CHECK_CONDITION(inRange, "MBORVA");
     }
     {
@@ -1836,7 +1836,7 @@ void genericMBORVATest()
         MASK_TYPE mask(DATA_SET::inputs::maskA);
         vec0[mask] |= vec1;
         vec0.store(values);
-        bool inRange = valuesInRange(values, DATA_SET::outputs::MBORV, VEC_LEN, 0.01f);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MBORV, VEC_LEN, SCALAR_TYPE(0.01f));
         CHECK_CONDITION(inRange, "MBORVA(vec[mask] |=)");
     }
 }
@@ -1848,7 +1848,7 @@ void genericBORSATest()
     VEC_TYPE vec0(DATA_SET::inputs::inputA);
     vec0.bora(DATA_SET::inputs::scalarA);
     vec0.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::BORS, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::BORS, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "BORSA");
 }
 
@@ -1860,7 +1860,7 @@ void genericMBORSATest()
     MASK_TYPE mask(DATA_SET::inputs::maskA);
     vec0.bora(mask, DATA_SET::inputs::scalarA);
     vec0.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MBORS, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::MBORS, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MBORSA");
 }
 
@@ -1872,7 +1872,7 @@ void genericBXORVTest()
     VEC_TYPE vec1(DATA_SET::inputs::inputB);
     VEC_TYPE vec2 = vec0.bxor(vec1);
     vec2.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::BXORV, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::BXORV, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "BXORV");
 }
 
@@ -1885,7 +1885,7 @@ void genericMBXORVTest()
     MASK_TYPE mask(DATA_SET::inputs::maskA);
     VEC_TYPE vec2 = vec0.bxor(mask, vec1);
     vec2.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MBXORV, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::MBXORV, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MBXORV");
 }
 
@@ -1896,7 +1896,7 @@ void genericBXORSTest()
     VEC_TYPE vec0(DATA_SET::inputs::inputA);
     VEC_TYPE vec2 = vec0.bxor(DATA_SET::inputs::scalarA);
     vec2.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::BXORS, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::BXORS, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "BXORS");
 }
 
@@ -1908,7 +1908,7 @@ void genericMBXORSTest()
     MASK_TYPE mask(DATA_SET::inputs::maskA);
     VEC_TYPE vec2 = vec0.bxor(mask, DATA_SET::inputs::scalarA);
     vec2.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MBXORS, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::MBXORS, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MBXORS");
 }
 
@@ -1920,7 +1920,7 @@ void genericBXORVATest()
     VEC_TYPE vec1(DATA_SET::inputs::inputB);
     vec0.bxora(vec1);
     vec0.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::BXORV, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::BXORV, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "BXORVA");
 }
 
@@ -1934,7 +1934,7 @@ void genericMBXORVATest()
         MASK_TYPE mask(DATA_SET::inputs::maskA);
         vec0.bxora(mask, vec1);
         vec0.store(values);
-        bool inRange = valuesInRange(values, DATA_SET::outputs::MBXORV, VEC_LEN, 0.01f);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MBXORV, VEC_LEN, SCALAR_TYPE(0.01f));
         CHECK_CONDITION(inRange, "MBXORVA");
     }
     {
@@ -1944,7 +1944,7 @@ void genericMBXORVATest()
         MASK_TYPE mask(DATA_SET::inputs::maskA);
         vec0[mask] ^= vec1;
         vec0.store(values);
-        bool inRange = valuesInRange(values, DATA_SET::outputs::MBXORV, VEC_LEN, 0.01f);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MBXORV, VEC_LEN, SCALAR_TYPE(0.01f));
         CHECK_CONDITION(inRange, "MBXORVA(vec[mask] ^=)");
     }
 }
@@ -1956,7 +1956,7 @@ void genericBXORSATest()
     VEC_TYPE vec0(DATA_SET::inputs::inputA);
     vec0.bxora(DATA_SET::inputs::scalarA);
     vec0.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::BXORS, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::BXORS, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "BXORSA");
 }
 
@@ -1968,7 +1968,7 @@ void genericMBXORSATest()
     MASK_TYPE mask(DATA_SET::inputs::maskA);
     vec0.bxora(mask, DATA_SET::inputs::scalarA);
     vec0.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MBXORS, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::MBXORS, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MBXORSA");
 }
 
@@ -1979,7 +1979,7 @@ void genericBNOTTest()
     VEC_TYPE vec0(DATA_SET::inputs::inputA);
     VEC_TYPE vec1 = vec0.bnot();
     vec1.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::BNOT, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::BNOT, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "BNOT");
 }
 
@@ -1991,7 +1991,7 @@ void genericMBNOTTest()
     MASK_TYPE mask(DATA_SET::inputs::maskA);
     VEC_TYPE vec1 = vec0.bnot(mask);
     vec1.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MBNOT, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::MBNOT, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MBNOT");
 }
 
@@ -2002,7 +2002,7 @@ void genericBNOTATest()
     VEC_TYPE vec0(DATA_SET::inputs::inputA);
     vec0.bnota();
     vec0.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::BNOT, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::BNOT, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "BNOTA");
 }
 
@@ -2014,7 +2014,7 @@ void genericMBNOTATest()
     MASK_TYPE mask(DATA_SET::inputs::maskA);
     vec0.bnota(mask);
     vec0.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MBNOT, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::MBNOT, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MBNOTA");
 }
  
@@ -2039,7 +2039,7 @@ void genericHADDTest()
 {
     VEC_TYPE vec0(DATA_SET::inputs::inputA);
     SCALAR_TYPE value = vec0.hadd();
-    bool inRange = valueInRange(value, DATA_SET::outputs::HADD[VEC_LEN-1], 0.01f);
+    bool inRange = valueInRange(value, DATA_SET::outputs::HADD[VEC_LEN-1], SCALAR_TYPE(SCALAR_TYPE(0.01f)));
     CHECK_CONDITION(inRange, "HADD");
 }
         // MHADD - Masked add elements of a vector (horizontal add)
@@ -2048,7 +2048,7 @@ void genericHMULTest()
 {
     VEC_TYPE vec0(DATA_SET::inputs::inputA);
     SCALAR_TYPE value = vec0.hmul();
-    bool inRange = valueInRange(value, DATA_SET::outputs::HMUL[VEC_LEN-1], 0.01f);
+    bool inRange = valueInRange(value, DATA_SET::outputs::HMUL[VEC_LEN-1], SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "HMUL");
 }
         // MHMUL - Masked multiply elements of a vector (horizontal mul)
@@ -2058,7 +2058,7 @@ void genericHBANDTest()
 {
     VEC_TYPE vec0(DATA_SET::inputs::inputA);
     SCALAR_TYPE value = vec0.hband();
-    bool inRange = valueInRange(value, DATA_SET::outputs::HBAND[VEC_LEN-1], 0.01f);
+    bool inRange = valueInRange(value, DATA_SET::outputs::HBAND[VEC_LEN-1], SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "HBAND");
 }
 
@@ -2068,7 +2068,7 @@ void genericMHBANDTest()
     VEC_TYPE vec0(DATA_SET::inputs::inputA);
     MASK_TYPE mask0(DATA_SET::inputs::maskA);
     SCALAR_TYPE value = vec0.hband(mask0);
-    bool inRange = valueInRange(value, DATA_SET::outputs::MHBAND[VEC_LEN-1], 0.01f);
+    bool inRange = valueInRange(value, DATA_SET::outputs::MHBAND[VEC_LEN-1], SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MHBAND");
 }
 
@@ -2077,7 +2077,7 @@ void genericHBANDSTest()
 {
     VEC_TYPE vec0(DATA_SET::inputs::inputA);
     SCALAR_TYPE value = vec0.hband(DATA_SET::inputs::scalarA);
-    bool inRange = valueInRange(value, DATA_SET::outputs::HBANDS[VEC_LEN-1], 0.01f);
+    bool inRange = valueInRange(value, DATA_SET::outputs::HBANDS[VEC_LEN-1], SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "HBANDS");
 }
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
@@ -2086,7 +2086,7 @@ void genericMHBANDSTest()
     VEC_TYPE vec0(DATA_SET::inputs::inputA);
     MASK_TYPE mask0(DATA_SET::inputs::maskA);
     SCALAR_TYPE value = vec0.hband(mask0, DATA_SET::inputs::scalarA);
-    bool inRange = valueInRange(value, DATA_SET::outputs::MHBANDS[VEC_LEN-1], 0.01f);
+    bool inRange = valueInRange(value, DATA_SET::outputs::MHBANDS[VEC_LEN-1], SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MHBANDS");
 }
 
@@ -2095,7 +2095,7 @@ void genericHBORTest()
 {
     VEC_TYPE vec0(DATA_SET::inputs::inputA);
     SCALAR_TYPE value = vec0.hbor();
-    bool inRange = valueInRange(value, DATA_SET::outputs::HBOR[VEC_LEN-1], 0.01f);
+    bool inRange = valueInRange(value, DATA_SET::outputs::HBOR[VEC_LEN-1], SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "HBOR");
 }
 
@@ -2105,7 +2105,7 @@ void genericMHBORTest()
     VEC_TYPE vec0(DATA_SET::inputs::inputA);
     MASK_TYPE mask0(DATA_SET::inputs::maskA);
     SCALAR_TYPE value = vec0.hbor(mask0);
-    bool inRange = valueInRange(value, DATA_SET::outputs::MHBOR[VEC_LEN-1], 0.01f);
+    bool inRange = valueInRange(value, DATA_SET::outputs::MHBOR[VEC_LEN-1], SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MHBOR");
 }
 
@@ -2114,7 +2114,7 @@ void genericHBORSTest()
 {
     VEC_TYPE vec0(DATA_SET::inputs::inputA);
     SCALAR_TYPE value = vec0.hbor(DATA_SET::inputs::scalarA);
-    bool inRange = valueInRange(value, DATA_SET::outputs::HBORS[VEC_LEN-1], 0.01f);
+    bool inRange = valueInRange(value, DATA_SET::outputs::HBORS[VEC_LEN-1], SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "HBORS");
 }
 
@@ -2124,7 +2124,7 @@ void genericMHBORSTest()
     VEC_TYPE vec0(DATA_SET::inputs::inputA);
     MASK_TYPE mask0(DATA_SET::inputs::maskA);
     SCALAR_TYPE value = vec0.hbor(mask0, DATA_SET::inputs::scalarA);
-    bool inRange = valueInRange(value, DATA_SET::outputs::MHBORS[VEC_LEN-1], 0.01f);
+    bool inRange = valueInRange(value, DATA_SET::outputs::MHBORS[VEC_LEN-1], SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MHBORS");
 }
 
@@ -2133,7 +2133,7 @@ void genericHBXORTest()
 {
     VEC_TYPE vec0(DATA_SET::inputs::inputA);
     SCALAR_TYPE value = vec0.hbxor();
-    bool inRange = valueInRange(value, DATA_SET::outputs::HBXOR[VEC_LEN-1], 0.01f);
+    bool inRange = valueInRange(value, DATA_SET::outputs::HBXOR[VEC_LEN-1], SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "HBXOR");
 }
 
@@ -2143,7 +2143,7 @@ void genericMHBXORTest()
     VEC_TYPE vec0(DATA_SET::inputs::inputA);
     MASK_TYPE mask0(DATA_SET::inputs::maskA);
     SCALAR_TYPE value = vec0.hbxor(mask0);
-    bool inRange = valueInRange(value, DATA_SET::outputs::MHBXOR[VEC_LEN-1], 0.01f);
+    bool inRange = valueInRange(value, DATA_SET::outputs::MHBXOR[VEC_LEN-1], SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MHBXOR");
 }
 
@@ -2152,7 +2152,7 @@ void genericHBXORSTest()
 {
     VEC_TYPE vec0(DATA_SET::inputs::inputA);
     SCALAR_TYPE value = vec0.hbxor(DATA_SET::inputs::scalarA);
-    bool inRange = valueInRange(value, DATA_SET::outputs::HBXORS[VEC_LEN-1], 0.01f);
+    bool inRange = valueInRange(value, DATA_SET::outputs::HBXORS[VEC_LEN-1], SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "HBXORS");
 }
 
@@ -2162,7 +2162,7 @@ void genericMHBXORSTest()
     VEC_TYPE vec0(DATA_SET::inputs::inputA);
     MASK_TYPE mask0(DATA_SET::inputs::maskA);
     SCALAR_TYPE value = vec0.hbxor(mask0, DATA_SET::inputs::scalarA);
-    bool inRange = valueInRange(value, DATA_SET::outputs::MHBXORS[VEC_LEN-1], 0.01f);
+    bool inRange = valueInRange(value, DATA_SET::outputs::MHBXORS[VEC_LEN-1], SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MHBXORS");
 }
 
@@ -2175,7 +2175,7 @@ void genericFMULADDVTest()
     VEC_TYPE vec2(DATA_SET::inputs::inputC);
     VEC_TYPE vec3 = vec0.fmuladd(vec1, vec2);
     vec3.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::FMULADDV, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::FMULADDV, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "FMULADDV");
 }
     
@@ -2189,7 +2189,7 @@ void genericMFMULADDVTest()
     MASK_TYPE mask(DATA_SET::inputs::maskA);
     VEC_TYPE vec3 = vec0.fmuladd(mask, vec1, vec2);
     vec3.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MFMULADDV, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::MFMULADDV, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MFMULADDV");
 }
     
@@ -2202,7 +2202,7 @@ void genericFMULSUBVTest()
     VEC_TYPE vec2(DATA_SET::inputs::inputC);
     VEC_TYPE vec3 = vec0.fmulsub(vec1, vec2);
     vec3.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::FMULSUBV, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::FMULSUBV, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "FMULSUBV");
 }
     
@@ -2216,7 +2216,7 @@ void genericMFMULSUBVTest()
     MASK_TYPE mask(DATA_SET::inputs::maskA);
     VEC_TYPE vec3 = vec0.fmulsub(mask, vec1, vec2);
     vec3.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MFMULSUBV, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::MFMULSUBV, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MFMULSUBV");
 }
     
@@ -2229,7 +2229,7 @@ void genericFADDMULVTest()
     VEC_TYPE vec2(DATA_SET::inputs::inputC);
     VEC_TYPE vec3 = vec0.faddmul(vec1, vec2);
     vec3.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::FADDMULV, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::FADDMULV, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "FADDMULV");
 }
     
@@ -2243,7 +2243,7 @@ void genericMFADDMULVTest()
     MASK_TYPE mask(DATA_SET::inputs::maskA);
     VEC_TYPE vec3 = vec0.faddmul(mask, vec1, vec2);
     vec3.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MFADDMULV, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::MFADDMULV, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MFADDMULV");
 }
     
@@ -2256,7 +2256,7 @@ void genericFSUBMULVTest()
     VEC_TYPE vec2(DATA_SET::inputs::inputC);
     VEC_TYPE vec3 = vec0.fsubmul(vec1, vec2);
     vec3.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::FSUBMULV, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::FSUBMULV, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "FSUBMULV");
 }
     
@@ -2270,7 +2270,7 @@ void genericMFSUBMULVTest()
     MASK_TYPE mask(DATA_SET::inputs::maskA);
     VEC_TYPE vec3 = vec0.fsubmul(mask, vec1, vec2);
     vec3.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MFSUBMULV, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::MFSUBMULV, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MFSUBMULV");
 }
     
@@ -2282,7 +2282,7 @@ void genericMAXVTest()
     VEC_TYPE vec1(DATA_SET::inputs::inputB);
     VEC_TYPE vec2 = vec0.max(vec1);
     vec2.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MAXV, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::MAXV, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MAXV");
 }
     
@@ -2295,7 +2295,7 @@ void genericMMAXVTest()
     MASK_TYPE mask(DATA_SET::inputs::maskA);
     VEC_TYPE vec2 = vec0.max(mask, vec1);
     vec2.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MMAXV, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::MMAXV, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MMAXV");
 }
     
@@ -2306,7 +2306,7 @@ void genericMAXSTest()
     VEC_TYPE vec0(DATA_SET::inputs::inputA);
     VEC_TYPE vec1 = vec0.max(DATA_SET::inputs::scalarA);
     vec1.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MAXS, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::MAXS, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MAXS");
 }
 
@@ -2318,7 +2318,7 @@ void genericMMAXSTest()
     MASK_TYPE mask(DATA_SET::inputs::maskA);
     VEC_TYPE vec1 = vec0.max(mask, DATA_SET::inputs::scalarA);
     vec1.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MMAXS, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::MMAXS, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MMAXS");
 }
     
@@ -2330,7 +2330,7 @@ void genericMAXVATest()
     VEC_TYPE vec1(DATA_SET::inputs::inputB);
     vec0.maxa(vec1);
     vec0.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MAXV, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::MAXV, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MAXVA");
 }
     
@@ -2343,7 +2343,7 @@ void genericMMAXVATest()
     MASK_TYPE mask(DATA_SET::inputs::maskA);
     vec0.maxa(mask, vec1);
     vec0.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MMAXV, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::MMAXV, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MMAXVA");
 }
     
@@ -2354,7 +2354,7 @@ void genericMAXSATest()
     VEC_TYPE vec0(DATA_SET::inputs::inputA);
     vec0.maxa(DATA_SET::inputs::scalarA);
     vec0.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MAXS, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::MAXS, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MAXSA");
 }
     
@@ -2366,7 +2366,7 @@ void genericMMAXSATest()
     MASK_TYPE mask(DATA_SET::inputs::maskA);
     vec0.maxa(mask, DATA_SET::inputs::scalarA);
     vec0.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MMAXS, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::MMAXS, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MMAXSA");
 }
     
@@ -2378,7 +2378,7 @@ void genericMINVTest()
     VEC_TYPE vec1(DATA_SET::inputs::inputB);
     VEC_TYPE vec2 = vec0.min(vec1);
     vec2.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MINV, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::MINV, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MINV");
 }
     
@@ -2391,7 +2391,7 @@ void genericMMINVTest()
     MASK_TYPE mask(DATA_SET::inputs::maskA);
     VEC_TYPE vec2 = vec0.min(mask, vec1);
     vec2.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MMINV, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::MMINV, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MMINV");
 }
     
@@ -2402,7 +2402,7 @@ void genericMINSTest()
     VEC_TYPE vec0(DATA_SET::inputs::inputA);
     VEC_TYPE vec1 = vec0.min(DATA_SET::inputs::scalarA);
     vec1.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MINS, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::MINS, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MINS");
 }
     
@@ -2414,7 +2414,7 @@ void genericMMINSTest()
     MASK_TYPE mask(DATA_SET::inputs::maskA);
     VEC_TYPE vec1 = vec0.min(mask, DATA_SET::inputs::scalarA);
     vec1.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MMINS, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::MMINS, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MMINS");
 }
 
@@ -2426,7 +2426,7 @@ void genericMINVATest()
     VEC_TYPE vec1(DATA_SET::inputs::inputB);
     vec0.mina(vec1);
     vec0.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MINV, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::MINV, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MINVA");
 }
     
@@ -2439,7 +2439,7 @@ void genericMMINVATest()
     MASK_TYPE mask(DATA_SET::inputs::maskA);
     vec0.mina(mask, vec1);
     vec0.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MMINV, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::MMINV, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MMINVA");
 }
     
@@ -2450,7 +2450,7 @@ void genericMINSATest()
     VEC_TYPE vec0(DATA_SET::inputs::inputA);
     vec0.mina(DATA_SET::inputs::scalarA);
     vec0.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MINS, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::MINS, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MINSA");
 }
 
@@ -2462,7 +2462,7 @@ void genericMMINSATest()
     MASK_TYPE mask(DATA_SET::inputs::maskA);
     vec0.mina(mask, DATA_SET::inputs::scalarA);
     vec0.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MMINS, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::MMINS, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MMINSA");
 }
     
@@ -2472,7 +2472,7 @@ void genericHMAXTest()
     VEC_TYPE vec0(DATA_SET::inputs::inputA);
     SCALAR_TYPE value = vec0.hmax();
     SCALAR_TYPE expected = DATA_SET::outputs::HMAX[VEC_LEN-1];
-    bool inRange = valueInRange(value, expected, 0.01f);
+    bool inRange = valueInRange(value, expected, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "HMAX");
 }
 
@@ -2484,7 +2484,7 @@ void genericHMINTest()
     VEC_TYPE vec0(DATA_SET::inputs::inputA);
     SCALAR_TYPE value = vec0.hmin();
     SCALAR_TYPE expected = DATA_SET::outputs::HMIN[VEC_LEN-1];
-    bool inRange = valueInRange(value, expected, 0.01f);
+    bool inRange = valueInRange(value, expected, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "HMIN");
 }
 
@@ -2498,7 +2498,7 @@ void genericLSHVTest()
     UINT_VEC_TYPE vec1(DATA_SET::inputs::inputShiftA);
     VEC_TYPE vec2 = vec0.lsh(vec1);
     vec2.store(values);
-    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::LSHV, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::LSHV, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "LSHV");
 }
     
@@ -2511,7 +2511,7 @@ void genericMLSHVTest()
     MASK_TYPE mask0(DATA_SET::inputs::maskA);
     VEC_TYPE vec2 = vec0.lsh(mask0, vec1);
     vec2.store(values);
-    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MLSHV, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MLSHV, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MLSHV");
 }
 
@@ -2522,7 +2522,7 @@ void genericLSHSTest()
     VEC_TYPE vec0(DATA_SET::inputs::inputA);
     VEC_TYPE vec1 = vec0.lsh(DATA_SET::inputs::inputShiftScalarA);
     vec1.store(values);
-    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::LSHS, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::LSHS, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "LSHS");
 }
     
@@ -2534,7 +2534,7 @@ void genericMLSHSTest()
     MASK_TYPE mask0(DATA_SET::inputs::maskA);
     VEC_TYPE vec1 = vec0.lsh(mask0, DATA_SET::inputs::inputShiftScalarA);
     vec1.store(values);
-    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MLSHS, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MLSHS, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MLSHS");
 }
 
@@ -2546,7 +2546,7 @@ void genericLSHVATest()
     UINT_VEC_TYPE vec1(DATA_SET::inputs::inputShiftA);
     vec0.lsha(vec1);
     vec0.store(values);
-    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::LSHV, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::LSHV, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "LSHVA");
 }
     
@@ -2559,7 +2559,7 @@ void genericMLSHVATest()
     MASK_TYPE mask0(DATA_SET::inputs::maskA);
     vec0.lsha(mask0, vec1);
     vec0.store(values);
-    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MLSHV, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MLSHV, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MLSHVA");
 }
 
@@ -2570,7 +2570,7 @@ void genericLSHSATest()
     VEC_TYPE vec0(DATA_SET::inputs::inputA);
     vec0.lsha(DATA_SET::inputs::inputShiftScalarA);
     vec0.store(values);
-    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::LSHS, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::LSHS, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "LSHSA");
 }
     
@@ -2582,7 +2582,7 @@ void genericMLSHSATest()
     MASK_TYPE mask0(DATA_SET::inputs::maskA);
     vec0.lsha(mask0, DATA_SET::inputs::inputShiftScalarA);
     vec0.store(values);
-    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MLSHS, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MLSHS, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MLSHSA");
 } 
 
@@ -2594,7 +2594,7 @@ void genericRSHVTest()
     UINT_VEC_TYPE vec1(DATA_SET::inputs::inputShiftA);
     VEC_TYPE vec2 = vec0.rsh(vec1);
     vec2.store(values);
-    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::RSHV, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::RSHV, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "RSHV");
 }
     
@@ -2607,7 +2607,7 @@ void genericMRSHVTest()
     MASK_TYPE mask0(DATA_SET::inputs::maskA);
     VEC_TYPE vec2 = vec0.rsh(mask0, vec1);
     vec2.store(values);
-    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MRSHV, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MRSHV, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MRSHV");
 }
 
@@ -2618,7 +2618,7 @@ void genericRSHSTest()
     VEC_TYPE vec0(DATA_SET::inputs::inputA);
     VEC_TYPE vec1 = vec0.rsh(DATA_SET::inputs::inputShiftScalarA);
     vec1.store(values);
-    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::RSHS, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::RSHS, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "RSHS");
 }
     
@@ -2630,7 +2630,7 @@ void genericMRSHSTest()
     MASK_TYPE mask0(DATA_SET::inputs::maskA);
     VEC_TYPE vec1 = vec0.rsh(mask0, DATA_SET::inputs::inputShiftScalarA);
     vec1.store(values);
-    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MRSHS, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MRSHS, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MRSHS");
 }
 
@@ -2642,7 +2642,7 @@ void genericRSHVATest()
     UINT_VEC_TYPE vec1(DATA_SET::inputs::inputShiftA);
     vec0.rsha(vec1);
     vec0.store(values);
-    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::RSHV, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::RSHV, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "RSHVA");
 }
     
@@ -2655,7 +2655,7 @@ void genericMRSHVATest()
     MASK_TYPE mask0(DATA_SET::inputs::maskA);
     vec0.rsha(mask0, vec1);
     vec0.store(values);
-    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MRSHV, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MRSHV, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MRSHVA");
 }
 
@@ -2666,7 +2666,7 @@ void genericRSHSATest()
     VEC_TYPE vec0(DATA_SET::inputs::inputA);
     vec0.rsha(DATA_SET::inputs::inputShiftScalarA);
     vec0.store(values);
-    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::RSHS, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::RSHS, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "RSHSA");
 }
     
@@ -2678,7 +2678,7 @@ void genericMRSHSATest()
     MASK_TYPE mask0(DATA_SET::inputs::maskA);
     vec0.rsha(mask0, DATA_SET::inputs::inputShiftScalarA);
     vec0.store(values);
-    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MRSHS, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MRSHS, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MRSHSA");
 } 
 
@@ -2690,7 +2690,7 @@ void genericROLVTest()
     UINT_VEC_TYPE vec1(DATA_SET::inputs::inputShiftA);
     VEC_TYPE vec2 = vec0.rol(vec1);
     vec2.store(values);
-    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::ROLV, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::ROLV, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "ROLV");
 }
     
@@ -2703,7 +2703,7 @@ void genericMROLVTest()
     MASK_TYPE mask0(DATA_SET::inputs::maskA);
     VEC_TYPE vec2 = vec0.rol(mask0, vec1);
     vec2.store(values);
-    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MROLV, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MROLV, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MROLV");
 }
 
@@ -2714,7 +2714,7 @@ void genericROLSTest()
     VEC_TYPE vec0(DATA_SET::inputs::inputA);
     VEC_TYPE vec1 = vec0.rol(DATA_SET::inputs::inputShiftScalarA);
     vec1.store(values);
-    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::ROLS, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::ROLS, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "ROLS");
 }
     
@@ -2726,7 +2726,7 @@ void genericMROLSTest()
     MASK_TYPE mask0(DATA_SET::inputs::maskA);
     VEC_TYPE vec1 = vec0.rol(mask0, DATA_SET::inputs::inputShiftScalarA);
     vec1.store(values);
-    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MROLS, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MROLS, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MROLS");
 }
 
@@ -2738,7 +2738,7 @@ void genericROLVATest()
     UINT_VEC_TYPE vec1(DATA_SET::inputs::inputShiftA);
     vec0.rola(vec1);
     vec0.store(values);
-    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::ROLV, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::ROLV, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "ROLVA");
 }
     
@@ -2751,7 +2751,7 @@ void genericMROLVATest()
     MASK_TYPE mask0(DATA_SET::inputs::maskA);
     vec0.rola(mask0, vec1);
     vec0.store(values);
-    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MROLV, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MROLV, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MROLVA");
 }
 
@@ -2762,7 +2762,7 @@ void genericROLSATest()
     VEC_TYPE vec0(DATA_SET::inputs::inputA);
     vec0.rola(DATA_SET::inputs::inputShiftScalarA);
     vec0.store(values);
-    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::ROLS, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::ROLS, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "ROLSA");
 }
     
@@ -2774,7 +2774,7 @@ void genericMROLSATest()
     MASK_TYPE mask0(DATA_SET::inputs::maskA);
     vec0.rola(mask0, DATA_SET::inputs::inputShiftScalarA);
     vec0.store(values);
-    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MROLS, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MROLS, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MROLSA");
 } 
 
@@ -2786,7 +2786,7 @@ void genericRORVTest()
     UINT_VEC_TYPE vec1(DATA_SET::inputs::inputShiftA);
     VEC_TYPE vec2 = vec0.ror(vec1);
     vec2.store(values);
-    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::RORV, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::RORV, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "RORV");
 }
     
@@ -2799,7 +2799,7 @@ void genericMRORVTest()
     MASK_TYPE mask0(DATA_SET::inputs::maskA);
     VEC_TYPE vec2 = vec0.ror(mask0, vec1);
     vec2.store(values);
-    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MRORV, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MRORV, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MRORV");
 }
 
@@ -2810,7 +2810,7 @@ void genericRORSTest()
     VEC_TYPE vec0(DATA_SET::inputs::inputA);
     VEC_TYPE vec1 = vec0.ror(DATA_SET::inputs::inputShiftScalarA);
     vec1.store(values);
-    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::RORS, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::RORS, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "RORS");
 }
     
@@ -2822,7 +2822,7 @@ void genericMRORSTest()
     MASK_TYPE mask0(DATA_SET::inputs::maskA);
     VEC_TYPE vec1 = vec0.ror(mask0, DATA_SET::inputs::inputShiftScalarA);
     vec1.store(values);
-    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MRORS, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MRORS, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MRORS");
 }
 
@@ -2834,7 +2834,7 @@ void genericRORVATest()
     UINT_VEC_TYPE vec1(DATA_SET::inputs::inputShiftA);
     vec0.rora(vec1);
     vec0.store(values);
-    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::RORV, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::RORV, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "RORVA");
 }
     
@@ -2847,7 +2847,7 @@ void genericMRORVATest()
     MASK_TYPE mask0(DATA_SET::inputs::maskA);
     vec0.rora(mask0, vec1);
     vec0.store(values);
-    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MRORV, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MRORV, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MRORVA");
 }
 
@@ -2858,7 +2858,7 @@ void genericRORSATest()
     VEC_TYPE vec0(DATA_SET::inputs::inputA);
     vec0.rora(DATA_SET::inputs::inputShiftScalarA);
     vec0.store(values);
-    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::RORS, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::RORS, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "RORSA");
 }
     
@@ -2870,7 +2870,7 @@ void genericMRORSATest()
     MASK_TYPE mask0(DATA_SET::inputs::maskA);
     vec0.rora(mask0, DATA_SET::inputs::inputShiftScalarA);
     vec0.store(values);
-    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MRORS, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MRORS, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MRORSA");
 } 
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
@@ -2881,7 +2881,7 @@ void genericNEGTest()
         VEC_TYPE vec0(DATA_SET::inputs::inputA);
         VEC_TYPE vec1 = vec0.neg();
         vec1.store(values);
-        bool inRange = valuesInRange(values, DATA_SET::outputs::NEG, VEC_LEN, 0.01f);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::NEG, VEC_LEN, SCALAR_TYPE(0.01f));
         CHECK_CONDITION(inRange, "NEG");
     }
     {
@@ -2889,7 +2889,7 @@ void genericNEGTest()
         VEC_TYPE vec0(DATA_SET::inputs::inputA);
         VEC_TYPE vec1 =  -vec0;
         vec1.store(values);
-        bool inRange = valuesInRange(values, DATA_SET::outputs::NEG, VEC_LEN, 0.01f);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::NEG, VEC_LEN, SCALAR_TYPE(0.01f));
         CHECK_CONDITION(inRange, "NEG(operator-)");
     }
 }
@@ -2902,7 +2902,7 @@ void genericMNEGTest()
     MASK_TYPE mask(DATA_SET::inputs::maskA);
     VEC_TYPE vec1 = vec0.neg(mask);
     vec1.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MNEG, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::MNEG, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MNEG");
 }
     
@@ -2913,7 +2913,7 @@ void genericNEGATest()
     VEC_TYPE vec0(DATA_SET::inputs::inputA);
     vec0.nega();
     vec0.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::NEG, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::NEG, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "NEGA");
 }
     
@@ -2925,7 +2925,7 @@ void genericMNEGATest()
     MASK_TYPE mask(DATA_SET::inputs::maskA);
     vec0.nega(mask);
     vec0.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MNEG, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::MNEG, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MNEGA");
 }
     
@@ -2936,7 +2936,7 @@ void genericABSTest()
     VEC_TYPE vec0(DATA_SET::inputs::inputA);
     VEC_TYPE vec1 = vec0.abs();
     vec1.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::ABS, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::ABS, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "ABS");
 }
     
@@ -2948,7 +2948,7 @@ void genericMABSTest()
     MASK_TYPE mask(DATA_SET::inputs::maskA);
     VEC_TYPE vec1 = vec0.abs(mask);
     vec1.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MABS, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::MABS, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MABS");
 }
     
@@ -2959,7 +2959,7 @@ void genericABSATest()
     VEC_TYPE vec0(DATA_SET::inputs::inputA);
     vec0.absa();
     vec0.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::ABS, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::ABS, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "ABSA");
 }
     
@@ -2971,7 +2971,7 @@ void genericMABSATest()
     MASK_TYPE mask(DATA_SET::inputs::maskA);
     vec0.absa(mask);
     vec0.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MABS, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::MABS, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MABSA");
 }
     
@@ -2982,7 +2982,7 @@ void genericSQRTest()
     VEC_TYPE vec0(DATA_SET::inputs::inputA);
     VEC_TYPE vec1 = vec0.sqr();
     vec1.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::SQR, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::SQR, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "SQR");
 }
     
@@ -2994,7 +2994,7 @@ void genericMSQRTest()
     MASK_TYPE mask(DATA_SET::inputs::maskA);
     VEC_TYPE vec1 = vec0.sqr(mask);
     vec1.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MSQR, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::MSQR, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MSQR");
 }
     
@@ -3005,7 +3005,7 @@ void genericSQRATest()
     VEC_TYPE vec0(DATA_SET::inputs::inputA);
     vec0.sqra();
     vec0.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::SQR, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::SQR, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "SQRA");
 }
 
@@ -3017,7 +3017,7 @@ void genericMSQRATest()
     MASK_TYPE mask(DATA_SET::inputs::maskA);
     vec0.sqra(mask);
     vec0.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MSQR, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::MSQR, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MSQRA");
 }
     
@@ -3029,7 +3029,7 @@ void genericSQRTTest()
     VEC_TYPE vec1 = vec0.abs();
     VEC_TYPE vec2 = vec1.sqrt();
     vec2.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::SQRT, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::SQRT, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "SQRT");
 }
     
@@ -3042,7 +3042,7 @@ void genericMSQRTTest()
     VEC_TYPE vec1 = vec0.abs(mask);
     VEC_TYPE vec2 = vec1.sqrt(mask);
     vec2.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MSQRT, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::MSQRT, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MSQRT");
 }
     
@@ -3054,7 +3054,7 @@ void genericSQRTATest()
     vec0.absa();
     vec0.sqrta();
     vec0.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::SQRT, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::SQRT, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "SQRTA");
 }
 
@@ -3067,7 +3067,7 @@ void genericMSQRTATest()
     vec0.absa(mask);
     vec0.sqrta(mask);
     vec0.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MSQRT, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::MSQRT, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MSQRTA");
 }
 
@@ -3078,7 +3078,7 @@ void genericROUNDTest()
     VEC_TYPE vec0(DATA_SET::inputs::inputA);
     VEC_TYPE vec1 = vec0.round();
     vec1.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::ROUND, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::ROUND, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "ROUND");
 }
 
@@ -3090,14 +3090,14 @@ void genericMROUNDTest()
     MASK_TYPE mask(DATA_SET::inputs::maskA);
     VEC_TYPE vec1 = vec0.round(mask); 
     vec1.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MROUND, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::MROUND, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MROUND");
 }
 
-template<typename VEC_TYPE, typename SCALAR_TYPE, typename VEC_INT_TYPE, int VEC_LEN, typename DATA_SET>
+template<typename VEC_TYPE, typename SCALAR_TYPE, typename VEC_INT_TYPE, typename SCALAR_INT_TYPE, int VEC_LEN, typename DATA_SET>
 void genericTRUNCTest()
 {
-    int32_t values[VEC_LEN];
+    SCALAR_INT_TYPE values[VEC_LEN];
     VEC_TYPE vec0(DATA_SET::inputs::inputA);
     VEC_INT_TYPE vec1 = vec0.trunc();
     vec1.store(values);
@@ -3105,10 +3105,10 @@ void genericTRUNCTest()
     CHECK_CONDITION(exact, "TRUNC");
 }
     
-template<typename VEC_TYPE, typename SCALAR_TYPE, typename VEC_INT_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
+template<typename VEC_TYPE, typename SCALAR_TYPE, typename VEC_INT_TYPE, typename SCALAR_INT_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMTRUNCTest()
 {
-    int32_t values[VEC_LEN];
+    SCALAR_INT_TYPE values[VEC_LEN];
     VEC_TYPE vec0(DATA_SET::inputs::inputA);
     MASK_TYPE mask(DATA_SET::inputs::maskA);
     VEC_INT_TYPE vec1 = vec0.trunc(mask); 
@@ -3124,7 +3124,7 @@ void genericFLOORTest()
     VEC_TYPE vec0(DATA_SET::inputs::inputA);
     VEC_TYPE vec1 = vec0.floor();
     vec1.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::FLOOR, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::FLOOR, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "FLOOR");
 }
     
@@ -3136,7 +3136,7 @@ void genericMFLOORTest()
     MASK_TYPE mask(DATA_SET::inputs::maskA);
     VEC_TYPE vec1 = vec0.floor(mask);
     vec1.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MFLOOR, VEC_LEN, 0.01f);
+    bool inRange = valuesInRange(values, DATA_SET::outputs::MFLOOR, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MFLOOR");
 }
     
@@ -3683,13 +3683,13 @@ void genericSignInterfaceTest()
     genericMABSATest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
 }
 
-template<typename VEC_TYPE, typename SCALAR_TYPE, typename VEC_INT_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
+template<typename VEC_TYPE, typename SCALAR_TYPE, typename VEC_INT_TYPE, typename SCALAR_INT_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericFloatInterfaceTest()
 {
     genericROUNDTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
     genericMROUNDTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
-    genericTRUNCTest<VEC_TYPE, SCALAR_TYPE, VEC_INT_TYPE, VEC_LEN, DATA_SET>();
-    genericMTRUNCTest<VEC_TYPE, SCALAR_TYPE, VEC_INT_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericTRUNCTest<VEC_TYPE, SCALAR_TYPE, VEC_INT_TYPE, SCALAR_INT_TYPE, VEC_LEN, DATA_SET>();
+    genericMTRUNCTest<VEC_TYPE, SCALAR_TYPE, VEC_INT_TYPE, SCALAR_INT_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
     genericFLOORTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
     genericMFLOORTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
     genericCEILTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
@@ -3824,7 +3824,7 @@ void genericFloatTest() {
     genericBaseInterfaceTest<FLOAT_VEC_TYPE, FLOAT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET> ();
     genericGatherScatterInterfaceTest<FLOAT_VEC_TYPE, FLOAT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET> ();
     genericSignInterfaceTest<FLOAT_VEC_TYPE, FLOAT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
-    genericFloatInterfaceTest<FLOAT_VEC_TYPE, FLOAT_SCALAR_TYPE, INT_VEC_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericFloatInterfaceTest<FLOAT_VEC_TYPE, FLOAT_SCALAR_TYPE, INT_VEC_TYPE, INT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
     genericFTOUTest<FLOAT_VEC_TYPE, UINT_VEC_TYPE, UINT_SCALAR_TYPE, VEC_LEN, DATA_SET>();
     genericFTOITest<FLOAT_VEC_TYPE, INT_VEC_TYPE, INT_SCALAR_TYPE, VEC_LEN, DATA_SET>();
 }
