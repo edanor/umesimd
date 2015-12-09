@@ -701,7 +701,11 @@ void genericMADDVATest()
         VEC_TYPE vec0(DATA_SET::inputs::inputA);
         VEC_TYPE vec1(DATA_SET::inputs::inputB);
         MASK_TYPE mask(DATA_SET::inputs::maskA);
+#if defined(USE_PARENTHESES_IN_MASK_ASSIGNMENT)
+        vec0(mask) += vec1;
+#else
         vec0[mask] += vec1;
+#endif
         vec0.store(values);
         bool inRange = valuesInRange(values, DATA_SET::outputs::MADDV, VEC_LEN, SCALAR_TYPE(0.01f));
         CHECK_CONDITION(inRange, "MADDVA(vec[mask] +=)");
@@ -918,7 +922,11 @@ void genericMSUBVATest()
         VEC_TYPE vec0(DATA_SET::inputs::inputA);
         VEC_TYPE vec1(DATA_SET::inputs::inputB);
         MASK_TYPE mask(DATA_SET::inputs::maskA);
+#if defined(USE_PARENTHESES_IN_MASK_ASSIGNMENT)
+        vec0(mask) -= vec1;
+#else
         vec0[mask] -= vec1;
+#endif
         vec0.store(values);
         bool inRange = valuesInRange(values, DATA_SET::outputs::MSUBV, VEC_LEN, SCALAR_TYPE(0.01f));
         CHECK_CONDITION(inRange, "MSUBVA(vec[mask] -=)");
@@ -1228,7 +1236,11 @@ void genericMMULVATest()
         VEC_TYPE vec0(DATA_SET::inputs::inputA);
         VEC_TYPE vec1(DATA_SET::inputs::inputB);
         MASK_TYPE mask(DATA_SET::inputs::maskA);
-        vec0[mask] *=  vec1;
+#if defined(USE_PARENTHESES_IN_MASK_ASSIGNMENT)
+        vec0(mask) *= vec1;
+#else
+        vec0[mask] *= vec1;
+#endif
         vec0.store(values);
         bool inRange = valuesInRange(values, DATA_SET::outputs::MMULV, VEC_LEN, SCALAR_TYPE(0.01f));
         CHECK_CONDITION(inRange, "MMULVA(vec[mask] /=)");
@@ -1359,10 +1371,19 @@ void genericMDIVVATest()
         VEC_TYPE vec0(DATA_SET::inputs::inputA);
         VEC_TYPE vec1(DATA_SET::inputs::inputB);
         MASK_TYPE mask(DATA_SET::inputs::maskA);
+#if defined(USE_PARENTHESES_IN_MASK_ASSIGNMENT)
+        vec0(mask) /= vec1;
+#else
         vec0[mask] /= vec1;
+#endif
         vec0.store(values);
         bool inRange = valuesInRange(values, DATA_SET::outputs::MDIVV, VEC_LEN, SCALAR_TYPE(0.01f));
+
+#if defined(USE_PARENTHESES_IN_MASK_ASSIGNMENT)
+        CHECK_CONDITION(inRange, "MDIVVA(vec(mask) /=)");
+#else
         CHECK_CONDITION(inRange, "MDIVVA(vec[mask] /=)");
+#endif
     }
 }
 
@@ -1726,7 +1747,11 @@ void genericMBANDVATest()
         VEC_TYPE vec0(DATA_SET::inputs::inputA);
         VEC_TYPE vec1(DATA_SET::inputs::inputB);
         MASK_TYPE mask(DATA_SET::inputs::maskA);
+#if defined(USE_PARENTHESES_IN_MASK_ASSIGNMENT)
+        vec0(mask) &= vec1;
+#else
         vec0[mask] &= vec1;
+#endif
         vec0.store(values);
         bool inRange = valuesInRange(values, DATA_SET::outputs::MBANDV, VEC_LEN, SCALAR_TYPE(0.01f));
         CHECK_CONDITION(inRange, "MBANDVA(vec[mask] &=)");
@@ -1834,7 +1859,11 @@ void genericMBORVATest()
         VEC_TYPE vec0(DATA_SET::inputs::inputA);
         VEC_TYPE vec1(DATA_SET::inputs::inputB);
         MASK_TYPE mask(DATA_SET::inputs::maskA);
+#if defined(USE_PARENTHESES_IN_MASK_ASSIGNMENT)
+        vec0(mask) |= vec1;
+#else
         vec0[mask] |= vec1;
+#endif
         vec0.store(values);
         bool inRange = valuesInRange(values, DATA_SET::outputs::MBORV, VEC_LEN, SCALAR_TYPE(0.01f));
         CHECK_CONDITION(inRange, "MBORVA(vec[mask] |=)");
@@ -1942,7 +1971,11 @@ void genericMBXORVATest()
         VEC_TYPE vec0(DATA_SET::inputs::inputA);
         VEC_TYPE vec1(DATA_SET::inputs::inputB);
         MASK_TYPE mask(DATA_SET::inputs::maskA);
+#if defined(USE_PARENTHESES_IN_MASK_ASSIGNMENT)
+        vec0(mask) ^= vec1;
+#else
         vec0[mask] ^= vec1;
+#endif
         vec0.store(values);
         bool inRange = valuesInRange(values, DATA_SET::outputs::MBXORV, VEC_LEN, SCALAR_TYPE(0.01f));
         CHECK_CONDITION(inRange, "MBXORVA(vec[mask] ^=)");

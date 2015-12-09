@@ -32,8 +32,9 @@
 #define UME_SIMD_VEC_FLOAT_PROTOTYPE_H_
 
 #include <type_traits>
-#include "../../../UMESimdInterface.h"
 #include <immintrin.h>
+
+#include "../../../UMESimdInterface.h"
 
 #include "../UMESimdMaskAVX2.h"
 #include "../UMESimdSwizzleAVX2.h"
@@ -229,7 +230,7 @@ namespace SIMD {
         // SET-CONSTR
         inline explicit SIMDVec_f(SCALAR_FLOAT_TYPE f) : mVec(f) {};
 
-        // LOAD-CONSTR - Construct by loading from memory
+        // LOAD-CONSTR
         inline explicit SIMDVec_f(SCALAR_FLOAT_TYPE const * p) { this->load(p); }
 
         inline SIMDVec_f(SCALAR_FLOAT_TYPE f0, SCALAR_FLOAT_TYPE f1) {
@@ -316,9 +317,15 @@ namespace SIMD {
         }
 
         // Override Mask Access operators
+#if defined(USE_PARENTHESES_IN_MASK_ASSIGNMENT)
+        inline IntermediateMask<SIMDVec_f, MASK_TYPE> operator() (MASK_TYPE const & mask) {
+            return IntermediateMask<SIMDVec_f, MASK_TYPE>(mask, static_cast<SIMDVec_f &>(*this));
+        }
+#else
         inline IntermediateMask<SIMDVec_f, MASK_TYPE> operator[] (MASK_TYPE const & mask) {
             return IntermediateMask<SIMDVec_f, MASK_TYPE>(mask, static_cast<SIMDVec_f &>(*this));
         }
+#endif
 
         // insert[] (scalar)
         inline SIMDVec_f & insert(uint32_t index, SCALAR_FLOAT_TYPE value) {
@@ -379,9 +386,15 @@ namespace SIMD {
         }
 
         // Override Mask Access operators
+#if defined(USE_PARENTHESES_IN_MASK_ASSIGNMENT)
+        inline IntermediateMask<SIMDVec_f, SIMDVecMask<1>> operator() (SIMDVecMask<1> const & mask) {
+            return IntermediateMask<SIMDVec_f, SIMDVecMask<1>>(mask, static_cast<SIMDVec_f &>(*this));
+        }
+#else
         inline IntermediateMask<SIMDVec_f, SIMDVecMask<1>> operator[] (SIMDVecMask<1> const & mask) {
             return IntermediateMask<SIMDVec_f, SIMDVecMask<1>>(mask, static_cast<SIMDVec_f &>(*this));
         }
+#endif
 
         // insert[] (scalar)
         inline SIMDVec_f & insert(uint32_t index, SCALAR_FLOAT_TYPE value) {
@@ -396,9 +409,10 @@ namespace SIMD {
     };
 
     template<uint32_t VEC_LEN>
-    class SIMDVec_f<DummyFloat, VEC_LEN> final
-    {
-    };
+    class SIMDVec_f<NullType, VEC_LEN> {};
+
+    template<>
+    class SIMDVec_f<NullType, 1> {};
 
 }
 }

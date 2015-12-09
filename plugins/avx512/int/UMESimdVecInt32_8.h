@@ -95,9 +95,16 @@ namespace SIMD {
             return extract(index);
         }
         // Override Mask Access operators
+#if defined(USE_PARENTHESES_IN_MASK_ASSIGNMENT)
+        inline IntermediateMask<SIMDVec_i, SIMDVecMask<8>> operator() (SIMDVecMask<8> const & mask) {
+            return IntermediateMask<SIMDVec_i, SIMDVecMask<8>>(mask, static_cast<SIMDVec_i &>(*this));
+        }
+#else
         inline IntermediateMask<SIMDVec_i, SIMDVecMask<8>> operator[] (SIMDVecMask<8> const & mask) {
             return IntermediateMask<SIMDVec_i, SIMDVecMask<8>>(mask, static_cast<SIMDVec_i &>(*this));
         }
+#endif
+
         // INSERT
         inline SIMDVec_i & insert(uint32_t index, int32_t value) {
             //UME_PERFORMANCE_UNOPTIMAL_WARNING()
