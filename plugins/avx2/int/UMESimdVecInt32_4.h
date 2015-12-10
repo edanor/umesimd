@@ -63,13 +63,15 @@ namespace SIMD {
         inline explicit SIMDVec_i(__m128i & x) { mVec = x; }
         inline explicit SIMDVec_i(const __m128i & x) { mVec = x; }
     public:
+        // ZERO-CONSTR
         inline SIMDVec_i() {};
 
+        // SET-CONSTR
         inline explicit SIMDVec_i(int32_t i) {
             mVec = _mm_set1_epi32(i);
         }
 
-        // LOAD-CONSTR - Construct by loading from memory
+        // LOAD-CONSTR
         inline explicit SIMDVec_i(int32_t const *p) { this->load(p); };
 
         inline SIMDVec_i(int32_t i0, int32_t i1, int32_t i2, int32_t i3)
@@ -108,6 +110,17 @@ namespace SIMD {
             mVec = _mm_load_si128((__m128i*)raw);
             return *this;
         }
+        //(Initialization)
+        // ASSIGNV
+        inline SIMDVec_i & operator= (SIMDVec_i const & b) {
+            return assign(b);
+        }
+        // MASSIGNV
+        // ASSIGNS
+        inline SIMDVec_i & operator= (int32_t b) {
+            return assign(b);
+        }
+        // MASSIGNS
 
         // UNIQUE
         inline bool unique() const {

@@ -132,15 +132,25 @@ namespace SIMD {
                 raw[index - 8] = value;
                 mVecHi = _mm256_load_ps(raw);
             }
-
             return *this;
         }
 
+
+        // ****************************************************************************************
+        // Overloading Interface functions starts here!
+        // ****************************************************************************************
+
         //(Initialization)
-        // ASSIGNV     - Assignment with another vector
-        // MASSIGNV    - Masked assignment with another vector
-        // ASSIGNS     - Assignment with scalar
-        // MASSIGNS    - Masked assign with scalar
+        // ASSIGNV
+        inline SIMDVec_f & operator= (SIMDVec_f const & b) {
+            return assign(b);
+        }
+        // MASSIGNV
+        // ASSIGNS
+        inline SIMDVec_f & operator= (float b) {
+            return assign(b);
+        }
+        // MASSIGNS
 
         //(Memory access)
         // LOAD    - Load from memory (either aligned or unaligned) to vector 
@@ -164,7 +174,6 @@ namespace SIMD {
             mVecHi = _mm256_load_ps(p + 8);
             return *this;
         }
-
         // MLOADA  - Masked load from aligned memory to vector
         inline SIMDVec_f & loada(SIMDVecMask<16> const & mask, float const * p) {
             __m256 t0 = _mm256_load_ps(p);
@@ -230,7 +239,6 @@ namespace SIMD {
             mVecHi = _mm256_add_ps(mVecHi, _mm256_set1_ps(b));
             return *this;
         }
-        // SADDV    - Saturated add with vector
         inline SIMDVec_f & adda(SIMDVecMask<16> const & mask, float b) {
             __m256 t0 = _mm256_add_ps(mVecLo, _mm256_set1_ps(b));
             __m256 t1 = _mm256_add_ps(mVecHi, _mm256_set1_ps(b));
@@ -238,6 +246,7 @@ namespace SIMD {
             mVecHi = _mm256_blendv_ps(mVecHi, t1, _mm256_castsi256_ps(mask.mMaskHi));
             return *this;
         }
+        // SADDV    - Saturated add with vector
         // MSADDV   - Masked saturated add with vector
         // SADDS    - Saturated add with scalar
         // MSADDS   - Masked saturated add with scalar
@@ -499,7 +508,6 @@ namespace SIMD {
         // FTOI
         inline operator SIMDVec_i<int32_t, 16>() const;
     };
-
 }
 }
 

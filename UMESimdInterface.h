@@ -4011,20 +4011,6 @@ namespace SIMD
             MASK_TYPE,
             SWIZZLE_MASK_TYPE> VEC_TYPE;
 
-    private:
-        // Forbid assignment-initialization of vector using scalar values
-        // TODO: is this necessary?
-        inline VEC_TYPE & operator= (const int8_t & x) { }
-        inline VEC_TYPE & operator= (const int16_t & x) { }
-        inline VEC_TYPE & operator= (const int32_t & x) { }
-        inline VEC_TYPE & operator= (const int64_t & x) { }
-        inline VEC_TYPE & operator= (const uint8_t & x) { }
-        inline VEC_TYPE & operator= (const uint16_t & x) { }
-        inline VEC_TYPE & operator= (const uint32_t & x) { }
-        inline VEC_TYPE & operator= (const uint64_t & x) { }
-        inline VEC_TYPE & operator= (const float & x) { }
-        inline VEC_TYPE & operator= (const double & x) { }
- 
     protected:
             
         // Making destructor protected prohibits this class from being instantiated. Effectively this class can only be used as a base class.
@@ -4057,6 +4043,9 @@ namespace SIMD
         inline DERIVED_VEC_TYPE & assign (DERIVED_VEC_TYPE const & src) {
             return EMULATED_FUNCTIONS::assign<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this), src);
         }
+        inline DERIVED_VEC_TYPE & operator= (DERIVED_VEC_TYPE const & src) {
+            return assign(src);
+        }
 
         // MASSIGNV
         inline DERIVED_VEC_TYPE & assign (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & src) {
@@ -4066,6 +4055,9 @@ namespace SIMD
         // ASSIGNS
         inline DERIVED_VEC_TYPE & assign (SCALAR_TYPE value) {
             return EMULATED_FUNCTIONS::assign<DERIVED_VEC_TYPE, SCALAR_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this), value);
+        }
+        inline DERIVED_VEC_TYPE & operator= (SCALAR_TYPE value) {
+            return assign(value);
         }
 
         // MASSIGNS
@@ -5683,17 +5675,6 @@ namespace SIMD
     private:
 
         // Forbid assignment-initialization of vector using scalar values
-        // TODO: is this necessary?
-        inline VEC_TYPE & operator= (const int8_t & x) { }
-        inline VEC_TYPE & operator= (const int16_t & x) { }
-        inline VEC_TYPE & operator= (const int32_t & x) { }
-        inline VEC_TYPE & operator= (const int64_t & x) { }
-        inline VEC_TYPE & operator= (const uint8_t & x) { }
-        inline VEC_TYPE & operator= (const uint16_t & x) { }
-        inline VEC_TYPE & operator= (const uint32_t & x) { }
-        inline VEC_TYPE & operator= (const uint64_t & x) { }
-        inline VEC_TYPE & operator= (const float & x) { }
-        inline VEC_TYPE & operator= (const double & x) { }
  
         SCALAR_UINT_TYPE operator[] (SCALAR_UINT_TYPE index) const; // Declaration only! This operator has to be implemented in derived class.
         inline DERIVED_UINT_VEC_TYPE & insert(uint32_t index, SCALAR_UINT_TYPE value); // Declaration only! This operator has to be implemented in derived class.
@@ -5703,8 +5684,6 @@ namespace SIMD
         // Making destructor protected prohibits this class from being instantiated. Effectively this class can only be used as a base class.
         ~SIMDVecUnsignedInterface() {};
     public:
-        // Everything already handled by other interface classes
-
         // SUBV
         inline DERIVED_UINT_VEC_TYPE operator- (DERIVED_UINT_VEC_TYPE const & b) const {
             return this->sub(b);

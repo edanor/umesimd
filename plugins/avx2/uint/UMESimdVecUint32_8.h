@@ -103,7 +103,6 @@ namespace SIMD {
             return IntermediateMask<SIMDVec_u, SIMDVecMask<8>>(mask, static_cast<SIMDVec_u &>(*this));
         }
 #endif
-
         // insert[] (scalar)
         inline SIMDVec_u & insert(uint32_t index, uint32_t value) {
             alignas(32) uint32_t raw[8];
@@ -113,10 +112,14 @@ namespace SIMD {
             return *this;
         }
 
+        //(Initialization)
         // ASSIGNV
         inline SIMDVec_u & assign(SIMDVec_u const & b) {
             mVec = b.mVec;
             return *this;
+        }
+        inline SIMDVec_u & operator= (SIMDVec_u const & b) {
+            return assign(b);
         }
         // MASSIGNV
         inline SIMDVec_u & assign(SIMDVecMask<8> const & mask, SIMDVec_u const & b) {
@@ -124,7 +127,19 @@ namespace SIMD {
             return *this;
         }
         // ASSIGNS
+        inline SIMDVec_u & assign(uint32_t b) {
+            mVec = _mm256_set1_epi32(b);
+            return *this;
+        }
+        inline SIMDVec_u & operator= (uint32_t b) {
+            return assign(b);
+        }
         // MASSIGNS
+        inline SIMDVec_u & assign(SIMDVecMask<8> const & mask, uint32_t b) {
+            __m256i t0 = _mm256_set1_epi32(b);
+            mVec = _mm256_blendv_epi8(mVec, t0, mask.mMask);
+            return *this;
+        }
 
         // LOAD
         // MLOAD

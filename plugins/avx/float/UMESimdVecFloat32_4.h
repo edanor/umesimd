@@ -116,10 +116,16 @@ namespace SIMD {
         // ****************************************************************************************
 
         //(Initialization)
-        // ASSIGNV     - Assignment with another vector
-        // MASSIGNV    - Masked assignment with another vector
-        // ASSIGNS     - Assignment with scalar
-        // MASSIGNS    - Masked assign with scalar
+        // ASSIGNV
+        inline SIMDVec_f & operator= (SIMDVec_f const & b) {
+            return assign(b);
+        }
+        // MASSIGNV
+        // ASSIGNS
+        inline SIMDVec_f & operator= (float b) {
+            return assign(b);
+        }
+        // MASSIGNS
 
         //(Memory access)
         // LOAD    - Load from memory (either aligned or unaligned) to vector 

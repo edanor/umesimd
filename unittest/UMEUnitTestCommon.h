@@ -600,6 +600,94 @@ void genericHLXORTest()
 }
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
+void generiASSIGNVTest()
+{
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        vec0.assign(vec1);
+        vec0.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::inputs::inputB, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "ASSIGNV");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        vec0 = vec1;
+        vec0.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::inputs::inputB, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "ASSIGNV(operator=)");
+    }
+}
+
+template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
+void generiMASSIGNVTest()
+{
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        SCALAR_TYPE expected[VEC_LEN];
+        for (int i = 0; i < VEC_LEN; i++) {
+            expected[i] = DATA_SET::inputs::maskA[i] ? 
+                          DATA_SET::inputs::inputA[i] : 
+                          DATA_SET::inputs::inputB[i];
+        }
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        vec0.assign(mask, vec1);
+        vec0.store(values);
+        bool inRange = valuesInRange(values, expected, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "MASSIGNV");
+    }
+}
+
+template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
+void generiASSIGNSTest()
+{
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        SCALAR_TYPE expected[VEC_LEN];
+        for (int i = 0; i < VEC_LEN; i++) expected[i] = DATA_SET::inputs::scalarA;
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        vec0.assign(DATA_SET::inputs::scalarA);
+        vec0.store(values);
+        bool inRange = valuesInRange(values, expected, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "ASSIGNS");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        SCALAR_TYPE expected[VEC_LEN];
+        for (int i = 0; i < VEC_LEN; i++) expected[i] = DATA_SET::inputs::scalarA;
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        vec0 = DATA_SET::inputs::scalarA;
+        vec0.store(values);
+        bool inRange = valuesInRange(values, expected, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "ASSIGNS(operator=)");
+    }
+}
+
+template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
+void generiMASSIGNSTest()
+{
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        SCALAR_TYPE expected[VEC_LEN];
+        for (int i = 0; i < VEC_LEN; i++) {
+            expected[i] = DATA_SET::inputs::maskA[i] ? 
+                          DATA_SET::inputs::inputA[i] : 
+                          DATA_SET::inputs::scalarA;
+        }
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        vec0.assign(mask, DATA_SET::inputs::scalarA);
+        vec0.store(values);
+        bool inRange = valuesInRange(values, expected, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "MASSIGNS");
+    }
+}
+template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericADDVTest()
 {
     {
@@ -3807,10 +3895,10 @@ void genericFTOITest()
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericBaseInterfaceTest()
 {   
-    // ASSIGNV
-    // MASSIGNV
-    // ASSIGNS
-    // MASSIGNS
+    generiASSIGNVTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
+    generiMASSIGNVTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    generiASSIGNSTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
+    generiMASSIGNSTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
     // PREFETCH0
     // PREFETCH1
     // PREFETCH2

@@ -32,8 +32,8 @@
 #define UME_SIMD_VEC_UINT_PROTOTYPE_H_
 
 #include <type_traits>
-#include "../../../UMESimdInterface.h"
 #include <immintrin.h>
+#include "../../../UMESimdInterface.h"
 
 #include "../UMESimdMaskAVX2.h"
 #include "../UMESimdSwizzleAVX2.h"
@@ -391,6 +391,15 @@ namespace SIMD {
             return *this;
         }
 
+        // ASSIGNV
+        inline SIMDVec_u & operator= (SIMDVec_u const & b) {
+            return assign(b);
+        }
+        // ASSIGNS
+        inline SIMDVec_u & operator= (SCALAR_UINT_TYPE b) {
+            return assign(b);
+        }
+
         // UTOI
         inline operator SIMDVec_i<SCALAR_INT_TYPE, VEC_LEN>() const;
         // UTOF
@@ -458,6 +467,15 @@ namespace SIMD {
             return *this;
         }
 
+        // ASSIGNV
+        inline SIMDVec_u & operator= (SIMDVec_u const & b) {
+            return assign(b);
+        }
+        // ASSIGNS
+        inline SIMDVec_u & operator= (SCALAR_UINT_TYPE b) {
+            return assign(b);
+        }
+
         // UNIQUE
         inline bool unique() const {
             return true;
@@ -465,7 +483,6 @@ namespace SIMD {
 
         // UTOI
         inline operator SIMDVec_i<SCALAR_INT_TYPE, 1>() const;
-
         // UTOF
         inline operator SIMDVec_f<SCALAR_FLOAT_TYPE, 1>() const;
     };

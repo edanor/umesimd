@@ -65,18 +65,18 @@ namespace SIMD {
         typedef SIMDVec_i<int32_t, 8>     VEC_INT_TYPE;
 
     public:
-        // ZERO-CONSTR - Zero element constructor 
+        // ZERO-CONSTR
         inline SIMDVec_f() {}
 
-        // SET-CONSTR  - One element constructor
+        // SET-CONSTR
         inline explicit SIMDVec_f(float f) {
             mVec = _mm256_set1_ps(f);
         }
 
-        // LOAD-CONSTR - Construct by loading from memory
+        // LOAD-CONSTR
         inline explicit SIMDVec_f(float const *p) { this->load(p); }
 
-        // FULL-CONSTR - constructor with VEC_LEN scalar element 
+        // FULL-CONSTR
         inline SIMDVec_f(float f0, float f1, float f2, float f3, float f4, float f5, float f6, float f7) {
             mVec = _mm256_setr_ps(f0, f1, f2, f3, f4, f5, f6, f7);
         }
@@ -88,8 +88,6 @@ namespace SIMD {
             _mm256_store_ps(raw, mVec);
             return raw[index];
         }
-
-        // EXTRACT
         inline float operator[] (uint32_t index) const {
             UME_PERFORMANCE_UNOPTIMAL_WARNING();
             return extract(index);
@@ -120,17 +118,17 @@ namespace SIMD {
         // Overloading Interface functions starts here!
         // ****************************************************************************************
 
-
-
-        // ****************************************************************************************
-        // Overloading Interface functions starts here!
-        // ****************************************************************************************
-
         //(Initialization)
-        // ASSIGNV     - Assignment with another vector
-        // MASSIGNV    - Masked assignment with another vector
-        // ASSIGNS     - Assignment with scalar
-        // MASSIGNS    - Masked assign with scalar
+        // ASSIGNV
+        inline SIMDVec_f & operator= (SIMDVec_f const & b) {
+            return assign(b);
+        }
+        // MASSIGNV
+        // ASSIGNS
+        inline SIMDVec_f & operator= (float b) {
+            return assign(b);
+        }
+        // MASSIGNS
 
         //(Memory access)
         // LOAD    - Load from memory (either aligned or unaligned) to vector
@@ -151,53 +149,52 @@ namespace SIMD {
         // MSTORE  - Masked store vector content into memory (either aligned or
         //           unaligned)
         // STOREA  - Store vector content into aligned memory
-        inline float* storea(float* p) {
+        inline float* storea(float* p) const {
             _mm256_store_ps(p, mVec);
             return p;
         }
         // MSTOREA - Masked store vector content into aligned memory
-        inline float* storea(SIMDVecMask<8> const & mask, float* p) {
+        inline float* storea(SIMDVecMask<8> const & mask, float* p) const {
             _mm256_maskstore_ps(p, mask.mMask, mVec);
             return p;
         }
-
         //(Addition operations)
-        // ADDV     - Add with vector
+        // ADDV
         inline SIMDVec_f add(SIMDVec_f const & b) const {
             __m256 t0 = _mm256_add_ps(this->mVec, b.mVec);
             return SIMDVec_f(t0);
         }
-        // MADDV    - Masked add with vector
+        // MADDV
         inline SIMDVec_f add(SIMDVecMask<8> const & mask, SIMDVec_f const & b) const {
             __m256 t0 = _mm256_add_ps(this->mVec, b.mVec);
             return SIMDVec_f(_mm256_blendv_ps(mVec, t0, _mm256_castsi256_ps(mask.mMask)));
         }
-        // ADDS     - Add with scalar
+        // ADDS
         inline SIMDVec_f add(float b) const {
             return SIMDVec_f(_mm256_add_ps(this->mVec, _mm256_set1_ps(b)));
         }
-        // MADDS    - Masked add with scalar
+        // MADDS
         inline SIMDVec_f add(SIMDVecMask<8> const & mask, float b) const {
             __m256 t0 = _mm256_add_ps(this->mVec, _mm256_set1_ps(b));
             return SIMDVec_f(_mm256_blendv_ps(mVec, t0, _mm256_castsi256_ps(mask.mMask)));
         }
-        // ADDVA    - Add with vector and assign
+        // ADDVA
         inline SIMDVec_f & adda(SIMDVec_f const & b) {
             mVec = _mm256_add_ps(this->mVec, b.mVec);
             return *this;
         }
-        // MADDVA   - Masked add with vector and assign
+        // MADDVA
         inline SIMDVec_f & adda(SIMDVecMask<8> const & mask, SIMDVec_f const & b) {
             __m256 t0 = _mm256_add_ps(this->mVec, b.mVec);
             mVec = _mm256_blendv_ps(mVec, t0, _mm256_castsi256_ps(mask.mMask));
             return *this;
         }
-        // ADDSA    - Add with scalar and assign
+        // ADDSA
         inline SIMDVec_f & adda(float b) {
             mVec = _mm256_add_ps(this->mVec, _mm256_set1_ps(b));
             return *this;
         }
-        // MADDSA   - Masked add with scalar and assign
+        // MADDSA
         inline SIMDVec_f & adda(SIMDVecMask<8> const & mask, float b) {
             __m256 t0 = _mm256_add_ps(this->mVec, _mm256_set1_ps(b));
             mVec = _mm256_blendv_ps(mVec, t0, _mm256_castsi256_ps(mask.mMask));
@@ -481,7 +478,6 @@ namespace SIMD {
         // FTOI
         inline operator SIMDVec_i<int32_t, 8>() const;
     };
-
 }
 }
 

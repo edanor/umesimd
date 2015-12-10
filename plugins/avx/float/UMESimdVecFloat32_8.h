@@ -114,10 +114,16 @@ namespace SIMD {
         // ****************************************************************************************
 
         //(Initialization)
-        // ASSIGNV     - Assignment with another vector
-        // MASSIGNV    - Masked assignment with another vector
-        // ASSIGNS     - Assignment with scalar
-        // MASSIGNS    - Masked assign with scalar
+        // ASSIGNV
+        inline SIMDVec_f & operator= (SIMDVec_f const & b) {
+            return assign(b);
+        }
+        // MASSIGNV
+        // ASSIGNS
+        inline SIMDVec_f & operator= (float b) {
+            return assign(b);
+        }
+        // MASSIGNS
 
         //(Memory access)
         // LOAD    - Load from memory (either aligned or unaligned) to vector 
@@ -156,42 +162,42 @@ namespace SIMD {
             return p;
         }
         //(Addition operations)
-        // ADDV     - Add with vector 
+        // ADDV
         inline SIMDVec_f add(SIMDVec_f const & b) const {
             __m256 t0 = _mm256_add_ps(mVec, b.mVec);
             return SIMDVec_f(t0);
         }
-        // MADDV    - Masked add with vector
+        // MADDV
         inline SIMDVec_f add(SIMDVecMask<8> const & mask, SIMDVec_f const & b) const {
             __m256 t0 = _mm256_add_ps(mVec, b.mVec);
             return SIMDVec_f(_mm256_blendv_ps(mVec, t0, _mm256_castsi256_ps(mask.mMask)));
         }
-        // ADDS     - Add with scalarr
+        // ADDS
         inline SIMDVec_f add(float b) const {
             return SIMDVec_f(_mm256_add_ps(mVec, _mm256_set1_ps(b)));
         }
-        // MADDS    - Masked add with scalar
+        // MADDS
         inline SIMDVec_f add(SIMDVecMask<8> const & mask, float b) const {
             __m256 t0 = _mm256_add_ps(mVec, _mm256_set1_ps(b));
             return SIMDVec_f(_mm256_blendv_ps(mVec, t0, _mm256_castsi256_ps(mask.mMask)));
         }
-        // ADDVA    - Add with vector and assign
+        // ADDVA
         inline SIMDVec_f & adda(SIMDVec_f const & b) {
             mVec = _mm256_add_ps(mVec, b.mVec);
             return *this;
         }
-        // MADDVA   - Masked add with vector and assign
+        // MADDVA
         inline SIMDVec_f & adda(SIMDVecMask<8> const & mask, SIMDVec_f const & b) {
             __m256 t0 = _mm256_add_ps(mVec, b.mVec);
             mVec = _mm256_blendv_ps(mVec, t0, _mm256_castsi256_ps(mask.mMask));
             return *this;
         }
-        // ADDSA    - Add with scalar and assign
+        // ADDSA
         inline SIMDVec_f & adda(float b) {
             mVec = _mm256_add_ps(mVec, _mm256_set1_ps(b));
             return *this;
         }
-        // MADDSA   - Masked add with scalar and assign
+        // MADDSA
         inline SIMDVec_f & adda(SIMDVecMask<8> const & mask, float b) {
             __m256 t0 = _mm256_add_ps(mVec, _mm256_set1_ps(b));
             mVec = _mm256_blendv_ps(mVec, t0, _mm256_castsi256_ps(mask.mMask));
@@ -313,36 +319,6 @@ namespace SIMD {
         // CMPLES - Element-wise 'less than or equal' with scalar
         // CMPEX  - Check if vectors are exact (returns scalar 'bool')
 
-        //(Bitwise operations)
-        // ANDV   - AND with vector
-        // MANDV  - Masked AND with vector
-        // ANDS   - AND with scalar
-        // MANDS  - Masked AND with scalar
-        // ANDVA  - AND with vector and assign
-        // MANDVA - Masked AND with vector and assign
-        // ANDSA  - AND with scalar and assign
-        // MANDSA - Masked AND with scalar and assign
-        // ORV    - OR with vector
-        // MORV   - Masked OR with vector
-        // ORS    - OR with scalar
-        // MORS   - Masked OR with scalar
-        // ORVA   - OR with vector and assign
-        // MORVA  - Masked OR with vector and assign
-        // ORSA   - OR with scalar and assign
-        // MORSA  - Masked OR with scalar and assign
-        // XORV   - XOR with vector
-        // MXORV  - Masked XOR with vector
-        // XORS   - XOR with scalar
-        // MXORS  - Masked XOR with scalar
-        // XORVA  - XOR with vector and assign
-        // MXORVA - Masked XOR with vector and assign
-        // XORSA  - XOR with scalar and assign
-        // MXORSA - Masked XOR with scalar and assign
-        // NOT    - Negation of bits
-        // MNOT   - Masked negation of bits
-        // NOTA   - Negation of bits and assign
-        // MNOTA  - Masked negation of bits and assign
-
         // (Pack/Unpack operations - not available for SIMD1)
         // PACK     - assign vector with two half-length vectors
         // PACKLO   - assign lower half of a vector with a half-length vector
@@ -363,12 +339,6 @@ namespace SIMD {
         // MHADD - Masked add elements of a vector (horizontal add)
         // HMUL  - Multiply elements of a vector (horizontal mul)
         // MHMUL - Masked multiply elements of a vector (horizontal mul)
-        // HAND  - AND of elements of a vector (horizontal AND)
-        // MHAND - Masked AND of elements of a vector (horizontal AND)
-        // HOR   - OR of elements of a vector (horizontal OR)
-        // MHOR  - Masked OR of elements of a vector (horizontal OR)
-        // HXOR  - XOR of elements of a vector (horizontal XOR)
-        // MHXOR - Masked XOR of elements of a vector (horizontal XOR)
 
         //(Fused arithmetics)
         // FMULADDV  - Fused multiply and add (A*B + C) with vectors
@@ -426,58 +396,7 @@ namespace SIMD {
         // SCATTERV  - Scatter to memory using indices from vector
         // MSCATTERV - Masked scatter to memory using indices from vector
 
-        // (Binary shift operations)
-        // LSHV   - Element-wise logical shift bits left (shift values in vector)
-        // MLSHV  - Masked element-wise logical shift bits left (shift values in
-        //          vector) 
-        // LSHS   - Element-wise logical shift bits left (shift value in scalar)
-        // MLSHS  - Masked element-wise logical shift bits left (shift value in
-        //          scalar)
-        // LSHVA  - Element-wise logical shift bits left (shift values in vector)
-        //          and assign
-        // MLSHVA - Masked element-wise logical shift bits left (shift values
-        //          in vector) and assign
-        // LSHSA  - Element-wise logical shift bits left (shift value in scalar)
-        //          and assign
-        // MLSHSA - Masked element-wise logical shift bits left (shift value in
-        //          scalar) and assign
-        // RSHV   - Logical shift bits right (shift values in vector)
-        // MRSHV  - Masked logical shift bits right (shift values in vector)
-        // RSHS   - Logical shift bits right (shift value in scalar)
-        // MRSHV  - Masked logical shift bits right (shift value in scalar)
-        // RSHVA  - Logical shift bits right (shift values in vector) and assign
-        // MRSHVA - Masked logical shift bits right (shift values in vector) and
-        //          assign
-        // RSHSA  - Logical shift bits right (shift value in scalar) and assign
-        // MRSHSA - Masked logical shift bits right (shift value in scalar) and
-        //          assign
-
-        // (Binary rotation operations)
-        // ROLV   - Rotate bits left (shift values in vector)
-        // MROLV  - Masked rotate bits left (shift values in vector)
-        // ROLS   - Rotate bits right (shift value in scalar)
-        // MROLS  - Masked rotate bits left (shift value in scalar)
-        // ROLVA  - Rotate bits left (shift values in vector) and assign
-        // MROLVA - Masked rotate bits left (shift values in vector) and assign
-        // ROLSA  - Rotate bits left (shift value in scalar) and assign
-        // MROLSA - Masked rotate bits left (shift value in scalar) and assign
-        // RORV   - Rotate bits right (shift values in vector)
-        // MRORV  - Masked rotate bits right (shift values in vector) 
-        // RORS   - Rotate bits right (shift values in scalar)
-        // MRORS  - Masked rotate bits right (shift values in scalar) 
-        // RORVA  - Rotate bits right (shift values in vector) and assign 
-        // MRORVA - Masked rotate bits right (shift values in vector) and assign
-        // RORSA  - Rotate bits right (shift values in scalar) and assign
-        // MRORSA - Masked rotate bits right (shift values in scalar) and assign
-
-        // 3) Operations available for Signed integer and Unsigned integer 
-        // data types:
-
-        //(Signed/Unsigned cast)
-        // UTOI - Cast unsigned vector to signed vector
-        // ITOU - Cast signed vector to unsigned vector
-
-        // 4) Operations available for Signed integer and floating point SIMD types:
+        // 3) Operations available for Signed integer and floating point SIMD types:
 
         // (Sign modification)
         // NEG   - Negate signed values
@@ -491,7 +410,7 @@ namespace SIMD {
         // ABSA  - Absolute value and assign
         // MABSA - Masked absolute value and assign
 
-        // 5) Operations available for floating point SIMD types:
+        // 4) Operations available for floating point SIMD types:
 
         // (Comparison operations)
         // CMPEQRV - Compare 'Equal within range' with margins from vector
@@ -503,11 +422,11 @@ namespace SIMD {
         // SQRA      - Square of vector values and assign
         // MSQRA     - Masked square of vector values and assign
         // SQRT      - Square root of vector values
-        SIMDVec_f sqrt() {
+        SIMDVec_f sqrt() const {
             return SIMDVec_f(_mm256_sqrt_ps(mVec));
         }
         // MSQRT     - Masked square root of vector values 
-        SIMDVec_f sqrt(SIMDVecMask<8> const & mask) {
+        SIMDVec_f sqrt(SIMDVecMask<8> const & mask) const {
             __m256 mask_ps = _mm256_castsi256_ps(mask.mMask);
             __m256 ret = _mm256_sqrt_ps(mVec);
             return SIMDVec_f(_mm256_blendv_ps(mVec, ret, mask_ps));
@@ -521,12 +440,12 @@ namespace SIMD {
         // ROUND     - Round to nearest integer
         // MROUND    - Masked round to nearest integer
         // TRUNC     - Truncate to integer (returns Signed integer vector)
-        SIMDVec_i<int32_t, 8> trunc() {
+        SIMDVec_i<int32_t, 8> trunc() const {
             __m256i t0 = _mm256_cvttps_epi32(mVec);
             return SIMDVec_i<int32_t, 8>(t0);
         }
         // MTRUNC    - Masked truncate to integer (returns Signed integer vector)
-        SIMDVec_i<int32_t, 8> trunc(SIMDVecMask<8> const & mask) {
+        SIMDVec_i<int32_t, 8> trunc(SIMDVecMask<8> const & mask) const {
             __m256 mask_ps = _mm256_castsi256_ps(mask.mMask);
             __m256 t0 = _mm256_blendv_ps(_mm256_setzero_ps(), mVec, mask_ps);
             __m256i t1 = _mm256_cvttps_epi32(t0);

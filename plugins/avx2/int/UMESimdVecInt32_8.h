@@ -56,20 +56,21 @@ namespace SIMD {
         friend class SIMDVec_u<uint32_t, 8>;
         friend class SIMDVec_f<float, 8>;
         friend class SIMDVec_f<double, 8>;
-
     private:
         __m256i mVec;
 
         inline explicit SIMDVec_i(__m256i & x) { mVec = x; }
         inline explicit SIMDVec_i(const __m256i & x) { mVec = x; }
     public:
+        // ZERO-CONSTR
         inline SIMDVec_i() {};
 
+        // SET-CONSTR
         inline explicit SIMDVec_i(int32_t i) {
             mVec = _mm256_set1_epi32(i);
         }
 
-        // LOAD-CONSTR - Construct by loading from memory
+        // LOAD-CONSTR
         inline explicit SIMDVec_i(int32_t const *p) { this->load(p); };
 
         inline SIMDVec_i(int32_t i0, int32_t i1, int32_t i2, int32_t i3,
@@ -101,16 +102,26 @@ namespace SIMD {
             return IntermediateMask<SIMDVec_i, SIMDVecMask<8>>(mask, static_cast<SIMDVec_i &>(*this));
         }
 #endif
-
         // insert[] (scalar)
         inline SIMDVec_i & insert(uint32_t index, int32_t value) {
-            UME_PERFORMANCE_UNOPTIMAL_WARNING()
-                alignas(32) int32_t raw[8];
+            //UME_PERFORMANCE_UNOPTIMAL_WARNING()
+            alignas(32) int32_t raw[8];
             _mm256_store_si256((__m256i *)raw, mVec);
             raw[index] = value;
             mVec = _mm256_load_si256((__m256i *)raw);
             return *this;
         }
+        //(Initialization)
+        // ASSIGNV
+        inline SIMDVec_i & operator= (SIMDVec_i const & b) {
+            return assign(b);
+        }
+        // MASSIGNV
+        // ASSIGNS
+        inline SIMDVec_i & operator= (int32_t b) {
+            return assign(b);
+        }
+        // MASSIGNS
 
         // ABS
         inline SIMDVec_i abs() const {

@@ -405,6 +405,17 @@ namespace SIMD {
             return *this;
         }
 
+        // ASSIGNV
+        inline SIMDVec_u & operator=(SIMDVec_u const & b) {
+            return assign(b);
+        }
+        // MASSIGNV
+        // ASSIGNS
+        inline SIMDVec_u & operator=(SCALAR_UINT_TYPE b) {
+            return assign(b);
+        }
+        // MASSIGNS
+
         // UTOI
         inline operator SIMDVec_i<SCALAR_INT_TYPE, VEC_LEN>() const;
         // UTOF
@@ -479,6 +490,17 @@ namespace SIMD {
         inline bool unique() const {
             return true;
         }
+
+        // ASSIGNV
+        inline SIMDVec_u & operator=(SIMDVec_u const & b) {
+            return assign(b);
+        }
+        // MASSIGNV
+        // ASSIGNS
+        inline SIMDVec_u & operator=(SCALAR_UINT_TYPE b) {
+            return assign(b);
+        }
+        // MASSIGNS
 
         // DEGRADE
         inline operator SIMDVec_u<SCALAR_UINT_LOWER_PRECISION, 1>() const;

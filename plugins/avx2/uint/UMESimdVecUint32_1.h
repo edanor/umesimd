@@ -84,7 +84,6 @@ namespace SIMD {
             return IntermediateMask<SIMDVec_u, SIMDVecMask<1>>(mask, static_cast<SIMDVec_u &>(*this));
         }
 #endif
-
         // INSERT
         inline SIMDVec_u & insert(uint32_t index, uint32_t value) {
             mVec = value;
@@ -98,13 +97,27 @@ namespace SIMD {
             mVec = src.mVec;
             return *this;
         }
+        inline SIMDVec_u & operator= (SIMDVec_u const & b) {
+            return assign(b);
+        }
         // MASSIGNV
         inline SIMDVec_u & assign(SIMDVecMask<1> const & mask, SIMDVec_u const & src) {
             if (mask.mMask == true) mVec = src.mVec;
             return *this;
         }
         // ASSIGNS
+        inline SIMDVec_u & assign(uint32_t b) {
+            mVec = b;
+            return *this;
+        }
+        inline SIMDVec_u & operator= (uint32_t b) {
+            return assign(b);
+        }
         // MASSIGNS
+        inline SIMDVec_u & assign(SIMDVecMask<1> const & mask, uint32_t b) {
+            if(mask.mMask == true) mVec = b;
+            return *this;
+        }
 
         // PREFETCH0
         // PREFETCH1

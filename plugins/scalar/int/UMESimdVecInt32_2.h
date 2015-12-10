@@ -106,19 +106,35 @@ namespace SIMD {
         // EXTRACT
 
         // ASSIGNV
-        inline SIMDVec_i & assign(SIMDVec_i const & src) {
-            mVec[0] = src.mVec[0];
-            mVec[1] = src.mVec[1];
+        inline SIMDVec_i & assign(SIMDVec_i const & b) {
+            mVec[0] = b.mVec[0];
+            mVec[1] = b.mVec[1];
             return *this;
         }
+        inline SIMDVec_i & operator= (SIMDVec_i const & b) {
+            return assign(b);
+        }
         // MASSIGNV
-        inline SIMDVec_i & assign(SIMDVecMask<2> const & mask, SIMDVec_i const & src) {
-            if (mask.mMask[0] == true) mVec[0] = src.mVec[0];
-            if (mask.mMask[1] == true) mVec[1] = src.mVec[1];
+        inline SIMDVec_i & assign(SIMDVecMask<2> const & mask, SIMDVec_i const & b) {
+            if (mask.mMask[0] == true) mVec[0] = b.mVec[0];
+            if (mask.mMask[1] == true) mVec[1] = b.mVec[1];
             return *this;
         }
         // ASSIGNS
+        inline SIMDVec_i & assign(int32_t b) {
+            mVec[0] = b;
+            mVec[1] = b;
+            return *this;
+        }
+        inline SIMDVec_i & operator=(int32_t b) {
+            return assign(b);
+        }
         // MASSIGNS
+        inline SIMDVec_i & assign(SIMDVecMask<2> const & mask, int32_t b) {
+            if (mask.mMask[0] == true) mVec[0] = b;
+            if (mask.mMask[1] == true) mVec[1] = b;
+            return *this;
+        }
 
         // PREFETCH0
         // PREFETCH1

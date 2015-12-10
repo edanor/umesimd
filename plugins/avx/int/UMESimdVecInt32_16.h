@@ -140,6 +140,18 @@ namespace SIMD {
             return *this;
         }
 
+        //(Initialization)
+        // ASSIGNV
+        inline SIMDVec_i & operator= (SIMDVec_i const & b) {
+            return assign(b);
+        }
+        // MASSIGNV
+        // ASSIGNS
+        inline SIMDVec_i & operator= (int32_t b) {
+            return assign(b);
+        }
+        // MASSIGNS
+
         // ABS
         SIMDVec_i abs() {
             __m128i a_low = _mm256_extractf128_si256(mVecLo, 0);

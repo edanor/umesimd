@@ -105,6 +105,9 @@ namespace SIMD {
             mVec = b.mVec;
             return *this;
         }
+        inline SIMDVec_f & operator=(SIMDVec_f const & b) {
+            return assign(b);
+        }
         // MASSIGNV    - Masked assignment with another vector
         inline SIMDVec_f & assign(SIMDVecMask<1> const & mask, SIMDVec_f const & b) {
             if (mask.mMask == true) mVec = b.mVec;
@@ -114,6 +117,9 @@ namespace SIMD {
         inline SIMDVec_f & assign(float b) {
             mVec = b;
             return *this;
+        }
+        inline SIMDVec_f & operator=(float b) {
+            return assign(b);
         }
         // MASSIGNS    - Masked assign with scalar
         inline SIMDVec_f & assign(SIMDVecMask<1> const & mask, float b) {
@@ -178,8 +184,8 @@ namespace SIMD {
             return SIMDVec_f(t0);
         }
         // ADDS     - Add with scalar
-        inline SIMDVec_f add(float a) const {
-            float t0 = mVec + a;
+        inline SIMDVec_f add(float b) const {
+            float t0 = mVec + b;
             return SIMDVec_f(t0);
         }
         inline SIMDVec_f operator+ (float b) const {

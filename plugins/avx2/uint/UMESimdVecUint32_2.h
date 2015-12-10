@@ -55,6 +55,7 @@ namespace SIMD {
 
         friend class SIMDVec_i<int32_t, 2>;
         friend class SIMDVec_f<float, 2>;
+
     public:
         // ZERO-CONSTR
         inline SIMDVec_u() {};
@@ -83,7 +84,6 @@ namespace SIMD {
             return IntermediateMask<SIMDVec_u, SIMDVecMask<2>>(mask, static_cast<SIMDVec_u &>(*this));
         }
 #endif
-
         // INSERT
         inline SIMDVec_u & insert(uint32_t index, uint32_t value) {
             mVec[index] = value;
@@ -104,6 +104,9 @@ namespace SIMD {
             mVec[1] = src.mVec[1];
             return *this;
         }
+        inline SIMDVec_u & operator= (SIMDVec_u const & b) {
+            return assign(b);
+        }
         // MASSIGNV
         inline SIMDVec_u & assign(SIMDVecMask<2> const & mask, SIMDVec_u const & src) {
             if (mask.mMask[0] == true) mVec[0] = src.mVec[0];
@@ -111,7 +114,20 @@ namespace SIMD {
             return *this;
         }
         // ASSIGNS
+        inline SIMDVec_u & assign(uint32_t b) {
+            mVec[0] = b;
+            mVec[1] = b;
+            return *this;
+        }
+        inline SIMDVec_u & operator= (uint32_t b) {
+            return assign(b);
+        }
         // MASSIGNS
+        inline SIMDVec_u & assign(SIMDVecMask<2> const & mask, uint32_t b) {
+            if (mask.mMask[0] == true) mVec[0] = b;
+            if (mask.mMask[1] == true) mVec[1] = b;
+            return *this;
+        }
 
         // PREFETCH0
         // PREFETCH1

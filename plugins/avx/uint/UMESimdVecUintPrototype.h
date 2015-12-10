@@ -391,6 +391,15 @@ namespace SIMD {
             return *this;
         }
 
+        // ASSIGNV
+        inline SIMDVec_u & operator= (SIMDVec_u const & b) {
+            return assign(b);
+        }
+        // ASSIGNS
+        inline SIMDVec_u & operator= (SCALAR_UINT_TYPE b) {
+            return assign(b);
+        }
+
         // UTOI
         inline operator SIMDVec_i<SCALAR_INT_TYPE, VEC_LEN>() const;
         // UTOF
@@ -456,6 +465,15 @@ namespace SIMD {
         inline SIMDVec_u & insert(uint32_t index, SCALAR_UINT_TYPE value) {
             mVec.insert(index, value);
             return *this;
+        }
+
+        // ASSIGNV
+        inline SIMDVec_u & operator= (SIMDVec_u const & b) {
+            return assign(b);
+        }
+        // ASSIGNS
+        inline SIMDVec_u & operator= (SCALAR_UINT_TYPE b) {
+            return assign(b);
         }
 
         // UNIQUE

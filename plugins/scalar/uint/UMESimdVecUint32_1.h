@@ -94,16 +94,14 @@ namespace SIMD {
         // EXTRACT
 
         // ASSIGNV
-        inline SIMDVec_u & assign(SIMDVec_u const & src) {
-            mVec = src.mVec;
-            return *this;
+        inline SIMDVec_u & operator=(SIMDVec_u const & b) {
+            return assign(b);
         }
         // MASSIGNV
-        inline SIMDVec_u & assign(SIMDVecMask<1> const & mask, SIMDVec_u const & src) {
-            if (mask.mMask == true) mVec = src.mVec;
-            return *this;
-        }
         // ASSIGNS
+        inline SIMDVec_u & operator=(uint32_t b) {
+            return assign(b);
+        }
         // MASSIGNS
 
         // PREFETCH0

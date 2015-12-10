@@ -106,10 +106,15 @@ namespace SIMD {
         }
 
         // ASSIGNV
-        inline SIMDVec_u & assign(SIMDVec_u const & b) {
-            mVec = b.mVec;
-            return *this;
+        inline SIMDVec_u & operator= (SIMDVec_u const & b) {
+            return assign(b);
         }
+        // MASSIGNV
+        // ASSIGNS
+        inline SIMDVec_u & operator= (uint32_t b) {
+            return assign(b);
+        }
+        // MASSIGNS
 
         // PREFINC
         inline SIMDVec_u & prefinc() {

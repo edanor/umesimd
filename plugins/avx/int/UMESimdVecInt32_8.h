@@ -32,8 +32,9 @@
 #define UME_SIMD_VEC_INT32_8_H_
 
 #include <type_traits>
-#include "../../../UMESimdInterface.h"
 #include <immintrin.h>
+
+#include "../../../UMESimdInterface.h"
 
 namespace UME {
 namespace SIMD {
@@ -111,9 +112,20 @@ namespace SIMD {
             mVec = _mm256_load_si256((__m256i *)raw);
             return *this;
         }
+        //(Initialization)
+        // ASSIGNV
+        inline SIMDVec_i & operator= (SIMDVec_i const & b) {
+            return assign(b);
+        }
+        // MASSIGNV
+        // ASSIGNS
+        inline SIMDVec_i & operator= (int32_t b) {
+            return assign(b);
+        }
+        // MASSIGNS
 
         // ABS
-        SIMDVec_i abs() {
+        inline SIMDVec_i abs() const {
             __m128i a_low = _mm256_extractf128_si256(mVec, 0);
             __m128i a_high = _mm256_extractf128_si256(mVec, 1);
             __m256i ret = _mm256_setzero_si256();
@@ -122,7 +134,7 @@ namespace SIMD {
             return SIMDVec_i(ret);
         }
         // MABS
-        SIMDVec_i abs(SIMDVecMask<8> const & mask) {
+        inline SIMDVec_i abs(SIMDVecMask<8> const & mask) const {
             __m128i a_low = _mm256_extractf128_si256(mVec, 0);
             __m128i a_high = _mm256_extractf128_si256(mVec, 1);
             __m128i m_low = _mm256_extractf128_si256(mask.mMask, 0);
@@ -137,9 +149,9 @@ namespace SIMD {
         }
 
         // ITOU
-        inline  operator SIMDVec_u<uint32_t, 8>() const;
+        inline operator SIMDVec_u<uint32_t, 8>() const;
         // ITOF
-        inline  operator SIMDVec_f<float, 8>() const;
+        inline operator SIMDVec_f<float, 8>() const;
     };
 
 }

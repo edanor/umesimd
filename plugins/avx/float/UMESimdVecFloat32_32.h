@@ -32,8 +32,9 @@
 #define UME_SIMD_VEC_FLOAT32_32_H_
 
 #include <type_traits>
-#include "../../../UMESimdInterface.h"
 #include <immintrin.h>
+
+#include "../../../UMESimdInterface.h"
 
 namespace UME {
 namespace SIMD {
@@ -172,10 +173,16 @@ namespace SIMD {
         // ****************************************************************************************
 
         //(Initialization)
-        // ASSIGNV     - Assignment with another vector
-        // MASSIGNV    - Masked assignment with another vector
-        // ASSIGNS     - Assignment with scalar
-        // MASSIGNS    - Masked assign with scalar
+        // ASSIGNV
+        inline SIMDVec_f & operator= (SIMDVec_f const & b) {
+            return assign(b);
+        }
+        // MASSIGNV
+        // ASSIGNS
+        inline SIMDVec_f & operator= (float b) {
+            return assign(b);
+        }
+        // MASSIGNS
 
         // PREFETCH0  
         static inline void prefetch0(float *p) {
@@ -439,36 +446,6 @@ namespace SIMD {
         // CMPLES - Element-wise 'less than or equal' with scalar
         // CMPEX  - Check if vectors are exact (returns scalar 'bool')
 
-        //(Bitwise operations)
-        // ANDV   - AND with vector
-        // MANDV  - Masked AND with vector
-        // ANDS   - AND with scalar
-        // MANDS  - Masked AND with scalar
-        // ANDVA  - AND with vector and assign
-        // MANDVA - Masked AND with vector and assign
-        // ANDSA  - AND with scalar and assign
-        // MANDSA - Masked AND with scalar and assign
-        // ORV    - OR with vector
-        // MORV   - Masked OR with vector
-        // ORS    - OR with scalar
-        // MORS   - Masked OR with scalar
-        // ORVA   - OR with vector and assign
-        // MORVA  - Masked OR with vector and assign
-        // ORSA   - OR with scalar and assign
-        // MORSA  - Masked OR with scalar and assign
-        // XORV   - XOR with vector
-        // MXORV  - Masked XOR with vector
-        // XORS   - XOR with scalar
-        // MXORS  - Masked XOR with scalar
-        // XORVA  - XOR with vector and assign
-        // MXORVA - Masked XOR with vector and assign
-        // XORSA  - XOR with scalar and assign
-        // MXORSA - Masked XOR with scalar and assign
-        // NOT    - Negation of bits
-        // MNOT   - Masked negation of bits
-        // NOTA   - Negation of bits and assign
-        // MNOTA  - Masked negation of bits and assign
-
         // (Pack/Unpack operations - not available for SIMD1)
         // PACK     - assign vector with two half-length vectors
         // PACKLO   - assign lower half of a vector with a half-length vector
@@ -489,12 +466,6 @@ namespace SIMD {
         // MHADD - Masked add elements of a vector (horizontal add)
         // HMUL  - Multiply elements of a vector (horizontal mul)
         // MHMUL - Masked multiply elements of a vector (horizontal mul)
-        // HAND  - AND of elements of a vector (horizontal AND)
-        // MHAND - Masked AND of elements of a vector (horizontal AND)
-        // HOR   - OR of elements of a vector (horizontal OR)
-        // MHOR  - Masked OR of elements of a vector (horizontal OR)
-        // HXOR  - XOR of elements of a vector (horizontal XOR)
-        // MHXOR - Masked XOR of elements of a vector (horizontal XOR)
 
         //(Fused arithmetics)
         // FMULADDV  - Fused multiply and add (A*B + C) with vectors
@@ -573,7 +544,7 @@ namespace SIMD {
         // SCATTERV  - Scatter to memory using indices from vector
         // MSCATTERV - Masked scatter to memory using indices from vector
 
-        // 4) Operations available for Signed integer and floating point SIMD types:
+        // 3) Operations available for Signed integer and floating point SIMD types:
 
         // (Sign modification)
         // NEG   - Negate signed values
@@ -587,7 +558,7 @@ namespace SIMD {
         // ABSA  - Absolute value and assign
         // MABSA - Masked absolute value and assign
 
-        // 5) Operations available for floating point SIMD types:
+        // 4) Operations available for floating point SIMD types:
 
         // (Comparison operations)
         // CMPEQRV - Compare 'Equal within range' with margins from vector
@@ -635,7 +606,6 @@ namespace SIMD {
         // FTOI
         inline operator SIMDVec_i<int32_t, 32>() const;
     };
-
 }
 }
 

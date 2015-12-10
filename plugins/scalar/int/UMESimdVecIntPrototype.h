@@ -418,6 +418,17 @@ namespace SIMD {
             return *this;
         }
 
+        // ASSIGNV
+        inline SIMDVec_i & operator=(SIMDVec_i const & b) {
+            return assign(b);
+        }
+        // MASSIGNV
+        // ASSIGNS
+        inline SIMDVec_i & operator=(SCALAR_INT_TYPE b) {
+            return assign(b);
+        }
+        // MASSIGNS
+
         // ITOU
         inline operator SIMDVec_u<SCALAR_UINT_TYPE, VEC_LEN>() const;
         // ITOF
@@ -483,6 +494,17 @@ namespace SIMD {
             mVec.insert(index, value);
             return *this;
         }
+
+        // ASSIGNV
+        inline SIMDVec_i & operator=(SIMDVec_i const & b) {
+            return assign(b);
+        }
+        // MASSIGNV
+        // ASSIGNS
+        inline SIMDVec_i & operator=(SCALAR_INT_TYPE b) {
+            return assign(b);
+        }
+        // MASSIGNS
 
         // UNIQUE
         inline bool unique() const {

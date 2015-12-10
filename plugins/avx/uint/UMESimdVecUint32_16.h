@@ -141,31 +141,19 @@ namespace SIMD {
                 mVecHi = _mm256_load_si256((__m256i*)raw);
             }
             return *this;
+        }        
+        
+        //(Initialization)
+        // ASSIGNV
+        inline SIMDVec_u & operator= (SIMDVec_u const & b) {
+            return assign(b);
         }
-        // STOREA
-        // ADDV
-        // MADDV
-        // ADDS
-        // MADDS
-        // ADDVA
-        // MADDVA
-        // ADDSA 
-        // MADDSA
-        // MULV
-        // MMULV
-        // MULS
-        // MMULS
-        // CMPEQV
-        // CMPEQS
-        // UNIQUE
-        // GATHERS
-        // MGATHERS
-        // GATHERV
-        // MGATHERV
-        // SCATTERS
-        // MSCATTERS
-        // SCATTERV
-        // MSCATTERV
+        // MASSIGNV
+        // ASSIGNS
+        inline SIMDVec_u & operator= (uint32_t b) {
+            return assign(b);
+        }
+        // MASSIGNS
 
         // UTOI
         inline operator SIMDVec_i<int32_t, 16>() const;
