@@ -166,7 +166,6 @@ namespace SIMD {
             __m128 t0 = _mm_add_ps(this->mVec, b.mVec);
             return SIMDVec_f(t0);
         }
-
         inline SIMDVec_f operator+ (SIMDVec_f const & b) const {
             return add(b);
         }
@@ -178,6 +177,9 @@ namespace SIMD {
         // ADDS     - Add with scalar
         inline SIMDVec_f add(float b) const {
             return SIMDVec_f(_mm_add_ps(this->mVec, _mm_set1_ps(b)));
+        }
+        inline SIMDVec_f operator+ (float b) const {
+            return add(b);
         }
         // MADDS    - Masked add with scalar
         inline SIMDVec_f add(SIMDVecMask<4> const & mask, float b) const {
@@ -251,7 +253,7 @@ namespace SIMD {
 
         //(Multiplication operations)
         // MULV   - Multiplication with vector
-        inline SIMDVec_f mul(SIMDVec_f const & b) {
+        inline SIMDVec_f mul(SIMDVec_f const & b) const {
             __m128 t0 = _mm_mul_ps(mVec, b.mVec);
             return SIMDVec_f(t0);
         }
@@ -263,13 +265,13 @@ namespace SIMD {
             return SIMDVec_f(t2);
         }
         // MULS   - Multiplication with scalar
-        inline SIMDVec_f mul(float b) {
+        inline SIMDVec_f mul(float b) const {
             __m128 t0 = _mm_set1_ps(b);
             __m128 t1 = _mm_mul_ps(mVec, t0);
             return SIMDVec_f(t1);
         }
         // MMULS  - Masked multiplication with scalar
-        inline SIMDVec_f mul(SIMDVecMask<4> const & mask, float b) {
+        inline SIMDVec_f mul(SIMDVecMask<4> const & mask, float b) const {
             __m128 t0 = _mm_set1_ps(b);
             __m128 t1 = _mm_mul_ps(mVec, t0);
             __m128 t2 = _mm_castsi128_ps(mask.mMask);
@@ -336,7 +338,7 @@ namespace SIMD {
 
         //(Fused arithmetics)
         // FMULADDV  - Fused multiply and add (A*B + C) with vectors     
-        inline SIMDVec_f fmuladd(SIMDVec_f const & b, SIMDVec_f const & c) {
+        inline SIMDVec_f fmuladd(SIMDVec_f const & b, SIMDVec_f const & c) const {
 #ifdef FMA
             __m128 t0 = _mm_fmadd_ps(mVec, b.mVec, c.mVec);
 #else
@@ -346,7 +348,7 @@ namespace SIMD {
         }
 
         // MFMULADDV
-        inline SIMDVec_f fmuladd(SIMDVecMask<4> const & mask, SIMDVec_f const & b, SIMDVec_f const & c) {
+        inline SIMDVec_f fmuladd(SIMDVecMask<4> const & mask, SIMDVec_f const & b, SIMDVec_f const & c) const {
 #ifdef FMA
             __m128 t0 = _mm_fmadd_ps(mVec, b.mVec, c.mVec);
 #else
@@ -440,12 +442,12 @@ namespace SIMD {
         // ROUND     - Round to nearest integer
         // MROUND    - Masked round to nearest integer
         // TRUNC     - Truncate to integer (returns Signed integer vector)
-        SIMDVec_i<int32_t, 4> trunc() {
+        SIMDVec_i<int32_t, 4> trunc() const {
             __m128i t0 = _mm_cvttps_epi32(mVec);
             return SIMDVec_i<int32_t, 4>(t0);
         }
         // MTRUNC    - Masked truncate to integer (returns Signed integer vector)
-        SIMDVec_i<int32_t, 4> trunc(SIMDVecMask<4> const & mask) {
+        SIMDVec_i<int32_t, 4> trunc(SIMDVecMask<4> const & mask) const {
             __m128 t0 = _mm_castsi128_ps(mask.mMask);
             __m128 t1 = _mm_setzero_ps();
             __m128i t2 = _mm_cvttps_epi32(_mm_blendv_ps(t1, mVec, t0));

@@ -28,6 +28,9 @@
 //  7th Framework programme Marie Curie Actions under grant PITN-GA-2012-316596".
 //
 
+// This define can be unblocked to test write-mask operator using '()' instead of '[]'
+//#define USE_PARENTHESES_IN_MASK_ASSIGNMENT
+
 #include "UMEUnitTestCommon.h"
 #include "UMEUnitTestSimd.h"
 

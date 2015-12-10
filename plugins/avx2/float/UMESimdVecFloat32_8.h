@@ -163,21 +163,21 @@ namespace SIMD {
 
         //(Addition operations)
         // ADDV     - Add with vector
-        inline SIMDVec_f add(SIMDVec_f const & b) {
+        inline SIMDVec_f add(SIMDVec_f const & b) const {
             __m256 t0 = _mm256_add_ps(this->mVec, b.mVec);
             return SIMDVec_f(t0);
         }
         // MADDV    - Masked add with vector
-        inline SIMDVec_f add(SIMDVecMask<8> const & mask, SIMDVec_f const & b) {
+        inline SIMDVec_f add(SIMDVecMask<8> const & mask, SIMDVec_f const & b) const {
             __m256 t0 = _mm256_add_ps(this->mVec, b.mVec);
             return SIMDVec_f(_mm256_blendv_ps(mVec, t0, _mm256_castsi256_ps(mask.mMask)));
         }
         // ADDS     - Add with scalar
-        inline SIMDVec_f add(float b) {
+        inline SIMDVec_f add(float b) const {
             return SIMDVec_f(_mm256_add_ps(this->mVec, _mm256_set1_ps(b)));
         }
         // MADDS    - Masked add with scalar
-        inline SIMDVec_f add(SIMDVecMask<8> const & mask, float b) {
+        inline SIMDVec_f add(SIMDVecMask<8> const & mask, float b) const {
             __m256 t0 = _mm256_add_ps(this->mVec, _mm256_set1_ps(b));
             return SIMDVec_f(_mm256_blendv_ps(mVec, t0, _mm256_castsi256_ps(mask.mMask)));
         }
@@ -248,20 +248,20 @@ namespace SIMD {
 
         //(Multiplication operations)
         // MULV   - Multiplication with vector
-        inline SIMDVec_f mul(SIMDVec_f const & b) {
+        inline SIMDVec_f mul(SIMDVec_f const & b) const {
             return SIMDVec_f(_mm256_mul_ps(this->mVec, b.mVec));
         }
         // MMULV  - Masked multiplication with vector
-        inline SIMDVec_f mul(SIMDVecMask<8> const & mask, SIMDVec_f const & b) {
+        inline SIMDVec_f mul(SIMDVecMask<8> const & mask, SIMDVec_f const & b) const {
             __m256 t0 = _mm256_mul_ps(this->mVec, b.mVec);
             return SIMDVec_f(_mm256_blendv_ps(mVec, t0, _mm256_castsi256_ps(mask.mMask)));
         }
         // MULS   - Multiplication with scalar
-        inline SIMDVec_f mul(float b) {
+        inline SIMDVec_f mul(float b) const {
             return SIMDVec_f(_mm256_mul_ps(this->mVec, _mm256_set1_ps(b)));
         }
         // MMULS  - Masked multiplication with scalar
-        inline SIMDVec_f mul(SIMDVecMask<8> const & mask, float b) {
+        inline SIMDVec_f mul(SIMDVecMask<8> const & mask, float b) const {
             __m256 t0 = _mm256_mul_ps(this->mVec, _mm256_set1_ps(b));
             return SIMDVec_f(_mm256_blendv_ps(mVec, t0, _mm256_castsi256_ps(mask.mMask)));
         }
@@ -280,21 +280,21 @@ namespace SIMD {
         // DIVSA  - Division with scalar and assign
         // MDIVSA - Masked division with scalar and assign
         // RCP    - Reciprocal
-        inline SIMDVec_f rcp() {
+        inline SIMDVec_f rcp() const {
             return SIMDVec_f(_mm256_rcp_ps(mVec));
         }
         // MRCP   - Masked reciprocal
-        inline SIMDVec_f rcp(SIMDVecMask<8> const & mask) {
+        inline SIMDVec_f rcp(SIMDVecMask<8> const & mask) const {
             __m256 t0 = _mm256_rcp_ps(mVec);
             return SIMDVec_f(_mm256_blendv_ps(mVec, t0, _mm256_castsi256_ps(mask.mMask)));
         }
         // RCPS   - Reciprocal with scalar numerator
-        inline SIMDVec_f rcp(float b) {
+        inline SIMDVec_f rcp(float b) const {
             __m256 t0 = _mm256_mul_ps(_mm256_rcp_ps(mVec), _mm256_set1_ps(b));
             return SIMDVec_f(t0);
         }
         // MRCPS  - Masked reciprocal with scalar
-        inline SIMDVec_f rcp(SIMDVecMask<8> const & mask, float b) {
+        inline SIMDVec_f rcp(SIMDVecMask<8> const & mask, float b) const {
             __m256 t0 = _mm256_mul_ps(_mm256_rcp_ps(mVec), _mm256_set1_ps(b));
             return SIMDVec_f(_mm256_blendv_ps(mVec, t0, _mm256_castsi256_ps(mask.mMask)));
         }
@@ -341,7 +341,7 @@ namespace SIMD {
 
         //(Fused arithmetics)
         // FMULADDV  - Fused multiply and add (A*B + C) with vectors        
-        inline SIMDVec_f fmuladd(SIMDVec_f const & b, SIMDVec_f const & c) {
+        inline SIMDVec_f fmuladd(SIMDVec_f const & b, SIMDVec_f const & c) const {
 #ifdef FMA
             return _mm256_fmadd_ps(this->mVec, a.mVec, b.mVec);
 #else
@@ -350,7 +350,7 @@ namespace SIMD {
         }
 
         // MFMULADDV
-        inline SIMDVec_f fmuladd(SIMDVecMask<8> const & mask, SIMDVec_f const & b, SIMDVec_f const & c) {
+        inline SIMDVec_f fmuladd(SIMDVecMask<8> const & mask, SIMDVec_f const & b, SIMDVec_f const & c) const {
 #ifdef FMA
             __m256 t0 = _mm256_fmadd_ps(this->mVec, b.mVec, c.mVec);
             return _mm256_blendv_ps(this->mVec, t0, _mm256_cvtepi32_ps(mask.mMask));
@@ -427,11 +427,11 @@ namespace SIMD {
         // SQRA      - Square of vector values and assign
         // MSQRA     - Masked square of vector values and assign
         // SQRT      - Square root of vector values
-        SIMDVec_f sqrt() {
+        SIMDVec_f sqrt() const {
             return SIMDVec_f(_mm256_sqrt_ps(mVec));
         }
         // MSQRT     - Masked square root of vector values 
-        SIMDVec_f sqrt(SIMDVecMask<8> const & mask) {
+        SIMDVec_f sqrt(SIMDVecMask<8> const & mask) const {
             __m256 mask_ps = _mm256_castsi256_ps(mask.mMask);
             __m256 ret = _mm256_sqrt_ps(mVec);
             return SIMDVec_f(_mm256_blendv_ps(mVec, ret, mask_ps));
@@ -445,12 +445,12 @@ namespace SIMD {
         // ROUND     - Round to nearest integer
         // MROUND    - Masked round to nearest integer
         // TRUNC     - Truncate to integer (returns Signed integer vector)
-        SIMDVec_i<int32_t, 8> trunc() {
+        SIMDVec_i<int32_t, 8> trunc() const {
             __m256i t0 = _mm256_cvttps_epi32(mVec);
             return SIMDVec_i<int32_t, 8>(t0);
         }
         // MTRUNC    - Masked truncate to integer (returns Signed integer vector)
-        SIMDVec_i<int32_t, 8> trunc(SIMDVecMask<8> const & mask) {
+        SIMDVec_i<int32_t, 8> trunc(SIMDVecMask<8> const & mask) const {
             __m256 mask_ps = _mm256_castsi256_ps(mask.mMask);
             __m256 t0 = _mm256_setzero_ps();
             __m256i t1 = _mm256_cvttps_epi32(_mm256_blendv_ps(t0, mVec, mask_ps));

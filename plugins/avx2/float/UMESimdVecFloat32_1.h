@@ -178,9 +178,12 @@ namespace SIMD {
             return SIMDVec_f(t0);
         }
         // ADDS     - Add with scalar
-        inline SIMDVec_f add(float a) const {
-            float t0 = mVec + a;
+        inline SIMDVec_f add(float b) const {
+            float t0 = mVec + b;
             return SIMDVec_f(t0);
+        }
+        inline SIMDVec_f operator+ (float b) const {
+            return add(b);
         }
         // MADDS    - Masked add with scalar
         inline SIMDVec_f add(SIMDVecMask<1> const & mask, float b) const {

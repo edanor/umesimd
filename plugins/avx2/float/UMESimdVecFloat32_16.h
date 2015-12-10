@@ -183,13 +183,13 @@ namespace SIMD {
 
         //(Addition operations)
         // ADDV     - Add with vector
-        inline SIMDVec_f add(SIMDVec_f const & b) {
+        inline SIMDVec_f add(SIMDVec_f const & b) const {
             __m256 t0 = _mm256_add_ps(mVecLo, b.mVecLo);
             __m256 t1 = _mm256_add_ps(mVecHi, b.mVecHi);
             return SIMDVec_f(t0, t1);
         }
         // MADDV    - Masked add with vector
-        inline SIMDVec_f add(SIMDVecMask<16> const & mask, SIMDVec_f const & b) {
+        inline SIMDVec_f add(SIMDVecMask<16> const & mask, SIMDVec_f const & b) const {
             __m256 t0 = _mm256_add_ps(mVecLo, b.mVecLo);
             __m256 t1 = _mm256_add_ps(mVecHi, b.mVecHi);
             __m256 t2 = _mm256_blendv_ps(mVecLo, t0, _mm256_castsi256_ps(mask.mMaskLo));
@@ -197,13 +197,13 @@ namespace SIMD {
             return SIMDVec_f(t2, t3);
         }
         // ADDS     - Add with scalar
-        inline SIMDVec_f add(float b) {
+        inline SIMDVec_f add(float b) const {
             __m256 t0 = _mm256_add_ps(mVecLo, _mm256_set1_ps(b));
             __m256 t1 = _mm256_add_ps(mVecHi, _mm256_set1_ps(b));
             return SIMDVec_f(t0, t1);
         }
         // MADDS    - Masked add with scalar
-        inline SIMDVec_f add(SIMDVecMask<16> const & mask, float b) {
+        inline SIMDVec_f add(SIMDVecMask<16> const & mask, float b) const {
             __m256 t0 = _mm256_add_ps(mVecLo, _mm256_set1_ps(b));
             __m256 t1 = _mm256_add_ps(mVecHi, _mm256_set1_ps(b));
             __m256 t2 = _mm256_blendv_ps(mVecLo, t0, _mm256_castsi256_ps(mask.mMaskLo));
@@ -282,13 +282,13 @@ namespace SIMD {
 
         //(Multiplication operations)
         // MULV   - Multiplication with vector
-        inline SIMDVec_f mul(SIMDVec_f const & b) {
+        inline SIMDVec_f mul(SIMDVec_f const & b) const {
             __m256 t0 = _mm256_mul_ps(this->mVecLo, b.mVecLo);
             __m256 t1 = _mm256_mul_ps(this->mVecHi, b.mVecHi);
             return SIMDVec_f(t0, t1);
         }
         // MMULV  - Masked multiplication with vector
-        inline SIMDVec_f mul(SIMDVecMask<16> const & mask, SIMDVec_f const & b) {
+        inline SIMDVec_f mul(SIMDVecMask<16> const & mask, SIMDVec_f const & b) const {
             __m256 t0 = _mm256_mul_ps(mVecLo, b.mVecLo);
             __m256 t1 = _mm256_mul_ps(mVecHi, b.mVecHi);
             __m256 t2 = _mm256_blendv_ps(mVecLo, t0, _mm256_castsi256_ps(mask.mMaskLo));
@@ -296,13 +296,13 @@ namespace SIMD {
             return SIMDVec_f(t2, t3);
         }
         // MULS   - Multiplication with scalar
-        inline SIMDVec_f mul(float b) {
+        inline SIMDVec_f mul(float b) const {
             __m256 t0 = _mm256_mul_ps(this->mVecLo, _mm256_set1_ps(b));
             __m256 t1 = _mm256_mul_ps(this->mVecHi, _mm256_set1_ps(b));
             return SIMDVec_f(t0, t1);
         }
         // MMULS  - Masked multiplication with scalar
-        inline SIMDVec_f mul(SIMDVecMask<16> const & mask, float b) {
+        inline SIMDVec_f mul(SIMDVecMask<16> const & mask, float b) const {
             __m256 t0 = _mm256_mul_ps(mVecLo, _mm256_set1_ps(b));
             __m256 t1 = _mm256_mul_ps(mVecHi, _mm256_set1_ps(b));
             __m256 t2 = _mm256_blendv_ps(mVecLo, t0, _mm256_castsi256_ps(mask.mMaskLo));
@@ -370,7 +370,7 @@ namespace SIMD {
 
         //(Fused arithmetics)
         // FMULADDV  - Fused multiply and add (A*B + C) with vectors
-        inline SIMDVec_f fmuladd(SIMDVec_f const & a, SIMDVec_f const & b) {
+        inline SIMDVec_f fmuladd(SIMDVec_f const & a, SIMDVec_f const & b) const {
 #ifdef FMA
             __m256 t0 = _mm256_fmadd_ps(this->mVecLo, a.mVecLo, b.mVecLo);
             __m256 t1 = _mm256_fmadd_ps(this->mVecHi, a.mVecHi, b.mVecHi);
@@ -383,7 +383,7 @@ namespace SIMD {
         }
 
         // MFMULADDV - Masked fused multiply and add (A*B + C) with vectors
-        inline SIMDVec_f fmuladd(SIMDVecMask<16> const & mask, SIMDVec_f const & a, SIMDVec_f const & b) {
+        inline SIMDVec_f fmuladd(SIMDVecMask<16> const & mask, SIMDVec_f const & a, SIMDVec_f const & b) const {
 #ifdef FMA
             __m256 t0 = _mm256_fmadd_ps(this->mVecLo, a.mVecLo, b.mVecLo);
             __m256 t1 = _mm256_fmadd_ps(this->mVecHi, a.mVecHi, b.mVecHi);

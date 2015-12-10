@@ -191,6 +191,11 @@ namespace SIMD {
             __m256d t1 = _mm256_add_pd(mVec, t0);
             return SIMDVec_f(t1);
         }
+        inline SIMDVec_f operator+ (double b) const {
+            __m256d t0 = _mm256_set1_pd(b);
+            __m256d t1 = _mm256_add_pd(mVec, t0);
+            return SIMDVec_f(t1);
+        }
         // MADDS    - Masked add with scalar
         inline SIMDVec_f add(SIMDVecMask<4> const & mask, double b) const {
             __m256d t0 = _mm256_set1_pd(b);

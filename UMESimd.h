@@ -137,5 +137,6 @@ namespace SIMD
 
 // Traits need to be defined after all SIMD vectors are defined. 
 #include "UMESimdTraits.h"
+#include "UMESimdScalarOperators.h"
 
 #endif

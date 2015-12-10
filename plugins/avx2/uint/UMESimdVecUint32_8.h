@@ -139,7 +139,7 @@ namespace SIMD {
         }
 
         // STOREA
-        inline uint32_t * storea(uint32_t * addrAligned) {
+        inline uint32_t * storea(uint32_t * addrAligned) const {
             _mm256_store_si256((__m256i*)addrAligned, mVec);
             return addrAligned;
         }
@@ -149,7 +149,6 @@ namespace SIMD {
             __m256i t0 = _mm256_add_epi32(mVec, b.mVec);
             return SIMDVec_u(t0);
         }
-
         inline SIMDVec_u operator+ (SIMDVec_u const & b) const {
             return add(b);
         }
@@ -164,6 +163,9 @@ namespace SIMD {
             __m256i t0 = _mm256_set1_epi32(b);
             __m256i t1 = _mm256_add_epi32(mVec, t0);
             return SIMDVec_u(t1);
+        }
+        inline SIMDVec_u operator+ (uint32_t b) const {
+            return add(b);
         }
         // MADDS
         inline SIMDVec_u add(SIMDVecMask<8> const & mask, uint32_t b) const {
@@ -253,7 +255,7 @@ namespace SIMD {
         }
 
         // MULV
-        inline SIMDVec_u mul(SIMDVec_u const & b) {
+        inline SIMDVec_u mul(SIMDVec_u const & b) const {
             __m128i a_low = _mm256_extractf128_si256(mVec, 0);
             __m128i a_high = _mm256_extractf128_si256(mVec, 1);
             __m128i b_low = _mm256_extractf128_si256(b.mVec, 0);
@@ -266,7 +268,7 @@ namespace SIMD {
             return SIMDVec_u(ret);
         }
         // MMULV
-        inline SIMDVec_u mul(SIMDVecMask<8> const & mask, SIMDVec_u const & b) {
+        inline SIMDVec_u mul(SIMDVecMask<8> const & mask, SIMDVec_u const & b) const {
             __m128i a_low = _mm256_extractf128_si256(mVec, 0);
             __m128i a_high = _mm256_extractf128_si256(mVec, 1);
             __m128i b_low = _mm256_extractf128_si256(b.mVec, 0);
@@ -283,7 +285,7 @@ namespace SIMD {
             return SIMDVec_u(ret);
         }
         // MULS
-        inline SIMDVec_u mul(uint32_t b) {
+        inline SIMDVec_u mul(uint32_t b) const {
             __m128i a_low = _mm256_extractf128_si256(mVec, 0);
             __m128i a_high = _mm256_extractf128_si256(mVec, 1);
             __m128i b_vec = _mm_set1_epi32(b);
@@ -295,7 +297,7 @@ namespace SIMD {
             return SIMDVec_u(ret);
         }
         // MMULS
-        inline SIMDVec_u mul(SIMDVecMask<8> const & mask, uint32_t b) {
+        inline SIMDVec_u mul(SIMDVecMask<8> const & mask, uint32_t b) const {
             __m128i a_low = _mm256_extractf128_si256(mVec, 0);
             __m128i a_high = _mm256_extractf128_si256(mVec, 1);
             __m128i b_vec = _mm_set1_epi32(b);
@@ -311,7 +313,7 @@ namespace SIMD {
             return SIMDVec_u(ret);
         }
         // CMPEQV
-        inline SIMDVecMask<8> cmpeq(SIMDVec_u const & b) {
+        inline SIMDVecMask<8> cmpeq(SIMDVec_u const & b) const {
             __m128i a_low = _mm256_extractf128_si256(mVec, 0);
             __m128i a_high = _mm256_extractf128_si256(mVec, 1);
             __m128i b_low = _mm256_extractf128_si256(b.mVec, 0);
@@ -326,7 +328,7 @@ namespace SIMD {
             return SIMDVecMask<8>(ret);
         }
         // CMPEQS
-        inline SIMDVecMask<8> cmpeq(uint32_t b) {
+        inline SIMDVecMask<8> cmpeq(uint32_t b) const {
             __m128i b_vec = _mm_set1_epi32(b);
             __m128i a_low = _mm256_extractf128_si256(mVec, 0);
             __m128i a_high = _mm256_extractf128_si256(mVec, 1);
@@ -407,14 +409,14 @@ namespace SIMD {
             return *this;
         }
         // SCATTERS
-        inline uint32_t* scatter(uint32_t* baseAddr, uint64_t* indices) {
+        inline uint32_t* scatter(uint32_t* baseAddr, uint64_t* indices) const {
             alignas(32) uint32_t raw[8];
             _mm256_store_si256((__m256i*) raw, mVec);
             for (int i = 0; i < 8; i++) { baseAddr[indices[i]] = raw[i]; };
             return baseAddr;
         }
         // MSCATTERS
-        inline uint32_t* scatter(SIMDVecMask<8> const & mask, uint32_t* baseAddr, uint64_t* indices) {
+        inline uint32_t* scatter(SIMDVecMask<8> const & mask, uint32_t* baseAddr, uint64_t* indices) const {
             alignas(32) uint32_t raw[8];
             alignas(32) uint32_t rawMask[8];
             _mm256_store_si256((__m256i*) raw, mVec);
@@ -423,7 +425,7 @@ namespace SIMD {
             return baseAddr;
         }
         // SCATTERV
-        inline uint32_t* scatter(uint32_t* baseAddr, SIMDVec_u const & indices) {
+        inline uint32_t* scatter(uint32_t* baseAddr, SIMDVec_u const & indices) const {
             alignas(32) uint32_t raw[8];
             alignas(32) uint32_t rawIndices[8];
             _mm256_store_si256((__m256i*) raw, mVec);
@@ -432,7 +434,7 @@ namespace SIMD {
             return baseAddr;
         }
         // MSCATTERV
-        inline uint32_t* scatter(SIMDVecMask<8> const & mask, uint32_t* baseAddr, SIMDVec_u const & indices) {
+        inline uint32_t* scatter(SIMDVecMask<8> const & mask, uint32_t* baseAddr, SIMDVec_u const & indices) const {
             alignas(32) uint32_t raw[8];
             alignas(32) uint32_t rawIndices[8];
             alignas(32) uint32_t rawMask[8];

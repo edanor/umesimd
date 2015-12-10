@@ -283,7 +283,7 @@ namespace SIMD {
             return SIMDVec_f(_mm256_blendv_ps(mVec, t0, _mm256_castsi256_ps(mask.mMask)));
         }
         // RCPS   - Reciprocal with scalar numerator
-        inline SIMDVec_f rcp(float b) {
+        inline SIMDVec_f rcp(float b) const {
             __m256 t0 = _mm256_rcp_ps(mVec);
             return SIMDVec_f(_mm256_mul_ps(t0, _mm256_set1_ps(b)));
         }

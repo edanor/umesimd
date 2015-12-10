@@ -248,6 +248,9 @@ namespace SIMD {
             __m128i t0 = _mm_add_epi32(mVec, _mm_set1_epi32(b));
             return SIMDVec_u(t0);
         }
+        inline SIMDVec_u operator+ (uint32_t b) const {
+            return add(b);
+        }
         // MADDS
         inline SIMDVec_u add(SIMDVecMask<4> const & mask, uint32_t b) const {
             __m128i t0 = _mm_set1_epi32(b);

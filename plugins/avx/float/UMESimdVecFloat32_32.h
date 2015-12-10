@@ -360,7 +360,7 @@ namespace SIMD {
 
         //(Multiplication operations)
         // MULV   - Multiplication with vector
-        inline SIMDVec_f mul(SIMDVec_f const & b) {
+        inline SIMDVec_f mul(SIMDVec_f const & b) const {
             __m256 t0 = _mm256_mul_ps(this->mVecLoLo, b.mVecLoLo);
             __m256 t1 = _mm256_mul_ps(this->mVecLoHi, b.mVecLoHi);
             __m256 t2 = _mm256_mul_ps(this->mVecHiLo, b.mVecHiLo);
@@ -380,7 +380,7 @@ namespace SIMD {
             return SIMDVec_f(t4, t5, t6, t7);
         }
         // MULS   - Multiplication with scalar
-        inline SIMDVec_f mul(float b) {
+        inline SIMDVec_f mul(float b) const {
             __m256 t0 = _mm256_set1_ps(b);
             __m256 t1 = _mm256_mul_ps(this->mVecLoLo, t0);
             __m256 t2 = _mm256_mul_ps(this->mVecLoHi, t0);

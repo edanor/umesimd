@@ -225,7 +225,7 @@ namespace SIMD {
 
         //(Addition operations)
         // ADDV     - Add with vector
-        inline SIMDVec_f add(SIMDVec_f const & b) {
+        inline SIMDVec_f add(SIMDVec_f const & b) const {
             __m256 t0 = _mm256_add_ps(mVecLoLo, b.mVecLoLo);
             __m256 t1 = _mm256_add_ps(mVecLoHi, b.mVecLoHi);
             __m256 t2 = _mm256_add_ps(mVecHiLo, b.mVecHiLo);
@@ -233,7 +233,7 @@ namespace SIMD {
             return SIMDVec_f(t0, t1, t2, t3);
         }
         // MADDV    - Masked add with vector
-        inline SIMDVec_f add(SIMDVecMask<32> const & mask, SIMDVec_f const & b) {
+        inline SIMDVec_f add(SIMDVecMask<32> const & mask, SIMDVec_f const & b) const {
             __m256 t0 = _mm256_add_ps(mVecLoLo, b.mVecLoLo);
             __m256 t1 = _mm256_add_ps(mVecLoHi, b.mVecLoHi);
             __m256 t2 = _mm256_add_ps(mVecHiLo, b.mVecHiLo);
@@ -245,7 +245,7 @@ namespace SIMD {
             return SIMDVec_f(t4, t5, t6, t7);
         }
         // ADDS     - Add with scalar
-        inline SIMDVec_f add(float b) {
+        inline SIMDVec_f add(float b) const {
             __m256 t0 = _mm256_add_ps(mVecLoLo, _mm256_set1_ps(b));
             __m256 t1 = _mm256_add_ps(mVecLoHi, _mm256_set1_ps(b));
             __m256 t2 = _mm256_add_ps(mVecHiLo, _mm256_set1_ps(b));
@@ -253,7 +253,7 @@ namespace SIMD {
             return SIMDVec_f(t0, t1, t2, t3);
         }
         // MADDS    - Masked add with scalar
-        inline SIMDVec_f add(SIMDVecMask<32> const & mask, float b) {
+        inline SIMDVec_f add(SIMDVecMask<32> const & mask, float b) const {
             __m256 t0 = _mm256_add_ps(mVecLoLo, _mm256_set1_ps(b));
             __m256 t1 = _mm256_add_ps(mVecLoHi, _mm256_set1_ps(b));
             __m256 t2 = _mm256_add_ps(mVecHiLo, _mm256_set1_ps(b));

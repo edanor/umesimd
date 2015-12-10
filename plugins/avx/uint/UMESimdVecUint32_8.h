@@ -129,7 +129,6 @@ namespace SIMD {
             __m256i t6 = _mm256_insertf128_si256(_mm256_castsi128_si256(t2), (t5), 0x1);
             return SIMDVec_u(t6);
         }
-
         inline SIMDVec_u operator+ (SIMDVec_u const & b) const {
             return add(b);
         }
@@ -155,6 +154,9 @@ namespace SIMD {
             __m128i t4 = _mm_add_epi32(t0, t3);
             __m256i t5 = _mm256_insertf128_si256(_mm256_castsi128_si256(t2), (t4), 0x1);
             return SIMDVec_u(t5);
+        }
+        inline SIMDVec_u operator+ (uint32_t b) const {
+            return add(b);
         }
         // MADDS
         inline SIMDVec_u add(SIMDVecMask<8> const & mask, uint32_t b) const {
@@ -216,7 +218,7 @@ namespace SIMD {
         }
 
         // MULV
-        inline SIMDVec_u mul(SIMDVec_u const & b) {
+        inline SIMDVec_u mul(SIMDVec_u const & b) const {
             __m128i a_low = _mm256_extractf128_si256(mVec, 0);
             __m128i a_high = _mm256_extractf128_si256(mVec, 1);
             __m128i b_low = _mm256_extractf128_si256(b.mVec, 0);
@@ -229,7 +231,7 @@ namespace SIMD {
             return SIMDVec_u(ret);
         }
         // MMULV
-        inline SIMDVec_u mul(SIMDVecMask<8> const & mask, SIMDVec_u const & b) {
+        inline SIMDVec_u mul(SIMDVecMask<8> const & mask, SIMDVec_u const & b) const {
             __m128i a_low = _mm256_extractf128_si256(mVec, 0);
             __m128i a_high = _mm256_extractf128_si256(mVec, 1);
             __m128i b_low = _mm256_extractf128_si256(b.mVec, 0);
@@ -246,7 +248,7 @@ namespace SIMD {
             return SIMDVec_u(ret);
         }
         // MULS
-        inline SIMDVec_u mul(uint32_t b) {
+        inline SIMDVec_u mul(uint32_t b) const {
             __m128i a_low = _mm256_extractf128_si256(mVec, 0);
             __m128i a_high = _mm256_extractf128_si256(mVec, 1);
             __m128i b_vec = _mm_set1_epi32(b);
@@ -258,7 +260,7 @@ namespace SIMD {
             return SIMDVec_u(ret);
         }
         // MMULS
-        inline SIMDVec_u mul(SIMDVecMask<8> const & mask, uint32_t b) {
+        inline SIMDVec_u mul(SIMDVecMask<8> const & mask, uint32_t b) const {
             __m128i a_low = _mm256_extractf128_si256(mVec, 0);
             __m128i a_high = _mm256_extractf128_si256(mVec, 1);
             __m128i b_vec = _mm_set1_epi32(b);
@@ -274,7 +276,7 @@ namespace SIMD {
             return SIMDVec_u(ret);
         }
         // CMPEQV
-        inline SIMDVecMask<8> cmpeq(SIMDVec_u const & b) {
+        inline SIMDVecMask<8> cmpeq(SIMDVec_u const & b) const {
             __m128i a_low = _mm256_extractf128_si256(mVec, 0);
             __m128i a_high = _mm256_extractf128_si256(mVec, 1);
             __m128i b_low = _mm256_extractf128_si256(b.mVec, 0);
@@ -289,7 +291,7 @@ namespace SIMD {
             return SIMDVecMask<8>(ret);
         }
         // CMPEQS
-        inline SIMDVecMask<8> cmpeq(uint32_t b) {
+        inline SIMDVecMask<8> cmpeq(uint32_t b) const {
             __m128i b_vec = _mm_set1_epi32(b);
             __m128i a_low = _mm256_extractf128_si256(mVec, 0);
             __m128i a_high = _mm256_extractf128_si256(mVec, 1);

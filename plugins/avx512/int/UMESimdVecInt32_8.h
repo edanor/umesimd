@@ -240,6 +240,9 @@ namespace SIMD {
             __m256i t1 = _mm256_add_epi32(mVec, t0);
             return SIMDVec_i(t1);
         }
+        inline SIMDVec_i operator+ (int32_t b) const {
+            return add(b);
+        }
         // MADDS
         inline SIMDVec_i add(SIMDVecMask<8> const & mask, int32_t b) const {
 #if defined(__AVX512VL__)

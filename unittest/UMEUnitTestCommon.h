@@ -640,12 +640,30 @@ void genericMADDVTest()
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericADDSTest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    VEC_TYPE vec1 = vec0.add(DATA_SET::inputs::scalarA);
-    vec1.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::ADDS, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "ADDS");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1 = vec0.add(DATA_SET::inputs::scalarA);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::ADDS, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "ADDS");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1 = vec0 + DATA_SET::inputs::scalarA;
+        vec1.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::ADDS, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "ADDS(operator+ RHS scalar");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1 = DATA_SET::inputs::scalarA + vec0;
+        vec1.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::ADDS, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "ADDS(operator+ LHS scalar");
+    }
 }
     
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
@@ -715,12 +733,22 @@ void genericMADDVATest()
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericADDSATest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    vec0.adda(DATA_SET::inputs::scalarA);
-    vec0.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::ADDS, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "ADDSA");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        vec0.adda(DATA_SET::inputs::scalarA);
+        vec0.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::ADDS, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "ADDSA");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        vec0 += DATA_SET::inputs::scalarA;
+        vec0.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::ADDS, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "ADDSA(operator+=)");
+    }
 }
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
@@ -860,12 +888,22 @@ void genericMSUBVTest()
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericSUBSTest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    VEC_TYPE vec1 = vec0.sub(DATA_SET::inputs::scalarA);
-    vec1.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::SUBS, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "SUBS");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1 = vec0.sub(DATA_SET::inputs::scalarA);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::SUBS, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "SUBS");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1 = vec0 - DATA_SET::inputs::scalarA;
+        vec1.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::SUBS, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "SUBS(operator- RHS scalar)");
+    }
 }
     
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
@@ -983,12 +1021,22 @@ void genericMSUBFROMVTest()
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericSUBFROMSTest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    VEC_TYPE vec2 = vec0.subfrom(DATA_SET::inputs::scalarA);
-    vec2.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::SUBFROMS, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "SUBFROMS");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec2 = vec0.subfrom(DATA_SET::inputs::scalarA);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::SUBFROMS, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "SUBFROMS");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1 = DATA_SET::inputs::scalarA - vec0;
+        vec1.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::SUBFROMS, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "SUBFROMS(operator- LHS scalar)");
+    }
 }
     
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
@@ -1174,12 +1222,30 @@ void genericMMULVTest()
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMULSTest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    VEC_TYPE vec1 = vec0.mul(DATA_SET::inputs::scalarA);
-    vec1.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MULS, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "MULS");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1 = vec0.mul(DATA_SET::inputs::scalarA);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MULS, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "MULS");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1 = vec0 * DATA_SET::inputs::scalarA;
+        vec1.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MULS, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "MULS(operator* RHS scalar)");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1 = DATA_SET::inputs::scalarA * vec0;
+        vec1.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MULS, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "MULS(operator* LHS scalar)");
+    }
 }
     
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
@@ -1250,12 +1316,22 @@ void genericMMULVATest()
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMULSATest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    vec0.mula(DATA_SET::inputs::scalarA);
-    vec0.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MULS, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "MULSA");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        vec0.mula(DATA_SET::inputs::scalarA);
+        vec0.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MULS, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "MULSA");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        vec0 *= DATA_SET::inputs::scalarA;
+        vec0.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MULS, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "MULSA(operator*=)");
+    }
 }
     
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
@@ -1309,12 +1385,22 @@ void genericMDIVVTest()
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericDIVSTest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    VEC_TYPE vec1 = vec0.div(DATA_SET::inputs::scalarA);
-    vec1.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::DIVS, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "DIVS");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1 = vec0.div(DATA_SET::inputs::scalarA);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::DIVS, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "DIVS");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1 = vec0 / DATA_SET::inputs::scalarA;
+        vec1.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::DIVS, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "DIVS(operator/ RHS scalar)");
+    }
 }
 
     
@@ -1390,12 +1476,22 @@ void genericMDIVVATest()
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericDIVSATest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    vec0.diva(DATA_SET::inputs::scalarA);
-    vec0.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::DIVS, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "DIVSA");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        vec0.diva(DATA_SET::inputs::scalarA);
+        vec0.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::DIVS, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "DIVSA");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        vec0 /= DATA_SET::inputs::scalarA;
+        vec0.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::DIVS, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "DIVSA(operator/=)");
+    }
 }
     
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
@@ -1436,12 +1532,22 @@ void genericMRCPTest()
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericRCPSTest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    VEC_TYPE vec1 = vec0.rcp(DATA_SET::inputs::scalarA);
-    vec1.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::RCPS, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "RCPS");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1 = vec0.rcp(DATA_SET::inputs::scalarA);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::RCPS, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "RCPS");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1 = vec0.rcp(DATA_SET::inputs::scalarA);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::RCPS, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "RCPS(operator/ LHS scalar)");
+    }
 }
     
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
@@ -1505,151 +1611,344 @@ void genericMRCPSATest()
 template<typename VEC_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericCMPEQVTest()
 {
-    bool values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    VEC_TYPE vec1(DATA_SET::inputs::inputB);
-    MASK_TYPE mask(true);
-    mask = vec0.cmpeq(vec1);
-    mask.store(values);
-    bool inRange = valuesExact(values, DATA_SET::outputs::CMPEQV, VEC_LEN);
-    CHECK_CONDITION(inRange, "CMPEQV");
+    {
+        bool values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        MASK_TYPE mask(true);
+        mask = vec0.cmpeq(vec1);
+        mask.store(values);
+        bool inRange = valuesExact(values, DATA_SET::outputs::CMPEQV, VEC_LEN);
+        CHECK_CONDITION(inRange, "CMPEQV");
+    }
+    {
+        bool values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        MASK_TYPE mask(true);
+        mask = vec0 == vec1;
+        mask.store(values);
+        bool inRange = valuesExact(values, DATA_SET::outputs::CMPEQV, VEC_LEN);
+        CHECK_CONDITION(inRange, "CMPEQV(operator==)");
+    }
 }
 
 template<typename VEC_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericCMPEQSTest()
 {
-    bool values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    MASK_TYPE mask(true);
-    mask = vec0.cmpeq(DATA_SET::inputs::scalarA);
-    mask.store(values);
-    bool inRange = valuesExact(values, DATA_SET::outputs::CMPEQS, VEC_LEN);
-    CHECK_CONDITION(inRange, "CMPEQS");
+    {
+        bool values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(true);
+        mask = vec0.cmpeq(DATA_SET::inputs::scalarA);
+        mask.store(values);
+        bool inRange = valuesExact(values, DATA_SET::outputs::CMPEQS, VEC_LEN);
+        CHECK_CONDITION(inRange, "CMPEQS");
+    }
+    {
+        bool values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(true);
+        mask = vec0 == DATA_SET::inputs::scalarA;
+        mask.store(values);
+        bool inRange = valuesExact(values, DATA_SET::outputs::CMPEQS, VEC_LEN);
+        CHECK_CONDITION(inRange, "CMPEQS(operator== RHS scalar)");
+    }
+    {
+        bool values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(true);
+        mask = DATA_SET::inputs::scalarA == vec0;
+        mask.store(values);
+        bool inRange = valuesExact(values, DATA_SET::outputs::CMPEQS, VEC_LEN);
+        CHECK_CONDITION(inRange, "CMPEQS(operator== LHS scalar)");
+    }
 }
 
 template<typename VEC_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericCMPNEVTest()
 {
-    bool values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    VEC_TYPE vec1(DATA_SET::inputs::inputB);
-    MASK_TYPE mask(true);
-    mask = vec0.cmpne(vec1);
-    mask.store(values);
-    bool inRange = valuesExact(values, DATA_SET::outputs::CMPNEV, VEC_LEN);
-    CHECK_CONDITION(inRange, "CMPNEV");
+    {
+        bool values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        MASK_TYPE mask(true);
+        mask = vec0.cmpne(vec1);
+        mask.store(values);
+        bool inRange = valuesExact(values, DATA_SET::outputs::CMPNEV, VEC_LEN);
+        CHECK_CONDITION(inRange, "CMPNEV");
+    }
+    {
+        bool values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        MASK_TYPE mask(true);
+        mask = vec0 != vec1;
+        mask.store(values);
+        bool inRange = valuesExact(values, DATA_SET::outputs::CMPNEV, VEC_LEN);
+        CHECK_CONDITION(inRange, "CMPNEV(operator!=)");
+    }
 }
 
 template<typename VEC_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericCMPNESTest()
 {
-    bool values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    MASK_TYPE mask(true);
-    mask = vec0.cmpne(DATA_SET::inputs::scalarA);
-    mask.store(values);
-    bool inRange = valuesExact(values, DATA_SET::outputs::CMPNES, VEC_LEN);
-    CHECK_CONDITION(inRange, "CMPNES");
+    {
+        bool values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(true);
+        mask = vec0.cmpne(DATA_SET::inputs::scalarA);
+        mask.store(values);
+        bool inRange = valuesExact(values, DATA_SET::outputs::CMPNES, VEC_LEN);
+        CHECK_CONDITION(inRange, "CMPNES");
+    }
+    {
+        bool values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(true);
+        mask = vec0 != DATA_SET::inputs::scalarA;
+        mask.store(values);
+        bool inRange = valuesExact(values, DATA_SET::outputs::CMPNES, VEC_LEN);
+        CHECK_CONDITION(inRange, "CMPNES(operator!= RHS scalar)");
+    }
+    {
+        bool values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(true);
+        mask = DATA_SET::inputs::scalarA != vec0;
+        mask.store(values);
+        bool inRange = valuesExact(values, DATA_SET::outputs::CMPNES, VEC_LEN);
+        CHECK_CONDITION(inRange, "CMPNES(operator!= LHS scalar)");
+    }
 }
 
 template<typename VEC_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericCMPGTVTest()
 {
-    bool values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    VEC_TYPE vec1(DATA_SET::inputs::inputB);
-    MASK_TYPE mask(true);
-    mask = vec0.cmpgt(vec1);
-    mask.store(values);
-    bool inRange = valuesExact(values, DATA_SET::outputs::CMPGTV, VEC_LEN);
-    CHECK_CONDITION(inRange, "CMPGTV");
+    {
+        bool values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        MASK_TYPE mask(true);
+        mask = vec0.cmpgt(vec1);
+        mask.store(values);
+        bool inRange = valuesExact(values, DATA_SET::outputs::CMPGTV, VEC_LEN);
+        CHECK_CONDITION(inRange, "CMPGTV");
+    }
+    {
+        bool values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        MASK_TYPE mask(true);
+        mask = vec0 > vec1;
+        mask.store(values);
+        bool inRange = valuesExact(values, DATA_SET::outputs::CMPGTV, VEC_LEN);
+        CHECK_CONDITION(inRange, "CMPGTV(operator>)");
+    }
+
 }
 
 template<typename VEC_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericCMPGTSTest()
 {
-    bool values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    MASK_TYPE mask(true);
-    mask = vec0.cmpgt(DATA_SET::inputs::scalarA);
-    mask.store(values);
-    bool inRange = valuesExact(values, DATA_SET::outputs::CMPGTS, VEC_LEN);
-    CHECK_CONDITION(inRange, "CMPGTS");
+    {
+        bool values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(true);
+        mask = vec0.cmpgt(DATA_SET::inputs::scalarA);
+        mask.store(values);
+        bool inRange = valuesExact(values, DATA_SET::outputs::CMPGTS, VEC_LEN);
+        CHECK_CONDITION(inRange, "CMPGTS");
+    }
+    {
+        bool values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(true);
+        mask = vec0 > DATA_SET::inputs::scalarA;
+        mask.store(values);
+        bool inRange = valuesExact(values, DATA_SET::outputs::CMPGTS, VEC_LEN);
+        CHECK_CONDITION(inRange, "CMPGTS(operator> RHS scalar)");
+    }
+    {
+        bool values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(true);
+        mask = DATA_SET::inputs::scalarA > vec0;
+        mask.store(values);
+        bool inRange = valuesExact(values, DATA_SET::outputs::CMPLTS, VEC_LEN);
+        CHECK_CONDITION(inRange, "CMPGTS(operator> LHS scalar)");
+    }
 }
 
 template<typename VEC_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericCMPLTVTest()
 {
-    bool values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    VEC_TYPE vec1(DATA_SET::inputs::inputB);
-    MASK_TYPE mask(true);
-    mask = vec0.cmplt(vec1);
-    mask.store(values);
-    bool inRange = valuesExact(values, DATA_SET::outputs::CMPLTV, VEC_LEN);
-    CHECK_CONDITION(inRange, "CMPLTV");
+    {
+        bool values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        MASK_TYPE mask(true);
+        mask = vec0.cmplt(vec1);
+        mask.store(values);
+        bool inRange = valuesExact(values, DATA_SET::outputs::CMPLTV, VEC_LEN);
+        CHECK_CONDITION(inRange, "CMPLTV");
+    }
+    {
+        bool values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        MASK_TYPE mask(true);
+        mask = vec0 < vec1;
+        mask.store(values);
+        bool inRange = valuesExact(values, DATA_SET::outputs::CMPLTV, VEC_LEN);
+        CHECK_CONDITION(inRange, "CMPLTV(operator<)");
+    }
 }
 
 template<typename VEC_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericCMPLTSTest()
 {
-    bool values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    MASK_TYPE mask(true);
-    mask = vec0.cmplt(DATA_SET::inputs::scalarA);
-    mask.store(values);
-    bool inRange = valuesExact(values, DATA_SET::outputs::CMPLTS, VEC_LEN);
-    CHECK_CONDITION(inRange, "CMPLTS");
+    {
+        bool values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(true);
+        mask = vec0.cmplt(DATA_SET::inputs::scalarA);
+        mask.store(values);
+        bool inRange = valuesExact(values, DATA_SET::outputs::CMPLTS, VEC_LEN);
+        CHECK_CONDITION(inRange, "CMPLTS");
+    }
+    {
+        bool values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(true);
+        mask = vec0 < DATA_SET::inputs::scalarA;
+        mask.store(values);
+        bool inRange = valuesExact(values, DATA_SET::outputs::CMPLTS, VEC_LEN);
+        CHECK_CONDITION(inRange, "CMPLTS(operator< RHS scalar)");
+    }
+    {
+        bool values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(true);
+        mask = DATA_SET::inputs::scalarA < vec0;
+        mask.store(values);
+        bool inRange = valuesExact(values, DATA_SET::outputs::CMPGTS, VEC_LEN);
+        CHECK_CONDITION(inRange, "CMPLTS(operator< LHS scalar)");
+    }
 }
 
 template<typename VEC_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericCMPGEVTest()
 {
-    bool values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    VEC_TYPE vec1(DATA_SET::inputs::inputB);
-    MASK_TYPE mask(true);
-    mask = vec0.cmpge(vec1);
-    mask.store(values);
-    bool inRange = valuesExact(values, DATA_SET::outputs::CMPGEV, VEC_LEN);
-    CHECK_CONDITION(inRange, "CMPGEV");
+    {
+        bool values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        MASK_TYPE mask(true);
+        mask = vec0.cmpge(vec1);
+        mask.store(values);
+        bool inRange = valuesExact(values, DATA_SET::outputs::CMPGEV, VEC_LEN);
+        CHECK_CONDITION(inRange, "CMPGEV");
+    }
+    {
+        bool values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        MASK_TYPE mask(true);
+        mask = vec0 >= vec1;
+        mask.store(values);
+        bool inRange = valuesExact(values, DATA_SET::outputs::CMPGEV, VEC_LEN);
+        CHECK_CONDITION(inRange, "CMPGEV(operator>=)");
+    }
 }
 
 template<typename VEC_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericCMPGESTest()
 {
-    bool values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    MASK_TYPE mask(true);
-    mask = vec0.cmpge(DATA_SET::inputs::scalarA);
-    mask.store(values);
-    bool inRange = valuesExact(values, DATA_SET::outputs::CMPGES, VEC_LEN);
-    CHECK_CONDITION(inRange, "CMPGES");
+    {
+        bool values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(true);
+        mask = vec0.cmpge(DATA_SET::inputs::scalarA);
+        mask.store(values);
+        bool inRange = valuesExact(values, DATA_SET::outputs::CMPGES, VEC_LEN);
+        CHECK_CONDITION(inRange, "CMPGES");
+    }
+    {
+        bool values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(true);
+        mask = vec0 >= DATA_SET::inputs::scalarA;
+        mask.store(values);
+        bool inRange = valuesExact(values, DATA_SET::outputs::CMPGES, VEC_LEN);
+        CHECK_CONDITION(inRange, "CMPGES(operator>= RHS scalar)");
+    }
+    {
+        bool values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(true);
+        mask = DATA_SET::inputs::scalarA >= vec0;
+        mask.store(values);
+        bool inRange = valuesExact(values, DATA_SET::outputs::CMPLES, VEC_LEN);
+        CHECK_CONDITION(inRange, "CMPGES(operator>= LHS scalar)");
+    }
 }
 
 template<typename VEC_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericCMPLEVTest()
 {
-    bool values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    VEC_TYPE vec1(DATA_SET::inputs::inputB);
-    MASK_TYPE mask(true);
-    mask = vec0.cmple(vec1);
-    mask.store(values);
-    bool inRange = valuesExact(values, DATA_SET::outputs::CMPLEV, VEC_LEN);
-    CHECK_CONDITION(inRange, "CMPLEV");
+    {
+        bool values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        MASK_TYPE mask(true);
+        mask = vec0.cmple(vec1);
+        mask.store(values);
+        bool inRange = valuesExact(values, DATA_SET::outputs::CMPLEV, VEC_LEN);
+        CHECK_CONDITION(inRange, "CMPLEV");
+    }
+    {
+        bool values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        MASK_TYPE mask(true);
+        mask = vec0 <= vec1;
+        mask.store(values);
+        bool inRange = valuesExact(values, DATA_SET::outputs::CMPLEV, VEC_LEN);
+        CHECK_CONDITION(inRange, "CMPLEV(operator<=)");
+    }
 }
 
 template<typename VEC_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericCMPLESTest()
 {
-    bool values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    MASK_TYPE mask(true);
-    mask = vec0.cmple(DATA_SET::inputs::scalarA);
-    mask.store(values);
-    bool inRange = valuesExact(values, DATA_SET::outputs::CMPLES, VEC_LEN);
-    CHECK_CONDITION(inRange, "CMPLES");
+    {
+        bool values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(true);
+        mask = vec0.cmple(DATA_SET::inputs::scalarA);
+        mask.store(values);
+        bool inRange = valuesExact(values, DATA_SET::outputs::CMPLES, VEC_LEN);
+        CHECK_CONDITION(inRange, "CMPLES");
+    }
+    {
+        bool values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(true);
+        mask = vec0 <= DATA_SET::inputs::scalarA;
+        mask.store(values);
+        bool inRange = valuesExact(values, DATA_SET::outputs::CMPLES, VEC_LEN);
+        CHECK_CONDITION(inRange, "CMPLES(operator<= LHS scalar)");
+    }
+    {
+        bool values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(true);
+        mask = DATA_SET::inputs::scalarA <= vec0;
+        mask.store(values);
+        bool inRange = valuesExact(values, DATA_SET::outputs::CMPGES, VEC_LEN);
+        CHECK_CONDITION(inRange, "CMPLES(operator<= RHS scalar)");
+    }
 }
 
 template<typename VEC_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
@@ -1672,13 +1971,24 @@ void genericCMPESTest()
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericBANDVTest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    VEC_TYPE vec1(DATA_SET::inputs::inputB);
-    VEC_TYPE vec2 = vec0.band(vec1);
-    vec2.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::BANDV, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "BANDV");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        VEC_TYPE vec2 = vec0.band(vec1);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::BANDV, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "BANDV");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        VEC_TYPE vec2 = vec0 & vec1;
+        vec2.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::BANDV, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "BANDV(operator&)");
+    }
 }
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
@@ -1697,12 +2007,30 @@ void genericMBANDVTest()
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericBANDSTest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    VEC_TYPE vec2 = vec0.band(DATA_SET::inputs::scalarA);
-    vec2.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::BANDS, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "BANDS");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec2 = vec0.band(DATA_SET::inputs::scalarA);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::BANDS, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "BANDS");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec2 = vec0 & DATA_SET::inputs::scalarA;
+        vec2.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::BANDS, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "BANDS(operator & RHS scalar)");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec2 = DATA_SET::inputs::scalarA & vec0;
+        vec2.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::BANDS, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "BANDS(operator & LHS scalar)");
+    }
 }
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
@@ -1809,12 +2137,30 @@ void genericMBORVTest()
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericBORSTest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    VEC_TYPE vec2 = vec0.bor(DATA_SET::inputs::scalarA);
-    vec2.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::BORS, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "BORS");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec2 = vec0.bor(DATA_SET::inputs::scalarA);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::BORS, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "BORS");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec2 = vec0 | DATA_SET::inputs::scalarA;
+        vec2.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::BORS, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "BORS(operator| RHS scalar)");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec2 = DATA_SET::inputs::scalarA | vec0;
+        vec2.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::BORS, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "BORS(operator| LHS scalar)");
+    }
 }
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
@@ -2008,12 +2354,22 @@ void genericMBXORSATest()
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericBNOTTest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    VEC_TYPE vec1 = vec0.bnot();
-    vec1.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::BNOT, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "BNOT");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1 = vec0.bnot();
+        vec1.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::BNOT, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "BNOT");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1 = ~vec0;
+        vec1.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::BNOT, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "BNOT(operator!)");
+    }
 }
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>

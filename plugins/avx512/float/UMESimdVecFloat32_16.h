@@ -203,6 +203,9 @@ namespace SIMD {
             __m512 t0 = _mm512_add_ps(this->mVec, _mm512_set1_ps(b));
             return SIMDVec_f(t0);
         }
+        inline SIMDVec_f operator+ (float b) const {
+            return add(b);
+        }
         // MADDS
         inline SIMDVec_f add(SIMDVecMask<16> const & mask, float b) const {
             __m512 t0 = _mm512_mask_add_ps(mVec, mask.mMask, mVec, _mm512_set1_ps(b));
