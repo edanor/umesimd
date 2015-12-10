@@ -152,7 +152,7 @@ namespace SIMD {
             return *this;
         }
         // STORE   - Store vector content into memory (either aligned or unaligned)
-        inline float* store(float* p) {
+        inline float* store(float* p) const {
             _mm_storeu_ps(p, mVec);
             return p;
         }
