@@ -310,7 +310,7 @@ bool valuesInRange(int64_t const *values, int64_t const *expectedValues, unsigne
 }
 
 template<typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
-void genericLANDTest()
+void genericLANDVTest()
 {
     {
         bool values[VEC_LEN];
@@ -320,12 +320,12 @@ void genericLANDTest()
         m2.store(values);
         bool exact = true;
         for(int i = 0; i < VEC_LEN; i++) {
-            if(values[i] != DATA_SET::outputs::LAND[i]) {
+            if(values[i] != DATA_SET::outputs::LANDV[i]) {
                 exact = false; 
                 break;
             }
         }
-        CHECK_CONDITION(exact, "LAND");
+        CHECK_CONDITION(exact, "LANDV");
     }
     {
         bool values[VEC_LEN];
@@ -335,17 +335,187 @@ void genericLANDTest()
         m2.store(values);
         bool exact = true;
         for(int i = 0; i < VEC_LEN; i++) {
-            if(values[i] != DATA_SET::outputs::LAND[i]) {
+            if(values[i] != DATA_SET::outputs::LANDV[i]) {
                 exact = false; 
                 break;
             }
         }
-        CHECK_CONDITION(exact, "LAND(operator &)");
+        CHECK_CONDITION(exact, "LANDV(operator &)");
+    }
+    {
+        bool values[VEC_LEN];
+        MASK_TYPE m0(DATA_SET::inputs::maskA);
+        MASK_TYPE m1(DATA_SET::inputs::maskB);
+        MASK_TYPE m2 = m0 && m1;
+        m2.store(values);
+        bool exact = true;
+        for (int i = 0; i < VEC_LEN; i++) {
+            if (values[i] != DATA_SET::outputs::LANDV[i]) {
+                exact = false;
+                break;
+            }
+        }
+        CHECK_CONDITION(exact, "LANDV(operator &&)");
     }
 }
 
 template<typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
-void genericLANDATest()
+void genericLANDSTest()
+{
+    {
+        bool values[VEC_LEN];
+        MASK_TYPE m0(DATA_SET::inputs::maskA);
+        bool s1 = DATA_SET::inputs::scalarA;
+        MASK_TYPE m2 = m0.land(s1);
+        m2.store(values);
+        bool exact = true;
+        for (int i = 0; i < VEC_LEN; i++) {
+            if (values[i] != DATA_SET::outputs::LANDS_A[i]) {
+                exact = false;
+                break;
+            }
+        }
+        CHECK_CONDITION(exact, "LANDS");
+    }
+    {
+        bool values[VEC_LEN];
+        MASK_TYPE m0(DATA_SET::inputs::maskA);
+        bool s1 = DATA_SET::inputs::scalarB;
+        MASK_TYPE m2 = m0.land(s1);
+        m2.store(values);
+        bool exact = true;
+        for (int i = 0; i < VEC_LEN; i++) {
+            if (values[i] != DATA_SET::outputs::LANDS_B[i]) {
+                exact = false;
+                break;
+            }
+        }
+        CHECK_CONDITION(exact, "LANDS");
+    }
+    {
+        bool values[VEC_LEN];
+        MASK_TYPE m0(DATA_SET::inputs::maskA);
+        bool s1 = DATA_SET::inputs::scalarA;
+        MASK_TYPE m2 = m0 & s1;
+        m2.store(values);
+        bool exact = true;
+        for (int i = 0; i < VEC_LEN; i++) {
+            if (values[i] != DATA_SET::outputs::LANDS_A[i]) {
+                exact = false;
+                break;
+            }
+        }
+        CHECK_CONDITION(exact, "LANDS(operator & RHS scalar)");
+    }
+    {
+        bool values[VEC_LEN];
+        MASK_TYPE m0(DATA_SET::inputs::maskA);
+        bool s1 = DATA_SET::inputs::scalarB;
+        MASK_TYPE m2 = m0 & s1;
+        m2.store(values);
+        bool exact = true;
+        for (int i = 0; i < VEC_LEN; i++) {
+            if (values[i] != DATA_SET::outputs::LANDS_B[i]) {
+                exact = false;
+                break;
+            }
+        }
+        CHECK_CONDITION(exact, "LANDS(operator & RHS scalar)");
+    }
+    {
+        bool values[VEC_LEN];
+        MASK_TYPE m0(DATA_SET::inputs::maskA);
+        bool s1 = DATA_SET::inputs::scalarA;
+        MASK_TYPE m2 = m0 && s1;
+        m2.store(values);
+        bool exact = true;
+        for (int i = 0; i < VEC_LEN; i++) {
+            if (values[i] != DATA_SET::outputs::LANDS_A[i]) {
+                exact = false;
+                break;
+            }
+        }
+        CHECK_CONDITION(exact, "LANDS(operator && RHS scalar)");
+    }
+    {
+        bool values[VEC_LEN];
+        MASK_TYPE m0(DATA_SET::inputs::maskA);
+        bool s1 = DATA_SET::inputs::scalarB;
+        MASK_TYPE m2 = m0 && s1;
+        m2.store(values);
+        bool exact = true;
+        for (int i = 0; i < VEC_LEN; i++) {
+            if (values[i] != DATA_SET::outputs::LANDS_B[i]) {
+                exact = false;
+                break;
+            }
+        }
+        CHECK_CONDITION(exact, "LANDS(operator && RHS scalar)");
+    }
+    {
+        bool values[VEC_LEN];
+        MASK_TYPE m0(DATA_SET::inputs::maskA);
+        bool s1 = DATA_SET::inputs::scalarA;
+        MASK_TYPE m2 = s1 & m0;
+        m2.store(values);
+        bool exact = true;
+        for (int i = 0; i < VEC_LEN; i++) {
+            if (values[i] != DATA_SET::outputs::LANDS_A[i]) {
+                exact = false;
+                break;
+            }
+        }
+        CHECK_CONDITION(exact, "LANDS(operator & LHS scalar)");
+    }
+    {
+        bool values[VEC_LEN];
+        MASK_TYPE m0(DATA_SET::inputs::maskA);
+        bool s1 = DATA_SET::inputs::scalarB;
+        MASK_TYPE m2 = s1 & m0;
+        m2.store(values);
+        bool exact = true;
+        for (int i = 0; i < VEC_LEN; i++) {
+            if (values[i] != DATA_SET::outputs::LANDS_B[i]) {
+                exact = false;
+                break;
+            }
+        }
+        CHECK_CONDITION(exact, "LANDS(operator & LHS scalar)");
+    }
+    {
+        bool values[VEC_LEN];
+        MASK_TYPE m0(DATA_SET::inputs::maskA);
+        bool s1 = DATA_SET::inputs::scalarA;
+        MASK_TYPE m2 = s1 && m0;
+        m2.store(values);
+        bool exact = true;
+        for (int i = 0; i < VEC_LEN; i++) {
+            if (values[i] != DATA_SET::outputs::LANDS_A[i]) {
+                exact = false;
+                break;
+            }
+        }
+        CHECK_CONDITION(exact, "LANDS(operator && LHS scalar)");
+    }
+    {
+        bool values[VEC_LEN];
+        MASK_TYPE m0(DATA_SET::inputs::maskA);
+        bool s1 = DATA_SET::inputs::scalarB;
+        MASK_TYPE m2 = s1 && m0;
+        m2.store(values);
+        bool exact = true;
+        for (int i = 0; i < VEC_LEN; i++) {
+            if (values[i] != DATA_SET::outputs::LANDS_B[i]) {
+                exact = false;
+                break;
+            }
+        }
+        CHECK_CONDITION(exact, "LANDS(operator && LHS scalar)");
+    }
+}
+
+template<typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
+void genericLANDVATest()
 {
     {
         bool values[VEC_LEN];
@@ -355,12 +525,12 @@ void genericLANDATest()
         m0.store(values);
         bool exact = true;
         for(int i = 0; i < VEC_LEN; i++) {
-            if(values[i] != DATA_SET::outputs::LAND[i]) {
+            if(values[i] != DATA_SET::outputs::LANDV[i]) {
                 exact = false; 
                 break;
             }
         }
-        CHECK_CONDITION(exact, "LANDA");
+        CHECK_CONDITION(exact, "LANDVA");
     }
     {
         bool values[VEC_LEN];
@@ -370,17 +540,52 @@ void genericLANDATest()
         m0.store(values);
         bool exact = true;
         for(int i = 0; i < VEC_LEN; i++) {
-            if(values[i] != DATA_SET::outputs::LAND[i]) {
+            if(values[i] != DATA_SET::outputs::LANDV[i]) {
                 exact = false; 
                 break;
             }
         }
-        CHECK_CONDITION(exact, "LANDA(operator &=)");
+        CHECK_CONDITION(exact, "LANDVA(operator &=)");
     }
 }
 
 template<typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
-void genericLORTest()
+void genericLANDSATest()
+{
+    {
+        bool values[VEC_LEN];
+        MASK_TYPE m0(DATA_SET::inputs::maskA);
+        bool s1 = DATA_SET::inputs::scalarA;
+        m0.landa(s1);
+        m0.store(values);
+        bool exact = true;
+        for (int i = 0; i < VEC_LEN; i++) {
+            if (values[i] != DATA_SET::outputs::LANDS_A[i]) {
+                exact = false;
+                break;
+            }
+        }
+        CHECK_CONDITION(exact, "LANDSA");
+    }
+    {
+        bool values[VEC_LEN];
+        MASK_TYPE m0(DATA_SET::inputs::maskA);
+        bool s1 = DATA_SET::inputs::scalarA;
+        m0 &= s1;
+        m0.store(values);
+        bool exact = true;
+        for (int i = 0; i < VEC_LEN; i++) {
+            if (values[i] != DATA_SET::outputs::LANDS_A[i]) {
+                exact = false;
+                break;
+            }
+        }
+        CHECK_CONDITION(exact, "LANDSA(operator &=)");
+    }
+}
+
+template<typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
+void genericLORVTest()
 {
     {
         bool values[VEC_LEN];
@@ -390,12 +595,12 @@ void genericLORTest()
         m2.store(values);
         bool exact = true;
         for(int i = 0; i < VEC_LEN; i++) {
-            if(values[i] != DATA_SET::outputs::LOR[i]) {
+            if(values[i] != DATA_SET::outputs::LORV[i]) {
                 exact = false; 
                 break;
             }
         }
-        CHECK_CONDITION(exact, "LOR");
+        CHECK_CONDITION(exact, "LORV");
     }
     {
         bool values[VEC_LEN];
@@ -405,17 +610,187 @@ void genericLORTest()
         m2.store(values);
         bool exact = true;
         for(int i = 0; i < VEC_LEN; i++) {
-            if(values[i] != DATA_SET::outputs::LOR[i]) {
+            if(values[i] != DATA_SET::outputs::LORV[i]) {
                 exact = false; 
                 break;
             }
         }
-        CHECK_CONDITION(exact, "LOR(operator |)");
+        CHECK_CONDITION(exact, "LORV(operator |)");
+    }
+    {
+        bool values[VEC_LEN];
+        MASK_TYPE m0(DATA_SET::inputs::maskA);
+        MASK_TYPE m1(DATA_SET::inputs::maskB);
+        MASK_TYPE m2 = m0 || m1;
+        m2.store(values);
+        bool exact = true;
+        for(int i = 0; i < VEC_LEN; i++) {
+            if(values[i] != DATA_SET::outputs::LORV[i]) {
+                exact = false; 
+                break;
+            }
+        }
+        CHECK_CONDITION(exact, "LORV(operator ||)");
     }
 }
 
 template<typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
-void genericLORATest()
+void genericLORSTest()
+{
+    {
+        bool values[VEC_LEN];
+        MASK_TYPE m0(DATA_SET::inputs::maskA);
+        bool s0 = DATA_SET::inputs::scalarA;
+        MASK_TYPE m2 = m0.lor(s0);
+        m2.store(values);
+        bool exact = true;
+        for (int i = 0; i < VEC_LEN; i++) {
+            if (values[i] != DATA_SET::outputs::LORS_A[i]) {
+                exact = false;
+                break;
+            }
+        }
+        CHECK_CONDITION(exact, "LORS");
+    }
+    {
+        bool values[VEC_LEN];
+        MASK_TYPE m0(DATA_SET::inputs::maskA);
+        bool s0 = DATA_SET::inputs::scalarB;
+        MASK_TYPE m2 = m0.lor(s0);
+        m2.store(values);
+        bool exact = true;
+        for (int i = 0; i < VEC_LEN; i++) {
+            if (values[i] != DATA_SET::outputs::LORS_B[i]) {
+                exact = false;
+                break;
+            }
+        }
+        CHECK_CONDITION(exact, "LORS");
+    }
+    {
+        bool values[VEC_LEN];
+        MASK_TYPE m0(DATA_SET::inputs::maskA);
+        bool s0 = DATA_SET::inputs::scalarA;
+        MASK_TYPE m2 = m0 | s0;
+        m2.store(values);
+        bool exact = true;
+        for (int i = 0; i < VEC_LEN; i++) {
+            if (values[i] != DATA_SET::outputs::LORS_A[i]) {
+                exact = false;
+                break;
+            }
+        }
+        CHECK_CONDITION(exact, "LORS (operator| RHS scalar)");
+    }
+    {
+        bool values[VEC_LEN];
+        MASK_TYPE m0(DATA_SET::inputs::maskA);
+        bool s0 = DATA_SET::inputs::scalarB;
+        MASK_TYPE m2 = m0 | s0;
+        m2.store(values);
+        bool exact = true;
+        for (int i = 0; i < VEC_LEN; i++) {
+            if (values[i] != DATA_SET::outputs::LORS_B[i]) {
+                exact = false;
+                break;
+            }
+        }
+        CHECK_CONDITION(exact, "LORS (operator| RHS scalar)");
+    }
+    {
+        bool values[VEC_LEN];
+        MASK_TYPE m0(DATA_SET::inputs::maskA);
+        bool s0 = DATA_SET::inputs::scalarA;
+        MASK_TYPE m2 = m0 || s0;
+        m2.store(values);
+        bool exact = true;
+        for (int i = 0; i < VEC_LEN; i++) {
+            if (values[i] != DATA_SET::outputs::LORS_A[i]) {
+                exact = false;
+                break;
+            }
+        }
+        CHECK_CONDITION(exact, "LORS (operator|| RHS scalar)");
+    }
+    {
+        bool values[VEC_LEN];
+        MASK_TYPE m0(DATA_SET::inputs::maskA);
+        bool s0 = DATA_SET::inputs::scalarB;
+        MASK_TYPE m2 = m0 || s0;
+        m2.store(values);
+        bool exact = true;
+        for (int i = 0; i < VEC_LEN; i++) {
+            if (values[i] != DATA_SET::outputs::LORS_B[i]) {
+                exact = false;
+                break;
+            }
+        }
+        CHECK_CONDITION(exact, "LORS (operator|| RHS scalar)");
+    }
+    {
+        bool values[VEC_LEN];
+        MASK_TYPE m0(DATA_SET::inputs::maskA);
+        bool s0 = DATA_SET::inputs::scalarA;
+        MASK_TYPE m2 = s0 | m0;
+        m2.store(values);
+        bool exact = true;
+        for (int i = 0; i < VEC_LEN; i++) {
+            if (values[i] != DATA_SET::outputs::LORS_A[i]) {
+                exact = false;
+                break;
+            }
+        }
+        CHECK_CONDITION(exact, "LORS (operator| LHS scalar)");
+    }
+    {
+        bool values[VEC_LEN];
+        MASK_TYPE m0(DATA_SET::inputs::maskA);
+        bool s0 = DATA_SET::inputs::scalarB;
+        MASK_TYPE m2 = s0 | m0;
+        m2.store(values);
+        bool exact = true;
+        for (int i = 0; i < VEC_LEN; i++) {
+            if (values[i] != DATA_SET::outputs::LORS_B[i]) {
+                exact = false;
+                break;
+            }
+        }
+        CHECK_CONDITION(exact, "LORS (operator| LHS scalar)");
+    }
+    {
+        bool values[VEC_LEN];
+        MASK_TYPE m0(DATA_SET::inputs::maskA);
+        bool s0 = DATA_SET::inputs::scalarA;
+        MASK_TYPE m2 = s0 || m0;
+        m2.store(values);
+        bool exact = true;
+        for (int i = 0; i < VEC_LEN; i++) {
+            if (values[i] != DATA_SET::outputs::LORS_A[i]) {
+                exact = false;
+                break;
+            }
+        }
+        CHECK_CONDITION(exact, "LORS (operator|| LHS scalar)");
+    }
+    {
+        bool values[VEC_LEN];
+        MASK_TYPE m0(DATA_SET::inputs::maskA);
+        bool s0 = DATA_SET::inputs::scalarB;
+        MASK_TYPE m2 = s0 || m0;
+        m2.store(values);
+        bool exact = true;
+        for (int i = 0; i < VEC_LEN; i++) {
+            if (values[i] != DATA_SET::outputs::LORS_B[i]) {
+                exact = false;
+                break;
+            }
+        }
+        CHECK_CONDITION(exact, "LORS (operator|| LHS scalar)");
+    }
+}
+
+template<typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
+void genericLORVATest()
 {
     {
         bool values[VEC_LEN];
@@ -425,12 +800,12 @@ void genericLORATest()
         m0.store(values);
         bool exact = true;
         for(int i = 0; i < VEC_LEN; i++) {
-            if(values[i] != DATA_SET::outputs::LOR[i]) {
+            if(values[i] != DATA_SET::outputs::LORV[i]) {
                 exact = false; 
                 break;
             }
         }
-        CHECK_CONDITION(exact, "LORA");
+        CHECK_CONDITION(exact, "LORVA");
     }
     {
         bool values[VEC_LEN];
@@ -440,18 +815,52 @@ void genericLORATest()
         m0.store(values);
         bool exact = true;
         for(int i = 0; i < VEC_LEN; i++) {
-            if(values[i] != DATA_SET::outputs::LOR[i]) {
+            if(values[i] != DATA_SET::outputs::LORV[i]) {
                 exact = false; 
                 break;
             }
         }
-        CHECK_CONDITION(exact, "LORA(operator |=)");
+        CHECK_CONDITION(exact, "LORVA(operator |=)");
     }
 }
 
+template<typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
+void genericLORSATest()
+{
+    {
+        bool values[VEC_LEN];
+        MASK_TYPE m0(DATA_SET::inputs::maskA);
+        bool s1 = DATA_SET::inputs::scalarA;
+        m0.lora(s1);
+        m0.store(values);
+        bool exact = true;
+        for (int i = 0; i < VEC_LEN; i++) {
+            if (values[i] != DATA_SET::outputs::LORS_A[i]) {
+                exact = false;
+                break;
+            }
+        }
+        CHECK_CONDITION(exact, "LORSA");
+    }
+    {
+        bool values[VEC_LEN];
+        MASK_TYPE m0(DATA_SET::inputs::maskA);
+        bool s1 = DATA_SET::inputs::scalarA;
+        m0 |= s1;
+        m0.store(values);
+        bool exact = true;
+        for (int i = 0; i < VEC_LEN; i++) {
+            if (values[i] != DATA_SET::outputs::LORS_A[i]) {
+                exact = false;
+                break;
+            }
+        }
+        CHECK_CONDITION(exact, "LORSA(operator |=)");
+    }
+}
 
 template<typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
-void genericLXORTest()
+void genericLXORVTest()
 {
     {
         bool values[VEC_LEN];
@@ -461,12 +870,12 @@ void genericLXORTest()
         m2.store(values);
         bool exact = true;
         for(int i = 0; i < VEC_LEN; i++) {
-            if(values[i] != DATA_SET::outputs::LXOR[i]) {
+            if(values[i] != DATA_SET::outputs::LXORV[i]) {
                 exact = false; 
                 break;
             }
         }
-        CHECK_CONDITION(exact, "LXOR");
+        CHECK_CONDITION(exact, "LXORV");
     }
     {
         bool values[VEC_LEN];
@@ -476,17 +885,112 @@ void genericLXORTest()
         m2.store(values);
         bool exact = true;
         for(int i = 0; i < VEC_LEN; i++) {
-            if(values[i] != DATA_SET::outputs::LXOR[i]) {
+            if(values[i] != DATA_SET::outputs::LXORV[i]) {
                 exact = false; 
                 break;
             }
         }
-        CHECK_CONDITION(exact, "LXOR(operator ^)");
+        CHECK_CONDITION(exact, "LXORV(operator^)");
     }
 }
 
 template<typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
-void genericLXORATest()
+void genericLXORSTest()
+{
+    {
+        bool values[VEC_LEN];
+        MASK_TYPE m0(DATA_SET::inputs::maskA);
+        bool s0 = DATA_SET::inputs::scalarA;
+        MASK_TYPE m2 = m0.lxor(s0);
+        m2.store(values);
+        bool exact = true;
+        for (int i = 0; i < VEC_LEN; i++) {
+            if (values[i] != DATA_SET::outputs::LXORS_A[i]) {
+                exact = false;
+                break;
+            }
+        }
+        CHECK_CONDITION(exact, "LXORS");
+    }
+    {
+        bool values[VEC_LEN];
+        MASK_TYPE m0(DATA_SET::inputs::maskA);
+        bool s0 = DATA_SET::inputs::scalarB;
+        MASK_TYPE m2 = m0.lxor(s0);
+        m2.store(values);
+        bool exact = true;
+        for (int i = 0; i < VEC_LEN; i++) {
+            if (values[i] != DATA_SET::outputs::LXORS_B[i]) {
+                exact = false;
+                break;
+            }
+        }
+        CHECK_CONDITION(exact, "LXORS");
+    }
+    {
+        bool values[VEC_LEN];
+        MASK_TYPE m0(DATA_SET::inputs::maskA);
+        bool s0 = DATA_SET::inputs::scalarA;
+        MASK_TYPE m2 = m0 ^ s0;
+        m2.store(values);
+        bool exact = true;
+        for (int i = 0; i < VEC_LEN; i++) {
+            if (values[i] != DATA_SET::outputs::LXORS_A[i]) {
+                exact = false;
+                break;
+            }
+        }
+        CHECK_CONDITION(exact, "LXORS (operator^ RHS scalar)");
+    }
+    {
+        bool values[VEC_LEN];
+        MASK_TYPE m0(DATA_SET::inputs::maskA);
+        bool s0 = DATA_SET::inputs::scalarB;
+        MASK_TYPE m2 = m0 ^ s0;
+        m2.store(values);
+        bool exact = true;
+        for (int i = 0; i < VEC_LEN; i++) {
+            if (values[i] != DATA_SET::outputs::LXORS_B[i]) {
+                exact = false;
+                break;
+            }
+        }
+        CHECK_CONDITION(exact, "LXORS (operator^ RHS scalar)");
+    }
+    {
+        bool values[VEC_LEN];
+        MASK_TYPE m0(DATA_SET::inputs::maskA);
+        bool s0 = DATA_SET::inputs::scalarA;
+        MASK_TYPE m2 = s0 ^ m0;
+        m2.store(values);
+        bool exact = true;
+        for (int i = 0; i < VEC_LEN; i++) {
+            if (values[i] != DATA_SET::outputs::LXORS_A[i]) {
+                exact = false;
+                break;
+            }
+        }
+        CHECK_CONDITION(exact, "LXORS (operator^ LHS scalar)");
+    }
+    {
+        bool values[VEC_LEN];
+        MASK_TYPE m0(DATA_SET::inputs::maskA);
+        bool s0 = DATA_SET::inputs::scalarB;
+        MASK_TYPE m2 = s0 ^ m0;
+        m2.store(values);
+        bool exact = true;
+        for (int i = 0; i < VEC_LEN; i++) {
+            if (values[i] != DATA_SET::outputs::LXORS_B[i]) {
+                exact = false;
+                break;
+            }
+        }
+        CHECK_CONDITION(exact, "LXORS (operator^ LHS scalar)");
+    }
+}
+
+template<typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
+void genericLXORVATest()
 {
     {
         bool values[VEC_LEN];
@@ -496,12 +1000,12 @@ void genericLXORATest()
         m0.store(values);
         bool exact = true;
         for(int i = 0; i < VEC_LEN; i++) {
-            if(values[i] != DATA_SET::outputs::LXOR[i]) {
+            if(values[i] != DATA_SET::outputs::LXORV[i]) {
                 exact = false; 
                 break;
             }
         }
-        CHECK_CONDITION(exact, "LXORA");
+        CHECK_CONDITION(exact, "LXORVA");
     }
     {
         bool values[VEC_LEN];
@@ -511,12 +1015,47 @@ void genericLXORATest()
         m0.store(values);
         bool exact = true;
         for(int i = 0; i < VEC_LEN; i++) {
-            if(values[i] != DATA_SET::outputs::LXOR[i]) {
+            if(values[i] != DATA_SET::outputs::LXORV[i]) {
                 exact = false; 
                 break;
             }
         }
-        CHECK_CONDITION(exact, "LXORA(operator ^=)");
+        CHECK_CONDITION(exact, "LXORVA(operator^=)");
+    }
+}
+
+template<typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
+void genericLXORSATest()
+{
+    {
+        bool values[VEC_LEN];
+        MASK_TYPE m0(DATA_SET::inputs::maskA);
+        bool s1 = DATA_SET::inputs::scalarA;
+        m0.lxora(s1);
+        m0.store(values);
+        bool exact = true;
+        for (int i = 0; i < VEC_LEN; i++) {
+            if (values[i] != DATA_SET::outputs::LXORS_A[i]) {
+                exact = false;
+                break;
+            }
+        }
+        CHECK_CONDITION(exact, "LXORSA");
+    }
+    {
+        bool values[VEC_LEN];
+        MASK_TYPE m0(DATA_SET::inputs::maskA);
+        bool s1 = DATA_SET::inputs::scalarA;
+        m0 ^= s1;
+        m0.store(values);
+        bool exact = true;
+        for (int i = 0; i < VEC_LEN; i++) {
+            if (values[i] != DATA_SET::outputs::LXORS_A[i]) {
+                exact = false;
+                break;
+            }
+        }
+        CHECK_CONDITION(exact, "LXORSA(operator^=)");
     }
 }
 
@@ -4201,12 +4740,18 @@ void genericFloatInterfaceTest()
 
 template<typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMaskTest() {
-    genericLANDTest<MASK_TYPE, VEC_LEN, DATA_SET> ();
-    genericLANDATest<MASK_TYPE, VEC_LEN, DATA_SET> ();
-    genericLORTest<MASK_TYPE, VEC_LEN, DATA_SET> ();
-    genericLORATest<MASK_TYPE, VEC_LEN, DATA_SET> ();
-    genericLXORTest<MASK_TYPE, VEC_LEN, DATA_SET> ();
-    genericLXORATest<MASK_TYPE, VEC_LEN, DATA_SET> ();
+    genericLANDVTest<MASK_TYPE, VEC_LEN, DATA_SET> ();
+    genericLANDSTest<MASK_TYPE, VEC_LEN, DATA_SET> ();
+    genericLANDVATest<MASK_TYPE, VEC_LEN, DATA_SET> ();
+    genericLANDSATest<MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericLORVTest<MASK_TYPE, VEC_LEN, DATA_SET> ();
+    genericLORSTest<MASK_TYPE, VEC_LEN, DATA_SET> ();
+    genericLORVATest<MASK_TYPE, VEC_LEN, DATA_SET> ();
+    genericLORSATest<MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericLXORVTest<MASK_TYPE, VEC_LEN, DATA_SET> ();
+    genericLXORSTest<MASK_TYPE, VEC_LEN, DATA_SET> ();
+    genericLXORVATest<MASK_TYPE, VEC_LEN, DATA_SET> ();
+    genericLXORSATest<MASK_TYPE, VEC_LEN, DATA_SET>();
     genericLNOTTest<MASK_TYPE, VEC_LEN, DATA_SET> ();
     genericLNOTATest<MASK_TYPE, VEC_LEN, DATA_SET> ();
     genericHLANDTest<MASK_TYPE, VEC_LEN, DATA_SET> ();

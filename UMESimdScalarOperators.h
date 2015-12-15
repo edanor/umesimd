@@ -6,6 +6,55 @@
 // requires explicit declaration of operators for every scalar type.
 namespace UME {
     namespace SIMD {
+
+        // LANDS
+        inline SIMDMask1 operator& (bool a, SIMDMask1 const &b) { return b.land(a); }
+        inline SIMDMask2 operator& (bool a, SIMDMask2 const &b) { return b.land(a); }
+        inline SIMDMask4 operator& (bool a, SIMDMask4 const &b) { return b.land(a); }
+        inline SIMDMask8 operator& (bool a, SIMDMask8 const &b) { return b.land(a); }
+        inline SIMDMask16 operator& (bool a, SIMDMask16 const &b) { return b.land(a); }
+        inline SIMDMask32 operator& (bool a, SIMDMask32 const &b) { return b.land(a); }
+        inline SIMDMask64 operator& (bool a, SIMDMask64 const &b) { return b.land(a); }
+        inline SIMDMask128 operator& (bool a, SIMDMask128 const &b) { return b.land(a); }
+
+        inline SIMDMask1 operator&& (bool a, SIMDMask1 const &b) { return b.land(a); }
+        inline SIMDMask2 operator&& (bool a, SIMDMask2 const &b) { return b.land(a); }
+        inline SIMDMask4 operator&& (bool a, SIMDMask4 const &b) { return b.land(a); }
+        inline SIMDMask8 operator&& (bool a, SIMDMask8 const &b) { return b.land(a); }
+        inline SIMDMask16 operator&& (bool a, SIMDMask16 const &b) { return b.land(a); }
+        inline SIMDMask32 operator&& (bool a, SIMDMask32 const &b) { return b.land(a); }
+        inline SIMDMask64 operator&& (bool a, SIMDMask64 const &b) { return b.land(a); }
+        inline SIMDMask128 operator&& (bool a, SIMDMask128 const &b) { return b.land(a); }
+
+        // LORS
+        inline SIMDMask1 operator| (bool a, SIMDMask1 const &b) { return b.lor(a); }
+        inline SIMDMask2 operator| (bool a, SIMDMask2 const &b) { return b.lor(a); }
+        inline SIMDMask4 operator| (bool a, SIMDMask4 const &b) { return b.lor(a); }
+        inline SIMDMask8 operator| (bool a, SIMDMask8 const &b) { return b.lor(a); }
+        inline SIMDMask16 operator| (bool a, SIMDMask16 const &b) { return b.lor(a); }
+        inline SIMDMask32 operator| (bool a, SIMDMask32 const &b) { return b.lor(a); }
+        inline SIMDMask64 operator| (bool a, SIMDMask64 const &b) { return b.lor(a); }
+        inline SIMDMask128 operator| (bool a, SIMDMask128 const &b) { return b.lor(a); }
+
+        inline SIMDMask1 operator|| (bool a, SIMDMask1 const &b) { return b.lor(a); }
+        inline SIMDMask2 operator|| (bool a, SIMDMask2 const &b) { return b.lor(a); }
+        inline SIMDMask4 operator|| (bool a, SIMDMask4 const &b) { return b.lor(a); }
+        inline SIMDMask8 operator|| (bool a, SIMDMask8 const &b) { return b.lor(a); }
+        inline SIMDMask16 operator|| (bool a, SIMDMask16 const &b) { return b.lor(a); }
+        inline SIMDMask32 operator|| (bool a, SIMDMask32 const &b) { return b.lor(a); }
+        inline SIMDMask64 operator|| (bool a, SIMDMask64 const &b) { return b.lor(a); }
+        inline SIMDMask128 operator|| (bool a, SIMDMask128 const &b) { return b.lor(a); }
+
+        // LXORS
+        inline SIMDMask1 operator^ (bool a, SIMDMask1 const &b) { return b.lxor(a); }
+        inline SIMDMask2 operator^ (bool a, SIMDMask2 const &b) { return b.lxor(a); }
+        inline SIMDMask4 operator^ (bool a, SIMDMask4 const &b) { return b.lxor(a); }
+        inline SIMDMask8 operator^ (bool a, SIMDMask8 const &b) { return b.lxor(a); }
+        inline SIMDMask16 operator^ (bool a, SIMDMask16 const &b) { return b.lxor(a); }
+        inline SIMDMask32 operator^ (bool a, SIMDMask32 const &b) { return b.lxor(a); }
+        inline SIMDMask64 operator^ (bool a, SIMDMask64 const &b) { return b.lxor(a); }
+        inline SIMDMask128 operator^ (bool a, SIMDMask128 const &b) { return b.lxor(a); }
+
         // ADDS
         inline SIMD1_8u operator+ (uint8_t a, SIMD1_8u const & b) { return b.add(a); }
         inline SIMD2_8u operator+ (uint8_t a, SIMD2_8u const & b) { return b.add(a); }

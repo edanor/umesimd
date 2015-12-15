@@ -36,12 +36,21 @@ struct DataSet_1_mask {
     struct inputs {
         static const bool maskA[128];
         static const bool maskB[128];
+
+        static const bool scalarA;
+        static const bool scalarB;
     };
 
     struct outputs {
-        static const bool LAND[128];
-        static const bool LOR[128];
-        static const bool LXOR[128];
+        static const bool LANDV[128];
+        static const bool LANDS_A[128]; // LANDS with scalarA
+        static const bool LANDS_B[128]; // LANDS with scalarB
+        static const bool LORV[128];
+        static const bool LORS_A[128];  // LORS with scalarA
+        static const bool LORS_B[128];  // LORS with scalarB
+        static const bool LXORV[128];
+        static const bool LXORS_A[128]; // LXORS with scalarA
+        static const bool LXORS_B[128]; // LXORS with scalarB
         static const bool LNOT[128];
         static const bool HLAND[128];
         static const bool HLOR[128];

@@ -74,7 +74,10 @@ const bool DataSet_1_mask::inputs::maskB[128] = {
     true,   false,  false,  false,  false,  false,  true,   false
 };
 
-const bool DataSet_1_mask::outputs::LAND[128] = {
+const bool DataSet_1_mask::inputs::scalarA = true;
+const bool DataSet_1_mask::inputs::scalarB = false;
+
+const bool DataSet_1_mask::outputs::LANDV[128] = {
     false,  true,   false,  false,  true,   false,  false,  false,
     false,  false,  true,   false,  true,   false,  false,  false,
     true,   true,   false,  false,  true,   false,  false,  false,
@@ -93,7 +96,45 @@ const bool DataSet_1_mask::outputs::LAND[128] = {
     false,  false,  false,  false,  false,  false,  true,   false
 };
 
-const bool DataSet_1_mask::outputs::LOR[128] = {
+const bool DataSet_1_mask::outputs::LANDS_A[128] = {
+    false,  true,   false,  false,  true,   false,  false,  false,
+    false,  true,   true,   false,  true,   true,   false,  false,
+    true,   true,   true,   false,  true,   false,  false,  false,
+    true,   false,  true,   false,  true,   true,   true,   true,
+    false,  false,  false,  false,  false,  false,  true,   false,
+    true,   false,  false,  false,  true,   true,   true,   true,
+    false,  false,  false,  true,   true,   false,  false,  true,
+    true,   true,   true,   true,   false,  false,  false,  false,
+    false,  false,  true,   false,  false,  false,  false,  false,
+    true,   false,  true,   true,   true,   false,  false,  false,
+    true,   false,  false,  true,   true,   false,  false,  false,
+    false,  false,  true,   false,  true,   true,   false,  true,
+    true,   true,   true,   true,   false,  false,  true,   true,
+    false,  false,  true,   false,  true,   false,  true,   false,
+    false,  true,   true,   true,   false,  true,   true,   false,
+    false,  true,   false,  false,  false,  true,   true,   true
+};
+
+const bool DataSet_1_mask::outputs::LANDS_B[128] = {
+    false,  false,  false,  false,  false,  false,  false,  false,
+    false,  false,  false,  false,  false,  false,  false,  false,
+    false,  false,  false,  false,  false,  false,  false,  false,
+    false,  false,  false,  false,  false,  false,  false,  false,
+    false,  false,  false,  false,  false,  false,  false,  false,
+    false,  false,  false,  false,  false,  false,  false,  false,
+    false,  false,  false,  false,  false,  false,  false,  false,
+    false,  false,  false,  false,  false,  false,  false,  false,
+    false,  false,  false,  false,  false,  false,  false,  false,
+    false,  false,  false,  false,  false,  false,  false,  false,
+    false,  false,  false,  false,  false,  false,  false,  false,
+    false,  false,  false,  false,  false,  false,  false,  false,
+    false,  false,  false,  false,  false,  false,  false,  false,
+    false,  false,  false,  false,  false,  false,  false,  false,
+    false,  false,  false,  false,  false,  false,  false,  false,
+    false,  false,  false,  false,  false,  false,  false,  false
+};
+
+const bool DataSet_1_mask::outputs::LORV[128] = {
     true,   true,   true,   false,  true,   true,   false,  false,
     false,  true,   true,   false,  true,   true,   true,   true,
     true,   true,   true,   false,  true,   false,  true,   true,
@@ -111,7 +152,46 @@ const bool DataSet_1_mask::outputs::LOR[128] = {
     false,  true,   true,   true,   true,   true,   true,   false,
     true,   true,   false,  false,  false,  true,   true,   true
 };
-const bool DataSet_1_mask::outputs::LXOR[128] = {
+
+const bool DataSet_1_mask::outputs::LORS_A[128] = {
+    true,   true,   true,   true,   true,   true,   true,   true,
+    true,   true,   true,   true,   true,   true,   true,   true,
+    true,   true,   true,   true,   true,   true,   true,   true,
+    true,   true,   true,   true,   true,   true,   true,   true,
+    true,   true,   true,   true,   true,   true,   true,   true,
+    true,   true,   true,   true,   true,   true,   true,   true,
+    true,   true,   true,   true,   true,   true,   true,   true,
+    true,   true,   true,   true,   true,   true,   true,   true,
+    true,   true,   true,   true,   true,   true,   true,   true,
+    true,   true,   true,   true,   true,   true,   true,   true,
+    true,   true,   true,   true,   true,   true,   true,   true,
+    true,   true,   true,   true,   true,   true,   true,   true,
+    true,   true,   true,   true,   true,   true,   true,   true,
+    true,   true,   true,   true,   true,   true,   true,   true,
+    true,   true,   true,   true,   true,   true,   true,   true,
+    true,   true,   true,   true,   true,   true,   true,   true
+};
+
+const bool DataSet_1_mask::outputs::LORS_B[128] = {
+    false,  true,   false,  false,  true,   false,  false,  false,
+    false,  true,   true,   false,  true,   true,   false,  false,
+    true,   true,   true,   false,  true,   false,  false,  false,
+    true,   false,  true,   false,  true,   true,   true,   true,
+    false,  false,  false,  false,  false,  false,  true,   false,
+    true,   false,  false,  false,  true,   true,   true,   true,
+    false,  false,  false,  true,   true,   false,  false,  true,
+    true,   true,   true,   true,   false,  false,  false,  false,
+    false,  false,  true,   false,  false,  false,  false,  false,
+    true,   false,  true,   true,   true,   false,  false,  false,
+    true,   false,  false,  true,   true,   false,  false,  false,
+    false,  false,  true,   false,  true,   true,   false,  true,
+    true,   true,   true,   true,   false,  false,  true,   true,
+    false,  false,  true,   false,  true,   false,  true,   false,
+    false,  true,   true,   true,   false,  true,   true,   false,
+    false,  true,   false,  false,  false,  true,   true,   true
+};
+
+const bool DataSet_1_mask::outputs::LXORV[128] = {
     true,   false,  true,   false,  false,  true,   false,  false,
     false,  true,   false,  false,  false,  true,   true,   true,
     false,  false,  true,   false,  false,  false,  true,   true,
@@ -129,6 +209,45 @@ const bool DataSet_1_mask::outputs::LXOR[128] = {
     false,  false,  true,   false,  true,   false,  false,  false,
     true,   true,   false,  false,  false,  true,   false,  true
 };
+
+const bool DataSet_1_mask::outputs::LXORS_A[128] = {
+    true,   false,  true,   true,   false,  true,   true,   true,
+    true,   false,  false,  true,   false,  false,  true,   true,
+    false,  false,  false,  true,   false,  true,   true,   true,
+    false,  true,   false,  true,   false,  false,  false,  false,
+    true,   true,   true,   true,   true,   true,   false,  true,
+    false,  true,   true,   true,   false,  false,  false,  false,
+    true,   true,   true,   false,  false,  true,   true,   false,
+    false,  false,  false,  false,  true,   true,   true,   true,
+    true,   true,   false,  true,   true,   true,   true,   true,
+    false,  true,   false,  false,  false,  true,   true,   true,
+    false,  true,   true,   false,  false,  true,   true,   true,
+    true,   true,   false,  true,   false,  false,  true,   false,
+    false,  false,  false,  false,  true,   true,   false,  false,
+    true,   true,   false,  true,   false,  true,   false,  true,
+    true,   false,  false,  false,  true,   false,  false,  true,
+    true,   false,  true,   true,   true,   false,  false,  false
+};
+
+const bool DataSet_1_mask::outputs::LXORS_B[128] = {
+    false,  true,   false,  false,  true,   false,  false,  false,
+    false,  true,   true,   false,  true,   true,   false,  false,
+    true,   true,   true,   false,  true,   false,  false,  false,
+    true,   false,  true,   false,  true,   true,   true,   true,
+    false,  false,  false,  false,  false,  false,  true,   false,
+    true,   false,  false,  false,  true,   true,   true,   true,
+    false,  false,  false,  true,   true,   false,  false,  true,
+    true,   true,   true,   true,   false,  false,  false,  false,
+    false,  false,  true,   false,  false,  false,  false,  false,
+    true,   false,  true,   true,   true,   false,  false,  false,
+    true,   false,  false,  true,   true,   false,  false,  false,
+    false,  false,  true,   false,  true,   true,   false,  true,
+    true,   true,   true,   true,   false,  false,  true,   true,
+    false,  false,  true,   false,  true,   false,  true,   false,
+    false,  true,   true,   true,   false,  true,   true,   false,
+    false,  true,   false,  false,  false,  true,   true,   true
+};
+
 const bool DataSet_1_mask::outputs::LNOT[128] = {
     true,   false,  true,   true,   false,  true,   true,   true,
     true,   false,  false,  true,   false,  false,  true,   true,
@@ -3508,7 +3627,6 @@ const bool DataSet_1_32f::outputs::ISINF[32] = {
     false, false, false, false, false, false, false, false,
     false, false, false, false, false, false, false, false
 };
-
 
 const bool DataSet_1_32f::outputs::ISAN[32] = {
     true, true, true, true, true, true, true, true,

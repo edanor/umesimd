@@ -3777,33 +3777,33 @@ namespace SIMD
 
     public:
         // LENGTH
-        constexpr static uint32_t length () { return MASK_LEN; }
+        constexpr static uint32_t length() { return MASK_LEN; }
 
         // ALIGNMENT
-        constexpr static int alignment () { return MASK_LEN*sizeof(MASK_BASE_TYPE); }
-        
+        constexpr static int alignment() { return MASK_LEN*sizeof(MASK_BASE_TYPE); }
+
         // LOAD
-        inline DERIVED_MASK_TYPE & load (bool const * addr) {
+        inline DERIVED_MASK_TYPE & load(bool const * addr) {
             return EMULATED_FUNCTIONS::load<DERIVED_MASK_TYPE, bool>(static_cast<DERIVED_MASK_TYPE &>(*this), addr);
         }
 
         // LOADA
-        inline DERIVED_MASK_TYPE & loadAligned (bool const * addrAligned) {
+        inline DERIVED_MASK_TYPE & loadAligned(bool const * addrAligned) {
             return EMULATED_FUNCTIONS::loadAligned<DERIVED_MASK_TYPE, bool>(static_cast<DERIVED_MASK_TYPE &>(*this), addrAligned);
         }
 
         // STORE
-        inline bool* store (bool* addr) const {
-            return EMULATED_FUNCTIONS::store<DERIVED_MASK_TYPE, bool> (static_cast<DERIVED_MASK_TYPE const &>(*this), addr);
+        inline bool* store(bool* addr) const {
+            return EMULATED_FUNCTIONS::store<DERIVED_MASK_TYPE, bool>(static_cast<DERIVED_MASK_TYPE const &>(*this), addr);
         }
 
         // STOREA
-        inline bool* storea (bool* addrAligned) const {
-            return EMULATED_FUNCTIONS::storeAligned<DERIVED_MASK_TYPE, bool> (static_cast<DERIVED_MASK_TYPE const &>(*this), addrAligned);
+        inline bool* storea(bool* addrAligned) const {
+            return EMULATED_FUNCTIONS::storeAligned<DERIVED_MASK_TYPE, bool>(static_cast<DERIVED_MASK_TYPE const &>(*this), addrAligned);
         }
 
         // ASSIGN
-        inline DERIVED_MASK_TYPE & assign (DERIVED_MASK_TYPE const & maskOp) {
+        inline DERIVED_MASK_TYPE & assign(DERIVED_MASK_TYPE const & maskOp) {
             return EMULATED_FUNCTIONS::assign<DERIVED_MASK_TYPE>(static_cast<DERIVED_MASK_TYPE &>(*this), maskOp);
         }
 
@@ -3811,26 +3811,52 @@ namespace SIMD
             return EMULATED_FUNCTIONS::assign<DERIVED_MASK_TYPE>(static_cast<DERIVED_MASK_TYPE &>(*this), maskOp);
         }
 
-        // LAND 
-        inline DERIVED_MASK_TYPE land ( DERIVED_MASK_TYPE const & maskOp) const {
+        // LANDV
+        inline DERIVED_MASK_TYPE land(DERIVED_MASK_TYPE const & maskOp) const {
             return EMULATED_FUNCTIONS::binaryAnd<DERIVED_MASK_TYPE>(static_cast<DERIVED_MASK_TYPE const &>(*this), maskOp);
         }
 
-        inline DERIVED_MASK_TYPE operator& ( DERIVED_MASK_TYPE const & maskOp) const {
+        inline DERIVED_MASK_TYPE operator& (DERIVED_MASK_TYPE const & maskOp) const {
             return land(maskOp);
         }
 
-        // LANDA
-        inline DERIVED_MASK_TYPE & landa (DERIVED_MASK_TYPE const & maskOp) {
+        inline DERIVED_MASK_TYPE operator&& (DERIVED_MASK_TYPE const & maskOp) const {
+            return land(maskOp);
+        }
+
+        // LANDS
+        inline DERIVED_MASK_TYPE land(bool value) const {
+            return EMULATED_FUNCTIONS::binaryAnd<DERIVED_MASK_TYPE>(static_cast<DERIVED_MASK_TYPE const &>(*this), value);
+        }
+
+        inline DERIVED_MASK_TYPE operator& (bool value) {
+            return EMULATED_FUNCTIONS::binaryAnd<DERIVED_MASK_TYPE, bool>(static_cast<DERIVED_MASK_TYPE const &>(*this), value);
+        }
+
+        inline DERIVED_MASK_TYPE operator&& (bool value) {
+            return EMULATED_FUNCTIONS::binaryAnd<DERIVED_MASK_TYPE, bool>(static_cast<DERIVED_MASK_TYPE const &>(*this), value);
+        }
+
+        // LANDVA
+        inline DERIVED_MASK_TYPE & landa(DERIVED_MASK_TYPE const & maskOp) {
             return EMULATED_FUNCTIONS::binaryAndAssign<DERIVED_MASK_TYPE>(static_cast<DERIVED_MASK_TYPE &>(*this), maskOp);
         }
-        
+
         inline DERIVED_MASK_TYPE & operator&= (DERIVED_MASK_TYPE const & maskOp) {
             return landa(maskOp);
         }
 
-        // LOR
-        inline DERIVED_MASK_TYPE lor (DERIVED_MASK_TYPE const & maskOp) const {
+        // LANDSA
+        inline DERIVED_MASK_TYPE & landa(bool value) {
+            return EMULATED_FUNCTIONS::binaryAndAssign<DERIVED_MASK_TYPE, bool>(static_cast<DERIVED_MASK_TYPE &>(*this), value);
+        }
+
+        inline DERIVED_MASK_TYPE & operator&= (bool value) {
+            return landa(value);
+        }
+
+        // LORV
+        inline DERIVED_MASK_TYPE lor(DERIVED_MASK_TYPE const & maskOp) const {
             return EMULATED_FUNCTIONS::binaryOr<DERIVED_MASK_TYPE>(static_cast<DERIVED_MASK_TYPE const &>(*this), maskOp);
         }
 
@@ -3838,8 +3864,25 @@ namespace SIMD
             return lor(maskOp);
         }
 
-        // LORA
-        inline DERIVED_MASK_TYPE & lora (DERIVED_MASK_TYPE const & maskOp) {
+        inline DERIVED_MASK_TYPE operator|| (DERIVED_MASK_TYPE const & maskOp) const {
+            return lor(maskOp);
+        }
+
+        // LORS
+        inline DERIVED_MASK_TYPE lor(bool value) const {
+            return EMULATED_FUNCTIONS::binaryOr<DERIVED_MASK_TYPE>(static_cast<DERIVED_MASK_TYPE const &>(*this), value);
+        }
+
+        inline DERIVED_MASK_TYPE operator| (bool value) {
+            return EMULATED_FUNCTIONS::binaryOr<DERIVED_MASK_TYPE, bool>(static_cast<DERIVED_MASK_TYPE const &>(*this), value);
+        }
+
+        inline DERIVED_MASK_TYPE operator|| (bool value) {
+            return EMULATED_FUNCTIONS::binaryOr<DERIVED_MASK_TYPE, bool>(static_cast<DERIVED_MASK_TYPE const &>(*this), value);
+        }
+
+        // LORVA
+        inline DERIVED_MASK_TYPE & lora(DERIVED_MASK_TYPE const & maskOp) {
             return EMULATED_FUNCTIONS::binaryOrAssign<DERIVED_MASK_TYPE>(static_cast<DERIVED_MASK_TYPE &>(*this), maskOp);
         }
 
@@ -3847,22 +3890,49 @@ namespace SIMD
             return lora(maskOp);
         }
 
-        // LXOR
-        inline DERIVED_MASK_TYPE lxor (DERIVED_MASK_TYPE const & maskOp) const {
+        // LORSA
+        inline DERIVED_MASK_TYPE & lora(bool value) {
+            return EMULATED_FUNCTIONS::binaryOrAssign<DERIVED_MASK_TYPE, bool>(static_cast<DERIVED_MASK_TYPE &>(*this), value);
+        }
+
+        inline DERIVED_MASK_TYPE & operator|= (bool value) {
+            return lora(value);
+        }
+
+        // LXORV
+        inline DERIVED_MASK_TYPE lxor(DERIVED_MASK_TYPE const & maskOp) const {
             return EMULATED_FUNCTIONS::binaryXor<DERIVED_MASK_TYPE>(static_cast<DERIVED_MASK_TYPE const &>(*this), maskOp);
         }
-        
+
         inline DERIVED_MASK_TYPE operator^ (DERIVED_MASK_TYPE const & maskOp) const {
             return lxor(maskOp);
         }
 
-        // LXORA
-        inline DERIVED_MASK_TYPE & lxora (DERIVED_MASK_TYPE const & maskOp) {
+        // LXORS
+        inline DERIVED_MASK_TYPE lxor(bool value) const {
+            return EMULATED_FUNCTIONS::binaryXor<DERIVED_MASK_TYPE, bool>(static_cast<DERIVED_MASK_TYPE const &>(*this), value);
+        }
+
+        inline DERIVED_MASK_TYPE operator^ (bool value) const {
+            return lxor(value);
+        }
+
+        // LXORVA
+        inline DERIVED_MASK_TYPE & lxora(DERIVED_MASK_TYPE const & maskOp) {
             return EMULATED_FUNCTIONS::binaryXorAssign<DERIVED_MASK_TYPE>(static_cast<DERIVED_MASK_TYPE &>(*this), maskOp);
         }
 
         inline DERIVED_MASK_TYPE & operator^= (DERIVED_MASK_TYPE const & maskOp) {
             return lxora(maskOp);
+        }
+
+        // LXORSA
+        inline DERIVED_MASK_TYPE & lxora(bool value) {
+            return EMULATED_FUNCTIONS::binaryXorAssign<DERIVED_MASK_TYPE, bool>(static_cast<DERIVED_MASK_TYPE &>(*this), value);
+        }
+
+        inline DERIVED_MASK_TYPE & operator^= (bool value) {
+            return lxora(value);
         }
 
         // LNOT
