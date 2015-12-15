@@ -324,7 +324,7 @@ namespace SIMD {
     // *
     // ***************************************************************************
     template<typename SCALAR_INT_TYPE, uint32_t VEC_LEN>
-    class SIMDVec_i final :
+    class SIMDVec_i :
         public SIMDVecSignedInterface<
             SIMDVec_i<SCALAR_INT_TYPE, VEC_LEN>,
             typename SIMDVec_i_traits<SCALAR_INT_TYPE, VEC_LEN>::VEC_UINT,
@@ -443,7 +443,7 @@ namespace SIMD {
     // *
     // ***************************************************************************
     template<typename SCALAR_INT_TYPE>
-    class SIMDVec_i<SCALAR_INT_TYPE, 1> final :
+    class SIMDVec_i<SCALAR_INT_TYPE, 1> :
         public SIMDVecSignedInterface<
         SIMDVec_i<SCALAR_INT_TYPE, 1>,
         typename SIMDVec_i_traits<SCALAR_INT_TYPE, 1>::VEC_UINT,
@@ -519,7 +519,7 @@ namespace SIMD {
     };
 
     template<>
-    class SIMDVec_i<NullType, 1> final
+    class SIMDVec_i<NullType, 1>
     {
     private:
         SIMDVec_i() {}
@@ -527,7 +527,7 @@ namespace SIMD {
     };
 
     template<>
-    class SIMDVec_i<NullType, 2> final
+    class SIMDVec_i<NullType, 2>
     {
     private:
         SIMDVec_i() {}
@@ -535,7 +535,7 @@ namespace SIMD {
     };
 
     template<>
-    class SIMDVec_i<NullType, 4> final
+    class SIMDVec_i<NullType, 4>
     {
     private:
         SIMDVec_i() {}
@@ -543,7 +543,7 @@ namespace SIMD {
     };
 
     template<>
-    class SIMDVec_i<NullType, 8> final
+    class SIMDVec_i<NullType, 8>
     {
     private:
         SIMDVec_i() {}
@@ -551,7 +551,7 @@ namespace SIMD {
     };
 
     template<>
-    class SIMDVec_i<NullType, 16> final
+    class SIMDVec_i<NullType, 16>
     {
     private:
         SIMDVec_i() {}
@@ -559,7 +559,7 @@ namespace SIMD {
     };
 
     template<>
-    class SIMDVec_i<NullType, 32> final
+    class SIMDVec_i<NullType, 32>
     {
     private:
         SIMDVec_i() {}
@@ -567,7 +567,7 @@ namespace SIMD {
     };
 
     template<>
-    class SIMDVec_i<NullType, 64> final
+    class SIMDVec_i<NullType, 64>
     {
     private:
         SIMDVec_i() {}
@@ -575,7 +575,7 @@ namespace SIMD {
     };
 
     template<>
-    class SIMDVec_i<NullType, 128> final
+    class SIMDVec_i<NullType, 128>
     {
     private:
         SIMDVec_i() {}

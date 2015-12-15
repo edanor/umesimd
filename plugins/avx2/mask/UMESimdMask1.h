@@ -37,7 +37,7 @@ namespace UME {
 namespace SIMD {
 
     template<>
-    class SIMDVecMask<1> final :
+    class SIMDVecMask<1> :
         public SIMDMaskBaseInterface<
         SIMDVecMask<1>,
         uint32_t,

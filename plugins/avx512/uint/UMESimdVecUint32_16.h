@@ -40,7 +40,7 @@ namespace UME {
 namespace SIMD {
 
     template<>
-    class SIMDVec_u<uint32_t, 16> final :
+    class SIMDVec_u<uint32_t, 16> :
         public SIMDVecUnsignedInterface<
             SIMDVec_u<uint32_t, 16>,
             uint32_t,

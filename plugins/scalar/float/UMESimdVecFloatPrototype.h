@@ -193,7 +193,7 @@ namespace SIMD {
     // *
     // ***************************************************************************
     template<typename SCALAR_FLOAT_TYPE, uint32_t VEC_LEN>
-    class SIMDVec_f final :
+    class SIMDVec_f :
         public SIMDVecFloatInterface<
             SIMDVec_f<SCALAR_FLOAT_TYPE, VEC_LEN>,
             typename SIMDVec_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::VEC_UINT_TYPE,
@@ -354,7 +354,7 @@ namespace SIMD {
     // *
     // ***************************************************************************
     template<typename SCALAR_FLOAT_TYPE>
-    class SIMDVec_f<SCALAR_FLOAT_TYPE, 1> final :
+    class SIMDVec_f<SCALAR_FLOAT_TYPE, 1> :
         public SIMDVecFloatInterface<
             SIMDVec_f<SCALAR_FLOAT_TYPE, 1>,
             typename SIMDVec_f_traits<SCALAR_FLOAT_TYPE, 1>::VEC_UINT_TYPE,
@@ -424,7 +424,7 @@ namespace SIMD {
     };
 
     template<>
-    class SIMDVec_f<NullType, 1> final
+    class SIMDVec_f<NullType, 1>
     {
     private:
         SIMDVec_f() {}
@@ -432,7 +432,7 @@ namespace SIMD {
     };
 
     template<>
-    class SIMDVec_f<NullType, 2> final
+    class SIMDVec_f<NullType, 2>
     {
     private:
         SIMDVec_f() {}
@@ -440,7 +440,7 @@ namespace SIMD {
     };
 
     template<>
-    class SIMDVec_f<NullType, 4> final
+    class SIMDVec_f<NullType, 4>
     {
     private:
         SIMDVec_f() {}
@@ -448,7 +448,7 @@ namespace SIMD {
     };
 
     template<>
-    class SIMDVec_f<NullType, 8> final
+    class SIMDVec_f<NullType, 8>
     {
     private:
         SIMDVec_f() {}
@@ -456,7 +456,7 @@ namespace SIMD {
     };
 
     template<>
-    class SIMDVec_f<NullType, 16> final
+    class SIMDVec_f<NullType, 16>
     {
     private:
         SIMDVec_f() {}
@@ -464,7 +464,7 @@ namespace SIMD {
     };
 
     template<>
-    class SIMDVec_f<NullType, 32> final
+    class SIMDVec_f<NullType, 32>
     {
     private:
         SIMDVec_f() {}
@@ -472,7 +472,7 @@ namespace SIMD {
     };
 
     template<>
-    class SIMDVec_f<NullType, 64> final
+    class SIMDVec_f<NullType, 64>
     {
     private:
         SIMDVec_f() {}
@@ -480,7 +480,7 @@ namespace SIMD {
     };
 
     template<>
-    class SIMDVec_f<NullType, 128> final
+    class SIMDVec_f<NullType, 128>
     {
     private:
         SIMDVec_f() {}

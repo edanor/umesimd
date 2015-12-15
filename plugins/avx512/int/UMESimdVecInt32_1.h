@@ -39,7 +39,7 @@ namespace UME {
 namespace SIMD {
 
     template<>
-    class SIMDVec_i<int32_t, 1> final :
+    class SIMDVec_i<int32_t, 1> :
         public SIMDVecSignedInterface<
             SIMDVec_i<int32_t, 1>,
             SIMDVec_u<uint32_t, 1>,

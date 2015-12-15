@@ -51,7 +51,7 @@ namespace SIMD {
     //                for the compiler to implicitly cast it to integer. To forbid this casting operations from
     //                happening the default type has to be wrapped into a class. 
     template<uint32_t VEC_LEN>
-    class SIMDVecMask final :
+    class SIMDVecMask :
         public SIMDMaskBaseInterface<
             SIMDVecMask<VEC_LEN>,
             bool,

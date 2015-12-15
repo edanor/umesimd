@@ -194,7 +194,7 @@ namespace SIMD {
     // *
     // ***************************************************************************
     template<typename SCALAR_FLOAT_TYPE, uint32_t VEC_LEN>
-    class SIMDVec_f final :
+    class SIMDVec_f :
         public SIMDVecFloatInterface<
             SIMDVec_f<SCALAR_FLOAT_TYPE, VEC_LEN>,
             typename SIMDVec_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::VEC_UINT_TYPE,
@@ -346,7 +346,7 @@ namespace SIMD {
     // *
     // ***************************************************************************
     template<typename SCALAR_FLOAT_TYPE>
-    class SIMDVec_f<SCALAR_FLOAT_TYPE, 1> final :
+    class SIMDVec_f<SCALAR_FLOAT_TYPE, 1> :
         public SIMDVecFloatInterface<
             SIMDVec_f<SCALAR_FLOAT_TYPE, 1>,
             typename SIMDVec_f_traits<SCALAR_FLOAT_TYPE, 1>::VEC_UINT_TYPE,

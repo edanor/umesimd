@@ -297,7 +297,7 @@ namespace SIMD {
     // *
     // ***************************************************************************
     template<typename SCALAR_UINT_TYPE, uint32_t VEC_LEN>
-    class SIMDVec_u final :
+    class SIMDVec_u :
         public SIMDVecUnsignedInterface<
             SIMDVec_u<SCALAR_UINT_TYPE, VEC_LEN>,
             SCALAR_UINT_TYPE,
@@ -405,7 +405,7 @@ namespace SIMD {
     // *
     // ***************************************************************************
     template<typename SCALAR_UINT_TYPE>
-    class SIMDVec_u<SCALAR_UINT_TYPE, 1> final :
+    class SIMDVec_u<SCALAR_UINT_TYPE, 1> :
         public SIMDVecUnsignedInterface<
             SIMDVec_u<SCALAR_UINT_TYPE, 1>, // DERIVED_UINT_VEC_TYPE
             SCALAR_UINT_TYPE,               // SCALAR_UINT_TYPE
