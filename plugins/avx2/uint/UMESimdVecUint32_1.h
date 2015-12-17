@@ -76,12 +76,12 @@ namespace SIMD {
 
         // Override Mask Access operators
 #if defined(USE_PARENTHESES_IN_MASK_ASSIGNMENT)
-        inline IntermediateMask<SIMDVec_u, SIMDVecMask<1>> operator() (SIMDVecMask<1> const & mask) {
-            return IntermediateMask<SIMDVec_u, SIMDVecMask<1>>(mask, static_cast<SIMDVec_u &>(*this));
+        inline IntermediateMask<SIMDVec_u, uint32_t, SIMDVecMask<1>> operator() (SIMDVecMask<1> const & mask) {
+            return IntermediateMask<SIMDVec_u, uint32_t, SIMDVecMask<1>>(mask, static_cast<SIMDVec_u &>(*this));
         }
 #else
-        inline IntermediateMask<SIMDVec_u, SIMDVecMask<1>> operator[] (SIMDVecMask<1> const & mask) {
-            return IntermediateMask<SIMDVec_u, SIMDVecMask<1>>(mask, static_cast<SIMDVec_u &>(*this));
+        inline IntermediateMask<SIMDVec_u, uint32_t, SIMDVecMask<1>> operator[] (SIMDVecMask<1> const & mask) {
+            return IntermediateMask<SIMDVec_u, uint32_t, SIMDVecMask<1>>(mask, static_cast<SIMDVec_u &>(*this));
         }
 #endif
         // INSERT

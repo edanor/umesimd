@@ -3949,15 +3949,6 @@ namespace SIMD
             return EMULATED_FUNCTIONS::logicalNotAssign<DERIVED_MASK_TYPE>(static_cast<DERIVED_MASK_TYPE &>(*this));
         }
 
-        // TOINT
-        //inline MaskAsInt<MASK_LEN> toInt() {
-        //    return 0;
-        //}
-
-        // FROMINT
-        //inline DERIVED_MASK_TYPE & fromInt(MaskAsInt<MASK_LEN>) {
-        //    return *this;
-        //}
         // HLAND
         inline bool hland() const {
             return EMULATED_FUNCTIONS::reduceLogicalAnd<DERIVED_MASK_TYPE>(static_cast<DERIVED_MASK_TYPE const &>(*this));
@@ -3974,7 +3965,6 @@ namespace SIMD
         }
     };
 
-    
     // **********************************************************************
     // *
     // *  Declaration of IntermediateMask class 
@@ -3984,22 +3974,37 @@ namespace SIMD
     // *    from its vector type (VEC_TYPE) for temporary use. 
     // *
     // **********************************************************************
-    template<class VEC_TYPE, class MASK_TYPE>
+    template<class VEC_TYPE, class SCALAR_TYPE, class MASK_TYPE>
     class IntermediateMask {
     public:
-        // MASSIGN
+        // MASSIGNV
         inline void operator=(VEC_TYPE const & vecRhs) const {
             mVecRef.assign(mMaskRef, vecRhs);
+        }
+
+        // MASSIGNS
+        inline void operator=(SCALAR_TYPE scalarRhs) const {
+            mVecRef.assing(mMaskRef, scalarRhs);
         }
 
         // MADDVA
         inline void operator+=(VEC_TYPE const & vecRhs) const {
             mVecRef.adda(mMaskRef, vecRhs);
         }
-        
+
+        // MADDSA
+        inline void operator+=(SCALAR_TYPE scalarRhs) const {
+            mVecRef.adda(mMaskRef, scalarRhs);
+        }
+
         // MSUBVA
         inline void operator-= (VEC_TYPE const & vecRhs) const {
             mVecRef.suba(mMaskRef, vecRhs);
+        }
+
+        // MSUBSA
+        inline void operator-=(SCALAR_TYPE scalarRhs) const {
+            mVecRef.suba(mMaskRef, scalarRhs);
         }
 
         // MMULVA
@@ -4007,9 +4012,19 @@ namespace SIMD
             mVecRef.mula(mMaskRef, vecRhs);
         }
 
+        // MMULSA
+        inline void operator*=(SCALAR_TYPE scalarRhs) const {
+            mVecRef.mula(mMaskRef, scalarRhs);
+        }
+
         // MDIVVA
         inline void operator/= (VEC_TYPE const & vecRhs) const {
             mVecRef.diva(mMaskRef, vecRhs);
+        }
+
+        // MDIVSA
+        inline void operator/=(SCALAR_TYPE scalarRhs) const {
+            mVecRef.diva(mMaskRef, scalarRhs);
         }
 
         // MBANDVA
@@ -4017,14 +4032,29 @@ namespace SIMD
             mVecRef.banda(mMaskRef, vecRhs);
         }
 
+        // MBANDSA
+        inline void operator&=(SCALAR_TYPE scalarRhs) const {
+            mVecRef.banda(mMaskRef, scalarRhs);
+        }
+
         // MBORVA
         inline void operator|= (VEC_TYPE const & vecRhs) const {
             mVecRef.bora(mMaskRef, vecRhs);
         }
 
+        // MBORSA
+        inline void operator|=(SCALAR_TYPE scalarRhs) const {
+            mVecRef.bora(mMaskRef, scalarRhs);
+        }
+
         // MBXORVA
         inline void operator^= (VEC_TYPE const & vecRhs) const {
             mVecRef.bxora(mMaskRef, vecRhs);
+        }
+
+        // MBXORSA
+        inline void operator^=(SCALAR_TYPE scalarRhs) const {
+            mVecRef.bxora(mMaskRef, scalarRhs);
         }
 
         // This object should be only constructible by the
@@ -4043,6 +4073,58 @@ namespace SIMD
         VEC_TYPE & mVecRef;
     };
 
+    // **********************************************************************
+    // *
+    // *  Declaration of IntermediateIndex class 
+    // *
+    // *    This class is a helper class used in assignment version of
+    // *    operator[SCALAR]. This object is not copyable and can only be created
+    // *    from its vector type (VEC_TYPE) for temporary use. It's purpose is
+    // *    to allow LHS assignments to expressions of form:
+    // *
+    // *     <vec>[index] <assignment_operator> <RHS scalar value>
+    // *
+    // **********************************************************************
+    template<class VEC_TYPE, class SCALAR_TYPE>
+    class IntermediateIndex {
+    public:
+        // MASSIGNS
+        inline void operator= (SCALAR_TYPE scalarRhs) const {
+            mVecRef.insert(mIndexRef, scalarRhs);
+        }
+
+        inline void operator+= (SCALAR_TYPE scalarRhs) const {
+            mVecRef.insert(mIndexRef, mVecRef[i] + scalarRhs);
+        }
+
+        inline void operator*= (SCALAR_TYPE scalarRhs) const {
+            mVecRef.insert(mIndexRef, mVecRef[i] * scalarRhs);
+        }
+
+        inline void operator/= (SCALAR_TYPE scalarRhs) const {
+            mVecRef.insert(mIndexRef, mVecRef[i] / scalarRhs);
+        }
+
+        inline void operator&= (SCALAR_TYPE scalarRhs) const {
+            mVecRef.insert(mIndexRef, mVecRef[i] & scalarRhs);
+        }
+
+        inline void operator|= (SCALAR_TYPE scalarRhs) const {
+            mVecRef.insert(mIndexRef, mVecRef[i] | scalarRhs);
+        }
+
+        inline void operator^= (SCALAR_TYPE scalarRhs) const {
+            mVecRef.insert(mIndexRef, mVecRef[i] ^ scalarRhs);
+        }
+
+    private:
+        friend VEC_TYPE;
+
+        inline explicit IntermediateIndex(SCALAR_TYPE index, VEC_TYPE & vec) : mIndexRef(index), mVecRef(vec) {}
+
+        SCALAR_TYPE mIndexRef;
+        VEC_TYPE & mVecRef;
+    };
 
     // **********************************************************************
     // *
