@@ -118,12 +118,12 @@ namespace SIMD {
         }
         // Override Mask Access operators
 #if defined(USE_PARENTHESES_IN_MASK_ASSIGNMENT)
-        inline IntermediateMask<SIMDVec_i, SIMDVecMask<4>> operator() (SIMDVecMask<4> const & mask) {
-            return IntermediateMask<SIMDVec_i, SIMDVecMask<4>>(mask, static_cast<SIMDVec_i &>(*this));
+        inline IntermediateMask<SIMDVec_i, int32_t, SIMDVecMask<4>> operator() (SIMDVecMask<4> const & mask) {
+            return IntermediateMask<SIMDVec_i, int32_t, SIMDVecMask<4>>(mask, static_cast<SIMDVec_i &>(*this));
         }
 #else
-        inline IntermediateMask<SIMDVec_i, SIMDVecMask<4>> operator[] (SIMDVecMask<4> const & mask) {
-            return IntermediateMask<SIMDVec_i, SIMDVecMask<4>>(mask, static_cast<SIMDVec_i &>(*this));
+        inline IntermediateMask<SIMDVec_i, int32_t, SIMDVecMask<4>> operator[] (SIMDVecMask<4> const & mask) {
+            return IntermediateMask<SIMDVec_i, int32_t, SIMDVecMask<4>>(mask, static_cast<SIMDVec_i &>(*this));
         }
 #endif
 
@@ -140,6 +140,9 @@ namespace SIMD {
             mVec = b.mVec;
             return *this;
         }
+        inline SIMDVec_i & operator= (SIMDVec_i const & b) {
+            return assign(b);
+        }
         // MASSIGNV
         inline SIMDVec_i & assign(SIMDVecMask<4> const & mask, SIMDVec_i const & b) {
 #if defined(__AVX512VL_)
@@ -153,12 +156,15 @@ namespace SIMD {
             return *this;
         }
         // ASSIGNS
-        inline SIMDVec_i & assigns(int32_t b) {
+        inline SIMDVec_i & assign(int32_t b) {
             mVec = _mm_set1_epi32(b);
             return *this;
         }
+        inline SIMDVec_i & operator= (int32_t b) {
+            return assign(b);
+        }
         // MASSIGNS
-        inline SIMDVec_i & assigns(SIMDVecMask<4> const & mask, int32_t b) {
+        inline SIMDVec_i & assign(SIMDVecMask<4> const & mask, int32_t b) {
 #if defined(__AVX512VL__)
             __m128i t0 = _mm_set1_epi32(b);
             mVec = _mm_mask_mov_epi32(mVec, mask.mMask, t0);

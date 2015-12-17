@@ -115,12 +115,12 @@ namespace SIMD {
         }
         // Override Mask Access operators
 #if defined(USE_PARENTHESES_IN_MASK_ASSIGNMENT)
-        inline IntermediateMask<SIMDVec_u, SIMDVecMask<4>> operator() (SIMDVecMask<4> const & mask) {
-            return IntermediateMask<SIMDVec_u, SIMDVecMask<4>>(mask, static_cast<SIMDVec_u &>(*this));
+        inline IntermediateMask<SIMDVec_u, uint32_t, SIMDVecMask<4>> operator() (SIMDVecMask<4> const & mask) {
+            return IntermediateMask<SIMDVec_u, uint32_t, SIMDVecMask<4>>(mask, static_cast<SIMDVec_u &>(*this));
         }
 #else
-        inline IntermediateMask<SIMDVec_u, SIMDVecMask<4>> operator[] (SIMDVecMask<4> const & mask) {
-            return IntermediateMask<SIMDVec_u, SIMDVecMask<4>>(mask, static_cast<SIMDVec_u &>(*this));
+        inline IntermediateMask<SIMDVec_u, uint32_t, SIMDVecMask<4>> operator[] (SIMDVecMask<4> const & mask) {
+            return IntermediateMask<SIMDVec_u, uint32_t, SIMDVecMask<4>>(mask, static_cast<SIMDVec_u &>(*this));
         }
 #endif
 
@@ -137,20 +137,40 @@ namespace SIMD {
             mVec = b.mVec;
             return *this;
         }
+        inline SIMDVec_u & operator=(SIMDVec_u const & b) {
+            return assign(b);
+        }
         // MASSIGNV
         inline SIMDVec_u & assign(SIMDVecMask<4> const & mask, SIMDVec_u const & b) {
+#if defined(__AVX512VL__)
             mVec = _mm_mask_mov_epi32(mVec, mask.mMask, b.mVec);
+#else
+            __m512i t0 = _mm512_castsi128_si512(mVec);
+            __m512i t1 = _mm512_castsi128_si512(b.mVec);
+            __m512i t2 = _mm512_mask_mov_epi32(t0, mask.mMask, t1);
+            mVec = _mm512_castsi512_si128(t2);
+#endif
             return *this;
         }
         // ASSIGNS
-        inline SIMDVec_u & assigns(uint32_t b) {
+        inline SIMDVec_u & assign(uint32_t b) {
             mVec = _mm_set1_epi32(b);
             return *this;
         }
+        inline SIMDVec_u & operator= (uint32_t b) {
+            return assign(b);
+        }
         // MASSIGNS
-        inline SIMDVec_u & assigns(SIMDVecMask<4> const & mask, uint32_t b) {
+        inline SIMDVec_u & assign(SIMDVecMask<4> const & mask, uint32_t b) {
+#if defined(__AVX512VL__)
             __m128i t0 = _mm_set1_epi32(b);
             mVec = _mm_mask_mov_epi32(mVec, mask.mMask, t0);
+#else
+            __m512i t0 = _mm512_castsi128_si512(mVec);
+            __m512i t1 = _mm512_set1_epi32(b);
+            __m512i t2 = _mm512_mask_mov_epi32(t0, mask.mMask, t1);
+            mVec = _mm512_castsi512_si128(t2);
+#endif
             return *this;
         }
         // PREFETCH0

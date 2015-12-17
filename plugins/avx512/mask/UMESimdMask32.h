@@ -276,39 +276,69 @@ namespace SIMD {
             p[31] = ((mMask & 0x80000000) != 0);
             return p;
         }
-        // ASSIGN
+        // ASSIGNV
         inline SIMDVecMask & operator= (SIMDVecMask const & x) {
             mMask = x.mMask;
             return *this;
         }
-        // LAND
+        // LANDV
         inline SIMDVecMask land(SIMDVecMask const & b) const {
             __mmask32 t0 = mMask & b.mMask;
             return SIMDVecMask(t0);
         }
-        // LANDA
+        // LANDS
+        inline SIMDVecMask land(bool b) const {
+            __mmask32 t0 = mMask & (b ? 0xFFFFFFFF : 0x00000000);
+            return SIMDVecMask(t0);
+        }
+        // LANDVA
         inline SIMDVecMask & landa(SIMDVecMask const & b) {
             mMask &= b.mMask;
             return *this;
         }
-        // LOR
+        // LANDSA
+        inline SIMDVecMask & landa(bool b) {
+            mMask &= (b ? 0xFFFFFFFF : 0x00000000);
+            return *this;
+        }
+        // LORV
         inline SIMDVecMask lor(SIMDVecMask const & b) const {
             __mmask32 t0 = mMask | b.mMask;
             return SIMDVecMask(t0);
         }
-        // LORA
+        // LORS
+        inline SIMDVecMask lor(bool b) const {
+            __mmask32 t0 = mMask | (b ? 0xFFFFFFFF : 0x00000000);
+            return SIMDVecMask(t0);
+        }
+        // LORVA
         inline SIMDVecMask & lora(SIMDVecMask const & b) {
             mMask |= b.mMask;
             return *this;
         }
-        // LXOR
+        // LORSA
+        inline SIMDVecMask & lora(bool b) {
+            mMask |= (b ? 0xFFFFFFFF : 0x00000000);
+            return *this;
+        }
+        // LXORV
         inline SIMDVecMask lxor(SIMDVecMask const & b) const {
             __mmask32 t0 = mMask ^ b.mMask;
             return SIMDVecMask(t0);
         }
-        // LXORA
+        // LXORS
+        inline SIMDVecMask lxor(bool b) const {
+            __mmask32 t0 = mMask ^ (b ? 0xFFFFFFFF : 0x00000000);
+            return SIMDVecMask(t0);
+        }
+        // LXORVA
         inline SIMDVecMask & lxora(SIMDVecMask const & b) {
             mMask ^= b.mMask;
+            return *this;
+        }
+        // LXORSA
+        inline SIMDVecMask & lxora(bool b) {
+            mMask ^= (b ? 0xFFFFFFFF : 0x00000000);
             return *this;
         }
         // LNOT

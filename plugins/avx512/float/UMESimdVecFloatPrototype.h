@@ -317,12 +317,12 @@ namespace SIMD {
 
         // Override Mask Access operators
 #if defined(USE_PARENTHESES_IN_MASK_ASSIGNMENT)
-        inline IntermediateMask<SIMDVec_f, MASK_TYPE> operator() (MASK_TYPE const & mask) {
-            return IntermediateMask<SIMDVec_f, MASK_TYPE>(mask, static_cast<SIMDVec_f &>(*this));
+        inline IntermediateMask<SIMDVec_f, SCALAR_FLOAT_TYPE, MASK_TYPE> operator() (MASK_TYPE const & mask) {
+            return IntermediateMask<SIMDVec_f, SCALAR_FLOAT_TYPE, MASK_TYPE>(mask, static_cast<SIMDVec_f &>(*this));
         }
 #else
-        inline IntermediateMask<SIMDVec_f, MASK_TYPE> operator[] (MASK_TYPE const & mask) {
-            return IntermediateMask<SIMDVec_f, MASK_TYPE>(mask, static_cast<SIMDVec_f &>(*this));
+        inline IntermediateMask<SIMDVec_f, SCALAR_FLOAT_TYPE, MASK_TYPE> operator[] (MASK_TYPE const & mask) {
+            return IntermediateMask<SIMDVec_f, SCALAR_FLOAT_TYPE, MASK_TYPE>(mask, static_cast<SIMDVec_f &>(*this));
         }
 #endif
 
@@ -331,6 +331,17 @@ namespace SIMD {
             mVec.insert(index, value);
             return *this;
         }
+
+        // ASSIGNV
+        inline SIMDVec_f & operator= (SIMDVec_f const & b) {
+            return assign(b);
+        }
+        // MASSIGNV
+        // ASSIGNS
+        inline SIMDVec_f & operator= (SCALAR_FLOAT_TYPE b) {
+            return assign(b);
+        }
+        // MASSIGNS
 
         // FTOU
         inline operator SIMDVec_u<SCALAR_UINT_TYPE, VEC_LEN>() const;
@@ -386,12 +397,12 @@ namespace SIMD {
 
         // Override Mask Access operators
 #if defined(USE_PARENTHESES_IN_MASK_ASSIGNMENT)
-        inline IntermediateMask<SIMDVec_f, SIMDVecMask<1>> operator() (SIMDVecMask<1> const & mask) {
-            return IntermediateMask<SIMDVec_f, SIMDVecMask<1>>(mask, static_cast<SIMDVec_f &>(*this));
+        inline IntermediateMask<SIMDVec_f, SCALAR_FLOAT_TYPE, SIMDVecMask<1>> operator() (SIMDVecMask<1> const & mask) {
+            return IntermediateMask<SIMDVec_f, SCALAR_FLOAT_TYPE, SIMDVecMask<1>>(mask, static_cast<SIMDVec_f &>(*this));
         }
 #else
-        inline IntermediateMask<SIMDVec_f, SIMDVecMask<1>> operator[] (SIMDVecMask<1> const & mask) {
-            return IntermediateMask<SIMDVec_f, SIMDVecMask<1>>(mask, static_cast<SIMDVec_f &>(*this));
+        inline IntermediateMask<SIMDVec_f, SCALAR_FLOAT_TYPE, SIMDVecMask<1>> operator[] (SIMDVecMask<1> const & mask) {
+            return IntermediateMask<SIMDVec_f, SCALAR_FLOAT_TYPE, SIMDVecMask<1>>(mask, static_cast<SIMDVec_f &>(*this));
         }
 #endif
 
@@ -399,6 +410,15 @@ namespace SIMD {
         inline SIMDVec_f & insert(uint32_t index, SCALAR_FLOAT_TYPE value) {
             mVec.insert(index, value);
             return *this;
+        }
+
+        // ASSIGNV
+        inline SIMDVec_f & operator= (SIMDVec_f const & b) {
+            return assign(b);
+        }
+        // ASSIGNS
+        inline SIMDVec_f & operator= (SCALAR_FLOAT_TYPE b) {
+            return assign(b);
         }
 
         // FTOU

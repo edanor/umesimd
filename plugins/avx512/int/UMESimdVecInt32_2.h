@@ -89,12 +89,12 @@ namespace SIMD {
         }
         // Override Mask Access operators
 #if defined(USE_PARENTHESES_IN_MASK_ASSIGNMENT)
-        inline IntermediateMask<SIMDVec_i, SIMDVecMask<2>> operator() (SIMDVecMask<2> const & mask) {
-            return IntermediateMask<SIMDVec_i, SIMDVecMask<2>>(mask, static_cast<SIMDVec_i &>(*this));
+        inline IntermediateMask<SIMDVec_i, int32_t, SIMDVecMask<2>> operator() (SIMDVecMask<2> const & mask) {
+            return IntermediateMask<SIMDVec_i, int32_t, SIMDVecMask<2>>(mask, static_cast<SIMDVec_i &>(*this));
         }
 #else
-        inline IntermediateMask<SIMDVec_i, SIMDVecMask<2>> operator[] (SIMDVecMask<2> const & mask) {
-            return IntermediateMask<SIMDVec_i, SIMDVecMask<2>>(mask, static_cast<SIMDVec_i &>(*this));
+        inline IntermediateMask<SIMDVec_i, int32_t, SIMDVecMask<2>> operator[] (SIMDVecMask<2> const & mask) {
+            return IntermediateMask<SIMDVec_i, int32_t, SIMDVecMask<2>>(mask, static_cast<SIMDVec_i &>(*this));
         }
 #endif
 
@@ -112,6 +112,9 @@ namespace SIMD {
             mVec[1] = src.mVec[1];
             return *this;
         }
+        inline SIMDVec_i & operator= (SIMDVec_i const & b) {
+            return assign(b);
+        }
         // MASSIGNV
         inline SIMDVec_i & assign(SIMDVecMask<2> const & mask, SIMDVec_i const & src) {
             if (mask.mMask[0] == true) mVec[0] = src.mVec[0];
@@ -119,7 +122,20 @@ namespace SIMD {
             return *this;
         }
         // ASSIGNS
+        inline SIMDVec_i & assign(int32_t src) {
+            mVec[0] = src;
+            mVec[1] = src;
+            return *this;
+        }
+        inline SIMDVec_i & operator= (int32_t b) {
+            return assign(b);
+        }
         // MASSIGNS
+        inline SIMDVec_i & assign(SIMDVecMask<2> const & mask, int32_t src) {
+            if (mask.mMask[0] == true) mVec[0] = src;
+            if (mask.mMask[1] == true) mVec[1] = src;
+            return *this;
+        }
 
         // PREFETCH0
         // PREFETCH1

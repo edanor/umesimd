@@ -98,12 +98,12 @@ namespace SIMD {
         }
         // Override Mask Access operators
 #if defined(USE_PARENTHESES_IN_MASK_ASSIGNMENT)
-        inline IntermediateMask<SIMDVec_i, SIMDVecMask<16>> operator() (SIMDVecMask<16> const & mask) {
-            return IntermediateMask<SIMDVec_i, SIMDVecMask<16>>(mask, static_cast<SIMDVec_i &>(*this));
+        inline IntermediateMask<SIMDVec_i, int32_t, SIMDVecMask<16>> operator() (SIMDVecMask<16> const & mask) {
+            return IntermediateMask<SIMDVec_i, int32_t, SIMDVecMask<16>>(mask, static_cast<SIMDVec_i &>(*this));
         }
 #else
-        inline IntermediateMask<SIMDVec_i, SIMDVecMask<16>> operator[] (SIMDVecMask<16> const & mask) {
-            return IntermediateMask<SIMDVec_i, SIMDVecMask<16>>(mask, static_cast<SIMDVec_i &>(*this));
+        inline IntermediateMask<SIMDVec_i, int32_t, SIMDVecMask<16>> operator[] (SIMDVecMask<16> const & mask) {
+            return IntermediateMask<SIMDVec_i, int32_t, SIMDVecMask<16>>(mask, static_cast<SIMDVec_i &>(*this));
         }
 #endif
 
@@ -120,6 +120,9 @@ namespace SIMD {
             mVec = b.mVec;
             return *this;
         }
+        inline SIMDVec_i & operator= (SIMDVec_i const & b) {
+            return assign(b);
+        }
         // MASSIGNV
         inline SIMDVec_i & assign(SIMDVecMask<16> const & mask, SIMDVec_i const & b) {
             mVec = _mm512_mask_mov_epi32(mVec, mask.mMask, b.mVec);
@@ -129,6 +132,9 @@ namespace SIMD {
         inline SIMDVec_i & assign(int32_t b) {
             mVec = _mm512_set1_epi32(b);
             return *this;
+        }
+        inline SIMDVec_i & operator= (int32_t b) {
+            return assign(b);
         }
         // MASSIGNS
         inline SIMDVec_i & assign(SIMDVecMask<16> const & mask, int32_t b) {

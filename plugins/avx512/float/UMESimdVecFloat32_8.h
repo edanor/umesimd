@@ -92,12 +92,12 @@ namespace SIMD {
         }
         // Override Mask Access operators
 #if defined(USE_PARENTHESES_IN_MASK_ASSIGNMENT)
-        inline IntermediateMask<SIMDVec_f, SIMDVecMask<8>> operator() (SIMDVecMask<8> const & mask) {
-            return IntermediateMask<SIMDVec_f, SIMDVecMask<8>>(mask, static_cast<SIMDVec_f &>(*this));
+        inline IntermediateMask<SIMDVec_f, float, SIMDVecMask<8>> operator() (SIMDVecMask<8> const & mask) {
+            return IntermediateMask<SIMDVec_f, float, SIMDVecMask<8>>(mask, static_cast<SIMDVec_f &>(*this));
         }
 #else
-        inline IntermediateMask<SIMDVec_f, SIMDVecMask<8>> operator[] (SIMDVecMask<8> const & mask) {
-            return IntermediateMask<SIMDVec_f, SIMDVecMask<8>>(mask, static_cast<SIMDVec_f &>(*this));
+        inline IntermediateMask<SIMDVec_f, float, SIMDVecMask<8>> operator[] (SIMDVecMask<8> const & mask) {
+            return IntermediateMask<SIMDVec_f, float, SIMDVecMask<8>>(mask, static_cast<SIMDVec_f &>(*this));
         }
 #endif
 
@@ -120,8 +120,7 @@ namespace SIMD {
             return *this;
         }
         inline SIMDVec_f & operator= (SIMDVec_f const & b) {
-            mVec = b.mVec;
-            return *this;
+            return assign(b);
         }
         // MASSIGNV
         inline SIMDVec_f & assign(SIMDVecMask<8> const & mask, SIMDVec_f const & b) {
@@ -139,6 +138,9 @@ namespace SIMD {
         inline SIMDVec_f & assign(float b) {
             mVec = _mm256_set1_ps(b);
             return *this;
+        }
+        inline SIMDVec_f & operator= (float b) {
+            return assign(b);
         }
         // MASSIGNS
         inline SIMDVec_f & assign(SIMDVecMask<8> const & mask, float b) {

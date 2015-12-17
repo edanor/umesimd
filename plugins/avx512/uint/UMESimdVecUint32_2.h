@@ -81,12 +81,12 @@ namespace SIMD {
         }
         // Override Mask Access operators
 #if defined(USE_PARENTHESES_IN_MASK_ASSIGNMENT)
-        inline IntermediateMask<SIMDVec_u, SIMDVecMask<2>> operator() (SIMDVecMask<2> const & mask) {
-            return IntermediateMask<SIMDVec_u, SIMDVecMask<2>>(mask, static_cast<SIMDVec_u &>(*this));
+        inline IntermediateMask<SIMDVec_u, uint32_t, SIMDVecMask<2>> operator() (SIMDVecMask<2> const & mask) {
+            return IntermediateMask<SIMDVec_u, uint32_t, SIMDVecMask<2>>(mask, static_cast<SIMDVec_u &>(*this));
         }
 #else
-        inline IntermediateMask<SIMDVec_u, SIMDVecMask<2>> operator[] (SIMDVecMask<2> const & mask) {
-            return IntermediateMask<SIMDVec_u, SIMDVecMask<2>>(mask, static_cast<SIMDVec_u &>(*this));
+        inline IntermediateMask<SIMDVec_u, uint32_t, SIMDVecMask<2>> operator[] (SIMDVecMask<2> const & mask) {
+            return IntermediateMask<SIMDVec_u, uint32_t, SIMDVecMask<2>>(mask, static_cast<SIMDVec_u &>(*this));
         }
 #endif
         // INSERT
@@ -109,6 +109,9 @@ namespace SIMD {
             mVec[1] = src.mVec[1];
             return *this;
         }
+        inline SIMDVec_u & operator= (SIMDVec_u const & src) {
+            return assign(src);
+        }
         // MASSIGNV
         inline SIMDVec_u & assign(SIMDVecMask<2> const & mask, SIMDVec_u const & src) {
             if (mask.mMask[0] == true) mVec[0] = src.mVec[0];
@@ -116,7 +119,20 @@ namespace SIMD {
             return *this;
         }
         // ASSIGNS
+        inline SIMDVec_u & assign(uint32_t src) {
+            mVec[0] = src;
+            mVec[1] = src;
+            return *this;
+        }
+        inline SIMDVec_u & operator= (uint32_t src) {
+            return assign(src);
+        }
         // MASSIGNS
+        inline SIMDVec_u & assign(SIMDVecMask<2> const & mask, uint32_t src) {
+            if (mask.mMask[0] == true) mVec[0] = src;
+            if (mask.mMask[1] == true) mVec[1] = src;
+            return *this;
+        }
 
         // PREFETCH0
         // PREFETCH1

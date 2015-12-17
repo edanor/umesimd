@@ -369,7 +369,7 @@ namespace SIMD {
             mVec.insert(28, i28);  mVec.insert(29, i29);  mVec.insert(30, i30);  mVec.insert(31, i31);
         }
 
-        // Override Access operators
+        // EXTRACT
         inline SCALAR_UINT_TYPE operator[] (uint32_t index) const {
             return mVec[index];
         }
@@ -385,7 +385,7 @@ namespace SIMD {
         }
 #endif
 
-        // insert[] (scalar)
+        // INSERT
         inline SIMDVec_u & insert(uint32_t index, SCALAR_UINT_TYPE value) {
             mVec.insert(index, value);
             return *this;
@@ -450,7 +450,7 @@ namespace SIMD {
             return mVec[index];
         }
 
-        // Override Mask Access operators
+        // EXTRACT
 #if defined(USE_PARENTHESES_IN_MASK_ASSIGNMENT)
         inline IntermediateMask<SIMDVec_u, SCALAR_UINT_TYPE, SIMDVecMask<1>> operator() (SIMDVecMask<1> const & mask) {
             return IntermediateMask<SIMDVec_u, SCALAR_UINT_TYPE, SIMDVecMask<1>>(mask, static_cast<SIMDVec_u &>(*this));
@@ -461,7 +461,7 @@ namespace SIMD {
         }
 #endif
 
-        // insert[] (scalar)
+        // INSERT
         inline SIMDVec_u & insert(uint32_t index, SCALAR_UINT_TYPE value) {
             mVec.insert(index, value);
             return *this;

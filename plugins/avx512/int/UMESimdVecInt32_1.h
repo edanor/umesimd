@@ -72,12 +72,12 @@ namespace SIMD {
 
         // Override Mask Access operators
 #if defined(USE_PARENTHESES_IN_MASK_ASSIGNMENT)
-        inline IntermediateMask<SIMDVec_i, SIMDVecMask<1>> operator() (SIMDVecMask<1> const & mask) {
-            return IntermediateMask<SIMDVec_i, SIMDVecMask<1>>(mask, static_cast<SIMDVec_i &>(*this));
+        inline IntermediateMask<SIMDVec_i, int32_t, SIMDVecMask<1>> operator() (SIMDVecMask<1> const & mask) {
+            return IntermediateMask<SIMDVec_i, int32_t, SIMDVecMask<1>>(mask, static_cast<SIMDVec_i &>(*this));
         }
 #else
-        inline IntermediateMask<SIMDVec_i, SIMDVecMask<1>> operator[] (SIMDVecMask<1> const & mask) {
-            return IntermediateMask<SIMDVec_i, SIMDVecMask<1>>(mask, static_cast<SIMDVec_i &>(*this));
+        inline IntermediateMask<SIMDVec_i, int32_t, SIMDVecMask<1>> operator[] (SIMDVecMask<1> const & mask) {
+            return IntermediateMask<SIMDVec_i, int32_t, SIMDVecMask<1>>(mask, static_cast<SIMDVec_i &>(*this));
         }
 #endif
 
@@ -94,13 +94,27 @@ namespace SIMD {
             mVec = src.mVec;
             return *this;
         }
+        inline SIMDVec_i & operator= (SIMDVec_i const & src) {
+            return assign(src);
+        }
         // MASSIGNV
         inline SIMDVec_i & assign(SIMDVecMask<1> const & mask, SIMDVec_i const & src) {
             if (mask.mMask == true) mVec = src.mVec;
             return *this;
         }
         // ASSIGNS
+        inline SIMDVec_i & assign(int32_t src) {
+            mVec = src;
+            return *this;
+        }
+        inline SIMDVec_i & operator= (int32_t src) {
+            return assign(src);
+        }
         // MASSIGNS
+        inline SIMDVec_i & assign(SIMDVecMask<1> const & mask, int32_t src) {
+            if (mask.mMask == true) mVec = src;
+            return *this;
+        }
 
         // PREFETCH0
         // PREFETCH1

@@ -93,12 +93,12 @@ namespace SIMD {
         }
         // Override Mask Access operators
 #if defined(USE_PARENTHESES_IN_MASK_ASSIGNMENT)
-        inline IntermediateMask<SIMDVec_f, SIMDVecMask<4>> operator() (SIMDVecMask<4> const & mask) {
-            return IntermediateMask<SIMDVec_f, SIMDVecMask<4>>(mask, static_cast<SIMDVec_f &>(*this));
+        inline IntermediateMask<SIMDVec_f, float, SIMDVecMask<4>> operator() (SIMDVecMask<4> const & mask) {
+            return IntermediateMask<SIMDVec_f, float, SIMDVecMask<4>>(mask, static_cast<SIMDVec_f &>(*this));
         }
 #else
-        inline IntermediateMask<SIMDVec_f, SIMDVecMask<4>> operator[] (SIMDVecMask<4> const & mask) {
-            return IntermediateMask<SIMDVec_f, SIMDVecMask<4>>(mask, static_cast<SIMDVec_f &>(*this));
+        inline IntermediateMask<SIMDVec_f, float, SIMDVecMask<4>> operator[] (SIMDVecMask<4> const & mask) {
+            return IntermediateMask<SIMDVec_f, float, SIMDVecMask<4>>(mask, static_cast<SIMDVec_f &>(*this));
         }
 #endif
 
@@ -120,9 +120,19 @@ namespace SIMD {
             mVec = b.mVec;
             return *this;
         }
+        inline SIMDVec_f & operator= (SIMDVec_f const & b) {
+            return assign(b);
+        }
         // MASSIGNV
         inline SIMDVec_f & assign(SIMDVecMask<4> const & mask, SIMDVec_f const & b) {
+#if defined(__AVX512VL__)
             mVec = _mm_mask_mov_ps(mVec, mask.mMask, b.mVec);
+#else
+            __m512 t0 = _mm512_castps128_ps512(mVec);
+            __m512 t1 = _mm512_castps128_ps512(b.mVec);
+            __m512 t2 = _mm512_mask_mov_ps(t0, mask.mMask, t1);
+            mVec = _mm512_castps512_ps128(t2);
+#endif
             return *this;
         }
         // ASSIGNS
@@ -130,9 +140,19 @@ namespace SIMD {
             mVec = _mm_set1_ps(b);
             return *this;
         }
+        inline SIMDVec_f & operator= (float b) {
+            return assign(b);
+        }
         // MASSIGNS
         inline SIMDVec_f & assign(SIMDVecMask<4> const & mask, float b) {
+#if defined(__AVX512VL__)
             mVec = _mm_mask_mov_ps(mVec, mask.mMask, _mm_set1_ps(b));
+#else
+            __m512 t0 = _mm512_castps128_ps512(mVec);
+            __m512 t1 = _mm512_set1_ps(b);
+            __m512 t2 = _mm512_mask_mov_ps(t0, mask.mMask, t1);
+            mVec = _mm512_castps512_ps128(t2);
+#endif
             return *this;
         }
 

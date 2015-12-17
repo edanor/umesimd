@@ -3802,13 +3802,22 @@ namespace SIMD
             return EMULATED_FUNCTIONS::storeAligned<DERIVED_MASK_TYPE, bool>(static_cast<DERIVED_MASK_TYPE const &>(*this), addrAligned);
         }
 
-        // ASSIGN
+        // ASSIGNV
         inline DERIVED_MASK_TYPE & assign(DERIVED_MASK_TYPE const & maskOp) {
             return EMULATED_FUNCTIONS::assign<DERIVED_MASK_TYPE>(static_cast<DERIVED_MASK_TYPE &>(*this), maskOp);
         }
 
         inline DERIVED_MASK_TYPE & operator= (DERIVED_MASK_TYPE const & maskOp) {
-            return EMULATED_FUNCTIONS::assign<DERIVED_MASK_TYPE>(static_cast<DERIVED_MASK_TYPE &>(*this), maskOp);
+            return assign(maskOp);
+        }
+
+        // ASSIGNS
+        inline DERIVED_MASK_TYPE & assign(bool scalarOp) {
+            return EMULATED_FUNCTIONS::assign<DERIVED_MASK_TYPE, bool>(static_cast<DERIVED_MASK_TYPE &>(*this), scalarOp);
+        }
+
+        inline DERIVED_MASK_TYPE & operator= (bool scalarOp) {
+            return assign(scalarOp);
         }
 
         // LANDV
