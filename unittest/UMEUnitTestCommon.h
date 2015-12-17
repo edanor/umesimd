@@ -1169,8 +1169,8 @@ void generiMASSIGNVTest()
         SCALAR_TYPE expected[VEC_LEN];
         for (int i = 0; i < VEC_LEN; i++) {
             expected[i] = DATA_SET::inputs::maskA[i] ? 
-                          DATA_SET::inputs::inputA[i] : 
-                          DATA_SET::inputs::inputB[i];
+                          DATA_SET::inputs::inputB[i] : 
+                          DATA_SET::inputs::inputA[i];
         }
         VEC_TYPE vec0(DATA_SET::inputs::inputA);
         VEC_TYPE vec1(DATA_SET::inputs::inputB);
@@ -1179,6 +1179,26 @@ void generiMASSIGNVTest()
         vec0.store(values);
         bool inRange = valuesInRange(values, expected, VEC_LEN, SCALAR_TYPE(0.01f));
         CHECK_CONDITION(inRange, "MASSIGNV");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        SCALAR_TYPE expected[VEC_LEN];
+        for (int i = 0; i < VEC_LEN; i++) {
+            expected[i] = DATA_SET::inputs::maskA[i] ?
+                DATA_SET::inputs::inputB[i] :
+                DATA_SET::inputs::inputA[i];
+        }
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+#if !defined(USE_PARENTHESES_IN_MASK_ASSIGNMENT)
+        vec0[mask] = vec1;
+#else
+        vec0(mask) = vec1;
+#endif
+        vec0.store(values);
+        bool inRange = valuesInRange(values, expected, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "MASSIGNV(vec[mask] = ) ");
     }
 }
 
@@ -1214,13 +1234,33 @@ void generiMASSIGNSTest()
         SCALAR_TYPE values[VEC_LEN];
         SCALAR_TYPE expected[VEC_LEN];
         for (int i = 0; i < VEC_LEN; i++) {
-            expected[i] = DATA_SET::inputs::maskA[i] ? 
-                          DATA_SET::inputs::inputA[i] : 
-                          DATA_SET::inputs::scalarA;
+            expected[i] = DATA_SET::inputs::maskA[i] ?  
+                          DATA_SET::inputs::scalarA :
+                          DATA_SET::inputs::inputA[i];
         }
         VEC_TYPE vec0(DATA_SET::inputs::inputA);
         MASK_TYPE mask(DATA_SET::inputs::maskA);
         vec0.assign(mask, DATA_SET::inputs::scalarA);
+        vec0.store(values);
+        bool inRange = valuesInRange(values, expected, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "MASSIGNS");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        SCALAR_TYPE expected[VEC_LEN];
+        for (int i = 0; i < VEC_LEN; i++) {
+            expected[i] = DATA_SET::inputs::maskA[i] ?
+                          DATA_SET::inputs::scalarA :
+                          DATA_SET::inputs::inputA[i];
+        }
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        vec0.assign(mask, DATA_SET::inputs::scalarA);
+#if !defined(USE_PARENTHESES_IN_MASK_ASSIGNMENT)
+        vec0[mask] = DATA_SET::inputs::scalarA;
+#else
+        vec0(mask) = DATA_SET::inputs::scalarA;
+#endif
         vec0.store(values);
         bool inRange = valuesInRange(values, expected, VEC_LEN, SCALAR_TYPE(0.01f));
         CHECK_CONDITION(inRange, "MASSIGNS");
@@ -1381,15 +1421,30 @@ void genericADDSATest()
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMADDSATest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    MASK_TYPE mask(DATA_SET::inputs::maskA);
-    vec0.adda(mask, DATA_SET::inputs::scalarA);
-    vec0.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MADDS, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "MADDSA");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        vec0.adda(mask, DATA_SET::inputs::scalarA);
+        vec0.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MADDS, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "MADDSA");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+#if !defined(USE_PARENTHESES_IN_MASK_ASSIGNMENT)
+        vec0[mask] += DATA_SET::inputs::scalarA;
+#else
+        vec0(mask) += DATA_SET::inputs::scalarA;
+#endif
+        vec0.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MADDS, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "MADDSA(vec[mask] +=)");
+    }
 }
-    
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericPOSTINCTest()
 {
@@ -1611,15 +1666,30 @@ void genericSUBSATest()
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMSUBSATest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    MASK_TYPE mask(DATA_SET::inputs::maskA);
-    vec0.suba(mask, DATA_SET::inputs::scalarA);
-    vec0.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MSUBS, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "MSUBSA");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        vec0.suba(mask, DATA_SET::inputs::scalarA);
+        vec0.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MSUBS, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "MSUBSA");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+#if !defined(USE_PARENTHESES_IN_MASK_ASSIGNMENT)
+        vec0[mask] -= DATA_SET::inputs::scalarA;
+#else
+        vec0(mask) -= DATA_SET::inputs::scalarA;
+#endif
+        vec0.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MSUBS, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "MSUBSA(vec[mask] -=)");
+    }
 }
-    
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericSUBFROMVTest()
 {
@@ -1631,7 +1701,7 @@ void genericSUBFROMVTest()
     bool inRange = valuesInRange(values, DATA_SET::outputs::SUBFROMV, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "SUBFROMV");
 }
-    
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMSUBFROMVTest()
 {
@@ -2124,13 +2194,28 @@ void genericDIVSATest()
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMDIVSATest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    MASK_TYPE mask(DATA_SET::inputs::maskA);
-    vec0.diva(mask, DATA_SET::inputs::scalarA);
-    vec0.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MDIVS, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "MDIVSA");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        vec0.diva(mask, DATA_SET::inputs::scalarA);
+        vec0.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MDIVS, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "MDIVSA");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+#if !defined(USE_PARENTHESES_IN_MASK_ASSIGNMENT)
+        vec0[mask] /= DATA_SET::inputs::scalarA;
+#else
+        vec0(mask) /= DATA_SET::inputs::scalarA;
+#endif
+        vec0.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MDIVS, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "MDIVSA(vec[mask] \\=)");
+    }
 }
     
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
@@ -2727,13 +2812,28 @@ void genericBANDSATest()
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMBANDSATest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    MASK_TYPE mask(DATA_SET::inputs::maskA);
-    vec0.banda(mask, DATA_SET::inputs::scalarA);
-    vec0.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MBANDS, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "MBANDSA");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        vec0.banda(mask, DATA_SET::inputs::scalarA);
+        vec0.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MBANDS, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "MBANDSA");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+#if !defined(USE_PARENTHESES_IN_MASK_ASSIGNMENT)
+        vec0[mask] &= DATA_SET::inputs::scalarA;
+#else
+        vec0(mask) &= DATA_SET::inputs::scalarA;
+#endif
+        vec0.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MBANDS, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "MBANDSA(vec[mask] &=)");
+    }
 }
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
@@ -2805,13 +2905,24 @@ void genericMBORSTest()
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericBORVATest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    VEC_TYPE vec1(DATA_SET::inputs::inputB);
-    vec0.bora(vec1);
-    vec0.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::BORV, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "BORVA");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        vec0.bora(vec1);
+        vec0.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::BORV, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "BORVA");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        vec0 |= vec1;
+        vec0.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::BORV, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "BORVA(operator|=)");
+    }
 }
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
@@ -2846,36 +2957,72 @@ void genericMBORVATest()
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericBORSATest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    vec0.bora(DATA_SET::inputs::scalarA);
-    vec0.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::BORS, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "BORSA");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        vec0.bora(DATA_SET::inputs::scalarA);
+        vec0.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::BORS, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "BORSA");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        vec0 |= DATA_SET::inputs::scalarA;
+        vec0.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::BORS, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "BORSA(operator|=)");
+    }
 }
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMBORSATest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    MASK_TYPE mask(DATA_SET::inputs::maskA);
-    vec0.bora(mask, DATA_SET::inputs::scalarA);
-    vec0.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MBORS, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "MBORSA");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        vec0.bora(mask, DATA_SET::inputs::scalarA);
+        vec0.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MBORS, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "MBORSA");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+#if !defined(USE_PARENTHESES_IN_MASK_ASSIGNMENT)
+        vec0[mask] |= DATA_SET::inputs::scalarA;
+#else
+        vec0(mask) |= DATA_SET::inputs::scalarA;
+#endif
+        vec0.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MBORS, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "MBORSA(vec[mask]|=");
+    }
 }
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericBXORVTest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    VEC_TYPE vec1(DATA_SET::inputs::inputB);
-    VEC_TYPE vec2 = vec0.bxor(vec1);
-    vec2.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::BXORV, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "BXORV");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        VEC_TYPE vec2 = vec0.bxor(vec1);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::BXORV, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "BXORV");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        VEC_TYPE vec2 = vec0 ^ vec1;
+        vec2.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::BXORV, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "BXORV(operator^");
+    }
 }
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
@@ -2894,12 +3041,30 @@ void genericMBXORVTest()
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericBXORSTest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    VEC_TYPE vec2 = vec0.bxor(DATA_SET::inputs::scalarA);
-    vec2.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::BXORS, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "BXORS");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec2 = vec0.bxor(DATA_SET::inputs::scalarA);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::BXORS, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "BXORS");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec2 = vec0 ^ DATA_SET::inputs::scalarA;
+        vec2.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::BXORS, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "BXORS(operator^ RHS scalar)");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec2 = DATA_SET::inputs::scalarA ^ vec0;
+        vec2.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::BXORS, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "BXORS(operator ^ LHS scalar)");
+    }
 }
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
@@ -2917,13 +3082,24 @@ void genericMBXORSTest()
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericBXORVATest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    VEC_TYPE vec1(DATA_SET::inputs::inputB);
-    vec0.bxora(vec1);
-    vec0.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::BXORV, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "BXORVA");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        vec0.bxora(vec1);
+        vec0.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::BXORV, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "BXORVA");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        vec0 ^= vec1;
+        vec0.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::BXORV, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "BXORVA(operator^=)");
+    }
 }
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
@@ -2944,10 +3120,10 @@ void genericMBXORVATest()
         VEC_TYPE vec0(DATA_SET::inputs::inputA);
         VEC_TYPE vec1(DATA_SET::inputs::inputB);
         MASK_TYPE mask(DATA_SET::inputs::maskA);
-#if defined(USE_PARENTHESES_IN_MASK_ASSIGNMENT)
-        vec0(mask) ^= vec1;
-#else
+#if !defined(USE_PARENTHESES_IN_MASK_ASSIGNMENT)
         vec0[mask] ^= vec1;
+#else
+        vec0(mask) ^= vec1;
 #endif
         vec0.store(values);
         bool inRange = valuesInRange(values, DATA_SET::outputs::MBXORV, VEC_LEN, SCALAR_TYPE(0.01f));
@@ -2958,24 +3134,49 @@ void genericMBXORVATest()
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericBXORSATest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    vec0.bxora(DATA_SET::inputs::scalarA);
-    vec0.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::BXORS, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "BXORSA");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        vec0.bxora(DATA_SET::inputs::scalarA);
+        vec0.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::BXORS, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "BXORSA");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        vec0 ^= DATA_SET::inputs::scalarA;
+        vec0.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::BXORS, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "BXORSA(operator^=)");
+    }
 }
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMBXORSATest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    MASK_TYPE mask(DATA_SET::inputs::maskA);
-    vec0.bxora(mask, DATA_SET::inputs::scalarA);
-    vec0.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MBXORS, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "MBXORSA");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        vec0.bxora(mask, DATA_SET::inputs::scalarA);
+        vec0.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MBXORS, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "MBXORSA");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+#if !defined(USE_PARENTHESES_IN_MASK_ASSIGNMENT)
+        vec0[mask] ^= DATA_SET::inputs::scalarA;
+#else
+        vec0(mask) ^= DATA_SET::inputs::scalarA;
+#endif
+        vec0.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MBXORS, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "MBXORSA(vec[mask] ^=)");
+    }
 }
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>

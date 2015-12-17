@@ -473,6 +473,67 @@ namespace UME {
         inline SIMD8_64i operator| (uint64_t a, SIMD8_64i const & b) { return b.bor(a); }
         inline SIMD16_64i operator| (uint64_t a, SIMD16_64i const & b) { return b.bor(a); }
 
+        // BXORS
+        inline SIMD1_8u operator^ (uint8_t a, SIMD1_8u const & b) { return b.bxor(a); }
+        inline SIMD2_8u operator^ (uint8_t a, SIMD2_8u const & b) { return b.bxor(a); }
+        inline SIMD4_8u operator^ (uint8_t a, SIMD4_8u const & b) { return b.bxor(a); }
+        inline SIMD8_8u operator^ (uint8_t a, SIMD8_8u const & b) { return b.bxor(a); }
+        inline SIMD16_8u operator^ (uint8_t a, SIMD16_8u const & b) { return b.bxor(a); }
+        inline SIMD32_8u operator^ (uint8_t a, SIMD32_8u const & b) { return b.bxor(a); }
+        inline SIMD64_8u operator^ (uint8_t a, SIMD64_8u const & b) { return b.bxor(a); }
+        inline SIMD128_8u operator^ (uint8_t a, SIMD128_8u const & b) { return b.bxor(a); }
+
+        inline SIMD1_16u operator^ (uint16_t a, SIMD1_16u const & b) { return b.bxor(a); }
+        inline SIMD2_16u operator^ (uint16_t a, SIMD2_16u const & b) { return b.bxor(a); }
+        inline SIMD4_16u operator^ (uint16_t a, SIMD4_16u const & b) { return b.bxor(a); }
+        inline SIMD8_16u operator^ (uint16_t a, SIMD8_16u const & b) { return b.bxor(a); }
+        inline SIMD16_16u operator^ (uint16_t a, SIMD16_16u const & b) { return b.bxor(a); }
+        inline SIMD32_16u operator^ (uint16_t a, SIMD32_16u const & b) { return b.bxor(a); }
+        inline SIMD64_16u operator^ (uint16_t a, SIMD64_16u const & b) { return b.bxor(a); }
+
+        inline SIMD1_32u operator^ (uint32_t a, SIMD1_32u const & b) { return b.bxor(a); }
+        inline SIMD2_32u operator^ (uint32_t a, SIMD2_32u const & b) { return b.bxor(a); }
+        inline SIMD4_32u operator^ (uint32_t a, SIMD4_32u const & b) { return b.bxor(a); }
+        inline SIMD8_32u operator^ (uint32_t a, SIMD8_32u const & b) { return b.bxor(a); }
+        inline SIMD16_32u operator^ (uint32_t a, SIMD16_32u const & b) { return b.bxor(a); }
+        inline SIMD32_32u operator^ (uint32_t a, SIMD32_32u const & b) { return b.bxor(a); }
+
+        inline SIMD1_64u operator^ (uint64_t a, SIMD1_64u const & b) { return b.bxor(a); }
+        inline SIMD2_64u operator^ (uint64_t a, SIMD2_64u const & b) { return b.bxor(a); }
+        inline SIMD4_64u operator^ (uint64_t a, SIMD4_64u const & b) { return b.bxor(a); }
+        inline SIMD8_64u operator^ (uint64_t a, SIMD8_64u const & b) { return b.bxor(a); }
+        inline SIMD16_64u operator^ (uint64_t a, SIMD16_64u const & b) { return b.bxor(a); }
+
+        inline SIMD1_8i operator^ (uint8_t a, SIMD1_8i const & b) { return b.bxor(a); }
+        inline SIMD2_8i operator^ (uint8_t a, SIMD2_8i const & b) { return b.bxor(a); }
+        inline SIMD4_8i operator^ (uint8_t a, SIMD4_8i const & b) { return b.bxor(a); }
+        inline SIMD8_8i operator^ (uint8_t a, SIMD8_8i const & b) { return b.bxor(a); }
+        inline SIMD16_8i operator^ (uint8_t a, SIMD16_8i const & b) { return b.bxor(a); }
+        inline SIMD32_8i operator^ (uint8_t a, SIMD32_8i const & b) { return b.bxor(a); }
+        inline SIMD64_8i operator^ (uint8_t a, SIMD64_8i const & b) { return b.bxor(a); }
+        inline SIMD128_8i operator^ (uint8_t a, SIMD128_8i const & b) { return b.bxor(a); }
+
+        inline SIMD1_16i operator^ (uint16_t a, SIMD1_16i const & b) { return b.bxor(a); }
+        inline SIMD2_16i operator^ (uint16_t a, SIMD2_16i const & b) { return b.bxor(a); }
+        inline SIMD4_16i operator^ (uint16_t a, SIMD4_16i const & b) { return b.bxor(a); }
+        inline SIMD8_16i operator^ (uint16_t a, SIMD8_16i const & b) { return b.bxor(a); }
+        inline SIMD16_16i operator^ (uint16_t a, SIMD16_16i const & b) { return b.bxor(a); }
+        inline SIMD32_16i operator^ (uint16_t a, SIMD32_16i const & b) { return b.bxor(a); }
+        inline SIMD64_16i operator^ (uint16_t a, SIMD64_16i const & b) { return b.bxor(a); }
+
+        inline SIMD1_32i operator^ (uint32_t a, SIMD1_32i const & b) { return b.bxor(a); }
+        inline SIMD2_32i operator^ (uint32_t a, SIMD2_32i const & b) { return b.bxor(a); }
+        inline SIMD4_32i operator^ (uint32_t a, SIMD4_32i const & b) { return b.bxor(a); }
+        inline SIMD8_32i operator^ (uint32_t a, SIMD8_32i const & b) { return b.bxor(a); }
+        inline SIMD16_32i operator^ (uint32_t a, SIMD16_32i const & b) { return b.bxor(a); }
+        inline SIMD32_32i operator^ (uint32_t a, SIMD32_32i const & b) { return b.bxor(a); }
+
+        inline SIMD1_64i operator^ (uint64_t a, SIMD1_64i const & b) { return b.bxor(a); }
+        inline SIMD2_64i operator^ (uint64_t a, SIMD2_64i const & b) { return b.bxor(a); }
+        inline SIMD4_64i operator^ (uint64_t a, SIMD4_64i const & b) { return b.bxor(a); }
+        inline SIMD8_64i operator^ (uint64_t a, SIMD8_64i const & b) { return b.bxor(a); }
+        inline SIMD16_64i operator^ (uint64_t a, SIMD16_64i const & b) { return b.bxor(a); }
+
         // CMPEQS
         inline SIMDMask1 operator== (uint8_t a, SIMD1_8u const & b) { return b.cmpeq(a); }
         inline SIMDMask2 operator== (uint8_t a, SIMD2_8u const & b) { return b.cmpeq(a); }

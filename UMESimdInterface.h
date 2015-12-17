@@ -3984,7 +3984,7 @@ namespace SIMD
 
         // MASSIGNS
         inline void operator=(SCALAR_TYPE scalarRhs) const {
-            mVecRef.assing(mMaskRef, scalarRhs);
+            mVecRef.assign(mMaskRef, scalarRhs);
         }
 
         // MADDVA
@@ -4063,7 +4063,7 @@ namespace SIMD
         IntermediateMask(IntermediateMask const &);
         IntermediateMask & operator= (IntermediateMask const &); 
 
-        IntermediateMask(uint32_t);
+        explicit IntermediateMask(uint32_t);
     private:
         friend VEC_TYPE;
 
