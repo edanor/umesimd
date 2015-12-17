@@ -3838,12 +3838,12 @@ namespace SIMD
             return EMULATED_FUNCTIONS::binaryAnd<DERIVED_MASK_TYPE>(static_cast<DERIVED_MASK_TYPE const &>(*this), value);
         }
 
-        inline DERIVED_MASK_TYPE operator& (bool value) {
-            return EMULATED_FUNCTIONS::binaryAnd<DERIVED_MASK_TYPE, bool>(static_cast<DERIVED_MASK_TYPE const &>(*this), value);
+        inline DERIVED_MASK_TYPE operator& (bool value) const {
+            return land(value);
         }
 
-        inline DERIVED_MASK_TYPE operator&& (bool value) {
-            return EMULATED_FUNCTIONS::binaryAnd<DERIVED_MASK_TYPE, bool>(static_cast<DERIVED_MASK_TYPE const &>(*this), value);
+        inline DERIVED_MASK_TYPE operator&& (bool value) const {
+            return land(value);
         }
 
         // LANDVA
@@ -3882,11 +3882,11 @@ namespace SIMD
             return EMULATED_FUNCTIONS::binaryOr<DERIVED_MASK_TYPE>(static_cast<DERIVED_MASK_TYPE const &>(*this), value);
         }
 
-        inline DERIVED_MASK_TYPE operator| (bool value) {
+        inline DERIVED_MASK_TYPE operator| (bool value) const {
             return EMULATED_FUNCTIONS::binaryOr<DERIVED_MASK_TYPE, bool>(static_cast<DERIVED_MASK_TYPE const &>(*this), value);
         }
 
-        inline DERIVED_MASK_TYPE operator|| (bool value) {
+        inline DERIVED_MASK_TYPE operator|| (bool value) const {
             return EMULATED_FUNCTIONS::binaryOr<DERIVED_MASK_TYPE, bool>(static_cast<DERIVED_MASK_TYPE const &>(*this), value);
         }
 

@@ -154,8 +154,14 @@ namespace SIMD {
 
         //(Initialization)
         // ASSIGNV     - Assignment with another vector
+        inline SIMDVec_f & operator= (SIMDVec_f const & b) {
+            return assign(b);
+        }
         // MASSIGNV    - Masked assignment with another vector
         // ASSIGNS     - Assignment with scalar
+        inline SIMDVec_f & operator= (float b) {
+            return assign(b);
+        }
         // MASSIGNS    - Masked assign with scalar
 
         //(Memory access)
@@ -183,8 +189,7 @@ namespace SIMD {
         }
         // MLOADA  - Masked load from aligned memory to vector
         // STORE   - Store vector content into memory (either aligned or unaligned)
-        inline float * store(float * p)
-        {
+        inline float * store(float * p) const {
             if ((uint64_t(p) % 64) == 0) {
                 _mm512_store_ps(p, mVecLo);
                 _mm512_store_ps(p + 16, mVecHi);
@@ -200,7 +205,7 @@ namespace SIMD {
         // MSTORE  - Masked store vector content into memory (either aligned or
         //           unaligned)
         // STOREA  - Store vector content into aligned memory
-        inline float* storea(float* p) {
+        inline float* storea(float* p) const {
             _mm512_store_ps(p, mVecLo);
             _mm512_store_ps(p + 16, mVecHi);
             return p;
@@ -317,13 +322,13 @@ namespace SIMD {
             return SIMDVec_f(t0, t1);
         }
         // MULS   - Multiplication with scalar
-        inline SIMDVec_f mul(float b) {
+        inline SIMDVec_f mul(float b) const {
             __m512 t0 = _mm512_mul_ps(mVecLo, _mm512_set1_ps(b));
             __m512 t1 = _mm512_mul_ps(mVecHi, _mm512_set1_ps(b));
             return SIMDVec_f(t0, t1);
         }
         // MMULS  - Masked multiplication with scalar
-        inline SIMDVec_f mul(SIMDVecMask<32> const & mask, float b) {
+        inline SIMDVec_f mul(SIMDVecMask<32> const & mask, float b) const {
             __m512 t0 = _mm512_mask_mul_ps(mVecLo, mask.mMaskLo, mVecLo, _mm512_set1_ps(b));
             __m512 t1 = _mm512_mask_mul_ps(mVecHi, mask.mMaskHi, mVecHi, _mm512_set1_ps(b));
             return SIMDVec_f(t0, t1);
@@ -389,13 +394,13 @@ namespace SIMD {
 
         //(Fused arithmetics)
         // FMULADDV  - Fused multiply and add (A*B + C) with vectors
-        inline SIMDVec_f fmuladd(SIMDVec_f const & b, SIMDVec_f const & c) {
+        inline SIMDVec_f fmuladd(SIMDVec_f const & b, SIMDVec_f const & c) const {
             __m512 t0 = _mm512_fmadd_ps(mVecLo, b.mVecLo, c.mVecLo);
             __m512 t1 = _mm512_fmadd_ps(mVecHi, b.mVecHi, c.mVecHi);
             return SIMDVec_f(t0, t1);
         }
         // MFMULADDV - Masked fused multiply and add (A*B + C) with vectors
-        inline SIMDVec_f fmuladd(SIMDVecMask<32> const & mask, SIMDVec_f const & b, SIMDVec_f const & c) {
+        inline SIMDVec_f fmuladd(SIMDVecMask<32> const & mask, SIMDVec_f const & b, SIMDVec_f const & c) const {
             __m512 t0 = _mm512_mask_fmadd_ps(mVecLo, mask.mMaskLo, b.mVecLo, c.mVecLo);
             __m512 t1 = _mm512_mask_fmadd_ps(mVecHi, mask.mMaskHi, b.mVecHi, c.mVecHi);
             return SIMDVec_f(t0, t1);

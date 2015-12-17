@@ -62,7 +62,7 @@ namespace SIMD {
         __m512 mVec;
 
         inline SIMDVec_f(__m512 & x) {
-            this->mVec = x;
+            mVec = x;
         }
 
     public:
@@ -85,7 +85,7 @@ namespace SIMD {
         }
 
         // LOAD-CONSTR - Construct by loading from memory
-        inline explicit SIMDVec_f(float const * p) { this->load(p); }
+        inline explicit SIMDVec_f(float const * p) { load(p); }
 
         // FULL-CONSTR - constructor with VEC_LEN scalar element 
         inline SIMDVec_f(float f0, float f1, float f2, float f3,

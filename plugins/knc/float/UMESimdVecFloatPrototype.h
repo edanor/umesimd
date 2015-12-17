@@ -228,7 +228,7 @@ namespace SIMD {
         // SET-CONSTR
         inline explicit SIMDVec_f(SCALAR_FLOAT_TYPE f) : mVec(f) {};
 
-        // LOAD-CONSTR - Construct by loading from memory
+        // LOAD-CONSTR
         inline explicit SIMDVec_f(SCALAR_FLOAT_TYPE const * p) { this->load(p); }
 
         inline SIMDVec_f(SCALAR_FLOAT_TYPE f0, SCALAR_FLOAT_TYPE f1) {
@@ -331,6 +331,17 @@ namespace SIMD {
             return *this;
         }
 
+        // ASSIGNV
+        inline SIMDVec_f & operator= (SIMDVec_f const & b) {
+            return assign(b);
+        }
+        // MASSIGNV
+        // ASSIGNS
+        inline SIMDVec_f & operator= (SCALAR_FLOAT_TYPE b) {
+            return assign(b);
+        }
+        // MASSIGNS
+
         // FTOU
         inline operator SIMDVec_u<SCALAR_UINT_TYPE, VEC_LEN>() const;
         // FTOI
@@ -400,11 +411,26 @@ namespace SIMD {
             return *this;
         }
 
+        // ASSIGNV
+        inline SIMDVec_f & operator= (SIMDVec_f const & b) {
+            return assign(b);
+        }
+        // ASSIGNS
+        inline SIMDVec_f & operator= (SCALAR_FLOAT_TYPE b) {
+            return assign(b);
+        }
+
         // FTOU
         inline operator SIMDVec_u<SCALAR_UINT_TYPE, 1>() const;
         // FTOI
         inline operator SIMDVec_i<SCALAR_INT_TYPE, 1>() const;
     };
+
+    template<uint32_t VEC_LEN>
+    class SIMDVec_f<NullType, VEC_LEN> {};
+
+    template<>
+    class SIMDVec_f<NullType, 1> {};
 
 }
 }

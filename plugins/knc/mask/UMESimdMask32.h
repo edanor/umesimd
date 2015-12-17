@@ -72,7 +72,7 @@ namespace SIMD {
         }
 
         // LOAD-CONSTR - Construct by loading from memory
-        inline explicit SIMDVecMask(bool const * p) { this->load(p); }
+        inline explicit SIMDVecMask(bool const * p) { load(p); }
 
         inline SIMDVecMask(bool m0, bool m1, bool m2, bool m3,
             bool m4, bool m5, bool m6, bool m7,
@@ -130,80 +130,81 @@ namespace SIMD {
             }
         }
 
-        inline SIMDVecMask(SIMDVecMask const & mask) {
+        inline SIMDVecMask (SIMDVecMask const & mask) {
             mMaskLo = mask.mMaskLo;
             mMaskHi = mask.mMaskHi;
         }
 
-        // LAND
+        // LANDV
         inline SIMDVecMask land(SIMDVecMask const & maskOp) const {
             __mmask16 m0 = mMaskLo & maskOp.mMaskLo;
             __mmask16 m1 = mMaskHi & maskOp.mMaskHi;
             return SIMDVecMask(m0, m1);
         }
-
-        inline SIMDVecMask operator& (SIMDVecMask const & maskOp) const {
-            __mmask16 m0 = mMaskLo & maskOp.mMaskLo;
-            __mmask16 m1 = mMaskHi & maskOp.mMaskHi;
+        // LANDS
+        inline SIMDVecMask land(bool scalarOp) const {
+            __mmask16 m0 = mMaskLo & (scalarOp ? 0xFFFF : 0x0000);
+            __mmask16 m1 = mMaskHi & (scalarOp ? 0xFFFF : 0x0000);
             return SIMDVecMask(m0, m1);
         }
-        // LANDA
+        // LANDVA
         inline SIMDVecMask & landa(SIMDVecMask const & maskOp) {
             mMaskLo &= maskOp.mMaskLo;
             mMaskHi &= maskOp.mMaskHi;
             return *this;
         }
-        inline SIMDVecMask & operator&= (SIMDVecMask const & maskOp) {
-            mMaskLo &= maskOp.mMaskLo;
-            mMaskHi &= maskOp.mMaskHi;
+        // LANDSA
+        inline SIMDVecMask & landa(bool scalarOp) {
+            mMaskLo &= (scalarOp ? 0xFFFF : 0x0000);
+            mMaskHi &= (scalarOp ? 0xFFFF : 0x0000);
             return *this;
         }
-        // LOR
+        // LORV
         inline SIMDVecMask lor(SIMDVecMask const & maskOp) const {
             __mmask16 m0 = mMaskLo | maskOp.mMaskLo;
             __mmask16 m1 = mMaskHi | maskOp.mMaskHi;
             return SIMDVecMask(m0, m1);
         }
-
-        inline SIMDVecMask operator| (SIMDVecMask const & maskOp) const {
-            __mmask16 m0 = mMaskLo | maskOp.mMaskLo;
-            __mmask16 m1 = mMaskHi | maskOp.mMaskHi;
+        // LORS
+        inline SIMDVecMask lor(bool scalarOp) const {
+            __mmask16 m0 = mMaskLo | (scalarOp ? 0xFFFF : 0x0000);
+            __mmask16 m1 = mMaskHi | (scalarOp ? 0xFFFF : 0x0000);
             return SIMDVecMask(m0, m1);
         }
-        // LORA
+        // LORVA
         inline SIMDVecMask & lora(SIMDVecMask const & maskOp) {
             mMaskLo |= maskOp.mMaskLo;
             mMaskHi |= maskOp.mMaskHi;
             return *this;
         }
-
-        inline SIMDVecMask & operator|= (SIMDVecMask const & maskOp) {
-            mMaskLo |= maskOp.mMaskLo;
-            mMaskHi |= maskOp.mMaskHi;
+        // LORSA
+        inline SIMDVecMask & lora(bool scalarOp) {
+            mMaskLo |= (scalarOp ? 0xFFFF : 0x0000);
+            mMaskHi |= (scalarOp ? 0xFFFF : 0x0000);
             return *this;
         }
-        // LXOR
+        // LXORV
         inline SIMDVecMask lxor(SIMDVecMask const & maskOp) const {
             __mmask16 m0 = mMaskLo ^ maskOp.mMaskLo;
             __mmask16 m1 = mMaskHi ^ maskOp.mMaskHi;
             return SIMDVecMask(m0, m1);
         }
-
-        inline SIMDVecMask operator^ (SIMDVecMask const & maskOp) const {
-            __mmask16 m0 = mMaskLo ^ maskOp.mMaskLo;
-            __mmask16 m1 = mMaskHi ^ maskOp.mMaskHi;
+        // LXORS
+        inline SIMDVecMask lxor(bool scalarOp) const {
+            __mmask16 m0 = mMaskLo ^ (scalarOp ? 0xFFFF : 0x0000);
+            __mmask16 m1 = mMaskHi ^ (scalarOp ? 0xFFFF : 0x0000);
             return SIMDVecMask(m0, m1);
         }
-        // LXORA
+        // LXORVA
         inline SIMDVecMask & lxora(SIMDVecMask const & maskOp) {
             mMaskLo ^= maskOp.mMaskLo;
             mMaskHi ^= maskOp.mMaskHi;
             return *this;
         }
-
-        inline SIMDVecMask & operator^= (SIMDVecMask const & maskOp) {
-            mMaskLo ^= maskOp.mMaskLo;
-            mMaskHi ^= maskOp.mMaskHi;
+        // LXORSA
+        inline SIMDVecMask & lxora(bool scalarOp) {
+            mMaskLo ^= (scalarOp ? 0xFFFF : 0x0000);
+            mMaskHi ^= (scalarOp ? 0xFFFF : 0x0000);
             return *this;
         }
         // LNOT

@@ -116,6 +116,17 @@ namespace SIMD {
             return *this;
         }
 
+        // ASSIGNV
+        inline SIMDVec_u & operator= (SIMDVec_u const & src) {
+            return assign(src);
+        }
+        // MASSIGNV
+        // ASSIGNS
+        inline SIMDVec_u & operator= (uint32_t src) {
+            return assign(src);
+        }
+        // MASSIGNS
+
         // UTOI
         inline operator SIMDVec_i<int32_t, 16>() const;
         // UTOF

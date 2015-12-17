@@ -33,7 +33,6 @@
 
 #include <type_traits>
 #include <immintrin.h>
-
 #include "../../../UMESimdInterface.h"
 
 #include "../UMESimdMaskKNC.h"
@@ -370,7 +369,7 @@ namespace SIMD {
             mVec.insert(28, i28);  mVec.insert(29, i29);  mVec.insert(30, i30);  mVec.insert(31, i31);
         }
 
-        // Override Access operators
+        // EXTRACT
         inline SCALAR_UINT_TYPE operator[] (uint32_t index) const {
             return mVec[index];
         }
@@ -386,10 +385,19 @@ namespace SIMD {
         }
 #endif
 
-        // insert[] (scalar)
+        // INSERT
         inline SIMDVec_u & insert(uint32_t index, SCALAR_UINT_TYPE value) {
             mVec.insert(index, value);
             return *this;
+        }
+
+        // ASSIGNV
+        inline SIMDVec_u & operator= (SIMDVec_u const & b) {
+            return assign(b);
+        }
+        // ASSIGNS
+        inline SIMDVec_u & operator= (SCALAR_UINT_TYPE b) {
+            return assign(b);
         }
 
         // UTOI
@@ -408,11 +416,11 @@ namespace SIMD {
     template<typename SCALAR_UINT_TYPE>
     class SIMDVec_u<SCALAR_UINT_TYPE, 1> :
         public SIMDVecUnsignedInterface<
-        SIMDVec_u<SCALAR_UINT_TYPE, 1>, // DERIVED_UINT_VEC_TYPE
-        SCALAR_UINT_TYPE,               // SCALAR_UINT_TYPE
-        1,
-        typename SIMDVec_u_traits<SCALAR_UINT_TYPE, 1>::MASK_TYPE,
-        typename SIMDVec_u_traits<SCALAR_UINT_TYPE, 1>::SWIZZLE_MASK_TYPE>
+            SIMDVec_u<SCALAR_UINT_TYPE, 1>, // DERIVED_UINT_VEC_TYPE
+            SCALAR_UINT_TYPE,               // SCALAR_UINT_TYPE
+            1,
+            typename SIMDVec_u_traits<SCALAR_UINT_TYPE, 1>::MASK_TYPE,
+            typename SIMDVec_u_traits<SCALAR_UINT_TYPE, 1>::SWIZZLE_MASK_TYPE>
     {
     public:
         typedef SIMDVecEmuRegister<SCALAR_UINT_TYPE, 1>                                   VEC_EMU_REG;
@@ -442,7 +450,7 @@ namespace SIMD {
             return mVec[index];
         }
 
-        // Override Mask Access operators
+        // EXTRACT
 #if defined(USE_PARENTHESES_IN_MASK_ASSIGNMENT)
         inline IntermediateMask<SIMDVec_u, SCALAR_UINT_TYPE, SIMDVecMask<1>> operator() (SIMDVecMask<1> const & mask) {
             return IntermediateMask<SIMDVec_u, SCALAR_UINT_TYPE, SIMDVecMask<1>>(mask, static_cast<SIMDVec_u &>(*this));
@@ -453,10 +461,19 @@ namespace SIMD {
         }
 #endif
 
-        // insert[] (scalar)
+        // INSERT
         inline SIMDVec_u & insert(uint32_t index, SCALAR_UINT_TYPE value) {
             mVec.insert(index, value);
             return *this;
+        }
+
+        // ASSIGNV
+        inline SIMDVec_u & operator= (SIMDVec_u const & b) {
+            return assign(b);
+        }
+        // ASSIGNS
+        inline SIMDVec_u & operator= (SCALAR_UINT_TYPE b) {
+            return assign(b);
         }
 
         // UNIQUE
@@ -466,7 +483,6 @@ namespace SIMD {
 
         // UTOI
         inline operator SIMDVec_i<SCALAR_INT_TYPE, 1>() const;
-
         // UTOF
         inline operator SIMDVec_f<SCALAR_FLOAT_TYPE, 1>() const;
     };

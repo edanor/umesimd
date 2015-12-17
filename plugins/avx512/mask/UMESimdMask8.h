@@ -244,7 +244,6 @@ namespace SIMD {
             return t8;
         }
     };
-
 }
 }
 
