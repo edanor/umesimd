@@ -42,17 +42,17 @@ namespace SIMD {
     template<>
     class SIMDVec_f<float, 4> :
         public SIMDVecFloatInterface<
-        SIMDVec_f<float, 4>,
-        SIMDVec_u<uint32_t, 4>,
-        SIMDVec_i<int32_t, 4>,
-        float,
-        4,
-        uint32_t,
-        SIMDVecMask<4>,
-        SIMDVecSwizzle<4 >> ,
+            SIMDVec_f<float, 4>,
+            SIMDVec_u<uint32_t, 4>,
+            SIMDVec_i<int32_t, 4>,
+            float,
+            4,
+            uint32_t,
+            SIMDVecMask<4>,
+            SIMDVecSwizzle<4 >> ,
         public SIMDVecPackableInterface<
-        SIMDVec_f<float, 4>,
-        SIMDVec_f<float, 2 >>
+            SIMDVec_f<float, 4>,
+            SIMDVec_f<float, 2 >>
     {
     private:
         __m128 mVec;
@@ -64,22 +64,18 @@ namespace SIMD {
     public:
         // ZERO-CONSTR
         inline SIMDVec_f() {}
-
         // SET-CONSTR
         inline explicit SIMDVec_f(float f) {
             mVec = _mm_set1_ps(f);
         }
-
         // LOAD-CONSTR
         inline explicit SIMDVec_f(float const * p) {
             mVec = _mm_loadu_ps(p);
         }
-
         // FULL-CONSTR
         inline SIMDVec_f(float f0, float f1, float f2, float f3) {
             mVec = _mm_setr_ps(f0, f1, f2, f3);
         }
-
         // EXTRACT
         inline float extract(uint32_t index) const {
             alignas(16) float raw[4];

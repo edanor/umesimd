@@ -70,6 +70,7 @@ namespace SIMD {
 
         // ZERO-CONSTR
         inline SIMDVec_i() {};
+
         // SET-CONSTR
         inline explicit SIMDVec_i(int32_t i) {
             mVec = _mm512_set1_epi32(i);
@@ -88,7 +89,7 @@ namespace SIMD {
                                      i8, i9, i10, i11, i12, i13, i14, i15);
         }
         // EXTRACT
-        inline int32_t extract(int32_t index) const {
+        inline int32_t extract(uint32_t index) const {
             alignas(64) int32_t raw[16];
             _mm512_store_si512((__m512i*)raw, mVec);
             return raw[index];
@@ -96,6 +97,19 @@ namespace SIMD {
         inline int32_t operator[] (uint32_t index) const {
             return extract(index);
         }
+
+        // INSERT
+        inline SIMDVec_i & insert(uint32_t index, int32_t value) {
+            alignas(64) int32_t raw[16];
+            _mm512_store_si512((__m512i*)raw, mVec);
+            raw[index] = value;
+            mVec = _mm512_load_si512((__m512i*)raw);
+            return *this;
+        }
+        inline IntermediateIndex<SIMDVec_i, int32_t> operator[] (uint32_t index) {
+            return IntermediateIndex<SIMDVec_i, int32_t>(index, static_cast<SIMDVec_i &>(*this));
+        }
+
         // Override Mask Access operators
 #if defined(USE_PARENTHESES_IN_MASK_ASSIGNMENT)
         inline IntermediateMask<SIMDVec_i, int32_t, SIMDVecMask<16>> operator() (SIMDVecMask<16> const & mask) {
@@ -106,15 +120,6 @@ namespace SIMD {
             return IntermediateMask<SIMDVec_i, int32_t, SIMDVecMask<16>>(mask, static_cast<SIMDVec_i &>(*this));
         }
 #endif
-
-        // INSERT
-        inline SIMDVec_i & insert(uint32_t index, int32_t value) {
-            alignas(64) int32_t raw[16];
-            _mm512_store_si512((__m512i*)raw, mVec);
-            raw[index] = value;
-            mVec = _mm512_load_si512((__m512i*)raw);
-            return *this;
-        }
         // ASSIGNV
         inline SIMDVec_i & assign(SIMDVec_i const & b) {
             mVec = b.mVec;

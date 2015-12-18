@@ -41,7 +41,7 @@ namespace SIMD {
 
     template<>
     class SIMDVec_u<uint32_t, 4> :
-        public SIMDVecUnsignedInterface<    
+        public SIMDVecUnsignedInterface<
             SIMDVec_u<uint32_t, 4>,
             uint32_t,
             4,
@@ -51,6 +51,8 @@ namespace SIMD {
             SIMDVec_u<uint32_t, 4>,
             SIMDVec_u<uint32_t, 2 >>
     {
+    public:
+        // Conversion operators require access to private members.
         friend class SIMDVec_i<int32_t, 4>;
         friend class SIMDVec_f<float, 4>;
 
@@ -113,6 +115,19 @@ namespace SIMD {
         inline uint32_t operator[] (uint32_t index) const {
             return extract(index);
         }
+
+        // INSERT
+        inline SIMDVec_u & insert(uint32_t index, uint32_t value) {
+            alignas(16) uint32_t raw[4];
+            _mm_store_si128((__m128i*)raw, mVec);
+            raw[index] = value;
+            mVec = _mm_load_si128((__m128i*)raw);
+            return *this;
+        }
+        inline IntermediateIndex<SIMDVec_u, uint32_t> operator[] (uint32_t index) {
+            return IntermediateIndex<SIMDVec_u, uint32_t>(index, static_cast<SIMDVec_u &>(*this));
+        }
+
         // Override Mask Access operators
 #if defined(USE_PARENTHESES_IN_MASK_ASSIGNMENT)
         inline IntermediateMask<SIMDVec_u, uint32_t, SIMDVecMask<4>> operator() (SIMDVecMask<4> const & mask) {
@@ -124,14 +139,6 @@ namespace SIMD {
         }
 #endif
 
-        // INSERT
-        inline SIMDVec_u & insert(uint32_t index, uint32_t value) {
-            alignas(16) uint32_t raw[4];
-            _mm_store_si128((__m128i*)raw, mVec);
-            raw[index] = value;
-            mVec = _mm_load_si128((__m128i*)raw);
-            return *this;
-        }
         // ASSIGNV
         inline SIMDVec_u & assign(SIMDVec_u const & b) {
             mVec = b.mVec;

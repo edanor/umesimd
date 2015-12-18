@@ -40,7 +40,7 @@ namespace UME {
 namespace SIMD {
 
     template<>
-    class SIMDVec_u<uint32_t, 2> :
+    class SIMDVec_u<uint32_t, 2>  :
         public SIMDVecUnsignedInterface<
             SIMDVec_u<uint32_t, 2>,
             uint32_t,
@@ -79,6 +79,24 @@ namespace SIMD {
             mVec[0] = i0;
             mVec[1] = i1;
         }
+
+        // EXTRACT
+        inline uint32_t extract(uint32_t index) const {
+            return mVec[index];
+        }
+        inline uint32_t operator[] (uint32_t index) const {
+            return extract(index);
+        }
+
+        // INSERT
+        inline SIMDVec_u & insert(uint32_t index, uint32_t value) {
+            mVec[index] = value;
+            return *this;
+        }
+        inline IntermediateIndex<SIMDVec_u, uint32_t> operator[] (uint32_t index) {
+            return IntermediateIndex<SIMDVec_u, uint32_t>(index, static_cast<SIMDVec_u &>(*this));
+        }
+
         // Override Mask Access operators
 #if defined(USE_PARENTHESES_IN_MASK_ASSIGNMENT)
         inline IntermediateMask<SIMDVec_u, uint32_t, SIMDVecMask<2>> operator() (SIMDVecMask<2> const & mask) {
@@ -89,19 +107,6 @@ namespace SIMD {
             return IntermediateMask<SIMDVec_u, uint32_t, SIMDVecMask<2>>(mask, static_cast<SIMDVec_u &>(*this));
         }
 #endif
-        // INSERT
-        inline SIMDVec_u & insert(uint32_t index, uint32_t value) {
-            mVec[index] = value;
-            return *this;
-        }
-
-        // EXTRACT
-        inline uint32_t extract(uint32_t index) const {
-            return mVec[index];
-        }
-        inline uint32_t operator[] (uint32_t index) const {
-            return mVec[index];
-        }
 
         // ASSIGNV
         inline SIMDVec_u & assign(SIMDVec_u const & src) {
@@ -109,8 +114,8 @@ namespace SIMD {
             mVec[1] = src.mVec[1];
             return *this;
         }
-        inline SIMDVec_u & operator= (SIMDVec_u const & src) {
-            return assign(src);
+        inline SIMDVec_u & operator= (SIMDVec_u const & b) {
+            return assign(b);
         }
         // MASSIGNV
         inline SIMDVec_u & assign(SIMDVecMask<2> const & mask, SIMDVec_u const & src) {
@@ -119,18 +124,18 @@ namespace SIMD {
             return *this;
         }
         // ASSIGNS
-        inline SIMDVec_u & assign(uint32_t src) {
-            mVec[0] = src;
-            mVec[1] = src;
+        inline SIMDVec_u & assign(uint32_t b) {
+            mVec[0] = b;
+            mVec[1] = b;
             return *this;
         }
-        inline SIMDVec_u & operator= (uint32_t src) {
-            return assign(src);
+        inline SIMDVec_u & operator= (uint32_t b) {
+            return assign(b);
         }
         // MASSIGNS
-        inline SIMDVec_u & assign(SIMDVecMask<2> const & mask, uint32_t src) {
-            if (mask.mMask[0] == true) mVec[0] = src;
-            if (mask.mMask[1] == true) mVec[1] = src;
+        inline SIMDVec_u & assign(SIMDVecMask<2> const & mask, uint32_t b) {
+            if (mask.mMask[0] == true) mVec[0] = b;
+            if (mask.mMask[1] == true) mVec[1] = b;
             return *this;
         }
 
@@ -151,6 +156,7 @@ namespace SIMD {
         // BLENDS
         // SWIZZLE
         // SWIZZLEA
+
         // ADDV
         // MADDV
         // ADDS

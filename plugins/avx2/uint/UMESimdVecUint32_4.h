@@ -32,8 +32,9 @@
 #define UME_SIMD_VEC_UINT32_4_H_
 
 #include <type_traits>
-#include "../../../UMESimdInterface.h"
 #include <immintrin.h>
+
+#include "../../../UMESimdInterface.h"
 
 namespace UME {
 namespace SIMD {
@@ -65,15 +66,13 @@ namespace SIMD {
         inline explicit SIMDVec_u(uint32_t i) {
             mVec = _mm_set1_epi32(i);
         }
-
-        // LOAD-CONSTR - Construct by loading from memory
+        // LOAD-CONSTR
         inline explicit SIMDVec_u(uint32_t const *p) { this->load(p); };
-
+        // FULL-CONSTR
         inline SIMDVec_u(uint32_t i0, uint32_t i1, uint32_t i2, uint32_t i3)
         {
             mVec = _mm_set_epi32(i3, i2, i1, i0);
         }
-
         // EXTRACT
         inline uint32_t extract(uint32_t index) const {
             alignas(16) uint32_t raw[4];

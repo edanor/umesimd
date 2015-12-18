@@ -83,7 +83,6 @@ namespace SIMD {
         {
             mVec = _mm256_setr_epi32(i0, i1, i2, i3, i4, i5, i6, i7);
         }
-
         // EXTRACT
         inline int32_t extract(uint32_t index) const {
             //return _mm256_extract_epi32(mVec, index); // TODO: this can be implemented in ICC
@@ -94,16 +93,6 @@ namespace SIMD {
         inline int32_t operator[] (uint32_t index) const {
             return extract(index);
         }
-        // Override Mask Access operators
-#if defined(USE_PARENTHESES_IN_MASK_ASSIGNMENT)
-        inline IntermediateMask<SIMDVec_i, int32_t, SIMDVecMask<8>> operator() (SIMDVecMask<8> const & mask) {
-            return IntermediateMask<SIMDVec_i, int32_t, SIMDVecMask<8>>(mask, static_cast<SIMDVec_i &>(*this));
-        }
-#else
-        inline IntermediateMask<SIMDVec_i, int32_t, SIMDVecMask<8>> operator[] (SIMDVecMask<8> const & mask) {
-            return IntermediateMask<SIMDVec_i, int32_t, SIMDVecMask<8>>(mask, static_cast<SIMDVec_i &>(*this));
-        }
-#endif
 
         // INSERT
         inline SIMDVec_i & insert(uint32_t index, int32_t value) {
@@ -114,6 +103,20 @@ namespace SIMD {
             mVec = _mm256_load_si256((__m256i *)raw);
             return *this;
         }
+        inline IntermediateIndex<SIMDVec_i, int32_t> operator[] (uint32_t index) {
+            return IntermediateIndex<SIMDVec_i, int32_t>(index, static_cast<SIMDVec_i &>(*this));
+        }
+
+        // Override Mask Access operators
+#if defined(USE_PARENTHESES_IN_MASK_ASSIGNMENT)
+        inline IntermediateMask<SIMDVec_i, int32_t, SIMDVecMask<8>> operator() (SIMDVecMask<8> const & mask) {
+            return IntermediateMask<SIMDVec_i, int32_t, SIMDVecMask<8>>(mask, static_cast<SIMDVec_i &>(*this));
+        }
+#else
+        inline IntermediateMask<SIMDVec_i, int32_t, SIMDVecMask<8>> operator[] (SIMDVecMask<8> const & mask) {
+            return IntermediateMask<SIMDVec_i, int32_t, SIMDVecMask<8>>(mask, static_cast<SIMDVec_i &>(*this));
+        }
+#endif
         // ASSIGNV
         inline SIMDVec_i & assign(SIMDVec_i const & b) {
             mVec = b.mVec;

@@ -74,9 +74,21 @@ namespace SIMD {
             mVec = i0;
         }
 
-        // Override Access operators
-        inline uint32_t operator[] (uint32_t index) const {
+        // EXTRACT
+        inline uint32_t extract(uint32_t index) const {
             return mVec;
+        }
+        inline uint32_t operator[] (uint32_t index) const {
+            return extract(index);
+        }
+
+        // INSERT
+        inline SIMDVec_u & insert(uint32_t index, uint32_t value) {
+            mVec = value;
+            return *this;
+        }
+        inline IntermediateIndex<SIMDVec_u, uint32_t> operator[] (uint32_t index) {
+            return IntermediateIndex<SIMDVec_u, uint32_t>(index, static_cast<SIMDVec_u &>(*this));
         }
 
         // Override Mask Access operators
@@ -90,21 +102,13 @@ namespace SIMD {
         }
 #endif
 
-        // INSERT
-        inline SIMDVec_u & insert(uint32_t index, uint32_t value) {
-            mVec = value;
-            return *this;
-        }
-
-        // EXTRACT
-
         // ASSIGNV
         inline SIMDVec_u & assign(SIMDVec_u const & src) {
             mVec = src.mVec;
             return *this;
         }
-        inline SIMDVec_u & operator= (SIMDVec_u const & src) {
-            return assign(src);
+        inline SIMDVec_u & operator= (SIMDVec_u const & b) {
+            return assign(b);
         }
         // MASSIGNV
         inline SIMDVec_u & assign(SIMDVecMask<1> const & mask, SIMDVec_u const & src) {
@@ -112,16 +116,16 @@ namespace SIMD {
             return *this;
         }
         // ASSIGNS
-        inline SIMDVec_u & assign(uint32_t src) {
-            mVec = src;
+        inline SIMDVec_u & assign(uint32_t b) {
+            mVec = b;
             return *this;
         }
-        inline SIMDVec_u & operator= (uint32_t src) {
-            return assign(src);
+        inline SIMDVec_u & operator= (uint32_t b) {
+            return assign(b);
         }
         // MASSIGNS
-        inline SIMDVec_u & assign(SIMDVecMask<1> const & mask, uint32_t src) {
-            if (mask.mMask) mVec = src;
+        inline SIMDVec_u & assign(SIMDVecMask<1> const & mask, uint32_t b) {
+            if(mask.mMask == true) mVec = b;
             return *this;
         }
 

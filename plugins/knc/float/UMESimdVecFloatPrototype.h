@@ -32,8 +32,9 @@
 #define UME_SIMD_VEC_FLOAT_PROTOTYPE_H_
 
 #include <type_traits>
-#include "../../../UMESimdInterface.h"
 #include <immintrin.h>
+
+#include "../../../UMESimdInterface.h"
 
 #include "../UMESimdMaskKNC.h"
 #include "../UMESimdSwizzleKNC.h"
@@ -309,9 +310,21 @@ namespace SIMD {
             mVec.insert(30, f30);  mVec.insert(31, f31);
         }
 
-        // Override Access operators
-        inline SCALAR_FLOAT_TYPE operator[] (uint32_t index) const {
+        // EXTRACT
+        inline SCALAR_FLOAT_TYPE extract(uint32_t index) const {
             return mVec[index];
+        }
+        inline SCALAR_FLOAT_TYPE operator[] (uint32_t index) const {
+            return extract(index);
+        }
+
+        // INSERT
+        inline SIMDVec_f & insert(uint32_t index, SCALAR_FLOAT_TYPE value) {
+            mVec.insert(index, value);
+            return *this;
+        }
+        inline IntermediateIndex<SIMDVec_f, SCALAR_FLOAT_TYPE> operator[] (uint32_t index) {
+            return IntermediateIndex<SIMDVec_f, SCALAR_FLOAT_TYPE>(index, static_cast<SIMDVec_f &>(*this));
         }
 
         // Override Mask Access operators
@@ -325,20 +338,13 @@ namespace SIMD {
         }
 #endif
 
-        // insert[] (scalar)
-        inline SIMDVec_f & insert(uint32_t index, SCALAR_FLOAT_TYPE value) {
-            mVec.insert(index, value);
-            return *this;
-        }
-
         // ASSIGNV
         inline SIMDVec_f & operator= (SIMDVec_f const & b) {
-            return assign(b);
+            return this->assign(b);
         }
-        // MASSIGNV
         // ASSIGNS
         inline SIMDVec_f & operator= (SCALAR_FLOAT_TYPE b) {
-            return assign(b);
+            return this->assign(b);
         }
         // MASSIGNS
 
@@ -389,9 +395,21 @@ namespace SIMD {
         // LOAD-CONSTR - Construct by loading from memory
         inline explicit SIMDVec_f(SCALAR_FLOAT_TYPE const *p) { this->load(p); }
 
-        // Override Access operators
+        // EXTRACT
+        inline SCALAR_FLOAT_TYPE extract(uint32_t index) const {
+            return mVec[0];
+        }
         inline SCALAR_FLOAT_TYPE operator[] (uint32_t index) const {
-            return mVec[index];
+            return extract(index);
+        }
+
+        // INSERT
+        inline SIMDVec_f & insert(uint32_t index, SCALAR_FLOAT_TYPE value) {
+            mVec.insert(index, value);
+            return *this;
+        }
+        inline IntermediateIndex<SIMDVec_f, SCALAR_FLOAT_TYPE> operator[] (uint32_t index) {
+            return IntermediateIndex<SIMDVec_f, SCALAR_FLOAT_TYPE>(index, static_cast<SIMDVec_f &>(*this));
         }
 
         // Override Mask Access operators
@@ -405,19 +423,13 @@ namespace SIMD {
         }
 #endif
 
-        // insert[] (scalar)
-        inline SIMDVec_f & insert(uint32_t index, SCALAR_FLOAT_TYPE value) {
-            mVec.insert(index, value);
-            return *this;
-        }
-
         // ASSIGNV
         inline SIMDVec_f & operator= (SIMDVec_f const & b) {
-            return assign(b);
+            return this->assign(b);
         }
         // ASSIGNS
         inline SIMDVec_f & operator= (SCALAR_FLOAT_TYPE b) {
-            return assign(b);
+            return this->assign(b);
         }
 
         // FTOU

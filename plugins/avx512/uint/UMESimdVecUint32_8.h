@@ -51,6 +51,8 @@ namespace SIMD {
             SIMDVec_u<uint32_t, 8>,
             SIMDVec_u<uint32_t, 4 >>
     {
+    public:
+        // Conversion operators require access to private members.
         friend class SIMDVec_i<int32_t, 8>;
         friend class SIMDVec_f<float, 8>;
 
@@ -88,6 +90,19 @@ namespace SIMD {
         inline uint32_t operator[] (uint32_t index) const {
             return extract(index);
         }
+
+        // INSERT
+        inline SIMDVec_u & insert(uint32_t index, uint32_t value) {
+            alignas(32) uint32_t raw[8];
+            _mm256_store_si256((__m256i*)raw, mVec);
+            raw[index] = value;
+            mVec = _mm256_load_si256((__m256i*)raw);
+            return *this;
+        }
+        inline IntermediateIndex<SIMDVec_u, uint32_t> operator[] (uint32_t index) {
+            return IntermediateIndex<SIMDVec_u, uint32_t>(index, static_cast<SIMDVec_u &>(*this));
+        }
+
         // Override Mask Access operators
 #if defined(USE_PARENTHESES_IN_MASK_ASSIGNMENT)
         inline IntermediateMask<SIMDVec_u, uint32_t, SIMDVecMask<8>> operator() (SIMDVecMask<8> const & mask) {
@@ -99,14 +114,6 @@ namespace SIMD {
         }
 #endif
 
-        // INSERT
-        inline SIMDVec_u & insert(uint32_t index, uint32_t value) {
-            alignas(32) uint32_t raw[8];
-            _mm256_store_si256((__m256i*)raw, mVec);
-            raw[index] = value;
-            mVec = _mm256_load_si256((__m256i*)raw);
-            return *this;
-        }
         // ASSIGNV
         inline SIMDVec_u & assign(SIMDVec_u const & b) {
             mVec = b.mVec;

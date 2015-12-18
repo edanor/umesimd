@@ -85,6 +85,7 @@ namespace SIMD {
             mVec = _mm512_setr_ps(f0, f1, f2,  f3,  f4,  f5,  f6,  f7,
                                   f8, f9, f10, f11, f12, f13, f14, f15);
         }
+
         // EXTRACT
         inline float extract(uint32_t index) const {
             alignas(64) float raw[16];
@@ -94,6 +95,19 @@ namespace SIMD {
         inline float operator[] (uint32_t index) const {
             return extract(index);
         }
+
+        // INSERT
+        inline SIMDVec_f & insert(uint32_t index, float value) {
+            alignas(64) float raw[16];
+            _mm512_store_ps(raw, mVec);
+            raw[index] = value;
+            mVec = _mm512_load_ps(raw);
+            return *this;
+        }
+        inline IntermediateIndex<SIMDVec_f, float> operator[] (uint32_t index) {
+            return IntermediateIndex<SIMDVec_f, float>(index, static_cast<SIMDVec_f &>(*this));
+        }
+
         // Override Mask Access operators
 #if defined(USE_PARENTHESES_IN_MASK_ASSIGNMENT)
         inline IntermediateMask<SIMDVec_f, float, SIMDVecMask<16>> operator() (SIMDVecMask<16> const & mask) {
@@ -105,14 +119,6 @@ namespace SIMD {
         }
 #endif
 
-        // INSERT
-        inline SIMDVec_f & insert(uint32_t index, float value) {
-            alignas(64) float raw[16];
-            _mm512_store_ps(raw, mVec);
-            raw[index] = value;
-            mVec = _mm512_load_ps(raw);
-            return *this;
-        }
         // ****************************************************************************************
         // Overloading Interface functions starts here!
         // ****************************************************************************************

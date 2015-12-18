@@ -42,16 +42,16 @@ namespace SIMD {
     template<>
     class SIMDVec_i<int32_t, 4> :
         public SIMDVecSignedInterface<
-        SIMDVec_i<int32_t, 4>,
-        SIMDVec_u<uint32_t, 4>,
-        int32_t,
-        4,
-        uint32_t,
-        SIMDVecMask<4>,
-        SIMDVecSwizzle<4 >> ,
+            SIMDVec_i<int32_t, 4>,
+            SIMDVec_u<uint32_t, 4>,
+            int32_t,
+            4,
+            uint32_t,
+            SIMDVecMask<4>,
+            SIMDVecSwizzle<4 >> ,
         public SIMDVecPackableInterface<
-        SIMDVec_i<int32_t, 4>,
-        SIMDVec_i<int32_t, 2 >>
+            SIMDVec_i<int32_t, 4>,
+            SIMDVec_i<int32_t, 2 >>
     {
         friend class SIMDVec_u<uint32_t, 4>;
         friend class SIMDVec_f<float, 4>;
@@ -70,10 +70,9 @@ namespace SIMD {
         inline explicit SIMDVec_i(int32_t i) {
             mVec = _mm_set1_epi32(i);
         }
-
         // LOAD-CONSTR
         inline explicit SIMDVec_i(int32_t const *p) { this->load(p); };
-
+        // FULL-CONSTR
         inline SIMDVec_i(int32_t i0, int32_t i1, int32_t i2, int32_t i3)
         {
             mVec = _mm_setr_epi32(i0, i1, i2, i3);

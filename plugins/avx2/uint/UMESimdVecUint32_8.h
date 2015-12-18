@@ -32,8 +32,9 @@
 #define UME_SIMD_VEC_UINT32_8_H_
 
 #include <type_traits>
-#include "../../../UMESimdInterface.h"
 #include <immintrin.h>
+
+#include "../../../UMESimdInterface.h"
 
 namespace UME {
 namespace SIMD {
@@ -41,14 +42,14 @@ namespace SIMD {
     template<>
     class SIMDVec_u<uint32_t, 8> :
         public SIMDVecUnsignedInterface<
-        SIMDVec_u<uint32_t, 8>,
-        uint32_t,
-        8,
-        SIMDVecMask<8>,
-        SIMDVecSwizzle<8 >> ,
+            SIMDVec_u<uint32_t, 8>,
+            uint32_t,
+            8,
+            SIMDVecMask<8>,
+            SIMDVecSwizzle<8 >> ,
         public SIMDVecPackableInterface<
-        SIMDVec_u<uint32_t, 8>,
-        SIMDVec_u<uint32_t, 4 >>
+            SIMDVec_u<uint32_t, 8>,
+            SIMDVec_u<uint32_t, 4 >>
     {
     public:
         // Conversion operators require access to private members.
@@ -70,7 +71,6 @@ namespace SIMD {
         inline explicit SIMDVec_u(uint32_t i) {
             mVec = _mm256_set1_epi32(i);
         }
-
         // LOAD-CONSTR
         inline explicit SIMDVec_u(uint32_t const * p) {
             mVec = _mm256_loadu_si256((__m256i*)p);
@@ -81,7 +81,6 @@ namespace SIMD {
         {
             mVec = _mm256_setr_epi32(i0, i1, i2, i3, i4, i5, i6, i7);
         }
-
         // EXTRACT
         inline uint32_t extract(uint32_t index) const {
             alignas(32) uint32_t raw[8];

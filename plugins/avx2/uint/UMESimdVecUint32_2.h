@@ -32,8 +32,9 @@
 #define UME_SIMD_VEC_UINT32_2_H_
 
 #include <type_traits>
-#include "../../../UMESimdInterface.h"
 #include <immintrin.h>
+
+#include "../../../UMESimdInterface.h"
 
 namespace UME {
 namespace SIMD {

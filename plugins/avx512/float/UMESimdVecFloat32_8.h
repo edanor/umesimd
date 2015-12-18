@@ -68,10 +68,12 @@ namespace SIMD {
     public:
         // ZERO-CONSTR
         inline SIMDVec_f() {}
+
         // SET-CONSTR
         inline explicit SIMDVec_f(float f) {
             mVec = _mm256_set1_ps(f);
         }
+
         // LOAD-CONSTR
         inline explicit SIMDVec_f(float const *p) { 
             mVec = _mm256_loadu_ps(p); 
@@ -81,6 +83,7 @@ namespace SIMD {
                          float f4, float f5, float f6, float f7) {
             mVec = _mm256_setr_ps(f0, f1, f2, f3, f4, f5, f6, f7);
         }
+
         // EXTRACT
         inline float extract(uint32_t index) const {
             alignas(32) float raw[8];
@@ -90,6 +93,19 @@ namespace SIMD {
         inline float operator[] (uint32_t index) const {
             return extract(index);
         }
+
+        // INSERT
+        inline SIMDVec_f & insert(uint32_t index, float value) {
+            alignas(32) float raw[8];
+            _mm256_store_ps(raw, mVec);
+            raw[index] = value;
+            mVec = _mm256_load_ps(raw);
+            return *this;
+        }
+        inline IntermediateIndex<SIMDVec_f, float> operator[] (uint32_t index) {
+            return IntermediateIndex<SIMDVec_f, float>(index, static_cast<SIMDVec_f &>(*this));
+        }
+
         // Override Mask Access operators
 #if defined(USE_PARENTHESES_IN_MASK_ASSIGNMENT)
         inline IntermediateMask<SIMDVec_f, float, SIMDVecMask<8>> operator() (SIMDVecMask<8> const & mask) {
@@ -101,14 +117,6 @@ namespace SIMD {
         }
 #endif
 
-        // INSERT
-        inline SIMDVec_f & insert(uint32_t index, float value) {
-            alignas(32) float raw[8];
-            _mm256_store_ps(raw, mVec);
-            raw[index] = value;
-            mVec = _mm256_load_ps(raw);
-            return *this;
-        }
         // ****************************************************************************************
         // Overloading Interface functions starts here!
         // ****************************************************************************************

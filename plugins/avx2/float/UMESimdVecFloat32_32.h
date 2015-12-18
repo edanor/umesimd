@@ -42,17 +42,17 @@ namespace SIMD {
     template<>
     class SIMDVec_f<float, 32> :
         public SIMDVecFloatInterface<
-        SIMDVec_f<float, 32>,
-        SIMDVec_u<uint32_t, 32>,
-        SIMDVec_i<int32_t, 32>,
-        float,
-        32,
-        uint32_t,
-        SIMDVecMask<32>,
-        SIMDVecSwizzle<32 >> ,
+            SIMDVec_f<float, 32>,
+            SIMDVec_u<uint32_t, 32>,
+            SIMDVec_i<int32_t, 32>,
+            float,
+            32,
+            uint32_t,
+            SIMDVecMask<32>,
+            SIMDVecSwizzle<32>> ,
         public SIMDVecPackableInterface<
-        SIMDVec_f<float, 32>,
-        SIMDVec_f<float, 16 >>
+            SIMDVec_f<float, 32>,
+            SIMDVec_f<float, 16>>
     {
     private:
         __m256 mVecLoLo;  // bits 0-255
@@ -80,8 +80,7 @@ namespace SIMD {
             mVecHiLo = _mm256_set1_ps(f);
             mVecHiHi = _mm256_set1_ps(f);
         }
-
-        // LOAD-CONSTR - Construct by loading from memory
+        // LOAD-CONSTR
         inline explicit SIMDVec_f(float const *p) { this->load(p); }
 
         // FULL-CONSTR - constructor with VEC_LEN scalar element 
@@ -98,7 +97,6 @@ namespace SIMD {
             mVecHiLo = _mm256_setr_ps(f16, f17, f18, f19, f20, f21, f22, f23);
             mVecHiHi = _mm256_setr_ps(f24, f25, f26, f27, f28, f29, f30, f31);
         }
-
         // EXTRACT
         inline float extract(uint32_t index) const {
             //UME_PERFORMANCE_UNOPTIMAL_WARNING();

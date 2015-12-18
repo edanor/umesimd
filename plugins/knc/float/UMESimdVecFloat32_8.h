@@ -32,8 +32,9 @@
 #define UME_SIMD_VEC_FLOAT32_8_H_
 
 #include <type_traits>
-#include "../../../UMESimdInterface.h"
 #include <immintrin.h>
+
+#include "../../../UMESimdInterface.h"
 
 namespace UME {
 namespace SIMD {
@@ -41,17 +42,17 @@ namespace SIMD {
     template<>
     class SIMDVec_f<float, 8> :
         public SIMDVecFloatInterface<
-        SIMDVec_f<float, 8>,
-        SIMDVec_u<uint32_t, 8>,
-        SIMDVec_i<int32_t, 8>,
-        float,
-        8,
-        uint32_t,
-        SIMDVecMask<8>,
-        SIMDVecSwizzle<8>>,
+            SIMDVec_f<float, 8>,
+            SIMDVec_u<uint32_t, 8>,
+            SIMDVec_i<int32_t, 8>,
+            float,
+            8,
+            uint32_t,
+            SIMDVecMask<8>,
+            SIMDVecSwizzle<8 >> ,
         public SIMDVecPackableInterface<
-        SIMDVec_f<float, 8>,
-        SIMDVec_f<float, 4 >>
+            SIMDVec_f<float, 8>,
+            SIMDVec_f<float, 4 >>
     {
     public:
         typedef typename SIMDVec_f_traits<float, 8>::VEC_UINT_TYPE    VEC_UINT_TYPE;
@@ -96,18 +97,28 @@ namespace SIMD {
                 0.0f, 0.0f, 0.0f, 0.0f);
         }
 
-        // EXTRACT - Extract single element from a vector
+        // EXTRACT
         inline float extract(uint32_t index) const {
             UME_PERFORMANCE_UNOPTIMAL_WARNING();
             alignas(64) float raw[16];
             _mm512_store_ps(raw, mVec);
             return raw[index];
         }
-
-        // EXTRACT - Extract single element from a vector
         inline float operator[] (uint32_t index) const {
-            UME_PERFORMANCE_UNOPTIMAL_WARNING();
             return extract(index);
+        }
+
+        // INSERT
+        inline SIMDVec_f & insert(uint32_t index, float value) {
+            UME_PERFORMANCE_UNOPTIMAL_WARNING();
+            alignas(64) float raw[16];
+            _mm512_store_ps(raw, mVec);
+            raw[index] = value;
+            mVec = _mm512_load_ps(raw);
+            return *this;
+        }
+        inline IntermediateIndex<SIMDVec_f, float> operator[] (uint32_t index) {
+            return IntermediateIndex<SIMDVec_f, float>(index, static_cast<SIMDVec_f &>(*this));
         }
 
         // Override Mask Access operators
@@ -121,24 +132,20 @@ namespace SIMD {
         }
 #endif
 
-        // INSERT  - Insert single element into a vector
-        inline SIMDVec_f & insert(uint32_t index, float value) {
-            UME_PERFORMANCE_UNOPTIMAL_WARNING();
-            alignas(64) float raw[16];
-            _mm512_store_ps(raw, mVec);
-            raw[index] = value;
-            mVec = _mm512_load_ps(raw);
-            return *this;
-        }
-
         // ****************************************************************************************
         // Overloading Interface functions starts here!
         // ****************************************************************************************
 
         //(Initialization)
         // ASSIGNV     - Assignment with another vector
+        inline SIMDVec_f & operator= (SIMDVec_f const & b) {
+            return this->assign(b);
+        }
         // MASSIGNV    - Masked assignment with another vector
         // ASSIGNS     - Assignment with scalar
+        inline SIMDVec_f & operator= (float b) {
+            return this->assign(b);
+        }
         // MASSIGNS    - Masked assign with scalar
 
         //(Memory access)

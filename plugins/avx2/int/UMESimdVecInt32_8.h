@@ -41,17 +41,17 @@ namespace SIMD {
 
     template<>
     class SIMDVec_i<int32_t, 8> :
-        public SIMDVecSignedInterface <
-        SIMDVec_i<int32_t, 8>,
-        SIMDVec_u<uint32_t, 8>,
-        int32_t,
-        8,
-        uint32_t,
-        SIMDVecMask<8>,
-        SIMDVecSwizzle < 8 >> ,
-        public SIMDVecPackableInterface <
-        SIMDVec_i<int32_t, 8>,
-        SIMDVec_i < int32_t, 4 >>
+        public SIMDVecSignedInterface<
+            SIMDVec_i<int32_t, 8>,
+            SIMDVec_u<uint32_t, 8>,
+            int32_t,
+            8,
+            uint32_t,
+            SIMDVecMask<8>,
+            SIMDVecSwizzle<8 >> ,
+        public SIMDVecPackableInterface<
+           SIMDVec_i<int32_t, 8>,
+           SIMDVec_i<int32_t, 4 >>
     {
         friend class SIMDVec_u<uint32_t, 8>;
         friend class SIMDVec_f<float, 8>;
@@ -69,7 +69,6 @@ namespace SIMD {
         inline explicit SIMDVec_i(int32_t i) {
             mVec = _mm256_set1_epi32(i);
         }
-
         // LOAD-CONSTR
         inline explicit SIMDVec_i(int32_t const *p) { this->load(p); };
 
@@ -112,7 +111,6 @@ namespace SIMD {
             return IntermediateMask<SIMDVec_i, int32_t, SIMDVecMask<8>>(mask, static_cast<SIMDVec_i &>(*this));
         }
 #endif
-
         // ASSIGNV
         inline SIMDVec_i & operator= (SIMDVec_i const & b) {
             return this->assign(b);

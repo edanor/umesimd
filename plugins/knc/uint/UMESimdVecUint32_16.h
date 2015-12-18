@@ -32,22 +32,24 @@
 #define UME_SIMD_VEC_UINT32_16_H_
 
 #include <type_traits>
-#include "../../../UMESimdInterface.h"
 #include <immintrin.h>
+
+#include "../../../UMESimdInterface.h"
 
 namespace UME {
 namespace SIMD {
+
     template<>
     class SIMDVec_u<uint32_t, 16> :
         public SIMDVecUnsignedInterface<
-        SIMDVec_u<uint32_t, 16>,
-        uint32_t,
-        16,
-        SIMDVecMask<16>,
-        SIMDVecSwizzle<16>>,
+            SIMDVec_u<uint32_t, 16>,
+            uint32_t,
+            16,
+            SIMDVecMask<16>,
+            SIMDVecSwizzle<16>> ,
         public SIMDVecPackableInterface<
-        SIMDVec_u<uint32_t, 16>, // DERIVED_VEC_TYPE
-        typename SIMDVec_u_traits<uint32_t, 16>::HALF_LEN_VEC_TYPE>
+            SIMDVec_u<uint32_t, 16>,
+            SIMDVec_u<uint32_t, 8>>
     {
     public:
         // Conversion operators require access to private members.
@@ -82,17 +84,26 @@ namespace SIMD {
             mVec = _mm512_setr_epi32(i0, i1, i2, i3, i4, i5, i6, i7,
                 i8, i9, i10, i11, i12, i13, i14, i15);
         }
-
+        // EXTRACT
         inline uint32_t extract(uint32_t index) const {
-            UME_PERFORMANCE_UNOPTIMAL_WARNING();
             alignas(64) uint32_t raw[16];
             _mm512_store_epi32(raw, mVec);
             return raw[index];
         }
-
-        // Override Access operators
         inline uint32_t operator[] (uint32_t index) const {
             return extract(index);
+        }
+
+        // INSERT
+        inline SIMDVec_u & insert(uint32_t index, uint32_t value) {
+            alignas(64) uint32_t raw[16];
+            _mm512_store_epi32(raw, mVec);
+            raw[index] = value;
+            mVec = _mm512_load_epi32(raw);
+            return *this;
+        }
+        inline IntermediateIndex<SIMDVec_u, uint32_t> operator[] (uint32_t index) {
+            return IntermediateIndex<SIMDVec_u, uint32_t>(index, static_cast<SIMDVec_u &>(*this));
         }
 
         // Override Mask Access operators
@@ -101,29 +112,19 @@ namespace SIMD {
             return IntermediateMask<SIMDVec_u, uint32_t, SIMDVecMask<16>>(mask, static_cast<SIMDVec_u &>(*this));
         }
 #else
-        inline IntermediateMask<SIMDVec_u, uint32_t, SIMDVecMask<16>> operator[] (SIMDVecMask<16> & mask) {
+        inline IntermediateMask<SIMDVec_u, uint32_t, SIMDVecMask<16>> operator[] (SIMDVecMask<16> const & mask) {
             return IntermediateMask<SIMDVec_u, uint32_t, SIMDVecMask<16>>(mask, static_cast<SIMDVec_u &>(*this));
         }
 #endif
 
-        // insert[] (scalar)
-        inline SIMDVec_u & insert(uint32_t index, uint32_t value) {
-            UME_PERFORMANCE_UNOPTIMAL_WARNING();
-            alignas(64) uint32_t raw[16];
-            _mm512_store_epi32(raw, mVec);
-            raw[index] = value;
-            mVec = _mm512_load_epi32(raw);
-            return *this;
-        }
-
         // ASSIGNV
         inline SIMDVec_u & operator= (SIMDVec_u const & src) {
-            return assign(src);
+            return this->assign(src);
         }
         // MASSIGNV
         // ASSIGNS
         inline SIMDVec_u & operator= (uint32_t src) {
-            return assign(src);
+            return this->assign(src);
         }
         // MASSIGNS
 
