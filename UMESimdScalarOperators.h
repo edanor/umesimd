@@ -6,7 +6,6 @@
 // requires explicit declaration of operators for every scalar type.
 namespace UME {
     namespace SIMD {
-
         // LANDS
         inline SIMDMask1 operator& (bool a, SIMDMask1 const &b) { return b.land(a); }
         inline SIMDMask2 operator& (bool a, SIMDMask2 const &b) { return b.land(a); }

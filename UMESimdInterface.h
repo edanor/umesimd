@@ -391,9 +391,9 @@ namespace SIMD
         inline VEC_TYPE addSaturated (VEC_TYPE const & a, VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
-            decltype(a[0]) temp = 0;
+            decltype(a.extract(0)) temp = 0;
             // maximum value
-            decltype(a[0]) satValue = std::numeric_limits<decltype(a[0])>::max();
+            decltype(a.extract(0)) satValue = std::numeric_limits<decltype(a.extract(0))>::max();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                 temp = (a[i] > (satValue - b[i])) ? satValue : (a[i] + b[i]);
                 retval.insert(i, temp);
@@ -406,9 +406,9 @@ namespace SIMD
         inline VEC_TYPE addSaturated (MASK_TYPE const & mask, VEC_TYPE const & a, VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
-            decltype(a[0]) temp = 0;
+            decltype(a.extract(0)) temp = 0;
             // maximum value
-            decltype(a[0]) satValue = std::numeric_limits<decltype(a[0])>::max();
+            decltype(a.extract(0)) satValue = std::numeric_limits<decltype(a.extract(0))>::max();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                 if(mask[i] == true) {
                     temp = (a[i] > (satValue - b[i])) ? satValue : (a[i] + b[i]);
@@ -426,9 +426,9 @@ namespace SIMD
         inline VEC_TYPE addSaturatedScalar (VEC_TYPE const & a, SCALAR_TYPE b) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
-            decltype(a[0]) temp = 0;
+            decltype(a.extract(0)) temp = 0;
             // maximum value
-            decltype(a[0]) satValue = std::numeric_limits<decltype(a[0])>::max();
+            decltype(a.extract(0)) satValue = std::numeric_limits<decltype(a.extract(0))>::max();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                 temp = (a[i] > (satValue - b)) ? satValue : (a[i] + b);
                 retval.insert(i, temp);
@@ -441,9 +441,9 @@ namespace SIMD
         inline VEC_TYPE addSaturatedScalar (MASK_TYPE const & mask, VEC_TYPE const & a, SCALAR_TYPE b) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
-            decltype(a[0]) temp = 0;
+            decltype(a.extract(0)) temp = 0;
             // maximum value
-            decltype(a[0]) satValue = std::numeric_limits<decltype(a[0])>::max();
+            decltype(a.extract(0)) satValue = std::numeric_limits<decltype(a.extract(0))>::max();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                 if(mask[i] == true) {
                     temp = (a[i] > (satValue - b)) ? satValue : (a[i] + b);
@@ -460,9 +460,9 @@ namespace SIMD
         template<typename VEC_TYPE>
         inline VEC_TYPE & addSaturatedAssign(VEC_TYPE & a, VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
-            decltype(a[0]) temp = 0;
+            decltype(a.extract(0)) temp = 0;
             // maximum value
-            decltype(a[0]) satValue = std::numeric_limits<decltype(a[0])>::max();
+            decltype(a.extract(0)) satValue = std::numeric_limits<decltype(a.extract(0))>::max();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                 temp = (a[i] > (satValue - b[i])) ? satValue : (a[i] + b[i]);
                 a.insert(i, temp);
@@ -474,9 +474,9 @@ namespace SIMD
         template<typename VEC_TYPE, typename MASK_TYPE>
         inline VEC_TYPE & addSaturatedAssign(MASK_TYPE const & mask, VEC_TYPE & a, VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
-            decltype(a[0]) temp = 0;
+            decltype(a.extract(0)) temp = 0;
             // maximum value
-            decltype(a[0]) satValue = std::numeric_limits<decltype(a[0])>::max();
+            decltype(a.extract(0)) satValue = std::numeric_limits<decltype(a.extract(0))>::max();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                 if(mask[i] == true) {
                     temp = (a[i] > (satValue - b[i])) ? satValue : (a[i] + b[i]);
@@ -490,9 +490,9 @@ namespace SIMD
         template<typename VEC_TYPE, typename SCALAR_TYPE>
         inline VEC_TYPE & addSaturatedScalarAssign(VEC_TYPE & a, SCALAR_TYPE b) {
             UME_EMULATION_WARNING();
-            decltype(a[0]) temp = 0;
+            decltype(a.extract(0)) temp = 0;
             // maximum value
-            decltype(a[0]) satValue = std::numeric_limits<decltype(a[0])>::max();
+            decltype(a.extract(0)) satValue = std::numeric_limits<decltype(a.extract(0))>::max();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                 temp = (a[i] > (satValue - b)) ? satValue : (a[i] + b);
                 a.insert(i, temp);
@@ -504,9 +504,9 @@ namespace SIMD
         template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
         inline VEC_TYPE & addSaturatedScalarAssign(MASK_TYPE const & mask, VEC_TYPE & a, SCALAR_TYPE b) {
             UME_EMULATION_WARNING();
-            decltype(a[0]) temp = 0;
+            decltype(a.extract(0)) temp = 0;
             // maximum value
-            decltype(a[0]) satValue = std::numeric_limits<decltype(a[0])>::max();
+            decltype(a.extract(0)) satValue = std::numeric_limits<decltype(a.extract(0))>::max();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                 if(mask[i] == true) {
                     temp = (a[i] > (satValue - b)) ? satValue : (a[i] + b);
@@ -781,9 +781,9 @@ namespace SIMD
         inline VEC_TYPE subSaturated (VEC_TYPE const & a, VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
-            decltype(a[0]) temp = 0;
+            decltype(a.extract(0)) temp = 0;
             // maximum value
-            decltype(a[0]) satValue = std::numeric_limits<decltype(a[0])>::min();
+            decltype(a.extract(0)) satValue = std::numeric_limits<decltype(a.extract(0))>::min();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                 temp = (a[i] < (satValue + b[i])) ? satValue : (a[i] - b[i]);
                 retval.insert(i, temp);
@@ -796,9 +796,9 @@ namespace SIMD
         inline VEC_TYPE subSaturated (MASK_TYPE const & mask, VEC_TYPE const & a, VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
-            decltype(a[0]) temp = 0;
+            decltype(a.extract(0)) temp = 0;
             // maximum value
-            decltype(a[0]) satValue = std::numeric_limits<decltype(a[0])>::min();
+            decltype(a.extract(0)) satValue = std::numeric_limits<decltype(a.extract(0))>::min();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                 if(mask[i] == true) {
                     temp = (a[i] < (satValue + b[i])) ? satValue : (a[i] - b[i]);
@@ -816,9 +816,9 @@ namespace SIMD
         inline VEC_TYPE subSaturated (VEC_TYPE const & a, SCALAR_TYPE b) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
-            decltype(a[0]) temp = 0;
+            decltype(a.extract(0)) temp = 0;
             // maximum value
-            decltype(a[0]) satValue = std::numeric_limits<decltype(a[0])>::min();
+            decltype(a.extract(0)) satValue = std::numeric_limits<decltype(a.extract(0))>::min();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                 temp = (a[i] < (satValue + b)) ? satValue : (a[i] - b);
                 retval.insert(i, temp);
@@ -831,9 +831,9 @@ namespace SIMD
         inline VEC_TYPE subSaturated (MASK_TYPE const & mask, VEC_TYPE const & a, SCALAR_TYPE b) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
-            decltype(a[0]) temp = 0;
+            decltype(a.extract(0)) temp = 0;
             // maximum value
-            decltype(a[0]) satValue = std::numeric_limits<decltype(a[0])>::min();
+            decltype(a.extract(0)) satValue = std::numeric_limits<decltype(a.extract(0))>::min();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                 if(mask[i] == true) {
                     temp = (a[i] < (satValue + b)) ? satValue : (a[i] - b);
@@ -850,9 +850,9 @@ namespace SIMD
         template<typename VEC_TYPE>
         inline VEC_TYPE & subSaturatedAssign (VEC_TYPE & a, VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
-            decltype(a[0]) temp = 0;
+            decltype(a.extract(0)) temp = 0;
             // maximum value
-            decltype(a[0]) satValue = std::numeric_limits<decltype(a[0])>::min();
+            decltype(a.extract(0)) satValue = std::numeric_limits<decltype(a.extract(0))>::min();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                 temp = (a[i] < (satValue + b[i])) ? satValue : (a[i] - b[i]);
                 a.insert(i, temp);
@@ -864,9 +864,9 @@ namespace SIMD
         template<typename VEC_TYPE, typename MASK_TYPE>
         inline VEC_TYPE & subSaturatedAssign (MASK_TYPE const & mask, VEC_TYPE & a, VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
-            decltype(a[0]) temp = 0;
+            decltype(a.extract(0)) temp = 0;
             // maximum value
-            decltype(a[0]) satValue = std::numeric_limits<decltype(a[0])>::min();
+            decltype(a.extract(0)) satValue = std::numeric_limits<decltype(a.extract(0))>::min();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                 if(mask[i] == true) {
                     temp = (a[i] < (satValue + b[i])) ? satValue : (a[i] - b[i]);
@@ -880,9 +880,9 @@ namespace SIMD
         template<typename VEC_TYPE, typename SCALAR_TYPE>
         inline VEC_TYPE & subSaturatedScalarAssign (VEC_TYPE & a, SCALAR_TYPE b) {
             UME_EMULATION_WARNING();
-            decltype(a[0]) temp = 0;
+            decltype(a.extract(0)) temp = 0;
             // maximum value
-            decltype(a[0]) satValue = std::numeric_limits<decltype(a[0])>::min();
+            decltype(a.extract(0)) satValue = std::numeric_limits<decltype(a.extract(0))>::min();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                 temp = (a[i] < (satValue + b)) ? satValue : (a[i] - b);
                 a.insert(i, temp);
@@ -894,9 +894,9 @@ namespace SIMD
         template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
         inline VEC_TYPE & subSaturatedScalarAssign (MASK_TYPE const & mask, VEC_TYPE & a, SCALAR_TYPE b) {
             UME_EMULATION_WARNING();
-            decltype(a[0]) temp = 0;
+            decltype(a.extract(0)) temp = 0;
             // maximum value
-            decltype(a[0]) satValue = std::numeric_limits<decltype(a[0])>::min();
+            decltype(a.extract(0)) satValue = std::numeric_limits<decltype(a.extract(0))>::min();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                 if(mask[i] == true) {
                     temp = (a[i] < (satValue + b)) ? satValue : (a[i] - b);
@@ -1141,7 +1141,7 @@ namespace SIMD
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
-                retval.insert(i, decltype(retval[0])(1.0)/b[i]);
+                retval.insert(i, decltype(retval.extract(0))(1.0)/b[i]);
             }
             return retval;
         }
@@ -1152,7 +1152,7 @@ namespace SIMD
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
-                if(mask[i] == true) retval.insert(i, decltype(retval[0])(1.0)/b[i]);
+                if(mask[i] == true) retval.insert(i, decltype(retval.extract(0))(1.0)/b[i]);
                 else retval.insert(i, b[i]);
             }
             return retval;
@@ -1186,7 +1186,7 @@ namespace SIMD
         inline VEC_TYPE & rcpAssign(VEC_TYPE & b) {
             UME_EMULATION_WARNING();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
-                b.insert(i, decltype(b[0])(1.0)/b[i]);
+                b.insert(i, decltype(b.extract(0))(1.0)/b[i]);
             }
             return b;
         }
@@ -1196,7 +1196,7 @@ namespace SIMD
         inline VEC_TYPE & rcpAssign(MASK_TYPE const & mask, VEC_TYPE & b) {
             UME_EMULATION_WARNING();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
-                if(mask[i] == true) b.insert(i, decltype(b[0])(1.0)/b[i]);
+                if(mask[i] == true) b.insert(i, decltype(b.extract(0))(1.0)/b[i]);
             }
             return b;
         }
@@ -2300,13 +2300,13 @@ namespace SIMD
         }
 
         // BNOT
-        template<typename VEC_TYPE>
+        template<typename VEC_TYPE, typename SCALAR_TYPE>
         inline VEC_TYPE binaryNot (VEC_TYPE const & a) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
-                decltype(a[0]) temp = a[i];
-                decltype(a[0]) temp2 = ~a[i];
+                SCALAR_TYPE temp = a[i];
+                SCALAR_TYPE temp2 = ~a[i];
                 retval.insert(i, temp2); //~a[i]);
             }
             return retval;
@@ -2662,14 +2662,16 @@ namespace SIMD
         }
 
         // xTOy (UTOI, ITOU, UTOF, FTOU)
-        template<typename UINT_VEC_TYPE, typename INT_VEC_TYPE>
-        inline UINT_VEC_TYPE xtoy(INT_VEC_TYPE const & a) {
+        template<typename VEC_Y_TYPE, typename SCALAR_Y_TYPE, typename VEC_X_TYPE>
+        inline VEC_Y_TYPE xtoy(VEC_X_TYPE const & a) {
             UME_EMULATION_WARNING();
-            static_assert(UINT_VEC_TYPE::length() == INT_VEC_TYPE::length(),
+            static_assert(VEC_X_TYPE::length() == VEC_Y_TYPE::length(),
                 "Cannot cast between vectors of different lengths");
-            UINT_VEC_TYPE retval;
-            for (uint32_t i = 0; i < INT_VEC_TYPE::length();i++) {
-                retval.insert(i, decltype(retval[0])(a[i]));
+            VEC_Y_TYPE retval;
+            for (uint32_t i = 0; i < VEC_X_TYPE::length();i++) {
+                decltype(a.extract(0)) t1 = 123;//a[i];
+                SCALAR_Y_TYPE t0 = SCALAR_Y_TYPE(a[i]);
+                retval.insert(i, t0);
             }
             return retval;
         }
@@ -2800,10 +2802,10 @@ namespace SIMD
             }
 
             // MMINV
-            template<typename VEC_TYPE, typename MASK_TYPE>
+            template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
             inline VEC_TYPE min(MASK_TYPE const & mask, VEC_TYPE const & a, VEC_TYPE const & b) {
                 UME_EMULATION_WARNING();
-                VEC_TYPE retval(std::numeric_limits<decltype(a[0])>::max());
+                VEC_TYPE retval(std::numeric_limits<SCALAR_TYPE>::max());
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                     if(mask[i] == true) retval.insert(i, a[i] < b[i] ? a[i] : b[i]);
                     else retval.insert(i, a[i]);
@@ -2896,11 +2898,11 @@ namespace SIMD
             }
 
             // IMAX
-            template<typename VEC_TYPE>
+            template<typename VEC_TYPE, typename SCALAR_TYPE>
             inline uint32_t indexMax(VEC_TYPE const & a) {
                 UME_EMULATION_WARNING();
                 uint32_t indexMax = 0;
-                decltype(a[0]) maxVal = a[0];
+                SCALAR_TYPE maxVal = a[0];
                 for(uint32_t i = 1; i < VEC_TYPE::length(); i++) {
                     if(a[i] > maxVal) {
                         maxVal = a[i];
@@ -2911,11 +2913,11 @@ namespace SIMD
             }
 
             // MIMAX
-            template<typename VEC_TYPE, typename MASK_TYPE>
+            template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
             inline uint32_t indexMax(MASK_TYPE const & mask, VEC_TYPE const & a) {
                 UME_EMULATION_WARNING();
                 uint32_t indexMax = 0xFFFFFFFF;
-                decltype(a[0]) maxVal = std::numeric_limits<decltype(a[0])>::min();
+                SCALAR_TYPE maxVal = std::numeric_limits<SCALAR_TYPE>::min();
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                     if(mask[i] == true && a[i] > maxVal) {
                         maxVal = a[i];
@@ -2948,11 +2950,11 @@ namespace SIMD
             }
 
             // IMIN
-            template<typename VEC_TYPE>
+            template<typename VEC_TYPE, typename SCALAR_TYPE>
             inline uint32_t indexMin(VEC_TYPE const & a) {
                 UME_EMULATION_WARNING();
                 uint32_t indexMin = 0;
-                decltype(a[0]) minVal = std::numeric_limits<decltype(a[0])>::max();
+                SCALAR_TYPE minVal = std::numeric_limits<SCALAR_TYPE>::max();
                 for(uint32_t i = 1; i < VEC_TYPE::length(); i++) {
                     if(a[i] < minVal) {
                         minVal = a[i];
@@ -2963,11 +2965,11 @@ namespace SIMD
             }
 
             // MIMIN
-            template<typename VEC_TYPE, typename MASK_TYPE>
+            template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
             inline uint32_t indexMin(MASK_TYPE const & mask, VEC_TYPE const & a) {
                 UME_EMULATION_WARNING();
                 uint32_t indexMin = 0xFFFFFFFF;
-                decltype(a[0]) minVal = std::numeric_limits<decltype(a[0])>::max();
+                SCALAR_TYPE minVal = std::numeric_limits<SCALAR_TYPE>::max();
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                     if(mask[i] == true && a[i] < minVal) {
                         minVal = a[i];
@@ -3114,7 +3116,7 @@ namespace SIMD
                 UME_EMULATION_WARNING();
                 VEC_TYPE retval;
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
-                    retval.insert(i, decltype(retval[0])(1.0)/std::sqrt(a[i])); 
+                    retval.insert(i, decltype(retval.extract(0))(1.0)/std::sqrt(a[i])); 
                 }
                 return retval;
             }
@@ -3123,9 +3125,9 @@ namespace SIMD
             inline VEC_TYPE rsqrt(MASK_TYPE const & mask, VEC_TYPE const & a) {
                 UME_EMULATION_WARNING();
                 VEC_TYPE retval;
-                decltype(retval[0]) temp;
+                decltype(retval.extract(0)) temp;
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
-                    temp = decltype(retval[0])(1.0)/std::sqrt(a[i]);
+                    temp = decltype(retval.extract(0))(1.0)/std::sqrt(a[i]);
                     retval.insert(i, (mask[i] == true) ? temp : a[i]);
                 }
                 return retval;
@@ -3134,9 +3136,9 @@ namespace SIMD
             template<typename VEC_TYPE>
             inline VEC_TYPE & rsqrtAssign (VEC_TYPE & a) {
                 UME_EMULATION_WARNING();
-                decltype(a[0]) temp;
+                decltype(a.extract(0)) temp;
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
-                    temp = decltype(a[0])(1.0)/std::sqrt(a[i]);
+                    temp = decltype(a.extract(0))(1.0)/std::sqrt(a[i]);
                     a.insert(i, temp);
                 }
                 return a;
@@ -3145,9 +3147,9 @@ namespace SIMD
             template<typename VEC_TYPE, typename MASK_TYPE>
             inline VEC_TYPE & rsqrtAssign(MASK_TYPE const & mask, VEC_TYPE & a) {
                 UME_EMULATION_WARNING();
-                decltype(a[0]) temp;
+                decltype(a.extract(0)) temp;
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
-                    temp = decltype(a[0])(1.0)/std::sqrt(a[i]);
+                    temp = decltype(a.extract(0))(1.0)/std::sqrt(a[i]);
                     if(mask[i] == true) a.insert(i, temp);
                 }
                 return a;
@@ -3228,7 +3230,7 @@ namespace SIMD
                 UME_EMULATION_WARNING();
                 INT_VEC_TYPE retval;
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
-                    retval.insert(i, decltype(retval[0])(std::trunc(a[i])));
+                    retval.insert(i, decltype(retval.extract(0))(std::trunc(a[i])));
                 }
                 return retval;
             }
@@ -3239,7 +3241,7 @@ namespace SIMD
                 UME_EMULATION_WARNING();
                 INT_VEC_TYPE retval;
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
-                    if(mask[i] == true) retval.insert(i, decltype(retval[0])(std::trunc(a[i])));
+                    if(mask[i] == true) retval.insert(i, decltype(retval.extract(0))(std::trunc(a[i])));
                     else retval.insert(i, 0);
                 }
                 return retval;
@@ -3439,12 +3441,12 @@ namespace SIMD
             }
 
             // ISSUB
-            template<typename VEC_TYPE, typename MASK_TYPE>
+            template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
             inline MASK_TYPE issub(VEC_TYPE const & a) {
                 UME_EMULATION_WARNING();
                 MASK_TYPE retval;
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
-                    bool isZero = (a[i] == (decltype(a[0])(0.0)));
+                    bool isZero = (a[i] == SCALAR_TYPE(0.0));
                     bool isNormal = std::isnormal(a[i]);
                     bool isFinite = std::isfinite(a[i]);
                     bool isNan = std::isnan(a[i]);
@@ -3460,7 +3462,7 @@ namespace SIMD
                 UME_EMULATION_WARNING();
                 MASK_TYPE retval;
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
-                    retval.insert(i, (a[i] == (decltype(a[0])(0.0))));
+                    retval.insert(i, (a[i] == (decltype(a.extract(0))(0.0))));
                 }
                 return retval;
             }
@@ -3471,7 +3473,7 @@ namespace SIMD
                 UME_EMULATION_WARNING();
                 MASK_TYPE retval;
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
-                    bool isZero = (a[i] == (decltype(a[0])(0.0)));
+                    bool isZero = (a[i] == (decltype(a.extract(0))(0.0)));
                     bool isNormal = std::isnormal(a[i]);
                     bool isFinite = std::isfinite(a[i]);
                     bool isNan = std::isnan(a[i]);
@@ -3576,7 +3578,7 @@ namespace SIMD
                 UME_EMULATION_WARNING();
                 VEC_TYPE retval;
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
-                    retval.insert(i, decltype(retval[0])(1.0)/std::tan(a[i]));
+                    retval.insert(i, decltype(retval.extract(0))(1.0)/std::tan(a[i]));
                 }
                 return retval;
             }
@@ -3587,7 +3589,7 @@ namespace SIMD
                 UME_EMULATION_WARNING();
                 VEC_TYPE retval;
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
-                    if(mask[i] == true) retval.insert(i, decltype(retval[0])(1.0)/std::tan(a[i]));
+                    if(mask[i] == true) retval.insert(i, decltype(retval.extract(0))(1.0)/std::tan(a[i]));
                     else retval.insert(i, a[i]);
                 }
                 return retval;
@@ -4098,41 +4100,52 @@ namespace SIMD
     class IntermediateIndex {
     public:
         // MASSIGNS
-        inline void operator= (SCALAR_TYPE scalarRhs) const {
-            mVecRef.insert(mIndexRef, scalarRhs);
+        inline void operator= (SCALAR_TYPE scalarRhs) {
+            mVecRef_RW.insert(mIndexRef, scalarRhs);
         }
 
-        inline void operator+= (SCALAR_TYPE scalarRhs) const {
-            mVecRef.insert(mIndexRef, mVecRef[i] + scalarRhs);
+        inline void operator+= (SCALAR_TYPE scalarRhs) {
+            mVecRef_RW.insert(mIndexRef, mVecRef_RW[mIndexRef] + scalarRhs);
         }
 
-        inline void operator*= (SCALAR_TYPE scalarRhs) const {
-            mVecRef.insert(mIndexRef, mVecRef[i] * scalarRhs);
+        inline void operator*= (SCALAR_TYPE scalarRhs) {
+            mVecRef_RW.insert(mIndexRef, mVecRef_RW[mIndexRef] * scalarRhs);
         }
 
-        inline void operator/= (SCALAR_TYPE scalarRhs) const {
-            mVecRef.insert(mIndexRef, mVecRef[i] / scalarRhs);
+        inline void operator/= (SCALAR_TYPE scalarRhs) {
+            mVecRef_RW.insert(mIndexRef, mVecRef_RW[mIndexRef] / scalarRhs);
         }
 
-        inline void operator&= (SCALAR_TYPE scalarRhs) const {
-            mVecRef.insert(mIndexRef, mVecRef[i] & scalarRhs);
+        inline void operator&= (SCALAR_TYPE scalarRhs) {
+            mVecRef_RW.insert(mIndexRef, mVecRef_RW[mIndexRef] & scalarRhs);
         }
 
-        inline void operator|= (SCALAR_TYPE scalarRhs) const {
-            mVecRef.insert(mIndexRef, mVecRef[i] | scalarRhs);
+        inline void operator|= (SCALAR_TYPE scalarRhs) {
+            mVecRef_RW.insert(mIndexRef, mVecRef_RW[mIndexRef] | scalarRhs);
         }
 
-        inline void operator^= (SCALAR_TYPE scalarRhs) const {
-            mVecRef.insert(mIndexRef, mVecRef[i] ^ scalarRhs);
+        inline void operator^= (SCALAR_TYPE scalarRhs) {
+            mVecRef_RW.insert(mIndexRef, mVecRef_RW[mIndexRef] ^ scalarRhs);
         }
+
+        inline operator SCALAR_TYPE() { return mVecRef_RW.extract(mIndexRef); }
 
     private:
+        // This object should be only constructible by the
+        // vector type using it.
+        IntermediateIndex() {}
+        IntermediateIndex(IntermediateIndex const & x) : mIndexRef(x.mIndexRef), mVecRef_RW(x.mVecRef_RW) {}
+        IntermediateIndex & operator= (IntermediateIndex const & x) {
+            mIndexRef = x.mIndexRef;
+            mVecRef_RW = x.mVecRef_RW
+        }
+
         friend VEC_TYPE;
 
-        inline explicit IntermediateIndex(SCALAR_TYPE index, VEC_TYPE & vec) : mIndexRef(index), mVecRef(vec) {}
+        inline explicit IntermediateIndex(uint32_t index, VEC_TYPE & vec) : mIndexRef(index), mVecRef_RW(vec) {}
 
-        SCALAR_TYPE mIndexRef;
-        VEC_TYPE & mVecRef;
+        uint32_t mIndexRef;
+        VEC_TYPE & mVecRef_RW;
     };
 
     // **********************************************************************
@@ -4189,16 +4202,10 @@ namespace SIMD
         // ONE-VEC
         static DERIVED_VEC_TYPE one() { return DERIVED_VEC_TYPE(SCALAR_TYPE(1)); }
 
-        inline SCALAR_TYPE extract(uint32_t index)
-        {
-            // Extract method should be provided for all derived classes.
-            return static_cast<DERIVED_VEC_TYPE>(*this)->extract(index);
-        }
-
-        inline SCALAR_TYPE operator[] (uint32_t index) {
-            // Extract method should be provided for all derived classes.
-            return static_cast<DERIVED_VEC_TYPE>(*this)->extract(index);
-        }
+        // EXTRACT
+        // This method should be provided for all derived classes and cannot be defined
+        // as generic.
+        inline SCALAR_TYPE extract(uint32_t index) const;
 
         // ASSIGNV
         inline DERIVED_VEC_TYPE & assign (DERIVED_VEC_TYPE const & src) {
@@ -4987,7 +4994,7 @@ namespace SIMD
 
         // MMINV
         inline DERIVED_VEC_TYPE min (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) const {
-            return EMULATED_FUNCTIONS::MATH::min<DERIVED_VEC_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
+            return EMULATED_FUNCTIONS::MATH::min<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
         // MINS
@@ -5032,12 +5039,12 @@ namespace SIMD
 
         // IMAX
         inline uint32_t imax() const {
-            return EMULATED_FUNCTIONS::MATH::indexMax<DERIVED_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this));
+            return EMULATED_FUNCTIONS::MATH::indexMax<DERIVED_VEC_TYPE, SCALAR_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // MIMAX
         inline uint32_t imax(MASK_TYPE const & mask) const {
-            return EMULATED_FUNCTIONS::MATH::indexMax<DERIVED_VEC_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE const &>(*this));
+            return EMULATED_FUNCTIONS::MATH::indexMax<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // HMIN
@@ -5052,12 +5059,12 @@ namespace SIMD
 
         // IMIN
         inline uint32_t imin() const {
-            return EMULATED_FUNCTIONS::MATH::indexMin<DERIVED_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this));
+            return EMULATED_FUNCTIONS::MATH::indexMin<DERIVED_VEC_TYPE, SCALAR_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // MIMIN
         inline uint32_t imin(MASK_TYPE const & mask) const {
-            return EMULATED_FUNCTIONS::MATH::indexMin<DERIVED_VEC_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE const &>(*this));
+            return EMULATED_FUNCTIONS::MATH::indexMin<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
     };
     
@@ -5280,7 +5287,7 @@ namespace SIMD
 
         // BNOT
         inline DERIVED_VEC_TYPE bnot () const {
-            return EMULATED_FUNCTIONS::binaryNot<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this));
+            return EMULATED_FUNCTIONS::binaryNot<DERIVED_VEC_TYPE, SCALAR_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
     
         inline DERIVED_VEC_TYPE operator~ () const {
@@ -5837,7 +5844,7 @@ namespace SIMD
 
         // Forbid assignment-initialization of vector using scalar values
  
-        SCALAR_UINT_TYPE operator[] (SCALAR_UINT_TYPE index) const; // Declaration only! This operator has to be implemented in derived class.
+        //SCALAR_UINT_TYPE operator[] (SCALAR_UINT_TYPE index) const; // Declaration only! This operator has to be implemented in derived class.
         inline DERIVED_UINT_VEC_TYPE & insert(uint32_t index, SCALAR_UINT_TYPE value); // Declaration only! This operator has to be implemented in derived class.
 
     protected:
@@ -6174,7 +6181,7 @@ namespace SIMD
 
         // ISSUB
         inline MASK_TYPE issub () const {
-            return EMULATED_FUNCTIONS::MATH::issub<DERIVED_VEC_TYPE, MASK_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this));
+            return EMULATED_FUNCTIONS::MATH::issub<DERIVED_VEC_TYPE, SCALAR_FLOAT_TYPE, MASK_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // ISZERO

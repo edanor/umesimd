@@ -1139,6 +1139,66 @@ void genericHLXORTest()
 }
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
+void genericEXTRACTTest()
+{
+    {
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        SCALAR_TYPE value;
+        bool exact = true;
+        for (int i = 0; i < VEC_LEN; i++) {
+            value = vec0.extract(i);
+            if (value != DATA_SET::inputs::inputA[i]) {
+                exact = false;
+                break;
+            }
+        }
+        CHECK_CONDITION(exact, "EXTRACT");
+    }
+    {
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        SCALAR_TYPE value;
+        bool exact = true;
+        for (int i = 0; i < VEC_LEN; i++) {
+            value = vec0[i];
+            if (value != DATA_SET::inputs::inputA[i]) {
+                exact = false;
+                break;
+            }
+        }
+        CHECK_CONDITION(exact, "EXTRACT(operator[])");
+    }
+}
+
+template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
+void genericINSERTTest()
+{
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0;
+        
+        bool exact = true;
+        for (int i = 0; i < VEC_LEN; i++) {
+            vec0.insert(i, DATA_SET::inputs::inputA[i]);
+        }
+        vec0.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "INSERT");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0;
+
+        bool exact = true;
+        for (uint32_t i = 0; i < VEC_LEN; i++) {
+            vec0[i] = DATA_SET::inputs::inputA[i];
+        }
+        vec0.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "INSERT(operator[] =)");
+    }
+}
+
+template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void generiASSIGNVTest()
 {
     {
@@ -4635,6 +4695,8 @@ void genericFTOITest()
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericBaseInterfaceTest()
 {   
+    genericINSERTTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
+    genericEXTRACTTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
     generiASSIGNVTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
     generiMASSIGNVTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
     generiASSIGNSTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();

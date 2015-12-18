@@ -383,9 +383,21 @@ namespace SIMD {
             mVec.insert(28, i28);  mVec.insert(29, i29);  mVec.insert(30, i30);  mVec.insert(31, i31);
         }
 
-        // Override Access operators
-        inline SCALAR_UINT_TYPE operator[] (uint32_t index) const {
+        // EXTRACT
+        inline SCALAR_UINT_TYPE extract(uint32_t index) const {
             return mVec[index];
+        }
+        inline SCALAR_UINT_TYPE operator[] (uint32_t index) const {
+            return extract(index);
+        }
+
+        // INSERT
+        inline SIMDVec_u & insert(uint32_t index, SCALAR_UINT_TYPE value) {
+            mVec.insert(index, value);
+            return *this;
+        }
+        inline IntermediateIndex<SIMDVec_u, SCALAR_UINT_TYPE> operator[] (uint32_t index) {
+            return IntermediateIndex<SIMDVec_u, SCALAR_UINT_TYPE>(index, static_cast<SIMDVec_u &>(*this));
         }
 
         // Override Mask Access operators
@@ -399,20 +411,14 @@ namespace SIMD {
         }
 #endif
 
-        // insert[] (scalar)
-        inline SIMDVec_u & insert(uint32_t index, SCALAR_UINT_TYPE value) {
-            mVec.insert(index, value);
-            return *this;
-        }
-
         // ASSIGNV
         inline SIMDVec_u & operator=(SIMDVec_u const & b) {
-            return assign(b);
+            return this->assign(b);
         }
         // MASSIGNV
         // ASSIGNS
         inline SIMDVec_u & operator=(SCALAR_UINT_TYPE b) {
-            return assign(b);
+            return this->assign(b);
         }
         // MASSIGNS
 
@@ -464,9 +470,21 @@ namespace SIMD {
         // LOAD-CONSTR - Construct by loading from memory
         inline explicit SIMDVec_u(SCALAR_UINT_TYPE const * p) { this->load(p); }
 
-        // Override Access operators
-        inline SCALAR_UINT_TYPE operator[] (uint32_t index) const {
+        // EXTRACT
+        inline SCALAR_UINT_TYPE extract(uint32_t index) const {
             return mVec[index];
+        }
+        inline SCALAR_UINT_TYPE operator[] (uint32_t index) const {
+            return extract(index);
+        }
+
+        // INSERT
+        inline SIMDVec_u & insert(uint32_t index, SCALAR_UINT_TYPE value) {
+            mVec.insert(index, value);
+            return *this;
+        }
+        inline IntermediateIndex<SIMDVec_u, SCALAR_UINT_TYPE> operator[] (uint32_t index) {
+            return IntermediateIndex<SIMDVec_u, SCALAR_UINT_TYPE>(index, static_cast<SIMDVec_u &>(*this));
         }
 
         // Override Mask Access operators
@@ -480,12 +498,6 @@ namespace SIMD {
         }
 #endif
 
-        // insert[] (scalar)
-        inline SIMDVec_u & insert(uint32_t index, SCALAR_UINT_TYPE value) {
-            mVec.insert(index, value);
-            return *this;
-        }
-
         // UNIQUE
         inline bool unique() const {
             return true;
@@ -493,12 +505,12 @@ namespace SIMD {
 
         // ASSIGNV
         inline SIMDVec_u & operator=(SIMDVec_u const & b) {
-            return assign(b);
+            return this->assign(b);
         }
         // MASSIGNV
         // ASSIGNS
         inline SIMDVec_u & operator=(SCALAR_UINT_TYPE b) {
-            return assign(b);
+            return this->assign(b);
         }
         // MASSIGNS
 
