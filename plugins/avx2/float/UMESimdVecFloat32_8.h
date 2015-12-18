@@ -42,17 +42,17 @@ namespace SIMD {
     template<>
     class SIMDVec_f<float, 8> :
         public SIMDVecFloatInterface<
-        SIMDVec_f<float, 8>,
-        SIMDVec_u<uint32_t, 8>,
-        SIMDVec_i<int32_t, 8>,
-        float,
-        8,
-        uint32_t,
-        SIMDVecMask<8>,
-        SIMDVecSwizzle<8 >> ,
+            SIMDVec_f<float, 8>,
+            SIMDVec_u<uint32_t, 8>,
+            SIMDVec_i<int32_t, 8>,
+            float,
+            8,
+            uint32_t,
+            SIMDVecMask<8>,
+            SIMDVecSwizzle<8 >> ,
         public SIMDVecPackableInterface<
-        SIMDVec_f<float, 8>,
-        SIMDVec_f<float, 4 >>
+            SIMDVec_f<float, 8>,
+            SIMDVec_f<float, 4 >>
     {
     private:
         __m256 mVec;
@@ -83,14 +83,24 @@ namespace SIMD {
 
         // EXTRACT
         inline float extract(uint32_t index) const {
-            UME_PERFORMANCE_UNOPTIMAL_WARNING();
             alignas(32) float raw[8];
             _mm256_store_ps(raw, mVec);
             return raw[index];
         }
         inline float operator[] (uint32_t index) const {
-            UME_PERFORMANCE_UNOPTIMAL_WARNING();
             return extract(index);
+        }
+
+        // INSERT
+        inline SIMDVec_f & insert(uint32_t index, float value) {
+            alignas(32) float raw[8];
+            _mm256_store_ps(raw, mVec);
+            raw[index] = value;
+            mVec = _mm256_load_ps(raw);
+            return *this;
+        }
+        inline IntermediateIndex<SIMDVec_f, float> operator[] (uint32_t index) {
+            return IntermediateIndex<SIMDVec_f, float>(index, static_cast<SIMDVec_f &>(*this));
         }
 
         // Override Mask Access operators
@@ -104,16 +114,6 @@ namespace SIMD {
         }
 #endif
 
-        // INSERT
-        inline SIMDVec_f & insert(uint32_t index, float value) {
-            UME_PERFORMANCE_UNOPTIMAL_WARNING();
-            alignas(32) float raw[8];
-            _mm256_store_ps(raw, mVec);
-            raw[index] = value;
-            mVec = _mm256_load_ps(raw);
-            return *this;
-        }
-
         // ****************************************************************************************
         // Overloading Interface functions starts here!
         // ****************************************************************************************
@@ -121,12 +121,12 @@ namespace SIMD {
         //(Initialization)
         // ASSIGNV
         inline SIMDVec_f & operator= (SIMDVec_f const & b) {
-            return assign(b);
+            return this->assign(b);
         }
         // MASSIGNV
         // ASSIGNS
         inline SIMDVec_f & operator= (float b) {
-            return assign(b);
+            return this->assign(b);
         }
         // MASSIGNS
 

@@ -72,6 +72,24 @@ namespace SIMD {
             mVec[0] = f;
             mVec[1] = f;
         }
+        // UTOF
+        inline explicit SIMDVec_f(VEC_UINT_TYPE const & vecUint) {
+            mVec[0] = float(vecUint[0]);
+            mVec[1] = float(vecUint[1]);
+        }
+        // FTOU
+        inline VEC_UINT_TYPE ftou() const {
+            return VEC_UINT_TYPE(uint32_t(mVec[0]), uint32_t(mVec[1]));
+        }
+        // ITOF
+        inline explicit SIMDVec_f(VEC_INT_TYPE const & vecInt) {
+            mVec[0] = float(vecInt[0]);
+            mVec[1] = float(vecInt[1]);
+        }
+        // FTOI
+        inline VEC_INT_TYPE ftoi() const {
+            return VEC_UINT_TYPE(int32_t(mVec[0]), int32_t(mVec[1]));
+        }
         // LOAD-CONSTR - Construct by loading from memory
         inline explicit SIMDVec_f(float const *p) {
             mVec[0] = p[0];
@@ -87,8 +105,18 @@ namespace SIMD {
             return mVec[index & 1];
         }
         inline float operator[] (uint32_t index) const {
-            return mVec[index & 1];
+            return extract(index);
         }
+
+        // INSERT
+        inline SIMDVec_f & insert(uint32_t index, float value) {
+            mVec[index & 1] = value;
+            return *this;
+        }
+        inline IntermediateIndex<SIMDVec_f, float> operator[] (uint32_t index) {
+            return IntermediateIndex<SIMDVec_f, float>(index, static_cast<SIMDVec_f &>(*this));
+        }
+
         // Override Mask Access operators
 #if defined(USE_PARENTHESES_IN_MASK_ASSIGNMENT)
         inline IntermediateMask<SIMDVec_f, float, SIMDVecMask<2>> operator() (SIMDVecMask<2> const & mask) {
@@ -99,11 +127,7 @@ namespace SIMD {
             return IntermediateMask<SIMDVec_f, float, SIMDVecMask<2>>(mask, static_cast<SIMDVec_f &>(*this));
         }
 #endif
-        // INSERT
-        inline SIMDVec_f & insert(uint32_t index, float value) {
-            mVec[index & 1] = value;
-            return *this;
-        }
+
         // ****************************************************************************************
         // Overloading Interface functions starts here!
         // ****************************************************************************************

@@ -73,14 +73,24 @@ namespace SIMD {
         inline explicit SIMDVec_f(float const *p) {
             mVec = p[0];
         }
+
         // EXTRACT
         inline float extract(uint32_t index) const {
             return mVec;
         }
-        // EXTRACT
         inline float operator[] (uint32_t index) const {
-            return mVec;
+            return extract(index);
         }
+
+        // INSERT
+        inline SIMDVec_f & insert(uint32_t index, float value) {
+            mVec = value;
+            return *this;
+        }
+        inline IntermediateIndex<SIMDVec_f, float> operator[] (uint32_t index) {
+            return IntermediateIndex<SIMDVec_f, float>(index, static_cast<SIMDVec_f &>(*this));
+        }
+
         // Override Mask Access operators
 #if defined(USE_PARENTHESES_IN_MASK_ASSIGNMENT)
         inline IntermediateMask<SIMDVec_f, float, SIMDVecMask<1>> operator() (SIMDVecMask<1> const & mask) {
@@ -91,11 +101,7 @@ namespace SIMD {
             return IntermediateMask<SIMDVec_f, float, SIMDVecMask<1>>(mask, static_cast<SIMDVec_f &>(*this));
         }
 #endif
-        // INSERT
-        inline SIMDVec_f & insert(uint32_t index, float value) {
-            mVec = value;
-            return *this;
-        }
+
         // ****************************************************************************************
         // Overloading Interface functions starts here!
         // ****************************************************************************************
@@ -105,7 +111,7 @@ namespace SIMD {
             mVec = b.mVec;
             return *this;
         }
-        inline SIMDVec_f & operator=(SIMDVec_f const & b) {
+        inline SIMDVec_f & operator= (SIMDVec_f const & b) {
             return assign(b);
         }
         // MASSIGNV    - Masked assignment with another vector
@@ -118,7 +124,7 @@ namespace SIMD {
             mVec = b;
             return *this;
         }
-        inline SIMDVec_f & operator=(float b) {
+        inline SIMDVec_f & operator= (float b) {
             return assign(b);
         }
         // MASSIGNS    - Masked assign with scalar
@@ -183,7 +189,7 @@ namespace SIMD {
             float t0 = mask.mMask ? mVec + b.mVec : mVec;
             return SIMDVec_f(t0);
         }
-        // ADDS     - Add with scalar
+        // ADDS
         inline SIMDVec_f add(float b) const {
             float t0 = mVec + b;
             return SIMDVec_f(t0);

@@ -74,15 +74,26 @@ namespace SIMD {
             mVec = _mm_set_epi32(i3, i2, i1, i0);
         }
 
+        // EXTRACT
         inline uint32_t extract(uint32_t index) const {
             alignas(16) uint32_t raw[4];
             _mm_store_si128((__m128i*) raw, mVec);
             return raw[index];
         }
-
-        // Override Access operators
         inline uint32_t operator[] (uint32_t index) const {
             return extract(index);
+        }
+
+        // INSERT
+        inline SIMDVec_u & insert(uint32_t index, uint32_t value) {
+            alignas(16) uint32_t raw[4];
+            _mm_store_si128((__m128i*)raw, mVec);
+            raw[index] = value;
+            mVec = _mm_load_si128((__m128i*)raw);
+            return *this;
+        }
+        inline IntermediateIndex<SIMDVec_u, uint32_t> operator[] (uint32_t index) {
+            return IntermediateIndex<SIMDVec_u, uint32_t>(index, static_cast<SIMDVec_u &>(*this));
         }
 
         // Override Mask Access operators
@@ -96,23 +107,14 @@ namespace SIMD {
         }
 #endif
 
-        // insert[] (scalar)
-        inline SIMDVec_u & insert(uint32_t index, uint32_t value) {
-            alignas(16) uint32_t raw[4];
-            _mm_store_si128((__m128i*)raw, mVec);
-            raw[index] = value;
-            mVec = _mm_load_si128((__m128i*)raw);
-            return *this;
-        }
-
         // ASSIGNV
         inline SIMDVec_u & operator= (SIMDVec_u const & b) {
-            return assign(b);
+            return this->assign(b);
         }
         // MASSIGNV
         // ASSIGNS
         inline SIMDVec_u & operator= (uint32_t b) {
-            return assign(b);
+            return this->assign(b);
         }
         // MASSIGNS
 
@@ -122,7 +124,6 @@ namespace SIMD {
             mVec = _mm_add_epi32(mVec, t0);
             return *this;
         }
-
         // MPREFINC
         inline SIMDVec_u & prefinc(SIMDVecMask<4> const & mask) {
             __m128i t0 = _mm_set1_epi32(1);

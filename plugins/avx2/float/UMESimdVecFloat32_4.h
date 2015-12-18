@@ -86,10 +86,20 @@ namespace SIMD {
             _mm_store_ps(raw, mVec);
             return raw[index];
         }
-
-        // EXTRACT
         inline float operator[] (uint32_t index) const {
             return extract(index);
+        }
+
+        // INSERT
+        inline SIMDVec_f & insert(uint32_t index, float value) {
+            alignas(16) float raw[4];
+            _mm_store_ps(raw, mVec);
+            raw[index] = value;
+            mVec = _mm_load_ps(raw);
+            return *this;
+        }
+        inline IntermediateIndex<SIMDVec_f, float> operator[] (uint32_t index) {
+            return IntermediateIndex<SIMDVec_f, float>(index, static_cast<SIMDVec_f &>(*this));
         }
 
         // Override Mask Access operators
@@ -102,14 +112,6 @@ namespace SIMD {
             return IntermediateMask<SIMDVec_f, float, SIMDVecMask<4>>(mask, static_cast<SIMDVec_f &>(*this));
         }
 #endif
-        // INSERT
-        inline SIMDVec_f & insert(uint32_t index, float value) {
-            alignas(16) float raw[4];
-            _mm_store_ps(raw, mVec);
-            raw[index] = value;
-            mVec = _mm_load_ps(raw);
-            return *this;
-        }
 
         // ****************************************************************************************
         // Overloading Interface functions starts here!
@@ -118,12 +120,12 @@ namespace SIMD {
         //(Initialization)
         // ASSIGNV
         inline SIMDVec_f & operator= (SIMDVec_f const & b) {
-            return assign(b);
+            return this->assign(b);
         }
         // MASSIGNV
         // ASSIGNS
         inline SIMDVec_f & operator= (float b) {
-            return assign(b);
+            return this->assign(b);
         }
         // MASSIGNS
 
@@ -152,7 +154,7 @@ namespace SIMD {
             return *this;
         }
         // STORE   - Store vector content into memory (either aligned or unaligned)
-        inline float* store(float* p) const {
+        inline float* store(float* p) {
             _mm_storeu_ps(p, mVec);
             return p;
         }
@@ -162,8 +164,6 @@ namespace SIMD {
             _mm_maskstore_ps(p, mask.mMask, mVec);
             return p;
         }
-        // STOREA  - Store vector content into aligned memory
-        // MSTOREA - Masked store vector content into aligned memory
 
         //(Addition operations)
         // ADDV     - Add with vector 

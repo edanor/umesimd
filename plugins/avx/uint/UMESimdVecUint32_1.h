@@ -97,8 +97,6 @@ namespace SIMD {
         }
 #endif
 
-        // EXTRACT
-
         // ASSIGNV
         inline SIMDVec_u & assign(SIMDVec_u const & src) {
             mVec = src.mVec;

@@ -114,7 +114,7 @@ namespace SIMD {
                 _mm256_store_ps(raw, mVecLoHi);
                 return raw[index - 8];
             }
-            else if (index <24) {
+            else if (index < 24) {
                 _mm256_store_ps(raw, mVecHiLo);
                 return raw[index - 16];
             }

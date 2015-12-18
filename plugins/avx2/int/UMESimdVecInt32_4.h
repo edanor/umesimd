@@ -78,17 +78,27 @@ namespace SIMD {
         {
             mVec = _mm_setr_epi32(i0, i1, i2, i3);
         }
-
+        // EXTRACT
         inline int32_t extract(uint32_t index) const {
             //return _mm256_extract_epi32(mVec, index); // TODO: this can be implemented in ICC
             alignas(16) int32_t raw[4];
             _mm_store_si128((__m128i *)raw, mVec);
             return raw[index];
         }
-
-        // Override Access operators
         inline int32_t operator[] (uint32_t index) const {
             return extract(index);
+        }
+
+        // INSERT
+        inline SIMDVec_i & insert(uint32_t index, int32_t value) {
+            alignas(16) int32_t raw[4];
+            _mm_store_si128((__m128i*)raw, mVec);
+            raw[index] = value;
+            mVec = _mm_load_si128((__m128i*)raw);
+            return *this;
+        }
+        inline IntermediateIndex<SIMDVec_i, int32_t> operator[] (uint32_t index) {
+            return IntermediateIndex<SIMDVec_i, int32_t>(index, static_cast<SIMDVec_i &>(*this));
         }
 
         // Override Mask Access operators
@@ -102,22 +112,13 @@ namespace SIMD {
         }
 #endif
 
-        // insert[] (scalar)
-        inline SIMDVec_i & insert(uint32_t index, int32_t value) {
-            alignas(16) int32_t raw[4];
-            _mm_store_si128((__m128i*)raw, mVec);
-            raw[index] = value;
-            mVec = _mm_load_si128((__m128i*)raw);
-            return *this;
-        }
-        //(Initialization)
         // ASSIGNV
         inline SIMDVec_i & operator= (SIMDVec_i const & b) {
-            return assign(b);
+            return this->assign(b);
         }
         // MASSIGNV
         // ASSIGNS
-        inline SIMDVec_i & operator= (int32_t b) {
+        inline SIMDVec_i & operator=(int32_t b) {
             return assign(b);
         }
         // MASSIGNS

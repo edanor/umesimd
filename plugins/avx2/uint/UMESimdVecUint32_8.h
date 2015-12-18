@@ -82,15 +82,26 @@ namespace SIMD {
             mVec = _mm256_setr_epi32(i0, i1, i2, i3, i4, i5, i6, i7);
         }
 
+        // EXTRACT
         inline uint32_t extract(uint32_t index) const {
             alignas(32) uint32_t raw[8];
             _mm256_store_si256((__m256i*)raw, mVec);
             return raw[index];
         }
-
-        // Override Access operators
         inline uint32_t operator[] (uint32_t index) const {
             return extract(index);
+        }
+
+        // INSERT
+        inline SIMDVec_u & insert(uint32_t index, uint32_t value) {
+            alignas(32) uint32_t raw[8];
+            _mm256_store_si256((__m256i*)raw, mVec);
+            raw[index] = value;
+            mVec = _mm256_load_si256((__m256i*)raw);
+            return *this;
+        }
+        inline IntermediateIndex<SIMDVec_u, uint32_t> operator[] (uint32_t index) {
+            return IntermediateIndex<SIMDVec_u, uint32_t>(index, static_cast<SIMDVec_u &>(*this));
         }
 
         // Override Mask Access operators
@@ -103,16 +114,7 @@ namespace SIMD {
             return IntermediateMask<SIMDVec_u, uint32_t, SIMDVecMask<8>>(mask, static_cast<SIMDVec_u &>(*this));
         }
 #endif
-        // insert[] (scalar)
-        inline SIMDVec_u & insert(uint32_t index, uint32_t value) {
-            alignas(32) uint32_t raw[8];
-            _mm256_store_si256((__m256i*)raw, mVec);
-            raw[index] = value;
-            mVec = _mm256_load_si256((__m256i*)raw);
-            return *this;
-        }
 
-        //(Initialization)
         // ASSIGNV
         inline SIMDVec_u & assign(SIMDVec_u const & b) {
             mVec = b.mVec;
@@ -260,7 +262,6 @@ namespace SIMD {
             mVec = _mm256_add_epi32(mVec, t0);
             return *this;
         }
-
         // MPREFINC
         inline SIMDVec_u & prefinc(SIMDVecMask<8> const & mask) {
             __m256i t0 = _mm256_set1_epi32(1);
