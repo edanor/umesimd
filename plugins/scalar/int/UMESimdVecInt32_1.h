@@ -111,7 +111,7 @@ namespace SIMD {
             mVec = b;
             return *this;
         }
-        inline SIMDVec_i & operator=(int32_t b) {
+        inline SIMDVec_i & operator= (int32_t b) {
             return assign(b);
         }
         // MASSIGNS

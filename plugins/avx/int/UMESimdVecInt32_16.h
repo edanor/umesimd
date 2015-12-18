@@ -76,7 +76,6 @@ namespace SIMD {
             mVecLo = _mm256_set1_epi32(i);
             mVecHi = mVecLo;
         }
-
         // LOAD-CONSTR
         inline explicit SIMDVec_i(int32_t const * p) {
             mVecLo = _mm256_loadu_si256((__m256i *)p);
@@ -91,7 +90,7 @@ namespace SIMD {
             mVecLo = _mm256_setr_epi32(i0, i1, i2, i3, i4, i5, i6, i7);
             mVecHi = _mm256_setr_epi32(i8, i9, i10, i11, i12, i13, i14, i15);
         }
-
+        // EXTRACT
         inline int32_t extract(uint32_t index) const {
             //UME_PERFORMANCE_UNOPTIMAL_WARNING();
             //return _mm256_extract_epi32(mVec, index); // TODO: this can be implemented in ICC
@@ -107,23 +106,11 @@ namespace SIMD {
             }
             return value;
         }
-
-        // Override Access operators
         inline int32_t operator[] (uint32_t index) const {
             return extract(index);
         }
 
-        // Override Mask Access operators
-#if defined(USE_PARENTHESES_IN_MASK_ASSIGNMENT)
-        inline IntermediateMask<SIMDVec_i, int32_t, SIMDVecMask<16>> operator() (SIMDVecMask<16> const & mask) {
-            return IntermediateMask<SIMDVec_i, int32_t, SIMDVecMask<16>>(mask, static_cast<SIMDVec_i &>(*this));
-        }
-#else
-        inline IntermediateMask<SIMDVec_i, int32_t, SIMDVecMask<16>> operator[] (SIMDVecMask<16> const & mask) {
-            return IntermediateMask<SIMDVec_i, int32_t, SIMDVecMask<16>>(mask, static_cast<SIMDVec_i &>(*this));
-        }
-#endif
-        // insert[] (scalar)
+        // INSERT
         inline SIMDVec_i & insert(uint32_t index, int32_t value) {
             //UME_PERFORMANCE_UNOPTIMAL_WARNING()
             alignas(32) int32_t raw[8];
@@ -139,8 +126,21 @@ namespace SIMD {
             }
             return *this;
         }
+        inline IntermediateIndex<SIMDVec_i, int32_t> operator[] (uint32_t index) {
+            return IntermediateIndex<SIMDVec_i, int32_t>(index, static_cast<SIMDVec_i &>(*this));
+        }
 
-        //(Initialization)
+        // Override Mask Access operators
+#if defined(USE_PARENTHESES_IN_MASK_ASSIGNMENT)
+        inline IntermediateMask<SIMDVec_i, int32_t, SIMDVecMask<16>> operator() (SIMDVecMask<16> const & mask) {
+            return IntermediateMask<SIMDVec_i, int32_t, SIMDVecMask<16>>(mask, static_cast<SIMDVec_i &>(*this));
+        }
+#else
+        inline IntermediateMask<SIMDVec_i, int32_t, SIMDVecMask<16>> operator[] (SIMDVecMask<16> const & mask) {
+            return IntermediateMask<SIMDVec_i, int32_t, SIMDVecMask<16>>(mask, static_cast<SIMDVec_i &>(*this));
+        }
+#endif
+
         // ASSIGNV
         inline SIMDVec_i & operator= (SIMDVec_i const & b) {
             return assign(b);

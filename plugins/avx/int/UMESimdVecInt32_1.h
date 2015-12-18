@@ -65,9 +65,21 @@ namespace SIMD {
         // LOAD-CONSTR - Construct by loading from memory
         inline explicit SIMDVec_i(int32_t const *p) { this->load(p); };
 
-        // Override Access operators
-        inline int32_t operator[] (uint32_t index) const {
+        // EXTRACT
+        inline int32_t extract(uint32_t index) const {
             return mVec;
+        }
+        inline int32_t operator[] (uint32_t index) const {
+            return extract(index);
+        }
+
+        // INSERT
+        inline SIMDVec_i & insert(uint32_t index, uint32_t value) {
+            mVec = value;
+            return *this;
+        }
+        inline IntermediateIndex<SIMDVec_i, int32_t> operator[] (uint32_t index) {
+            return IntermediateIndex<SIMDVec_i, int32_t>(index, static_cast<SIMDVec_i &>(*this));
         }
 
         // Override Mask Access operators
@@ -80,25 +92,18 @@ namespace SIMD {
             return IntermediateMask<SIMDVec_i, int32_t, SIMDVecMask<1>>(mask, static_cast<SIMDVec_i &>(*this));
         }
 #endif
-        // INSERT
-        inline SIMDVec_i & insert(uint32_t index, uint32_t value) {
-            mVec = value;
-            return *this;
-        }
-
-        // EXTRACT
 
         // ASSIGNV
-        inline SIMDVec_i & assign(SIMDVec_i const & src) {
-            mVec = src.mVec;
+        inline SIMDVec_i & assign(SIMDVec_i const & b) {
+            mVec = b.mVec;
             return *this;
         }
         inline SIMDVec_i & operator= (SIMDVec_i const & b) {
             return assign(b);
         }
         // MASSIGNV
-        inline SIMDVec_i & assign(SIMDVecMask<1> const & mask, SIMDVec_i const & src) {
-            if (mask.mMask == true) mVec = src.mVec;
+        inline SIMDVec_i & assign(SIMDVecMask<1> const & mask, SIMDVec_i const & b) {
+            if (mask.mMask == true) mVec = b.mVec;
             return *this;
         }
         // ASSIGNS

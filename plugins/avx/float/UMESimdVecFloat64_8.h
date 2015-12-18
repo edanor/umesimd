@@ -63,6 +63,7 @@ namespace SIMD {
         }
 
     public:
+
         // ZERO-CONSTR - Zero element constructor 
         inline SIMDVec_f() {}
 
@@ -82,7 +83,7 @@ namespace SIMD {
             mVecHi = _mm256_setr_pd(d4, d5, d6, d7);
         }
 
-        // EXTRACT - Extract single element from a vector
+        // EXTRACT
         inline double extract(uint32_t index) const {
             //UME_PERFORMANCE_UNOPTIMAL_WARNING();
             alignas(32) double raw[4];
@@ -96,25 +97,11 @@ namespace SIMD {
                 return raw[index - 4];
             }
         }
-
-        // EXTRACT - Extract single element from a vector
         inline double operator[] (uint32_t index) const {
-            //UME_PERFORMANCE_UNOPTIMAL_WARNING();
             return extract(index);
         }
 
-        // Override Mask Access operators
-#if defined(USE_PARENTHESES_IN_MASK_ASSIGNMENT)
-        inline IntermediateMask<SIMDVec_f, double, SIMDVecMask<8>> operator() (SIMDVecMask<8> const & mask) {
-            return IntermediateMask<SIMDVec_f, double, SIMDVecMask<8>>(mask, static_cast<SIMDVec_f &>(*this));
-        }
-#else
-        inline IntermediateMask<SIMDVec_f, double, SIMDVecMask<8>> operator[] (SIMDVecMask<8> const & mask) {
-            return IntermediateMask<SIMDVec_f, double, SIMDVecMask<8>>(mask, static_cast<SIMDVec_f &>(*this));
-        }
-#endif
-
-        // INSERT  - Insert single element into a vector
+        // INSERT
         inline SIMDVec_f & insert(uint32_t index, double value) {
             //UME_PERFORMANCE_UNOPTIMAL_WARNING();
             alignas(32) double raw[4];
@@ -130,6 +117,20 @@ namespace SIMD {
             }
             return *this;
         }
+        inline IntermediateIndex<SIMDVec_f, double> operator[] (uint32_t index) {
+            return IntermediateIndex<SIMDVec_f, double>(index, static_cast<SIMDVec_f &>(*this));
+        }
+
+        // Override Mask Access operators
+#if defined(USE_PARENTHESES_IN_MASK_ASSIGNMENT)
+        inline IntermediateMask<SIMDVec_f, double, SIMDVecMask<8>> operator() (SIMDVecMask<8> const & mask) {
+            return IntermediateMask<SIMDVec_f, double, SIMDVecMask<8>>(mask, static_cast<SIMDVec_f &>(*this));
+        }
+#else
+        inline IntermediateMask<SIMDVec_f, double, SIMDVecMask<8>> operator[] (SIMDVecMask<8> const & mask) {
+            return IntermediateMask<SIMDVec_f, double, SIMDVecMask<8>>(mask, static_cast<SIMDVec_f &>(*this));
+        }
+#endif
 
         // ****************************************************************************************
         // Overloading Interface functions starts here!
@@ -138,12 +139,12 @@ namespace SIMD {
         //(Initialization)
         // ASSIGNV
         inline SIMDVec_f & operator= (SIMDVec_f const & b) {
-            return assign(b);
+            return this->assign(b);
         }
         // MASSIGNV
         // ASSIGNS
         inline SIMDVec_f & operator= (double b) {
-            return assign(b);
+            return this->assign(b);
         }
         // MASSIGNS
 

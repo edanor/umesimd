@@ -100,13 +100,13 @@ namespace SIMD {
         // EXTRACT
 
         // ASSIGNV
-        inline SIMDVec_u & operator=(SIMDVec_u const & b) {
-            return assign(b);
+        inline SIMDVec_u & operator= (SIMDVec_u const & b) {
+            return this->assign(b);
         }
         // MASSIGNV
         // ASSIGNS
-        inline SIMDVec_u & operator=(uint32_t b) {
-            return assign(b);
+        inline SIMDVec_u & operator= (uint32_t b) {
+            return this->assign(b);
         }
         // MASSIGNS
 

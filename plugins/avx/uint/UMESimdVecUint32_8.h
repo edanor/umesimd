@@ -61,7 +61,6 @@ namespace SIMD {
         inline explicit SIMDVec_u(__m256i & x) { this->mVec = x; }
         inline explicit SIMDVec_u(const __m256i & x) { this->mVec = x; }
     public:
-
         // ZERO-CONSTR
         inline SIMDVec_u() {
             mVec = _mm256_setzero_si256();
@@ -71,7 +70,6 @@ namespace SIMD {
         inline explicit SIMDVec_u(uint32_t i) {
             mVec = _mm256_set1_epi32(i);
         }
-
         // LOAD-CONSTR
         inline explicit SIMDVec_u(uint32_t const * p) {
             mVec = _mm256_loadu_si256((__m256i*)p);
@@ -83,15 +81,26 @@ namespace SIMD {
             mVec = _mm256_setr_epi32(i0, i1, i2, i3, i4, i5, i6, i7);
         }
 
+        // EXTRACT
         inline uint32_t extract(uint32_t index) const {
             alignas(32) uint32_t raw[8];
             _mm256_store_si256((__m256i*)raw, mVec);
             return raw[index];
         }
-
-        // Override Access operators
         inline uint32_t operator[] (uint32_t index) const {
             return extract(index);
+        }
+
+        // INSERT
+        inline SIMDVec_u & insert(uint32_t index, uint32_t value) {
+            alignas(32) uint32_t raw[8];
+            _mm256_store_si256((__m256i*)raw, mVec);
+            raw[index] = value;
+            mVec = _mm256_load_si256((__m256i*)raw);
+            return *this;
+        }
+        inline IntermediateIndex<SIMDVec_u, uint32_t> operator[] (uint32_t index) {
+            return IntermediateIndex<SIMDVec_u, uint32_t>(index, static_cast<SIMDVec_u &>(*this));
         }
 
         // Override Mask Access operators
@@ -104,16 +113,7 @@ namespace SIMD {
             return IntermediateMask<SIMDVec_u, uint32_t, SIMDVecMask<8>>(mask, static_cast<SIMDVec_u &>(*this));
         }
 #endif
-        // insert[] (scalar)
-        inline SIMDVec_u & insert(uint32_t index, uint32_t value) {
-            alignas(32) uint32_t raw[8];
-            _mm256_store_si256((__m256i*)raw, mVec);
-            raw[index] = value;
-            mVec = _mm256_load_si256((__m256i*)raw);
-            return *this;
-        }
 
-        //(Initialization)
         // ASSIGNV
         inline SIMDVec_u & operator= (SIMDVec_u const & b) {
             return assign(b);
@@ -125,6 +125,16 @@ namespace SIMD {
         }
         // MASSIGNS
 
+        // PREFETCH0
+        // PREFETCH1
+        // PREFETCH2
+
+        // LOAD
+        // MLOAD
+        // LOADA
+        // MLOADA
+        // STORE
+        // MSTORE
         // STOREA
         inline uint32_t * storea(uint32_t * addrAligned) {
             _mm256_store_si256((__m256i*)addrAligned, mVec);
@@ -425,12 +435,11 @@ namespace SIMD {
         }
 
         // UTOI
-        inline operator SIMDVec_i<int32_t, 8> () const;
+        inline operator SIMDVec_i<int32_t, 8>() const;
         // UTOF
         inline operator SIMDVec_f<float, 8>() const;
 
     };
-
 }
 }
 

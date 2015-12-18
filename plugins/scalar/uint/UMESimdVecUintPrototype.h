@@ -412,12 +412,12 @@ namespace SIMD {
 #endif
 
         // ASSIGNV
-        inline SIMDVec_u & operator=(SIMDVec_u const & b) {
+        inline SIMDVec_u & operator= (SIMDVec_u const & b) {
             return this->assign(b);
         }
         // MASSIGNV
         // ASSIGNS
-        inline SIMDVec_u & operator=(SCALAR_UINT_TYPE b) {
+        inline SIMDVec_u & operator= s(SCALAR_UINT_TYPE b) {
             return this->assign(b);
         }
         // MASSIGNS
@@ -438,11 +438,11 @@ namespace SIMD {
     template<typename SCALAR_UINT_TYPE>
     class SIMDVec_u<SCALAR_UINT_TYPE, 1> :
         public SIMDVecUnsignedInterface<
-        SIMDVec_u<SCALAR_UINT_TYPE, 1>, // DERIVED_UINT_VEC_TYPE
-        SCALAR_UINT_TYPE,               // SCALAR_UINT_TYPE
-        1,
-        typename SIMDVec_u_traits<SCALAR_UINT_TYPE, 1>::MASK_TYPE,
-        typename SIMDVec_u_traits<SCALAR_UINT_TYPE, 1>::SWIZZLE_MASK_TYPE>
+            SIMDVec_u<SCALAR_UINT_TYPE, 1>, // DERIVED_UINT_VEC_TYPE
+            SCALAR_UINT_TYPE,               // SCALAR_UINT_TYPE
+            1,
+            typename SIMDVec_u_traits<SCALAR_UINT_TYPE, 1>::MASK_TYPE,
+            typename SIMDVec_u_traits<SCALAR_UINT_TYPE, 1>::SWIZZLE_MASK_TYPE>
     {
     public:
         typedef SIMDVecEmuRegister<SCALAR_UINT_TYPE, 1>                                   VEC_EMU_REG;
@@ -498,21 +498,21 @@ namespace SIMD {
         }
 #endif
 
-        // UNIQUE
-        inline bool unique() const {
-            return true;
-        }
-
         // ASSIGNV
-        inline SIMDVec_u & operator=(SIMDVec_u const & b) {
+        inline SIMDVec_u & operator= (SIMDVec_u const & b) {
             return this->assign(b);
         }
         // MASSIGNV
         // ASSIGNS
-        inline SIMDVec_u & operator=(SCALAR_UINT_TYPE b) {
+        inline SIMDVec_u & operator= (SCALAR_UINT_TYPE b) {
             return this->assign(b);
         }
         // MASSIGNS
+
+        // UNIQUE
+        inline bool unique() const {
+            return true;
+        }
 
         // DEGRADE
         inline operator SIMDVec_u<SCALAR_UINT_LOWER_PRECISION, 1>() const;
@@ -521,7 +521,6 @@ namespace SIMD {
 
         // UTOI
         inline operator SIMDVec_i<SCALAR_INT_TYPE, 1>() const;
-
         // UTOF
         inline operator SIMDVec_f<SCALAR_FLOAT_TYPE, 1>() const;
     };

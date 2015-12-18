@@ -108,7 +108,7 @@ namespace SIMD {
             mVec[1] = src.mVec[1];
             return *this;
         }
-        inline SIMDVec_u & operator=(SIMDVec_u const & b) {
+        inline SIMDVec_u & operator= (SIMDVec_u const & b) {
             return assign(b);
         }
         // MASSIGNV
@@ -123,7 +123,7 @@ namespace SIMD {
             mVec[1] = b;
             return *this;
         }
-        inline SIMDVec_u & operator=(uint32_t b) {
+        inline SIMDVec_u & operator= (uint32_t b) {
             return assign(b);
         }
         // MASSIGNS

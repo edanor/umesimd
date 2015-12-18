@@ -189,9 +189,9 @@ namespace SIMD {
             float t0 = mask.mMask ? mVec + b.mVec : mVec;
             return SIMDVec_f(t0);
         }
-        // ADDS     - Add with scalar
-        inline SIMDVec_f add(float a) const {
-            float t0 = mVec + a;
+        // ADDS
+        inline SIMDVec_f add(float b) const {
+            float t0 = mVec + b;
             return SIMDVec_f(t0);
         }
         inline SIMDVec_f operator+ (float b) const {

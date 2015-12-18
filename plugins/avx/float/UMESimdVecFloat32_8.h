@@ -32,8 +32,9 @@
 #define UME_SIMD_VEC_FLOAT32_8_H_
 
 #include <type_traits>
-#include "../../../UMESimdInterface.h"
 #include <immintrin.h>
+
+#include "../../../UMESimdInterface.h"
 
 namespace UME {
 namespace SIMD {
@@ -89,6 +90,18 @@ namespace SIMD {
             return extract(index);
         }
 
+        // INSERT
+        inline SIMDVec_f & insert(uint32_t index, float value) {
+            alignas(32) float raw[8];
+            _mm256_store_ps(raw, mVec);
+            raw[index] = value;
+            mVec = _mm256_load_ps(raw);
+            return *this;
+        }
+        inline IntermediateIndex<SIMDVec_f, float> operator[] (uint32_t index) {
+            return IntermediateIndex<SIMDVec_f, float>(index, static_cast<SIMDVec_f &>(*this));
+        }
+
         // Override Mask Access operators
 #if defined(USE_PARENTHESES_IN_MASK_ASSIGNMENT)
         inline IntermediateMask<SIMDVec_f, float, SIMDVecMask<8>> operator() (SIMDVecMask<8> const & mask) {
@@ -100,15 +113,6 @@ namespace SIMD {
         }
 #endif
 
-        // INSERT
-        inline SIMDVec_f & insert(uint32_t index, float value) {
-            alignas(32) float raw[8];
-            _mm256_store_ps(raw, mVec);
-            raw[index] = value;
-            mVec = _mm256_load_ps(raw);
-            return *this;
-        }
-
         // ****************************************************************************************
         // Overloading Interface functions starts here!
         // ****************************************************************************************
@@ -116,12 +120,12 @@ namespace SIMD {
         //(Initialization)
         // ASSIGNV
         inline SIMDVec_f & operator= (SIMDVec_f const & b) {
-            return assign(b);
+            return this->assign(b);
         }
         // MASSIGNV
         // ASSIGNS
         inline SIMDVec_f & operator= (float b) {
-            return assign(b);
+            return this->assign(b);
         }
         // MASSIGNS
 

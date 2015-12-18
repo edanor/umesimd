@@ -231,9 +231,9 @@ namespace SIMD {
             return SIMDVec_f(t0, t1);
         }
         // ADDS     - Add with scalar
-        inline SIMDVec_f add(float a) const {
-            float t0 = mVec[0] + a;
-            float t1 = mVec[1] + a;
+        inline SIMDVec_f add(float b) const {
+            float t0 = mVec[0] + b;
+            float t1 = mVec[1] + b;
             return SIMDVec_f(t0, t1);
         }
         inline SIMDVec_f operator+ (float b) const {
@@ -1122,7 +1122,7 @@ namespace SIMD {
         // MFLOOR    - Masked floor
         // CEIL      - Ceil
         // MCEIL     - Masked ceil
-        // ISFIN     - Is finMite
+        // ISFIN     - Is finite
         // ISINF     - Is infinite (INF)
         // ISAN      - Is a number
         // ISNAN     - Is 'Not a Number (NaN)'

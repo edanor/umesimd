@@ -2669,9 +2669,7 @@ namespace SIMD
                 "Cannot cast between vectors of different lengths");
             VEC_Y_TYPE retval;
             for (uint32_t i = 0; i < VEC_X_TYPE::length();i++) {
-                decltype(a.extract(0)) t1 = 123;//a[i];
-                SCALAR_Y_TYPE t0 = SCALAR_Y_TYPE(a[i]);
-                retval.insert(i, t0);
+                retval.insert(i, SCALAR_Y_TYPE(a[0]));
             }
             return retval;
         }

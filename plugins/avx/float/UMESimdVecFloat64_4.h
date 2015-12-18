@@ -32,8 +32,9 @@
 #define UME_SIMD_VEC_FLOAT64_4_H_
 
 #include <type_traits>
-#include "../../../UMESimdInterface.h"
 #include <immintrin.h>
+
+#include "../../../UMESimdInterface.h"
 
 namespace UME {
 namespace SIMD {
@@ -80,18 +81,28 @@ namespace SIMD {
             mVec = _mm256_setr_pd(d0, d1, d2, d3);
         }
 
-        // EXTRACT - Extract single element from a vector
+        // EXTRACT
         inline double extract(uint32_t index) const {
             //UME_PERFORMANCE_UNOPTIMAL_WARNING();
             alignas(32) double raw[4];
             _mm256_store_pd(raw, mVec);
             return raw[index];
         }
-
-        // EXTRACT - Extract single element from a vector
         inline double operator[] (uint32_t index) const {
-            //UME_PERFORMANCE_UNOPTIMAL_WARNING();
             return extract(index);
+        }
+
+        // INSERT
+        inline SIMDVec_f & insert(uint32_t index, double value) {
+            //UME_PERFORMANCE_UNOPTIMAL_WARNING();
+            alignas(32) double raw[4];
+            _mm256_store_pd(raw, mVec);
+            raw[index] = value;
+            mVec = _mm256_load_pd(raw);
+            return *this;
+        }
+        inline IntermediateIndex<SIMDVec_f, double> operator[] (uint32_t index) {
+            return IntermediateIndex<SIMDVec_f, double>(index, static_cast<SIMDVec_f &>(*this));
         }
 
         // Override Mask Access operators
@@ -105,16 +116,6 @@ namespace SIMD {
         }
 #endif
 
-        // INSERT  - Insert single element into a vector
-        inline SIMDVec_f & insert(uint32_t index, double value) {
-            //UME_PERFORMANCE_UNOPTIMAL_WARNING();
-            alignas(32) double raw[4];
-            _mm256_store_pd(raw, mVec);
-            raw[index] = value;
-            mVec = _mm256_load_pd(raw);
-            return *this;
-        }
-
         // ****************************************************************************************
         // Overloading Interface functions starts here!
         // ****************************************************************************************
@@ -122,12 +123,12 @@ namespace SIMD {
         //(Initialization)
         // ASSIGNV
         inline SIMDVec_f & operator= (SIMDVec_f const & b) {
-            return assign(b);
+            return this->assign(b);
         }
         // MASSIGNV
         // ASSIGNS
         inline SIMDVec_f & operator= (double b) {
-            return assign(b);
+            return this->assign(b);
         }
         // MASSIGNS
 
