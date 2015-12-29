@@ -3593,6 +3593,61 @@ namespace SIMD
                 return retval;
             }
 
+            // ATAN
+            template<typename VEC_TYPE>
+            inline VEC_TYPE atan(VEC_TYPE const & a) {
+                UME_EMULATION_WARNING();
+                VEC_TYPE retval;
+                for (uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+                    retval.insert(i, std::atan(a[i]));
+                }
+                return retval;
+            }
+
+            // ATAN2
+            template<typename VEC_TYPE>
+            inline VEC_TYPE atan2(VEC_TYPE const & a, VEC_TYPE const & b) {
+                UME_EMULATION_WARNING();
+                VEC_TYPE retval;
+                for (uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+                    retval.insert(i, std::atan2(a[i], b[i]));
+                }
+                return retval;
+            }
+
+            // LOG
+            template<typename VEC_TYPE>
+            inline VEC_TYPE log(VEC_TYPE const & a) {
+                UME_EMULATION_WARNING();
+                VEC_TYPE retval;
+                for (uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+                    retval.insert(i, std::log(a.extract(i)));
+                }
+                return retval;
+            }
+
+            // LOG10
+            template<typename VEC_TYPE>
+            inline VEC_TYPE log10(VEC_TYPE const & a) {
+                UME_EMULATION_WARNING();
+                VEC_TYPE retval;
+                for (uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+                    retval.insert(i, std::log10(a.extract(i)));
+                }
+                return retval;
+            }
+
+            // LOG2
+            template<typename VEC_TYPE>
+            inline VEC_TYPE log2(VEC_TYPE const & a) {
+                UME_EMULATION_WARNING();
+                VEC_TYPE retval;
+                for (uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+                    retval.insert(i, std::log2(a.extract(i)));
+                }
+                return retval;
+            }
+
         } // UME::SIMD::EMULATED_FUNCTIONS::MATH
     } // namespace UME::SIMD::EMULATED_FUNCTIONS
     
@@ -3811,6 +3866,11 @@ namespace SIMD
             return assign(maskOp);
         }
 
+        // MASSIGNV
+        inline DERIVED_MASK_TYPE & assign(DERIVED_MASK_TYPE const & mask, DERIVED_MASK_TYPE const & maskOp) {
+            return EMULATED_FUNCTIONS::assign<DERIVED_MASK_TYPE, DERIVED_MASK_TYPE>(mask, static_cast<DERIVED_MASK_TYPE &>(*this), maskOp);
+        }
+
         // ASSIGNS
         inline DERIVED_MASK_TYPE & assign(bool scalarOp) {
             return EMULATED_FUNCTIONS::assign<DERIVED_MASK_TYPE, bool>(static_cast<DERIVED_MASK_TYPE &>(*this), scalarOp);
@@ -3818,6 +3878,11 @@ namespace SIMD
 
         inline DERIVED_MASK_TYPE & operator= (bool scalarOp) {
             return assign(scalarOp);
+        }
+
+        // MASSIGNS
+        inline DERIVED_MASK_TYPE & assign(DERIVED_MASK_TYPE const & mask, bool scalarOp) {
+            return EMULATED_FUNCTIONS::assign<DERIVED_MASK_TYPE, bool, DERIVED_MASK_TYPE>(mask, static_cast<DERIVED_MASK_TYPE &>(*this), scalarOp);
         }
 
         // LANDV
@@ -3956,6 +4021,42 @@ namespace SIMD
         // LNOTA
         inline DERIVED_MASK_TYPE & lnota () {
             return EMULATED_FUNCTIONS::logicalNotAssign<DERIVED_MASK_TYPE>(static_cast<DERIVED_MASK_TYPE &>(*this));
+        }
+
+        // CMPEQV
+        inline DERIVED_MASK_TYPE cmpeq(DERIVED_MASK_TYPE const & b) const {
+            return EMULATED_FUNCTIONS::isEqual<DERIVED_MASK_TYPE, DERIVED_MASK_TYPE>(static_cast<DERIVED_MASK_TYPE const &>(*this), b);
+        }
+
+        inline DERIVED_MASK_TYPE operator== (DERIVED_MASK_TYPE const & b) const {
+            return cmpeq(b);
+        }
+
+        // CMPEQS
+        inline DERIVED_MASK_TYPE cmpeq(bool b) const {
+            return EMULATED_FUNCTIONS::isEqual<DERIVED_MASK_TYPE, DERIVED_MASK_TYPE, bool>(static_cast<DERIVED_MASK_TYPE const &>(*this), b);
+        }
+
+        inline DERIVED_MASK_TYPE operator== (bool b) const {
+            return cmpeq(b);
+        }
+
+        // CMPNEV
+        inline DERIVED_MASK_TYPE cmpne(DERIVED_MASK_TYPE const & b) const {
+            return EMULATED_FUNCTIONS::isNotEqual<DERIVED_MASK_TYPE, DERIVED_MASK_TYPE>(static_cast<DERIVED_MASK_TYPE const &>(*this), b);
+        }
+
+        inline DERIVED_MASK_TYPE operator!= (DERIVED_MASK_TYPE const & b) const {
+            return cmpne(b);
+        }
+
+        // CMPNES
+        inline DERIVED_MASK_TYPE cmpne(bool b) const {
+            return EMULATED_FUNCTIONS::isNotEqual<DERIVED_MASK_TYPE, DERIVED_MASK_TYPE, bool>(static_cast<DERIVED_MASK_TYPE const &>(*this), b);
+        }
+
+        inline DERIVED_MASK_TYPE operator!= (bool b) const {
+            return  cmpne(b);
         }
 
         // HLAND
@@ -6222,6 +6323,18 @@ namespace SIMD
             return EMULATED_FUNCTIONS::MATH::cos<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
+        // SINCOS
+        inline void sincos(DERIVED_VEC_TYPE & sinvec, DERIVED_VEC_TYPE & cosvec) const {
+            sinvec = EMULATED_FUNCTIONS::MATH::sin<DERIVED_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this));
+            cosvec = EMULATED_FUNCTIONS::MATH::cos<DERIVED_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this));
+        }
+
+        // MSINCOS
+        inline void sincos(MASK_TYPE const & mask, DERIVED_VEC_TYPE & sinvec, DERIVED_VEC_TYPE & cosvec) const {
+            sinvec = EMULATED_FUNCTIONS::MATH::sin<DERIVED_VEC_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE const &>(*this));
+            cosvec = EMULATED_FUNCTIONS::MATH::cos<DERIVED_VEC_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE const &>(*this));
+        }
+
         // TAN
         inline DERIVED_VEC_TYPE tan () const {
             return EMULATED_FUNCTIONS::MATH::tan<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this));
@@ -6242,6 +6355,30 @@ namespace SIMD
             return EMULATED_FUNCTIONS::MATH::ctan<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
+        // ATAN
+        inline DERIVED_VEC_TYPE atan() const {
+            return EMULATED_FUNCTIONS::MATH::atan<DERIVED_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this));
+        }
+
+        // ATAN2
+        inline DERIVED_VEC_TYPE atan2(DERIVED_VEC_TYPE const & b) const {
+            return EMULATED_FUNCTIONS::MATH::atan2<DERIVED_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this), b);
+        }
+
+        // LOG
+        inline DERIVED_VEC_TYPE log() const {
+            return EMULATED_FUNCTIONS::MATH::log<DERIVED_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this));
+        }
+
+        // LOG10
+        inline DERIVED_VEC_TYPE log10() const {
+            return EMULATED_FUNCTIONS::MATH::log10<DERIVED_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this));
+        }
+
+        // LOG2
+        inline DERIVED_VEC_TYPE log2() const {
+            return EMULATED_FUNCTIONS::MATH::log2<DERIVED_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this));
+        }
     };
 
     // This is just an experimental setup! Providing functions like this to handle interface

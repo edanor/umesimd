@@ -54,6 +54,26 @@ namespace UME {
         inline SIMDMask64 operator^ (bool a, SIMDMask64 const &b) { return b.lxor(a); }
         inline SIMDMask128 operator^ (bool a, SIMDMask128 const &b) { return b.lxor(a); }
 
+        // CMPEQS
+        inline SIMDMask1 operator== (bool a, SIMDMask1 const &b) { return b.cmpeq(a); }
+        inline SIMDMask2 operator== (bool a, SIMDMask2 const &b) { return b.cmpeq(a); }
+        inline SIMDMask4 operator== (bool a, SIMDMask4 const &b) { return b.cmpeq(a); }
+        inline SIMDMask8 operator== (bool a, SIMDMask8 const &b) { return b.cmpeq(a); }
+        inline SIMDMask16 operator== (bool a, SIMDMask16 const &b) { return b.cmpeq(a); }
+        inline SIMDMask32 operator== (bool a, SIMDMask32 const &b) { return b.cmpeq(a); }
+        inline SIMDMask64 operator== (bool a, SIMDMask64 const &b) { return b.cmpeq(a); }
+        inline SIMDMask128 operator== (bool a, SIMDMask128 const &b) { return b.cmpeq(a); }
+
+        // CMPNES
+        inline SIMDMask1 operator!= (bool a, SIMDMask1 const &b) { return b.cmpne(a); }
+        inline SIMDMask2 operator!= (bool a, SIMDMask2 const &b) { return b.cmpne(a); }
+        inline SIMDMask4 operator!= (bool a, SIMDMask4 const &b) { return b.cmpne(a); }
+        inline SIMDMask8 operator!= (bool a, SIMDMask8 const &b) { return b.cmpne(a); }
+        inline SIMDMask16 operator!= (bool a, SIMDMask16 const &b) { return b.cmpne(a); }
+        inline SIMDMask32 operator!= (bool a, SIMDMask32 const &b) { return b.cmpne(a); }
+        inline SIMDMask64 operator!= (bool a, SIMDMask64 const &b) { return b.cmpne(a); }
+        inline SIMDMask128 operator!= (bool a, SIMDMask128 const &b) { return b.cmpne(a); }
+
         // ADDS
         inline SIMD1_8u operator+ (uint8_t a, SIMD1_8u const & b) { return b.add(a); }
         inline SIMD2_8u operator+ (uint8_t a, SIMD2_8u const & b) { return b.add(a); }
