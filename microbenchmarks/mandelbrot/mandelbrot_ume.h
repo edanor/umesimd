@@ -1,7 +1,7 @@
-#ifndef MANDEL_UME_H_
-#define MANDEL_UME_H_
+#ifndef MANDELBROT_UME_H_
+#define MANDELBROT_UME_H_
 
-#include "mandel.h"
+#include "mandelbrot.h"
 #include "../../UMESimd.h"
 
 template<typename VEC_T>

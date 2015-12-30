@@ -1,5 +1,5 @@
 #include <immintrin.h>
-#include "mandel.h"
+#include "mandelbrot.h"
 
 #if defined __AVX__
 void

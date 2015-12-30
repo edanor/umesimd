@@ -422,6 +422,7 @@ namespace SIMD {
         return EMULATED_FUNCTIONS::xtoy < SIMDVec_u<uint32_t, 32>, uint32_t, SIMDVec_f<float, 32>>(*this);
     }
 
+    template<>
     inline SIMDVec_f<double, 1>::operator SIMDVec_u<uint64_t, 1>() const {
         return EMULATED_FUNCTIONS::xtoy < SIMDVec_u<uint64_t, 1>, uint64_t, SIMDVec_f<double, 1>>(*this);
     }

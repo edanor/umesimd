@@ -1,5 +1,5 @@
 #include <xmmintrin.h>
-#include "mandel.h"
+#include "mandelbrot.h"
 
 #include <immintrin.h>
 

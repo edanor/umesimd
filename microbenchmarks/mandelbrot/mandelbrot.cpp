@@ -4,10 +4,10 @@
 #include <time.h>
 
 //#include <getopt.h>
-#include "mandel.h"
+#include "mandelbrot.h"
 #include "UMEBitmap.h"
 
-#include "mandel_ume.h"
+#include "mandelbrot_ume.h"
 
 // Introducing inline assembly forces compiler to generate
 #define BREAK_COMPILER_OPTIMIZATION() __asm__ ("NOP");
@@ -85,7 +85,7 @@ is_avx_supported(void)
 int
 main(int argc, char *argv[])
 {
-    int ITERATIONS = 10;
+    int ITERATIONS = 20;
 
     /* Config */
     struct spec spec;

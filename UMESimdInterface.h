@@ -4236,7 +4236,7 @@ namespace SIMD
         IntermediateIndex(IntermediateIndex const & x) : mIndexRef(x.mIndexRef), mVecRef_RW(x.mVecRef_RW) {}
         IntermediateIndex & operator= (IntermediateIndex const & x) {
             mIndexRef = x.mIndexRef;
-            mVecRef_RW = x.mVecRef_RW
+            mVecRef_RW = x.mVecRef_RW;
         }
 
         friend VEC_TYPE;
@@ -4285,7 +4285,6 @@ namespace SIMD
             SWIZZLE_MASK_TYPE> VEC_TYPE;
 
     protected:
-            
         // Making destructor protected prohibits this class from being instantiated. Effectively this class can only be used as a base class.
         ~SIMDVecBaseInterface() {};
     public:
