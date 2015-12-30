@@ -1,13 +1,41 @@
+// The MIT License (MIT)
+//
+// Copyright (c) 2015 CERN
+//
+// Author: Przemyslaw Karpinski
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+//
+//
+//  This piece of code was developed as part of ICE-DIP project at CERN.
+//  "ICE-DIP is a European Industrial Doctorate project funded by the European Community's 
+//  7th Framework programme Marie Curie Actions under grant PITN-GA-2012-316596".
+//
+
 #include <stdio.h>
 #include <stdlib.h>
-#include <cmath>
 #include <time.h>
 
-//#include <getopt.h>
 #include "mandelbrot.h"
-#include "UMEBitmap.h"
-
 #include "mandelbrot_ume.h"
+
+#include "UMEBitmap.h"
 
 // Introducing inline assembly forces compiler to generate
 #define BREAK_COMPILER_OPTIMIZATION() __asm__ ("NOP");
@@ -34,41 +62,6 @@ typedef unsigned long long TIMING_RES;
 void mandel_basic(unsigned char *image, const struct spec *s);
 void mandel_avx(unsigned char *image, const struct spec *s);
 void mandel_sse2(unsigned char *image, const struct spec *s);
-
-void mandel_basic(unsigned char *image, const struct spec *s)
-{
-    float xdiff = s->xlim[1] - s->xlim[0];
-    float ydiff = s->ylim[1] - s->ylim[0];
-    float iter_scale = 1.0f / s->iterations;
-    float depth_scale = float(s->depth - 1);
-   // #pragma omp parallel for schedule(dynamic, 1)
-    for (int y = 0; y < s->height; y++) {
-        for (int x = 0; x < s->width; x++) {
-            float cr = x * xdiff / s->width  + s->xlim[0];
-            float ci = y * ydiff / s->height + s->ylim[0];
-            float zr = cr;
-            float zi = ci;
-            int k = 0;
-            float mk = 0.0f;
-            while (++k < s->iterations) {
-                float zr1 = zr * zr - zi * zi + cr;
-                float zi1 = zr * zi + zr * zi + ci;
-                zr = zr1;
-                zi = zi1;
-                mk += 1.0f;
-                if (zr * zr + zi * zi >= 4.0f)
-                    break;
-            }
-            mk *= iter_scale;
-            mk = sqrtf(mk);
-            mk *= depth_scale;
-            int pixel = int(mk);
-            image[y * s->width * 3 + x * 3 + 0] = pixel;
-            image[y * s->width * 3 + x * 3 + 1] = pixel;
-            image[y * s->width * 3 + x * 3 + 2] = pixel;
-        }
-    }
-}
 
 #ifdef __x86_64__
 #include <cpuid.h>

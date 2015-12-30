@@ -1,3 +1,11 @@
+// 
+// This piece of code comes from https://github.com/skeeto/mandel-simd .
+// this code is not a part of UME::SIMD library code and is used purely for
+// performance measurement reference.
+// 
+// Modifications have been made to original files to fit them for benchmarking
+// of UME::SIMD.
+
 #include <xmmintrin.h>
 #include "mandelbrot.h"
 
@@ -16,7 +24,6 @@ mandel_sse2(unsigned char *image, const struct spec *s)
     __m128 iter_scale = _mm_set_ps1(1.0f / s->iterations);
     __m128 depth_scale = _mm_set_ps1(float(s->depth - 1));
 
-    //#pragma omp parallel for schedule(dynamic, 1)
     for (int y = 0; y < s->height; y++) {
         for (int x = 0; x < s->width; x += 4) {
             __m128 mx = _mm_set_ps(float(x + 3), float(x + 2), float(x + 1), float(x + 0));

@@ -1,3 +1,11 @@
+// 
+// This piece of code comes from https://github.com/skeeto/mandel-simd .
+// this code is not a part of UME::SIMD library code and is used purely for
+// performance measurement reference.
+// 
+// Modifications have been made to original files to fit them for benchmarking
+// of UME::SIMD.
+
 #include <immintrin.h>
 #include "mandelbrot.h"
 

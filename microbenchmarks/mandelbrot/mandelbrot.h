@@ -1,4 +1,13 @@
-#pragma once
+// 
+// This piece of code comes from https://github.com/skeeto/mandel-simd .
+// this code is not a part of UME::SIMD library code and is used purely for
+// performance measurement reference.
+// 
+// Modifications have been made to original files to fit them for benchmarking
+// of UME::SIMD.
+
+#ifndef MANDELBROT_H_
+#define MANDELBROT_H_
 
 struct spec {
     /* Image Specification */
@@ -10,3 +19,5 @@ struct spec {
     float ylim[2];
     int iterations;
 };
+
+#endif
