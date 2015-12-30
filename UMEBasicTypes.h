@@ -28,8 +28,8 @@
 //  7th Framework programme Marie Curie Actions under grant PITN-GA-2012-316596".
 //
 
-#ifndef BASIC_TYPES_H_
-#define BASIC_TYPES_H_
+#ifndef UME_BASIC_TYPES_H_
+#define UME_BASIC_TYPES_H_
 
 #ifdef _MSC_VER
 

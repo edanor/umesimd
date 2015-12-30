@@ -417,7 +417,7 @@ namespace SIMD {
         }
         // MASSIGNV
         // ASSIGNS
-        inline SIMDVec_u & operator= s(SCALAR_UINT_TYPE b) {
+        inline SIMDVec_u & operator= (SCALAR_UINT_TYPE b) {
             return this->assign(b);
         }
         // MASSIGNS

@@ -119,15 +119,31 @@ namespace SIMD {
 
         //(Initialization)
         // ASSIGNV
+        inline SIMDVec_f & assign(SIMDVec_f const & b) {
+            mVec = b.mVec;
+            return *this;
+        }
         inline SIMDVec_f & operator= (SIMDVec_f const & b) {
             return this->assign(b);
         }
         // MASSIGNV
+        inline SIMDVec_f & assign(SIMDVecMask<4> const & mask, SIMDVec_f const & b) {
+            mVec = _mm_blendv_ps(mVec, b.mVec, _mm_castsi128_ps(mask.mMask));
+            return *this;
+        }
         // ASSIGNS
+        inline SIMDVec_f & assign(float b) {
+            mVec = _mm_set1_ps(b);
+        }
         inline SIMDVec_f & operator= (float b) {
             return this->assign(b);
         }
         // MASSIGNS
+        inline SIMDVec_f & assign(SIMDVecMask<4> const & mask, float b) {
+            __m128 t0 = _mm_set1_ps(b);
+            mVec = _mm_blendv_ps(mVec, t0, _mm_castsi128_ps(mask.mMask));
+            return *this;
+        }
 
         //(Memory access)
         // LOAD    - Load from memory (either aligned or unaligned) to vector 
@@ -230,9 +246,30 @@ namespace SIMD {
 
         //(Subtraction operations)
         // SUBV       - Sub with vector
+        inline SIMDVec_f sub(SIMDVec_f const & b) {
+            __m128 t0 = _mm_sub_ps(this->mVec, b.mVec);
+            return SIMDVec_f(t0);
+        }
+        inline SIMDVec_f operator- (SIMDVec_f const & b) {
+            return sub(b);
+        }
         // MSUBV      - Masked sub with vector
+        inline SIMDVec_f sub(SIMDVecMask<4> const & mask, SIMDVec_f const & b) const {
+            __m128 t0 = _mm_sub_ps(this->mVec, b.mVec);
+            return SIMDVec_f(_mm_blendv_ps(mVec, t0, _mm_castsi128_ps(mask.mMask)));
+        }
         // SUBS       - Sub with scalar
+        inline SIMDVec_f sub(float b) const {
+            return SIMDVec_f(_mm_sub_ps(this->mVec, _mm_set1_ps(b)));
+        }
+        inline SIMDVec_f operator- (float b) const {
+            return sub(b);
+        }
         // MSUBS      - Masked subtraction with scalar
+        inline SIMDVec_f sub(SIMDVecMask<4> const & mask, float b) const {
+            __m128 t0 = _mm_sub_ps(this->mVec, _mm_set1_ps(b));
+            return SIMDVec_f(_mm_blendv_ps(mVec, t0, _mm_castsi128_ps(mask.mMask)));
+        }
         // SUBVA      - Sub with vector and assign
         // MSUBVA     - Masked sub with vector and assign
         // SUBSA      - Sub with scalar and assign
@@ -316,7 +353,23 @@ namespace SIMD {
         // CMPGTV - Element-wise 'greater than' with vector
         // CMPGTS - Element-wise 'greater than' with scalar
         // CMPLTV - Element-wise 'less than' with vector
+        inline SIMDVecMask<4> cmplt(SIMDVec_f const & b) const {
+            __m128 t0 = _mm_cmplt_ps(mVec, b.mVec);
+            __m128i mask = _mm_castps_si128(t0);
+            return SIMDVecMask<4>(mask);
+        }
+        inline SIMDVecMask<4> operator< (SIMDVec_f const & b) const {
+            return cmplt(b);
+        }
         // CMPLTS - Element-wise 'less than' with scalar
+        inline SIMDVecMask<4> cmplt(float b) const {
+            __m128 t0 = _mm_cmplt_ps(mVec, _mm_set1_ps(b));
+            __m128i mask = _mm_castps_si128(t0);
+            return SIMDVecMask<4>(mask);
+        }
+        inline SIMDVecMask<4> operator< (float b) const {
+            return cmplt(b);
+        }
         // CMPGEV - Element-wise 'greater than or equal' with vector
         // CMPGES - Element-wise 'greater than or equal' with scalar
         // CMPLEV - Element-wise 'less than or equal' with vector
@@ -504,6 +557,9 @@ namespace SIMD {
 
         // (Sign modification)
         // NEG   - Negate signed values
+        inline SIMDVec_f operator- () const {
+            return this->neg();
+        }
         // MNEG  - Masked negate signed values
         // NEGA  - Negate signed values and assign
         // MNEGA - Masked negate signed values and assign
@@ -526,7 +582,16 @@ namespace SIMD {
         // SQRA      - Square of vector values and assign
         // MSQRA     - Masked square of vector values and assign
         // SQRT      - Square root of vector values
-        // MSQRT     - Masked square root of vector values 
+        inline SIMDVec_f sqrt() const {
+            __m128 t0 = _mm_sqrt_ps(mVec);
+            return SIMDVec_f(t0);
+        }
+        // MSQRT     - Masked square root of vector values
+        inline SIMDVec_f sqrt(SIMDVecMask<4> const & mask) const {
+            __m128 t0 = _mm_sqrt_ps(mVec);
+            __m128 t1 = _mm_blendv_ps(mVec, t0, _mm_castsi128_ps(mask.mMask));
+            return SIMDVec_f(t0);
+        }
         // SQRTA     - Square root of vector values and assign
         // MSQRTA    - Masked square root of vector values and assign
         // POWV      - Power (exponents in vector)
@@ -534,7 +599,16 @@ namespace SIMD {
         // POWS      - Power (exponent in scalar)
         // MPOWS     - Masked power (exponent in scalar) 
         // ROUND     - Round to nearest integer
+        inline SIMDVec_f round() const {
+            __m128 t0 = _mm_round_ps(mVec, _MM_FROUND_TO_NEAREST_INT | _MM_FROUND_NO_EXC);
+            return SIMDVec_f(t0);
+        }
         // MROUND    - Masked round to nearest integer
+        inline SIMDVec_f round(SIMDVecMask<4> const & mask) {
+            __m128 t0 = _mm_round_ps(mVec, _MM_FROUND_TO_NEAREST_INT | _MM_FROUND_NO_EXC);
+            __m128 t1 = _mm_blendv_ps(mVec, t0, _mm_castsi128_ps(mask.mMask));
+            return SIMDVec_f(t0);
+        }
         // TRUNC     - Truncate to integer (returns Signed integer vector)
         // MTRUNC    - Masked truncate to integer (returns Signed integer vector)
         // FLOOR     - Floor
