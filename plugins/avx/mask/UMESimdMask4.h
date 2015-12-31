@@ -35,7 +35,6 @@
 
 namespace UME {
 namespace SIMD {
-
     template<>
     class SIMDVecMask<4> :
         public SIMDMaskBaseInterface<
@@ -93,7 +92,7 @@ namespace SIMD {
         // EXTRACT
         inline bool extract(uint32_t index) const {
             UME_PERFORMANCE_UNOPTIMAL_WARNING()
-                alignas(16) uint32_t raw[4];
+            alignas(16) uint32_t raw[4];
             _mm_store_si128((__m128i*)raw, mMask);
             return raw[index] == TRUE();
         }
@@ -103,31 +102,23 @@ namespace SIMD {
         // INSERT
         inline void insert(uint32_t index, bool x) {
             UME_PERFORMANCE_UNOPTIMAL_WARNING()
-                alignas(16) static uint32_t raw[4] = { 0, 0, 0, 0 };
+            alignas(16) static uint32_t raw[4] = { 0, 0, 0, 0 };
             _mm_store_si128((__m128i*)raw, mMask);
             raw[index] = toMaskBool(x);
             mMask = _mm_load_si128((__m128i*)raw);
         }
 
         inline SIMDVecMask & operator= (SIMDVecMask const & x) {
-            mMask = _mm_load_si128(&x.mMask);
+            mMask = x.mMask;
             return *this;
         }
 
         // HLOR
         inline bool hlor() const {
-            int t0 = _mm_test_all_zeros(mMask, _mm_set1_epi32(0xFFFFFFFF));
+            int t0 = _mm_testz_si128(mMask, mMask);
             return t0 == 0;
-            /*alignas(16) static uint32_t raw[4];
-            _mm_store_si128((__m128i*)raw, mMask);
-            bool t0 = raw[0] != 0;
-            bool t1 = raw[1] != 0;
-            bool t2 = raw[2] != 0;
-            bool t3 = raw[3] != 0;
-            return t0 | t1 | t2 | t3;*/
         }
     };
-
 }
 }
 

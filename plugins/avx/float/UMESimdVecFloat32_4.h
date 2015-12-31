@@ -42,17 +42,17 @@ namespace SIMD {
     template<>
     class SIMDVec_f<float, 4> :
         public SIMDVecFloatInterface<
-        SIMDVec_f<float, 4>,
-        SIMDVec_u<uint32_t, 4>,
-        SIMDVec_i<int32_t, 4>,
-        float,
-        4,
-        uint32_t,
-        SIMDVecMask<4>,
-        SIMDVecSwizzle<4 >> ,
+            SIMDVec_f<float, 4>,
+            SIMDVec_u<uint32_t, 4>,
+            SIMDVec_i<int32_t, 4>,
+            float,
+            4,
+            uint32_t,
+            SIMDVecMask<4>,
+            SIMDVecSwizzle<4 >> ,
         public SIMDVecPackableInterface<
-        SIMDVec_f<float, 4>,
-        SIMDVec_f<float, 2 >>
+            SIMDVec_f<float, 4>,
+            SIMDVec_f<float, 2 >>
     {
     private:
         __m128 mVec;
@@ -134,6 +134,7 @@ namespace SIMD {
         // ASSIGNS
         inline SIMDVec_f & assign(float b) {
             mVec = _mm_set1_ps(b);
+            return *this;
         }
         inline SIMDVec_f & operator= (float b) {
             return this->assign(b);
@@ -176,15 +177,13 @@ namespace SIMD {
             _mm_store_ps(p, mVec);
             return p;
         }
-
         // MSTOREA - Masked store vector content into aligned memory
         inline float* storea(SIMDVecMask<4> const & mask, float* p) const {
             _mm_maskstore_ps(p, mask.mMask, mVec);
             return p;
         }
-
-        //(Addition operations)
-        // ADDV     - Add with vector 
+        //(Addition operations)
+        // ADDV
         inline SIMDVec_f add(SIMDVec_f const & b) const {
             __m128 t0 = _mm_add_ps(this->mVec, b.mVec);
             return SIMDVec_f(t0);
@@ -197,7 +196,7 @@ namespace SIMD {
             __m128 t0 = _mm_add_ps(this->mVec, b.mVec);
             return SIMDVec_f(_mm_blendv_ps(mVec, t0, _mm_castsi128_ps(mask.mMask)));
         }
-        // ADDS     - Add with scalar
+        // ADDS
         inline SIMDVec_f add(float b) const {
             return SIMDVec_f(_mm_add_ps(this->mVec, _mm_set1_ps(b)));
         }
@@ -209,7 +208,7 @@ namespace SIMD {
             __m128 t0 = _mm_add_ps(this->mVec, _mm_set1_ps(b));
             return SIMDVec_f(_mm_blendv_ps(mVec, t0, _mm_castsi128_ps(mask.mMask)));
         }
-        // ADDVA    - Add with vector and assign
+        // ADDVA
         inline SIMDVec_f & adda(SIMDVec_f const & b) {
             mVec = _mm_add_ps(this->mVec, b.mVec);
             return *this;
@@ -220,7 +219,7 @@ namespace SIMD {
             mVec = _mm_blendv_ps(mVec, t0, _mm_castsi128_ps(mask.mMask));
             return *this;
         }
-        // ADDSA    - Add with scalar and assign
+        // ADDSA
         inline SIMDVec_f & adda(float b) {
             mVec = _mm_add_ps(this->mVec, _mm_set1_ps(b));
             return *this;
@@ -459,7 +458,6 @@ namespace SIMD {
             __m128 t1 = _mm_blendv_ps(mVec, t0, _mm_cvtepi32_ps(mask.mMask));
             return SIMDVec_f(t1);
         }
-
         // FMULSUBV  - Fused multiply and sub (A*B - C) with vectors
         // MFMULSUBV - Masked fused multiply and sub (A*B - C) with vectors
         // FADDMULV  - Fused add and multiply ((A + B)*C) with vectors

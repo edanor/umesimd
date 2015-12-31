@@ -459,11 +459,14 @@ namespace SIMD {
     }
 
     inline SIMDVec_f<float, 8>::operator SIMDVec_i<int32_t, 8>() const {
-        return EMULATED_FUNCTIONS::xtoy < SIMDVec_i<int32_t, 8>, int32_t, SIMDVec_f<float, 8>>(*this);
+        __m256i t0 = _mm256_cvtps_epi32(mVec);
+        return SIMDVec_i<int32_t, 8>(t0);
     }
 
     inline SIMDVec_f<float, 16>::operator SIMDVec_i<int32_t, 16>() const {
-        return EMULATED_FUNCTIONS::xtoy < SIMDVec_i<int32_t, 16>, int32_t, SIMDVec_f<float, 16>>(*this);
+        __m256i t0 = _mm256_cvtps_epi32(mVecLo);
+        __m256i t1 = _mm256_cvtps_epi32(mVecHi);
+        return SIMDVec_i<int32_t, 16>(t0, t1);
     }
 
     inline SIMDVec_f<float, 32>::operator SIMDVec_i<int32_t, 32>() const {

@@ -65,17 +65,14 @@ namespace SIMD {
 
         inline SIMDVecMask(__m256i const & x) { mMask = x; };
     public:
-        inline SIMDVecMask() {
-            mMask = _mm256_set1_epi32(FALSE());
-        }
+        inline SIMDVecMask() {}
 
         // Regardless of the mask representation, the interface should only allow initialization using 
         // standard bool or using equivalent mask
         inline explicit SIMDVecMask(bool m) {
             mMask = _mm256_set1_epi32(toMaskBool(m));
         }
-
-        // LOAD-CONSTR - Construct by loading from memory
+        // LOAD-CONSTR
         inline explicit SIMDVecMask(bool const *p) {
             alignas(32) uint32_t raw[8];
             for (int i = 0; i < 8; i++) {
@@ -83,7 +80,7 @@ namespace SIMD {
             }
             mMask = _mm256_loadu_si256((__m256i*)raw);
         }
-
+        // FULL-CONSTR
         inline SIMDVecMask(bool m0, bool m1, bool m2, bool m3, bool m4, bool m5, bool m6, bool m7) {
             mMask = _mm256_setr_epi32(toMaskBool(m0), toMaskBool(m1),
                 toMaskBool(m2), toMaskBool(m3),
@@ -94,23 +91,20 @@ namespace SIMD {
         inline SIMDVecMask(SIMDVecMask const & mask) {
             this->mMask = mask.mMask;
         }
-
+        // EXTRACT
         inline bool extract(uint32_t index) const {
             UME_PERFORMANCE_UNOPTIMAL_WARNING()
-                alignas(32) uint32_t raw[8];
+            alignas(32) uint32_t raw[8];
             _mm256_store_si256((__m256i*)raw, mMask);
             return raw[index] == TRUE();
         }
-
-        // A non-modifying element-wise access operator
         inline bool operator[] (uint32_t index) const {
             return extract(index);
         }
-
-        // Element-wise modification operator
+        // INSERT
         inline void insert(uint32_t index, bool x) {
             UME_PERFORMANCE_UNOPTIMAL_WARNING()
-                alignas(32) static uint32_t raw[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
+            alignas(32) static uint32_t raw[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
             _mm256_store_si256((__m256i*)raw, mMask);
             raw[index] = toMaskBool(x);
             mMask = _mm256_load_si256((__m256i*)raw);
@@ -119,6 +113,12 @@ namespace SIMD {
         inline SIMDVecMask & operator= (SIMDVecMask const & x) {
             mMask = x.mMask;
             return *this;
+        }
+
+        // HLOR
+        inline bool hlor() const {
+            int t0 = _mm256_testz_si256(mMask, mMask);
+            return t0 == 0;
         }
     };
 }

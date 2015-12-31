@@ -41,6 +41,7 @@ void mandel_umesimd(unsigned char *image, const struct spec *s)
     typedef typename UME::SIMD::SIMDTraits<VEC_T>::MASK_T    MASK_T;
     typedef typename UME::SIMD::SIMDTraits<VEC_T>::INT_VEC_T INT_VEC_T;
 
+    const unsigned int VEC_LEN = VEC_T::length();
     VEC_T xmin(s->xlim[0]);
     VEC_T ymin(s->ylim[0]);
     VEC_T xscale((s->xlim[1] - s->xlim[0]) / s->width);
@@ -51,12 +52,12 @@ void mandel_umesimd(unsigned char *image, const struct spec *s)
     VEC_T depth_scale(SCALAR_T(s->depth - 1));
 
     // Initialize vector of incremental values: 0, 1, 2, 3, ... up to VEC_LEN
-    SCALAR_T initializer1[VEC_T::length()];
-    for (unsigned int i = 0; i < VEC_T::length(); i++) initializer1[i] = SCALAR_T(i);
+    SCALAR_T initializer1[VEC_LEN];
+    for (unsigned int i = 0; i < VEC_LEN; i++) initializer1[i] = SCALAR_T(i);
     VEC_T initial_increments(initializer1);
 
     for (int y = 0; y < s->height; y++) {
-        for (int x = 0; x < s->width; x += VEC_T::length()) {
+        for (int x = 0; x < s->width; x += VEC_LEN) {
             VEC_T mx = initial_increments + SCALAR_T(x);
             VEC_T my = VEC_T(float(y));
             VEC_T cr = mx.fmuladd(xscale, xmin);
@@ -90,9 +91,9 @@ void mandel_umesimd(unsigned char *image, const struct spec *s)
             mk = mk * depth_scale;
             INT_VEC_T pixels = INT_VEC_T(mk.round());
             unsigned char *dst = image + y * s->width * 3 + x * 3;
-            unsigned char src[VEC_T::length()*4];
+            unsigned char src[VEC_LEN *4];
             pixels.store((int32_t*)src);
-            for (unsigned int i = 0; i < VEC_T::length(); i++) {
+            for (unsigned int i = 0; i < VEC_LEN; i++) {
                 dst[i * 3 + 0] = src[i * 4];
                 dst[i * 3 + 1] = src[i * 4];
                 dst[i * 3 + 2] = src[i * 4];

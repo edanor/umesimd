@@ -140,15 +140,36 @@ namespace SIMD {
 
         //(Initialization)
         // ASSIGNV
+        inline SIMDVec_f & assign(SIMDVec_f const & b) {
+            mVecLo = b.mVecLo;
+            mVecHi = b.mVecHi;
+            return *this;
+        }
         inline SIMDVec_f & operator= (SIMDVec_f const & b) {
-            return this->assign(b);
+            return assign(b);
         }
         // MASSIGNV
+        inline SIMDVec_f & assign(SIMDVecMask<16> const & mask, SIMDVec_f const & b) {
+            mVecLo = _mm256_blendv_ps(mVecLo, b.mVecLo, _mm256_castsi256_ps(mask.mMaskLo));
+            mVecHi = _mm256_blendv_ps(mVecHi, b.mVecHi, _mm256_castsi256_ps(mask.mMaskHi));
+            return *this;
+        }
         // ASSIGNS
+        inline SIMDVec_f & assign(float b) {
+            mVecLo = _mm256_set1_ps(b);
+            mVecHi = mVecLo;
+            return *this;
+        }
         inline SIMDVec_f & operator= (float b) {
-            return this->assign(b);
+            return assign(b);
         }
         // MASSIGNS
+        inline SIMDVec_f & assign(SIMDVecMask<16> const & mask, float b) {
+            __m256 t0 = _mm256_set1_ps(b);
+            mVecLo = _mm256_blendv_ps(mVecLo, t0, _mm256_castsi256_ps(mask.mMaskLo));
+            mVecHi = _mm256_blendv_ps(mVecHi, t0, _mm256_castsi256_ps(mask.mMaskHi));
+            return *this;
+        }
 
         //(Memory access)
         // LOAD    - Load from memory (either aligned or unaligned) to vector 
@@ -200,7 +221,7 @@ namespace SIMD {
             return SIMDVec_f(t0, t1);
         }
         inline SIMDVec_f operator+ (SIMDVec_f const & b) {
-            return this->add(b);
+            return add(b);
         }
         // MADDV    - Masked add with vector
         inline SIMDVec_f add(SIMDVecMask<16> const & mask, SIMDVec_f const & b) const {
@@ -279,10 +300,42 @@ namespace SIMD {
         // MPREFINC - Masked prefix increment
 
         //(Subtraction operations)
-        // SUBV       - Sub with vector
-        // MSUBV      - Masked sub with vector
-        // SUBS       - Sub with scalar
-        // MSUBS      - Masked subtraction with scalar
+        // SUBV
+        inline SIMDVec_f sub(SIMDVec_f const & b) const {
+            __m256 t0 = _mm256_sub_ps(this->mVecLo, b.mVecLo);
+            __m256 t1 = _mm256_sub_ps(this->mVecHi, b.mVecHi);
+            return SIMDVec_f(t0, t1);
+        }
+        inline SIMDVec_f operator- (SIMDVec_f const & b) {
+            return sub(b);
+        }
+        // MSUBV
+        inline SIMDVec_f sub(SIMDVecMask<16> const & mask, SIMDVec_f const & b) const {
+            __m256 t0 = _mm256_sub_ps(this->mVecLo, b.mVecLo);
+            __m256 t1 = _mm256_blendv_ps(mVecLo, t0, _mm256_castsi256_ps(mask.mMaskLo));
+            __m256 t2 = _mm256_sub_ps(this->mVecHi, b.mVecHi);
+            __m256 t3 = _mm256_blendv_ps(mVecHi, t2, _mm256_castsi256_ps(mask.mMaskHi));
+            return SIMDVec_f(t1, t3);
+        }
+        // SUBS
+        inline SIMDVec_f sub(float b) const {
+            __m256 t0 = _mm256_set1_ps(b);
+            __m256 t1 = _mm256_sub_ps(this->mVecLo, t0);
+            __m256 t2 = _mm256_sub_ps(this->mVecHi, t0);
+            return SIMDVec_f(t1, t2);
+        }
+        inline SIMDVec_f operator- (float b) const {
+            return sub(b);
+        }
+        // MSUBS
+        inline SIMDVec_f sub(SIMDVecMask<16> const & mask, float b) const {
+            __m256 t0 = _mm256_set1_ps(b);
+            __m256 t1 = _mm256_sub_ps(mVecLo, t0);
+            __m256 t2 = _mm256_sub_ps(mVecHi, t0);
+            __m256 t3 = _mm256_blendv_ps(mVecLo, t1, _mm256_castsi256_ps(mask.mMaskLo));
+            __m256 t4 = _mm256_blendv_ps(mVecHi, t2, _mm256_castsi256_ps(mask.mMaskHi));
+            return SIMDVec_f(t3, t4);
+        }
         // SUBVA      - Sub with vector and assign
         // MSUBVA     - Masked sub with vector and assign
         // SUBSA      - Sub with scalar and assign
@@ -402,7 +455,27 @@ namespace SIMD {
         // CMPGTV - Element-wise 'greater than' with vector
         // CMPGTS - Element-wise 'greater than' with scalar
         // CMPLTV - Element-wise 'less than' with vector
+        inline SIMDVecMask<16> cmplt(SIMDVec_f const & b) const {
+            __m256 t0 = _mm256_cmp_ps(mVecLo, b.mVecLo, 17);
+            __m256 t1 = _mm256_cmp_ps(mVecHi, b.mVecHi, 17);
+            __m256i m0 = _mm256_castps_si256(t0);
+            __m256i m1 = _mm256_castps_si256(t1);
+            return SIMDVecMask<16>(m0, m1);
+        }
+        inline SIMDVecMask<16> operator< (SIMDVec_f const & b) const {
+            return cmplt(b);
+        }
         // CMPLTS - Element-wise 'less than' with scalar
+        inline SIMDVecMask<16> cmplt(float b) const {
+            __m256 t0 = _mm256_cmp_ps(mVecLo, _mm256_set1_ps(b), 17);
+            __m256 t1 = _mm256_cmp_ps(mVecHi, _mm256_set1_ps(b), 17);
+            __m256i m0 = _mm256_castps_si256(t0);
+            __m256i m1 = _mm256_castps_si256(t1);
+            return SIMDVecMask<16>(m0, m1);
+        }
+        inline SIMDVecMask<16> operator< (float b) const {
+            return cmplt(b);
+        }
         // CMPGEV - Element-wise 'greater than or equal' with vector
         // CMPGES - Element-wise 'greater than or equal' with scalar
         // CMPLEV - Element-wise 'less than or equal' with vector
@@ -584,6 +657,9 @@ namespace SIMD {
 
         // (Sign modification)
         // NEG   - Negate signed values
+        inline SIMDVec_f operator- () const {
+            return this->neg();
+        }
         // MNEG  - Masked negate signed values
         // NEGA  - Negate signed values and assign
         // MNEGA - Masked negate signed values and assign
@@ -606,15 +682,43 @@ namespace SIMD {
         // SQRA      - Square of vector values and assign
         // MSQRA     - Masked square of vector values and assign
         // SQRT      - Square root of vector values
-        // MSQRT     - Masked square root of vector values 
+        SIMDVec_f sqrt() const {
+            __m256 t0 = _mm256_sqrt_ps(mVecLo);
+            __m256 t1 = _mm256_sqrt_ps(mVecHi);
+            return SIMDVec_f(t0, t1);
+        }
+        // MSQRT     - Masked square root of vector values
+        SIMDVec_f sqrt(SIMDVecMask<16> const & mask) const {
+            __m256 m0 = _mm256_castsi256_ps(mask.mMaskLo);
+            __m256 m1 = _mm256_castsi256_ps(mask.mMaskHi);
+            __m256 t0 = _mm256_sqrt_ps(mVecLo);
+            __m256 t1 = _mm256_sqrt_ps(mVecHi);
+            __m256 t2 = _mm256_blendv_ps(mVecLo, t0, m0);
+            __m256 t3 = _mm256_blendv_ps(mVecHi, t1, m1);
+            return SIMDVec_f(t2, t3);
+        }
         // SQRTA     - Square root of vector values and assign
         // MSQRTA    - Masked square root of vector values and assign
         // POWV      - Power (exponents in vector)
         // MPOWV     - Masked power (exponents in vector)
         // POWS      - Power (exponent in scalar)
         // MPOWS     - Masked power (exponent in scalar) 
-        // ROUND     - Round to nearest integer
-        // MROUND    - Masked round to nearest integer
+        // ROUND
+        inline SIMDVec_f round() const {
+            __m256 t0 = _mm256_round_ps(mVecLo, _MM_FROUND_TO_NEAREST_INT | _MM_FROUND_NO_EXC);
+            __m256 t1 = _mm256_round_ps(mVecHi, _MM_FROUND_TO_NEAREST_INT | _MM_FROUND_NO_EXC);
+            return SIMDVec_f(t0, t1);
+        }
+        // MROUND
+        inline SIMDVec_f round(SIMDVecMask<16> const & mask) const {
+            __m256 m0 = _mm256_castsi256_ps(mask.mMaskLo);
+            __m256 m1 = _mm256_castsi256_ps(mask.mMaskHi);
+            __m256 t0 = _mm256_round_ps(mVecLo, _MM_FROUND_TO_NEAREST_INT | _MM_FROUND_NO_EXC);
+            __m256 t1 = _mm256_round_ps(mVecHi, _MM_FROUND_TO_NEAREST_INT | _MM_FROUND_NO_EXC);
+            __m256 t2 = _mm256_blendv_ps(mVecLo, t0, m0);
+            __m256 t3 = _mm256_blendv_ps(mVecHi, t1, m1);
+            return SIMDVec_f(t2, t3);
+        }
         // TRUNC     - Truncate to integer (returns Signed integer vector)
         inline SIMDVec_i<int32_t, 16> trunc() const {
             __m256i t0 = _mm256_cvtps_epi32(_mm256_round_ps(mVecLo, _MM_FROUND_TO_ZERO | _MM_FROUND_NO_EXC));

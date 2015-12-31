@@ -125,6 +125,29 @@ namespace SIMD {
         }
         // MASSIGNS
 
+        // LOAD
+        // MLOAD
+        // LOADA
+        // MLOADA
+        // STORE
+        inline int32_t * store(int32_t *p) const {
+            _mm256_storeu_si256((__m256i *)p, mVec);
+            return p;
+        }
+        // MSTORE
+        inline int32_t * store(SIMDVecMask<8> const & mask, int32_t *p) const {
+            __m256i t0 = _mm256_load_si256((__m256i*)p);
+            __m256 t1 = _mm256_castsi256_ps(mVec);
+            __m256 t2 = _mm256_castsi256_ps(t0);
+            __m256 t3 = _mm256_castsi256_ps(mask.mMask);
+            __m256 t4 = _mm256_blendv_ps(t1, t2, t3);
+            __m256i t5 = _mm256_castps_si256(t4);
+            _mm256_storeu_si256((__m256i*)p, t5);
+            return p;
+        }
+        // STOREA
+        // MSTOREA
+
         // ABS
         inline SIMDVec_i abs() const {
             __m128i a_low = _mm256_extractf128_si256(mVec, 0);

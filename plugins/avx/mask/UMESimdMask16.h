@@ -136,6 +136,13 @@ namespace UME {
             mMaskHi = x.mMaskHi;
             return *this;
         }
+
+        // HLOR
+        inline bool hlor() const {
+            int t0 = _mm256_testz_si256(mMaskLo, mMaskLo);
+            int t1 = _mm256_testz_si256(mMaskHi, mMaskHi);
+            return (t0 == 0) | (t1 == 0);
+        }
     };
 
 }

@@ -119,15 +119,32 @@ namespace SIMD {
 
         //(Initialization)
         // ASSIGNV
+        inline SIMDVec_f & assign(SIMDVec_f const & b) {
+            mVec = b.mVec;
+            return *this;
+        }
         inline SIMDVec_f & operator= (SIMDVec_f const & b) {
-            return this->assign(b);
+            return assign(b);
         }
         // MASSIGNV
+        inline SIMDVec_f & assign(SIMDVecMask<8> const & mask, SIMDVec_f const & b) {
+            mVec = _mm256_blendv_ps(mVec, b.mVec, _mm256_castsi256_ps(mask.mMask));
+            return *this;
+        }
         // ASSIGNS
+        inline SIMDVec_f & assign(float b) {
+            mVec = _mm256_set1_ps(b);
+            return *this;
+        }
         inline SIMDVec_f & operator= (float b) {
-            return this->assign(b);
+            return assign(b);
         }
         // MASSIGNS
+        inline SIMDVec_f & assign(SIMDVecMask<8> const & mask, float b) {
+            __m256 t0 = _mm256_set1_ps(b);
+            mVec = _mm256_blendv_ps(mVec, t0, _mm256_castsi256_ps(mask.mMask));
+            return *this;
+        }
 
         //(Memory access)
         // LOAD    - Load from memory (either aligned or unaligned) to vector 
@@ -171,6 +188,9 @@ namespace SIMD {
             __m256 t0 = _mm256_add_ps(mVec, b.mVec);
             return SIMDVec_f(t0);
         }
+        inline SIMDVec_f operator+ (SIMDVec_f const & b) const {
+            return add(b);
+        }
         // MADDV
         inline SIMDVec_f add(SIMDVecMask<8> const & mask, SIMDVec_f const & b) const {
             __m256 t0 = _mm256_add_ps(mVec, b.mVec);
@@ -179,6 +199,9 @@ namespace SIMD {
         // ADDS
         inline SIMDVec_f add(float b) const {
             return SIMDVec_f(_mm256_add_ps(mVec, _mm256_set1_ps(b)));
+        }
+        inline SIMDVec_f operator+ (float b) const {
+            return add(b);
         }
         // MADDS
         inline SIMDVec_f add(SIMDVecMask<8> const & mask, float b) const {
@@ -222,9 +245,30 @@ namespace SIMD {
 
         //(Subtraction operations)
         // SUBV       - Sub with vector
+        inline SIMDVec_f sub(SIMDVec_f const & b) {
+            __m256 t0 = _mm256_sub_ps(this->mVec, b.mVec);
+            return SIMDVec_f(t0);
+        }
+        inline SIMDVec_f operator- (SIMDVec_f const & b) {
+            return sub(b);
+        }
         // MSUBV      - Masked sub with vector
+        inline SIMDVec_f sub(SIMDVecMask<8> const & mask, SIMDVec_f const & b) const {
+            __m256 t0 = _mm256_sub_ps(this->mVec, b.mVec);
+            return SIMDVec_f(_mm256_blendv_ps(mVec, t0, _mm256_castsi256_ps(mask.mMask)));
+        }
         // SUBS       - Sub with scalar
+        inline SIMDVec_f sub(float b) const {
+            return SIMDVec_f(_mm256_sub_ps(this->mVec, _mm256_set1_ps(b)));
+        }
+        inline SIMDVec_f operator- (float b) const {
+            return sub(b);
+        }
         // MSUBS      - Masked subtraction with scalar
+        inline SIMDVec_f sub(SIMDVecMask<8> const & mask, float b) const {
+            __m256 t0 = _mm256_sub_ps(this->mVec, _mm256_set1_ps(b));
+            return SIMDVec_f(_mm256_blendv_ps(mVec, t0, _mm256_castsi256_ps(mask.mMask)));
+        }
         // SUBVA      - Sub with vector and assign
         // MSUBVA     - Masked sub with vector and assign
         // SUBSA      - Sub with scalar and assign
@@ -255,6 +299,9 @@ namespace SIMD {
         inline SIMDVec_f mul(SIMDVec_f const & b) const {
             return SIMDVec_f(_mm256_mul_ps(mVec, b.mVec));
         }
+        inline SIMDVec_f operator*(SIMDVec_f const & b) const {
+            return mul(b);
+        }
         // MMULV  - Masked multiplication with vector
         inline SIMDVec_f mul(SIMDVecMask<8> const & mask, SIMDVec_f const & b) const {
             __m256 t0 = _mm256_mul_ps(mVec, b.mVec);
@@ -263,6 +310,9 @@ namespace SIMD {
         // MULS   - Multiplication with scalar
         inline SIMDVec_f mul(float b)  const {
             return SIMDVec_f(_mm256_mul_ps(mVec, _mm256_set1_ps(b)));
+        }
+        inline SIMDVec_f operator* (float b) const {
+            return mul(b);
         }
         // MMULS  - Masked multiplication with scalar
         inline SIMDVec_f mul(SIMDVecMask<8> const & mask, float b) const {
@@ -316,12 +366,58 @@ namespace SIMD {
         // CMPGTV - Element-wise 'greater than' with vector
         // CMPGTS - Element-wise 'greater than' with scalar
         // CMPLTV - Element-wise 'less than' with vector
+        inline SIMDVecMask<8> cmplt(SIMDVec_f const & b) const {
+            __m256 t0 = _mm256_cmp_ps(mVec, b.mVec, 17);
+            __m256i mask = _mm256_castps_si256(t0);
+            return SIMDVecMask<8>(mask);
+        }
+        inline SIMDVecMask<8> operator< (SIMDVec_f const & b) const {
+            return cmplt(b);
+        }
         // CMPLTS - Element-wise 'less than' with scalar
+        inline SIMDVecMask<8> cmplt(float b) const {
+            __m256 t0 = _mm256_cmp_ps(mVec, _mm256_set1_ps(b), 17);
+            __m256i mask = _mm256_castps_si256(t0);
+            return SIMDVecMask<8>(mask);
+        }
+        inline SIMDVecMask<8> operator< (float b) const {
+            return cmplt(b);
+        }
         // CMPGEV - Element-wise 'greater than or equal' with vector
         // CMPGES - Element-wise 'greater than or equal' with scalar
         // CMPLEV - Element-wise 'less than or equal' with vector
         // CMPLES - Element-wise 'less than or equal' with scalar
         // CMPEX  - Check if vectors are exact (returns scalar 'bool')
+
+        //(Bitwise operations)
+        // ANDV   - AND with vector
+        // MANDV  - Masked AND with vector
+        // ANDS   - AND with scalar
+        // MANDS  - Masked AND with scalar
+        // ANDVA  - AND with vector and assign
+        // MANDVA - Masked AND with vector and assign
+        // ANDSA  - AND with scalar and assign
+        // MANDSA - Masked AND with scalar and assign
+        // ORV    - OR with vector
+        // MORV   - Masked OR with vector
+        // ORS    - OR with scalar
+        // MORS   - Masked OR with scalar
+        // ORVA   - OR with vector and assign
+        // MORVA  - Masked OR with vector and assign
+        // ORSA   - OR with scalar and assign
+        // MORSA  - Masked OR with scalar and assign
+        // XORV   - XOR with vector
+        // MXORV  - Masked XOR with vector
+        // XORS   - XOR with scalar
+        // MXORS  - Masked XOR with scalar
+        // XORVA  - XOR with vector and assign
+        // MXORVA - Masked XOR with vector and assign
+        // XORSA  - XOR with scalar and assign
+        // MXORSA - Masked XOR with scalar and assign
+        // NOT    - Negation of bits
+        // MNOT   - Masked negation of bits
+        // NOTA   - Negation of bits and assign
+        // MNOTA  - Masked negation of bits and assign
 
         // (Pack/Unpack operations - not available for SIMD1)
         // PACK     - assign vector with two half-length vectors
@@ -343,9 +439,15 @@ namespace SIMD {
         // MHADD - Masked add elements of a vector (horizontal add)
         // HMUL  - Multiply elements of a vector (horizontal mul)
         // MHMUL - Masked multiply elements of a vector (horizontal mul)
+        // HAND  - AND of elements of a vector (horizontal AND)
+        // MHAND - Masked AND of elements of a vector (horizontal AND)
+        // HOR   - OR of elements of a vector (horizontal OR)
+        // MHOR  - Masked OR of elements of a vector (horizontal OR)
+        // HXOR  - XOR of elements of a vector (horizontal XOR)
+        // MHXOR - Masked XOR of elements of a vector (horizontal XOR)
 
         //(Fused arithmetics)
-        // FMULADDV  - Fused multiply and add (A*B + C) with vectors
+        // FMULADDV
         inline SIMDVec_f fmuladd(SIMDVec_f const & a, SIMDVec_f const & b) {
 #ifdef FMA
             return _mm256_fmadd_ps(this->mVec, a.mVec, b.mVec);
@@ -404,6 +506,9 @@ namespace SIMD {
 
         // (Sign modification)
         // NEG   - Negate signed values
+        inline SIMDVec_f operator- () const {
+            return this->neg();
+        }
         // MNEG  - Masked negate signed values
         // NEGA  - Negate signed values and assign
         // MNEGA - Masked negate signed values and assign
@@ -441,8 +546,18 @@ namespace SIMD {
         // MPOWV     - Masked power (exponents in vector)
         // POWS      - Power (exponent in scalar)
         // MPOWS     - Masked power (exponent in scalar) 
-        // ROUND     - Round to nearest integer
-        // MROUND    - Masked round to nearest integer
+        // ROUND
+        inline SIMDVec_f round() const {
+            __m256 t0 = _mm256_round_ps(mVec, _MM_FROUND_TO_NEAREST_INT | _MM_FROUND_NO_EXC);
+            return SIMDVec_f(t0);
+        }
+        // MROUND
+        inline SIMDVec_f round(SIMDVecMask<8> const & mask) const {
+            __m256 m0 = _mm256_castsi256_ps(mask.mMask);
+            __m256 t0 = _mm256_round_ps(mVec, _MM_FROUND_TO_NEAREST_INT | _MM_FROUND_NO_EXC);
+            __m256 t1 = _mm256_blendv_ps(mVec, t0, m0);
+            return SIMDVec_f(t1);
+        }
         // TRUNC     - Truncate to integer (returns Signed integer vector)
         SIMDVec_i<int32_t, 8> trunc() const {
             __m256i t0 = _mm256_cvttps_epi32(mVec);
