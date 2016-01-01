@@ -32,7 +32,6 @@
 #define UME_SIMD_VEC_FLOAT_PROTOTYPE_H_
 
 #include <type_traits>
-#include <immintrin.h>
 
 #include "../../../UMESimdInterface.h"
 
@@ -52,6 +51,7 @@ namespace SIMD {
     // 32b vectors
     template<>
     struct SIMDVec_f_traits<float, 1> {
+        typedef NullType<1>             HALF_LEN_VEC_TYPE;
         typedef SIMDVec_u<uint32_t, 1>  VEC_UINT_TYPE;
         typedef SIMDVec_i<int32_t, 1>   VEC_INT_TYPE;
         typedef int32_t                 SCALAR_INT_TYPE;
@@ -76,6 +76,7 @@ namespace SIMD {
 
     template<>
     struct SIMDVec_f_traits<double, 1> {
+        typedef NullType<1>             HALF_LEN_VEC_TYPE;
         typedef SIMDVec_u<uint64_t, 1>  VEC_UINT_TYPE;
         typedef SIMDVec_i<int64_t, 1>   VEC_INT_TYPE;
         typedef int64_t                 SCALAR_INT_TYPE;
@@ -354,95 +355,17 @@ namespace SIMD {
         inline operator SIMDVec_i<SCALAR_INT_TYPE, VEC_LEN>() const;
     };
 
-    // ***************************************************************************
-    // *
-    // *    Partial specialization of floating point SIMD for VEC_LEN == 1.
-    // *    This specialization is necessary to eliminate PACK operations from
-    // *    being used on SIMD1 types.
-    // *
-    // ***************************************************************************
-    template<typename SCALAR_FLOAT_TYPE>
-    class SIMDVec_f<SCALAR_FLOAT_TYPE, 1> :
-        public SIMDVecFloatInterface<
-            SIMDVec_f<SCALAR_FLOAT_TYPE, 1>,
-            typename SIMDVec_f_traits<SCALAR_FLOAT_TYPE, 1>::VEC_UINT_TYPE,
-            typename SIMDVec_f_traits<SCALAR_FLOAT_TYPE, 1>::VEC_INT_TYPE,
-            SCALAR_FLOAT_TYPE,
-            1,
-            typename SIMDVec_f_traits<SCALAR_FLOAT_TYPE, 1>::SCALAR_UINT_TYPE,
-            typename SIMDVec_f_traits<SCALAR_FLOAT_TYPE, 1>::MASK_TYPE,
-            typename SIMDVec_f_traits<SCALAR_FLOAT_TYPE, 1>::SWIZZLE_MASK_TYPE>
+    // A template for SIMD NullTypes. These are created whenever
+    // a terminating scalar type is used as a creator function for SIMD type.
+    // These types cannot be instantiated, but are necessary for 
+    // typeset to be consistent.
+    template<int N, int VEC_LEN>
+    class SIMDVec_f<NullType<N>, VEC_LEN>
     {
-    public:
-        typedef SIMDVecEmuRegister<SCALAR_FLOAT_TYPE, 1> VEC_EMU_REG;
-        typedef typename SIMDVec_f_traits<SCALAR_FLOAT_TYPE, 1>::SCALAR_UINT_TYPE SCALAR_UINT_TYPE;
-        typedef typename SIMDVec_f_traits<SCALAR_FLOAT_TYPE, 1>::SCALAR_INT_TYPE SCALAR_INT_TYPE;
-
-        typedef SIMDVec_f VEC_TYPE;
-        typedef typename SIMDVec_f_traits<SCALAR_FLOAT_TYPE, 1>::VEC_UINT_TYPE VEC_UINT_TYPE;
-        typedef typename SIMDVec_f_traits<SCALAR_FLOAT_TYPE, 1>::VEC_INT_TYPE VEC_INT_TYPE;
-        typedef typename SIMDVec_f_traits<SCALAR_FLOAT_TYPE, 1>::MASK_TYPE       MASK_TYPE;
     private:
-        VEC_EMU_REG mVec;
-
-    public:
-        // ZERO-CONSTR
-        inline SIMDVec_f() : mVec() {};
-
-        // SET-CONSTR
-        inline explicit SIMDVec_f(SCALAR_FLOAT_TYPE f) : mVec(f) {};
-
-        // LOAD-CONSTR - Construct by loading from memory
-        inline explicit SIMDVec_f(SCALAR_FLOAT_TYPE const *p) { this->load(p); }
-
-        // EXTRACT
-        inline SCALAR_FLOAT_TYPE extract(uint32_t index) const {
-            return mVec[0];
-        }
-        inline SCALAR_FLOAT_TYPE operator[] (uint32_t index) const {
-            return extract(index);
-        }
-
-        // INSERT
-        inline SIMDVec_f & insert(uint32_t index, SCALAR_FLOAT_TYPE value) {
-            mVec.insert(index, value);
-            return *this;
-        }
-        inline IntermediateIndex<SIMDVec_f, SCALAR_FLOAT_TYPE> operator[] (uint32_t index) {
-            return IntermediateIndex<SIMDVec_f, SCALAR_FLOAT_TYPE>(index, static_cast<SIMDVec_f &>(*this));
-        }
-
-        // Override Mask Access operators
-#if defined(USE_PARENTHESES_IN_MASK_ASSIGNMENT)
-        inline IntermediateMask<SIMDVec_f, SCALAR_FLOAT_TYPE, SIMDVecMask<1>> operator() (SIMDVecMask<1> const & mask) {
-            return IntermediateMask<SIMDVec_f, SCALAR_FLOAT_TYPE, SIMDVecMask<1>>(mask, static_cast<SIMDVec_f &>(*this));
-        }
-#else
-        inline IntermediateMask<SIMDVec_f, SCALAR_FLOAT_TYPE, SIMDVecMask<1>> operator[] (SIMDVecMask<1> const & mask) {
-            return IntermediateMask<SIMDVec_f, SCALAR_FLOAT_TYPE, SIMDVecMask<1>>(mask, static_cast<SIMDVec_f &>(*this));
-        }
-#endif
-
-        // ASSIGNV
-        inline SIMDVec_f & operator= (SIMDVec_f const & b) {
-            return this->assign(b);
-        }
-        // ASSIGNS
-        inline SIMDVec_f & operator= (SCALAR_FLOAT_TYPE b) {
-            return this->assign(b);
-        }
-
-        // FTOU
-        inline operator SIMDVec_u<SCALAR_UINT_TYPE, 1>() const;
-        // FTOI
-        inline operator SIMDVec_i<SCALAR_INT_TYPE, 1>() const;
+        SIMDVec_f() {}
+        ~SIMDVec_f() {}
     };
-
-    template<uint32_t VEC_LEN>
-    class SIMDVec_f<NullType, VEC_LEN> {};
-
-    template<>
-    class SIMDVec_f<NullType, 1> {};
 
 }
 }

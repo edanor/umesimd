@@ -4,7 +4,7 @@
 //
 // Author: Przemyslaw Karpinski
 //
-// Permission is hereby granted, free of charge, to any person obtaining a copy
+// Permission is hereby granted, free   of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
@@ -516,11 +516,12 @@ namespace SIMD {
     }
 
     // PROMOTE
+    /*
     template<>
     inline SIMDVec_u<uint8_t, 1>::operator SIMDVec_u<uint16_t, 1>() const {
         return EMULATED_FUNCTIONS::xtoy <SIMDVec_u<uint16_t, 1>, uint16_t, SIMDVec_u<uint8_t, 1>>(*this);
     }
-    /*
+    
     template<>
     inline SIMDVec_u<uint8_t, 2>::operator SIMDVec_u<uint16_t, 2>() const {
         return EMULATED_FUNCTIONS::xtoy <SIMDVec_u<uint16_t, 2>, SIMDVec_u<uint8_t, 2>>(*this);
@@ -622,11 +623,11 @@ namespace SIMD {
     }
     */
     // DEGRADE
+    /*
     template<>
     inline SIMDVec_u<uint16_t, 1>::operator SIMDVec_u<uint8_t, 1>() const {
         return EMULATED_FUNCTIONS::xtoy <SIMDVec_u<uint8_t, 1>, uint8_t, SIMDVec_u<uint16_t, 1>>(*this);
     }
-    /*
     template<>
     inline SIMDVec_u<uint16_t, 2>::operator SIMDVec_u<uint8_t, 2>() const {
         return EMULATED_FUNCTIONS::xtoy <SIMDVec_u<uint8_t, 2>, SIMDVec_u<uint16_t, 2>>(*this);
@@ -687,11 +688,11 @@ namespace SIMD {
         return EMULATED_FUNCTIONS::xtoy <SIMDVec_u<uint16_t, 32>, SIMDVec_u<uint32_t, 32>>(*this);
     }
     */
+    /*
     template<>
     inline SIMDVec_u<uint64_t, 1>::operator SIMDVec_u<uint32_t, 1>() const {
         return EMULATED_FUNCTIONS::xtoy <SIMDVec_u<uint32_t, 1>, uint32_t, SIMDVec_u<uint64_t, 1>>(*this);
     }
-    /*
     template<>
     inline SIMDVec_u<uint64_t, 2>::operator SIMDVec_u<uint32_t, 2>() const {
         return EMULATED_FUNCTIONS::xtoy <SIMDVec_u<uint32_t, 2>, SIMDVec_u<uint64_t, 2>>(*this);
