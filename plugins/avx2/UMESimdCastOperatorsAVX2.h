@@ -667,6 +667,7 @@ namespace SIMD {
         return EMULATED_FUNCTIONS::xtoy <SIMDVec_i<int64_t, 8>, int64_t, SIMDVec_i<int32_t, 8>>(*this);
     }
 
+    template<>
     inline SIMDVec_i<int32_t, 16>::operator SIMDVec_i<int64_t, 16>() const {
         return EMULATED_FUNCTIONS::xtoy <SIMDVec_i<int64_t, 16>, int64_t, SIMDVec_i<int32_t, 16>>(*this);
     }
@@ -742,6 +743,7 @@ namespace SIMD {
         return EMULATED_FUNCTIONS::xtoy <SIMDVec_u<uint16_t, 8>, uint16_t, SIMDVec_u<uint32_t, 8>>(*this);
     }
 
+    template<>
     inline SIMDVec_u<uint32_t, 16>::operator SIMDVec_u<uint16_t, 16>() const {
         return EMULATED_FUNCTIONS::xtoy <SIMDVec_u<uint16_t, 16>, uint16_t, SIMDVec_u<uint32_t, 16>>(*this);
     }
@@ -825,6 +827,7 @@ namespace SIMD {
         return EMULATED_FUNCTIONS::xtoy <SIMDVec_i<int16_t, 8>, int16_t, SIMDVec_i<int32_t, 8>>(*this);
     }
 
+    template<>
     inline SIMDVec_i<int32_t, 16>::operator SIMDVec_i<int16_t, 16>() const {
         return EMULATED_FUNCTIONS::xtoy <SIMDVec_i<int16_t, 16>, int16_t, SIMDVec_i<int32_t, 16>>(*this);
     }
@@ -868,14 +871,17 @@ namespace SIMD {
         return EMULATED_FUNCTIONS::xtoy <SIMDVec_f<float, 2>, float, SIMDVec_f<double, 2>>(*this);
     }
 
+    template<>
     inline SIMDVec_f<double, 4>::operator SIMDVec_f<float, 4>() const {
         return EMULATED_FUNCTIONS::xtoy <SIMDVec_f<float, 4>, float, SIMDVec_f<double, 4>>(*this);
     }
 
+    template<>
     inline SIMDVec_f<double, 8>::operator SIMDVec_f<float, 8>() const {
         return EMULATED_FUNCTIONS::xtoy <SIMDVec_f<float, 8>, float, SIMDVec_f<double, 8>>(*this);
     }
 
+    template<>
     inline SIMDVec_f<double, 16>::operator SIMDVec_f<float, 16>() const {
         return EMULATED_FUNCTIONS::xtoy <SIMDVec_f<float, 16>, float, SIMDVec_f<double, 16>>(*this);
     }
