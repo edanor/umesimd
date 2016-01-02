@@ -172,11 +172,17 @@ namespace SIMD {
             return SIMDVec_i(ret);
         }
 
+        // PROMOTE
+        inline operator SIMDVec_i<int64_t, 8>() const;
+        // DEMOTE
+        inline operator SIMDVec_i<int16_t, 8>() const;
+
         // ITOU
         inline operator SIMDVec_u<uint32_t, 8>() const;
         // ITOF
         inline operator SIMDVec_f<float, 8>() const;
     };
+
 }
 }
 

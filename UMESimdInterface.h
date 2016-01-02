@@ -2661,7 +2661,7 @@ namespace SIMD
             return retval;
         }
 
-        // xTOy (UTOI, ITOU, UTOF, FTOU)
+        // xTOy (UTOI, ITOU, UTOF, FTOU, PROMOTE, DEGRADE)
         template<typename VEC_Y_TYPE, typename SCALAR_Y_TYPE, typename VEC_X_TYPE>
         inline VEC_Y_TYPE xtoy(VEC_X_TYPE const & a) {
             UME_EMULATION_WARNING();

@@ -444,6 +444,11 @@ namespace SIMD {
         // SUBV
         // NEG
 
+        // PROMOTE
+        inline operator SIMDVec_i<int64_t, 2>() const;
+        // DEMOTE
+        inline operator SIMDVec_i<int16_t, 2>() const;
+
         // ITOU
         inline operator SIMDVec_u<uint32_t, 2>() const;
         // ITOF

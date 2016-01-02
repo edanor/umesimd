@@ -158,6 +158,12 @@ int test_UME_SIMD64_16u(bool supressMessages) {
         64,
         DataSet_1_16u>();
 
+    genericDEMOTETest<
+        SIMD64_16u, uint16_t,
+        SIMD64_8u, uint8_t,
+        64,
+        DataSet_1_16u>();
+
     return g_failCount;
 }
 
@@ -178,6 +184,12 @@ int test_UME_SIMD64_16i(bool supressMessages) {
         64,
         DataSet_1_16i>();
 
+    genericDEMOTETest<
+        SIMD64_16i, int16_t,
+        SIMD64_8i,  int8_t,
+        64,
+        DataSet_1_16i>();
+
     return g_failCount;
 }
 
@@ -194,11 +206,16 @@ int test_UME_SIMD32_32u(bool supressMessages) {
         32,
         DataSet_1_32u>();
 
+    genericDEMOTETest<
+        SIMD32_32u, uint32_t,
+        SIMD32_16u, uint16_t,
+        32,
+        DataSet_1_32u>();
+
     {
         SIMD32_32u vec0;
         CHECK_CONDITION(true, "ZERO-CONSTR");
     }
-
 
     return g_failCount;
 }
@@ -216,12 +233,16 @@ int test_UME_SIMD32_32i(bool supressMessages) {
         32,
         DataSet_1_32i>();
 
+    genericDEMOTETest<
+        SIMD32_32i, int32_t,
+        SIMD32_16i, int16_t,
+        32,
+        DataSet_1_32i>();
+
     {
         SIMD32_32i vec0;
         CHECK_CONDITION(true, "ZERO-CONSTR");
     }
-
-
 
     return g_failCount;
 }
@@ -265,6 +286,12 @@ int test_UME_SIMD16_64u(bool supressMessages) {
         16,
         DataSet_1_64u>();
 
+    genericDEMOTETest<
+        SIMD16_64u, uint64_t,
+        SIMD16_32u, uint32_t,
+        16,
+        DataSet_1_64u>();
+
     return g_failCount;
 }
 
@@ -282,6 +309,12 @@ int test_UME_SIMD16_64i(bool supressMessages) {
         SIMD16_64i, int64_t,
         SIMD16_64u, uint64_t,
         SIMDMask16,
+        16,
+        DataSet_1_64i>();
+
+    genericDEMOTETest<
+        SIMD16_64i, int64_t,
+        SIMD16_32i, int32_t,
         16,
         DataSet_1_64i>();
 
@@ -306,6 +339,11 @@ int test_UME_SIMD16_64f(bool supressMessages) {
         16,
         DataSet_1_64f>();
 
+    genericDEMOTETest<
+        SIMD16_64f, double,
+        SIMD16_32f, float,
+        16,
+        DataSet_1_64i>();
 
     return g_failCount;
 }

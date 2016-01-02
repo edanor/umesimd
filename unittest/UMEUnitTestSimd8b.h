@@ -71,6 +71,12 @@ int test_UME_SIMD1_8u(bool supressMessages) {
         1,
         DataSet_1_8u>();
 
+    genericPROMOTETest<
+        SIMD1_8u, uint8_t,
+        SIMD1_16u, uint16_t,
+        1,
+        DataSet_1_8u>();
+
     return g_failCount;
 }
 
@@ -100,6 +106,12 @@ int test_UME_SIMD1_8i(bool supressMessages) {
         SIMD1_8i, int8_t,
         SIMD1_8u, uint8_t,
         SIMDMask1,
+        1,
+        DataSet_1_8i>();
+
+    genericPROMOTETest<
+        SIMD1_8i,  int8_t,
+        SIMD1_16i, int16_t,
         1,
         DataSet_1_8i>();
 

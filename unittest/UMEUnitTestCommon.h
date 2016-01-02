@@ -4692,6 +4692,53 @@ void genericFTOITest()
     CHECK_CONDITION(inRange, "FTOI");
 }
 
+template<typename VEC_TYPE_X, typename SCALAR_TYPE_X, typename VEC_TYPE_Y, typename SCALAR_TYPE_Y, int VEC_LEN, typename DATA_SET>
+void genericPROMOTETest()
+{
+    SCALAR_TYPE_X input[VEC_LEN];
+    SCALAR_TYPE_Y expected[VEC_LEN];
+    SCALAR_TYPE_Y output[VEC_LEN];
+
+    // Easier to generate output data here than to pre-compute it. There
+    // are too many conversions to provide ready data sets.
+    for (int i = 0; i < VEC_LEN; i++) {
+        input[i] = SCALAR_TYPE_X(DATA_SET::inputs::inputA[i]);
+        expected[i] = SCALAR_TYPE_Y(DATA_SET::inputs::inputA[i]);
+    }
+
+    VEC_TYPE_X vec0(input);
+    VEC_TYPE_Y vec1;
+
+    vec1 = VEC_TYPE_Y(vec0);
+    vec1.store(output);
+    bool inRange = valuesInRange(output, expected, VEC_LEN, 0.01f);
+    CHECK_CONDITION(inRange, "PROMOTE");
+}
+
+
+template<typename VEC_TYPE_X, typename SCALAR_TYPE_X, typename VEC_TYPE_Y, typename SCALAR_TYPE_Y, int VEC_LEN, typename DATA_SET>
+void genericDEMOTETest()
+{
+    SCALAR_TYPE_X input[VEC_LEN];
+    SCALAR_TYPE_Y expected[VEC_LEN];
+    SCALAR_TYPE_Y output[VEC_LEN];
+
+    // Easier to generate output data here than to pre-compute it. There
+    // are too many conversions to provide ready data sets.
+    for (int i = 0; i < VEC_LEN; i++) {
+        input[i] = SCALAR_TYPE_X(DATA_SET::inputs::inputA[i]);
+        expected[i] = SCALAR_TYPE_Y(DATA_SET::inputs::inputA[i]);
+    }
+
+    VEC_TYPE_X vec0(input);
+    VEC_TYPE_Y vec1;
+
+    vec1 = VEC_TYPE_Y(vec0);
+    vec1.store(output);
+    bool inRange = valuesInRange(output, expected, VEC_LEN, 0.01f);
+    CHECK_CONDITION(inRange, "DEMOTE");
+}
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericBaseInterfaceTest()
 {   
@@ -4804,7 +4851,7 @@ void genericBaseInterfaceTest()
 
     // BLENDV
     // BLENDS
-    
+
     genericHADDTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
     // MHADD
     // HADDS

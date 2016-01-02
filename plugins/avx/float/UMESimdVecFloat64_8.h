@@ -41,14 +41,14 @@ namespace SIMD {
     template<>
     class SIMDVec_f<double, 8> :
         public SIMDVecFloatInterface<
-        SIMDVec_f<double, 8>,
-        SIMDVec_u<uint64_t, 8>,
-        SIMDVec_i<int64_t, 8>,
-        double,
-        8,
-        uint64_t,
-        SIMDVecMask<8>, // Using non-standard mask!
-        SIMDVecSwizzle<4 >> ,
+            SIMDVec_f<double, 8>,
+            SIMDVec_u<uint64_t, 8>,
+            SIMDVec_i<int64_t, 8>,
+            double,
+            8,
+            uint64_t,
+            SIMDVecMask<8>, // Using non-standard mask!
+            SIMDVecSwizzle<8>> ,
         public SIMDVecPackableInterface<
         SIMDVec_f<double, 8>,
         SIMDVec_f<double, 4 >>
@@ -504,6 +504,11 @@ namespace SIMD {
         // MTAN      - Masked tangent
         // CTAN      - Cotangent
         // MCTAN     - Masked cotangent
+
+        // PROMOTE
+        // -
+        // DEMOTE
+        inline operator SIMDVec_f<float, 8>() const;
 
         // FTOU
         inline operator SIMDVec_u<uint64_t, 8>() const;

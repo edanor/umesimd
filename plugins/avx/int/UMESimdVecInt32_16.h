@@ -196,6 +196,11 @@ namespace SIMD {
             return SIMDVec_i(ret_lo, ret_hi);
         }
 
+        // PROMOTE
+        inline operator SIMDVec_i<int64_t, 16>() const;
+        // DEMOTE
+        inline operator SIMDVec_i<int16_t, 16>() const;
+
         // ITOU
         inline  operator SIMDVec_u<uint32_t, 16> () const;
         // ITOF

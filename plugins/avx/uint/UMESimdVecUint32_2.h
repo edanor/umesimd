@@ -32,8 +32,9 @@
 #define UME_SIMD_VEC_UINT32_2_H_
 
 #include <type_traits>
-#include "../../../UMESimdInterface.h"
 #include <immintrin.h>
+
+#include "../../../UMESimdInterface.h"
 
 namespace UME {
 namespace SIMD {
@@ -427,6 +428,11 @@ namespace SIMD {
         }
         // UNPACKLO
         // UNPACKHI
+
+        // PROMOTE
+        inline operator SIMDVec_u<uint64_t, 2>() const;
+        // DEMOTE
+        inline operator SIMDVec_u<uint16_t, 2>() const;
 
         // UTOI
         inline operator SIMDVec_i<int32_t, 2>() const;

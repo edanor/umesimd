@@ -477,10 +477,16 @@ namespace SIMD {
         // UNPACKLO
         // UNPACKHI
 
+        // PROMOTE
+        inline operator SIMDVec_u<uint64_t, 8>() const;
+        // DEMOTE
+        inline operator SIMDVec_u<uint16_t, 8>() const;
+
         // UTOI
         inline operator SIMDVec_i<int32_t, 8>() const;
         // UTOF
         inline operator SIMDVec_f<float, 8>() const;
+
     };
 }
 }

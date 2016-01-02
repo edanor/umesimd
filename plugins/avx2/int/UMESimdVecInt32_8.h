@@ -50,8 +50,8 @@ namespace SIMD {
             SIMDVecMask<8>,
             SIMDVecSwizzle<8 >> ,
         public SIMDVecPackableInterface<
-           SIMDVec_i<int32_t, 8>,
-           SIMDVec_i<int32_t, 4 >>
+            SIMDVec_i<int32_t, 8>,
+            SIMDVec_i<int32_t, 4 >>
     {
         friend class SIMDVec_u<uint32_t, 8>;
         friend class SIMDVec_f<float, 8>;
@@ -159,6 +159,11 @@ namespace SIMD {
             }*/
             return true;
         }
+
+        // PROMOTE
+        inline operator SIMDVec_i<int64_t, 8>() const;
+        // DEMOTE
+        inline operator SIMDVec_i<int16_t, 8>() const;
 
         // ITOU
         inline operator SIMDVec_u<uint32_t, 8>() const;

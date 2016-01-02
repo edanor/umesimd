@@ -39,6 +39,8 @@
 namespace UME {
 namespace SIMD {
 
+    class SIMDVec_f<double, 8>;
+
     template<>
     class SIMDVec_f<float, 8> :
         public SIMDVecFloatInterface<
@@ -597,6 +599,11 @@ namespace SIMD {
         // MTAN      - Masked tangent
         // CTAN      - Cotangent
         // MCTAN     - Masked cotangent
+
+        // PROMOTE
+        inline operator SIMDVec_f<double, 8>() const;
+        // DEMOTE
+        // -
 
         // FTOU
         inline operator SIMDVec_u<uint32_t, 8>() const;

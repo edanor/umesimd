@@ -474,6 +474,11 @@ namespace SIMD {
         // CTAN      - Cotangent
         // MCTAN     - Masked cotangent
 
+        // PROMOTE
+        inline operator SIMDVec_f<double, 4>() const;
+        // DEMOTE
+        // -
+
         // FTOU
         inline operator SIMDVec_u<uint32_t, 4>() const;
         // FTOI

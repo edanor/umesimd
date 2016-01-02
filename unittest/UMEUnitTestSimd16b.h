@@ -87,6 +87,12 @@ int test_UME_SIMD2_8u(bool supressMessages) {
         2,
         DataSet_1_8u>();
 
+    genericPROMOTETest<
+        SIMD2_8u, uint8_t,
+        SIMD2_16u, uint16_t,
+        2,
+        DataSet_1_8u>();
+
     return g_failCount;
 }
 
@@ -119,9 +125,14 @@ int test_UME_SIMD2_8i(bool supressMessages) {
         2,
         DataSet_1_8i>();
 
+    genericPROMOTETest<
+        SIMD2_8i,  int8_t,
+        SIMD2_16i, int16_t,
+        2,
+        DataSet_1_8i>();
+
     return g_failCount;
 }
-
 
 int test_UME_SIMD1_16u(bool supressMessages) {
     char header[] = "UME::SIMD::SIMD1_16u test";
@@ -136,6 +147,18 @@ int test_UME_SIMD1_16u(bool supressMessages) {
         SIMD1_16u, uint16_t,
         SIMD1_16i, int16_t,
         SIMDMask1,
+        1,
+        DataSet_1_16u>();
+
+    genericPROMOTETest<
+        SIMD1_16u, uint16_t,
+        SIMD1_32u, uint32_t,
+        1,
+        DataSet_1_16u>();
+
+    genericDEMOTETest<
+        SIMD1_16u, uint16_t,
+        SIMD1_8u, uint8_t,
         1,
         DataSet_1_16u>();
 
@@ -167,6 +190,18 @@ int test_UME_SIMD1_16i(bool supressMessages) {
         SIMD1_16i, int16_t,
         SIMD1_16u, uint16_t,
         SIMDMask1,
+        1,
+        DataSet_1_16i>();
+
+    genericPROMOTETest<
+        SIMD1_16i, int16_t,
+        SIMD1_32i, int32_t,
+        1,
+        DataSet_1_16i>();
+
+    genericDEMOTETest<
+        SIMD1_16i, int16_t,
+        SIMD1_8i,  int8_t,
         1,
         DataSet_1_16i>();
 

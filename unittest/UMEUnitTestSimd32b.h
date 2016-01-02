@@ -101,6 +101,12 @@ int test_UME_SIMD4_8u(bool supressMessages) {
         4,
         DataSet_1_8u>();
 
+    genericPROMOTETest<
+        SIMD4_8u,  uint8_t,
+        SIMD4_16u, uint16_t,
+        4,
+        DataSet_1_8u>();
+
     return g_failCount;
 }
 
@@ -132,9 +138,14 @@ int test_UME_SIMD4_8i(bool supressMessages) {
         4,
         DataSet_1_8i>();
 
+    genericPROMOTETest<
+        SIMD4_8i,  int8_t,
+        SIMD4_16i, int16_t,
+        4,
+        DataSet_1_8i>();
+
     return g_failCount;
 }
-
 
 int test_UME_SIMD2_16u(bool supressMessages) {
     char header[] = "UME::SIMD::SIMD2_16u test";
@@ -149,6 +160,18 @@ int test_UME_SIMD2_16u(bool supressMessages) {
         SIMD2_16u, uint16_t,
         SIMD2_16i, int16_t,
         SIMDMask2,
+        2,
+        DataSet_1_16u>();
+
+    genericPROMOTETest<
+        SIMD2_16u, uint16_t,
+        SIMD2_32u, uint32_t,
+        2,
+        DataSet_1_16u>();
+
+    genericDEMOTETest<
+        SIMD2_16u, uint16_t,
+        SIMD2_8u,  uint8_t,
         2,
         DataSet_1_16u>();
 
@@ -191,6 +214,18 @@ int test_UME_SIMD2_16i(bool supressMessages) {
         2,
         DataSet_1_16i>();
 
+    genericPROMOTETest<
+        SIMD2_16i, int16_t,
+        SIMD2_32i, int32_t,
+        2,
+        DataSet_1_16i>();
+
+    genericDEMOTETest<
+        SIMD2_16i, int16_t,
+        SIMD2_8i,  int8_t,
+        2,
+        DataSet_1_16i>();
+
     return g_failCount;
 }
 
@@ -210,6 +245,18 @@ int test_UME_SIMD1_32u(bool supressMessages) {
         1,
         DataSet_1_32u>();
 
+    genericPROMOTETest<
+        SIMD1_32u, uint32_t,
+        SIMD1_64u, uint64_t,
+        1,
+        DataSet_1_32u>();
+
+    genericDEMOTETest<
+        SIMD1_32u, uint32_t,
+        SIMD1_16u, uint16_t,
+        1,
+        DataSet_1_32u>();
+
     return g_failCount;
 }
 
@@ -222,6 +269,18 @@ int test_UME_SIMD1_32i(bool supressMessages) {
         SIMD1_32u, uint32_t,
         SIMD1_32f, float,
         SIMDMask1,
+        1,
+        DataSet_1_32i>();
+
+    genericPROMOTETest<
+        SIMD1_32i, int32_t,
+        SIMD1_64i, int64_t,
+        1,
+        DataSet_1_32i>();
+
+    genericDEMOTETest<
+        SIMD1_32i, int32_t,
+        SIMD1_16i, int16_t,
         1,
         DataSet_1_32i>();
 
@@ -248,6 +307,12 @@ int test_UME_SIMD1_32f(bool supressMessages) {
         SIMD1_32u, uint32_t,
         SIMD1_32i, int32_t,
         SIMDMask1, 
+        1,
+        DataSet_1_32f>();
+
+    genericPROMOTETest<
+        SIMD1_32f, float,
+        SIMD1_64f, double,
         1,
         DataSet_1_32f>();
 

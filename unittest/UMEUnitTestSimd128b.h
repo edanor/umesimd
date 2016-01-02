@@ -142,6 +142,12 @@ int test_UME_SIMD16_8u(bool supressMessages)
         16,
         DataSet_1_8u>();
 
+    genericPROMOTETest<
+        SIMD16_8u, uint8_t,
+        SIMD16_16u, uint16_t,
+        16,
+        DataSet_1_8u>();
+
     return g_failCount;
 }
 
@@ -159,6 +165,12 @@ int test_UME_SIMD16_8i(bool supressMessages)
         SIMD16_8i, int8_t,
         SIMD16_8u, uint8_t,
         SIMDMask16,
+        16,
+        DataSet_1_8i>();
+
+    genericPROMOTETest<
+        SIMD16_8i, int8_t,
+        SIMD16_16i, int16_t,
         16,
         DataSet_1_8i>();
 
@@ -398,6 +410,18 @@ int test_UME_SIMD8_16u(bool supressMessages)
         8,
         DataSet_1_16u>();
 
+    genericPROMOTETest<
+        SIMD8_16u, uint16_t,
+        SIMD8_32u, uint32_t,
+        8,
+        DataSet_1_16u>();
+
+    genericDEMOTETest<
+        SIMD8_16u, uint16_t,
+        SIMD8_8u,  uint8_t,
+        8,
+        DataSet_1_16u>();
+
     return g_failCount;
 }
 
@@ -539,6 +563,18 @@ int test_UME_SIMD8_16i(bool supressMessages)
         8,
         DataSet_1_16i>();
 
+    genericPROMOTETest<
+        SIMD8_16i, int16_t,
+        SIMD8_32i, int32_t,
+        8,
+        DataSet_1_16i>();
+
+    genericDEMOTETest<
+        SIMD8_16i, int16_t,
+        SIMD8_8i,  int8_t,
+        8,
+        DataSet_1_16i>();
+
     return g_failCount;
 }
 
@@ -553,6 +589,18 @@ int test_UME_SIMD4_32u(bool supressMessages)
         SIMD4_32i, int32_t,
         SIMD4_32f, float,
         SIMDMask4,
+        4,
+        DataSet_1_32u>();
+
+    genericPROMOTETest<
+        SIMD4_32u, uint32_t,
+        SIMD4_64u, uint64_t,
+        4,
+        DataSet_1_32u>();
+
+    genericDEMOTETest<
+        SIMD4_32u, uint32_t,
+        SIMD4_16u, uint16_t,
         4,
         DataSet_1_32u>();
 
@@ -1449,6 +1497,18 @@ int test_UME_SIMD4_32i(bool supressMessages)
         SIMD4_32u, uint32_t,
         SIMD4_32f, float,
         SIMDMask4,
+        4,
+        DataSet_1_32i>();
+
+    genericPROMOTETest<
+        SIMD4_32i, int32_t,
+        SIMD4_64i, int64_t,
+        4,
+        DataSet_1_32i>();
+
+    genericDEMOTETest<
+        SIMD4_32i, int32_t,
+        SIMD4_16i, int16_t,
         4,
         DataSet_1_32i>();
 
@@ -2500,6 +2560,12 @@ int test_UME_SIMD4_32f(bool supressMessages)
         4,
         DataSet_1_32f>();
 
+    genericPROMOTETest<
+        SIMD4_32f, float,
+        SIMD4_64f, double,
+        4,
+        DataSet_1_32f>();
+
     {
         SIMD4_32f vec0(1.0f);
         SIMD4_32f vec1(2.0f);
@@ -3257,6 +3323,12 @@ int test_UME_SIMD2_64i(bool supressMessages)
         2,
         DataSet_1_64i>();
 
+    genericDEMOTETest<
+        SIMD2_64i, int64_t,
+        SIMD2_32i, int32_t,
+        2,
+        DataSet_1_64i>();
+
     return g_failCount;
 }
 
@@ -3278,6 +3350,12 @@ int test_UME_SIMD2_64u(bool supressMessages)
         2,
         DataSet_1_64u>();
 
+    genericDEMOTETest<
+        SIMD2_64u, uint64_t,
+        SIMD2_32u, uint32_t,
+        2,
+        DataSet_1_64u>();
+
     return g_failCount;
 }
 
@@ -3296,6 +3374,12 @@ int test_UME_SIMD2_64f(bool supressMessages)
         SIMD2_64u, uint64_t,
         SIMD2_64i, int64_t,
         SIMDMask2,
+        2,
+        DataSet_1_64f>();
+
+    genericDEMOTETest<
+        SIMD2_64f, double,
+        SIMD2_32f, float,
         2,
         DataSet_1_64f>();
 
