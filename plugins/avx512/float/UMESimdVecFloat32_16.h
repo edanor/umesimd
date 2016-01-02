@@ -1107,6 +1107,11 @@ namespace SIMD {
             return SIMDVec_f<float, 8>(t0);
         }
 
+        // PROMOTE
+        inline operator SIMDVec_f<double, 16>() const;
+        // DEMOTE
+        // -
+
         // FTOU
         inline operator SIMDVec_u<uint32_t, 16>() const;
         // FTOI

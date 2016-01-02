@@ -403,6 +403,11 @@ namespace SIMD {
         // RORSA
         // MRORSA
 
+        // PROMOTE
+        inline operator SIMDVec_u<uint64_t, 1>() const;
+        // DEMOTE
+        inline operator SIMDVec_u<uint16_t, 1>() const;
+
         // UTOI
         inline operator SIMDVec_i<int32_t, 1>() const;
         // UTOF

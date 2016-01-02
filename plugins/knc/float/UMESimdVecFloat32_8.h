@@ -600,6 +600,16 @@ namespace SIMD {
         // MTAN      - Masked tangent
         // CTAN      - Cotangent
         // MCTAN     - Masked cotangent
+
+        // PROMOTE
+        inline operator SIMDVec_f<double, 8>() const;
+        // DEMOTE
+        // -
+
+        // FTOU
+        inline operator SIMDVec_u<uint32_t, 8>() const;
+        // FTOI
+        inline operator SIMDVec_i<int32_t, 8>() const;
     };
 }
 }
