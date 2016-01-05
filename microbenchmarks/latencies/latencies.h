@@ -33,6 +33,21 @@ bool getRandomValue() {
     return getRandomValue<uint8_t>() > 128 ? true : false;
 }
 
+template<typename VEC_T, typename SCALAR_T>
+SCALAR_T forceReduction(VEC_T & x) {
+    return x.hadd();
+}
+
+// specialization for masks
+template <> bool forceReduction<SIMDMask1, bool>(SIMDMask1 & x) { return x.hlxor(); }
+template <> bool forceReduction<SIMDMask2, bool>(SIMDMask2 & x) { return x.hlxor(); }
+template <> bool forceReduction<SIMDMask4, bool>(SIMDMask4 & x) { return x.hlxor(); }
+template <> bool forceReduction<SIMDMask8, bool>(SIMDMask8 & x) { return x.hlxor(); }
+template <> bool forceReduction<SIMDMask16, bool>(SIMDMask16 & x) { return x.hlxor(); }
+template <> bool forceReduction<SIMDMask32, bool>(SIMDMask32 & x) { return x.hlxor(); }
+template <> bool forceReduction<SIMDMask64, bool>(SIMDMask64 & x) { return x.hlxor(); }
+template <> bool forceReduction<SIMDMask128, bool> (SIMDMask128 & x) { return x.hlxor(); }
+
 const int ITERATIONS = 1000;
 
 // Generate test function for Base vector operations of following form:
@@ -42,7 +57,7 @@ const int ITERATIONS = 1000;
 //
 // instr_name - name of instruction as defined in UME::SIMD interface spec
 // MFI_name   - name of function in Member Function Interface used to implement instr_name
-#define DEFINE_BASE_TEST_TEMPLATE(instr_name, MFI_name) \
+#define DEFINE_VEC_VEC_TEST_TEMPLATE(instr_name, MFI_name) \
 template<typename VEC_T> \
 void instr_name##Latency() { \
     unsigned long long start = 0, end = 0; \
@@ -70,7 +85,7 @@ void instr_name##Latency() { \
             res.assign(vec0.MFI_name(vec1)); \
         end = __rdtsc(); \
  \
-        volatile SCALAR_T x = res.hadd(); \
+        volatile SCALAR_T x = forceReduction<VEC_T, SCALAR_T>(res); \
  \
         delta = end - start; \
         float d = float(delta) - latency_avg; \
@@ -90,7 +105,7 @@ void instr_name##Latency() { \
 //
 // instr_name - name of instruction as defined in UME::SIMD interface spec
 // MFI_name   - name of function in Member Function Interface used to implement instr_name
-#define DEFINE_BASE_TEST_MASK_TEMPLATE(instr_name, MFI_name) \
+#define DEFINE_VEC_MASK_VEC_TEST_TEMPLATE(instr_name, MFI_name) \
 template<typename VEC_T> \
 void instr_name##Latency() { \
     unsigned long long start = 0, end = 0; \
@@ -142,7 +157,7 @@ void instr_name##Latency() { \
 //
 // instr_name - name of instruction as defined in UME::SIMD interface spec
 // MFI_name   - name of function in Member Function Interface used to implement instr_name
-#define DEFINE_BASE_TEST_SCALAR_TEMPLATE(instr_name, MFI_name) \
+#define DEFINE_VEC_SCALAR_TEST_TEMPLATE(instr_name, MFI_name) \
 template<typename VEC_T> \
 void instr_name##Latency() { \
     unsigned long long start = 0, end = 0; \
@@ -168,7 +183,7 @@ void instr_name##Latency() { \
             res.assign(vec0.MFI_name(scalarOp)); \
         end = __rdtsc(); \
  \
-        volatile SCALAR_T x = res.hadd(); \
+        volatile SCALAR_T x = forceReduction<VEC_T, SCALAR_T>(res); \
  \
         delta = end - start; \
         float d = float(delta) - latency_avg; \
@@ -189,7 +204,7 @@ void instr_name##Latency() { \
 //
 // instr_name - name of instruction as defined in UME::SIMD interface spec
 // MFI_name   - name of function in Member Function Interface used to implement instr_name
-#define DEFINE_BASE_TEST_MASK_SCALAR_TEMPLATE(instr_name, MFI_name) \
+#define DEFINE_VEC_MASK_SCALAR_TEST_TEMPLATE(instr_name, MFI_name) \
 template<typename VEC_T> \
 void instr_name##Latency() { \
     unsigned long long start = 0, end = 0; \
@@ -243,7 +258,7 @@ void instr_name##Latency() { \
 //
 // instr_name - name of instruction as defined in UME::SIMD interface spec
 // MFI_name   - name of function in Member Function Interface used to implement instr_name
-#define DEFINE_BASE_TEST_ASSIGN_TEMPLATE(instr_name, MFI_name) \
+#define DEFINE_ASSIGN_VEC_TEST_TEMPLATE(instr_name, MFI_name) \
 template<typename VEC_T> \
 void instr_name##Latency() { \
     unsigned long long start = 0, end = 0; \
@@ -271,7 +286,7 @@ void instr_name##Latency() { \
             vec0.MFI_name(vec1); \
         end = __rdtsc(); \
  \
-        volatile SCALAR_T x = vec0.hadd(); \
+        volatile SCALAR_T x = forceReduction<VEC_T, SCALAR_T>(vec0); \
  \
         delta = end - start; \
         float d = float(delta) - latency_avg; \
@@ -293,7 +308,7 @@ void instr_name##Latency() { \
 //
 // instr_name - name of instruction as defined in UME::SIMD interface spec
 // MFI_name   - name of function in Member Function Interface used to implement instr_name
-#define DEFINE_BASE_TEST_MASK_ASSIGN_TEMPLATE(instr_name, MFI_name) \
+#define DEFINE_ASSIGN_MASK_VEC_TEST_TEMPLATE(instr_name, MFI_name) \
 template<typename VEC_T> \
 void instr_name##Latency() { \
     unsigned long long start = 0, end = 0; \
@@ -346,7 +361,7 @@ void instr_name##Latency() { \
 //
 // instr_name - name of instruction as defined in UME::SIMD interface spec
 // MFI_name   - name of function in Member Function Interface used to implement instr_name
-#define DEFINE_BASE_TEST_SCALAR_ASSIGN_TEMPLATE(instr_name, MFI_name) \
+#define DEFINE_ASSIGN_SCALAR_TEST_TEMPLATE(instr_name, MFI_name) \
 template<typename VEC_T> \
 void instr_name##Latency() { \
     unsigned long long start = 0, end = 0; \
@@ -371,7 +386,7 @@ void instr_name##Latency() { \
             vec0.MFI_name(scalarOp); \
         end = __rdtsc(); \
  \
-        volatile SCALAR_T x = vec0.hadd(); \
+        volatile SCALAR_T x = forceReduction<VEC_T, SCALAR_T>(vec0); \
  \
         delta = end - start; \
         float d = float(delta) - latency_avg; \
@@ -394,7 +409,7 @@ void instr_name##Latency() { \
 //
 // instr_name - name of instruction as defined in UME::SIMD interface spec
 // MFI_name   - name of function in Member Function Interface used to implement instr_name
-#define DEFINE_BASE_TEST_MASK_SCALAR_ASSIGN_TEMPLATE(instr_name, MFI_name) \
+#define DEFINE_ASSIGN_MASK_SCALAR_TEST_TEMPLATE(instr_name, MFI_name) \
 template<typename VEC_T> \
 void instr_name##Latency() { \
     unsigned long long start = 0, end = 0; \
@@ -444,7 +459,7 @@ void instr_name##Latency() { \
 //
 // instr_name - name of instruction as defined in UME::SIMD interface spec
 // MFI_name   - name of function in Member Function Interface used to implement instr_name
-#define DEFINE_BASE_TEST_UNARY_TEMPLATE(instr_name, MFI_name) \
+#define DEFINE_VEC_TEST_TEMPLATE(instr_name, MFI_name) \
 template<typename VEC_T> \
 void instr_name##Latency() { \
     unsigned long long start = 0, end = 0; \
@@ -489,7 +504,7 @@ void instr_name##Latency() { \
 //
 // instr_name - name of instruction as defined in UME::SIMD interface spec
 // MFI_name   - name of function in Member Function Interface used to implement instr_name
-#define DEFINE_BASE_TEST_UNARY_MASK_TEMPLATE(instr_name, MFI_name) \
+#define DEFINE_VEC_MASK_TEST_TEMPLATE(instr_name, MFI_name) \
 template<typename VEC_T> \
 void instr_name##Latency() { \
     unsigned long long start = 0, end = 0; \
@@ -539,7 +554,7 @@ void instr_name##Latency() { \
 // 
 // instr_name - name of instruction as defined in UME::SIMD interface spec
 // MFI_name   - name of function in Member Function Interface used to implement instr_name
-#define DEFINE_BASE_TEST_UNARY_ASSIGN_TEMPLATE(instr_name, MFI_name) \
+#define DEFINE_ASSIGN_TEST_TEMPLATE(instr_name, MFI_name) \
 template<typename VEC_T> \
 void instr_name##Latency() { \
     unsigned long long start = 0, end = 0; \
@@ -578,13 +593,14 @@ void instr_name##Latency() { \
 // Generate test function for Base vector operations of following form:
 //
 //   VEC_T vec0;
-//   vec0.<MFI_FUNCTION>();
+//   MASK_T mask;
+//   vec0.<MFI_FUNCTION>(mask);
 //
 //  where MFI_FUNCTION is an in-place operation (e.g. MRCPA)
 // 
 // instr_name - name of instruction as defined in UME::SIMD interface spec
 // MFI_name   - name of function in Member Function Interface used to implement instr_name
-#define DEFINE_BASE_TEST_UNARY_MASK_ASSIGN_TEMPLATE(instr_name, MFI_name) \
+#define DEFINE_ASSIGN_MASK_TEST_TEMPLATE(instr_name, MFI_name) \
 template<typename VEC_T> \
 void instr_name##Latency() { \
     unsigned long long start = 0, end = 0; \
@@ -633,7 +649,7 @@ void instr_name##Latency() { \
 //
 // instr_name - name of instruction as defined in UME::SIMD interface spec
 // MFI_name   - name of function in Member Function Interface used to implement instr_name
-#define DEFINE_BASE_TEST_PREDICATE_TEMPLATE(instr_name, MFI_name) \
+#define DEFINE_MASK_VEC_TEST_TEMPLATE(instr_name, MFI_name) \
 template<typename VEC_T> \
 void instr_name##Latency() { \
     unsigned long long start = 0, end = 0; \
@@ -676,13 +692,14 @@ void instr_name##Latency() { \
 
 // Generate test function for Base vector operations of following form:
 //
-//   VEC_T vec0, vec1;
+//   VEC_T vec0;
+//   SCALAR_T scalar;
 //   MASK_T mask;
-//   mask = vec0.<MFI_FUNCTION>(vec1);
+//   mask = vec0.<MFI_FUNCTION>(scalar);
 //
 // instr_name - name of instruction as defined in UME::SIMD interface spec
 // MFI_name   - name of function in Member Function Interface used to implement instr_name
-#define DEFINE_BASE_TEST_PREDICATE_SCALAR_TEMPLATE(instr_name, MFI_name) \
+#define DEFINE_MASK_SCALAR_TEST_TEMPLATE(instr_name, MFI_name) \
 template<typename VEC_T> \
 void instr_name##Latency() { \
     unsigned long long start = 0, end = 0; \
@@ -729,7 +746,7 @@ void instr_name##Latency() { \
 //
 // instr_name - name of instruction as defined in UME::SIMD interface spec
 // MFI_name   - name of function in Member Function Interface used to implement instr_name
-#define DEFINE_BASE_TEST_REDUCTION_TEMPLATE(instr_name, MFI_name) \
+#define DEFINE_SCALAR_TEST_TEMPLATE(instr_name, MFI_name) \
 template<typename VEC_T> \
 void instr_name##Latency() { \
     unsigned long long start = 0, end = 0; \
@@ -772,7 +789,7 @@ void instr_name##Latency() { \
 //
 // instr_name - name of instruction as defined in UME::SIMD interface spec
 // MFI_name   - name of function in Member Function Interface used to implement instr_name
-#define DEFINE_BASE_TEST_REDUCTION_MASK_TEMPLATE(instr_name, MFI_name) \
+#define DEFINE_SCALAR_MASK_TEST_TEMPLATE(instr_name, MFI_name) \
 template<typename VEC_T> \
 void instr_name##Latency() { \
     unsigned long long start = 0, end = 0; \
@@ -820,7 +837,7 @@ void instr_name##Latency() { \
 //
 // instr_name - name of instruction as defined in UME::SIMD interface spec
 // MFI_name   - name of function in Member Function Interface used to implement instr_name
-#define DEFINE_BASE_TEST_REDUCTION_SCALAR_TEMPLATE(instr_name, MFI_name) \
+#define DEFINE_SCALAR_SCALAR_TEST_TEMPLATE(instr_name, MFI_name) \
 template<typename VEC_T> \
 void instr_name##Latency() { \
     unsigned long long start = 0, end = 0; \
@@ -859,12 +876,13 @@ void instr_name##Latency() { \
 // Generate test function for Base vector operations of following form:
 //
 //   VEC_T vec0;
+//   MASK_T mask;
 //   SCALAR_T scalar1, scalar2;
 //   scalar1 = vec0.<MFI_FUNCTION>(scalar2);
 //
 // instr_name - name of instruction as defined in UME::SIMD interface spec
 // MFI_name   - name of function in Member Function Interface used to implement instr_name
-#define DEFINE_BASE_TEST_REDUCTION_SCALAR_MASK_TEMPLATE(instr_name, MFI_name) \
+#define DEFINE_SCALAR_MASK_SCALAR_TEST_TEMPLATE(instr_name, MFI_name) \
 template<typename VEC_T> \
 void instr_name##Latency() { \
     unsigned long long start = 0, end = 0; \
@@ -891,7 +909,7 @@ void instr_name##Latency() { \
         volatile SCALAR_T res; \
  \
         start = __rdtsc(); \
-            res = vec0.MFI_name(scalarOp); \
+            res = vec0.MFI_name(mask, scalarOp); \
         end = __rdtsc(); \
  \
         delta = end - start; \
@@ -912,7 +930,7 @@ void instr_name##Latency() { \
 //
 // instr_name - name of instruction as defined in UME::SIMD interface spec
 // MFI_name   - name of function in Member Function Interface used to implement instr_name
-#define DEFINE_BASE_TEST_REDUCTION_PREDICATE_TEMPLATE(instr_name, MFI_name) \
+#define DEFINE_BOOL_VEC_TEST_TEMPLATE(instr_name, MFI_name) \
 template<typename VEC_T> \
 void instr_name##Latency() { \
     unsigned long long start = 0, end = 0; \
@@ -957,7 +975,7 @@ void instr_name##Latency() { \
 //
 // instr_name - name of instruction as defined in UME::SIMD interface spec
 // MFI_name   - name of function in Member Function Interface used to implement instr_name
-#define DEFINE_BASE_TEST_TERNARY_TEMPLATE(instr_name, MFI_name) \
+#define DEFINE_VEC_VEC_VEC_TEST_TEMPLATE(instr_name, MFI_name) \
 template<typename VEC_T> \
 void instr_name##Latency() { \
     unsigned long long start = 0, end = 0; \
@@ -1008,7 +1026,7 @@ void instr_name##Latency() { \
 //
 // instr_name - name of instruction as defined in UME::SIMD interface spec
 // MFI_name   - name of function in Member Function Interface used to implement instr_name
-#define DEFINE_BASE_TEST_TERNARY_MASK_TEMPLATE(instr_name, MFI_name) \
+#define DEFINE_VEC_MASK_VEC_VEC_TEST_TEMPLATE(instr_name, MFI_name) \
 template<typename VEC_T> \
 void instr_name##Latency() { \
     unsigned long long start = 0, end = 0; \
@@ -1058,256 +1076,272 @@ void instr_name##Latency() { \
 // Define all template functions necessary to run tests.
 
 // vec0 = vec1.<INSTR>(vec2)
+//      Mask interface operations
+DEFINE_VEC_VEC_TEST_TEMPLATE(LANDV, land);
+DEFINE_VEC_VEC_TEST_TEMPLATE(LORV, lor);
+DEFINE_VEC_VEC_TEST_TEMPLATE(LXORV, lxor);
 //      Base interface operations
-DEFINE_BASE_TEST_TEMPLATE(ADDV, add);
-DEFINE_BASE_TEST_TEMPLATE(SUBV, sub);
-DEFINE_BASE_TEST_TEMPLATE(SADDV, sadd);
-DEFINE_BASE_TEST_TEMPLATE(SSUBV, ssub);
-DEFINE_BASE_TEST_TEMPLATE(SUBFROMV, subfrom);
-DEFINE_BASE_TEST_TEMPLATE(MULV, mul);
-DEFINE_BASE_TEST_TEMPLATE(DIVV, div);
-DEFINE_BASE_TEST_TEMPLATE(MAXV, max);
-DEFINE_BASE_TEST_TEMPLATE(MINV, min);
+DEFINE_VEC_VEC_TEST_TEMPLATE(ADDV, add);
+DEFINE_VEC_VEC_TEST_TEMPLATE(SUBV, sub);
+DEFINE_VEC_VEC_TEST_TEMPLATE(SADDV, sadd);
+DEFINE_VEC_VEC_TEST_TEMPLATE(SSUBV, ssub);
+DEFINE_VEC_VEC_TEST_TEMPLATE(SUBFROMV, subfrom);
+DEFINE_VEC_VEC_TEST_TEMPLATE(MULV, mul);
+DEFINE_VEC_VEC_TEST_TEMPLATE(DIVV, div);
+DEFINE_VEC_VEC_TEST_TEMPLATE(MAXV, max);
+DEFINE_VEC_VEC_TEST_TEMPLATE(MINV, min);
 //      Bitwise interface operations
-DEFINE_BASE_TEST_TEMPLATE(BANDV, band);
-DEFINE_BASE_TEST_TEMPLATE(BORV, bor);
-DEFINE_BASE_TEST_TEMPLATE(BXORV, bxor);
+DEFINE_VEC_VEC_TEST_TEMPLATE(BANDV, band);
+DEFINE_VEC_VEC_TEST_TEMPLATE(BORV, bor);
+DEFINE_VEC_VEC_TEST_TEMPLATE(BXORV, bxor);
 
 // vec0 = vec1.<INSTR>(mask, vec2)
 //      Base interface operations
-DEFINE_BASE_TEST_MASK_TEMPLATE(MADDV, add);
-DEFINE_BASE_TEST_MASK_TEMPLATE(MSUBV, sub);
-DEFINE_BASE_TEST_MASK_TEMPLATE(MSADDV, sadd);
-DEFINE_BASE_TEST_MASK_TEMPLATE(MSSUBV, ssub);
-DEFINE_BASE_TEST_MASK_TEMPLATE(MSUBFROMV, subfrom);
-DEFINE_BASE_TEST_MASK_TEMPLATE(MMULV, mul);
-DEFINE_BASE_TEST_MASK_TEMPLATE(MDIVV, div);
-DEFINE_BASE_TEST_MASK_TEMPLATE(MMAXV, max);
-DEFINE_BASE_TEST_MASK_TEMPLATE(MMINV, min);
+DEFINE_VEC_MASK_VEC_TEST_TEMPLATE(MADDV, add);
+DEFINE_VEC_MASK_VEC_TEST_TEMPLATE(MSUBV, sub);
+DEFINE_VEC_MASK_VEC_TEST_TEMPLATE(MSADDV, sadd);
+DEFINE_VEC_MASK_VEC_TEST_TEMPLATE(MSSUBV, ssub);
+DEFINE_VEC_MASK_VEC_TEST_TEMPLATE(MSUBFROMV, subfrom);
+DEFINE_VEC_MASK_VEC_TEST_TEMPLATE(MMULV, mul);
+DEFINE_VEC_MASK_VEC_TEST_TEMPLATE(MDIVV, div);
+DEFINE_VEC_MASK_VEC_TEST_TEMPLATE(MMAXV, max);
+DEFINE_VEC_MASK_VEC_TEST_TEMPLATE(MMINV, min);
 //      Bitwise interface operations
-DEFINE_BASE_TEST_MASK_TEMPLATE(MBANDV, band);
-DEFINE_BASE_TEST_MASK_TEMPLATE(MBORV, bor);
-DEFINE_BASE_TEST_MASK_TEMPLATE(MBXORV, bxor);
+DEFINE_VEC_MASK_VEC_TEST_TEMPLATE(MBANDV, band);
+DEFINE_VEC_MASK_VEC_TEST_TEMPLATE(MBORV, bor);
+DEFINE_VEC_MASK_VEC_TEST_TEMPLATE(MBXORV, bxor);
 
 // vec0 = vec1.<INSTR>(scalar2)
+//      Mask interface operations
+DEFINE_VEC_SCALAR_TEST_TEMPLATE(LANDS, land);
+DEFINE_VEC_SCALAR_TEST_TEMPLATE(LORS, lor);
+DEFINE_VEC_SCALAR_TEST_TEMPLATE(LXORS, lxor);
 //      Base interface operations
-DEFINE_BASE_TEST_SCALAR_TEMPLATE(ADDS, add);
-DEFINE_BASE_TEST_SCALAR_TEMPLATE(SUBS, sub);
-DEFINE_BASE_TEST_SCALAR_TEMPLATE(SADDS, sadd);
-DEFINE_BASE_TEST_SCALAR_TEMPLATE(SSUBS, ssub);
-DEFINE_BASE_TEST_SCALAR_TEMPLATE(SUBFROMS, subfrom);
-DEFINE_BASE_TEST_SCALAR_TEMPLATE(MULS, mul);
-DEFINE_BASE_TEST_SCALAR_TEMPLATE(DIVS, div);
-DEFINE_BASE_TEST_SCALAR_TEMPLATE(RCPS, rcp);
-DEFINE_BASE_TEST_SCALAR_TEMPLATE(MAXS, max);
-DEFINE_BASE_TEST_SCALAR_TEMPLATE(MINS, min);
+DEFINE_VEC_SCALAR_TEST_TEMPLATE(ADDS, add);
+DEFINE_VEC_SCALAR_TEST_TEMPLATE(SUBS, sub);
+DEFINE_VEC_SCALAR_TEST_TEMPLATE(SADDS, sadd);
+DEFINE_VEC_SCALAR_TEST_TEMPLATE(SSUBS, ssub);
+DEFINE_VEC_SCALAR_TEST_TEMPLATE(SUBFROMS, subfrom);
+DEFINE_VEC_SCALAR_TEST_TEMPLATE(MULS, mul);
+DEFINE_VEC_SCALAR_TEST_TEMPLATE(DIVS, div);
+DEFINE_VEC_SCALAR_TEST_TEMPLATE(RCPS, rcp);
+DEFINE_VEC_SCALAR_TEST_TEMPLATE(MAXS, max);
+DEFINE_VEC_SCALAR_TEST_TEMPLATE(MINS, min);
 //      Bitwise interface operations
-DEFINE_BASE_TEST_SCALAR_TEMPLATE(BANDS, band);
-DEFINE_BASE_TEST_SCALAR_TEMPLATE(BORS, bor);
-DEFINE_BASE_TEST_SCALAR_TEMPLATE(BXORS, bxor);
+DEFINE_VEC_SCALAR_TEST_TEMPLATE(BANDS, band);
+DEFINE_VEC_SCALAR_TEST_TEMPLATE(BORS, bor);
+DEFINE_VEC_SCALAR_TEST_TEMPLATE(BXORS, bxor);
 
 // vec0 = vec1.<INSTR>(mask, scalar2)
 //      Base interface operations
-DEFINE_BASE_TEST_MASK_SCALAR_TEMPLATE(MADDS, add);
-DEFINE_BASE_TEST_MASK_SCALAR_TEMPLATE(MSUBS, add);
-DEFINE_BASE_TEST_MASK_SCALAR_TEMPLATE(MSADDS, sadd);
-DEFINE_BASE_TEST_MASK_SCALAR_TEMPLATE(MSSUBS, ssub);
-DEFINE_BASE_TEST_MASK_SCALAR_TEMPLATE(MSUBFROMS, subfrom);
-DEFINE_BASE_TEST_MASK_SCALAR_TEMPLATE(MMULS, mul);
-DEFINE_BASE_TEST_MASK_SCALAR_TEMPLATE(MDIVS, div);
-DEFINE_BASE_TEST_MASK_SCALAR_TEMPLATE(MRCPS, rcp);
-DEFINE_BASE_TEST_MASK_SCALAR_TEMPLATE(MMAXS, max);
-DEFINE_BASE_TEST_MASK_SCALAR_TEMPLATE(MMINS, min);
+DEFINE_VEC_MASK_SCALAR_TEST_TEMPLATE(MADDS, add);
+DEFINE_VEC_MASK_SCALAR_TEST_TEMPLATE(MSUBS, add);
+DEFINE_VEC_MASK_SCALAR_TEST_TEMPLATE(MSADDS, sadd);
+DEFINE_VEC_MASK_SCALAR_TEST_TEMPLATE(MSSUBS, ssub);
+DEFINE_VEC_MASK_SCALAR_TEST_TEMPLATE(MSUBFROMS, subfrom);
+DEFINE_VEC_MASK_SCALAR_TEST_TEMPLATE(MMULS, mul);
+DEFINE_VEC_MASK_SCALAR_TEST_TEMPLATE(MDIVS, div);
+DEFINE_VEC_MASK_SCALAR_TEST_TEMPLATE(MRCPS, rcp);
+DEFINE_VEC_MASK_SCALAR_TEST_TEMPLATE(MMAXS, max);
+DEFINE_VEC_MASK_SCALAR_TEST_TEMPLATE(MMINS, min);
 //      Bitwise interface operations
-DEFINE_BASE_TEST_MASK_SCALAR_TEMPLATE(MBANDS, band);
-DEFINE_BASE_TEST_MASK_SCALAR_TEMPLATE(MBORS, bor);
-DEFINE_BASE_TEST_MASK_SCALAR_TEMPLATE(MBXORS, bxor);
+DEFINE_VEC_MASK_SCALAR_TEST_TEMPLATE(MBANDS, band);
+DEFINE_VEC_MASK_SCALAR_TEST_TEMPLATE(MBORS, bor);
+DEFINE_VEC_MASK_SCALAR_TEST_TEMPLATE(MBXORS, bxor);
 
 // vec0 <- vec0.<INSTR>(vec1)
+//      Mask interface operations
+DEFINE_ASSIGN_VEC_TEST_TEMPLATE(LANDVA, landa);
+DEFINE_ASSIGN_VEC_TEST_TEMPLATE(LORVA, lora);
+DEFINE_ASSIGN_VEC_TEST_TEMPLATE(LXORVA, lxora);
 //      Base interface operations
-DEFINE_BASE_TEST_ASSIGN_TEMPLATE(ADDVA, adda);
-DEFINE_BASE_TEST_ASSIGN_TEMPLATE(SUBVA, suba);
-DEFINE_BASE_TEST_ASSIGN_TEMPLATE(SADDVA, sadda);
-DEFINE_BASE_TEST_ASSIGN_TEMPLATE(SSUBVA, ssuba);
-DEFINE_BASE_TEST_ASSIGN_TEMPLATE(SUBFROMVA, subfroma);
-DEFINE_BASE_TEST_ASSIGN_TEMPLATE(MULVA, mula);
-DEFINE_BASE_TEST_ASSIGN_TEMPLATE(DIVVA, diva);
-DEFINE_BASE_TEST_ASSIGN_TEMPLATE(MAXVA, maxa);
-DEFINE_BASE_TEST_ASSIGN_TEMPLATE(MINVA, mina);
+DEFINE_ASSIGN_VEC_TEST_TEMPLATE(ADDVA, adda);
+DEFINE_ASSIGN_VEC_TEST_TEMPLATE(SUBVA, suba);
+DEFINE_ASSIGN_VEC_TEST_TEMPLATE(SADDVA, sadda);
+DEFINE_ASSIGN_VEC_TEST_TEMPLATE(SSUBVA, ssuba);
+DEFINE_ASSIGN_VEC_TEST_TEMPLATE(SUBFROMVA, subfroma);
+DEFINE_ASSIGN_VEC_TEST_TEMPLATE(MULVA, mula);
+DEFINE_ASSIGN_VEC_TEST_TEMPLATE(DIVVA, diva);
+DEFINE_ASSIGN_VEC_TEST_TEMPLATE(MAXVA, maxa);
+DEFINE_ASSIGN_VEC_TEST_TEMPLATE(MINVA, mina);
 //      Bitwise interface operations
-DEFINE_BASE_TEST_ASSIGN_TEMPLATE(BANDVA, banda);
-DEFINE_BASE_TEST_ASSIGN_TEMPLATE(BORVA, bora)
-DEFINE_BASE_TEST_ASSIGN_TEMPLATE(BXORVA, bxora)
+DEFINE_ASSIGN_VEC_TEST_TEMPLATE(BANDVA, banda);
+DEFINE_ASSIGN_VEC_TEST_TEMPLATE(BORVA, bora)
+DEFINE_ASSIGN_VEC_TEST_TEMPLATE(BXORVA, bxora)
 
 // vec0 <- vec0.<INSTR>(mask, vec1)
 //      Base interface operations
-DEFINE_BASE_TEST_MASK_ASSIGN_TEMPLATE(MADDVA, adda);
-DEFINE_BASE_TEST_MASK_ASSIGN_TEMPLATE(MSUBVA, suba);
-DEFINE_BASE_TEST_MASK_ASSIGN_TEMPLATE(MSADDVA, sadda);
-DEFINE_BASE_TEST_MASK_ASSIGN_TEMPLATE(MSSUBVA, ssuba);
-DEFINE_BASE_TEST_MASK_ASSIGN_TEMPLATE(MSUBFROMVA, subfroma);
-DEFINE_BASE_TEST_MASK_ASSIGN_TEMPLATE(MMULVA, mula);
-DEFINE_BASE_TEST_MASK_ASSIGN_TEMPLATE(MDIVVA, diva);
-DEFINE_BASE_TEST_MASK_ASSIGN_TEMPLATE(MMAXVA, maxa);
-DEFINE_BASE_TEST_MASK_ASSIGN_TEMPLATE(MMINVA, mina);
+DEFINE_ASSIGN_MASK_VEC_TEST_TEMPLATE(MADDVA, adda);
+DEFINE_ASSIGN_MASK_VEC_TEST_TEMPLATE(MSUBVA, suba);
+DEFINE_ASSIGN_MASK_VEC_TEST_TEMPLATE(MSADDVA, sadda);
+DEFINE_ASSIGN_MASK_VEC_TEST_TEMPLATE(MSSUBVA, ssuba);
+DEFINE_ASSIGN_MASK_VEC_TEST_TEMPLATE(MSUBFROMVA, subfroma);
+DEFINE_ASSIGN_MASK_VEC_TEST_TEMPLATE(MMULVA, mula);
+DEFINE_ASSIGN_MASK_VEC_TEST_TEMPLATE(MDIVVA, diva);
+DEFINE_ASSIGN_MASK_VEC_TEST_TEMPLATE(MMAXVA, maxa);
+DEFINE_ASSIGN_MASK_VEC_TEST_TEMPLATE(MMINVA, mina);
 //      Bitwise interface operations
-DEFINE_BASE_TEST_MASK_ASSIGN_TEMPLATE(MBANDVA, banda);
-DEFINE_BASE_TEST_MASK_ASSIGN_TEMPLATE(MBORVA, bora);
-DEFINE_BASE_TEST_MASK_ASSIGN_TEMPLATE(MBXORVA, bxora);
+DEFINE_ASSIGN_MASK_VEC_TEST_TEMPLATE(MBANDVA, banda);
+DEFINE_ASSIGN_MASK_VEC_TEST_TEMPLATE(MBORVA, bora);
+DEFINE_ASSIGN_MASK_VEC_TEST_TEMPLATE(MBXORVA, bxora);
 
 // vec0 <- vec0.<INSTR>(scalar1)
+//      Mask interface operations
+DEFINE_ASSIGN_SCALAR_TEST_TEMPLATE(LANDSA, landa);
+DEFINE_ASSIGN_SCALAR_TEST_TEMPLATE(LORSA, lora);
+DEFINE_ASSIGN_SCALAR_TEST_TEMPLATE(LXORSA, lxora);
 //      Base interface operations
-DEFINE_BASE_TEST_SCALAR_ASSIGN_TEMPLATE(ADDSA, adda);
-DEFINE_BASE_TEST_SCALAR_ASSIGN_TEMPLATE(SUBSA, suba);
-DEFINE_BASE_TEST_SCALAR_ASSIGN_TEMPLATE(SADDSA, sadda);
-DEFINE_BASE_TEST_SCALAR_ASSIGN_TEMPLATE(SSUBSA, ssuba);
-DEFINE_BASE_TEST_SCALAR_ASSIGN_TEMPLATE(SUBFROMSA, subfroma);
-DEFINE_BASE_TEST_SCALAR_ASSIGN_TEMPLATE(MULSA, mula);
-DEFINE_BASE_TEST_SCALAR_ASSIGN_TEMPLATE(DIVSA, diva);
-DEFINE_BASE_TEST_SCALAR_ASSIGN_TEMPLATE(RCPSA, rcpa);
-DEFINE_BASE_TEST_SCALAR_ASSIGN_TEMPLATE(MAXSA, maxa);
-DEFINE_BASE_TEST_SCALAR_ASSIGN_TEMPLATE(MINSA, mina);
+DEFINE_ASSIGN_SCALAR_TEST_TEMPLATE(ADDSA, adda);
+DEFINE_ASSIGN_SCALAR_TEST_TEMPLATE(SUBSA, suba);
+DEFINE_ASSIGN_SCALAR_TEST_TEMPLATE(SADDSA, sadda);
+DEFINE_ASSIGN_SCALAR_TEST_TEMPLATE(SSUBSA, ssuba);
+DEFINE_ASSIGN_SCALAR_TEST_TEMPLATE(SUBFROMSA, subfroma);
+DEFINE_ASSIGN_SCALAR_TEST_TEMPLATE(MULSA, mula);
+DEFINE_ASSIGN_SCALAR_TEST_TEMPLATE(DIVSA, diva);
+DEFINE_ASSIGN_SCALAR_TEST_TEMPLATE(RCPSA, rcpa);
+DEFINE_ASSIGN_SCALAR_TEST_TEMPLATE(MAXSA, maxa);
+DEFINE_ASSIGN_SCALAR_TEST_TEMPLATE(MINSA, mina);
 //      Base interface operations
-DEFINE_BASE_TEST_SCALAR_ASSIGN_TEMPLATE(BANDSA, banda);
-DEFINE_BASE_TEST_SCALAR_ASSIGN_TEMPLATE(BORSA, bora);
-DEFINE_BASE_TEST_SCALAR_ASSIGN_TEMPLATE(BXORSA, bxora);
+DEFINE_ASSIGN_SCALAR_TEST_TEMPLATE(BANDSA, banda);
+DEFINE_ASSIGN_SCALAR_TEST_TEMPLATE(BORSA, bora);
+DEFINE_ASSIGN_SCALAR_TEST_TEMPLATE(BXORSA, bxora);
 
 // vec0 <- vec0.<INSTR>(mask, scalar1)
 //      Base interface operations
-DEFINE_BASE_TEST_MASK_SCALAR_ASSIGN_TEMPLATE(MADDSA, adda);
-DEFINE_BASE_TEST_MASK_SCALAR_ASSIGN_TEMPLATE(MSUBSA, suba);
-DEFINE_BASE_TEST_MASK_SCALAR_ASSIGN_TEMPLATE(MSADDSA, sadda);
-DEFINE_BASE_TEST_MASK_SCALAR_ASSIGN_TEMPLATE(MSSUBSA, ssuba);
-DEFINE_BASE_TEST_MASK_SCALAR_ASSIGN_TEMPLATE(MSUBFROMSA, subfroma);
-DEFINE_BASE_TEST_MASK_SCALAR_ASSIGN_TEMPLATE(MMULSA, mula);
-DEFINE_BASE_TEST_MASK_SCALAR_ASSIGN_TEMPLATE(MDIVSA, diva);
-DEFINE_BASE_TEST_MASK_SCALAR_ASSIGN_TEMPLATE(MRCPSA, rcpa);
-DEFINE_BASE_TEST_MASK_SCALAR_ASSIGN_TEMPLATE(MMAXSA, maxa);
-DEFINE_BASE_TEST_MASK_SCALAR_ASSIGN_TEMPLATE(MMINSA, mina);
+DEFINE_ASSIGN_MASK_SCALAR_TEST_TEMPLATE(MADDSA, adda);
+DEFINE_ASSIGN_MASK_SCALAR_TEST_TEMPLATE(MSUBSA, suba);
+DEFINE_ASSIGN_MASK_SCALAR_TEST_TEMPLATE(MSADDSA, sadda);
+DEFINE_ASSIGN_MASK_SCALAR_TEST_TEMPLATE(MSSUBSA, ssuba);
+DEFINE_ASSIGN_MASK_SCALAR_TEST_TEMPLATE(MSUBFROMSA, subfroma);
+DEFINE_ASSIGN_MASK_SCALAR_TEST_TEMPLATE(MMULSA, mula);
+DEFINE_ASSIGN_MASK_SCALAR_TEST_TEMPLATE(MDIVSA, diva);
+DEFINE_ASSIGN_MASK_SCALAR_TEST_TEMPLATE(MRCPSA, rcpa);
+DEFINE_ASSIGN_MASK_SCALAR_TEST_TEMPLATE(MMAXSA, maxa);
+DEFINE_ASSIGN_MASK_SCALAR_TEST_TEMPLATE(MMINSA, mina);
 //      Base interface operations
-DEFINE_BASE_TEST_MASK_SCALAR_ASSIGN_TEMPLATE(MBANDSA, banda);
-DEFINE_BASE_TEST_MASK_SCALAR_ASSIGN_TEMPLATE(MBORSA, bora);
-DEFINE_BASE_TEST_MASK_SCALAR_ASSIGN_TEMPLATE(MBXORSA, bxora);
+DEFINE_ASSIGN_MASK_SCALAR_TEST_TEMPLATE(MBANDSA, banda);
+DEFINE_ASSIGN_MASK_SCALAR_TEST_TEMPLATE(MBORSA, bora);
+DEFINE_ASSIGN_MASK_SCALAR_TEST_TEMPLATE(MBXORSA, bxora);
 
 // vec1 = vec0.<INSTR>()
 //      Base interface operations
-DEFINE_BASE_TEST_UNARY_TEMPLATE(POSTINC, postinc);
-DEFINE_BASE_TEST_UNARY_TEMPLATE(PREFINC, prefinc);
-DEFINE_BASE_TEST_UNARY_TEMPLATE(POSTDEC, postdec);
-DEFINE_BASE_TEST_UNARY_TEMPLATE(PREFDEC, prefdec);
-DEFINE_BASE_TEST_UNARY_TEMPLATE(RCP, rcp);
+DEFINE_VEC_TEST_TEMPLATE(POSTINC, postinc);
+DEFINE_VEC_TEST_TEMPLATE(PREFINC, prefinc);
+DEFINE_VEC_TEST_TEMPLATE(POSTDEC, postdec);
+DEFINE_VEC_TEST_TEMPLATE(PREFDEC, prefdec);
+DEFINE_VEC_TEST_TEMPLATE(RCP, rcp);
 //      Bitwise interface operations
-DEFINE_BASE_TEST_UNARY_TEMPLATE(BNOT, bnot);
+DEFINE_VEC_TEST_TEMPLATE(BNOT, bnot);
 
 // vec1 = vec0.<INSTR>(mask)
 //      Base interface operations
-DEFINE_BASE_TEST_UNARY_MASK_TEMPLATE(MPOSTINC, postinc);
-DEFINE_BASE_TEST_UNARY_MASK_TEMPLATE(MPREFINC, prefinc);
-DEFINE_BASE_TEST_UNARY_MASK_TEMPLATE(MPOSTDEC, postdec);
-DEFINE_BASE_TEST_UNARY_MASK_TEMPLATE(MPREFDEC, prefdec);
-DEFINE_BASE_TEST_UNARY_MASK_TEMPLATE(MRCP, rcp);
+DEFINE_VEC_MASK_TEST_TEMPLATE(MPOSTINC, postinc);
+DEFINE_VEC_MASK_TEST_TEMPLATE(MPREFINC, prefinc);
+DEFINE_VEC_MASK_TEST_TEMPLATE(MPOSTDEC, postdec);
+DEFINE_VEC_MASK_TEST_TEMPLATE(MPREFDEC, prefdec);
+DEFINE_VEC_MASK_TEST_TEMPLATE(MRCP, rcp);
 //      Bitwise interface operations
-DEFINE_BASE_TEST_UNARY_MASK_TEMPLATE(MBNOT, bnot);
+DEFINE_VEC_MASK_TEST_TEMPLATE(MBNOT, bnot);
 
 // vec0 <- vec0.<INSTR>()
 //      Base interface operations
-DEFINE_BASE_TEST_UNARY_ASSIGN_TEMPLATE(RCPA, rcpa);
+DEFINE_ASSIGN_TEST_TEMPLATE(RCPA, rcpa);
 //      Bitwise interface operations
-DEFINE_BASE_TEST_UNARY_ASSIGN_TEMPLATE(BNOTA, bnota);
+DEFINE_ASSIGN_TEST_TEMPLATE(BNOTA, bnota);
 
 // vec0 <- vec0.<INSTR>(mask)
 //      Base interface operations
-DEFINE_BASE_TEST_UNARY_MASK_ASSIGN_TEMPLATE(MRCPA, rcpa);
+DEFINE_ASSIGN_MASK_TEST_TEMPLATE(MRCPA, rcpa);
 //      Bitwise interface operations
-DEFINE_BASE_TEST_UNARY_MASK_ASSIGN_TEMPLATE(MBNOTA, bnota);
+DEFINE_ASSIGN_MASK_TEST_TEMPLATE(MBNOTA, bnota);
 
 // mask = vec0.<INSTR>(vec1)
 //      Base interface operations
-DEFINE_BASE_TEST_PREDICATE_TEMPLATE(CMPEQV, cmpeq);
-DEFINE_BASE_TEST_PREDICATE_TEMPLATE(CMPNEV, cmpne);
-DEFINE_BASE_TEST_PREDICATE_TEMPLATE(CMPGTV, cmpgt);
-DEFINE_BASE_TEST_PREDICATE_TEMPLATE(CMPLTV, cmplt);
-DEFINE_BASE_TEST_PREDICATE_TEMPLATE(CMPGEV, cmpge);
-DEFINE_BASE_TEST_PREDICATE_TEMPLATE(CMPLEV, cmple);
+DEFINE_MASK_VEC_TEST_TEMPLATE(CMPEQV, cmpeq);
+DEFINE_MASK_VEC_TEST_TEMPLATE(CMPNEV, cmpne);
+DEFINE_MASK_VEC_TEST_TEMPLATE(CMPGTV, cmpgt);
+DEFINE_MASK_VEC_TEST_TEMPLATE(CMPLTV, cmplt);
+DEFINE_MASK_VEC_TEST_TEMPLATE(CMPGEV, cmpge);
+DEFINE_MASK_VEC_TEST_TEMPLATE(CMPLEV, cmple);
 
 // mask = vec0.<INSTR>(scalar1)
 //      Base interface operations
-DEFINE_BASE_TEST_PREDICATE_SCALAR_TEMPLATE(CMPEQS, cmpeq);
-DEFINE_BASE_TEST_PREDICATE_SCALAR_TEMPLATE(CMPNES, cmpne);
-DEFINE_BASE_TEST_PREDICATE_SCALAR_TEMPLATE(CMPGTS, cmpgt);
-DEFINE_BASE_TEST_PREDICATE_SCALAR_TEMPLATE(CMPLTS, cmplt);
-DEFINE_BASE_TEST_PREDICATE_SCALAR_TEMPLATE(CMPGES, cmpge);
-DEFINE_BASE_TEST_PREDICATE_SCALAR_TEMPLATE(CMPLES, cmple);
+DEFINE_MASK_SCALAR_TEST_TEMPLATE(CMPEQS, cmpeq);
+DEFINE_MASK_SCALAR_TEST_TEMPLATE(CMPNES, cmpne);
+DEFINE_MASK_SCALAR_TEST_TEMPLATE(CMPGTS, cmpgt);
+DEFINE_MASK_SCALAR_TEST_TEMPLATE(CMPLTS, cmplt);
+DEFINE_MASK_SCALAR_TEST_TEMPLATE(CMPGES, cmpge);
+DEFINE_MASK_SCALAR_TEST_TEMPLATE(CMPLES, cmple);
 
 // scalar = vec0.<INSTR>()
 //      Base interface operations
-DEFINE_BASE_TEST_REDUCTION_TEMPLATE(HADD, hadd);
-DEFINE_BASE_TEST_REDUCTION_TEMPLATE(HMUL, hmul);
-DEFINE_BASE_TEST_REDUCTION_TEMPLATE(HMAX, hmax);
-DEFINE_BASE_TEST_REDUCTION_TEMPLATE(IMAX, imax);
-DEFINE_BASE_TEST_REDUCTION_TEMPLATE(HMIN, hmin);
-DEFINE_BASE_TEST_REDUCTION_TEMPLATE(IMIN, imin);
+DEFINE_SCALAR_TEST_TEMPLATE(HADD, hadd);
+DEFINE_SCALAR_TEST_TEMPLATE(HMUL, hmul);
+DEFINE_SCALAR_TEST_TEMPLATE(HMAX, hmax);
+DEFINE_SCALAR_TEST_TEMPLATE(IMAX, imax);
+DEFINE_SCALAR_TEST_TEMPLATE(HMIN, hmin);
+DEFINE_SCALAR_TEST_TEMPLATE(IMIN, imin);
 //      Bitwise interface operations
-DEFINE_BASE_TEST_REDUCTION_TEMPLATE(HBAND, hband);
-DEFINE_BASE_TEST_REDUCTION_TEMPLATE(HBOR, hbor);
-DEFINE_BASE_TEST_REDUCTION_TEMPLATE(HBXOR, hbxor);
+DEFINE_SCALAR_TEST_TEMPLATE(HBAND, hband);
+DEFINE_SCALAR_TEST_TEMPLATE(HBOR, hbor);
+DEFINE_SCALAR_TEST_TEMPLATE(HBXOR, hbxor);
 
 // scalar = vec0.<INSTR>(mask)
 //      Base interface operations
-DEFINE_BASE_TEST_REDUCTION_MASK_TEMPLATE(MHADD, hadd);
-DEFINE_BASE_TEST_REDUCTION_MASK_TEMPLATE(MHMUL, hmul);
-DEFINE_BASE_TEST_REDUCTION_MASK_TEMPLATE(MHMAX, hmax);
-DEFINE_BASE_TEST_REDUCTION_MASK_TEMPLATE(MIMAX, imax);
-DEFINE_BASE_TEST_REDUCTION_MASK_TEMPLATE(MHMIN, hmin);
-DEFINE_BASE_TEST_REDUCTION_MASK_TEMPLATE(MIMIN, imin);
+DEFINE_SCALAR_MASK_TEST_TEMPLATE(MHADD, hadd);
+DEFINE_SCALAR_MASK_TEST_TEMPLATE(MHMUL, hmul);
+DEFINE_SCALAR_MASK_TEST_TEMPLATE(MHMAX, hmax);
+DEFINE_SCALAR_MASK_TEST_TEMPLATE(MIMAX, imax);
+DEFINE_SCALAR_MASK_TEST_TEMPLATE(MHMIN, hmin);
+DEFINE_SCALAR_MASK_TEST_TEMPLATE(MIMIN, imin);
 //      Bitwise interface operations
-DEFINE_BASE_TEST_REDUCTION_MASK_TEMPLATE(MHBAND, hband);
-DEFINE_BASE_TEST_REDUCTION_MASK_TEMPLATE(MHBOR, hbor);
-DEFINE_BASE_TEST_REDUCTION_MASK_TEMPLATE(MHBXOR, hbxor);
+DEFINE_SCALAR_MASK_TEST_TEMPLATE(MHBAND, hband);
+DEFINE_SCALAR_MASK_TEST_TEMPLATE(MHBOR, hbor);
+DEFINE_SCALAR_MASK_TEST_TEMPLATE(MHBXOR, hbxor);
 
 // scalar2 = vec0.<INSTR>(scalar1)
 //      Base interface operations
-DEFINE_BASE_TEST_REDUCTION_SCALAR_TEMPLATE(HADDS, hadd);
-DEFINE_BASE_TEST_REDUCTION_SCALAR_TEMPLATE(HMULS, hmul);
+DEFINE_SCALAR_SCALAR_TEST_TEMPLATE(HADDS, hadd);
+DEFINE_SCALAR_SCALAR_TEST_TEMPLATE(HMULS, hmul);
 //      Bitwise interface operations
-DEFINE_BASE_TEST_REDUCTION_SCALAR_TEMPLATE(HBANDS, hband);
-DEFINE_BASE_TEST_REDUCTION_SCALAR_TEMPLATE(HBORS, hbor);
-DEFINE_BASE_TEST_REDUCTION_SCALAR_TEMPLATE(HBXORS, hbxor);
+DEFINE_SCALAR_SCALAR_TEST_TEMPLATE(HBANDS, hband);
+DEFINE_SCALAR_SCALAR_TEST_TEMPLATE(HBORS, hbor);
+DEFINE_SCALAR_SCALAR_TEST_TEMPLATE(HBXORS, hbxor);
 
 // scalar2 = vec0.<INSTR>(mask, scalar1)
 //      Base interface operations
-DEFINE_BASE_TEST_REDUCTION_SCALAR_MASK_TEMPLATE(MHADDS, hadd);
-DEFINE_BASE_TEST_REDUCTION_SCALAR_MASK_TEMPLATE(MHMULS, hmul);
+DEFINE_SCALAR_MASK_SCALAR_TEST_TEMPLATE(MHADDS, hadd);
+DEFINE_SCALAR_MASK_SCALAR_TEST_TEMPLATE(MHMULS, hmul);
 //      Bitwise interface operations
-DEFINE_BASE_TEST_REDUCTION_SCALAR_MASK_TEMPLATE(MHBANDS, hband);
-DEFINE_BASE_TEST_REDUCTION_SCALAR_MASK_TEMPLATE(MHBORS, hbor);
-DEFINE_BASE_TEST_REDUCTION_SCALAR_MASK_TEMPLATE(MHBXORS, hbxor);
+DEFINE_SCALAR_MASK_SCALAR_TEST_TEMPLATE(MHBANDS, hband);
+DEFINE_SCALAR_MASK_SCALAR_TEST_TEMPLATE(MHBORS, hbor);
+DEFINE_SCALAR_MASK_SCALAR_TEST_TEMPLATE(MHBXORS, hbxor);
 
 // bool_scalar = vec0.<INSTR>(vec1)
 //      Base interface operations
-DEFINE_BASE_TEST_REDUCTION_PREDICATE_TEMPLATE(CMPEV, cmpe);
+DEFINE_BOOL_VEC_TEST_TEMPLATE(CMPEV, cmpe);
 
 // bool_scalar = vec0.<INSTR>()
 //      Base interface operations
-DEFINE_BASE_TEST_REDUCTION_TEMPLATE(UNIQUE, unique);
+DEFINE_SCALAR_TEST_TEMPLATE(UNIQUE, unique);
 
 // bool_scalar = vec0.<INSTR>(scalar1)
 //      Base interface operations
-DEFINE_BASE_TEST_REDUCTION_SCALAR_TEMPLATE(CMPES, cmpe);
+DEFINE_SCALAR_SCALAR_TEST_TEMPLATE(CMPES, cmpe);
 
 // vec0 = vec1.<INSTR>(vec2, vec3)
 //      Base interface operations
-DEFINE_BASE_TEST_TERNARY_TEMPLATE(FMULADDV, fmuladd);
-DEFINE_BASE_TEST_TERNARY_TEMPLATE(FMULSUBV, fmulsub);
-DEFINE_BASE_TEST_TERNARY_TEMPLATE(FADDMULV, faddmul);
-DEFINE_BASE_TEST_TERNARY_TEMPLATE(FSUBMULV, fsubmul);
+DEFINE_VEC_VEC_VEC_TEST_TEMPLATE(FMULADDV, fmuladd);
+DEFINE_VEC_VEC_VEC_TEST_TEMPLATE(FMULSUBV, fmulsub);
+DEFINE_VEC_VEC_VEC_TEST_TEMPLATE(FADDMULV, faddmul);
+DEFINE_VEC_VEC_VEC_TEST_TEMPLATE(FSUBMULV, fsubmul);
 
 // vec0 = vec1.<INSTR>(mask, vec2, vec3)
 //      Base interface operations
-DEFINE_BASE_TEST_TERNARY_MASK_TEMPLATE(MFMULADDV, fmuladd);
-DEFINE_BASE_TEST_TERNARY_MASK_TEMPLATE(MFMULSUBV, fmulsub);
-DEFINE_BASE_TEST_TERNARY_MASK_TEMPLATE(MFADDMULV, faddmul);
-DEFINE_BASE_TEST_TERNARY_MASK_TEMPLATE(MFSUBMULV, fsubmul);
+DEFINE_VEC_MASK_VEC_VEC_TEST_TEMPLATE(MFMULADDV, fmuladd);
+DEFINE_VEC_MASK_VEC_VEC_TEST_TEMPLATE(MFMULSUBV, fmulsub);
+DEFINE_VEC_MASK_VEC_VEC_TEST_TEMPLATE(MFADDMULV, faddmul);
+DEFINE_VEC_MASK_VEC_VEC_TEST_TEMPLATE(MFSUBMULV, fsubmul);
 
 #define STRINGIFY(x) #x
 #define TOSTRING(x) STRINGIFY(x)
@@ -1486,6 +1520,21 @@ DEFINE_BASE_TEST_TERNARY_MASK_TEMPLATE(MFSUBMULV, fsubmul);
     CALL_TEST(MHBXOR, vecname); \
     CALL_TEST(HBXORS, vecname); \
     CALL_TEST(MHBXORS, vecname);
+
+#define CALL_TESTS_MASK(vecname) \
+    std::cout << "Testing: " << TOSTRING(vecname) << "\n"; \
+    CALL_TEST(LANDV, vecname); \
+    CALL_TEST(LANDS, vecname); \
+    CALL_TEST(LANDVA, vecname); \
+    CALL_TEST(LANDSA, vecname); \
+    CALL_TEST(LORV, vecname); \
+    CALL_TEST(LORS, vecname); \
+    CALL_TEST(LORVA, vecname); \
+    CALL_TEST(LORSA, vecname); \
+    CALL_TEST(LXORV, vecname); \
+    CALL_TEST(LXORS, vecname); \
+    CALL_TEST(LXORVA, vecname); \
+    CALL_TEST(LXORSA, vecname); 
 
 #define CALL_TESTS_UINT(vecname) \
     std::cout << "Testing: " << TOSTRING(vecname) << "\n"; \

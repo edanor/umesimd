@@ -55,6 +55,70 @@ namespace UME {
         };
 
         template<>
+        class SIMDTraits<SIMDMask1>
+        {
+        public:
+            typedef bool         SCALAR_T;
+            typedef SIMDSwizzle1 SWIZZLE_T;
+        };
+
+        template<>
+        class SIMDTraits<SIMDMask2>
+        {
+        public:
+            typedef bool         SCALAR_T;
+            typedef SIMDSwizzle2 SWIZZLE_T;
+        };
+
+        template<>
+        class SIMDTraits<SIMDMask4>
+        {
+        public:
+            typedef bool         SCALAR_T;
+            typedef SIMDSwizzle4 SWIZZLE_T;
+        };
+
+        template<>
+        class SIMDTraits<SIMDMask8>
+        {
+        public:
+            typedef bool         SCALAR_T;
+            typedef SIMDSwizzle8 SWIZZLE_T;
+        };
+
+        template<>
+        class SIMDTraits<SIMDMask16>
+        {
+        public:
+            typedef bool         SCALAR_T;
+            typedef SIMDSwizzle16 SWIZZLE_T;
+        };
+
+        template<>
+        class SIMDTraits<SIMDMask32>
+        {
+        public:
+            typedef bool          SCALAR_T;
+            typedef SIMDSwizzle32 SWIZZLE_T;
+        };
+
+        template<>
+        class SIMDTraits<SIMDMask64>
+        {
+        public:
+            typedef bool          SCALAR_T;
+            typedef SIMDSwizzle64 SWIZZLE_T;
+        };
+
+        template<>
+        class SIMDTraits<SIMDMask128>
+        {
+        public:
+            typedef bool         SCALAR_T;
+            typedef SIMDSwizzle128 SWIZZLE_T;
+        };
+
+        template<>
         class SIMDTraits<SIMD1_8u>
         {
         public:

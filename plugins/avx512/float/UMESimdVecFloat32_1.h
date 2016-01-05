@@ -594,7 +594,7 @@ namespace SIMD {
             return mVec + b;
         }
         // MHADDS
-        inline float hadds(SIMDVecMask<1> const & mask, float b) const {
+        inline float hadd(SIMDVecMask<1> const & mask, float b) const {
             float t0 = b;
             if (mask.mMask == true) t0 += mVec;
             return t0;
