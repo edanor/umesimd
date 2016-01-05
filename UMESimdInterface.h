@@ -2432,7 +2432,7 @@ namespace SIMD
 
         // reduceAdd (scalar, VEC) -> scalar
         template<typename SCALAR_TYPE, typename VEC_TYPE>
-        inline SCALAR_TYPE reduceAdd (SCALAR_TYPE a, VEC_TYPE const & b) {
+        inline SCALAR_TYPE reduceAdd (SCALAR_TYPE & a, VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             SCALAR_TYPE retval = a;
             for(uint32_t i = 0; i <VEC_TYPE::length(); i++) {

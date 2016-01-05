@@ -39,7 +39,7 @@
 namespace UME {
 namespace SIMD {
 
-    class SIMDVec_f<double, 16>;
+    //class SIMDVec_f<double, 16>;
 
     template<>
     class SIMDVec_f<float, 16> :

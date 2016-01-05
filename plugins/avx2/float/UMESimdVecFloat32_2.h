@@ -716,24 +716,46 @@ namespace SIMD {
         // SWIZZLEA - Swizzle (reorder/permute) vector elements and assign
 
         //(Reduction to scalar operations)
-        // HADD  - Add elements of a vector (horizontal add)
+        // HADD
         inline float hadd() const {
             return mVec[0] + mVec[1];
         }
-        // MHADD - Masked add elements of a vector (horizontal add)
+        // MHADD
         inline float hadd(SIMDVecMask<2> const & mask) const {
             float t0 = 0.0f;
             if (mask.mMask[0] == true) t0 += mVec[0];
             if (mask.mMask[1] == true) t0 += mVec[1];
             return t0;
         }
-        // HMUL  - Multiply elements of a vector (horizontal mul)
+        // HADDS
+        inline float hadd(float b) const {
+            return b + mVec[0] + mVec[1];
+        }
+        // MHADDS
+        inline float hadd(SIMDVecMask<2> const & mask, float b) const {
+            float t0 = b;
+            if (mask.mMask[0] == true) t0 += mVec[0];
+            if (mask.mMask[1] == true) t0 += mVec[1];
+            return t0;
+        }
+        // HMUL
         inline float hmul() const {
             return mVec[0] * mVec[1];
         }
-        // MHMUL - Masked multiply elements of a vector (horizontal mul)
+        // MHMUL
         inline float hmul(SIMDVecMask<2> const & mask) const {
             float t0 = 1.0f;
+            if (mask.mMask[0] == true) t0 *= mVec[0];
+            if (mask.mMask[1] == true) t0 *= mVec[1];
+            return t0;
+        }
+        // HMULS
+        inline float hmul(float b) const {
+            return b * mVec[0] * mVec[1];
+        }
+        // MHMULS
+        inline float hmul(SIMDVecMask<2> const & mask, float b) const {
+            float t0 = b;
             if (mask.mMask[0] == true) t0 *= mVec[0];
             if (mask.mMask[1] == true) t0 *= mVec[1];
             return t0;
@@ -948,7 +970,7 @@ namespace SIMD {
             return t0;
         }
         // MIMAX  - Masked index of max element of a vector
-        inline uint32_t mimax(SIMDVecMask<2> const & mask) const {
+        inline uint32_t imax(SIMDVecMask<2> const & mask) const {
             uint32_t t0 = 0;
             if (mask.mMask[1] == true) {
                 if (mVec[0] < mVec[1]) t0 = 1;
@@ -962,7 +984,7 @@ namespace SIMD {
             return t0;
         }
         // MHMIN  - Masked min of elements of a vector (horizontal min)
-        inline float mhmin(SIMDVecMask<2> const & mask) const {
+        inline float hmin(SIMDVecMask<2> const & mask) const {
             float t0 = std::numeric_limits<float>::max();
             if (mask.mMask[0] == true) t0 = mVec[0];
             if (mask.mMask[1] == true) {
@@ -979,7 +1001,7 @@ namespace SIMD {
             return t0;
         }
         // MIMIN  - Masked index of min element of a vector
-        inline uint32_t mimin(SIMDVecMask<2> const & mask) const {
+        inline uint32_t imin(SIMDVecMask<2> const & mask) const {
             uint32_t t0 = 0;
             if (mask.mMask[1] == true) {
                 if (mVec[0] > mVec[1]) t0 = 1;

@@ -481,7 +481,8 @@ namespace SIMD {
     }
 
     inline SIMDVec_f<float, 16>::operator SIMDVec_i<int32_t, 16>() const {
-        return EMULATED_FUNCTIONS::xtoy < SIMDVec_i<int32_t, 16>, int32_t, SIMDVec_f<float, 16>>(*this);
+        __m512i t0 = _mm512_cvtfxpnt_round_adjustps_epi32(mVec, _MM_FROUND_TO_NEAREST_INT | _MM_FROUND_NO_EXC, _MM_EXPADJ_NONE);
+        return SIMDVec_i<int32_t, 16>(t0);
     }
 
     inline SIMDVec_f<float, 32>::operator SIMDVec_i<int32_t, 32>() const {

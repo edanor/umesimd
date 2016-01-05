@@ -35,6 +35,8 @@
 #include <cstdlib>
 #include <stdlib.h>
 
+#include <iostream>
+
 #if defined (_MSC_VER)
 //#define UME_ALIGN(alignment) __declspec(align(alignment))
     #if (_MSC_VER <= 1900)

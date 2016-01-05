@@ -430,8 +430,39 @@ namespace SIMD {
             return raw[0] + raw[1] + raw[2] + raw[3];
         }
         // MHADD - Masked add elements of a vector (horizontal add)
+        inline float hadd(SIMDVecMask<4> const & mask) {
+            alignas(16) float raw[4];
+            _mm_store_ps(raw, mVec);
+            float t0 = 0.0f;
+            int m0 = _mm_movemask_epi8(mask.mMask);
+            if (m0 & 0x0001) t0 += raw[0];
+            if (m0 & 0x0010) t0 += raw[1];
+            if (m0 & 0x0100) t0 += raw[2];
+            if (m0 & 0x1000) t0 += raw[3];
+            return t0;
+        }
+        // HADDS
+        inline float hadd(float b) {
+            alignas(16) float raw[4];
+            _mm_store_ps(raw, mVec);
+            return b + raw[0] + raw[1] + raw[2] + raw[3];
+        }
+        // MHADDS
+        inline float hadd(SIMDVecMask<4> const & mask, float b) {
+            alignas(16) float raw[4];
+            _mm_store_ps(raw, mVec);
+            float t0 = b;
+            int m0 = _mm_movemask_epi8(mask.mMask);
+            if (m0 & 0x0001) t0 += raw[0];
+            if (m0 & 0x0010) t0 += raw[1];
+            if (m0 & 0x0100) t0 += raw[2];
+            if (m0 & 0x1000) t0 += raw[3];
+            return t0;
+        }
         // HMUL  - Multiply elements of a vector (horizontal mul)
         // MHMUL - Masked multiply elements of a vector (horizontal mul)
+        // HMULS
+        // MHMULS
         // HAND  - AND of elements of a vector (horizontal AND)
         // MHAND - Masked AND of elements of a vector (horizontal AND)
         // HOR   - OR of elements of a vector (horizontal OR)

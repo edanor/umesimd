@@ -178,6 +178,9 @@ namespace SIMD {
         }
         // HLAND
         // HLOR
+        inline bool hlor() const {
+            return mMask != 0;
+        }
         // HLXOR
     };
 

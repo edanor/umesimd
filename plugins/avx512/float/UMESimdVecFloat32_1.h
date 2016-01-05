@@ -589,6 +589,16 @@ namespace SIMD {
             if (mask.mMask == true) t0 += mVec;
             return t0;
         }
+        // HADDS
+        inline float hadd(float b) const {
+            return mVec + b;
+        }
+        // MHADDS
+        inline float hadds(SIMDVecMask<1> const & mask, float b) const {
+            float t0 = b;
+            if (mask.mMask == true) t0 += mVec;
+            return t0;
+        }
         // HMUL  - Multiply elements of a vector (horizontal mul)
         inline float hmul() const {
             return mVec;
@@ -596,6 +606,16 @@ namespace SIMD {
         // MHMUL - Masked multiply elements of a vector (horizontal mul)
         inline float hmul(SIMDVecMask<1> const & mask) const {
             float t0 = 1.0f;
+            if (mask.mMask == true) t0 *= mVec;
+            return t0;
+        }
+        // HMULS
+        inline float hmul(float b) const {
+            return mVec * b;
+        }
+        // MHMULS
+        inline float hmul(SIMDVecMask<1> const & mask, float b) const {
+            float t0 = b;
             if (mask.mMask == true) t0 *= mVec;
             return t0;
         }
@@ -750,7 +770,7 @@ namespace SIMD {
             return 0;
         }
         // MIMAX  - Masked index of max element of a vector
-        inline uint32_t mimax(SIMDVecMask<1> const & mask) const {
+        inline uint32_t imax(SIMDVecMask<1> const & mask) const {
             return 0;
         }
         // HMIN   - Min of elements of a vector (horizontal min)
@@ -758,7 +778,7 @@ namespace SIMD {
             return mVec;
         }
         // MHMIN  - Masked min of elements of a vector (horizontal min)
-        inline float mhmin(SIMDVecMask<1> const & mask) const {
+        inline float hmin(SIMDVecMask<1> const & mask) const {
             float t0 = std::numeric_limits<float>::max();
             if (mask.mMask == true) t0 = mVec;
             return t0;
@@ -768,7 +788,7 @@ namespace SIMD {
             return 0;
         }
         // MIMIN  - Masked index of min element of a vector
-        inline uint32_t mimin(SIMDVecMask<1> const & mask) const {
+        inline uint32_t imin(SIMDVecMask<1> const & mask) const {
             return 0;
         }
 

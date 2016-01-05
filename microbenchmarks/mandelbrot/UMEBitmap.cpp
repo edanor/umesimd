@@ -30,6 +30,7 @@
 
 #include "UMEBitmap.h"
 #include "UMEEndianness.h"
+#include "../../UMEMemory.h"
 
 #include <iostream>
 #include <stdio.h>
@@ -130,8 +131,7 @@ UME::Bitmap::Bitmap(uint32_t width, uint32_t height, PIXEL_TYPE type)
         WRITE_DWORD(mDIBHeader.raw + 32, 0); // number of colors in the color palette (0 for 2^n)
         WRITE_DWORD(mDIBHeader.raw + 36, 0); // number of important colors
 
-    this->mRasterData = (uint8_t*)malloc(GetBitmapSize());
-    
+    this->mRasterData = (uint8_t*)UME::DynamicMemory::Malloc(GetBitmapSize());
 }
 
 UME::Bitmap::Bitmap(std::string const & fileName)
@@ -150,7 +150,7 @@ UME::Bitmap::Bitmap(Bitmap & original, bool copyData)
     this->mPaddedWidth = original.mPaddedWidth;
     
     unsigned int bitmapSize = GetBitmapSize();
-    this->mRasterData = (uint8_t*)malloc(bitmapSize);
+    this->mRasterData = (uint8_t*)UME::DynamicMemory::Malloc(bitmapSize);
     
     if(copyData) // copy whole blob
     {
@@ -175,7 +175,7 @@ UME::Bitmap::Bitmap(UME::BitmapFileHeader &header, UME::BitmapDIBHeader &dIBHead
 
 UME::Bitmap::~Bitmap()
 {
-    free(mRasterData);
+    UME::DynamicMemory::Free(mRasterData);
 }
 
 bool UME::Bitmap::LoadFromFile(std::string const & fileName)
@@ -237,7 +237,7 @@ bool UME::Bitmap::LoadFromFile(std::string const & fileName)
             std::cout << "UMEBitmap: error - invalid line padding!" << std::endl;
         }
 
-        mRasterData = (uint8_t*)malloc(bitmapSize);
+        mRasterData = (uint8_t*)UME::DynamicMemory::Malloc(bitmapSize);
         fread(mRasterData, 1, bitmapSize, file);
     } while (0);
 
