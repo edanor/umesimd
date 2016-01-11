@@ -140,15 +140,40 @@ namespace SIMD {
 
         //(Initialization)
         // ASSIGNV
+        inline SIMDVec_f & assign(SIMDVec_f const & b) {
+            mVecLo = b.mVecLo;
+            mVecHi = b.mVecHi;
+            return *this;
+        }
         inline SIMDVec_f & operator= (SIMDVec_f const & b) {
             return this->assign(b);
         }
         // MASSIGNV
+        inline SIMDVec_f & assign(SIMDVecMask<16> const & mask, SIMDVec_f const & b) {
+            __m256 m0 = _mm256_castsi256_ps(mask.mMaskLo);
+            __m256 m1 = _mm256_castsi256_ps(mask.mMaskHi);
+            mVecLo = _mm256_blendv_ps(mVecLo, b.mVecLo, m0);
+            mVecHi = _mm256_blendv_ps(mVecHi, b.mVecHi, m1);
+            return *this;
+        }
         // ASSIGNS
+        inline SIMDVec_f & assign(float b) {
+            mVecLo = _mm256_set1_ps(b);
+            mVecHi = mVecLo;
+            return *this;
+        }
         inline SIMDVec_f & operator= (float b) {
             return this->assign(b);
         }
         // MASSIGNS
+        inline SIMDVec_f & assign(SIMDVecMask<16> const & mask, float b) {
+            __m256 m0 = _mm256_castsi256_ps(mask.mMaskLo);
+            __m256 m1 = _mm256_castsi256_ps(mask.mMaskHi);
+            __m256 t0 = _mm256_set1_ps(b);
+            mVecLo = _mm256_blendv_ps(mVecLo, t0, m0);
+            mVecHi = _mm256_blendv_ps(mVecHi, t0, m1);
+            return *this;
+        }
 
         //(Memory access)
         // LOAD    - Load from memory (either aligned or unaligned) to vector 

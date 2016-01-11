@@ -1,3 +1,33 @@
+// The MIT License (MIT)
+//
+// Copyright (c) 2016 CERN
+//
+// Author: Przemyslaw Karpinski
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+//
+//
+// This piece of code was developed as part of ICE-DIP project at CERN.
+//  "ICE-DIP is a European Industrial Doctorate project funded by the European Community's 
+//  7th Framework programme Marie Curie Actions under grant PITN-GA-2012-316596".
+//
+
 #ifndef LATENCIES_H_
 #define LATENCIES_H_
 
@@ -5,7 +35,6 @@
 
 using namespace UME::SIMD;
 
-// define RDTSC getter function
 #if defined(__i386__)
 static __inline__ unsigned long long __rdtsc(void)
 {
@@ -13,42 +42,106 @@ static __inline__ unsigned long long __rdtsc(void)
     __asm__ volatile (".byte 0x0f, 0x31" : "=A" (x));
     return x;
 }
+
 #elif defined(__x86_64__)
-static __inline__ unsigned long long __rdtsc(void)
-{
-    unsigned hi, lo;
-    __asm__ __volatile__("rdtsc" : "=a"(lo), "=d"(hi));
-    return ((unsigned long long)lo) | (((unsigned long long)hi) << 32);
+
+#if defined(MSC_VER)
+static inline void forceSerialize(void) {
+    int tmp[4];
+    cpuid_(tmp, 0);
+    volatile int x = tmp[3];
+    _ReadWriteBarrier();
+}
+#else
+
+static inline void forceSerialize(void) {
+    uint32_t regs[4];
+    asm volatile
+        ("cpuid" : "=a" (regs[0]), "=b" (regs[1]), "=c" (regs[2]), "=d" (regs[3])
+            : "a" (0), "c" (0));
+    asm volatile("MFENCE");
 }
 #endif
 
+static inline unsigned long long __rdtsc(void)
+{
+    unsigned hi, lo;
+    forceSerialize();
+    __asm__ __volatile__("rdtsc" : "=a"(lo), "=d"(hi));
+    return ((unsigned long long)lo) | (((unsigned long long)hi) << 32);
+}
+
+#endif
+
 template<typename T>
-T getRandomValue() {
-    T value = T((std::numeric_limits<T>::max() - 1) * (float(rand()) / float(RAND_MAX)) + 1.0f);
+inline T getRandomValue() {
+    T value = T((std::numeric_limits<T>::max() - 2) * (float(rand()) / float(RAND_MAX)) + 1.0f);
     //std::cout << " " << uint32_t(value) << " ";
     return value;
 }
 template<>
-bool getRandomValue() {
+inline bool getRandomValue<bool>() {
     return getRandomValue<uint8_t>() > 128 ? true : false;
 }
 
+template<typename T>
+inline void getRandomArray(T* arr, int N) {
+    for (int i = 0; i < N; i++) {
+        arr[i] = getRandomValue<T>();
+    }
+}
+
 template<typename VEC_T, typename SCALAR_T>
-SCALAR_T forceReduction(VEC_T & x) {
+inline SCALAR_T forceReduction(VEC_T & x) {
     return x.hadd();
 }
 
-// specialization for masks
-template <> bool forceReduction<SIMDMask1, bool>(SIMDMask1 & x) { return x.hlxor(); }
-template <> bool forceReduction<SIMDMask2, bool>(SIMDMask2 & x) { return x.hlxor(); }
-template <> bool forceReduction<SIMDMask4, bool>(SIMDMask4 & x) { return x.hlxor(); }
-template <> bool forceReduction<SIMDMask8, bool>(SIMDMask8 & x) { return x.hlxor(); }
-template <> bool forceReduction<SIMDMask16, bool>(SIMDMask16 & x) { return x.hlxor(); }
-template <> bool forceReduction<SIMDMask32, bool>(SIMDMask32 & x) { return x.hlxor(); }
-template <> bool forceReduction<SIMDMask64, bool>(SIMDMask64 & x) { return x.hlxor(); }
-template <> bool forceReduction<SIMDMask128, bool> (SIMDMask128 & x) { return x.hlxor(); }
+template<typename SCALAR_T>
+inline SCALAR_T forceReductionArray(SCALAR_T *arr, const unsigned int N) {
+    SCALAR_T res = SCALAR_T(0);
+    for (unsigned int i = 0; i < N; i++) res += arr[i];
+    return res;
+}
 
+template<>
+inline bool forceReductionArray(bool *arr, const unsigned int N) {
+    bool res = false;
+    for (unsigned int i = 0; i < N; i++) res ^= arr[i];
+    return res;
+}
+
+// specialization for masks
+template <> inline bool forceReduction<SIMDMask1, bool>(SIMDMask1 & x) { return x.hlxor(); }
+template <> inline bool forceReduction<SIMDMask2, bool>(SIMDMask2 & x) { return x.hlxor(); }
+template <> inline bool forceReduction<SIMDMask4, bool>(SIMDMask4 & x) { return x.hlxor(); }
+template <> inline bool forceReduction<SIMDMask8, bool>(SIMDMask8 & x) { return x.hlxor(); }
+template <> inline bool forceReduction<SIMDMask16, bool>(SIMDMask16 & x) { return x.hlxor(); }
+template <> inline bool forceReduction<SIMDMask32, bool>(SIMDMask32 & x) { return x.hlxor(); }
+template <> inline bool forceReduction<SIMDMask64, bool>(SIMDMask64 & x) { return x.hlxor(); }
+template <> inline bool forceReduction<SIMDMask128, bool>(SIMDMask128 & x) { return x.hlxor(); }
+
+#define BREAK_COMPILER_OPTIMIZATION() /* __asm__ ("NOP"); \
+        __asm__ volatile("" ::: "memory"); \
+        __asm__ volatile("LFENCE");*/
+
+#define REPEAT_LINE2(x) x; \
+                        /*BREAK_COMPILER_OPTIMIZATION();*/ \
+                        x; \
+                        /*BREAK_COMPILER_OPTIMIZATION();*/
+#define REPEAT_LINE4(x) REPEAT_LINE2(x); REPEAT_LINE2(x);
+#define REPEAT_LINE8(x) REPEAT_LINE4(x); REPEAT_LINE4(x);
+#define REPEAT_LINE16(x) REPEAT_LINE8(x); REPEAT_LINE8(x);
+#define REPEAT_LINE32(x) REPEAT_LINE16(x); REPEAT_LINE16(x);
+#define REPEAT_LINE64(x) REPEAT_LINE32(x); REPEAT_LINE32(x);
+#define REPEAT_LINE128(x) REPEAT_LINE64(x); REPEAT_LINE64(x);
+#define REPEAT_LINE256(x) REPEAT_LINE128(x); REPEAT_LINE128(x);
+#define REPEAT_LINE512(x) REPEAT_LINE256(x); REPEAT_LINE256(x);
+#define REPEAT_LINE1024(x) REPEAT_LINE512(x); REPEAT_LINE512(x);
+
+// Number of measurement iterations
 const int ITERATIONS = 1000;
+// Number of operation repetitions in each operation.
+const int OPERATION_REPETITIONS = 1000;
 
 // Generate test function for Base vector operations of following form:
 //
@@ -61,7 +154,7 @@ const int ITERATIONS = 1000;
 template<typename VEC_T> \
 void instr_name##Latency() { \
     unsigned long long start = 0, end = 0; \
-    unsigned long long delta = 0; \
+    float delta = 0.0f; \
     float latency_avg = 0.0f; \
  \
     typedef typename UME::SIMD::SIMDTraits<VEC_T>::SCALAR_T SCALAR_T; \
@@ -71,24 +164,21 @@ void instr_name##Latency() { \
     alignas(VEC_T::alignment()) SCALAR_T raw2[VEC_LEN]; \
  \
     for (int i = 0; i < ITERATIONS; i++) { \
-        for (unsigned int k = 0; k < VEC_LEN; k++) \
-        { \
-            raw1[k] = getRandomValue<SCALAR_T>(); \
-            raw2[k] = getRandomValue<SCALAR_T>(); \
-        } \
+        getRandomArray<SCALAR_T>(raw1, VEC_LEN); \
+        getRandomArray<SCALAR_T>(raw2, VEC_LEN); \
  \
-        VEC_T vec0(raw1); \
-        VEC_T vec1(raw2); \
+        VEC_T vec1(raw1), vec2(raw2); \
         VEC_T res; \
  \
         start = __rdtsc(); \
-            res.assign(vec0.MFI_name(vec1)); \
+            REPEAT_LINE1024(vec1.assign(vec1.MFI_name(vec2));) \
+            vec1.store(raw1); /* force memory store operation */\
         end = __rdtsc(); \
  \
-        volatile SCALAR_T x = forceReduction<VEC_T, SCALAR_T>(res); \
+        volatile SCALAR_T t = forceReductionArray<SCALAR_T>(raw1, VEC_LEN);\
  \
-        delta = end - start; \
-        float d = float(delta) - latency_avg; \
+        delta = float(end - start)/ float(1024); \
+        float d = delta - latency_avg; \
         latency_avg += d / (1.0f + float(i)); \
  \
     } \
@@ -109,7 +199,7 @@ void instr_name##Latency() { \
 template<typename VEC_T> \
 void instr_name##Latency() { \
     unsigned long long start = 0, end = 0; \
-    unsigned long long delta = 0; \
+    float delta = 0.0f; \
     float latency_avg = 0.0f; \
  \
     typedef typename UME::SIMD::SIMDTraits<VEC_T>::SCALAR_T SCALAR_T; \
@@ -121,12 +211,9 @@ void instr_name##Latency() { \
     bool mask_raw[VEC_LEN]; \
  \
     for (int i = 0; i < ITERATIONS; i++) { \
-        for (unsigned int k = 0; k < VEC_LEN; k++) \
-        { \
-            raw1[k] = getRandomValue<SCALAR_T>(); \
-            raw2[k] = getRandomValue<SCALAR_T>(); \
-            mask_raw[k] = float(rand()) / float(RAND_MAX) > 0.5f ? true : false; \
-        } \
+        getRandomArray<SCALAR_T>(raw1, VEC_LEN); \
+        getRandomArray<SCALAR_T>(raw2, VEC_LEN); \
+        getRandomArray<bool>(mask_raw, VEC_LEN); \
  \
         VEC_T vec0(raw1); \
         VEC_T vec1(raw2); \
@@ -134,13 +221,14 @@ void instr_name##Latency() { \
         VEC_T res; \
  \
         start = __rdtsc(); \
-            res.assign(vec0.MFI_name(mask, vec1)); \
+            REPEAT_LINE1024(vec0.assign(vec0.MFI_name(mask, vec1))); \
+            vec0.store(raw1); /* force memory store operation */\
         end = __rdtsc(); \
  \
-        volatile SCALAR_T x = res.hadd(); \
+        volatile SCALAR_T t = forceReductionArray<SCALAR_T>(raw1, VEC_LEN);\
  \
-        delta = end - start; \
-        float d = float(delta) - latency_avg; \
+        delta = float(end - start)/ float(1024); \
+        float d = delta - latency_avg; \
         latency_avg += d / (1.0f + float(i)); \
  \
     } \
@@ -161,7 +249,7 @@ void instr_name##Latency() { \
 template<typename VEC_T> \
 void instr_name##Latency() { \
     unsigned long long start = 0, end = 0; \
-    unsigned long long delta = 0; \
+    float delta = 0.0f; \
     float latency_avg = 0.0f; \
  \
     typedef typename UME::SIMD::SIMDTraits<VEC_T>::SCALAR_T SCALAR_T; \
@@ -170,23 +258,21 @@ void instr_name##Latency() { \
     alignas(VEC_T::alignment()) SCALAR_T raw1[VEC_LEN]; \
  \
     for (int i = 0; i < ITERATIONS; i++) { \
-        for (unsigned int k = 0; k < VEC_LEN; k++) \
-        { \
-            raw1[k] = getRandomValue<SCALAR_T>(); \
-        } \
+        getRandomArray<SCALAR_T>(raw1, VEC_LEN); \
         SCALAR_T scalarOp = getRandomValue<SCALAR_T>(); \
  \
         VEC_T vec0(raw1); \
         VEC_T res; \
  \
         start = __rdtsc(); \
-            res.assign(vec0.MFI_name(scalarOp)); \
+            REPEAT_LINE1024(vec0.assign(vec0.MFI_name(scalarOp))); \
+            vec0.store(raw1); /* force memory store operation */\
         end = __rdtsc(); \
  \
-        volatile SCALAR_T x = forceReduction<VEC_T, SCALAR_T>(res); \
+        volatile SCALAR_T x = forceReductionArray<SCALAR_T>(raw1, VEC_LEN); \
  \
-        delta = end - start; \
-        float d = float(delta) - latency_avg; \
+        delta = float(end - start)/ float(1024); \
+        float d = delta - latency_avg; \
         latency_avg += d / (1.0f + float(i)); \
  \
     } \
@@ -208,7 +294,7 @@ void instr_name##Latency() { \
 template<typename VEC_T> \
 void instr_name##Latency() { \
     unsigned long long start = 0, end = 0; \
-    unsigned long long delta = 0; \
+    float delta = 0.0f; \
     float latency_avg = 0.0f; \
  \
     typedef typename UME::SIMD::SIMDTraits<VEC_T>::SCALAR_T SCALAR_T; \
@@ -218,13 +304,10 @@ void instr_name##Latency() { \
     alignas(VEC_T::alignment()) SCALAR_T raw1[VEC_LEN]; \
     bool mask_raw[VEC_LEN]; \
  \
-    unsigned long long sum = 0; \
     for (int i = 0; i < ITERATIONS; i++) { \
-        for (unsigned int k = 0; k < VEC_LEN; k++) \
-        { \
-            raw1[k] = getRandomValue<SCALAR_T>(); \
-            mask_raw[k] = getRandomValue<bool>(); \
-        } \
+        getRandomArray<SCALAR_T>(raw1, VEC_LEN); \
+        getRandomArray<bool>(mask_raw, VEC_LEN); \
+ \
         SCALAR_T scalarOp = getRandomValue<SCALAR_T>(); \
  \
         VEC_T vec0(raw1); \
@@ -232,16 +315,16 @@ void instr_name##Latency() { \
         VEC_T res; \
  \
         start = __rdtsc(); \
-            res.assign(vec0.MFI_name(mask, scalarOp)); \
+            REPEAT_LINE1024(vec0.assign(vec0.MFI_name(mask, scalarOp))); \
+            vec0.store(raw1); /* force memory store operation */\
         end = __rdtsc(); \
  \
-        volatile SCALAR_T x = res.hadd(); \
+        volatile SCALAR_T t = forceReductionArray<SCALAR_T>(raw1, VEC_LEN);\
  \
-        delta = end - start; \
-        float d = float(delta) - latency_avg; \
+        delta = float(end - start)/ float(1024); \
+        float d = delta - latency_avg; \
         latency_avg += d / (1.0f + float(i)); \
  \
-        sum += delta; \
     } \
  \
     std::cout << " Average latency is: " << latency_avg << \
@@ -262,7 +345,7 @@ void instr_name##Latency() { \
 template<typename VEC_T> \
 void instr_name##Latency() { \
     unsigned long long start = 0, end = 0; \
-    unsigned long long delta = 0; \
+    float delta = 0.0f; \
     float latency_avg = 0.0f; \
  \
     typedef typename UME::SIMD::SIMDTraits<VEC_T>::SCALAR_T SCALAR_T; \
@@ -272,24 +355,21 @@ void instr_name##Latency() { \
     alignas(VEC_T::alignment()) SCALAR_T raw2[VEC_LEN]; \
  \
     for (int i = 0; i < ITERATIONS; i++) { \
-        for (unsigned int k = 0; k < VEC_LEN; k++) \
-        { \
-            raw1[k] = getRandomValue<SCALAR_T>(); \
-            raw2[k] = getRandomValue<SCALAR_T>(); \
-        } \
+        getRandomArray<SCALAR_T>(raw1, VEC_LEN); \
+        getRandomArray<SCALAR_T>(raw2, VEC_LEN); \
  \
         VEC_T vec0(raw1); \
         VEC_T vec1(raw2); \
-        VEC_T res; \
  \
         start = __rdtsc(); \
-            vec0.MFI_name(vec1); \
+            REPEAT_LINE1024(vec0.MFI_name(vec0)); \
+            vec0.store(raw1); /* force memory store operation */\
         end = __rdtsc(); \
  \
-        volatile SCALAR_T x = forceReduction<VEC_T, SCALAR_T>(vec0); \
+        volatile SCALAR_T t = forceReductionArray<SCALAR_T>(raw1, VEC_LEN);\
  \
-        delta = end - start; \
-        float d = float(delta) - latency_avg; \
+        delta = float(end - start)/ float(1024); \
+        float d = delta - latency_avg; \
         latency_avg += d / (1.0f + float(i)); \
  \
     } \
@@ -312,7 +392,7 @@ void instr_name##Latency() { \
 template<typename VEC_T> \
 void instr_name##Latency() { \
     unsigned long long start = 0, end = 0; \
-    unsigned long long delta = 0; \
+    float delta = 0.0f; \
     float latency_avg = 0.0f; \
  \
     typedef typename UME::SIMD::SIMDTraits<VEC_T>::SCALAR_T SCALAR_T; \
@@ -324,25 +404,23 @@ void instr_name##Latency() { \
     bool mask_raw[VEC_LEN]; \
  \
     for (int i = 0; i < ITERATIONS; i++) { \
-        for (unsigned int k = 0; k < VEC_LEN; k++) \
-        { \
-            raw1[k] = getRandomValue<SCALAR_T>(); \
-            raw2[k] = getRandomValue<SCALAR_T>(); \
-            mask_raw[k] = float(rand()) / float(RAND_MAX) > 0.5f ? true : false; \
-        } \
+        getRandomArray<SCALAR_T>(raw1, VEC_LEN); \
+        getRandomArray<SCALAR_T>(raw2, VEC_LEN); \
+        getRandomArray<bool>(mask_raw, VEC_LEN); \
  \
         VEC_T vec0(raw1); \
         VEC_T vec1(raw2); \
         MASK_T mask(mask_raw); \
  \
         start = __rdtsc(); \
-            vec0.MFI_name(mask, vec1); \
+            REPEAT_LINE1024(vec0.MFI_name(mask, vec1)); \
+            vec0.store(raw1); /* force memory store operation */\
         end = __rdtsc(); \
  \
-        volatile SCALAR_T x = vec0.hadd(); \
+        volatile SCALAR_T t = forceReductionArray<SCALAR_T>(raw1, VEC_LEN);\
  \
-        delta = end - start; \
-        float d = float(delta) - latency_avg; \
+        delta = float(end - start)/ float(1024); \
+        float d = delta - latency_avg; \
         latency_avg += d / (1.0f + float(i)); \
  \
     } \
@@ -365,7 +443,7 @@ void instr_name##Latency() { \
 template<typename VEC_T> \
 void instr_name##Latency() { \
     unsigned long long start = 0, end = 0; \
-    unsigned long long delta = 0; \
+    float delta = 0.0f; \
     float latency_avg = 0.0f; \
  \
     typedef typename UME::SIMD::SIMDTraits<VEC_T>::SCALAR_T SCALAR_T; \
@@ -374,22 +452,20 @@ void instr_name##Latency() { \
     alignas(VEC_T::alignment()) SCALAR_T raw1[VEC_LEN]; \
  \
     for (int i = 0; i < ITERATIONS; i++) { \
-        for (unsigned int k = 0; k < VEC_LEN; k++) \
-        { \
-            raw1[k] = getRandomValue<SCALAR_T>(); \
-        } \
+        getRandomArray<SCALAR_T>(raw1, VEC_LEN); \
         SCALAR_T scalarOp = getRandomValue<SCALAR_T>(); \
  \
         VEC_T vec0(raw1); \
  \
         start = __rdtsc(); \
-            vec0.MFI_name(scalarOp); \
+            REPEAT_LINE1024(vec0.MFI_name(scalarOp)); \
+            vec0.store(raw1); /* force memory store operation */\
         end = __rdtsc(); \
  \
-        volatile SCALAR_T x = forceReduction<VEC_T, SCALAR_T>(vec0); \
+        volatile SCALAR_T t = forceReductionArray<SCALAR_T>(raw1, VEC_LEN);\
  \
-        delta = end - start; \
-        float d = float(delta) - latency_avg; \
+        delta = float(end - start)/ float(1024); \
+        float d = delta - latency_avg; \
         latency_avg += d / (1.0f + float(i)); \
  \
     } \
@@ -413,7 +489,7 @@ void instr_name##Latency() { \
 template<typename VEC_T> \
 void instr_name##Latency() { \
     unsigned long long start = 0, end = 0; \
-    unsigned long long delta = 0; \
+    float delta = 0.0f; \
     float latency_avg = 0.0f; \
  \
     typedef typename UME::SIMD::SIMDTraits<VEC_T>::SCALAR_T SCALAR_T; \
@@ -421,31 +497,29 @@ void instr_name##Latency() { \
     const int VEC_LEN = VEC_T::length(); \
  \
     alignas(VEC_T::alignment()) SCALAR_T raw1[VEC_LEN]; \
+    SCALAR_T scalarOps[1024]; \
     bool mask_raw[VEC_LEN]; \
+    int offset = 0; \
  \
-    unsigned long long sum = 0; \
     for (int i = 0; i < ITERATIONS; i++) { \
-        for (unsigned int k = 0; k < VEC_LEN; k++) \
-        { \
-            raw1[k] = getRandomValue<SCALAR_T>(); \
-            mask_raw[k] = getRandomValue<bool>(); \
-        } \
-        SCALAR_T scalarOp = getRandomValue<SCALAR_T>(); \
- \
+        getRandomArray<SCALAR_T>(raw1, VEC_LEN); \
+        getRandomArray<SCALAR_T>(scalarOps, 1024); \
+        getRandomArray<bool>(mask_raw, VEC_LEN); \
         VEC_T vec0(raw1); \
         MASK_T mask(mask_raw); \
+        offset = 0; \
  \
         start = __rdtsc(); \
-            vec0.MFI_name(mask, scalarOp); \
+            REPEAT_LINE1024(vec0.MFI_name(mask, scalarOps[offset++]);); \
+            vec0.store(raw1); /* force memory store operation */\
         end = __rdtsc(); \
  \
-        volatile SCALAR_T x = vec0.hadd(); \
+        volatile SCALAR_T t = forceReductionArray<SCALAR_T>(raw1, VEC_LEN);\
  \
-        delta = end - start; \
-        float d = float(delta) - latency_avg; \
+        delta = float(end - start)/ float(1024); \
+        float d = delta - latency_avg; \
         latency_avg += d / (1.0f + float(i)); \
  \
-        sum += delta; \
     } \
  \
     std::cout << " Average latency is: " << latency_avg << \
@@ -463,7 +537,7 @@ void instr_name##Latency() { \
 template<typename VEC_T> \
 void instr_name##Latency() { \
     unsigned long long start = 0, end = 0; \
-    unsigned long long delta = 0; \
+    float delta = 0.0f; \
     float latency_avg = 0.0f; \
  \
     typedef typename UME::SIMD::SIMDTraits<VEC_T>::SCALAR_T SCALAR_T; \
@@ -472,22 +546,20 @@ void instr_name##Latency() { \
     alignas(VEC_T::alignment()) SCALAR_T raw1[VEC_LEN]; \
  \
     for (int i = 0; i < ITERATIONS; i++) { \
-        for (unsigned int k = 0; k < VEC_LEN; k++) \
-        { \
-            raw1[k] = getRandomValue<SCALAR_T>(); \
-        } \
+        getRandomArray<SCALAR_T>(raw1, VEC_LEN); \
  \
         VEC_T vec0(raw1); \
         VEC_T res; \
  \
         start = __rdtsc(); \
-            res.assign(vec0.MFI_name()); \
+            REPEAT_LINE1024(vec0.assign(vec0.MFI_name())); \
+            vec0.store(raw1); /* force memory store operation */\
         end = __rdtsc(); \
  \
-        volatile SCALAR_T x = res.hadd(); \
+        volatile SCALAR_T t = forceReductionArray<SCALAR_T>(raw1, VEC_LEN);\
  \
-        delta = end - start; \
-        float d = float(delta) - latency_avg; \
+        delta = float(end - start)/ float(1024); \
+        float d = delta - latency_avg; \
         latency_avg += d / (1.0f + float(i)); \
  \
     } \
@@ -508,7 +580,7 @@ void instr_name##Latency() { \
 template<typename VEC_T> \
 void instr_name##Latency() { \
     unsigned long long start = 0, end = 0; \
-    unsigned long long delta = 0; \
+    float delta = 0.0f; \
     float latency_avg = 0.0f; \
  \
     typedef typename UME::SIMD::SIMDTraits<VEC_T>::SCALAR_T SCALAR_T; \
@@ -519,24 +591,22 @@ void instr_name##Latency() { \
     bool mask_raw[VEC_LEN]; \
  \
     for (int i = 0; i < ITERATIONS; i++) { \
-        for (unsigned int k = 0; k < VEC_LEN; k++) \
-        { \
-            raw1[k] = getRandomValue<SCALAR_T>(); \
-            mask_raw[k] = getRandomValue<bool>(); \
-        } \
+        getRandomArray<SCALAR_T>(raw1, VEC_LEN); \
+        getRandomArray<bool>(mask_raw, VEC_LEN); \
  \
         VEC_T vec0(raw1); \
         VEC_T res; \
         MASK_T mask(mask_raw); \
  \
         start = __rdtsc(); \
-            res.assign(vec0.MFI_name(mask)); \
+            REPEAT_LINE1024(vec0.assign(vec0.MFI_name(mask))); \
+            vec0.store(raw1); /* force memory store operation */\
         end = __rdtsc(); \
  \
-        volatile SCALAR_T x = res.hadd(); \
+        volatile SCALAR_T t = forceReductionArray<SCALAR_T>(raw1, VEC_LEN);\
  \
-        delta = end - start; \
-        float d = float(delta) - latency_avg; \
+        delta = float(end - start)/ float(1024); \
+        float d = delta - latency_avg; \
         latency_avg += d / (1.0f + float(i)); \
  \
     } \
@@ -558,7 +628,7 @@ void instr_name##Latency() { \
 template<typename VEC_T> \
 void instr_name##Latency() { \
     unsigned long long start = 0, end = 0; \
-    unsigned long long delta = 0; \
+    float delta = 0.0f; \
     float latency_avg = 0.0f; \
  \
     typedef typename UME::SIMD::SIMDTraits<VEC_T>::SCALAR_T SCALAR_T; \
@@ -567,21 +637,19 @@ void instr_name##Latency() { \
     alignas(VEC_T::alignment()) SCALAR_T raw1[VEC_LEN]; \
  \
     for (int i = 0; i < ITERATIONS; i++) { \
-        for (unsigned int k = 0; k < VEC_LEN; k++) \
-        { \
-            raw1[k] = getRandomValue<SCALAR_T>(); \
-        } \
+        getRandomArray<SCALAR_T>(raw1, VEC_LEN); \
  \
         VEC_T vec0(raw1); \
  \
         start = __rdtsc(); \
-            vec0.MFI_name(); \
+            REPEAT_LINE1024(vec0.MFI_name();) \
+            vec0.store(raw1); /* force memory store operation */\
         end = __rdtsc(); \
  \
-        volatile SCALAR_T x = vec0.hadd(); \
+        volatile SCALAR_T t = forceReductionArray<SCALAR_T>(raw1, VEC_LEN);\
  \
-        delta = end - start; \
-        float d = float(delta) - latency_avg; \
+        delta = float(end - start)/ float(1024); \
+        float d = delta - latency_avg; \
         latency_avg += d / (1.0f + float(i)); \
  \
     } \
@@ -604,7 +672,7 @@ void instr_name##Latency() { \
 template<typename VEC_T> \
 void instr_name##Latency() { \
     unsigned long long start = 0, end = 0; \
-    unsigned long long delta = 0; \
+    float delta = 0.0f; \
     float latency_avg = 0.0f; \
  \
     typedef typename UME::SIMD::SIMDTraits<VEC_T>::SCALAR_T SCALAR_T; \
@@ -615,23 +683,21 @@ void instr_name##Latency() { \
     bool mask_raw[VEC_LEN]; \
  \
     for (int i = 0; i < ITERATIONS; i++) { \
-        for (unsigned int k = 0; k < VEC_LEN; k++) \
-        { \
-            raw1[k] = getRandomValue<SCALAR_T>(); \
-            mask_raw[k] = getRandomValue<bool>(); \
-        } \
+        getRandomArray<SCALAR_T>(raw1, VEC_LEN); \
+        getRandomArray<bool>(mask_raw, VEC_LEN); \
  \
         VEC_T vec0(raw1); \
         MASK_T mask(mask_raw); \
  \
         start = __rdtsc(); \
-            vec0.MFI_name(mask); \
+            REPEAT_LINE1024(vec0.MFI_name(mask);); \
+            vec0.store(raw1); /* force memory store operation */\
         end = __rdtsc(); \
  \
-        volatile SCALAR_T x = vec0.hadd(); \
+        volatile SCALAR_T t = forceReductionArray<SCALAR_T>(raw1, VEC_LEN);\
  \
-        delta = end - start; \
-        float d = float(delta) - latency_avg; \
+        delta = float(end - start)/ float(1024); \
+        float d = delta - latency_avg; \
         latency_avg += d / (1.0f + float(i)); \
  \
     } \
@@ -653,7 +719,7 @@ void instr_name##Latency() { \
 template<typename VEC_T> \
 void instr_name##Latency() { \
     unsigned long long start = 0, end = 0; \
-    unsigned long long delta = 0; \
+    float delta = 0.0f; \
     float latency_avg = 0.0f; \
  \
     typedef typename UME::SIMD::SIMDTraits<VEC_T>::SCALAR_T SCALAR_T; \
@@ -662,26 +728,25 @@ void instr_name##Latency() { \
  \
     alignas(VEC_T::alignment()) SCALAR_T raw1[VEC_LEN]; \
     alignas(VEC_T::alignment()) SCALAR_T raw2[VEC_LEN]; \
+    alignas(MASK_T::alignment()) bool rawBool[VEC_LEN]; \
  \
     for (int i = 0; i < ITERATIONS; i++) { \
-        for (unsigned int k = 0; k < VEC_LEN; k++) \
-        { \
-            raw1[k] = getRandomValue<SCALAR_T>(); \
-            raw2[k] = getRandomValue<SCALAR_T>(); \
-        } \
+        getRandomArray<SCALAR_T>(raw1, VEC_LEN); \
+        getRandomArray<SCALAR_T>(raw2, VEC_LEN); \
  \
         VEC_T vec0(raw1); \
         VEC_T vec1(raw2); \
         MASK_T mask; \
  \
         start = __rdtsc(); \
-            mask.assign(vec0.MFI_name(vec1)); \
+            REPEAT_LINE1024(mask.assign(vec0.MFI_name(vec1))); \
+            mask.store(rawBool); /* force memory store operation */\
         end = __rdtsc(); \
  \
-        volatile SCALAR_T x = mask.hlxor(); \
+        volatile bool t = forceReductionArray<bool>(rawBool, VEC_LEN);\
  \
-        delta = end - start; \
-        float d = float(delta) - latency_avg; \
+        delta = float(end - start)/ float(1024); \
+        float d = delta - latency_avg; \
         latency_avg += d / (1.0f + float(i)); \
  \
     } \
@@ -703,7 +768,7 @@ void instr_name##Latency() { \
 template<typename VEC_T> \
 void instr_name##Latency() { \
     unsigned long long start = 0, end = 0; \
-    unsigned long long delta = 0; \
+    float delta = 0.0f; \
     float latency_avg = 0.0f; \
  \
     typedef typename UME::SIMD::SIMDTraits<VEC_T>::SCALAR_T SCALAR_T; \
@@ -711,25 +776,29 @@ void instr_name##Latency() { \
     const int VEC_LEN = VEC_T::length(); \
  \
     alignas(VEC_T::alignment()) SCALAR_T raw1[VEC_LEN]; \
+    alignas(MASK_T::alignment()) bool rawBool[VEC_LEN]; \
+    SCALAR_T scalarOps[1024]; \
+    int offset = 0; \
  \
-    for (int i = 0; i < ITERATIONS; i++) { \
-        for (unsigned int k = 0; k < VEC_LEN; k++) \
-        { \
-            raw1[k] = getRandomValue<SCALAR_T>(); \
-        } \
+for (int i = 0; i < ITERATIONS; i++) { \
+    \
+        getRandomArray<SCALAR_T>(raw1, VEC_LEN); \
+        getRandomArray<SCALAR_T>(scalarOps, 1024); \
  \
         VEC_T vec0(raw1); \
         SCALAR_T scalarOp = getRandomValue<SCALAR_T>(); \
         MASK_T mask; \
+        int offset = 0; \
  \
         start = __rdtsc(); \
-            mask.assign(vec0.MFI_name(scalarOp)); \
+            REPEAT_LINE1024(mask.assign(vec0.MFI_name(scalarOps[offset++]));); \
+            mask.store(rawBool); /* force memory store operation */\
         end = __rdtsc(); \
  \
-        volatile SCALAR_T x = mask.hlxor(); \
+        volatile bool t = forceReductionArray<bool>(rawBool, VEC_LEN);\
  \
-        delta = end - start; \
-        float d = float(delta) - latency_avg; \
+        delta = float(end - start)/ float(1024); \
+        float d = delta - latency_avg; \
         latency_avg += d / (1.0f + float(i)); \
  \
     } \
@@ -750,28 +819,31 @@ void instr_name##Latency() { \
 template<typename VEC_T> \
 void instr_name##Latency() { \
     unsigned long long start = 0, end = 0; \
-    unsigned long long delta = 0; \
+    float delta = 0.0f; \
     float latency_avg = 0.0f; \
  \
     typedef typename UME::SIMD::SIMDTraits<VEC_T>::SCALAR_T SCALAR_T; \
     const int VEC_LEN = VEC_T::length(); \
  \
-    alignas(VEC_T::alignment()) SCALAR_T raw1[VEC_LEN]; \
+    alignas(VEC_T::alignment()) SCALAR_T raw1[VEC_LEN*1024]; \
+    int offset = 0; \
  \
-    for (int i = 0; i < ITERATIONS; i++) { \
-        for (unsigned int k = 0; k < VEC_LEN; k++) \
-        { \
-            raw1[k] = getRandomValue<SCALAR_T>(); \
-        } \
- \
+for (int i = 0; i < ITERATIONS; i++) { \
+        getRandomArray<SCALAR_T>(raw1, VEC_LEN * 1024); \
+        \
         VEC_T vec0(raw1); \
+        volatile auto res = vec0.MFI_name(); \
+        offset = 0; \
  \
         start = __rdtsc(); \
-            volatile auto res = vec0.MFI_name(); \
+        REPEAT_LINE1024(vec0.load(&raw1[offset*VEC_LEN]); \
+            res += vec0.MFI_name();) \
         end = __rdtsc(); \
+        \
+        volatile auto x = res; \
  \
-        delta = end - start; \
-        float d = float(delta) - latency_avg; \
+        delta = float(end - start)/ float(1024); \
+        float d = delta - latency_avg; \
         latency_avg += d / (1.0f + float(i)); \
  \
     } \
@@ -793,7 +865,7 @@ void instr_name##Latency() { \
 template<typename VEC_T> \
 void instr_name##Latency() { \
     unsigned long long start = 0, end = 0; \
-    unsigned long long delta = 0; \
+    float delta = 0.0f; \
     float latency_avg = 0.0f; \
  \
     typedef typename UME::SIMD::SIMDTraits<VEC_T>::SCALAR_T SCALAR_T; \
@@ -805,22 +877,19 @@ void instr_name##Latency() { \
  \
     for (int i = 0; i < ITERATIONS; i++) { \
     \
-        for (unsigned int k = 0; k < VEC_LEN; k++) \
-        { \
-            raw1[k] = getRandomValue<SCALAR_T>(); \
-            mask_raw[k] = getRandomValue<bool>(); \
-        } \
+        getRandomArray<SCALAR_T>(raw1, VEC_LEN); \
+        getRandomArray<bool>(mask_raw, VEC_LEN); \
  \
         VEC_T vec0(raw1); \
         MASK_T mask(mask_raw); \
-        volatile SCALAR_T res; \
+        auto volatile res = vec0.MFI_name(mask); \
  \
         start = __rdtsc(); \
-            res = vec0.MFI_name(mask); \
+            REPEAT_LINE1024(res += vec0.MFI_name(mask);); \
         end = __rdtsc(); \
  \
-        delta = end - start; \
-        float d = float(delta) - latency_avg; \
+        delta = float(end - start)/ float(1024); \
+        float d = delta - latency_avg; \
         latency_avg += d / (1.0f + float(i)); \
  \
     } \
@@ -841,29 +910,30 @@ void instr_name##Latency() { \
 template<typename VEC_T> \
 void instr_name##Latency() { \
     unsigned long long start = 0, end = 0; \
-    unsigned long long delta = 0; \
+    float delta = 0.0f; \
     float latency_avg = 0.0f; \
  \
     typedef typename UME::SIMD::SIMDTraits<VEC_T>::SCALAR_T SCALAR_T; \
     const int VEC_LEN = VEC_T::length(); \
  \
     alignas(VEC_T::alignment()) SCALAR_T raw1[VEC_LEN]; \
+    SCALAR_T scalarOps[1024]; \
+    int offset = 0; \
  \
     for (int i = 0; i < ITERATIONS; i++) { \
-        for (unsigned int k = 0; k < VEC_LEN; k++) \
-        { \
-            raw1[k] = getRandomValue<SCALAR_T>(); \
-        } \
+        getRandomArray<SCALAR_T>(raw1, VEC_LEN); \
  \
         VEC_T vec0(raw1); \
-        SCALAR_T scalarOp = getRandomValue<SCALAR_T>(); \
+        getRandomArray<SCALAR_T>(scalarOps, 1024); \
+        offset = 0; \
+        volatile auto res = vec0.MFI_name(scalarOps[0]); \
  \
         start = __rdtsc(); \
-            volatile auto res = vec0.MFI_name(scalarOp); \
+            REPEAT_LINE1024(res += vec0.MFI_name(scalarOps[offset++]);) \
         end = __rdtsc(); \
  \
-        delta = end - start; \
-        float d = float(delta) - latency_avg; \
+        delta = float(end - start)/ float(1024); \
+        float d = delta - latency_avg; \
         latency_avg += d / (1.0f + float(i)); \
  \
     } \
@@ -878,7 +948,7 @@ void instr_name##Latency() { \
 //   VEC_T vec0;
 //   MASK_T mask;
 //   SCALAR_T scalar1, scalar2;
-//   scalar1 = vec0.<MFI_FUNCTION>(scalar2);
+//   scalar1 = vec0.<MFI_FUNCTION>(mask, scalar2);
 //
 // instr_name - name of instruction as defined in UME::SIMD interface spec
 // MFI_name   - name of function in Member Function Interface used to implement instr_name
@@ -886,7 +956,7 @@ void instr_name##Latency() { \
 template<typename VEC_T> \
 void instr_name##Latency() { \
     unsigned long long start = 0, end = 0; \
-    unsigned long long delta = 0; \
+    float delta = 0.0f; \
     float latency_avg = 0.0f; \
  \
     typedef typename UME::SIMD::SIMDTraits<VEC_T>::SCALAR_T SCALAR_T; \
@@ -895,25 +965,25 @@ void instr_name##Latency() { \
  \
     alignas(VEC_T::alignment()) SCALAR_T raw1[VEC_LEN]; \
     bool mask_raw[VEC_LEN]; \
+    SCALAR_T scalarOps[1024]; \
+    int offset = 0; \
  \
     for (int i = 0; i < ITERATIONS; i++) { \
-        for (unsigned int k = 0; k < VEC_LEN; k++) \
-        { \
-            raw1[k] = getRandomValue<SCALAR_T>(); \
-            mask_raw[k] = getRandomValue<bool>(); \
-        } \
+        getRandomArray<SCALAR_T>(raw1, VEC_LEN); \
+        getRandomArray<bool>(mask_raw, VEC_LEN); \
+        getRandomArray<SCALAR_T>(scalarOps, 1024); \
  \
         VEC_T vec0(raw1); \
         MASK_T mask(mask_raw); \
-        SCALAR_T scalarOp = getRandomValue<SCALAR_T>(); \
-        volatile SCALAR_T res; \
+        volatile auto res = vec0.MFI_name(mask, scalarOps[0]); \
+        offset = 0; \
  \
         start = __rdtsc(); \
-            res = vec0.MFI_name(mask, scalarOp); \
+            REPEAT_LINE1024(res = vec0.MFI_name(mask, scalarOps[offset++]);); \
         end = __rdtsc(); \
  \
-        delta = end - start; \
-        float d = float(delta) - latency_avg; \
+        delta = float(end - start)/ float(1024); \
+        float d = delta - latency_avg; \
         latency_avg += d / (1.0f + float(i)); \
  \
     } \
@@ -934,32 +1004,33 @@ void instr_name##Latency() { \
 template<typename VEC_T> \
 void instr_name##Latency() { \
     unsigned long long start = 0, end = 0; \
-    unsigned long long delta = 0; \
+    float delta = 0.0f; \
     float latency_avg = 0.0f; \
  \
     typedef typename UME::SIMD::SIMDTraits<VEC_T>::SCALAR_T SCALAR_T; \
     const int VEC_LEN = VEC_T::length(); \
  \
     alignas(VEC_T::alignment()) SCALAR_T raw1[VEC_LEN]; \
-    alignas(VEC_T::alignment()) SCALAR_T raw2[VEC_LEN]; \
+    alignas(VEC_T::alignment()) SCALAR_T raw2[VEC_LEN*1024]; \
+    int offset; \
  \
     for (int i = 0; i < ITERATIONS; i++) { \
-        for (unsigned int k = 0; k < VEC_LEN; k++) \
-        { \
-            raw1[k] = getRandomValue<SCALAR_T>(); \
-            raw2[k] = getRandomValue<SCALAR_T>(); \
-        } \
+        getRandomArray<SCALAR_T>(raw1, VEC_LEN); \
+        getRandomArray<SCALAR_T>(raw2, VEC_LEN * 1024); \
  \
         VEC_T vec0(raw1); \
         VEC_T vec1(raw2); \
-        volatile bool predicate; \
+        volatile auto predicate = vec0.MFI_name(vec1); \
+        offset = 0; \
  \
         start = __rdtsc(); \
-            predicate = vec0.MFI_name(vec1); \
+            REPEAT_LINE1024( vec1.load(&raw2[offset*VEC_LEN]); \
+                             offset++; \
+                             predicate ^= vec0.MFI_name(vec1);); \
         end = __rdtsc(); \
  \
-        delta = end - start; \
-        float d = float(delta) - latency_avg; \
+        delta = float(end - start)/ float(1024); \
+        float d = delta - latency_avg; \
         latency_avg += d / (1.0f + float(i)); \
  \
     } \
@@ -979,7 +1050,7 @@ void instr_name##Latency() { \
 template<typename VEC_T> \
 void instr_name##Latency() { \
     unsigned long long start = 0, end = 0; \
-    unsigned long long delta = 0; \
+    float delta = 0.0f; \
     float latency_avg = 0.0f; \
  \
     typedef typename UME::SIMD::SIMDTraits<VEC_T>::SCALAR_T SCALAR_T; \
@@ -990,25 +1061,23 @@ void instr_name##Latency() { \
     alignas(VEC_T::alignment()) SCALAR_T raw3[VEC_LEN]; \
  \
     for (int i = 0; i < ITERATIONS; i++) { \
-        for (unsigned int k = 0; k < VEC_LEN; k++) \
-        { \
-            raw1[k] = getRandomValue<SCALAR_T>(); \
-            raw2[k] = getRandomValue<SCALAR_T>(); \
-            raw3[k] = getRandomValue<SCALAR_T>(); \
-        } \
+        getRandomArray<SCALAR_T>(raw1, VEC_LEN); \
+        getRandomArray<SCALAR_T>(raw2, VEC_LEN); \
+        getRandomArray<SCALAR_T>(raw3, VEC_LEN); \
  \
         VEC_T vec0(raw1); \
         VEC_T vec1(raw2); \
         VEC_T vec2(raw3); \
-        VEC_T res; \
  \
         start = __rdtsc(); \
-            res = vec0.MFI_name(vec1, vec2); \
+            REPEAT_LINE1024(vec0.assign(vec0.MFI_name(vec1, vec2));) \
+            vec0.store(raw1); /* force memory store operation */\
         end = __rdtsc(); \
  \
-        volatile SCALAR_T x = res.hadd(); \
-        delta = end - start; \
-        float d = float(delta) - latency_avg; \
+        volatile SCALAR_T t = forceReductionArray<SCALAR_T>(raw1, VEC_LEN);\
+ \
+        delta = float(end - start)/ float(1024); \
+        float d = delta - latency_avg; \
         latency_avg += d / (1.0f + float(i)); \
  \
     } \
@@ -1030,7 +1099,7 @@ void instr_name##Latency() { \
 template<typename VEC_T> \
 void instr_name##Latency() { \
     unsigned long long start = 0, end = 0; \
-    unsigned long long delta = 0; \
+    float delta = 0.0f; \
     float latency_avg = 0.0f; \
  \
     typedef typename UME::SIMD::SIMDTraits<VEC_T>::SCALAR_T SCALAR_T; \
@@ -1043,13 +1112,10 @@ void instr_name##Latency() { \
     bool raw_mask[VEC_LEN]; \
  \
     for (int i = 0; i < ITERATIONS; i++) { \
-        for (unsigned int k = 0; k < VEC_LEN; k++) \
-        { \
-            raw1[k] = getRandomValue<SCALAR_T>(); \
-            raw2[k] = getRandomValue<SCALAR_T>(); \
-            raw3[k] = getRandomValue<SCALAR_T>(); \
-            raw_mask[k] = getRandomValue<bool>(); \
-        } \
+        getRandomArray<SCALAR_T>(raw1, VEC_LEN); \
+        getRandomArray<SCALAR_T>(raw2, VEC_LEN); \
+        getRandomArray<SCALAR_T>(raw3, VEC_LEN); \
+        getRandomArray<bool>(raw_mask, VEC_LEN); \
  \
         VEC_T vec0(raw1); \
         VEC_T vec1(raw2); \
@@ -1058,12 +1124,14 @@ void instr_name##Latency() { \
         VEC_T res; \
  \
         start = __rdtsc(); \
-            res = vec0.MFI_name(mask, vec1, vec2); \
+            REPEAT_LINE1024(vec0.assign(vec0.MFI_name(mask, vec1, vec2));); \
+            vec0.store(raw1); /* force memory store operation */\
         end = __rdtsc(); \
  \
-        volatile SCALAR_T x = res.hadd(); \
-        delta = end - start; \
-        float d = float(delta) - latency_avg; \
+        volatile SCALAR_T t = forceReductionArray<SCALAR_T>(raw1, VEC_LEN);\
+ \
+        delta = float(end - start)/ float(1024); \
+        float d = delta - latency_avg; \
         latency_avg += d / (1.0f + float(i)); \
  \
     } \
@@ -1155,6 +1223,7 @@ DEFINE_ASSIGN_VEC_TEST_TEMPLATE(LANDVA, landa);
 DEFINE_ASSIGN_VEC_TEST_TEMPLATE(LORVA, lora);
 DEFINE_ASSIGN_VEC_TEST_TEMPLATE(LXORVA, lxora);
 //      Base interface operations
+DEFINE_ASSIGN_VEC_TEST_TEMPLATE(ASSIGNV, assign);
 DEFINE_ASSIGN_VEC_TEST_TEMPLATE(ADDVA, adda);
 DEFINE_ASSIGN_VEC_TEST_TEMPLATE(SUBVA, suba);
 DEFINE_ASSIGN_VEC_TEST_TEMPLATE(SADDVA, sadda);
@@ -1232,6 +1301,25 @@ DEFINE_VEC_TEST_TEMPLATE(PREFDEC, prefdec);
 DEFINE_VEC_TEST_TEMPLATE(RCP, rcp);
 //      Bitwise interface operations
 DEFINE_VEC_TEST_TEMPLATE(BNOT, bnot);
+//      Sign interface operations
+DEFINE_VEC_TEST_TEMPLATE(NEG, neg);
+DEFINE_VEC_TEST_TEMPLATE(ABS, abs);
+//      Float interface operations
+DEFINE_VEC_TEST_TEMPLATE(SQR, sqr);
+DEFINE_VEC_TEST_TEMPLATE(SQRT, sqrt);
+DEFINE_VEC_TEST_TEMPLATE(RSQRT, rsqrt);
+DEFINE_VEC_TEST_TEMPLATE(ROUND, round);
+DEFINE_VEC_TEST_TEMPLATE(FLOOR, floor);
+DEFINE_VEC_TEST_TEMPLATE(CEIL, ceil);
+DEFINE_VEC_TEST_TEMPLATE(EXP, exp);
+DEFINE_VEC_TEST_TEMPLATE(SIN, sin);
+DEFINE_VEC_TEST_TEMPLATE(COS, cos);
+DEFINE_VEC_TEST_TEMPLATE(TAN, tan);
+DEFINE_VEC_TEST_TEMPLATE(CTAN, ctan);
+DEFINE_VEC_TEST_TEMPLATE(ATAN, atan);
+DEFINE_VEC_TEST_TEMPLATE(LOG, log);
+DEFINE_VEC_TEST_TEMPLATE(LOG10, log10);
+DEFINE_VEC_TEST_TEMPLATE(LOG2, log2);
 
 // vec1 = vec0.<INSTR>(mask)
 //      Base interface operations
@@ -1242,18 +1330,39 @@ DEFINE_VEC_MASK_TEST_TEMPLATE(MPREFDEC, prefdec);
 DEFINE_VEC_MASK_TEST_TEMPLATE(MRCP, rcp);
 //      Bitwise interface operations
 DEFINE_VEC_MASK_TEST_TEMPLATE(MBNOT, bnot);
+//      Sign interface operations
+DEFINE_VEC_MASK_TEST_TEMPLATE(MNEG, neg);
+DEFINE_VEC_MASK_TEST_TEMPLATE(MABS, abs);
+//      Float interface operations
+DEFINE_VEC_MASK_TEST_TEMPLATE(MSQR, sqr);
+DEFINE_VEC_MASK_TEST_TEMPLATE(MSQRT, sqrt);
+DEFINE_VEC_MASK_TEST_TEMPLATE(MRSQRT, rsqrt);
+DEFINE_VEC_MASK_TEST_TEMPLATE(MROUND, round);
+DEFINE_VEC_MASK_TEST_TEMPLATE(MFLOOR, floor);
+DEFINE_VEC_MASK_TEST_TEMPLATE(MCEIL, ceil);
+DEFINE_VEC_MASK_TEST_TEMPLATE(MEXP, exp);
+DEFINE_VEC_MASK_TEST_TEMPLATE(MSIN, sin);
+DEFINE_VEC_MASK_TEST_TEMPLATE(MCOS, cos);
+DEFINE_VEC_MASK_TEST_TEMPLATE(MTAN, tan);
+DEFINE_VEC_MASK_TEST_TEMPLATE(MCTAN, ctan);
 
 // vec0 <- vec0.<INSTR>()
 //      Base interface operations
 DEFINE_ASSIGN_TEST_TEMPLATE(RCPA, rcpa);
 //      Bitwise interface operations
 DEFINE_ASSIGN_TEST_TEMPLATE(BNOTA, bnota);
+//      Sign interface operations
+DEFINE_ASSIGN_TEST_TEMPLATE(NEGA, nega);
+DEFINE_ASSIGN_TEST_TEMPLATE(ABSA, absa);
 
 // vec0 <- vec0.<INSTR>(mask)
 //      Base interface operations
 DEFINE_ASSIGN_MASK_TEST_TEMPLATE(MRCPA, rcpa);
 //      Bitwise interface operations
 DEFINE_ASSIGN_MASK_TEST_TEMPLATE(MBNOTA, bnota);
+//      Sign interface operations
+DEFINE_ASSIGN_MASK_TEST_TEMPLATE(MNEGA, nega);
+DEFINE_ASSIGN_MASK_TEST_TEMPLATE(MABSA, absa);
 
 // mask = vec0.<INSTR>(vec1)
 //      Base interface operations
@@ -1477,7 +1586,7 @@ DEFINE_VEC_MASK_VEC_VEC_TEST_TEMPLATE(MFSUBMULV, fsubmul);
     CALL_TEST(HMIN, vecname); \
     CALL_TEST(MHMIN, vecname); \
     CALL_TEST(IMIN, vecname); \
-    CALL_TEST(MIMIN, vecname); 
+    CALL_TEST(MIMIN, vecname);
 
 #define CALL_TESTS_BITWISE(vecname); \
     CALL_TEST(BANDV, vecname); \
@@ -1521,6 +1630,16 @@ DEFINE_VEC_MASK_VEC_VEC_TEST_TEMPLATE(MFSUBMULV, fsubmul);
     CALL_TEST(HBXORS, vecname); \
     CALL_TEST(MHBXORS, vecname);
 
+#define CALL_TESTS_SIGN(vecname) \
+    CALL_TEST(NEG, vecname); \
+    CALL_TEST(MNEG, vecname); \
+    CALL_TEST(NEGA, vecname); \
+    CALL_TEST(MNEGA, vecname); \
+    CALL_TEST(ABS, vecname); \
+    CALL_TEST(MABS, vecname); \
+    CALL_TEST(ABSA, vecname); \
+    CALL_TEST(MABSA, vecname);
+
 #define CALL_TESTS_MASK(vecname) \
     std::cout << "Testing: " << TOSTRING(vecname) << "\n"; \
     CALL_TEST(LANDV, vecname); \
@@ -1544,10 +1663,45 @@ DEFINE_VEC_MASK_VEC_VEC_TEST_TEMPLATE(MFSUBMULV, fsubmul);
 #define CALL_TESTS_INT(vecname) \
     std::cout << "Testing: " << TOSTRING(vecname) << "\n"; \
     CALL_BASE_TESTS(vecname); \
-    CALL_TESTS_BITWISE(vecname);
+    CALL_TESTS_BITWISE(vecname); \
+    CALL_TESTS_SIGN(vecname);
 
 #define CALL_TESTS_FLOAT(vecname) \
     std::cout << "Testing: " << TOSTRING(vecname) << "\n"; \
-    CALL_BASE_TESTS(vecname);
+    CALL_BASE_TESTS(vecname); \
+    CALL_TESTS_SIGN(vecname); \
+    CALL_TEST(SQR, vecname); \
+    CALL_TEST(MSQR, vecname); \
+    \
+    CALL_TEST(SQRT, vecname); \
+    CALL_TEST(MSQRT, vecname); \
+     \
+    CALL_TEST(RSQRT, vecname); \
+    CALL_TEST(MRSQRT, vecname); \
+ \
+    CALL_TEST(ROUND, vecname); \
+    CALL_TEST(MROUND, vecname); \
+ \
+    CALL_TEST(FLOOR, vecname); \
+    CALL_TEST(MFLOOR, vecname); \
+    CALL_TEST(CEIL, vecname); \
+    CALL_TEST(MCEIL, vecname); \
+ \
+    CALL_TEST(EXP, vecname); \
+    CALL_TEST(MEXP, vecname); \
+    CALL_TEST(SIN, vecname); \
+    CALL_TEST(MSIN, vecname); \
+    CALL_TEST(COS, vecname); \
+    CALL_TEST(MCOS, vecname); \
+   \
+    CALL_TEST(TAN, vecname); \
+    CALL_TEST(MTAN, vecname); \
+    CALL_TEST(CTAN, vecname); \
+    CALL_TEST(MCTAN, vecname); \
+    CALL_TEST(ATAN, vecname); \
+    \
+    CALL_TEST(LOG, vecname); \
+    CALL_TEST(LOG10, vecname); \
+    CALL_TEST(LOG2, vecname);
 
 #endif
