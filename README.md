@@ -32,7 +32,7 @@ Please refer to the wiki for introduction and additional information:
    
    
    
-*RELEASE NOTES for v0.3.1-stable*
+**RELEASE NOTES for v0.3.1-stable**
    
 Interface:   
 - added PROMOTE/DEGRADE operations to convert between vectors using scalars of different precision (e.g. PROMOTE SIMD4_32f to SIMD4_64f)   
@@ -66,4 +66,4 @@ Benchmarks:
 Internal code:   
 - fixed missing template<> for templated cast operators   
 - extended NullTypes and eliminate SIMD1 template specializations; this change simplifies the plugin system and fixes loose ends of the typeset system;   
-- remove 'final' class specifiers to allow custom extensions of SIMD types; this change allows using SIMD types as base classes for custom vectorization interfaces;   
+- remove 'final' class specifiers to allow custom extensions of SIMD types; this change allows using SIMD types as base classes for custom vectorization interfaces;
