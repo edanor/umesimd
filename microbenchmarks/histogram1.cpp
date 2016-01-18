@@ -61,7 +61,7 @@ static __inline__ unsigned long long __rdtsc(void)
 
 typedef unsigned long long TIMING_RES;
 
-const int INPUT_SIZE = 600000; // Number of data samples
+const int INPUT_SIZE = 100; // Number of data samples
 const int HIST_SIZE = 100;     // Number of histogram bins
 //alignas(32) float x[ARRAY_SIZE];
 
@@ -131,9 +131,19 @@ inline void test_UME_SIMD_float_recursive_helper(UINT_VEC_T const & index_vec, u
         bin_vec.scatter(hist, index_vec);
     }
     else {
-        //std::cout << "unpacking: " << index_vec[0] << " " << index_vec[1] << std::endl;
         HALF_LEN_UINT_VEC_T vec_l, vec_h;
         index_vec.unpack(vec_l, vec_h);
+
+        std::cout << "unpacking:\n";
+        for (int i = 0; i < HALF_LEN_UINT_VEC_T::length(); i++) {
+            std::cout << vec_l[i] << " ";
+        }
+        std::cout << std::endl;
+        for (int i = 0; i < HALF_LEN_UINT_VEC_T::length(); i++) {
+            std::cout << vec_h[i] << " ";
+        }
+        std::cout << std::endl;
+
         test_UME_SIMD_float_recursive_helper<HALF_LEN_VEC_T, HALF_LEN_UINT_VEC_T>(vec_l, hist);
         test_UME_SIMD_float_recursive_helper<HALF_LEN_VEC_T, HALF_LEN_UINT_VEC_T>(vec_h, hist);
     }
@@ -194,6 +204,9 @@ TIMING_RES test_UME_SIMD()
 
         unsigned int bin;
 
+        std::cout << " PEEL_COUNT: " << PEEL_COUNT << std::endl;
+        std::cout << "REM_COUNT: " << REM_COUNT << std::endl;
+
         start = __rdtsc();
 
         for (uint32_t i = 0; i < PEEL_COUNT; i++) {
@@ -204,6 +217,19 @@ TIMING_RES test_UME_SIMD()
             index_vec.assign(UINT_VEC_T(t1));
             // Perform histogram update
             test_UME_SIMD_float_recursive_helper<FLOAT_VEC_T, UINT_VEC_T>(index_vec, hist);
+
+std::cout << "expected indices: ";
+for (int k = 0; k < VEC_LEN; k++) {
+    bin = (unsigned int)((FLOAT_T(HIST_SIZE) / static_cast<FLOAT_T>(1000))*data[i*VEC_LEN + k]);
+    std::cout << bin << " ";
+}
+std::cout << std::endl;
+
+std::cout << "actual indices:   ";
+for (int k = 0; k < VEC_LEN; k++) {
+    std::cout << index_vec[k] << " ";
+}
+std::cout << std::endl;
         }
         
         // Calculate reminder elements using scalar code
@@ -222,7 +248,7 @@ TIMING_RES test_UME_SIMD()
 
         for (int i = 0; i < HIST_SIZE; i++) {
             if (hist[i] != verify_hist[i]) {
-                std::cout << "Invalid result at index " << i << " expected: " << verify_hist[i] << ", actual: " << hist[i] << "\n";
+                std::cout << VEC_LEN << ": Invalid result at index " << i << " expected: " << verify_hist[i] << ", actual: " << hist[i] << "\n";
             }
         }
     }
@@ -252,27 +278,27 @@ int main()
           t_UME_SIMD32_32f_avg = 0.0f;
 
     srand ((unsigned int)time(NULL));
-    for (int i = 0; i < 20; i++)
+    for (int i = 0; i < 1; i++)
     {
         t_scalar_f = test_scalar<float>();
         t_scalar_f_avg = 1.0f / (1.0f + float(i)) * (float(t_scalar_f) - t_scalar_f_avg);
 
-        t_UME_SIMD1_32f = test_UME_SIMD<UME::SIMD::SIMD1_32f>();
+//        t_UME_SIMD1_32f = test_UME_SIMD<UME::SIMD::SIMD1_32f>();
         t_UME_SIMD1_32f_avg = 1.0f / (1.0f + float(i)) * (float(t_UME_SIMD1_32f) - t_UME_SIMD1_32f_avg);
 
-        t_UME_SIMD2_32f = test_UME_SIMD<UME::SIMD::SIMD2_32f>();
+//        t_UME_SIMD2_32f = test_UME_SIMD<UME::SIMD::SIMD2_32f>();
         t_UME_SIMD2_32f_avg = 1.0f / (1.0f + float(i)) * (float(t_UME_SIMD2_32f) - t_UME_SIMD2_32f_avg);
 
-        t_UME_SIMD4_32f = test_UME_SIMD<UME::SIMD::SIMD4_32f>();
+//        t_UME_SIMD4_32f = test_UME_SIMD<UME::SIMD::SIMD4_32f>();
         t_UME_SIMD4_32f_avg = 1.0f / (1.0f + float(i)) * (float(t_UME_SIMD4_32f) - t_UME_SIMD4_32f_avg);
 
-        t_UME_SIMD8_32f = test_UME_SIMD<UME::SIMD::SIMD8_32f>();
+//        t_UME_SIMD8_32f = test_UME_SIMD<UME::SIMD::SIMD8_32f>();
         t_UME_SIMD8_32f_avg = 1.0f / (1.0f + float(i)) * (float(t_UME_SIMD8_32f) - t_UME_SIMD8_32f_avg);
 
         t_UME_SIMD16_32f = test_UME_SIMD<UME::SIMD::SIMD16_32f>();
         t_UME_SIMD16_32f_avg = 1.0f / (1.0f + float(i)) * (float(t_UME_SIMD16_32f) - t_UME_SIMD16_32f_avg);
 
-        t_UME_SIMD32_32f = test_UME_SIMD<UME::SIMD::SIMD32_32f>();
+//        t_UME_SIMD32_32f = test_UME_SIMD<UME::SIMD::SIMD32_32f>();
         t_UME_SIMD32_32f_avg = 1.0f / (1.0f + float(i)) * (float(t_UME_SIMD32_32f) - t_UME_SIMD32_32f_avg);
     }
 

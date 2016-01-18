@@ -32,8 +32,8 @@
 #define BITMAP_H_
 
 #include <string>
-#include "UMEBasicTypes.h"
-#include "UMEConstants.h"
+#include "../../UMEBasicTypes.h"
+#include "../utilities/UMEConstants.h"
 
 namespace UME
 {

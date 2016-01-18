@@ -238,7 +238,7 @@ TIMING_RES test_UME_SIMD()
 
         for (int i = 0; i < HIST_SIZE; i++) {
             if (hist[i] != verify_hist[i]) {
-                std::cout << "Invalid result at index " << i << " expected: " << verify_hist[i] << ", actual: " << hist[i] << "\n";
+                std::cout << "SIMD: " << VEC_LEN << ", Invalid result at index " << i << " expected: " << verify_hist[i] << ", actual: " << hist[i] << "\n";
             }
         }
     }

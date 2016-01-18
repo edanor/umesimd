@@ -35,7 +35,8 @@
 #include "mandelbrot.h"
 #include "mandelbrot_ume.h"
 
-#include "UMEBitmap.h"
+#include "../utilities/UMEBitmap.h"
+#include "../utilities/TimingStatistics.h"
 
 // Introducing inline assembly forces compiler to generate
 #define BREAK_COMPILER_OPTIMIZATION() __asm__ ("NOP");
@@ -75,10 +76,44 @@ is_avx_supported(void)
 }
 #endif // __x86_64__
 
+template<typename SIMD_T>
+void benchmarkUMESIMD(struct spec & spec,
+                      char * filename, 
+                      char * resultPrefix, 
+                      int iterations,
+                      TimingStatistics & reference)
+{
+    TimingStatistics stats;
+
+    UME::Bitmap bmp(spec.width, spec.height, UME::PIXEL_TYPE_RGB);
+    uint8_t* image = bmp.GetRasterData();
+
+    for (int i = 0; i < iterations; i++) {
+        TIMING_RES start, end;
+
+        start = __rdtsc();
+        mandel_umesimd<SIMD_T>(image, &spec);
+        end = __rdtsc();
+
+        stats.update(end - start);
+
+        // Saving to file to make sure the results generated are correct
+        bmp.SaveToFile(filename);
+        bmp.ClearTarget(0, 255, 0);
+    }
+
+    std::cout << resultPrefix << (unsigned long long) stats.getAverage()
+        << ", dev: " << (unsigned long long) stats.getStdDev()
+        << " (speedup: "
+        << stats.calculateSpeedup(reference) << ")"
+        << std::endl;
+}
+
+
 int
 main(int argc, char *argv[])
 {
-    int ITERATIONS = 1000;
+    int ITERATIONS = 10;
 
     /* Config */
     struct spec spec;
@@ -91,36 +126,21 @@ main(int argc, char *argv[])
     spec.ylim[1] = 1.5;
     spec.iterations = 256;
 
-
-    TIMING_RES  t_scalar_f, 
-                t_SSE2_f, 
-                t_AVX_f,
-                t_UME_SIMD1_32f,
-                t_UME_SIMD2_32f,
-                t_UME_SIMD4_32f,
-                t_UME_SIMD8_32f,
-                t_UME_SIMD16_32f,
-                t_UME_SIMD32_32f;
-
-    float   t_scalar_f_avg = 0.0f,
-            t_SSE2_f_avg = 0.0f,
-            t_AVX_f_avg = 0.0f,
-            t_UME_SIMD1_32f_avg = 0.0f,
-            t_UME_SIMD2_32f_avg = 0.0f,
-            t_UME_SIMD4_32f_avg = 0.0f,
-            t_UME_SIMD8_32f_avg = 0.0f,
-            t_UME_SIMD16_32f_avg = 0.0f,
-            t_UME_SIMD32_32f_avg = 0.0f;
-
-    float   t_scalar_f_var = 0.0f,
-            t_SSE2_f_var = 0.0f,
-            t_AVX_f_var = 0.0f,
-            t_UME_SIMD1_32f_var = 0.0f,
-            t_UME_SIMD2_32f_var = 0.0f,
-            t_UME_SIMD4_32f_var = 0.0f,
-            t_UME_SIMD8_32f_var = 0.0f,
-            t_UME_SIMD16_32f_var = 0.0f,
-            t_UME_SIMD32_32f_var = 0.0f;
+    TimingStatistics stats_scalar,
+                     stats_sse2,
+                     stats_avx,
+                     stats_avx2,
+                     stats_SIMD1_32f,
+                     stats_SIMD2_32f,
+                     stats_SIMD4_32f,
+                     stats_SIMD8_32f,
+                     stats_SIMD16_32f,
+                     stats_SIMD32_32f,
+                     stats_SIMD1_64f,
+                     stats_SIMD2_64f,
+                     stats_SIMD4_64f,
+                     stats_SIMD8_64f,
+                     stats_SIMD16_64f;
 
     UME::Bitmap bmp(spec.width, spec.height, UME::PIXEL_TYPE_RGB);
     uint8_t* image = bmp.GetRasterData();
@@ -148,18 +168,15 @@ main(int argc, char *argv[])
         mandel_basic(image, &spec);
         end = __rdtsc();
 
-        t_scalar_f = end - start;
-        float d = float(t_scalar_f) - t_scalar_f_avg;
-        t_scalar_f_avg += d / (1.0f + float(i));
-        t_scalar_f_var += d * (float(t_scalar_f) - t_scalar_f_avg);
+        stats_scalar.update(end - start);
 
         // Saving to file to make sure the results generated are correct
         bmp.SaveToFile("mandel_basic.bmp");
         bmp.ClearTarget(0, 255, 0);
     }
 
-    std::cout << "Scalar code (float): " << (long)t_scalar_f_avg
-        << ", dev: " << (long(sqrtf(t_scalar_f_var)) / ITERATIONS) 
+    std::cout << "Scalar code (float): " << (unsigned long long)stats_scalar.getAverage()
+        << ", dev: " << (unsigned long long)stats_scalar.getStdDev()
         << " (speedup: 1.0x )" 
         << std::endl;
 
@@ -171,20 +188,17 @@ main(int argc, char *argv[])
         mandel_sse2(image, &spec);
         end = __rdtsc();
 
-        t_SSE2_f = end - start;
-        float d = float(t_SSE2_f) - t_SSE2_f_avg;
-        t_SSE2_f_avg += d / (1.0f + float(i));
-        t_SSE2_f_var += d * (float(t_SSE2_f) - t_SSE2_f_avg);
+        stats_sse2.update(end - start);
 
         // Saving to file to make sure the results generated are correct
         bmp.SaveToFile("mandel_sse2.bmp");
         bmp.ClearTarget(0, 255, 0);
     }
 
-    std::cout << "SSE2 intrinsic code (float): " << (long)t_SSE2_f_avg
-        << ", dev: " << (long(sqrtf(t_SSE2_f_var)) / ITERATIONS)
+    std::cout << "SSE2 intrinsic code (float): " << (unsigned long long)stats_sse2.getAverage()
+        << ", dev: " << (unsigned long long)stats_sse2.getStdDev()
         << " (speedup: "
-        << float(t_scalar_f_avg) / float(t_SSE2_f_avg) << ")\n";
+        << stats_sse2.calculateSpeedup(stats_scalar)<< ")\n";
 #endif
 
 #if defined __AVX__
@@ -195,166 +209,31 @@ main(int argc, char *argv[])
         mandel_avx(image, &spec);
         end = __rdtsc();
 
-        t_AVX_f = end - start;
-        float d = float(t_AVX_f) - t_AVX_f_avg;
-        t_AVX_f_avg += d / (1.0f + float(i));
-        t_AVX_f_var += d * (float(t_AVX_f) - t_AVX_f_avg);
+        stats_avx.update(end - start);
 
         // Saving to file to make sure the results generated are correct
         bmp.SaveToFile("mandel_avx.bmp");
         bmp.ClearTarget(0, 255, 0);
     }
 
-    std::cout << "AVX intrinsic code (float): " << (long)t_AVX_f_avg
-        << ", dev: " << (long(sqrtf(t_AVX_f_var)) / ITERATIONS)
+    std::cout << "AVX intrinsic code (float): " << (unsigned long long)stats_avx.getAverage()
+        << ", dev: " << (unsigned long long)stats_avx.getStdDev()
         << " (speedup: "
-        << float(t_scalar_f_avg) / float(t_AVX_f_avg) << ")\n";
+        << stats_avx.calculateSpeedup(stats_scalar) << ")\n";
 #endif
 
-    // Test UME::SIMD::SIMD1_32f
-    for (int i = 0; i < ITERATIONS; i++) {
-        TIMING_RES start, end;
+    benchmarkUMESIMD<UME::SIMD::SIMD1_32f>(spec, "mandel_umesimd_1_32f.bmp", "SIMD code (1x32f): ", ITERATIONS, stats_scalar);
+    benchmarkUMESIMD<UME::SIMD::SIMD2_32f>(spec, "mandel_umesimd_2_32f.bmp", "SIMD code (2x32f): ", ITERATIONS, stats_scalar);
+    benchmarkUMESIMD<UME::SIMD::SIMD4_32f>(spec, "mandel_umesimd_4_32f.bmp", "SIMD code (4x32f): ", ITERATIONS, stats_scalar);
+    benchmarkUMESIMD<UME::SIMD::SIMD8_32f>(spec, "mandel_umesimd_8_32f.bmp", "SIMD code (8x32f): ", ITERATIONS, stats_scalar);
+    benchmarkUMESIMD<UME::SIMD::SIMD16_32f>(spec, "mandel_umesimd_16_32f.bmp", "SIMD code (16x32f): ", ITERATIONS, stats_scalar);
+    benchmarkUMESIMD<UME::SIMD::SIMD32_32f>(spec, "mandel_umesimd_32_32f.bmp", "SIMD code (32x32f): ", ITERATIONS, stats_scalar);
 
-        start = __rdtsc();
-        mandel_umesimd<UME::SIMD::SIMD1_32f>(image, &spec);
-        end = __rdtsc();
-
-        t_UME_SIMD1_32f = end - start;
-        float d = float(t_UME_SIMD1_32f) - t_UME_SIMD1_32f_avg;
-        t_UME_SIMD1_32f_avg += d / (1.0f + float(i));
-        t_UME_SIMD1_32f_var += d * (float(t_UME_SIMD1_32f) - t_UME_SIMD1_32f_avg);
-
-        // Saving to file to make sure the results generated are correct
-        bmp.SaveToFile("mandel_umesimd_1_32f.bmp");
-        bmp.ClearTarget(0, 255, 0);
-    }
-
-    std::cout << "SIMD code (1x32f): " << (long)t_UME_SIMD1_32f_avg
-        << ", dev: " << (long(sqrtf(t_UME_SIMD1_32f_var)) / ITERATIONS)
-        << " (speedup: "
-        << float(t_scalar_f_avg) / float(t_UME_SIMD1_32f_avg) << ")"
-        << std::endl;
-
-    // Test UME::SIMD::SIMD2_32f
-    for (int i = 0; i < ITERATIONS; i++) {
-        TIMING_RES start, end;
-
-        start = __rdtsc();
-        mandel_umesimd<UME::SIMD::SIMD2_32f>(image, &spec);
-        end = __rdtsc();
-
-        t_UME_SIMD2_32f = end - start;
-        float d = float(t_UME_SIMD2_32f) - t_UME_SIMD2_32f_avg;
-        t_UME_SIMD2_32f_avg += d / (1.0f + float(i));
-        t_UME_SIMD2_32f_var += d * (float(t_UME_SIMD2_32f) - t_UME_SIMD2_32f_avg);
-
-        // Saving to file to make sure the results generated are correct
-        bmp.SaveToFile("mandel_umesimd_2_32f.bmp");
-        bmp.ClearTarget(0, 255, 0);
-    }
-
-    std::cout << "SIMD code (2x32f): " << (long)t_UME_SIMD2_32f_avg
-        << ", dev: " << (long(sqrtf(t_UME_SIMD2_32f_var)) / ITERATIONS)
-        << " (speedup: "
-        << float(t_scalar_f_avg) / float(t_UME_SIMD2_32f_avg) << ")"
-        << std::endl;
-
-    // Test UME::SIMD::SIMD4_32f
-    for (int i = 0; i < ITERATIONS; i++) {
-        TIMING_RES start, end;
-
-        start = __rdtsc();
-        mandel_umesimd<UME::SIMD::SIMD4_32f>(image, &spec);
-        end = __rdtsc();
-
-        t_UME_SIMD4_32f = end - start;
-        float d = float(t_UME_SIMD4_32f) - t_UME_SIMD4_32f_avg;
-        t_UME_SIMD4_32f_avg += d / (1.0f + float(i));
-        t_UME_SIMD4_32f_var += d * (float(t_UME_SIMD4_32f) - t_UME_SIMD4_32f_avg);
-
-        // Saving to file to make sure the results generated are correct
-        bmp.SaveToFile("mandel_umesimd_4_32f.bmp");
-        bmp.ClearTarget(0, 255, 0);
-    }
-
-    std::cout << "SIMD code (4x32f): " << (long)t_UME_SIMD4_32f_avg
-        << ", dev: " << (long(sqrtf(t_UME_SIMD4_32f_var)) / ITERATIONS)
-        << " (speedup: "
-        << float(t_scalar_f_avg) / float(t_UME_SIMD4_32f_avg) << ")"
-        << std::endl;
-
-    // Test UME::SIMD::SIMD8_32f
-    for (int i = 0; i < ITERATIONS; i++) {
-        TIMING_RES start, end;
-
-        start = __rdtsc();
-        mandel_umesimd<UME::SIMD::SIMD8_32f>(image, &spec);
-        end = __rdtsc();
-
-        t_UME_SIMD8_32f = end - start;
-        float d = float(t_UME_SIMD8_32f) - t_UME_SIMD8_32f_avg;
-        t_UME_SIMD8_32f_avg += d / (1.0f + float(i));
-        t_UME_SIMD8_32f_var += d * (float(t_UME_SIMD8_32f) - t_UME_SIMD8_32f_avg);
-
-        // Saving to file to make sure the results generated are correct
-        bmp.SaveToFile("mandel_umesimd_8_32f.bmp");
-        bmp.ClearTarget(0, 255, 0);
-    }
-
-    std::cout << "SIMD code (8x32f): " << (long)t_UME_SIMD8_32f_avg
-        << ", dev: " << (long(sqrtf(t_UME_SIMD8_32f_var)) / ITERATIONS)
-        << " (speedup: "
-        << float(t_scalar_f_avg) / float(t_UME_SIMD8_32f_avg) << ")"
-        << std::endl;
-
-    // Test UME::SIMD::SIMD16_32f
-    for (int i = 0; i < ITERATIONS; i++) {
-        TIMING_RES start, end;
-
-        start = __rdtsc();
-        mandel_umesimd<UME::SIMD::SIMD16_32f>(image, &spec);
-        end = __rdtsc();
-
-        t_UME_SIMD16_32f = end - start;
-
-        float d = float(t_UME_SIMD16_32f) - t_UME_SIMD16_32f_avg;
-        t_UME_SIMD16_32f_avg += d / (1.0f + float(i));
-        t_UME_SIMD16_32f_var += d * (float(t_UME_SIMD16_32f) - t_UME_SIMD16_32f_avg);
-
-        // Saving to file to make sure the results generated are correct
-        bmp.SaveToFile("mandel_umesimd_16_32f.bmp");
-        bmp.ClearTarget(0, 255, 0);
-    }
-
-    std::cout << "SIMD code (16x32f): " << (long)t_UME_SIMD16_32f_avg
-        << ", dev: " << (long(sqrtf(t_UME_SIMD16_32f_var)) / ITERATIONS)
-        << " (speedup: "
-        << float(t_scalar_f_avg) / float(t_UME_SIMD16_32f_avg) << ")"
-        << std::endl;
-
-    // Test UME::SIMD::SIMD32_32f
-    for (int i = 0; i < ITERATIONS; i++) {
-        TIMING_RES start, end;
-
-        start = __rdtsc();
-        mandel_umesimd<UME::SIMD::SIMD32_32f>(image, &spec);
-        end = __rdtsc();
-        t_UME_SIMD32_32f = end - start;
-
-        float d = float(t_UME_SIMD32_32f) - t_UME_SIMD32_32f_avg;
-        t_UME_SIMD32_32f_avg += d / (1.0f + float(i));
-        t_UME_SIMD32_32f_var += d * (float(t_UME_SIMD32_32f) - t_UME_SIMD32_32f_avg);
-
-        // Saving to file to make sure the results generated are correct
-        bmp.SaveToFile("mandel_umesimd_32_32f.bmp");
-        bmp.ClearTarget(0, 255, 0);
-    }
-
-    std::cout << "SIMD code (32x32f): " << (long)t_UME_SIMD32_32f_avg
-        << ", dev: " << (long(sqrtf(t_UME_SIMD32_32f_var)) / ITERATIONS)
-        << " (speedup: "
-        << float(t_scalar_f_avg) / float(t_UME_SIMD32_32f_avg) << ")"
-        << std::endl;
+    benchmarkUMESIMD<UME::SIMD::SIMD1_64f>(spec, "mandel_umesimd_1_64f.bmp", "SIMD code (1x64f): ", ITERATIONS, stats_scalar);
+    benchmarkUMESIMD<UME::SIMD::SIMD2_64f>(spec, "mandel_umesimd_2_64f.bmp", "SIMD code (2x64f): ", ITERATIONS, stats_scalar);
+    benchmarkUMESIMD<UME::SIMD::SIMD4_64f>(spec, "mandel_umesimd_4_64f.bmp", "SIMD code (4x64f): ", ITERATIONS, stats_scalar);
+    benchmarkUMESIMD<UME::SIMD::SIMD8_64f>(spec, "mandel_umesimd_8_64f.bmp", "SIMD code (8x64f): ", ITERATIONS, stats_scalar);
+    benchmarkUMESIMD<UME::SIMD::SIMD16_64f>(spec, "mandel_umesimd_16_64f.bmp", "SIMD code (16x64f): ", ITERATIONS, stats_scalar);
 
     return 0;
 }

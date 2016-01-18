@@ -38,6 +38,7 @@
 
 //#define UME_SIMD_SHOW_EMULATION_WARNINGS 1
 #include "../UMESimd.h"
+#include "utilities/TimingStatistics.h"
 
 // Introducing inline assembly forces compiler to generate
 #define BREAK_COMPILER_OPTIMIZATION() __asm__ ("NOP");
@@ -61,7 +62,7 @@ static __inline__ unsigned long long __rdtsc(void)
 
 typedef unsigned long long TIMING_RES;
 
-const int ARRAY_SIZE = 600000; // Array size increased to show the peeling effect.
+const int ARRAY_SIZE = 60000; // Array size increased to show the peeling effect.
 //alignas(32) float x[ARRAY_SIZE];
 
 template<typename FLOAT_T>
@@ -123,9 +124,11 @@ TIMING_RES test_scalar()
     return end - start;
 }
 
-template<typename FLOAT_T, typename FLOAT_VEC_TYPE>
+template<typename FLOAT_VEC_TYPE>
 TIMING_RES test_SIMD()
 {
+    typedef typename UME::SIMD::SIMDTraits<FLOAT_VEC_TYPE>::SCALAR_T FLOAT_T;
+
     unsigned long long start, end; // Time measurements
     FLOAT_T a[17];
     FLOAT_T *x;
@@ -224,146 +227,64 @@ TIMING_RES test_SIMD()
     return end - start;
 }
 
+template<typename FLOAT_T>
+void benchmarkSIMD(char * resultPrefix,
+                   int iterations,
+                   TimingStatistics & reference)
+{
+    TimingStatistics stats;
+
+    for (int i = 0; i < iterations; i++)
+    {
+        stats.update(test_SIMD<FLOAT_T>());
+    }
+
+    std::cout << resultPrefix << (unsigned long long) stats.getAverage()
+        << ", dev: " << (unsigned long long) stats.getStdDev()
+        << " (speedup: " << stats.calculateSpeedup(reference) << "x)\n";
+}
+
 int main()
 {
-    TIMING_RES t_scalar_f,
-               t_scalar_d,
-               t_SIMD1_32f,
-               t_SIMD2_32f,
-               t_SIMD4_32f,
-               t_SIMD8_32f,
-               t_SIMD16_32f,
-               t_SIMD32_32f,
-               t_SIMD1_64f,
-               t_SIMD2_64f,
-               t_SIMD4_64f,
-               t_SIMD8_64f,
-               t_SIMD16_64f;
-    float t_scalar_f_avg = 0.0f,
-          t_scalar_d_avg = 0.0f,
-          t_SIMD1_32f_avg = 0.0f,
-          t_SIMD2_32f_avg = 0.0f,
-          t_SIMD4_32f_avg = 0.0f,
-          t_SIMD8_32f_avg = 0.0f,
-          t_SIMD16_32f_avg = 0.0f,
-          t_SIMD32_32f_avg = 0.0f,
-          t_SIMD1_64f_avg = 0.0f,
-          t_SIMD2_64f_avg = 0.0f,
-          t_SIMD4_64f_avg = 0.0f,
-          t_SIMD8_64f_avg = 0.0f,
-          t_SIMD16_64f_avg = 0.0f;
-    
-    // Run each timing test 100 times
-    for(int i = 0; i < 100; i++)
-    {
-        t_scalar_f = test_scalar<float>();
-        t_scalar_f_avg = 1.0f/(1.0f + float(i)) * (float(t_scalar_f) - t_scalar_f_avg);
-        
-        t_scalar_d = test_scalar<double>();
-        t_scalar_d_avg = 1.0f/(1.0f + float(i)) * (float(t_scalar_d) - t_scalar_d_avg);
+    const int ITERATIONS = 100;
 
-        t_SIMD1_32f = test_SIMD<float, UME::SIMD::SIMD1_32f>();
-        t_SIMD1_32f_avg = 1.0f/(1.0f + float(i)) * (float(t_SIMD1_32f) - t_SIMD1_32f_avg);
-        
-        t_SIMD2_32f = test_SIMD<float, UME::SIMD::SIMD2_32f>();
-        t_SIMD2_32f_avg = 1.0f/(1.0f + float(i)) * (float(t_SIMD2_32f) - t_SIMD2_32f_avg);
-
-        t_SIMD4_32f = test_SIMD<float, UME::SIMD::SIMD4_32f>();
-        t_SIMD4_32f_avg = 1.0f/(1.0f + float(i)) * (float(t_SIMD4_32f) - t_SIMD4_32f_avg);
-
-        t_SIMD8_32f = test_SIMD<float, UME::SIMD::SIMD8_32f>();
-        t_SIMD8_32f_avg = 1.0f/(1.0f + float(i)) * (float(t_SIMD8_32f) - t_SIMD8_32f_avg);
-
-        t_SIMD16_32f = test_SIMD<float, UME::SIMD::SIMD16_32f>();
-        t_SIMD16_32f_avg = 1.0f/(1.0f + float(i)) * (float(t_SIMD16_32f) - t_SIMD16_32f_avg);
-
-        t_SIMD32_32f = test_SIMD<float, UME::SIMD::SIMD32_32f>();
-        t_SIMD32_32f_avg = 1.0f/(1.0f + float(i)) * (float(t_SIMD32_32f) - t_SIMD32_32f_avg);
-        
-        t_SIMD1_64f = test_SIMD<double, UME::SIMD::SIMD1_64f>();
-        t_SIMD1_64f_avg = 1.0f/(1.0f + float(i)) * (float(t_SIMD1_64f) - t_SIMD1_64f_avg);
-        
-        t_SIMD2_64f = test_SIMD<double, UME::SIMD::SIMD2_64f>();
-        t_SIMD2_64f_avg = 1.0f/(1.0f + float(i)) * (float(t_SIMD2_64f) - t_SIMD2_64f_avg);
-        
-        t_SIMD4_64f = test_SIMD<double, UME::SIMD::SIMD4_64f>();
-        t_SIMD4_64f_avg = 1.0f/(1.0f + float(i)) * (float(t_SIMD4_64f) - t_SIMD4_64f_avg);
-        
-        t_SIMD8_64f = test_SIMD<double, UME::SIMD::SIMD8_64f>();
-        t_SIMD8_64f_avg = 1.0f/(1.0f + float(i)) * (float(t_SIMD8_64f) - t_SIMD8_64f_avg);
-        
-        t_SIMD16_64f = test_SIMD<double, UME::SIMD::SIMD16_64f>();
-        t_SIMD16_64f_avg = 1.0f/(1.0f + float(i)) * (float(t_SIMD16_64f) - t_SIMD16_64f_avg);
-    }
-    
     std::cout << "The result is amount of time it takes to calculate polynomial of\n" 
                  "order 16 (no zero-coefficients) of: " << ARRAY_SIZE << " elements.\n" 
                  "All timing results in clock cycles. \n"
                  "Speedup calculated with scalar floating point result as reference.\n\n"
                  "SIMD version uses following operations: \n"
                  " ZERO-CONSTR, SET-CONSTR, LOAD, STORE, MULV, FMULADDV, ADDVA\n";
-                 
-    std::cout << "Scalar code (float): " << (long)t_scalar_f_avg
-                                         << "(speedup: 1.0x)\n";
 
-    std::cout << "Scalar code (double): " << (long)t_scalar_d_avg
-                                          << "(speedup: "
-                                          << float(t_scalar_f_avg)/float(t_scalar_d_avg)
-                                          << "x)\n";
+    TimingStatistics stats_scalar_f, stats_scalar_d;
 
-    std::cout << "SIMD code (1x32f): "  << (long) t_SIMD1_32f_avg
-                                        << "\t(speedup: "
-                                        << float(t_scalar_f_avg)/float(t_SIMD1_32f_avg)
-                                        << "x)\n";
-    
-    std::cout << "SIMD code (2x32f): "  << (long) t_SIMD2_32f_avg
-                                        << "\t(speedup: "
-                                        << float(t_scalar_f_avg)/float(t_SIMD2_32f_avg)
-                                        << "x)\n";
-    
-    std::cout << "SIMD code (4x32f): "  << (long) t_SIMD4_32f_avg
-                                        << "\t(speedup: "
-                                        << float(t_scalar_f_avg)/float(t_SIMD4_32f_avg)
-                                        << "x)\n";
-    
-    std::cout << "SIMD code (8x32f): "  << (long) t_SIMD8_32f_avg
-                                        << "\t(speedup: "
-                                        << float(t_scalar_f_avg)/float(t_SIMD8_32f_avg)
-                                        << "x)\n";
+    for (int i = 0; i < ITERATIONS; i++) {
+        stats_scalar_f.update(test_scalar<float>());
+    }
 
-    std::cout << "SIMD code (16x32f): " << (long) t_SIMD16_32f_avg
-                                        << "\t(speedup: "
-                                        << float(t_scalar_f_avg)/float(t_SIMD16_32f_avg)
-                                        << "x)\n";
-    
-    std::cout << "SIMD code (32x32f): " << (long) t_SIMD32_32f_avg
-                                        << "\t(speedup: "
-                                        << float(t_scalar_f_avg)/float(t_SIMD32_32f_avg)
-                                        << "x)\n";
+    std::cout << "Scalar code (float): " << (unsigned long long) stats_scalar_f.getAverage()
+        << ", dev: " << (unsigned long long) stats_scalar_f.getStdDev()
+        << " (speedup: 1.0x)\n";
 
-    std::cout << "SIMD code (1x64f): "  << (long) t_SIMD1_64f_avg
-                                        << "\t(speedup: "
-                                        << float(t_scalar_f_avg)/float(t_SIMD1_64f_avg)
-                                        << "x)\n";
-    
-    std::cout << "SIMD code (2x64f): "  << (long) t_SIMD2_64f_avg
-                                        << "\t(speedup: "
-                                        << float(t_scalar_f_avg)/float(t_SIMD2_64f_avg)
-                                        << "x)\n";
-    
-    std::cout << "SIMD code (4x64f): "  << (long) t_SIMD4_64f_avg
-                                        << "\t(speedup: "
-                                        << float(t_scalar_f_avg)/float(t_SIMD4_64f_avg)
-                                        << "x)\n";
-    
-    std::cout << "SIMD code (8x64f): "  << (long) t_SIMD8_64f_avg
-                                        << "\t(speedup: "
-                                        << float(t_scalar_f_avg)/float(t_SIMD8_64f_avg)
-                                        << "x)\n";
-    
-    std::cout << "SIMD code (16x64f): "  << (long) t_SIMD16_64f_avg
-                                        << "\t(speedup: "
-                                        << float(t_scalar_f_avg)/float(t_SIMD16_64f_avg)
-                                        << "x)\n";
+    for (int i = 0; i < ITERATIONS; i++) {
+        stats_scalar_d.update(test_scalar<double>());
+    }
+
+    std::cout << "Scalar code (double): " << (unsigned long long) stats_scalar_d.getAverage()
+        << ", dev: " << (unsigned long long) stats_scalar_d.getStdDev()
+        << " (speedup: " << stats_scalar_d.calculateSpeedup(stats_scalar_f) << "x)\n";
+
+    benchmarkSIMD<UME::SIMD::SIMD1_32f>("SIMD code (1x32f): ", ITERATIONS, stats_scalar_f);
+    benchmarkSIMD<UME::SIMD::SIMD2_32f>("SIMD code (2x32f): ", ITERATIONS, stats_scalar_f);
+    benchmarkSIMD<UME::SIMD::SIMD4_32f>("SIMD code (4x32f): ", ITERATIONS, stats_scalar_f);
+    benchmarkSIMD<UME::SIMD::SIMD8_32f>("SIMD code (8x32f): ", ITERATIONS, stats_scalar_f);
+    benchmarkSIMD<UME::SIMD::SIMD16_32f>("SIMD code (16x32f): ", ITERATIONS, stats_scalar_f);
+    benchmarkSIMD<UME::SIMD::SIMD32_32f>("SIMD code (32x32f): ", ITERATIONS, stats_scalar_f);
+
+    benchmarkSIMD<UME::SIMD::SIMD1_64f>("SIMD code (1x64f): ", ITERATIONS, stats_scalar_f);
+    benchmarkSIMD<UME::SIMD::SIMD2_64f>("SIMD code (2x64f): ", ITERATIONS, stats_scalar_f);
+    benchmarkSIMD<UME::SIMD::SIMD4_64f>("SIMD code (4x64f): ", ITERATIONS, stats_scalar_f);
+    benchmarkSIMD<UME::SIMD::SIMD8_64f>("SIMD code (8x64f): ", ITERATIONS, stats_scalar_f);
+    benchmarkSIMD<UME::SIMD::SIMD16_64f>("SIMD code (16x64f): ", ITERATIONS, stats_scalar_f);
+
     return 0;
 }

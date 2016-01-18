@@ -38,6 +38,7 @@ template<typename VEC_T>
 void mandel_umesimd(unsigned char *image, const struct spec *s)
 {
     typedef typename UME::SIMD::SIMDTraits<VEC_T>::SCALAR_T  SCALAR_T;
+    typedef typename UME::SIMD::SIMDTraits<VEC_T>::SCALAR_INT_T SCALAR_INT_T;
     typedef typename UME::SIMD::SIMDTraits<VEC_T>::MASK_T    MASK_T;
     typedef typename UME::SIMD::SIMDTraits<VEC_T>::INT_VEC_T INT_VEC_T;
 
@@ -91,12 +92,12 @@ void mandel_umesimd(unsigned char *image, const struct spec *s)
             mk = mk * depth_scale;
             INT_VEC_T pixels = INT_VEC_T(mk.round());
             unsigned char *dst = image + y * s->width * 3 + x * 3;
-            unsigned char src[VEC_LEN *4];
-            pixels.store((int32_t*)src);
+            unsigned char src[VEC_LEN * sizeof(SCALAR_INT_T)];
+            pixels.store((SCALAR_INT_T*)src);
             for (unsigned int i = 0; i < VEC_LEN; i++) {
-                dst[i * 3 + 0] = src[i * 4];
-                dst[i * 3 + 1] = src[i * 4];
-                dst[i * 3 + 2] = src[i * 4];
+                dst[i * 3 + 0] = src[i * sizeof(SCALAR_INT_T)];
+                dst[i * 3 + 1] = src[i * sizeof(SCALAR_INT_T)];
+                dst[i * 3 + 2] = src[i * sizeof(SCALAR_INT_T)];
             }
         }
     }
