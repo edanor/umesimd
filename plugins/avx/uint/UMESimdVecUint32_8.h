@@ -437,7 +437,7 @@ namespace SIMD {
 
         // PROMOTE
         inline operator SIMDVec_u<uint64_t, 8>() const;
-        // DEMOTE
+        // DEGRADE
         inline operator SIMDVec_u<uint16_t, 8>() const;
 
         // UTOI

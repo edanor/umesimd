@@ -156,7 +156,7 @@ int test_UME_SIMD1_16u(bool supressMessages) {
         1,
         DataSet_1_16u>();
 
-    genericDEMOTETest<
+    genericDEGRADETest<
         SIMD1_16u, uint16_t,
         SIMD1_8u, uint8_t,
         1,
@@ -199,7 +199,7 @@ int test_UME_SIMD1_16i(bool supressMessages) {
         1,
         DataSet_1_16i>();
 
-    genericDEMOTETest<
+    genericDEGRADETest<
         SIMD1_16i, int16_t,
         SIMD1_8i,  int8_t,
         1,

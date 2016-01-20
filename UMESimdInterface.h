@@ -1963,7 +1963,7 @@ namespace SIMD
             return retval;
         }
 
-        // CMPEX 
+        // CMPEV 
         template<typename VEC_TYPE>
         inline bool isExact(VEC_TYPE const & a, VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
@@ -3653,7 +3653,7 @@ namespace SIMD
     
     // **********************************************************************
     // *
-    // *  Declaration of SwizzleMaskInterface class
+    // *  Declaration of IndexVectorInterface class
     // *
     // **********************************************************************
  
@@ -3867,9 +3867,9 @@ namespace SIMD
         }
 
         // MASSIGNV
-        inline DERIVED_MASK_TYPE & assign(DERIVED_MASK_TYPE const & mask, DERIVED_MASK_TYPE const & maskOp) {
+        /*inline DERIVED_MASK_TYPE & assign(DERIVED_MASK_TYPE const & mask, DERIVED_MASK_TYPE const & maskOp) {
             return EMULATED_FUNCTIONS::assign<DERIVED_MASK_TYPE, DERIVED_MASK_TYPE>(mask, static_cast<DERIVED_MASK_TYPE &>(*this), maskOp);
-        }
+        }*/
 
         // ASSIGNS
         inline DERIVED_MASK_TYPE & assign(bool scalarOp) {
@@ -3881,9 +3881,9 @@ namespace SIMD
         }
 
         // MASSIGNS
-        inline DERIVED_MASK_TYPE & assign(DERIVED_MASK_TYPE const & mask, bool scalarOp) {
+        /*inline DERIVED_MASK_TYPE & assign(DERIVED_MASK_TYPE const & mask, bool scalarOp) {
             return EMULATED_FUNCTIONS::assign<DERIVED_MASK_TYPE, bool, DERIVED_MASK_TYPE>(mask, static_cast<DERIVED_MASK_TYPE &>(*this), scalarOp);
-        }
+        }*/
 
         // LANDV
         inline DERIVED_MASK_TYPE land(DERIVED_MASK_TYPE const & maskOp) const {
@@ -4069,9 +4069,19 @@ namespace SIMD
             return EMULATED_FUNCTIONS::reduceLogicalOr<DERIVED_MASK_TYPE>(static_cast<DERIVED_MASK_TYPE const &>(*this));
         }
 
-        //HLXOR
+        // HLXOR
         inline bool hlxor() const {
             return EMULATED_FUNCTIONS::reduceLogicalXor<DERIVED_MASK_TYPE>(static_cast<DERIVED_MASK_TYPE const &>(*this));
+        }
+
+        // CMPEV
+        inline bool cmpe(DERIVED_MASK_TYPE const & mask) const {
+            return EMULATED_FUNCTIONS::isExact<DERIVED_MASK_TYPE>(static_cast<DERIVED_MASK_TYPE const &>(*this), mask);
+        }
+
+        // CMPES
+        inline bool cmpe(bool b) const {
+            return EMULATED_FUNCTIONS::isExact<DERIVED_MASK_TYPE>(static_cast<DERIVED_MASK_TYPE const &>(*this), DERIVED_MASK_TYPE(b));
         }
     };
 
@@ -4300,10 +4310,20 @@ namespace SIMD
         // ONE-VEC
         static DERIVED_VEC_TYPE one() { return DERIVED_VEC_TYPE(SCALAR_TYPE(1)); }
 
-        // EXTRACT
-        // This method should be provided for all derived classes and cannot be defined
-        // as generic.
-        inline SCALAR_TYPE extract(uint32_t index) const;
+        // PREFETCH0
+        static inline void prefetch0(SCALAR_TYPE const *p) {
+            // DO NOTHING!
+        }
+
+        // PREFETCH1
+        static inline void prefetch1(SCALAR_TYPE const *p) {
+            // DO NOTHING!
+        }
+
+        // PREFETCH2
+        static inline void prefetch2(SCALAR_TYPE const *p) {
+            // DO NOTHING!
+        }
 
         // ASSIGNV
         inline DERIVED_VEC_TYPE & assign (DERIVED_VEC_TYPE const & src) {
@@ -4329,21 +4349,6 @@ namespace SIMD
         // MASSIGNS
         inline DERIVED_VEC_TYPE & assign (MASK_TYPE const & mask, SCALAR_TYPE value) {
             return EMULATED_FUNCTIONS::assign<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this), value);
-        }
-
-        // PREFETCH0
-        static inline void prefetch0 (SCALAR_TYPE const *p) {
-            // DO NOTHING!
-        }
-
-        // PREFETCH1
-        static inline void prefetch1 (SCALAR_TYPE const *p) {
-            // DO NOTHING!
-        }
-
-        // PREFETCH2
-        static inline void prefetch2 (SCALAR_TYPE const *p) {
-            // DO NOTHING!
         }
 
         // LOAD
@@ -4385,6 +4390,16 @@ namespace SIMD
         inline SCALAR_TYPE* storea (MASK_TYPE const & mask, SCALAR_TYPE* p) const {
            return EMULATED_FUNCTIONS::store<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this), p);
         }
+
+        // EXTRACT
+        // This method should be provided for all derived classes and cannot be defined
+        // as generic.
+        inline SCALAR_TYPE extract(uint32_t index) const;
+
+        // INSERT
+        // This method should be provided for all derived classes and cannot be defined
+        // as generic.
+        inline DERIVED_VEC_TYPE & insert(uint32_t index, SCALAR_TYPE value);
 
         // BLENDV
         inline DERIVED_VEC_TYPE blend (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) const {
@@ -4440,7 +4455,7 @@ namespace SIMD
         }
 
         inline DERIVED_VEC_TYPE & operator+= (DERIVED_VEC_TYPE const & b) {
-            return this->adda(b);
+            return adda(b);
         }
 
         // MADDVA
@@ -4454,7 +4469,7 @@ namespace SIMD
         }
 
         inline DERIVED_VEC_TYPE & operator+= (SCALAR_TYPE b) {
-            return this->adda(b);
+            return adda(b);
         }
 
         // MADDSA
@@ -4567,6 +4582,9 @@ namespace SIMD
         // SUBSA
         inline DERIVED_VEC_TYPE & suba (SCALAR_TYPE b) {
             return EMULATED_FUNCTIONS::subAssign<DERIVED_VEC_TYPE, SCALAR_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this), b);
+        }
+        inline DERIVED_VEC_TYPE & operator-= (SCALAR_TYPE b) {
+            return suba(b);
         }
 
         // MSUBSA
@@ -5225,10 +5243,10 @@ namespace SIMD
         inline DERIVED_VEC_TYPE operator& (SCALAR_TYPE b) const {
             return band(b);
         }
-
+        /*
         inline DERIVED_VEC_TYPE operator&& (SCALAR_TYPE b) const {
             return band(b);
-        }
+        }*/
 
         // MBANDS
         inline DERIVED_VEC_TYPE band (MASK_TYPE const & mask, SCALAR_TYPE b) const {
@@ -5741,7 +5759,90 @@ namespace SIMD
             return EMULATED_FUNCTIONS::rotateBitsRightAssignScalar<DERIVED_VEC_TYPE, SCALAR_TYPE, SCALAR_UINT_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
     };
-    
+
+    // ***************************************************************************
+    // *
+    // *    Definition of Packable Interface. Pack operations can only be 
+    // *    performed on SIMD vector with lengths higher than 1 and being
+    // *    powers of 2. Vectors of such lengths have to derive from one of type
+    // *    interfaces: signed, unsigned or float and from packable interface.
+    // *    SIMD vectors of length 1 should only use type interface.
+    // *
+    // ***************************************************************************
+    template<class DERIVED_VEC_TYPE,
+    class DERIVED_HALF_VEC_TYPE>
+    class SIMDVecPackableInterface
+    {
+        // Other vector types necessary for this class
+        typedef SIMDVecPackableInterface<
+            DERIVED_VEC_TYPE,
+            DERIVED_HALF_VEC_TYPE> VEC_TYPE;
+
+    private:
+        // Forbid assignment-initialization of vector using scalar values
+        // TODO: is this necessary?
+        inline VEC_TYPE & operator= (const int8_t & x) { }
+        inline VEC_TYPE & operator= (const int16_t & x) { }
+        inline VEC_TYPE & operator= (const int32_t & x) { }
+        inline VEC_TYPE & operator= (const int64_t & x) { }
+        inline VEC_TYPE & operator= (const uint8_t & x) { }
+        inline VEC_TYPE & operator= (const uint16_t & x) { }
+        inline VEC_TYPE & operator= (const uint32_t & x) { }
+        inline VEC_TYPE & operator= (const uint64_t & x) { }
+        inline VEC_TYPE & operator= (const float & x) { }
+        inline VEC_TYPE & operator= (const double & x) { }
+
+    public:
+
+        // PACK
+        DERIVED_VEC_TYPE & pack(DERIVED_HALF_VEC_TYPE const & a, DERIVED_HALF_VEC_TYPE const & b) {
+            return EMULATED_FUNCTIONS::pack<DERIVED_VEC_TYPE, DERIVED_HALF_VEC_TYPE>(
+                static_cast<DERIVED_VEC_TYPE &>(*this),
+                static_cast<DERIVED_HALF_VEC_TYPE const &>(a),
+                static_cast<DERIVED_HALF_VEC_TYPE const &>(b)
+                );
+        }
+
+        // PACKLO
+        DERIVED_VEC_TYPE & packlo(DERIVED_HALF_VEC_TYPE const & a) {
+            return EMULATED_FUNCTIONS::packLow<DERIVED_VEC_TYPE, DERIVED_HALF_VEC_TYPE>(
+                static_cast<DERIVED_VEC_TYPE &>(*this),
+                static_cast<DERIVED_HALF_VEC_TYPE const &>(a)
+                );
+        }
+
+        // PACKHI
+        DERIVED_VEC_TYPE & packhi(DERIVED_HALF_VEC_TYPE const & a) {
+            return EMULATED_FUNCTIONS::packHigh<DERIVED_VEC_TYPE, DERIVED_HALF_VEC_TYPE>(
+                static_cast<DERIVED_VEC_TYPE &>(*this),
+                static_cast<DERIVED_HALF_VEC_TYPE const &>(a)
+                );
+        }
+
+        // UNPACK
+        void unpack(DERIVED_HALF_VEC_TYPE & a, DERIVED_HALF_VEC_TYPE & b) const {
+            EMULATED_FUNCTIONS::unpack<DERIVED_VEC_TYPE, DERIVED_HALF_VEC_TYPE>(
+                static_cast<DERIVED_VEC_TYPE const &>(*this),
+                static_cast<DERIVED_HALF_VEC_TYPE &>(a),
+                static_cast<DERIVED_HALF_VEC_TYPE &>(b)
+                );
+        }
+
+        // UNPACKLO
+        DERIVED_HALF_VEC_TYPE unpacklo() const {
+            return EMULATED_FUNCTIONS::unpackLow<DERIVED_VEC_TYPE, DERIVED_HALF_VEC_TYPE>(
+                static_cast<DERIVED_VEC_TYPE const &> (*this)
+                );
+        }
+
+        // UNPACKHI
+        DERIVED_HALF_VEC_TYPE unpackhi() const {
+            return EMULATED_FUNCTIONS::unpackHigh<DERIVED_VEC_TYPE, DERIVED_HALF_VEC_TYPE>(
+                static_cast<DERIVED_VEC_TYPE const &> (*this)
+                );
+        }
+    };
+
     // ***************************************************************************
     // *
     // *    Definition of Sign interface. This interface creates
@@ -5814,89 +5915,6 @@ namespace SIMD
             return EMULATED_FUNCTIONS::MATH::absAssign<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this));
         }
     };
-
-    // ***************************************************************************
-    // *
-    // *    Definition of Packable Interface. Pack operations can only be 
-    // *    performed on SIMD vector with lengths higher than 1 and being
-    // *    powers of 2. Vectors of such lengths have to derive from one of type
-    // *    interfaces: signed, unsigned or float and from packable interface.
-    // *    SIMD vectors of length 1 should only use type interface.
-    // *
-    // ***************************************************************************
-    template<class DERIVED_VEC_TYPE,
-             class DERIVED_HALF_VEC_TYPE>
-    class SIMDVecPackableInterface
-    {        
-        // Other vector types necessary for this class
-        typedef SIMDVecPackableInterface< 
-            DERIVED_VEC_TYPE, 
-            DERIVED_HALF_VEC_TYPE> VEC_TYPE;
-
-    private:
-        // Forbid assignment-initialization of vector using scalar values
-        // TODO: is this necessary?
-        inline VEC_TYPE & operator= (const int8_t & x) { }
-        inline VEC_TYPE & operator= (const int16_t & x) { }
-        inline VEC_TYPE & operator= (const int32_t & x) { }
-        inline VEC_TYPE & operator= (const int64_t & x) { }
-        inline VEC_TYPE & operator= (const uint8_t & x) { }
-        inline VEC_TYPE & operator= (const uint16_t & x) { }
-        inline VEC_TYPE & operator= (const uint32_t & x) { }
-        inline VEC_TYPE & operator= (const uint64_t & x) { }
-        inline VEC_TYPE & operator= (const float & x) { }
-        inline VEC_TYPE & operator= (const double & x) { }
- 
-    public:
-
-        // PACK
-        DERIVED_VEC_TYPE & pack(DERIVED_HALF_VEC_TYPE const & a, DERIVED_HALF_VEC_TYPE const & b) {
-            return EMULATED_FUNCTIONS::pack<DERIVED_VEC_TYPE, DERIVED_HALF_VEC_TYPE> (
-                    static_cast<DERIVED_VEC_TYPE &>(*this), 
-                    static_cast<DERIVED_HALF_VEC_TYPE const &>(a),
-                    static_cast<DERIVED_HALF_VEC_TYPE const &>(b)
-                );
-        }
-        
-        // PACKLO
-        DERIVED_VEC_TYPE & packlo(DERIVED_HALF_VEC_TYPE const & a) {
-            return EMULATED_FUNCTIONS::packLow<DERIVED_VEC_TYPE, DERIVED_HALF_VEC_TYPE> (
-                    static_cast<DERIVED_VEC_TYPE &>(*this), 
-                    static_cast<DERIVED_HALF_VEC_TYPE const &>(a)
-                );
-        }
-
-        // PACKHI
-        DERIVED_VEC_TYPE & packhi(DERIVED_HALF_VEC_TYPE const & a) {
-            return EMULATED_FUNCTIONS::packHigh<DERIVED_VEC_TYPE, DERIVED_HALF_VEC_TYPE> (
-                    static_cast<DERIVED_VEC_TYPE &>(*this), 
-                    static_cast<DERIVED_HALF_VEC_TYPE const &>(a)
-                );
-        }
-        
-        // UNPACK
-        void unpack(DERIVED_HALF_VEC_TYPE & a, DERIVED_HALF_VEC_TYPE & b) const {
-            EMULATED_FUNCTIONS::unpack<DERIVED_VEC_TYPE, DERIVED_HALF_VEC_TYPE> (
-                    static_cast<DERIVED_VEC_TYPE const &>(*this), 
-                    static_cast<DERIVED_HALF_VEC_TYPE &>(a),
-                    static_cast<DERIVED_HALF_VEC_TYPE &>(b)
-                );
-        }
-
-        // UNPACKLO
-        DERIVED_HALF_VEC_TYPE unpacklo() const {
-            return EMULATED_FUNCTIONS::unpackLow<DERIVED_VEC_TYPE, DERIVED_HALF_VEC_TYPE> (
-                        static_cast<DERIVED_VEC_TYPE const &> (*this)
-                    );
-        }
-
-        // UNPACKHI
-        DERIVED_HALF_VEC_TYPE unpackhi() const {
-            return EMULATED_FUNCTIONS::unpackHigh<DERIVED_VEC_TYPE, DERIVED_HALF_VEC_TYPE> (
-                        static_cast<DERIVED_VEC_TYPE const &> (*this)
-                    );
-        }
-    };
     
     // ***************************************************************************
     // *
@@ -5952,11 +5970,11 @@ namespace SIMD
     public:
         // SUBV
         inline DERIVED_UINT_VEC_TYPE operator- (DERIVED_UINT_VEC_TYPE const & b) const {
-            return this->sub(b);
+            return sub(b);
         }
         // SUBS
         inline DERIVED_UINT_VEC_TYPE operator- (SCALAR_UINT_TYPE b) const {
-            return this->sub(b);
+            return sub(b);
         }
     };
 
@@ -6032,17 +6050,17 @@ namespace SIMD
 
         // SUBV
         inline DERIVED_VEC_TYPE operator- (DERIVED_VEC_TYPE const & b) const {
-            return this->sub(b);
+            return sub(b);
         }
 
         // SUBS
         inline DERIVED_VEC_TYPE operator- (SCALAR_TYPE const & b) const {
-            return this->sub(b);
+            return sub(b);
         }
 
         // NEG
         inline DERIVED_VEC_TYPE operator- () const {
-            return this->neg();
+            return neg();
         }
     };
 
@@ -6109,20 +6127,17 @@ namespace SIMD
 
         // SUBV
         inline DERIVED_VEC_TYPE operator- (DERIVED_VEC_TYPE const & b) const {
-            return this->sub(b);
+            return sub(b);
         }
         
         // SUBS
         inline DERIVED_VEC_TYPE operator- (SCALAR_FLOAT_TYPE b) const {
-            return this->sub(b);
+            return sub(b);
         }
         // NEG
         inline DERIVED_VEC_TYPE operator- () const {
-            return this->neg();
+            return neg();
         }
-
-        // CMPEQRV
-        //inline DERIVED_VEC_TYPE 
 
         // ********************************************************************
         // * MATH FUNCTIONS
@@ -6302,6 +6317,21 @@ namespace SIMD
             return EMULATED_FUNCTIONS::MATH::exp<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
+        // LOG
+        inline DERIVED_VEC_TYPE log() const {
+            return EMULATED_FUNCTIONS::MATH::log<DERIVED_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this));
+        }
+
+        // LOG10
+        inline DERIVED_VEC_TYPE log10() const {
+            return EMULATED_FUNCTIONS::MATH::log10<DERIVED_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this));
+        }
+
+        // LOG2
+        inline DERIVED_VEC_TYPE log2() const {
+            return EMULATED_FUNCTIONS::MATH::log2<DERIVED_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this));
+        }
+
         // SIN
         inline DERIVED_VEC_TYPE sin () const {
             return EMULATED_FUNCTIONS::MATH::sin<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this));
@@ -6364,20 +6394,6 @@ namespace SIMD
             return EMULATED_FUNCTIONS::MATH::atan2<DERIVED_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
-        // LOG
-        inline DERIVED_VEC_TYPE log() const {
-            return EMULATED_FUNCTIONS::MATH::log<DERIVED_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this));
-        }
-
-        // LOG10
-        inline DERIVED_VEC_TYPE log10() const {
-            return EMULATED_FUNCTIONS::MATH::log10<DERIVED_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this));
-        }
-
-        // LOG2
-        inline DERIVED_VEC_TYPE log2() const {
-            return EMULATED_FUNCTIONS::MATH::log2<DERIVED_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this));
-        }
     };
 
     // This is just an experimental setup! Providing functions like this to handle interface

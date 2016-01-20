@@ -45,6 +45,18 @@ public:
             std::cout << (*iter) << std::endl;
         }
     }
+
+    // Calculate 90% confidence level. Adding/subtracting this
+    // value from average will give upper/lower bounds.
+    float confidence90() {
+        return 1.645f * getStdDev() / sqrtf(float(count));
+    }
+
+    // Calculate 95% confidence level. Adding/subtracting this
+    // value from average will give upper/lower bounds.
+    float confidence95() {
+        return 1.96f * getStdDev() / sqrtf(float(count));
+    }
 };
 
 #endif

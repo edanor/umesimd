@@ -437,6 +437,8 @@ void benchmarkUMESIMD( char * resultPrefix, int iterations, TimingStatistics & r
 
     std::cout << resultPrefix << (unsigned long long) stats.getAverage()
         << ", dev: " << (unsigned long long) stats.getStdDev()
+        << ", 90% confidence: " << (unsigned long long) stats.confidence90()
+        << ", 95% confidence: " << (unsigned long long) stats.confidence95()
         << " (speedup: "
         << stats.calculateSpeedup(reference) << ")"
         << std::endl;

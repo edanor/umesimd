@@ -4717,7 +4717,7 @@ void genericPROMOTETest()
 
 
 template<typename VEC_TYPE_X, typename SCALAR_TYPE_X, typename VEC_TYPE_Y, typename SCALAR_TYPE_Y, int VEC_LEN, typename DATA_SET>
-void genericDEMOTETest()
+void genericDEGRADETest()
 {
     SCALAR_TYPE_X input[VEC_LEN];
     SCALAR_TYPE_Y expected[VEC_LEN];
@@ -4736,7 +4736,7 @@ void genericDEMOTETest()
     vec1 = VEC_TYPE_Y(vec0);
     vec1.store(output);
     bool inRange = valuesInRange(output, expected, VEC_LEN, 0.01f);
-    CHECK_CONDITION(inRange, "DEMOTE");
+    CHECK_CONDITION(inRange, "DEGRADE");
 }
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>

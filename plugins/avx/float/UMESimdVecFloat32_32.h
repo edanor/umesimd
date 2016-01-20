@@ -602,7 +602,7 @@ namespace SIMD {
 
         // PROMOTE
         // -
-        // DEMOTE
+        // DEGRADE
         // -
 
         // FTOU

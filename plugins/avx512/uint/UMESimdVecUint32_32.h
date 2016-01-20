@@ -1501,16 +1501,16 @@ namespace SIMD {
         }
         // SCATTERV
         inline uint32_t* scatter(uint32_t* baseAddr, SIMDVec_u const & indices) {
-            _mm512_i32scatter_epi32(baseAddr, indices.mVec[0], mVec[0], 1);
-            _mm512_i32scatter_epi32(baseAddr + 16, indices.mVec[1], mVec[1], 1);
+            _mm512_i32scatter_epi32(baseAddr, indices.mVec[0], mVec[0], 4);
+            _mm512_i32scatter_epi32(baseAddr + 16, indices.mVec[1], mVec[1], 4);
             return baseAddr;
         }
         // MSCATTERV
         inline uint32_t* scatter(SIMDVecMask<32> const & mask, uint32_t* baseAddr, SIMDVec_u const & indices) {
             __mmask16 m0 = mask.mMask & 0x0000FFFF;
             __mmask16 m1 = (mask.mMask & 0xFFFF0000) >> 16;
-            _mm512_mask_i32scatter_epi32(baseAddr,      m0, indices.mVec[0], mVec[0], 1);
-            _mm512_mask_i32scatter_epi32(baseAddr + 16, m1, indices.mVec[1], mVec[1], 1);
+            _mm512_mask_i32scatter_epi32(baseAddr,      m0, indices.mVec[0], mVec[0], 4);
+            _mm512_mask_i32scatter_epi32(baseAddr + 16, m1, indices.mVec[1], mVec[1], 4);
             return baseAddr;
         }
         // LSHV
@@ -1682,7 +1682,7 @@ namespace SIMD {
 
         // PROMOTE
         // - 
-        // DEMOTE
+        // DEGRADE
         inline operator SIMDVec_u<uint16_t, 32>() const;
 
         // UTOI

@@ -38,6 +38,7 @@
 
 //#define UME_SIMD_SHOW_EMULATION_WARNINGS 1
 #include "../UMESimd.h"
+#include "utilities/TimingStatistics.h"
 
 // Introducing inline assembly forces compiler to generate
 #define BREAK_COMPILER_OPTIMIZATION() __asm__ ("NOP");
@@ -61,7 +62,7 @@ static __inline__ unsigned long long __rdtsc(void)
 
 typedef unsigned long long TIMING_RES;
 
-const int INPUT_SIZE = 100; // Number of data samples
+const int INPUT_SIZE = 1000000; // Number of data samples
 const int HIST_SIZE = 100;     // Number of histogram bins
 //alignas(32) float x[ARRAY_SIZE];
 
@@ -100,12 +101,6 @@ TIMING_RES test_scalar()
         
         end = __rdtsc();
     }
-    
-    // Use for debugging
-    //for (unsigned int i = 0; i < HIST_SIZE; i++) {
-    //    std::cout << i << ": " << hist[i] << "\n";
-    //}
-
 
     UME::DynamicMemory::AlignedFree(data);
     UME::DynamicMemory::AlignedFree(hist);
@@ -133,16 +128,6 @@ inline void test_UME_SIMD_float_recursive_helper(UINT_VEC_T const & index_vec, u
     else {
         HALF_LEN_UINT_VEC_T vec_l, vec_h;
         index_vec.unpack(vec_l, vec_h);
-
-        std::cout << "unpacking:\n";
-        for (int i = 0; i < HALF_LEN_UINT_VEC_T::length(); i++) {
-            std::cout << vec_l[i] << " ";
-        }
-        std::cout << std::endl;
-        for (int i = 0; i < HALF_LEN_UINT_VEC_T::length(); i++) {
-            std::cout << vec_h[i] << " ";
-        }
-        std::cout << std::endl;
 
         test_UME_SIMD_float_recursive_helper<HALF_LEN_VEC_T, HALF_LEN_UINT_VEC_T>(vec_l, hist);
         test_UME_SIMD_float_recursive_helper<HALF_LEN_VEC_T, HALF_LEN_UINT_VEC_T>(vec_h, hist);
@@ -204,9 +189,6 @@ TIMING_RES test_UME_SIMD()
 
         unsigned int bin;
 
-        std::cout << " PEEL_COUNT: " << PEEL_COUNT << std::endl;
-        std::cout << "REM_COUNT: " << REM_COUNT << std::endl;
-
         start = __rdtsc();
 
         for (uint32_t i = 0; i < PEEL_COUNT; i++) {
@@ -217,19 +199,6 @@ TIMING_RES test_UME_SIMD()
             index_vec.assign(UINT_VEC_T(t1));
             // Perform histogram update
             test_UME_SIMD_float_recursive_helper<FLOAT_VEC_T, UINT_VEC_T>(index_vec, hist);
-
-std::cout << "expected indices: ";
-for (int k = 0; k < VEC_LEN; k++) {
-    bin = (unsigned int)((FLOAT_T(HIST_SIZE) / static_cast<FLOAT_T>(1000))*data[i*VEC_LEN + k]);
-    std::cout << bin << " ";
-}
-std::cout << std::endl;
-
-std::cout << "actual indices:   ";
-for (int k = 0; k < VEC_LEN; k++) {
-    std::cout << index_vec[k] << " ";
-}
-std::cout << std::endl;
         }
         
         // Calculate reminder elements using scalar code
@@ -239,6 +208,7 @@ std::cout << std::endl;
         }
 
         end = __rdtsc();
+
         // Verify results
         for (int i = 0; i < INPUT_SIZE; i++)
         {
@@ -259,48 +229,33 @@ std::cout << std::endl;
     return end - start;
 }
 
+template<typename VEC_T>
+void benchmarkUMESIMD(char * resultPrefix, int iterations, TimingStatistics & reference)
+{
+    TimingStatistics stats;
+
+    for (int i = 0; i < iterations; i++)
+    {
+        unsigned long long elapsed = test_UME_SIMD<VEC_T>();
+        stats.update(elapsed);
+    }
+
+    std::cout << resultPrefix << (unsigned long long) stats.getAverage()
+        << ", dev: " << (unsigned long long) stats.getStdDev()
+        << ", 90% confidence: " << (unsigned long long) stats.confidence90()
+        << ", 95% confidence: " << (unsigned long long) stats.confidence95()
+        << " (speedup: "
+        << stats.calculateSpeedup(reference) << ")"
+        << std::endl;
+}
+
 int main()
 {
-    TIMING_RES t_scalar_f, 
-               t_UME_SIMD1_32f,
-               t_UME_SIMD2_32f,
-               t_UME_SIMD4_32f,
-               t_UME_SIMD8_32f,
-               t_UME_SIMD16_32f,
-               t_UME_SIMD32_32f;
+    const int ITERATIONS = 1000;
 
-    float t_scalar_f_avg = 0.0f,
-          t_UME_SIMD1_32f_avg = 0.0f,
-          t_UME_SIMD2_32f_avg = 0.0f,
-          t_UME_SIMD4_32f_avg = 0.0f,
-          t_UME_SIMD8_32f_avg = 0.0f,
-          t_UME_SIMD16_32f_avg = 0.0f,
-          t_UME_SIMD32_32f_avg = 0.0f;
+    TimingStatistics stats_scalar_f, stats_scalar_d;
 
     srand ((unsigned int)time(NULL));
-    for (int i = 0; i < 1; i++)
-    {
-        t_scalar_f = test_scalar<float>();
-        t_scalar_f_avg = 1.0f / (1.0f + float(i)) * (float(t_scalar_f) - t_scalar_f_avg);
-
-//        t_UME_SIMD1_32f = test_UME_SIMD<UME::SIMD::SIMD1_32f>();
-        t_UME_SIMD1_32f_avg = 1.0f / (1.0f + float(i)) * (float(t_UME_SIMD1_32f) - t_UME_SIMD1_32f_avg);
-
-//        t_UME_SIMD2_32f = test_UME_SIMD<UME::SIMD::SIMD2_32f>();
-        t_UME_SIMD2_32f_avg = 1.0f / (1.0f + float(i)) * (float(t_UME_SIMD2_32f) - t_UME_SIMD2_32f_avg);
-
-//        t_UME_SIMD4_32f = test_UME_SIMD<UME::SIMD::SIMD4_32f>();
-        t_UME_SIMD4_32f_avg = 1.0f / (1.0f + float(i)) * (float(t_UME_SIMD4_32f) - t_UME_SIMD4_32f_avg);
-
-//        t_UME_SIMD8_32f = test_UME_SIMD<UME::SIMD::SIMD8_32f>();
-        t_UME_SIMD8_32f_avg = 1.0f / (1.0f + float(i)) * (float(t_UME_SIMD8_32f) - t_UME_SIMD8_32f_avg);
-
-        t_UME_SIMD16_32f = test_UME_SIMD<UME::SIMD::SIMD16_32f>();
-        t_UME_SIMD16_32f_avg = 1.0f / (1.0f + float(i)) * (float(t_UME_SIMD16_32f) - t_UME_SIMD16_32f_avg);
-
-//        t_UME_SIMD32_32f = test_UME_SIMD<UME::SIMD::SIMD32_32f>();
-        t_UME_SIMD32_32f_avg = 1.0f / (1.0f + float(i)) * (float(t_UME_SIMD32_32f) - t_UME_SIMD32_32f_avg);
-    }
 
     std::cout << "The result is amount of time it takes to calculate histogram of: " << INPUT_SIZE << " elements with " << HIST_SIZE << "-bin histogram.\n"
         "All timing results in clock cycles. \n"
@@ -308,41 +263,26 @@ int main()
         "SIMD versions use following operations: \n"
         "float 32b: LOADA, MULV, TRUNC\n"
         "int   32b:  ITOU\n"
-        "uint  32b:  ASSIGNV, UNIQUE, GATHER, SCATTER, PREFINC, UNPACK\n\n";
+        "uint  32b:  ASSIGNV, UNIQUE, GATHERV, SCATTERV, PREFINC, UNPACK\n\n";
 
-    std::cout << "Scalar code (float): " << (long)t_scalar_f_avg
+    for (int i = 0; i < ITERATIONS; i++)
+    {
+        stats_scalar_f.update(test_scalar<float>());
+    }
+
+    std::cout << "Scalar code (float): " << (unsigned long long) stats_scalar_f.getAverage()
+        << ", dev: " << (unsigned long long) stats_scalar_f.getStdDev()
+        << ", 90% confidence: " << (unsigned long long) stats_scalar_f.confidence90()
+        << ", 95% confidence: " << (unsigned long long) stats_scalar_f.confidence95()
         << " (speedup: 1.0x)"
         << std::endl;
 
-    std::cout << "SIMD code (1x32f): " << (long)t_UME_SIMD1_32f_avg
-        << " (speedup: "
-        << float(t_scalar_f_avg) / float(t_UME_SIMD1_32f_avg) << ")"
-        << std::endl;
-
-    std::cout << "SIMD code (2x32f): " << (long)t_UME_SIMD2_32f_avg
-        << " (speedup: "
-        << float(t_scalar_f_avg) / float(t_UME_SIMD2_32f_avg) << ")"
-        << std::endl;
-
-    std::cout << "SIMD code (4x32f): " << (long)t_UME_SIMD4_32f_avg
-        << " (speedup: "
-        << float(t_scalar_f_avg) / float(t_UME_SIMD4_32f_avg) << ")"
-        << std::endl;
-
-    std::cout << "SIMD code (8x32f): " << (long)t_UME_SIMD8_32f_avg
-        << " (speedup: "
-        << float(t_scalar_f_avg) / float(t_UME_SIMD8_32f_avg) << ")"
-        << std::endl;
-
-    std::cout << "SIMD code (16x32f): " << (long)t_UME_SIMD16_32f_avg
-        << " (speedup: "
-        << float(t_scalar_f_avg) / float(t_UME_SIMD16_32f_avg) << ")"
-        << std::endl;
-
-    std::cout << "SIMD code (32x32f): " << (long)t_UME_SIMD32_32f_avg
-        << " (speedup: "
-        << float(t_scalar_f_avg) / float(t_UME_SIMD32_32f_avg) << ")"
-        << std::endl;
+    benchmarkUMESIMD<UME::SIMD::SIMD1_32f>("SIMD code (1x32f): ", ITERATIONS, stats_scalar_f);
+    benchmarkUMESIMD<UME::SIMD::SIMD2_32f>("SIMD code (2x32f): ", ITERATIONS, stats_scalar_f);
+    benchmarkUMESIMD<UME::SIMD::SIMD4_32f>("SIMD code (4x32f): ", ITERATIONS, stats_scalar_f);
+    benchmarkUMESIMD<UME::SIMD::SIMD8_32f>("SIMD code (8x32f): ", ITERATIONS, stats_scalar_f);
+    benchmarkUMESIMD<UME::SIMD::SIMD16_32f>("SIMD code (16x32f): ", ITERATIONS, stats_scalar_f);
+    benchmarkUMESIMD<UME::SIMD::SIMD32_32f>("SIMD code (32x32f): ", ITERATIONS, stats_scalar_f);
 
     return 0;
 }

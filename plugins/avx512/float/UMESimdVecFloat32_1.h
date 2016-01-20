@@ -223,13 +223,45 @@ namespace SIMD {
             return *this;
         }
         // SADDV    - Saturated add with vector
+        inline SIMDVec_f & sadd(SIMDVec_f const & b) const {
+            float t0 = mVec + b.mVec;
+            return SIMDVec_f(t0);
+        }
         // MSADDV   - Masked saturated add with vector
+        inline SIMDVec_f & sadd(SIMDVecMask<1> const & mask, SIMDVec_f const & b) const {
+            float t0 = mask.mMask ? mVec + b.mVec : mVec;
+            return SIMDVec_f(t0);
+        }
         // SADDS    - Saturated add with scalar
+        inline SIMDVec_f & sadd(float b) const {
+            float t0 = mVec + b;
+            return SIMDVec_f(t0);
+        }
         // MSADDS   - Masked saturated add with scalar
+        inline SIMDVec_f & sadd(SIMDVecMask<1> const & mask, float b) const {
+            float t0 = mask.mMask ? mVec + b : mVec;
+            return SIMDVec_f(t0);
+        }
         // SADDVA   - Saturated add with vector and assign
+        inline SIMDVec_f & sadda(SIMDVec_f const & b) {
+            mVec = mVec + b.mVec;
+            return *this;
+        }
         // MSADDVA  - Masked saturated add with vector and assign
+        inline SIMDVec_f & sadda(SIMDVecMask<1> const & mask, SIMDVec_f const & b) {
+            mVec = mask.mMask ? mVec + b.mVec : mVec;
+            return *this;
+        }
         // SADDSA   - Satureated add with scalar and assign
+        inline SIMDVec_f & sadda(float b) {
+            mVec = mVec + b;
+            return *this;
+        }
         // MSADDSA  - Masked staturated add with vector and assign
+        inline SIMDVec_f & sadda(SIMDVecMask<1> const & mask, float b) {
+            mVec = mask.mMask ? mVec + b : mVec;
+            return *this;
+        }
         // POSTINC  - Postfix increment
         inline SIMDVec_f postinc() {
             float t0 = mVec++;
@@ -292,13 +324,45 @@ namespace SIMD {
             return *this;
         }
         // SSUBV      - Saturated sub with vector
+        inline SIMDVec_f & ssub(SIMDVec_f const & b) const {
+            float t0 = mVec - b.mVec;
+            return SIMDVec_f(t0);
+        }
         // MSSUBV     - Masked saturated sub with vector
+        inline SIMDVec_f & ssub(SIMDVecMask<1> const & mask, SIMDVec_f const & b) const {
+            float t0 = mask.mMask ? mVec - b.mVec : mVec;
+            return SIMDVec_f(t0);
+        }
         // SSUBS      - Saturated sub with scalar
+        inline SIMDVec_f & ssub(float b) const {
+            float t0 = mVec - b;
+            return SIMDVec_f(t0);
+        }
         // MSSUBS     - Masked saturated sub with scalar
+        inline SIMDVec_f & ssub(SIMDVecMask<1> const & mask, float b) const {
+            float t0 = mask.mMask ? mVec - b : mVec;
+            return SIMDVec_f(t0);
+        }
         // SSUBVA     - Saturated sub with vector and assign
+        inline SIMDVec_f & ssuba(SIMDVec_f const & b) {
+            mVec = mVec - b.mVec;
+            return *this;
+        }
         // MSSUBVA    - Masked saturated sub with vector and assign
+        inline SIMDVec_f & ssuba(SIMDVecMask<1> const & mask, SIMDVec_f const & b) {
+            mVec = mask.mMask ? mVec - b.mVec : mVec;
+            return *this;
+        }
         // SSUBSA     - Saturated sub with scalar and assign
+        inline SIMDVec_f & ssuba(float b) {
+            mVec = mVec - b;
+            return *this;
+        }
         // MSSUBSA    - Masked saturated sub with scalar and assign
+        inline SIMDVec_f & ssuba(SIMDVecMask<1> const & mask, float b) {
+            mVec = mask.mMask ? mVec - b : mVec;
+            return *this;
+        }
         // SUBFROMV   - Sub from vector
         inline SIMDVec_f subfrom(SIMDVec_f const & a) const {
             float t0 = a.mVec - mVec;
@@ -576,7 +640,14 @@ namespace SIMD {
             return SIMDVec_f(t0);
         }
         // SWIZZLE  - Swizzle (reorder/permute) vector elements
+        inline SIMDVec_f swizzle(SIMDVecSwizzle<1> const & swizzle) const {
+            return SIMDVec_f(mVec);
+        }
         // SWIZZLEA - Swizzle (reorder/permute) vector elements and assign
+        inline SIMDVec_f & swizzlea(SIMDVecSwizzle<1> const & swizzle) {
+        {
+            return *this;
+        }
 
         //(Reduction to scalar operations)
         // HADD  - Add elements of a vector (horizontal add)
@@ -883,19 +954,75 @@ namespace SIMD {
 
         // (Mathematical functions)
         // SQR       - Square of vector values
+        inline SIMDVec_f sqr() const {
+            float t0 = mVec*mVec;
+            return SIMDVec_f(t0);
+        }
         // MSQR      - Masked square of vector values
+        inline SIMDVec_f sqr(SIMDVecMask<1> const & mask) const {
+            float t0 = mask.mMask ? mVec*mVec : mVec;
+            return SIMDVec_f(t0);
+        }
         // SQRA      - Square of vector values and assign
+        inline SIMDVec_f & sqra() {
+            mVec = mVec*mVec;
+            return *this;
+        }
         // MSQRA     - Masked square of vector values and assign
+        inline SIMDVec_f & sqra(SIMDVecMask<1> const & mask) {
+            mVec = mask.mMask ? mVec*mVec : mVec;
+            return *this;
+        }
         // SQRT      - Square root of vector values
+        inline SIMDVec_f sqrt() const {
+            float t0 = std::sqrtf(mVec);
+            return SIMDVec_f(t0);
+        }
         // MSQRT     - Masked square root of vector values 
+        inline SIMDVec_f sqrt(SIMDVecMask<1> const & mask) const {
+            float t0 = mask.mMask ? std::sqrtf(mVec) : mVec;
+            return SIMDVec_f(t0);
+        }
         // SQRTA     - Square root of vector values and assign
+        inline SIMDVec_f & sqrta() {
+            mVec = std::sqrtf(mVec);
+            return *this;
+        }
         // MSQRTA    - Masked square root of vector values and assign
+        inline SIMDVec_f & sqrta(SIMDVecMask<1> const & mask) {
+            mVec = mask.mMask ? std::sqrtf(mVec) : mVec;
+            return *this;
+        }
         // POWV      - Power (exponents in vector)
+        inline SIMDVec_f pow(SIMDVec_f const & b) const {
+            float t0 = std::pow(mVec, b.mVec);
+            return SIMDVec_f(t0);
+        }
         // MPOWV     - Masked power (exponents in vector)
+        inline SIMDVec_f pow(SIMDVecMask<1> const & mask, SIMDVec_f const & b) const {
+            float t0 = mask.mMask ? std::pow(mVec, b.mVec) : mVec;
+            return SIMDVec_f(t0);
+        }
         // POWS      - Power (exponent in scalar)
+        inline SIMDVec_f pow(float b) const {
+            float t0 = std::pow(mVec, b);
+            return SIMDVec_f(t0);
+        }
         // MPOWS     - Masked power (exponent in scalar) 
+        inline SIMDVec_f pow(SIMDVecMask<1> const & mask, float b) const {
+            float t0 = mask.mMask ? std::pow(mVec, b) : mVec;
+            return SIMDVec_f(t0);
+        }
         // ROUND     - Round to nearest integer
+        inline SIMDVec_f round() const {
+            float t0 = std::round(mVec);
+            return SIMDVec_f(t0);
+        }
         // MROUND    - Masked round to nearest integer
+        inline SIMDVec_f round(SIMDVecMask<1> const & mask) const {
+            float t0 = mask.mMask ? std::round(mVec) : mVec;
+            return SIMDVec_f(t0);
+        }
         // TRUNC     - Truncate to integer (returns Signed integer vector)
         inline SIMDVec_i<int32_t, 1> trunc() {
             int32_t t0 = (int32_t)mVec;
@@ -907,28 +1034,113 @@ namespace SIMD {
             return SIMDVec_i<int32_t, 1>(t0);
         }
         // FLOOR     - Floor
+        inline SIMDVec_f floor() const {
+            float t0 = std::floor(mVec);
+            return SIMDVec_f(t0);
+        }
         // MFLOOR    - Masked floor
+        inline SIMDVec_f floor(SIMDVecMask<1> const & mask) const {
+            float t0 = mask.mMask ? std::floor(mVec) : mVec;
+            return SIMDVec_f(t0);
+        }
         // CEIL      - Ceil
+        inline SIMDVec_f ceil() const {
+            float t0 = std::ceil(mVec);
+            return SIMDVec_f(t0);
+        }
         // MCEIL     - Masked ceil
+        inline SIMDVec_f ceil(SIMDVecMask<1> const & mask) const {
+            float t0 = mask.mMask ? std::ceil(mVec) : mVec;
+            return SIMDVec_f(t0);
+        }
         // ISFIN     - Is finite
+        inline SIMDVecMask<1> isfin() const {
+            bool m0 = std::isfinite(mVec);
+            return SIMDVecMask<1>(m0);
+        }
         // ISINF     - Is infinite (INF)
+        inline SIMDVecMask<1> isinf() const {
+            bool m0 = std::isinf(mVec);
+            return SIMDVecMask<1>(m0);
+        }
         // ISAN      - Is a number
+        inline SIMDVecMask<1> isfin() const {
+            bool m0 = !std::isnan(mVec);
+            return SIMDVecMask<1>(m0);
+        }
         // ISNAN     - Is 'Not a Number (NaN)'
+        inline SIMDVecMask<1> isnan() const {
+            bool m0 = std::isnan(mVec);
+            return SIMDVecMask<1>(m0);
+        }
         // ISSUB     - Is subnormal
+        inline SIMDVecMask<1> issub() const {
+            bool m0 = !(std::abs(mVec) == 0.0f); // is not zero?
+            bool m1 = !std::isnan(mVec);         // is not NaN?
+            bool m2 = !std::isinf(mVec);         // is not Inf?
+            bool m3 = !std::isnorm(mVec);        // is not normal?
+            return SIMDVecMask<1>(m0 & m1 & m2 & m3);
+        }
         // ISZERO    - Is zero
+        inline SIMDVecMask<1> iszero() const {
+            bool m0 = std::abs(mVec) == 0.0f;
+            return SIMDVecMask<1>(m0);
+        }
         // ISZEROSUB - Is zero or subnormal
+        inline SIMDVecMask<1> iszero() const {
+            bool m0 = std::abs(mVec) == 0.0f;
+            bool m1 = std::issub
+            return SIMDVecMask<1>(m0);
+        }
         // SIN       - Sine
+        inline SIMDVec_f sin() const {
+            float t0 = std::sin(mVeC);
+            return SIMDVec_f(t0);
+        }
         // MSIN      - Masked sine
+        inline SIMDVec_f sin(SIMDVecMask<1> const & mask) const {
+            float t0 = mask.mMask ? std::sin(mVeC) : mVec;
+            return SIMDVec_f(t0);
+        }
         // COS       - Cosine
+        inline SIMDVec_f cos() const {
+            float t0 = std::cos(mVeC);
+            return SIMDVec_f(t0);
+        }
         // MCOS      - Masked cosine
+        inline SIMDVec_f cos(SIMDVecMask<1> const & mask) const {
+            float t0 = mask.mMask ? std::cos(mVeC) : mVec;
+            return SIMDVec_f(t0);
+        }
+        // SINCOS    - Simultaneous sine and cosine
+        inline void sincos(SIMDVec_f & a, SIMDVec_f & b) const {
+            a.mVec = std::sin(mVec);
+            b.mVec = std::cos(mVec);
+        }
+        // MSINCOS   - Masked simultaneous sine and cosine
+        inline void sincos(SIMDVecMask<1> const & mask, SIMDVec_f & a, SIMDVec_f & b) const {
+            a.mVec = mask.mMask ? std::sin(mVec) : mVec;
+            b.mVec = mask.mMask ? std::cos(mVec) : mVec;
+        }
         // TAN       - Tangent
+        inline SIMDVec_f tan() const {
+            float t0 = std::tan(mVeC);
+            return SIMDVec_f(t0);
+        }
         // MTAN      - Masked tangent
+        inline SIMDVec_f sqr(SIMDVecMask<1> const & mask) const {
+            float t0 = mask.mMask ? mVec*mVec : mVec;
+            return SIMDVec_f(t0);
+        }
+
         // CTAN      - Cotangent
         // MCTAN     - Masked cotangent
+        // ATAN      - Arctangent
+        // ATAN2     - Arctangent with separate numerator and denominator
 
         // PROMOTE
         inline operator SIMDVec_f<double, 1>() const;
-        // DEMOTE
+        // DEGRADE
         // -
 
         // FTOU

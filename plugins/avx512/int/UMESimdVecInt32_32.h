@@ -1744,7 +1744,7 @@ namespace SIMD {
 
         // PROMOTE
         // -
-        // DEMOTE
+        // DEGRADE
         inline operator SIMDVec_i<int16_t, 32>() const;
 
         // UTOI

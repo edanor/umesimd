@@ -318,6 +318,7 @@ namespace UME {
             typedef SIMDMask1    MASK_T;
             typedef SIMDSwizzle1 SWIZZLE_T;
 
+            typedef NullType<1>  HALF_LEN_VEC_T;
             typedef SIMD2_32u    DOUBLE_LEN_VEC_T;
         };
 
@@ -383,6 +384,7 @@ namespace UME {
             typedef SIMDSwizzle32 SWIZZLE_T;
 
             typedef SIMD16_32u    HALF_LEN_VEC_T;
+            typedef NullType<2>   DOUBLE_LEN_VEC_T;
         };
 
         template<>
@@ -394,6 +396,7 @@ namespace UME {
             typedef SIMDMask1    MASK_T;
             typedef SIMDSwizzle1 SWIZZLE_T;
 
+            typedef NullType<1>  HALF_LEN_VEC_T;
             typedef SIMD2_64u    DOUBLE_LEN_VEC_T;
         };
 
@@ -446,6 +449,7 @@ namespace UME {
             typedef SIMDSwizzle16 SWIZZLE_T;
 
             typedef SIMD8_64u     HALF_LEN_VEC_T;
+            typedef NullType<1>   DOUBLE_LEN_VEC_T;
         };
 
         template<>
@@ -457,6 +461,7 @@ namespace UME {
             typedef SIMDMask1    MASK_T;
             typedef SIMDSwizzle1 SWIZZLE_T;
 
+            typedef NullType<1> HALF_LEN_VEC_T;
             typedef SIMD2_8i    DOUBLE_LEN_VEC_T;
         };
 
@@ -548,6 +553,7 @@ namespace UME {
             typedef SIMDSwizzle128 SWIZZLE_T;
 
             typedef SIMD64_8i      HALF_LEN_VEC_T;
+            typedef NullType<1>    DOUBLE_LEN_VEC_T;
         };
 
         template<>
@@ -559,7 +565,8 @@ namespace UME {
             typedef SIMDMask1    MASK_T;
             typedef SIMDSwizzle1 SWIZZLE_T;
 
-            typedef SIMD2_16i   DOUBLE_LEN_VEC_T;
+            typedef NullType<1>  HALF_LEN_VEC_T;
+            typedef SIMD2_16i    DOUBLE_LEN_VEC_T;
         };
 
         template<>
@@ -637,6 +644,7 @@ namespace UME {
             typedef SIMDSwizzle64 SWIZZLE_T;
 
             typedef SIMD32_16i    HALF_LEN_VEC_T;
+            typedef NullType<1>   DOUBLE_LEN_VEC_T;
         };
 
         template<>
@@ -648,6 +656,7 @@ namespace UME {
             typedef SIMDMask1    MASK_T;
             typedef SIMDSwizzle1 SWIZZLE_T;
 
+            typedef NullType<1>  HALF_LEN_VEC_T;
             typedef SIMD2_32i    DOUBLE_LEN_VEC_T;
         };
 
@@ -713,6 +722,7 @@ namespace UME {
             typedef SIMDSwizzle32 SWIZZLE_T;
 
             typedef SIMD16_32i    HALF_LEN_VEC_T;
+            typedef NullType<1>   DOUBLE_LEN_VEC_T;
         };
 
         template<>
@@ -724,6 +734,7 @@ namespace UME {
             typedef SIMDMask1    MASK_T;
             typedef SIMDSwizzle1 SWIZZLE_T;
 
+            typedef NullType<1>  HALF_LEN_VEC_T;
             typedef SIMD2_64i    DOUBLE_LEN_VEC_T;
         };
 
@@ -776,6 +787,7 @@ namespace UME {
             typedef SIMDSwizzle16 SWIZZLE_T;
 
             typedef SIMD8_64i     HALF_LEN_VEC_T;
+            typedef NullType<1>   DOUBLE_LEN_VEC_T;
         };
 
         template<>
@@ -790,6 +802,7 @@ namespace UME {
             typedef SIMDMask1    MASK_T;
             typedef SIMDSwizzle1 SWIZZLE_T;
 
+            typedef NullType<1>  HALF_LEN_VEC_T;
             typedef SIMD2_32f    DOUBLE_LEN_VEC_T;
         };
 
@@ -870,6 +883,7 @@ namespace UME {
             typedef SIMDSwizzle32 SWIZZLE_T;
 
             typedef SIMD16_32f    HALF_LEN_VEC_T;
+            typedef NullType<1>   DOUBLE_LEN_VEC_T;
         };
 
 
@@ -885,6 +899,7 @@ namespace UME {
             typedef SIMDMask1    MASK_T;
             typedef SIMDSwizzle1 SWIZZLE_T;
 
+            typedef NullType<1>  HALF_LEN_VEC_T;
             typedef SIMD2_64f    DOUBLE_LEN_VEC_T;
         };
 
@@ -949,6 +964,7 @@ namespace UME {
             typedef SIMDSwizzle16 SWIZZLE_T;
 
             typedef SIMD8_64f     HALF_LEN_VEC_T;
+            typedef NullType<1>   DOUBLE_LEN_VEC_T;
         };
 
     }

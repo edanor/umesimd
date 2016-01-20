@@ -175,7 +175,7 @@ int test_UME_SIMD4_16u(bool supressMessages) {
         4,
         DataSet_1_16u>();
 
-    genericDEMOTETest<
+    genericDEGRADETest<
         SIMD4_16u, uint16_t,
         SIMD4_8u, uint8_t,
         4,
@@ -206,7 +206,7 @@ int test_UME_SIMD4_16i(bool supressMessages) {
         4,
         DataSet_1_16i>();
 
-    genericDEMOTETest<
+    genericDEGRADETest<
         SIMD4_16i, int16_t,
         SIMD4_8i,  int8_t,
         4,
@@ -237,7 +237,7 @@ int test_UME_SIMD2_32u(bool supressMessages) {
         2,
         DataSet_1_32u>();
 
-    genericDEMOTETest<
+    genericDEGRADETest<
         SIMD2_32u, uint32_t,
         SIMD2_16u, uint16_t,
         2,
@@ -264,7 +264,7 @@ int test_UME_SIMD2_32i(bool supressMessages) {
         2,
         DataSet_1_32i>();
 
-    genericDEMOTETest<
+    genericDEGRADETest<
         SIMD2_32i, int32_t,
         SIMD2_16i, int16_t,
         2,
@@ -331,7 +331,7 @@ int test_UME_SIMD1_64u(bool supressMessages) {
         1,
         DataSet_1_64u>();
 
-    genericDEMOTETest<
+    genericDEGRADETest<
         SIMD1_64u, uint64_t,
         SIMD1_32u, uint32_t,
         1,
@@ -358,7 +358,7 @@ int test_UME_SIMD1_64i(bool supressMessages) {
         1,
         DataSet_1_64i>();
 
-    genericDEMOTETest<
+    genericDEGRADETest<
         SIMD1_64i, int64_t,
         SIMD1_32i, int32_t,
         1,
@@ -383,7 +383,7 @@ int test_UME_SIMD1_64f(bool supressMessages) {
         1,
         DataSet_1_64f>();
 
-    genericDEMOTETest<
+    genericDEGRADETest<
         SIMD1_64f, double,
         SIMD1_32f, float,
         1,

@@ -1494,8 +1494,8 @@ namespace SIMD {
         }
         // GATHERV
         inline SIMDVec_u & gather(uint32_t* baseAddr, SIMDVec_u const & indices) {
-            alignas(32) uint32_t rawIndices[4];
-            alignas(32) uint32_t rawData[4];
+            alignas(32) uint32_t rawIndices[8];
+            alignas(32) uint32_t rawData[8];
             _mm256_store_si256((__m256i*) rawIndices, indices.mVec);
             rawData[0] = baseAddr[rawIndices[0]];
             rawData[1] = baseAddr[rawIndices[1]];
@@ -1823,7 +1823,7 @@ namespace SIMD {
 
         // PROMOTE
         inline operator SIMDVec_u<uint64_t, 8>() const;
-        // DEMOTE
+        // DEGRADE
         inline operator SIMDVec_u<uint16_t, 8>() const;
 
         // UTOI

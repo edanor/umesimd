@@ -1164,7 +1164,7 @@ namespace SIMD {
 
         // PROMOTE
         inline operator SIMDVec_f<double, 2>() const;
-        // DEMOTE
+        // DEGRADE
         // -
 
         // FTOU

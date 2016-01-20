@@ -174,7 +174,7 @@ namespace SIMD {
 
         // PROMOTE
         inline operator SIMDVec_i<int64_t, 8>() const;
-        // DEMOTE
+        // DEGRADE
         inline operator SIMDVec_i<int16_t, 8>() const;
 
         // ITOU
