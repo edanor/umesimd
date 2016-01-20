@@ -1,7 +1,7 @@
-**Current stable release is: v0.2.1-stable**  
+**Current stable release is: v0.3.1-stable**  
 **To checkout stable release use:**  
  > git clone https://edanor@bitbucket.org/edanor/umesimd.git  
- > git checkout tags/v0.2.1-stable
+ > git checkout tags/v0.3.1-stable
 
 
 UME::SIMD is an explicit vectorization library. The library defines homogeneous interface for accessing functionality of SIMD registers of AVX, AVX2, AVX512 and IMCI (KNCNI, k1om) instruction set. 
@@ -28,3 +28,42 @@ Please refer to the wiki for introduction and additional information:
 
 
    >   [wiki pages](https://bitbucket.org/edanor/umesimd/wiki/Home)
+
+   
+   
+   
+**RELEASE NOTES for v0.3.1-stable**
+   
+Interface:   
+- added PROMOTE/DEGRADE operations to convert between vectors using scalars of different precision (e.g. PROMOTE SIMD4_32f to SIMD4_64f)   
+- added LOG, LOG2, LOG10 to floating point interface   
+- added CMPEQS/CMPNES for masks   
+- added compilation flag to switch between '[]' and '()' syntax for writemasks   
+- added overloaded operators for mixed scalar<->vector operations (Issue #25)   
+- added missing operator= (ISSUE #26)   
+- added writemask operators for scalars (e.g. vec[mask] = scalar)   
+   
+Performance tuning:   
+- AVX512 (SKX + KNL): SIMDMask4/8/32, SIMD4_32u/i/f, SIMD8_32u/i/f, SIMD32_32u/i/f, (extensive update)   
+   
+Bug fixes:   
+- AVX2: SIMD4_32f missing 'const' qualifier in STORE   
+- AVX: add missing definitions for float vectors   
+- AVX512: separation between different AVX512 ISA variations   
+- AVX512: AVX512: missing explicit in constructor of SIMDMask<8>   
+   
+   
+Examples:   
+- added basic example for SIMD vector showing MFI(Member Function Interface) and operator syntax.   
+   
+Tests:   
+- added generic unit tests for SIMD using 64f, 8u/i and 16u/i scalar types   
+   
+Benchmarks:   
+- added Latencies benchmark allowing monitoring of library performance with instruction-level granularity   
+- added Mandelbrot Set benchmark   
+   
+Internal code:   
+- fixed missing template<> for templated cast operators   
+- extended NullTypes and eliminate SIMD1 template specializations; this change simplifies the plugin system and fixes loose ends of the typeset system;   
+- remove 'final' class specifiers to allow custom extensions of SIMD types; this change allows using SIMD types as base classes for custom vectorization interfaces;
