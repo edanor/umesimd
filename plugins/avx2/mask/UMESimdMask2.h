@@ -50,10 +50,6 @@ namespace SIMD {
     private:
         bool mMask[2];
 
-        inline SIMDVecMask(bool const & x_lo, bool const & x_hi) {
-            mMask[0] = x_lo;
-            mMask[1] = x_hi;
-        };
     public:
         inline SIMDVecMask() {}
 

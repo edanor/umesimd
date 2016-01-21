@@ -42,17 +42,17 @@ namespace SIMD {
     template<>
     class SIMDVec_f<float, 2> :
         public SIMDVecFloatInterface<
-        SIMDVec_f<float, 2>,
-        SIMDVec_u<uint32_t, 2>,
-        SIMDVec_i<int32_t, 2>,
-        float,
-        2,
-        uint32_t,
-        SIMDVecMask<2>,
-        SIMDVecSwizzle<2 >> ,
+            SIMDVec_f<float, 2>,
+            SIMDVec_u<uint32_t, 2>,
+            SIMDVec_i<int32_t, 2>,
+            float,
+            2,
+            uint32_t,
+            SIMDVecMask<2>,
+            SIMDVecSwizzle<2 >> ,
         public SIMDVecPackableInterface<
-        SIMDVec_f<float, 2>,
-        SIMDVec_f<float, 1 >>
+            SIMDVec_f<float, 2>,
+            SIMDVec_f<float, 1 >>
     {
     private:
         float mVec[2];
@@ -63,17 +63,16 @@ namespace SIMD {
 
         friend class SIMDVec_f<float, 4>;
     public:
+        constexpr static uint32_t length() { return 2; }
+        constexpr static uint32_t alignment() { return 8; }
 
-        constexpr static uint32_t alignment() {
-            return 4;
-        }
-        // ZERO-CONSTR - Zero element constructor 
+        // ZERO-CONSTR
         inline SIMDVec_f() {}
-        // SET-CONSTR  - One element constructor
+        // SET-CONSTR
         inline explicit SIMDVec_f(float f) {
             mVec[0] = f;
             mVec[1] = f;
-        }
+        }/*
         // UTOF
         inline explicit SIMDVec_f(VEC_UINT_TYPE const & vecUint) {
             mVec[0] = float(vecUint[0]);
@@ -91,17 +90,18 @@ namespace SIMD {
         // FTOI
         inline VEC_INT_TYPE ftoi() const {
             return VEC_UINT_TYPE(int32_t(mVec[0]), int32_t(mVec[1]));
-        }
-        // LOAD-CONSTR - Construct by loading from memory
+        }*/
+        // LOAD-CONSTR
         inline explicit SIMDVec_f(float const *p) {
             mVec[0] = p[0];
             mVec[1] = p[1];
         }
-        // FULL-CONSTR - constructor with VEC_LEN scalar element 
+        // FULL-CONSTR
         inline SIMDVec_f(float x_lo, float x_hi) {
             mVec[0] = x_lo;
             mVec[1] = x_hi;
         }
+
         // EXTRACT
         inline float extract(uint32_t index) const {
             return mVec[index & 1];
@@ -134,8 +134,7 @@ namespace SIMD {
         // Overloading Interface functions starts here!
         // ****************************************************************************************
 
-        //(Initialization)
-        // ASSIGNV     - Assignment with another vector
+        // ASSIGNV
         inline SIMDVec_f & assign(SIMDVec_f const & b) {
             mVec[0] = b.mVec[0];
             mVec[1] = b.mVec[1];
@@ -144,13 +143,13 @@ namespace SIMD {
         inline SIMDVec_f & operator= (SIMDVec_f const & b) {
             return assign(b);
         }
-        // MASSIGNV    - Masked assignment with another vector
+        // MASSIGNV
         inline SIMDVec_f & assign(SIMDVecMask<2> const & mask, SIMDVec_f const & b) {
             if (mask.mMask[0] == true) mVec[0] = b.mVec[0];
             if (mask.mMask[1] == true) mVec[1] = b.mVec[1];
             return *this;
         }
-        // ASSIGNS     - Assignment with scalar
+        // ASSIGNS
         inline SIMDVec_f & assign(float b) {
             mVec[0] = b;
             mVec[1] = b;
@@ -159,65 +158,82 @@ namespace SIMD {
         inline SIMDVec_f & operator= (float b) {
             return assign(b);
         }
-        // MASSIGNS    - Masked assign with scalar
+        // MASSIGNS
         inline SIMDVec_f & assign(SIMDVecMask<2> const & mask, float b) {
             if (mask.mMask[0] == true) mVec[0] = b;
             if (mask.mMask[1] == true) mVec[1] = b;
             return *this;
         }
-        //(Memory access)
-        // LOAD    - Load from memory (either aligned or unaligned) to vector 
+
+        // PREFETCH0
+        // PREFETCH1
+        // PREFETCH2
+
+        // LOAD
         inline SIMDVec_f & load(float const * p) {
             mVec[0] = p[0];
             mVec[1] = p[1];
             return *this;
         }
-        // MLOAD   - Masked load from memory (either aligned or unaligned) to
-        //        vector
+        // MLOAD
         inline SIMDVec_f & load(SIMDVecMask<2> const & mask, float const * p) {
             if (mask.mMask[0] == true) mVec[0] = p[0];
             if (mask.mMask[1] == true) mVec[1] = p[1];
             return *this;
         }
-        // LOADA   - Load from aligned memory to vector
+        // LOADA
         inline SIMDVec_f & loada(float const * p) {
             mVec[0] = p[0];
             mVec[1] = p[1];
             return *this;
         }
-        // MLOADA  - Masked load from aligned memory to vector
+        // MLOADA
         inline SIMDVec_f & loada(SIMDVecMask<2> const & mask, float const * p) {
             if (mask.mMask[0] == true) mVec[0] = p[0];
             if (mask.mMask[1] == true) mVec[1] = p[1];
             return *this;
         }
-        // STORE   - Store vector content into memory (either aligned or unaligned)
+        // STORE
         inline float* store(float * p) const {
             p[0] = mVec[0];
             p[1] = mVec[1];
             return p;
         }
-        // MSTORE  - Masked store vector content into memory (either aligned or
-        //        unaligned)
+        // MSTORE
         inline float* store(SIMDVecMask<2> const & mask, float * p) const {
             if (mask.mMask[0] == true) p[0] = mVec[0];
             if (mask.mMask[1] == true) p[1] = mVec[1];
             return p;
         }
-        // STOREA  - Store vector content into aligned memory
+        // STOREA
         inline float* storea(float * p) const {
             p[0] = mVec[0];
             p[1] = mVec[1];
             return p;
         }
-        // MSTOREA - Masked store vector content into aligned memory
+        // MSTOREA
         inline float* storea(SIMDVecMask<2> const & mask, float * p) const {
             if (mask.mMask[0] == true) p[0] = mVec[0];
             if (mask.mMask[1] == true) p[1] = mVec[1];
             return p;
         }
-        //(Addition operations)
-        // ADDV     - Add with vector 
+
+        // BLENDV
+        inline SIMDVec_f blend(SIMDVecMask<2> const & mask, SIMDVec_f const & b) const {
+            float t0 = (mask.mMask[0] == true) ? b.mVec[0] : mVec[0];
+            float t1 = (mask.mMask[1] == true) ? b.mVec[1] : mVec[1];
+            return SIMDVec_f(t0, t1);
+        }
+        // BLENDS
+        inline SIMDVec_f blend(SIMDVecMask<2> const & mask, float b) const {
+            float t0 = (mask.mMask[0] == true) ? b : mVec[0];
+            float t1 = (mask.mMask[1] == true) ? b : mVec[1];
+            return SIMDVec_f(t0, t1);
+        }
+        // SWIZZLE
+        // SWIZZLEA
+
+        // ADDV
         inline SIMDVec_f add(SIMDVec_f const & b) const {
             float t0 = mVec[0] + b.mVec[0];
             float t1 = mVec[1] + b.mVec[1];
@@ -226,13 +242,13 @@ namespace SIMD {
         inline SIMDVec_f operator+ (SIMDVec_f const & b) const {
             return add(b);
         }
-        // MADDV    - Masked add with vector
+        // MADDV
         inline SIMDVec_f add(SIMDVecMask<2> const & mask, SIMDVec_f const & b) const {
             float t0 = mask.mMask[0] ? mVec[0] + b.mVec[0] : mVec[0];
             float t1 = mask.mMask[1] ? mVec[1] + b.mVec[1] : mVec[1];
             return SIMDVec_f(t0, t1);
         }
-        // ADDS     - Add with scalar
+        // ADDS
         inline SIMDVec_f add(float b) const {
             float t0 = mVec[0] + b;
             float t1 = mVec[1] + b;
@@ -241,493 +257,532 @@ namespace SIMD {
         inline SIMDVec_f operator+ (float b) const {
             return add(b);
         }
-        // MADDS    - Masked add with scalar
+        // MADDS
         inline SIMDVec_f add(SIMDVecMask<2> const & mask, float b) const {
             float t0 = mask.mMask[0] ? mVec[0] + b : mVec[0];
             float t1 = mask.mMask[1] ? mVec[1] + b : mVec[1];
             return SIMDVec_f(t0, t1);
         }
-        // ADDVA    - Add with vector and assign
+        // ADDVA
         inline SIMDVec_f & adda(SIMDVec_f const & b) {
             mVec[0] += b.mVec[0];
             mVec[1] += b.mVec[1];
             return *this;
         }
-        // MADDVA   - Masked add with vector and assign
+        inline SIMDVec_f & operator+= (SIMDVec_f const & b) {
+            return adda(b);
+        }
+        // MADDVA
         inline SIMDVec_f & adda(SIMDVecMask<2> const & mask, SIMDVec_f const & b) {
             mVec[0] = mask.mMask[0] ? mVec[0] + b.mVec[0] : mVec[0];
             mVec[1] = mask.mMask[1] ? mVec[1] + b.mVec[1] : mVec[1];
             return *this;
         }
-        // ADDSA    - Add with scalar and assign
-        inline SIMDVec_f & adda(float a) {
-            mVec[0] += a;
-            mVec[1] += a;
+        // ADDSA
+        inline SIMDVec_f & adda(float b) {
+            mVec[0] += b;
+            mVec[1] += b;
             return *this;
         }
-        // MADDSA   - Masked add with scalar and assign
+        inline SIMDVec_f & operator+= (float b) {
+            return adda(b);
+        }
+        // MADDSA
         inline SIMDVec_f & adda(SIMDVecMask<2> const & mask, float b) {
             mVec[0] = mask.mMask[0] ? mVec[0] + b : mVec[0];
             mVec[1] = mask.mMask[1] ? mVec[1] + b : mVec[1];
             return *this;
         }
-        // SADDV    - Saturated add with vector
-        // MSADDV   - Masked saturated add with vector
-        // SADDS    - Saturated add with scalar
-        // MSADDS   - Masked saturated add with scalar
-        // SADDVA   - Saturated add with vector and assign
-        // MSADDVA  - Masked saturated add with vector and assign
-        // SADDSA   - Satureated add with scalar and assign
-        // MSADDSA  - Masked staturated add with vector and assign
-        // POSTINC  - Postfix increment
+        // SADDV
+        // MSADDV
+        // SADDS
+        // MSADDS
+        // SADDVA
+        // MSADDVA
+        // SADDSA
+        // MSADDSA
+        // POSTINC
         inline SIMDVec_f postinc() {
             float t0 = mVec[0]++;
             float t1 = mVec[1]++;
             return SIMDVec_f(t0, t1);
         }
-        // MPOSTINC - Masked postfix increment
+        inline SIMDVec_f operator++ (int) {
+            return postinc();
+        }
+        // MPOSTINC
         inline SIMDVec_f postinc(SIMDVecMask<2> const & mask) {
             float t0 = (mask.mMask[0] == true) ? mVec[0]++ : mVec[0];
             float t1 = (mask.mMask[1] == true) ? mVec[1]++ : mVec[1];
             return SIMDVec_f(t0, t1);
         }
-        // PREFINC  - Prefix increment
+        // PREFINC
         inline SIMDVec_f & prefinc() {
-            ++mVec[0];
-            ++mVec[1];
+            mVec[0]++;
+            mVec[1]++;
             return *this;
         }
-        // MPREFINC - Masked prefix increment
+        inline SIMDVec_f & operator++ () {
+            return prefinc();
+        }
+        // MPREFINC
         inline SIMDVec_f & prefinc(SIMDVecMask<2> const & mask) {
             if (mask.mMask[0] == true) ++mVec[0];
             if (mask.mMask[1] == true) ++mVec[1];
             return *this;
         }
-        //(Subtraction operations)
-        // SUBV       - Sub with vector
+        // SUBV
         inline SIMDVec_f sub(SIMDVec_f const & b) const {
             float t0 = mVec[0] - b.mVec[0];
             float t1 = mVec[1] - b.mVec[1];
             return SIMDVec_f(t0, t1);
         }
-        // MSUBV      - Masked sub with vector
+        inline SIMDVec_f operator- (SIMDVec_f const & b) const {
+            return sub(b);
+        }
+        // MSUBV
         inline SIMDVec_f sub(SIMDVecMask<2> const & mask, SIMDVec_f const & b) const {
             float t0 = (mask.mMask[0] == true) ? (mVec[0] - b.mVec[0]) : mVec[0];
             float t1 = (mask.mMask[1] == true) ? (mVec[1] - b.mVec[1]) : mVec[1];
             return SIMDVec_f(t0, t1);
         }
-        // SUBS       - Sub with scalar
+        // SUBS
         inline SIMDVec_f sub(float b) const {
             float t0 = mVec[0] - b;
             float t1 = mVec[1] - b;
             return SIMDVec_f(t0, t1);
         }
-        // MSUBS      - Masked subtraction with scalar
+        inline SIMDVec_f operator- (float b) const {
+            return sub(b);
+        }
+        // MSUBS
         inline SIMDVec_f sub(SIMDVecMask<2> const & mask, float b) const {
             float t0 = (mask.mMask[0] == true) ? (mVec[0] - b) : mVec[0];
             float t1 = (mask.mMask[1] == true) ? (mVec[1] - b) : mVec[1];
             return SIMDVec_f(t0, t1);
         }
-        // SUBVA      - Sub with vector and assign
+        // SUBVA
         inline SIMDVec_f & suba(SIMDVec_f const & b) {
             mVec[0] = mVec[0] - b.mVec[0];
             mVec[1] = mVec[1] - b.mVec[1];
             return *this;
         }
-        // MSUBVA     - Masked sub with vector and assign
+        inline SIMDVec_f & operator-= (SIMDVec_f const & b) {
+            return suba(b);
+        }
+        // MSUBVA
         inline SIMDVec_f & suba(SIMDVecMask<2> const & mask, SIMDVec_f const & b) {
             if (mask.mMask[0] == true) mVec[0] = mVec[0] - b.mVec[0];
             if (mask.mMask[1] == true) mVec[1] = mVec[1] - b.mVec[1];
             return *this;
         }
-        // SUBSA      - Sub with scalar and assign
+        // SUBSA
         inline SIMDVec_f & suba(const float b) {
             mVec[0] = mVec[0] - b;
             mVec[1] = mVec[1] - b;
             return *this;
         }
-        // MSUBSA     - Masked sub with scalar and assign
+        inline SIMDVec_f & operator-= (float b) {
+            return suba(b);
+        }
+        // MSUBSA
         inline SIMDVec_f & suba(SIMDVecMask<2> const & mask, const float b) {
             if (mask.mMask[0] == true) mVec[0] = mVec[0] - b;
             if (mask.mMask[1] == true) mVec[1] = mVec[1] - b;
             return *this;
         }
-        // SSUBV      - Saturated sub with vector
-        // MSSUBV     - Masked saturated sub with vector
-        // SSUBS      - Saturated sub with scalar
-        // MSSUBS     - Masked saturated sub with scalar
-        // SSUBVA     - Saturated sub with vector and assign
-        // MSSUBVA    - Masked saturated sub with vector and assign
-        // SSUBSA     - Saturated sub with scalar and assign
-        // MSSUBSA    - Masked saturated sub with scalar and assign
-        // SUBFROMV   - Sub from vector
+        // SSUBV
+        // MSSUBV
+        // SSUBS
+        // MSSUBS
+        // SSUBVA
+        // MSSUBVA
+        // SSUBSA
+        // MSSUBSA
+        // SUBFROMV
         inline SIMDVec_f subfrom(SIMDVec_f const & a) const {
             float t0 = a.mVec[0] - mVec[0];
             float t1 = a.mVec[1] - mVec[1];
             return SIMDVec_f(t0, t1);
         }
-        // MSUBFROMV  - Masked sub from vector
+        // MSUBFROMV
         inline SIMDVec_f subfrom(SIMDVecMask<2> const & mask, SIMDVec_f const & a) const {
             float t0 = (mask.mMask[0] == true) ? (a.mVec[0] - mVec[0]) : a[0];
             float t1 = (mask.mMask[1] == true) ? (a.mVec[1] - mVec[1]) : a[1];
             return SIMDVec_f(t0, t1);
         }
-        // SUBFROMS   - Sub from scalar (promoted to vector)
+        // SUBFROMS
         inline SIMDVec_f subfrom(float a) const {
             float t0 = a - mVec[0];
             float t1 = a - mVec[1];
             return SIMDVec_f(t0, t1);
         }
-        // MSUBFROMS  - Masked sub from scalar (promoted to vector)
+        // MSUBFROMS
         inline SIMDVec_f subfrom(SIMDVecMask<2> const & mask, float a) const {
             float t0 = (mask.mMask[0] == true) ? (a - mVec[0]) : a;
             float t1 = (mask.mMask[1] == true) ? (a - mVec[1]) : a;
             return SIMDVec_f(t0, t1);
         }
-        // SUBFROMVA  - Sub from vector and assign
+        // SUBFROMVA
         inline SIMDVec_f & subfroma(SIMDVec_f const & a) {
             mVec[0] = a.mVec[0] - mVec[0];
             mVec[1] = a.mVec[1] - mVec[1];
             return *this;
         }
-        // MSUBFROMVA - Masked sub from vector and assign
+        // MSUBFROMVA
         inline SIMDVec_f & subfroma(SIMDVecMask<2> const & mask, SIMDVec_f const & a) {
             mVec[0] = (mask.mMask[0] == true) ? (a.mVec[0] - mVec[0]) : a.mVec[0];
             mVec[1] = (mask.mMask[1] == true) ? (a.mVec[1] - mVec[1]) : a.mVec[1];
             return *this;
         }
-        // SUBFROMSA  - Sub from scalar (promoted to vector) and assign
+        // SUBFROMSA
         inline SIMDVec_f & subfroma(float a) {
             mVec[0] = a - mVec[0];
             mVec[1] = a - mVec[1];
             return *this;
         }
-        // MSUBFROMSA - Masked sub from scalar (promoted to vector) and assign
+        // MSUBFROMSA
         inline SIMDVec_f & subfroma(SIMDVecMask<2> const & mask, float a) {
             mVec[0] = (mask.mMask[0] == true) ? (a - mVec[0]) : a;
             mVec[1] = (mask.mMask[1] == true) ? (a - mVec[1]) : a;
             return *this;
         }
-        // POSTDEC    - Postfix decrement
+        // POSTDEC
         inline SIMDVec_f postdec() {
             float t0 = mVec[0]--;
             float t1 = mVec[1]--;
             return SIMDVec_f(t0, t1);
         }
-        // MPOSTDEC   - Masked postfix decrement
+        inline SIMDVec_f operator-- (int) {
+            return postdec();
+        }
+        // MPOSTDEC
         inline SIMDVec_f postdec(SIMDVecMask<2> const & mask) {
             float t0 = (mask.mMask[0] == true) ? mVec[0]-- : mVec[0];
             float t1 = (mask.mMask[1] == true) ? mVec[1]-- : mVec[1];
             return SIMDVec_f(t0, t1);
         }
-        // PREFDEC    - Prefix decrement
+        // PREFDEC
         inline SIMDVec_f & prefdec() {
             --mVec[0];
             --mVec[1];
             return *this;
         }
-        // MPREFDEC   - Masked prefix decrement
+        inline SIMDVec_f & operator-- () {
+            return prefdec();
+        }
+        // MPREFDEC
         inline SIMDVec_f & prefdec(SIMDVecMask<2> const & mask) {
             if (mask.mMask[0] == true) --mVec[0];
             if (mask.mMask[1] == true) --mVec[1];
             return *this;
         }
-        //(Multiplication operations)
-        // MULV   - Multiplication with vector
+        // MULV
         inline SIMDVec_f mul(SIMDVec_f const & b) const {
             float t0 = mVec[0] * b.mVec[0];
             float t1 = mVec[1] * b.mVec[1];
             return SIMDVec_f(t0, t1);
         }
-        // MMULV  - Masked multiplication with vector
+        inline SIMDVec_f operator* (SIMDVec_f const & b) const {
+            return mul(b);
+        }
+        // MMULV
         inline SIMDVec_f mul(SIMDVecMask<2> const & mask, SIMDVec_f const & b) const {
             float t0 = mask.mMask[0] ? mVec[0] * b.mVec[0] : mVec[0];
             float t1 = mask.mMask[1] ? mVec[1] * b.mVec[1] : mVec[1];
             return SIMDVec_f(t0, t1);
         }
-        // MULS   - Multiplication with scalar
+        // MULS
         inline SIMDVec_f mul(float b) const {
             float t0 = mVec[0] * b;
             float t1 = mVec[1] * b;
             return SIMDVec_f(t0, t1);
         }
-        // MMULS  - Masked multiplication with scalar
+        inline SIMDVec_f operator* (float b) const {
+            return mul(b);
+        }
+        // MMULS
         inline SIMDVec_f mul(SIMDVecMask<2> const & mask, float b) const {
             float t0 = mask.mMask[0] ? mVec[0] * b : mVec[0];
             float t1 = mask.mMask[1] ? mVec[1] * b : mVec[1];
             return SIMDVec_f(t0, t1);
         }
-        // MULVA  - Multiplication with vector and assign
+        // MULVA
         inline SIMDVec_f & mula(SIMDVec_f const & b) {
             mVec[0] *= b.mVec[0];
             mVec[1] *= b.mVec[1];
             return *this;
         }
-        // MMULVA - Masked multiplication with vector and assign
+        inline SIMDVec_f & operator*= (SIMDVec_f const & b) {
+            return mula(b);
+        }
+        // MMULVA
         inline SIMDVec_f & mula(SIMDVecMask<2> const & mask, SIMDVec_f const & b) {
             if (mask.mMask[0] == true) mVec[0] *= b.mVec[0];
             if (mask.mMask[1] == true) mVec[1] *= b.mVec[1];
             return *this;
         }
-        // MULSA  - Multiplication with scalar and assign
+        // MULSA
         inline SIMDVec_f & mula(float b) {
             mVec[0] *= b;
             mVec[1] *= b;
             return *this;
         }
-        // MMULSA - Masked multiplication with scalar and assign
+        inline SIMDVec_f & operator*= (float b) {
+            return mula(b);
+        }
+        // MMULSA
         inline SIMDVec_f & mula(SIMDVecMask<2> const & mask, float b) {
             if (mask.mMask[0] == true) mVec[0] *= b;
             if (mask.mMask[1] == true) mVec[1] *= b;
             return *this;
         }
-
-        //(Division operations)
-        // DIVV   - Division with vector
+        // DIVV
         inline SIMDVec_f div(SIMDVec_f const & b) const {
             float t0 = mVec[0] / b.mVec[0];
             float t1 = mVec[1] / b.mVec[1];
             return SIMDVec_f(t0, t1);
         }
-        // MDIVV  - Masked division with vector
+        inline SIMDVec_f operator/ (SIMDVec_f const & b) const {
+            return div(b);
+        }
+        // MDIVV
         inline SIMDVec_f div(SIMDVecMask<2> const & mask, SIMDVec_f const & b) const {
             float t0 = mask.mMask[0] ? mVec[0] / b.mVec[0] : mVec[0];
             float t1 = mask.mMask[1] ? mVec[1] / b.mVec[1] : mVec[1];
             return SIMDVec_f(t0, t1);
         }
-        // DIVS   - Division with scalar
+        // DIVS
         inline SIMDVec_f div(float b) const {
             float t0 = mVec[0] / b;
             float t1 = mVec[1] / b;
             return SIMDVec_f(t0, t1);
         }
-        // MDIVS  - Masked division with scalar
+        inline SIMDVec_f operator/ (float b) const {
+            return div(b);
+        }
+        // MDIVS
         inline SIMDVec_f div(SIMDVecMask<2> const & mask, float b) const {
             float t0 = mask.mMask[0] ? mVec[0] / b : mVec[0];
             float t1 = mask.mMask[1] ? mVec[1] / b : mVec[1];
             return SIMDVec_f(t0, t1);
         }
-        // DIVVA  - Division with vector and assign
+        // DIVVA
         inline SIMDVec_f & diva(SIMDVec_f const & b) {
             mVec[0] /= b.mVec[0];
             mVec[1] /= b.mVec[1];
             return *this;
         }
-        // MDIVVA - Masked division with vector and assign
+        inline SIMDVec_f operator/= (SIMDVec_f const & b) {
+            return diva(b);
+        }
+        // MDIVVA
         inline SIMDVec_f & diva(SIMDVecMask<2> const & mask, SIMDVec_f const & b) {
             if (mask.mMask[0] == true) mVec[0] /= b.mVec[0];
             if (mask.mMask[1] == true) mVec[1] /= b.mVec[1];
             return *this;
         }
-        // DIVSA  - Division with scalar and assign
+        // DIVSA
         inline SIMDVec_f & diva(float b) {
             mVec[0] /= b;
             mVec[1] /= b;
             return *this;
         }
-        // MDIVSA - Masked division with scalar and assign
+        inline SIMDVec_f operator/= (float b) {
+            return diva(b);
+        }
+        // MDIVSA
         inline SIMDVec_f & diva(SIMDVecMask<2> const & mask, float b) {
             if (mask.mMask[0] == true) mVec[0] /= b;
             if (mask.mMask[1] == true) mVec[1] /= b;
             return *this;
         }
-        // RCP    - Reciprocal
+        // RCP
         inline SIMDVec_f rcp() const {
             float t0 = 1.0f / mVec[0];
             float t1 = 1.0f / mVec[1];
             return SIMDVec_f(t0, t1);
         }
-        // MRCP   - Masked reciprocal
+        // MRCP
         inline SIMDVec_f rcp(SIMDVecMask<2> const & mask) const {
             float t0 = mask.mMask[0] ? 1.0f / mVec[0] : mVec[0];
             float t1 = mask.mMask[1] ? 1.0f / mVec[1] : mVec[1];
             return SIMDVec_f(t0, t1);
         }
-        // RCPS   - Reciprocal with scalar numerator
+        // RCPS
         inline SIMDVec_f rcp(float b) const {
             float t0 = b / mVec[0];
             float t1 = b / mVec[1];
             return SIMDVec_f(t0, t1);
         }
-        // MRCPS  - Masked reciprocal with scalar
+        // MRCPS
         inline SIMDVec_f rcp(SIMDVecMask<2> const & mask, float b) const {
             float t0 = mask.mMask[0] ? b / mVec[0] : mVec[0];
             float t1 = mask.mMask[1] ? b / mVec[1] : mVec[1];
             return SIMDVec_f(t0, t1);
         }
-        // RCPA   - Reciprocal and assign
+        // RCPA
         inline SIMDVec_f & rcpa() {
             mVec[0] = 1.0f / mVec[0];
             mVec[1] = 1.0f / mVec[1];
             return *this;
         }
-        // MRCPA  - Masked reciprocal and assign
+        // MRCPA
         inline SIMDVec_f & rcpa(SIMDVecMask<2> const & mask) {
             if (mask.mMask[0] == true) mVec[0] = 1.0f / mVec[0];
             if (mask.mMask[1] == true) mVec[1] = 1.0f / mVec[1];
             return *this;
         }
-        // RCPSA  - Reciprocal with scalar and assign
+        // RCPSA
         inline SIMDVec_f & rcpa(float b) {
             mVec[0] = b / mVec[0];
             mVec[1] = b / mVec[1];
             return *this;
         }
-        // MRCPSA - Masked reciprocal with scalar and assign
+        // MRCPSA
         inline SIMDVec_f & rcpa(SIMDVecMask<2> const & mask, float b) {
             if (mask.mMask[0] == true) mVec[0] = b / mVec[0];
             if (mask.mMask[1] == true) mVec[1] = b / mVec[1];
             return *this;
         }
 
-        //(Comparison operations)
-        // CMPEQV - Element-wise 'equal' with vector
+        // CMPEQV
         inline SIMDVecMask<2> cmpeq(SIMDVec_f const & b) const {
-            SIMDVecMask<2> mask;
-            mask.mMask[0] = mVec[0] == b.mVec[0];
-            mask.mMask[1] = mVec[1] == b.mVec[1];
-            return mask;
+            bool m0 = mVec[0] == b.mVec[0];
+            bool m1 = mVec[1] == b.mVec[1];
+            return SIMDVecMask<2>(m0, m1);
         }
-        // CMPEQS - Element-wise 'equal' with scalar
+        inline SIMDVecMask<2> operator== (SIMDVec_f const & b) const {
+            return cmpeq(b);
+        }
+        // CMPEQS
         inline SIMDVecMask<2> cmpeq(float b) const {
-            SIMDVecMask<2> mask;
-            mask.mMask[0] = mVec[0] == b;
-            mask.mMask[1] = mVec[1] == b;
-            return mask;
+            bool m0 = mVec[0] == b;
+            bool m1 = mVec[1] == b;
+            return SIMDVecMask<2>(m0, m1);
         }
-        // CMPNEV - Element-wise 'not equal' with vector
+        inline SIMDVecMask<2> operator== (float b) const {
+            return cmpeq(b);
+        }
+        // CMPNEV
         inline SIMDVecMask<2> cmpne(SIMDVec_f const & b) const {
-            SIMDVecMask<2> mask;
-            mask.mMask[0] = mVec[0] != b.mVec[0];
-            mask.mMask[1] = mVec[1] != b.mVec[1];
-            return mask;
+            bool m0 = mVec[0] != b.mVec[0];
+            bool m1 = mVec[1] != b.mVec[1];
+            return SIMDVecMask<2>(m0, m1);
         }
-        // CMPNES - Element-wise 'not equal' with scalar
+        inline SIMDVecMask<2> operator!= (SIMDVec_f const & b) const {
+            return cmpne(b);
+        }
+        // CMPNES
         inline SIMDVecMask<2> cmpne(float b) const {
-            SIMDVecMask<2> mask;
-            mask.mMask[0] = mVec[0] != b;
-            mask.mMask[1] = mVec[1] != b;
-            return mask;
+            bool m0 = mVec[0] != b;
+            bool m1 = mVec[1] != b;
+            return SIMDVecMask<2>(m0, m1);
         }
-        // CMPGTV - Element-wise 'greater than' with vector
+        inline SIMDVecMask<2> operator!= (float b) const {
+            return cmpne(b);
+        }
+        // CMPGTV
         inline SIMDVecMask<2> cmpgt(SIMDVec_f const & b) const {
-            SIMDVecMask<2> mask;
-            mask.mMask[0] = mVec[0] > b.mVec[0];
-            mask.mMask[1] = mVec[1] > b.mVec[1];
-            return mask;
+            bool m0 = mVec[0] > b.mVec[0];
+            bool m1 = mVec[1] > b.mVec[1];
+            return SIMDVecMask<2>(m0, m1);
         }
-        // CMPGTS - Element-wise 'greater than' with scalar
+        inline SIMDVecMask<2> operator> (SIMDVec_f const & b) const {
+            return cmpgt(b);
+        }
+        // CMPGTS
         inline SIMDVecMask<2> cmpgt(float b) const {
-            SIMDVecMask<2> mask;
-            mask.mMask[0] = mVec[0] > b;
-            mask.mMask[1] = mVec[1] > b;
-            return mask;
+            bool m0 = mVec[0] > b;
+            bool m1 = mVec[1] > b;
+            return SIMDVecMask<2>(m0, m1);
         }
-        // CMPLTV - Element-wise 'less than' with vector
+        inline SIMDVecMask<2> operator> (float b) const {
+            return cmpgt(b);
+        }
+        // CMPLTV
         inline SIMDVecMask<2> cmplt(SIMDVec_f const & b) const {
-            SIMDVecMask<2> mask;
-            mask.mMask[0] = mVec[0] < b.mVec[0];
-            mask.mMask[1] = mVec[1] < b.mVec[1];
-            return mask;
+            bool m0 = mVec[0] < b.mVec[0];
+            bool m1 = mVec[1] < b.mVec[1];
+            return SIMDVecMask<2>(m0, m1);
         }
-        // CMPLTS - Element-wise 'less than' with scalar
+        inline SIMDVecMask<2> operator< (SIMDVec_f const & b) const {
+            return cmplt(b);
+        }
+        // CMPLTS
         inline SIMDVecMask<2> cmplt(float b) const {
-            SIMDVecMask<2> mask;
-            mask.mMask[0] = mVec[0] < b;
-            mask.mMask[1] = mVec[1] < b;
-            return mask;
+            bool m0 = mVec[0] < b;
+            bool m1 = mVec[1] < b;
+            return SIMDVecMask<2>(m0, m1);
         }
-        // CMPGEV - Element-wise 'greater than or equal' with vector
+        inline SIMDVecMask<2> operator< (float b) const {
+            return cmplt(b);
+        }
+        // CMPGEV
         inline SIMDVecMask<2> cmpge(SIMDVec_f const & b) const {
             SIMDVecMask<2> mask;
             mask.mMask[0] = mVec[0] >= b.mVec[0];
             mask.mMask[1] = mVec[1] >= b.mVec[1];
             return mask;
         }
-        // CMPGES - Element-wise 'greater than or equal' with scalar
+        inline SIMDVecMask<2> operator>= (SIMDVec_f const & b) const {
+            return cmpge(b);
+        }
+        // CMPGES
         inline SIMDVecMask<2> cmpge(float b) const {
             SIMDVecMask<2> mask;
             mask.mMask[0] = mVec[0] >= b;
             mask.mMask[1] = mVec[1] >= b;
             return mask;
         }
-        // CMPLEV - Element-wise 'less than or equal' with vector
+        inline SIMDVecMask<2> operator>= (float b) const {
+            return cmpge(b);
+        }
+        // CMPLEV
         inline SIMDVecMask<2> cmple(SIMDVec_f const & b) const {
             SIMDVecMask<2> mask;
             mask.mMask[0] = mVec[0] <= b.mVec[0];
             mask.mMask[1] = mVec[1] <= b.mVec[1];
             return mask;
         }
-        // CMPLES - Element-wise 'less than or equal' with scalar
+        inline SIMDVecMask<2> operator<= (SIMDVec_f const & b) const {
+            return cmple(b);
+        }
+        // CMPLES
         inline SIMDVecMask<2> cmple(float b) const {
             SIMDVecMask<2> mask;
             mask.mMask[0] = mVec[0] <= b;
             mask.mMask[1] = mVec[1] <= b;
             return mask;
         }
-        // CMPEX  - Check if vectors are exact (returns scalar 'bool')
-        inline bool cmpex(SIMDVec_f const & b) const {
-            bool t0 = (b.mVec[0] == mVec[0]) && (b.mVec[1] == mVec[1]);
-            return t0;
+        inline SIMDVecMask<2> operator<= (float b) const {
+            return cmple(b);
         }
-
-        // (Pack/Unpack operations - not available for SIMD1)
-        // PACK     - assign vector with two half-length vectors
-        inline SIMDVec_f & pack(HALF_LEN_VEC_TYPE const & a, HALF_LEN_VEC_TYPE const & b) {
-            mVec[0] = a[0];
-            mVec[1] = b[0];
-            return *this;
+        // CMPEV
+        inline bool cmpe(SIMDVec_f const & b) const {
+            bool m0 = mVec[0] == b.mVec[0];
+            bool m1 = mVec[0] == b.mVec[1];
+            return m0 && m1;
         }
-        // PACKLO   - assign lower half of a vector with a half-length vector
-        inline SIMDVec_f packlo(HALF_LEN_VEC_TYPE const & a) {
-            return SIMDVec_f(a[0], mVec[1]);
+        // CMPES
+        inline bool cmpe(float b) const {
+            bool m0 = mVec[0] == b;
+            bool m1 = mVec[1] == b;
+            return m0 && m1;
         }
-        // PACKHI   - assign upper half of a vector with a half-length vector
-        inline SIMDVec_f packhi(HALF_LEN_VEC_TYPE const & b) {
-            return SIMDVec_f(mVec[0], b[0]);
+        // UNIQUE
+        inline bool unique() const {
+            return mVec[0] != mVec[1];
         }
-        // UNPACK   - Unpack lower and upper halfs to half-length vectors.
-        inline void unpack(HALF_LEN_VEC_TYPE & a, HALF_LEN_VEC_TYPE & b) {
-            a.insert(0, mVec[0]);
-            b.insert(0, mVec[1]);
-        }
-        // UNPACKLO - Unpack lower half and return as a half-length vector.
-        inline HALF_LEN_VEC_TYPE unpacklo() const {
-            return HALF_LEN_VEC_TYPE(mVec[0]);
-        }
-        // UNPACKHI - Unpack upper half and return as a half-length vector.
-        inline HALF_LEN_VEC_TYPE unpackhi() const {
-            return HALF_LEN_VEC_TYPE(mVec[1]);
-        }
-
-        //(Blend/Swizzle operations)
-        // BLENDV   - Blend (mix) two vectors
-        inline SIMDVec_f blend(SIMDVecMask<2> const & mask, SIMDVec_f const & b) const {
-            float t0 = (mask.mMask[0] == true) ? mVec[0] : b.mVec[0];
-            float t1 = (mask.mMask[1] == true) ? mVec[1] : b.mVec[1];
-            return SIMDVec_f(t0, t1);
-        }
-        // BLENDS   - Blend (mix) vector with scalar (promoted to vector)
-        //         assign
-        inline SIMDVec_f blend(SIMDVecMask<2> const & mask, float b) const {
-            float t0 = (mask.mMask[0] == true) ? mVec[0] : b;
-            float t1 = (mask.mMask[1] == true) ? mVec[1] : b;
-            return SIMDVec_f(t0, t1);
-        }
-        // SWIZZLE  - Swizzle (reorder/permute) vector elements
-        // SWIZZLEA - Swizzle (reorder/permute) vector elements and assign
-
-        //(Reduction to scalar operations)
         // HADD
         inline float hadd() const {
             return mVec[0] + mVec[1];
         }
         // MHADD
         inline float hadd(SIMDVecMask<2> const & mask) const {
-            float t0 = 0.0f;
-            if (mask.mMask[0] == true) t0 += mVec[0];
-            if (mask.mMask[1] == true) t0 += mVec[1];
-            return t0;
+            float t0 = mask.mMask[0] ? mVec[0] : 0;
+            float t1 = mask.mMask[1] ? mVec[1] : 0;
+            return t0 + t1;
         }
         // HADDS
         inline float hadd(float b) const {
@@ -735,10 +790,9 @@ namespace SIMD {
         }
         // MHADDS
         inline float hadd(SIMDVecMask<2> const & mask, float b) const {
-            float t0 = b;
-            if (mask.mMask[0] == true) t0 += mVec[0];
-            if (mask.mMask[1] == true) t0 += mVec[1];
-            return t0;
+            float t0 = mask.mMask[0] ? mVec[0] + b : b;
+            float t1 = mask.mMask[1] ? mVec[1] + t0 : t0;
+            return t1;
         }
         // HMUL
         inline float hmul() const {
@@ -746,10 +800,9 @@ namespace SIMD {
         }
         // MHMUL
         inline float hmul(SIMDVecMask<2> const & mask) const {
-            float t0 = 1.0f;
-            if (mask.mMask[0] == true) t0 *= mVec[0];
-            if (mask.mMask[1] == true) t0 *= mVec[1];
-            return t0;
+            float t0 = mask.mMask[0] ? mVec[0] : 1;
+            float t1 = mask.mMask[1] ? mVec[1]*t0 : t0;
+            return t1;
         }
         // HMULS
         inline float hmul(float b) const {
@@ -757,410 +810,421 @@ namespace SIMD {
         }
         // MHMULS
         inline float hmul(SIMDVecMask<2> const & mask, float b) const {
-            float t0 = b;
-            if (mask.mMask[0] == true) t0 *= mVec[0];
-            if (mask.mMask[1] == true) t0 *= mVec[1];
-            return t0;
+            float t0 = mask.mMask[0] ? mVec[0] * b : b;
+            float t1 = mask.mMask[1] ? mVec[1] * t0 : t0;
+            return t1;
         }
 
-        //(Fused arithmetics)
-        // FMULADDV  - Fused multiply and add (A*B + C) with vectors
+        // FMULADDV
         inline SIMDVec_f fmuladd(SIMDVec_f const & b, SIMDVec_f const & c) const {
             float t0 = mVec[0] * b.mVec[0] + c.mVec[0];
             float t1 = mVec[1] * b.mVec[1] + c.mVec[1];
             return SIMDVec_f(t0, t1);
         }
-        // MFMULADDV - Masked fused multiply and add (A*B + C) with vectors
+        // MFMULADDV
         inline SIMDVec_f fmuladd(SIMDVecMask<2> const & mask, SIMDVec_f const & b, SIMDVec_f const & c) const {
             float t0 = (mask.mMask[0] == true) ? (mVec[0] * b.mVec[0] + c.mVec[0]) : mVec[0];
             float t1 = (mask.mMask[1] == true) ? (mVec[1] * b.mVec[1] + c.mVec[1]) : mVec[1];
             return SIMDVec_f(t0, t1);
         }
-        // FMULSUBV  - Fused multiply and sub (A*B - C) with vectors
+        // FMULSUBV
         inline SIMDVec_f fmulsub(SIMDVec_f const & b, SIMDVec_f const & c) const {
             float t0 = mVec[0] * b.mVec[0] - c.mVec[0];
             float t1 = mVec[1] * b.mVec[1] - c.mVec[1];
             return SIMDVec_f(t0, t1);
         }
-        // MFMULSUBV - Masked fused multiply and sub (A*B - C) with vectors
+        // MFMULSUBV
         inline SIMDVec_f fmulsub(SIMDVecMask<2> const & mask, SIMDVec_f const & b, SIMDVec_f const & c) const {
             float t0 = (mask.mMask[0] == true) ? (mVec[0] * b.mVec[0] - c.mVec[0]) : mVec[0];
             float t1 = (mask.mMask[1] == true) ? (mVec[1] * b.mVec[1] - c.mVec[1]) : mVec[1];
             return SIMDVec_f(t0, t1);
         }
-        // FADDMULV  - Fused add and multiply ((A + B)*C) with vectors
+        // FADDMULV
         inline SIMDVec_f faddmul(SIMDVec_f const & b, SIMDVec_f const & c) const {
             float t0 = (mVec[0] + b.mVec[0]) * c.mVec[0];
             float t1 = (mVec[1] + b.mVec[1]) * c.mVec[1];
             return SIMDVec_f(t0, t1);
         }
-        // MFADDMULV - Masked fused add and multiply ((A + B)*C) with vectors
+        // MFADDMULV
         inline SIMDVec_f faddmul(SIMDVecMask<2> const & mask, SIMDVec_f const & b, SIMDVec_f const & c) const {
             float t0 = (mask.mMask[0] == true) ? ((mVec[0] + b.mVec[0]) * c.mVec[0]) : mVec[0];
             float t1 = (mask.mMask[1] == true) ? ((mVec[1] + b.mVec[1]) * c.mVec[1]) : mVec[1];
             return SIMDVec_f(t0, t1);
         }
-        // FSUBMULV  - Fused sub and multiply ((A - B)*C) with vectors
+        // FSUBMULV
         inline SIMDVec_f fsubmul(SIMDVec_f const & b, SIMDVec_f const & c) const {
             float t0 = (mVec[0] - b.mVec[0]) * c.mVec[0];
             float t1 = (mVec[1] - b.mVec[1]) * c.mVec[1];
             return SIMDVec_f(t0, t1);
         }
-        // MFSUBMULV - Masked fused sub and multiply ((A - B)*C) with vectors
+        // MFSUBMULV
         inline SIMDVec_f fsubmul(SIMDVecMask<2> const & mask, SIMDVec_f const & b, SIMDVec_f const & c) const {
             float t0 = (mask.mMask[0] == true) ? ((mVec[0] - b.mVec[0]) * c.mVec[0]) : mVec[0];
             float t1 = (mask.mMask[1] == true) ? ((mVec[1] - b.mVec[1]) * c.mVec[1]) : mVec[1];
             return SIMDVec_f(t0, t1);
         }
 
-        // (Mathematical operations)
-        // MAXV   - Max with vector
+        // MAXV
         inline SIMDVec_f max(SIMDVec_f const & b) const {
             float t0 = mVec[0] > b.mVec[0] ? mVec[0] : b.mVec[0];
             float t1 = mVec[1] > b.mVec[1] ? mVec[1] : b.mVec[1];
             return SIMDVec_f(t0, t1);
         }
-        // MMAXV  - Masked max with vector
+        // MMAXV
         inline SIMDVec_f max(SIMDVecMask<2> const & mask, SIMDVec_f const & b) const {
-            float t0, t1;
+            float t0 = mVec[0], t1 = mVec[1];
             if (mask.mMask[0] == true) {
                 t0 = (mVec[0] > b.mVec[0]) ? mVec[0] : b.mVec[0];
-            }
-            else {
-                t0 = mVec[0];
             }
             if (mask.mMask[1] == true) {
                 t1 = (mVec[1] > b.mVec[1]) ? mVec[1] : b.mVec[1];
             }
-            else {
-                t1 = mVec[1];
-            }
             return SIMDVec_f(t0, t1);
         }
-        // MAXS   - Max with scalar
+        // MAXS
         inline SIMDVec_f max(float b) const {
             float t0 = mVec[0] > b ? mVec[0] : b;
             float t1 = mVec[1] > b ? mVec[1] : b;
             return SIMDVec_f(t0, t1);
         }
-        // MMAXS  - Masked max with scalar
+        // MMAXS
         inline SIMDVec_f max(SIMDVecMask<2> const & mask, float b) const {
-            float t0, t1;
+            float t0 = mVec[0], t1 = mVec[1];
             if (mask.mMask[0] == true) {
                 t0 = (mVec[0] > b) ? mVec[0] : b;
-            }
-            else {
-                t0 = mVec[0];
             }
             if (mask.mMask[1] == true) {
                 t1 = (mVec[1] > b) ? mVec[1] : b;
             }
-            else {
-                t1 = mVec[1];
-            }
             return SIMDVec_f(t0, t1);
         }
-        // MAXVA  - Max with vector and assign
+        // MAXVA
         inline SIMDVec_f & maxa(SIMDVec_f const & b) {
             if (mVec[0] < b.mVec[0]) mVec[0] = b.mVec[0];
             if (mVec[1] < b.mVec[1]) mVec[1] = b.mVec[1];
             return *this;
         }
-        // MMAXVA - Masked max with vector and assign
+        // MMAXVA
         inline SIMDVec_f & maxa(SIMDVecMask<2> const & mask, SIMDVec_f const & b) {
-            if ((mask.mMask[0] == true) && (mVec[0] < b.mVec[0])) mVec[0] = b.mVec[0];
-            if ((mask.mMask[1] == true) && (mVec[1] < b.mVec[1])) mVec[1] = b.mVec[1];
+            if (mask.mMask[0] == true && mVec[0] < b.mVec[0]) {
+                mVec[0] = b.mVec[0];
+            }
+            if (mask.mMask[1] == true && mVec[1] < b.mVec[1]) {
+                mVec[1] = b.mVec[1];
+            }
             return *this;
         }
-        // MAXSA  - Max with scalar (promoted to vector) and assign
+        // MAXSA
         inline SIMDVec_f & maxa(float b) {
-            if (mVec[0] < b) mVec[0] = b;
-            if (mVec[1] < b) mVec[1] = b;
+            mVec[0] = mVec[0] > b ? mVec[0] : b;
+            mVec[1] = mVec[1] > b ? mVec[1] : b;
             return *this;
         }
-        // MMAXSA - Masked max with scalar (promoted to vector) and assign
+        // MMAXSA
         inline SIMDVec_f & maxa(SIMDVecMask<2> const & mask, float b) {
-            if ((mask.mMask[0] == true) && (mVec[0] < b)) mVec[0] = b;
-            if ((mask.mMask[1] == true) && (mVec[1] < b)) mVec[1] = b;
+            if (mask.mMask[0] == true && mVec[0] < b) {
+                mVec[0] = b;
+            }
+            if (mask.mMask[1] == true && mVec[1] < b) {
+                mVec[1] = b;
+            }
             return *this;
         }
-        // MINV   - Min with vector
+        // MINV
         inline SIMDVec_f min(SIMDVec_f const & b) const {
             float t0 = mVec[0] < b.mVec[0] ? mVec[0] : b.mVec[0];
             float t1 = mVec[1] < b.mVec[1] ? mVec[1] : b.mVec[1];
             return SIMDVec_f(t0, t1);
         }
-        // MMINV  - Masked min with vector
+        // MMINV
         inline SIMDVec_f min(SIMDVecMask<2> const & mask, SIMDVec_f const & b) const {
-            float t0, t1;
+            float t0 = mVec[0], t1 = mVec[1];
             if (mask.mMask[0] == true) {
                 t0 = (mVec[0] < b.mVec[0]) ? mVec[0] : b.mVec[0];
-            }
-            else {
-                t0 = mVec[0];
             }
             if (mask.mMask[1] == true) {
                 t1 = (mVec[1] < b.mVec[1]) ? mVec[1] : b.mVec[1];
             }
-            else {
-                t1 = mVec[1];
-            }
             return SIMDVec_f(t0, t1);
         }
-        // MINS   - Min with scalar (promoted to vector)
+        // MINS
         inline SIMDVec_f min(float b) const {
             float t0 = mVec[0] < b ? mVec[0] : b;
             float t1 = mVec[1] < b ? mVec[1] : b;
             return SIMDVec_f(t0, t1);
         }
-        // MMINS  - Masked min with scalar (promoted to vector)
+        // MMINS
         inline SIMDVec_f min(SIMDVecMask<2> const & mask, float b) const {
-            float t0, t1;
+            float t0 = mVec[0], t1 = mVec[1];
             if (mask.mMask[0] == true) {
-                t0 = (mVec[0] < b) ? mVec[0] : b;
-            }
-            else {
-                t0 = mVec[0];
+                t0 = mVec[0] < b ? mVec[0] : b;
             }
             if (mask.mMask[1] == true) {
-                t1 = (mVec[1] < b) ? mVec[1] : b;
-            }
-            else {
-                t1 = mVec[1];
+                t1 = mVec[1] < b ? mVec[1] : b;
             }
             return SIMDVec_f(t0, t1);
         }
-        // MINVA  - Min with vector and assign
+        // MINVA
         inline SIMDVec_f & mina(SIMDVec_f const & b) {
-            if (mVec[0] > b.mVec[0]) mVec[0] = b.mVec[0];
-            if (mVec[1] > b.mVec[1]) mVec[1] = b.mVec[1];
+            if(mVec[0] > b.mVec[0]) mVec[0] = b.mVec[0];
+            if(mVec[1] > b.mVec[1]) mVec[1] = b.mVec[1];
             return *this;
         }
-        // MMINVA - Masked min with vector and assign
+        // MMINVA
         inline SIMDVec_f & mina(SIMDVecMask<2> const & mask, SIMDVec_f const & b) {
-            if ((mask.mMask[0] == true) && (mVec[0] > b.mVec[0])) mVec[0] = b.mVec[0];
-            if ((mask.mMask[1] == true) && (mVec[1] > b.mVec[1])) mVec[1] = b.mVec[1];
+            if (mask.mMask[0] == true && mVec[0] > b.mVec[0]) {
+                mVec[0] = b.mVec[0];
+            }
+            if (mask.mMask[1] == true && mVec[1] > b.mVec[1]) {
+                mVec[1] = b.mVec[1];
+            }
             return *this;
         }
-        // MINSA  - Min with scalar (promoted to vector) and assign
+        // MINSA
         inline SIMDVec_f & mina(float b) {
-            if (mVec[0] > b) mVec[0] = b;
-            if (mVec[1] > b) mVec[1] = b;
+            if(mVec[0] > b) mVec[0] = b;
+            if(mVec[1] > b) mVec[1] = b;
             return *this;
         }
-        // MMINSA - Masked min with scalar (promoted to vector) and assign
+        // MMINSA
         inline SIMDVec_f & mina(SIMDVecMask<2> const & mask, float b) {
-            if ((mask.mMask[0] == true) && (mVec[0] > b)) mVec[0] = b;
-            if ((mask.mMask[1] == true) && (mVec[1] > b)) mVec[1] = b;
+            if (mask.mMask[0] == true && mVec[0] > b) {
+                mVec[0] = b;
+            }
+            if (mask.mMask[1] == true && mVec[1] > b) {
+                mVec[1] = b;
+            }
             return *this;
         }
-        // HMAX   - Max of elements of a vector (horizontal max)
+        // HMAX
         inline float hmax() const {
             return mVec[0] > mVec[1] ? mVec[0] : mVec[1];
         }
-        // MHMAX  - Masked max of elements of a vector (horizontal max)
+        // MHMAX
         inline float hmax(SIMDVecMask<2> const & mask) const {
+            float t0 = mask.mMask[0] ? mVec[0] : std::numeric_limits<int32_t>::min();
+            float t1 = (mask.mMask[1] && mVec[1] > t0) ? mVec[1] : t0;
+            return t1;
+        }
+        // IMAX
+        inline int32_t imax() const {
+            return mVec[0] > mVec[1] ? 0 : 1;
+        }
+        // MIMAX
+        inline int32_t imax(SIMDVecMask<2> const & mask) const {
+            int32_t i0 = 0xFFFFFFFF;
             float t0 = std::numeric_limits<float>::min();
-            if (mask.mMask[0] == true) t0 = mVec[0];
-            if ((mask.mMask[1] == true) && (mVec[1] > t0)) t0 = mVec[1];
-            return t0;
-        }
-        // IMAX   - Index of max element of a vector
-        inline uint32_t imax() const {
-            uint32_t t0 = 0;
-            if (mVec[0] < mVec[1]) t0 = 1;
-            return t0;
-        }
-        // MIMAX  - Masked index of max element of a vector
-        inline uint32_t imax(SIMDVecMask<2> const & mask) const {
-            uint32_t t0 = 0;
-            if (mask.mMask[1] == true) {
-                if (mVec[0] < mVec[1]) t0 = 1;
+            if(mask.mMask[0] == true) {
+                i0 = 0;
+                t0 = mVec[0];
             }
-            return t0;
+            if(mask.mMask[1] == true && mVec[1] > t0) {
+                i0 = 1;
+            }
+            return i0;
         }
-        // HMIN   - Min of elements of a vector (horizontal min)
+        // HMIN
         inline float hmin() const {
-            float t0 = mVec[0];
-            if (mVec[0] > mVec[1]) t0 = mVec[1];
-            return t0;
+            return mVec[0] < mVec[1] ? mVec[0] : mVec[1];
         }
-        // MHMIN  - Masked min of elements of a vector (horizontal min)
+        // MHMIN
         inline float hmin(SIMDVecMask<2> const & mask) const {
+            float t0 = mask.mMask[0] ? mVec[0] : std::numeric_limits<float>::max();
+            float t1 = (mask.mMask[1] && mVec[1] < t0) ? mVec[1] : t0;
+            return t1;
+        }
+        // IMIN
+        inline int32_t imin() const {
+            return mVec[0] < mVec[1] ? 0 : 1;
+        }
+        // MIMIN
+        inline int32_t imin(SIMDVecMask<2> const & mask) const {
+            int32_t i0 = 0xFFFFFFFF;
             float t0 = std::numeric_limits<float>::max();
-            if (mask.mMask[0] == true) t0 = mVec[0];
-            if (mask.mMask[1] == true) {
-                if (t0 < mVec[1]) {
-                    t0 = mVec[1];
-                }
+            if(mask.mMask[0] == true) {
+                i0 = 0;
+                t0 = mVec[0];
             }
-            return t0;
-        }
-        // IMIN   - Index of min element of a vector
-        inline uint32_t imin() const {
-            uint32_t t0 = 0;
-            if (mVec[0] > mVec[1]) t0 = 1;
-            return t0;
-        }
-        // MIMIN  - Masked index of min element of a vector
-        inline uint32_t imin(SIMDVecMask<2> const & mask) const {
-            uint32_t t0 = 0;
-            if (mask.mMask[1] == true) {
-                if (mVec[0] > mVec[1]) t0 = 1;
+            if(mask.mMask[1] == true && mVec[1] < t0) {
+                i0 = 1;
             }
-            return t0;
+            return i0;
         }
 
-        // (Gather/Scatter operations)
-        // GATHERS   - Gather from memory using indices from array
+        // GATHERS
         inline SIMDVec_f & gather(float * baseAddr, uint64_t * indices) {
             mVec[0] = baseAddr[indices[0]];
             mVec[1] = baseAddr[indices[1]];
             return *this;
         }
-        // MGATHERS  - Masked gather from memory using indices from array
+        // MGATHERS
         inline SIMDVec_f & gather(SIMDVecMask<2> const & mask, float * baseAddr, uint64_t * indices) {
             if (mask.mMask[0] == true) mVec[0] = baseAddr[indices[0]];
             if (mask.mMask[1] == true) mVec[1] = baseAddr[indices[1]];
             return *this;
         }
-        // GATHERV   - Gather from memory using indices from vector
+        // GATHERV
         inline SIMDVec_f & gather(float * baseAddr, VEC_UINT_TYPE const & indices) {
-            mVec[0] = baseAddr[indices[0]];
-            mVec[1] = baseAddr[indices[1]];
+            mVec[0] = baseAddr[indices.mVec[0]];
+            mVec[1] = baseAddr[indices.mVec[1]];
             return *this;
         }
-        // MGATHERV  - Masked gather from memory using indices from vector
+        // MGATHERV
         inline SIMDVec_f & gather(SIMDVecMask<2> const & mask, float * baseAddr, VEC_UINT_TYPE const & indices) {
-            if (mask.mMask[0] == true) mVec[0] = baseAddr[indices[0]];
-            if (mask.mMask[1] == true) mVec[1] = baseAddr[indices[1]];
+            if (mask.mMask[0] == true) mVec[0] = baseAddr[indices.mVec[0]];
+            if (mask.mMask[1] == true) mVec[1] = baseAddr[indices.mVec[1]];
             return *this;
         }
-        // SCATTERS  - Scatter to memory using indices from array
+        // SCATTERS
         inline float * scatter(float * baseAddr, uint64_t * indices) const {
             baseAddr[indices[0]] = mVec[0];
             baseAddr[indices[1]] = mVec[1];
             return baseAddr;
         }
-        // MSCATTERS - Masked scatter to memory using indices from array
+        // MSCATTERS
         inline float * scatter(SIMDVecMask<2> const & mask, float * baseAddr, uint64_t * indices) const {
             if (mask.mMask[0] == true) baseAddr[indices[0]] = mVec[0];
             if (mask.mMask[1] == true) baseAddr[indices[1]] = mVec[1];
             return baseAddr;
         }
-        // SCATTERV  - Scatter to memory using indices from vector
+        // SCATTERV
         inline float * scatter(float * baseAddr, VEC_UINT_TYPE const & indices) const {
-            baseAddr[indices[0]] = mVec[0];
-            baseAddr[indices[1]] = mVec[1];
+            baseAddr[indices.mVec[0]] = mVec[0];
+            baseAddr[indices.mVec[1]] = mVec[1];
             return baseAddr;
         }
-        // MSCATTERV - Masked scatter to memory using indices from vector
+        // MSCATTERV
         inline float * scatter(SIMDVecMask<2> const & mask, float * baseAddr, VEC_UINT_TYPE const & indices) const {
-            if (mask.mMask[0] == true)  baseAddr[indices[0]] = mVec[0];
-            if (mask.mMask[1] == true) baseAddr[indices[1]] = mVec[1];
+            if (mask.mMask[0] == true) baseAddr[indices.mVec[0]] = mVec[0];
+            if (mask.mMask[1] == true) baseAddr[indices.mVec[1]] = mVec[1];
             return baseAddr;
         }
-        // NEG   - Negate signed values
+        // NEG
         inline SIMDVec_f neg() const {
             return SIMDVec_f(-mVec[0], -mVec[1]);
         }
-        // MNEG  - Masked negate signed values
+        inline SIMDVec_f operator- () const {
+            return neg();
+        }
+        // MNEG
         inline SIMDVec_f neg(SIMDVecMask<2> const & mask) const {
             float t0 = (mask.mMask[0] == true) ? -mVec[0] : mVec[0];
             float t1 = (mask.mMask[1] == true) ? -mVec[1] : mVec[1];
             return SIMDVec_f(t0, t1);
         }
-        // NEGA  - Negate signed values and assign
+        // NEGA
         inline SIMDVec_f & nega() {
             mVec[0] = -mVec[0];
             mVec[1] = -mVec[1];
             return *this;
         }
-        // MNEGA - Masked negate signed values and assign
+        // MNEGA
         inline SIMDVec_f & nega(SIMDVecMask<2> const & mask) {
             if (mask.mMask[0] == true) mVec[0] = -mVec[0];
             if (mask.mMask[1] == true) mVec[1] = -mVec[1];
             return *this;
         }
-
-        // (Mathematical functions)
-        // ABS   - Absolute value
+        // ABS
         inline SIMDVec_f abs() const {
             float t0 = (mVec[0] > 0.0f) ? mVec[0] : -mVec[0];
             float t1 = (mVec[1] > 0.0f) ? mVec[1] : -mVec[1];
             return SIMDVec_f(t0, t1);
         }
-        // MABS  - Masked absolute value
+        // MABS
         inline SIMDVec_f abs(SIMDVecMask<2> const & mask) const {
             float t0 = ((mask.mMask[0] == true) && (mVec[0] < 0.0f)) ? -mVec[0] : mVec[0];
             float t1 = ((mask.mMask[1] == true) && (mVec[1] < 0.0f)) ? -mVec[1] : mVec[1];
             return SIMDVec_f(t0, t1);
         }
-        // ABSA  - Absolute value and assign
+        // ABSA
         inline SIMDVec_f & absa() {
             if (mVec[0] < 0.0f) mVec[0] = -mVec[0];
             if (mVec[1] < 0.0f) mVec[1] = -mVec[1];
             return *this;
         }
-        // MABSA - Masked absolute value and assign
+        // MABSA
         inline SIMDVec_f & absa(SIMDVecMask<2> const & mask) {
             if ((mask.mMask[0] == true) && (mVec[0] < 0.0f)) mVec[0] = -mVec[0];
             if ((mask.mMask[1] == true) && (mVec[1] < 0.0f)) mVec[1] = -mVec[1];
             return *this;
         }
 
-        // 5) Operations available for floating point SIMD types:
+        // CMPEQRV
+        // CMPEQRS
 
-        // (Comparison operations)
-        // CMPEQRV - Compare 'Equal within range' with margins from vector
-        // CMPEQRS - Compare 'Equal within range' with scalar margin
-
-        // (Mathematical functions)
-        // SQR       - Square of vector values
-        // MSQR      - Masked square of vector values
-        // SQRA      - Square of vector values and assign
-        // MSQRA     - Masked square of vector values and assign
-        // SQRT      - Square root of vector values
-        // MSQRT     - Masked square root of vector values 
-        // SQRTA     - Square root of vector values and assign
-        // MSQRTA    - Masked square root of vector values and assign
-        // POWV      - Power (exponents in vector)
-        // MPOWV     - Masked power (exponents in vector)
-        // POWS      - Power (exponent in scalar)
-        // MPOWS     - Masked power (exponent in scalar) 
-        // ROUND     - Round to nearest integer
-        // MROUND    - Masked round to nearest integer
-        // TRUNC     - Truncate to integer (returns Signed integer vector)
+        // SQR
+        // MSQR
+        // SQRA
+        // MSQRA
+        // SQRT
+        // MSQRT
+        // SQRTA
+        // MSQRTA
+        // POWV
+        // MPOWV
+        // POWS
+        // MPOWS
+        // ROUND
+        // MROUND
+        // TRUNC
         inline SIMDVec_i<int32_t, 2> trunc() {
             int32_t t0 = (int32_t)mVec[0];
             int32_t t1 = (int32_t)mVec[1];
             return SIMDVec_i<int32_t, 2>(t0, t1);
         }
-        // MTRUNC    - Masked truncate to integer (returns Signed integer vector)
+        // MTRUNC
         inline SIMDVec_i<int32_t, 2> trunc(SIMDVecMask<2> const & mask) {
             int32_t t0 = mask.mMask[0] ? (int32_t)mVec[0] : 0;
             int32_t t1 = mask.mMask[1] ? (int32_t)mVec[1] : 0;
             return SIMDVec_i<int32_t, 2>(t0, t1);
         }
-        // FLOOR     - Floor
-        // MFLOOR    - Masked floor
-        // CEIL      - Ceil
-        // MCEIL     - Masked ceil
-        // ISFIN     - Is finite
-        // ISINF     - Is infinite (INF)
-        // ISAN      - Is a number
-        // ISNAN     - Is 'Not a Number (NaN)'
-        // ISSUB     - Is subnormal
-        // ISZERO    - Is zero
-        // ISZEROSUB - Is zero or subnormal
-        // SIN       - Sine
-        // MSIN      - Masked sine
-        // COS       - Cosine
-        // MCOS      - Masked cosine
-        // TAN       - Tangent
-        // MTAN      - Masked tangent
-        // CTAN      - Cotangent
-        // MCTAN     - Masked cotangent
+        // FLOOR
+        // MFLOOR
+        // CEIL
+        // MCEIL
+        // ISFIN
+        // ISINF
+        // ISAN
+        // ISNAN
+        // ISSUB
+        // ISZERO
+        // ISZEROSUB
+        // SIN
+        // MSIN
+        // COS
+        // MCOS
+        // TAN
+        // MTAN
+        // CTAN
+        // MCTAN
+
+        // PACK
+        inline SIMDVec_f & pack(HALF_LEN_VEC_TYPE const & a, HALF_LEN_VEC_TYPE const & b) {
+            mVec[0] = a[0];
+            mVec[1] = b[0];
+            return *this;
+        }
+        // PACKLO
+        inline SIMDVec_f packlo(SIMDVec_f<float, 1> const & a) {
+            return SIMDVec_f(a[0], mVec[1]);
+        }
+        // PACKHI
+        inline SIMDVec_f packhi(SIMDVec_f<float, 1> const & b) {
+            return SIMDVec_f(mVec[0], b[0]);
+        }
+        // UNPACK
+        inline void unpack(SIMDVec_f<float, 1> & a, SIMDVec_f<float, 1> & b) {
+            a.insert(0, mVec[0]);
+            b.insert(0, mVec[1]);
+        }
+        // UNPACKLO
+        inline SIMDVec_f<float, 1> unpacklo() const {
+            return SIMDVec_f<float, 1>(mVec[0]);
+        }
+        // UNPACKHI
+        inline SIMDVec_f<float, 1> unpackhi() const {
+            return SIMDVec_f<float, 1>(mVec[1]);
+        }
 
         // PROMOTE
         inline operator SIMDVec_f<double, 2>() const;

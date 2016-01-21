@@ -32,8 +32,9 @@
 #define UME_SIMD_VEC_UINT32_1_H_
 
 #include <type_traits>
-#include "../../../UMESimdInterface.h"
 #include <immintrin.h>
+
+#include "../../../UMESimdInterface.h"
 
 namespace UME {
 namespace SIMD {
@@ -41,11 +42,11 @@ namespace SIMD {
     template<>
     class SIMDVec_u<uint32_t, 1> :
         public SIMDVecUnsignedInterface<
-        SIMDVec_u<uint32_t, 1>, // DERIVED_UINT_VEC_TYPE
-        uint32_t,                        // SCALAR_UINT_TYPE
-        1,
-        SIMDVecMask<1>,
-        SIMDVecSwizzle<1>>
+            SIMDVec_u<uint32_t, 1>, // DERIVED_UINT_VEC_TYPE
+            uint32_t,                        // SCALAR_UINT_TYPE
+            1,
+            SIMDVecMask<1>,
+            SIMDVecSwizzle<1>>
     {
     private:
         // This is the only data member and it is a low level representation of vector register.
@@ -61,16 +62,16 @@ namespace SIMD {
         constexpr static uint32_t alignment() { return 4; }
 
         // ZERO-CONSTR
-        inline SIMDVec_u() : mVec() {};
-
+        inline SIMDVec_u() {}
         // SET-CONSTR
         inline explicit SIMDVec_u(uint32_t i) {
             mVec = i;
-        };
-
-        // LOAD-CONSTR - Construct by loading from memory
-        inline explicit SIMDVec_u(uint32_t const *p) { this->load(p); };
-
+        }
+        // LOAD-CONSTR
+        inline explicit SIMDVec_u(uint32_t const *p) { 
+            mVec = p[0];
+        }
+        // FULL-CONSTR
         inline SIMDVec_u(uint32_t i0, uint32_t i1) {
             mVec = i0;
         }
@@ -242,58 +243,59 @@ namespace SIMD {
         }
         // SADDV
         inline SIMDVec_u sadd(SIMDVec_u const & b) const {
-            uint32_t t0 = (mVec > 0xFFFFFFFF - b.mVec) ? 0xFFFFFFFF : mVec + b.mVec;
+            const uint32_t MAX_VAL = std::numeric_limits<uint32_t>::max();
+            uint32_t t0 = (mVec > MAX_VAL - b.mVec) ? MAX_VAL : mVec + b.mVec;
             return SIMDVec_u(t0);
         }
         // MSADDV
         inline SIMDVec_u sadd(SIMDVecMask<1> const & mask, SIMDVec_u const & b) const {
-            uint32_t t0;
+            const uint32_t MAX_VAL = std::numeric_limits<uint32_t>::max();
+            uint32_t t0 = mVec;
             if (mask.mMask == true) {
-                t0 = (mVec > 0xFFFFFFFF - b.mVec) ? 0xFFFFFFFF : mVec + b.mVec;
-            }
-            else {
-                t0 = mVec;
+                t0 = (mVec > MAX_VAL - b.mVec) ? MAX_VAL : mVec + b.mVec;
             }
             return SIMDVec_u(t0);
         }
         // SADDS
         inline SIMDVec_u sadd(uint32_t b) const {
-            uint32_t t0 = (mVec > 0xFFFFFFFF - b) ? 0xFFFFFFFF : mVec + b;
+            const uint32_t MAX_VAL = std::numeric_limits<uint32_t>::max();
+            uint32_t t0 = (mVec > MAX_VAL - b) ? MAX_VAL : mVec + b;
             return SIMDVec_u(t0);
         }
         // MSADDS
         inline SIMDVec_u sadd(SIMDVecMask<1> const & mask, uint32_t b) const {
-            uint32_t t0;
+            const uint32_t MAX_VAL = std::numeric_limits<uint32_t>::max();
+            uint32_t t0 = mVec;
             if (mask.mMask == true) {
-                t0 = (mVec > 0xFFFFFFFF - b) ? 0xFFFFFFFF : mVec + b;
-            }
-            else {
-                t0 = mVec;
+                t0 = (mVec > MAX_VAL - b) ? MAX_VAL : mVec + b;
             }
             return SIMDVec_u(t0);
         }
         // SADDVA
         inline SIMDVec_u & sadda(SIMDVec_u const & b) {
-            mVec = (mVec > 0xFFFFFFFF - b.mVec) ? 0xFFFFFFFF : mVec + b.mVec;
+            const uint32_t MAX_VAL = std::numeric_limits<uint32_t>::max();
+            mVec = (mVec > MAX_VAL - b.mVec) ? MAX_VAL : mVec + b.mVec;
             return *this;
         }
         // MSADDVA
         inline SIMDVec_u & sadda(SIMDVecMask<1> const & mask, SIMDVec_u const & b) {
-            uint32_t t0;
+            const uint32_t MAX_VAL = std::numeric_limits<uint32_t>::max();
             if (mask.mMask == true) {
-                mVec = (mVec > 0xFFFFFFFF - b.mVec) ? 0xFFFFFFFF : mVec + b.mVec;
+                mVec = (mVec > MAX_VAL - b.mVec) ? MAX_VAL : mVec + b.mVec;
             }
-            return SIMDVec_u(t0);
+            return *this;
         }
         // SADDSA
         inline SIMDVec_u & sadd(uint32_t b) {
-            mVec = (mVec > 0xFFFFFFFF - b) ? 0xFFFFFFFF : mVec + b;
+            const uint32_t MAX_VAL = std::numeric_limits<uint32_t>::max();
+            mVec = (mVec > MAX_VAL - b) ? MAX_VAL : mVec + b;
             return *this;
         }
         // MSADDSA
         inline SIMDVec_u & sadda(SIMDVecMask<1> const & mask, uint32_t b) {
+            const uint32_t MAX_VAL = std::numeric_limits<uint32_t>::max();
             if (mask.mMask == true) {
-                mVec = (mVec > 0xFFFFFFFF - b) ? 0xFFFFFFFF : mVec + b;
+                mVec = (mVec > MAX_VAL - b) ? MAX_VAL : mVec + b;
             }
             return *this;
         }
@@ -384,12 +386,9 @@ namespace SIMD {
         }
         // MSSUBV
         inline SIMDVec_u ssub(SIMDVecMask<1> const & mask, SIMDVec_u const & b) const {
-            uint32_t t0;
+            uint32_t t0 = mVec;
             if (mask.mMask == true) {
                 t0 = (mVec < b.mVec) ? 0 : mVec - b.mVec;
-            }
-            else {
-                t0 = mVec;
             }
             return SIMDVec_u(t0);
         }
@@ -400,12 +399,9 @@ namespace SIMD {
         }
         // MSSUBS
         inline SIMDVec_u ssub(SIMDVecMask<1> const & mask, uint32_t b) const {
-            uint32_t t0;
+            uint32_t t0 = mVec;
             if (mask.mMask == true) {
                 t0 = (mVec < b) ? 0 : mVec - b;
-            }
-            else {
-                t0 = mVec;
             }
             return SIMDVec_u(t0);
         }
@@ -1305,6 +1301,14 @@ namespace SIMD {
         // RORSA
         // MRORSA
 
+        // PACK
+        // -
+        // PACKLO
+        // -
+        // PACKHI
+        // -
+        // UNPACK
+        // -
         // PROMOTE
         inline operator SIMDVec_u<uint64_t, 1>() const;
         // DEGRADE
