@@ -279,11 +279,10 @@ namespace SIMD {
         // MSADDVA
         inline SIMDVec_i & sadda(SIMDVecMask<1> const & mask, SIMDVec_i const & b) {
             const int32_t MAX_VAL = std::numeric_limits<int32_t>::max();
-            int32_t t0;
             if (mask.mMask == true) {
                 mVec = (mVec > MAX_VAL - b.mVec) ? MAX_VAL : mVec + b.mVec;
             }
-            return SIMDVec_i(t0);
+            return *this;
         }
         // SADDSA
         inline SIMDVec_i & sadd(int32_t b) {

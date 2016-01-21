@@ -56,6 +56,8 @@ namespace SIMD {
 
         friend class SIMDVec_i<int32_t, 2>;
         friend class SIMDVec_f<float, 2>;
+
+        friend class SIMDVec_u<uint32_t, 4>;
     public:
         constexpr static uint32_t length() { return 2; }
         constexpr static uint32_t alignment() { return 8; }

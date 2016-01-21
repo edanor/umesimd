@@ -35,12 +35,13 @@
 
 namespace UME {
 namespace SIMD {
+
     template<>
     class SIMDVecMask<4> :
         public SIMDMaskBaseInterface<
-        SIMDVecMask<4>,
-        uint32_t,
-        4>
+            SIMDVecMask<4>,
+            uint32_t,
+            4>
     {
         static uint32_t TRUE() { return 0xFFFFFFFF; };
         static uint32_t FALSE() { return 0x00000000; };
@@ -65,23 +66,27 @@ namespace SIMD {
 
         inline SIMDVecMask(__m128i const & x) { mMask = x; };
     public:
+        constexpr static uint32_t length() { return 4; }
+        constexpr static uint32_t alignment() { return 16; }
         inline SIMDVecMask() {}
 
         // Regardless of the mask representation, the interface should only allow initialization using 
         // standard bool or using equivalent mask
+        // SET-CONSTR
         inline explicit SIMDVecMask(bool m) {
             mMask = _mm_set1_epi32(toMaskBool(m));
         }
+
         // LOAD-CONSTR
         inline explicit SIMDVecMask(bool const *p) {
-            alignas(32) uint32_t raw[4];
+            alignas(16) uint32_t raw[4];
             for (int i = 0; i < 4; i++) {
                 raw[i] = p[i] ? TRUE() : FALSE();
             }
             mMask = _mm_load_si128((__m128i*)raw);
         }
         // FULL-CONSTR
-        inline SIMDVecMask(bool m0, bool m1, bool m2, bool m3) {
+        inline explicit SIMDVecMask(bool m0, bool m1, bool m2, bool m3) {
             mMask = _mm_setr_epi32(toMaskBool(m0), toMaskBool(m1),
                 toMaskBool(m2), toMaskBool(m3));
         }
@@ -92,7 +97,7 @@ namespace SIMD {
         // EXTRACT
         inline bool extract(uint32_t index) const {
             UME_PERFORMANCE_UNOPTIMAL_WARNING()
-            alignas(16) uint32_t raw[4];
+                alignas(16) uint32_t raw[4];
             _mm_store_si128((__m128i*)raw, mMask);
             return raw[index] == TRUE();
         }
@@ -102,23 +107,152 @@ namespace SIMD {
         // INSERT
         inline void insert(uint32_t index, bool x) {
             UME_PERFORMANCE_UNOPTIMAL_WARNING()
-            alignas(16) static uint32_t raw[4] = { 0, 0, 0, 0 };
+                alignas(16) static uint32_t raw[4] = { 0, 0, 0, 0 };
             _mm_store_si128((__m128i*)raw, mMask);
             raw[index] = toMaskBool(x);
             mMask = _mm_load_si128((__m128i*)raw);
         }
-
+        // LOAD
+        inline SIMDVecMask & load(bool const * p) {
+            alignas(16) uint32_t raw[4];
+            raw[0] = p[0] ? TRUE() : FALSE();
+            raw[1] = p[1] ? TRUE() : FALSE();
+            raw[2] = p[2] ? TRUE() : FALSE();
+            raw[3] = p[3] ? TRUE() : FALSE();
+            mMask = _mm_load_si128((__m128i*)raw);
+        }
+        // LOADA
+        inline SIMDVecMask & loada(bool const * p) {
+            alignas(16) uint32_t raw[4];
+            raw[0] = p[0] ? TRUE() : FALSE();
+            raw[1] = p[1] ? TRUE() : FALSE();
+            raw[2] = p[2] ? TRUE() : FALSE();
+            raw[3] = p[3] ? TRUE() : FALSE();
+            mMask = _mm_load_si128((__m128i*)raw);
+        }
+        // STORE
+        inline bool* store(bool * p) const {
+            alignas(16) uint32_t raw[4];
+            _mm_store_si128((__m128i*)raw, mMask);
+            p[0] = raw[0] == TRUE();
+            p[1] = raw[1] == TRUE();
+            p[2] = raw[2] == TRUE();
+            p[3] = raw[3] == TRUE();
+            return p;
+        }
+        // STOREA
+        inline bool* storea(bool * p) const {
+            alignas(16) uint32_t raw[4];
+            _mm_store_si128((__m128i*)raw, mMask);
+            p[0] = raw[0] == TRUE();
+            p[1] = raw[1] == TRUE();
+            p[2] = raw[2] == TRUE();
+            p[3] = raw[3] == TRUE();
+            return p;
+        }
+        // ASSIGN
         inline SIMDVecMask & operator= (SIMDVecMask const & x) {
-            mMask = x.mMask;
+            mMask = _mm_load_si128(&x.mMask);
             return *this;
         }
-
+        // LANDV
+        inline SIMDVecMask land(SIMDVecMask const & b) const {
+            __m128i t0 = _mm_and_si128(mMask, b.mMask);
+            return SIMDVecMask(t0);
+        }
+        // LANDS
+        inline SIMDVecMask land(bool b) const {
+            __m128i t0 = _mm_set1_epi32(b ? TRUE() : FALSE());
+            __m128i t1 = _mm_and_si128(mMask, t0);
+            return SIMDVecMask(t1);
+        }
+        // LANDVA
+        inline SIMDVecMask & landa(SIMDVecMask const & b) {
+            mMask = _mm_and_si128(mMask, b.mMask);
+            return *this;
+        }
+        // LANDSA
+        inline SIMDVecMask & landa(bool b) {
+            __m128i t0 = _mm_set1_epi32(b ? TRUE() : FALSE());
+            mMask = _mm_and_si128(mMask, t0);
+            return *this;
+        }
+        // LORV
+        inline SIMDVecMask lor(SIMDVecMask const & b) const {
+            __m128i t0 = _mm_or_si128(mMask, b.mMask);
+            return SIMDVecMask(t0);
+        }
+        // LORS
+        inline SIMDVecMask lor(bool b) const {
+            __m128i t0 = _mm_set1_epi32(b ? TRUE() : FALSE());
+            __m128i t1 = _mm_or_si128(mMask, t0);
+            return SIMDVecMask(t1);
+        }
+        // LORVA
+        inline SIMDVecMask & lora(SIMDVecMask const & b) {
+            mMask = _mm_or_si128(mMask, b.mMask);
+            return *this;
+        }
+        // LORSA
+        inline SIMDVecMask & lora(bool b) {
+            __m128i t0 = _mm_set1_epi32(b ? TRUE() : FALSE());
+            mMask = _mm_or_si128(mMask, t0);
+            return *this;
+        }
+        // LXORV
+        inline SIMDVecMask lxor(SIMDVecMask const & b) const {
+            __m128i t0 = _mm_xor_si128(mMask, b.mMask);
+            return SIMDVecMask(t0);
+        }
+        // LXORS
+        inline SIMDVecMask lxor(bool b) const {
+            __m128i t0 = _mm_set1_epi32(b ? TRUE() : FALSE());
+            __m128i t1 = _mm_xor_si128(mMask, t0);
+            return SIMDVecMask(t1);
+        }
+        // LXORVA
+        inline SIMDVecMask & lxora(SIMDVecMask const & b) {
+            mMask = _mm_xor_si128(mMask, b.mMask);
+            return *this;
+        }
+        // LXORSA
+        inline SIMDVecMask & lxora(bool b) {
+            __m128i t0 = _mm_set1_epi32(b ? TRUE() : FALSE());
+            mMask = _mm_xor_si128(mMask, t0);
+            return *this;
+        }
+        // LNOT
+        inline SIMDVecMask lnot() const {
+            __m128i t0 = _mm_set1_epi32(TRUE());
+            __m128i t1 = _mm_andnot_si128(mMask, t0);
+            return SIMDVecMask(t1);
+        }
+        // LNOTA
+        inline SIMDVecMask lnota() {
+            __m128i t0 = _mm_set1_epi32(TRUE());
+            mMask = _mm_andnot_si128(mMask, t0);
+            return *this;
+        }
+        // HLAND
+        inline bool hland() const {
+            alignas(16) uint32_t raw[4];
+            _mm_store_si128((__m128i*)raw, mMask);
+            return (raw[0] & raw[1] & raw[2] & raw[3]) != 0;
+        }
         // HLOR
         inline bool hlor() const {
-            int t0 = _mm_testz_si128(mMask, mMask);
-            return t0 == 0;
+            alignas(16) uint32_t raw[4];
+            _mm_store_si128((__m128i*)raw, mMask);
+            return (raw[0] | raw[1] | raw[2] | raw[3]) != 0;
+        }
+        // HLXOR
+        inline bool hlxor() const {
+            alignas(16) uint32_t raw[4];
+            _mm_store_si128((__m128i*)raw, mMask);
+            return (raw[0] ^ raw[1] ^ raw[2] ^ raw[3]) != 0;
         }
     };
+
 }
 }
 

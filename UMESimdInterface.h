@@ -6060,7 +6060,7 @@ namespace SIMD
 
         // NEG
         inline DERIVED_VEC_TYPE operator- () const {
-            return neg();
+            return this->neg();
         }
     };
 
@@ -6136,7 +6136,7 @@ namespace SIMD
         }
         // NEG
         inline DERIVED_VEC_TYPE operator- () const {
-            return neg();
+            return EMULATED_FUNCTIONS::unaryMinus<DERIVED_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // ********************************************************************
