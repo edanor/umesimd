@@ -180,9 +180,7 @@ namespace SIMD {
         }
         // MSTORE
         inline int32_t * store(SIMDVecMask<4> const & mask, int32_t * p) const {
-            __m128i t0 = _mm_load_si128((__m128i*)p);
-            __m128i t1 = _mm_blendv_epi8(t0, mVec, mask.mMask);
-            _mm_storeu_si128((__m128i*) p, t1);
+            _mm_maskstore_epi32(p, mask.mMask, mVec);
             return p;
         }
         // STOREA
@@ -192,9 +190,7 @@ namespace SIMD {
         }
         // MSTOREA
         inline int32_t * storea(SIMDVecMask<4> const & mask, int32_t * p) const {
-            __m128i t0 = _mm_load_si128((__m128i*)p);
-            __m128i t1 = _mm_blendv_epi8(t0, mVec, mask.mMask);
-            _mm_store_si128((__m128i*) p, t1);
+            _mm_maskstore_epi32(p, mask.mMask, mVec);
             return p;
         }
 

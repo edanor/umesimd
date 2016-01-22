@@ -49,7 +49,7 @@ namespace SIMD {
             4,
             uint32_t,
             SIMDVecMask<4>,
-            SIMDVecSwizzle<4 >> ,
+            SIMDVecSwizzle<4>> ,
         public SIMDVecPackableInterface<
             SIMDVec_f<float, 4>,
             SIMDVec_f<float, 2 >>
@@ -180,13 +180,13 @@ namespace SIMD {
             mVec = _mm_mask_loadu_ps(mVec, mask.mMask, p);
             return *this;
         }
-        // STORE
-        inline float* store(float * p) const {
+        // STORE
+        inline float* store(float* p) const {
             _mm_storeu_ps(p, mVec);
             return p;
         }
         // MSTORE
-        inline float * store(SIMDVecMask<4> const & mask, float * p) const {
+        inline float* store(SIMDVecMask<4> const & mask, float * p) const {
             _mm_mask_storeu_ps(p, mask.mMask, mVec);
             return p;
         }
@@ -220,7 +220,7 @@ namespace SIMD {
 #endif
             return SIMDVec_f(t0);
         }
-        // ADDS
+        // ADDS
         inline SIMDVec_f add(float b) const {
             __m128 t0 = _mm_add_ps(this->mVec, _mm_set1_ps(b));
             return SIMDVec_f(t0);
@@ -228,7 +228,7 @@ namespace SIMD {
         inline SIMDVec_f operator+ (float b) const {
             return add(b);
         }
-        // MADDS
+        // MADDS
         inline SIMDVec_f add(SIMDVecMask<4> const & mask, float b) const {
 #if defined(__AVX512VL__)
             __m128 t0 = _mm_mask_add_ps(mVec, mask.mMask, mVec, _mm_set1_ps(b));
@@ -245,6 +245,9 @@ namespace SIMD {
             mVec = _mm_add_ps(this->mVec, b.mVec);
             return *this;
         }
+        inline SIMDVec_f & operator+= (SIMDVec_f const & b) {
+            return adda(b);
+        }
         // MADDVA
         inline SIMDVec_f & adda(SIMDVecMask<4> const & mask, SIMDVec_f const & b) {
 #if defined(__AVX512VL__)
@@ -257,12 +260,15 @@ namespace SIMD {
 #endif
             return *this;
         }
-        // ADDSA
+        // ADDSA
         inline SIMDVec_f & adda(float b) {
             mVec = _mm_add_ps(this->mVec, _mm_set1_ps(b));
             return *this;
         }
-        // MADDSA
+        inline SIMDVec_f & operator+= (float b) {
+            return adda(b);
+        }
+        // MADDSA
         inline SIMDVec_f & adda(SIMDVecMask<4> const & mask, float b) {
 #if defined(__AVX512VL__)
             mVec = _mm_mask_add_ps(mVec, mask.mMask, mVec, _mm_set1_ps(b));
@@ -274,15 +280,15 @@ namespace SIMD {
 #endif
             return *this;
         }
-        // SADDV
-        // MSADDV
-        // SADDS
-        // MSADDS
-        // SADDVA
-        // MSADDVA
-        // SADDSA
-        // MSADDSA
-        // POSTINC
+        // SADDV
+        // MSADDV
+        // SADDS
+        // MSADDS
+        // SADDVA
+        // MSADDVA
+        // SADDSA
+        // MSADDSA
+        // POSTINC
         inline SIMDVec_f postinc() {
             __m128 t0 = mVec;
             mVec = _mm_add_ps(mVec, _mm_set1_ps(1.0f));
@@ -293,7 +299,7 @@ namespace SIMD {
             mVec = _mm_add_ps(mVec, _mm_set1_ps(1.0f));
             return SIMDVec_f(t0);
         }
-        // MPOSTINC
+        // MPOSTINC
         inline SIMDVec_f postinc(SIMDVecMask<4> const & mask) {
             __m128 t0 = mVec;
 #if defined(__AVX512VL__)
@@ -306,7 +312,7 @@ namespace SIMD {
 #endif
             return SIMDVec_f(t0);
         }
-        // PREFINC
+        // PREFINC
         inline SIMDVec_f & prefinc() {
             mVec = _mm_add_ps(mVec, _mm_set1_ps(1.0f));
             return *this;
@@ -315,7 +321,7 @@ namespace SIMD {
             mVec = _mm_add_ps(mVec, _mm_set1_ps(1.0f));
             return *this;
         }
-        // MPREFINC
+        // MPREFINC
         inline SIMDVec_f & prefinc(SIMDVecMask<4> const & mask) {
 #if defined(__AVX512VL__)
             mVec = _mm_mask_add_ps(mVec, mask.mMask, mVec, _mm_set1_ps(1.0f));
@@ -327,12 +333,15 @@ namespace SIMD {
 #endif
             return *this;
         }
-        // SUBV
+        // SUBV
         inline SIMDVec_f sub(SIMDVec_f const & b) const {
             __m128 t0 = _mm_sub_ps(mVec, b.mVec);
             return SIMDVec_f(t0);
         }
-        // MSUBV
+        inline SIMDVec_f operator- (SIMDVec_f const & b) const {
+            return sub(b);
+        }
+        // MSUBV
         inline SIMDVec_f sub(SIMDVecMask<4> const & mask, SIMDVec_f const & b) const {
 #if defined(__AVX512VL__)
             __m128 t0 = _mm_mask_sub_ps(mVec, mask.mMask, mVec, b.mVec);
@@ -344,12 +353,15 @@ namespace SIMD {
 #endif
             return SIMDVec_f(t0);
         }
-        // SUBS
+        // SUBS
         inline SIMDVec_f sub(float b) const {
             __m128 t0 = _mm_sub_ps(mVec, _mm_set1_ps(b));
             return SIMDVec_f(t0);
         }
-        // MSUBS
+        inline SIMDVec_f operator- (float b) const {
+            return sub(b);
+        }
+        // MSUBS
         inline SIMDVec_f sub(SIMDVecMask<4> const & mask, float b) const {
 #if defined(__AVX512VL__)
             __m128 t0 = _mm_set1_ps(b);
@@ -362,12 +374,15 @@ namespace SIMD {
 #endif
             return SIMDVec_f(t1);
         }
-        // SUBVA
+        // SUBVA
         inline SIMDVec_f & suba(SIMDVec_f const & b) {
             mVec = _mm_sub_ps(mVec, b.mVec);
             return *this;
         }
-        // MSUBVA
+        inline SIMDVec_f & operator-=(SIMDVec_f const & b) {
+            return suba(b);
+        }
+        // MSUBVA
         inline SIMDVec_f & suba(SIMDVecMask<4> const & mask, SIMDVec_f const & b) {
 #if defined(__AVX512VL__)
             mVec = _mm_mask_sub_ps(mVec, mask.mMask, mVec, b.mVec);
@@ -379,12 +394,15 @@ namespace SIMD {
 #endif
             return *this;
         }
-        // SUBSA
+        // SUBSA
         inline SIMDVec_f & suba(float b) {
             mVec = _mm_sub_ps(mVec, _mm_set1_ps(b));
             return *this;
         }
-        // MSUBSA
+        inline SIMDVec_f & operator-= (float b) {
+            return suba(b);
+        }
+        // MSUBSA
         inline SIMDVec_f & suba(SIMDVecMask<4> const & mask, float b) {
 #if defined(__AVX512VL__)
             __m128 t0 = _mm_set1_ps(b);
@@ -397,20 +415,20 @@ namespace SIMD {
 #endif
             return *this;
         }
-        // SSUBV
-        // MSSUBV
-        // SSUBS
-        // MSSUBS
-        // SSUBVA
-        // MSSUBVA
-        // SSUBSA
-        // MSSUBSA
-        // SUBFROMV
+        // SSUBV
+        // MSSUBV
+        // SSUBS
+        // MSSUBS
+        // SSUBVA
+        // MSSUBVA
+        // SSUBSA
+        // MSSUBSA
+        // SUBFROMV
         inline SIMDVec_f subfrom(SIMDVec_f const & b) const {
             __m128 t0 = _mm_sub_ps(b.mVec, mVec);
             return SIMDVec_f(t0);
         }
-        // MSUBFROMV
+        // MSUBFROMV
         inline SIMDVec_f subfrom(SIMDVecMask<4> const & mask, SIMDVec_f const & b) const {
 #if defined(__AVX512VL__)
             __m128 t0 = _mm_mask_sub_ps(b.mVec, mask.mMask, b.mVec, mVec);
@@ -422,12 +440,12 @@ namespace SIMD {
 #endif
             return SIMDVec_f(t0);
         }
-        // SUBFROMS
+        // SUBFROMS
         inline SIMDVec_f subfrom(float b) const {
             __m128 t0 = _mm_sub_ps(_mm_set1_ps(b), mVec);
             return SIMDVec_f(t0);
         }
-        // MSUBFROMS
+        // MSUBFROMS
         inline SIMDVec_f subfrom(SIMDVecMask<4> const & mask, float b) const {
 #if defined(__AVX512VL__)
             __m128 t0 = _mm_set1_ps(b);
@@ -440,12 +458,12 @@ namespace SIMD {
 #endif
             return SIMDVec_f(t1);
         }
-        // SUBFROMVA
+        // SUBFROMVA
         inline SIMDVec_f & subfroma(SIMDVec_f const & b) {
             mVec = _mm_sub_ps(b.mVec, mVec);
             return *this;
         }
-        // MSUBFROMVA
+        // MSUBFROMVA
         inline SIMDVec_f & subfroma(SIMDVecMask<4> const & mask, SIMDVec_f const & b) {
 #if defined(__AVX512VL__)
             mVec = _mm_mask_sub_ps(b.mVec, mask.mMask, b.mVec, mVec);
@@ -457,13 +475,13 @@ namespace SIMD {
 #endif
             return *this;
         }
-        // SUBFROMSA
+        // SUBFROMSA
         inline SIMDVec_f & subfroma(float b) {
             __m128 t0 = _mm_set1_ps(b);
             mVec = _mm_sub_ps(t0, mVec);
             return *this;
         }
-        // MSUBFROMSA
+        // MSUBFROMSA
         inline SIMDVec_f & subfroma(SIMDVecMask<4> const & mask, float b) {
 #if defined(__AVX512VL__)
             __m128 t0 = _mm_set1_ps(b);
@@ -476,18 +494,16 @@ namespace SIMD {
 #endif
             return *this;
         }
-        // POSTDEC
+        // POSTDEC
         inline SIMDVec_f postdec() {
             __m128 t0 = mVec;
             mVec = _mm_sub_ps(mVec, _mm_set1_ps(1.0f));
             return SIMDVec_f(t0);
         }
         inline SIMDVec_f operator-- (int) {
-            __m128 t0 = mVec;
-            mVec = _mm_sub_ps(mVec, _mm_set1_ps(1.0f));
-            return SIMDVec_f(t0);
+            return postdec();
         }
-        // MPOSTDEC
+        // MPOSTDEC
         inline SIMDVec_f postdec(SIMDVecMask<4> const & mask) {
             __m128 t0 = mVec;
 #if defined(__AVX512VL__)
@@ -501,16 +517,15 @@ namespace SIMD {
 #endif
             return SIMDVec_f(t0);
         }
-        // PREFDEC
+        // PREFDEC
         inline SIMDVec_f & prefdec() {
             mVec = _mm_sub_ps(mVec, _mm_set1_ps(1.0f));
             return *this;
         }
         inline SIMDVec_f & operator-- () {
-            mVec = _mm_sub_ps(mVec, _mm_set1_ps(1.0f));
-            return *this;
+            return prefdec();
         }
-        // MPREFDEC
+        // MPREFDEC
         inline SIMDVec_f & prefdec(SIMDVecMask<4> const & mask) {
 #if defined(__AVX512VL__)
             __m128 t0 = _mm_set1_ps(1.0f);
@@ -523,12 +538,15 @@ namespace SIMD {
 #endif
             return *this;
         }
-        // MULV
+        // MULV
         inline SIMDVec_f mul(SIMDVec_f const & b) const {
             __m128 t0 = _mm_mul_ps(mVec, b.mVec);
             return SIMDVec_f(t0);
         }
-        // MMULV
+        inline SIMDVec_f operator* (SIMDVec_f const & b) const {
+            return mul(b);
+        }
+        // MMULV
         inline SIMDVec_f mul(SIMDVecMask<4> const & mask, SIMDVec_f const & b) const {
 #if defined(__AVX512VL__)
             __m128 t0 = _mm_mask_mul_ps(mVec, mask.mMask, mVec, b.mVec);
@@ -540,11 +558,14 @@ namespace SIMD {
 #endif
             return SIMDVec_f(t0);
         }
-        // MULS
+        // MULS
         inline SIMDVec_f mul(float b) const {
             __m128 t0 = _mm_set1_ps(b);
             __m128 t1 = _mm_mul_ps(mVec, t0);
             return SIMDVec_f(t1);
+        }
+        inline SIMDVec_f operator* (float b) const {
+            return mul(b);
         }
         // MMULS
         inline SIMDVec_f mul(SIMDVecMask<4> const & mask, float b) const {
@@ -564,6 +585,9 @@ namespace SIMD {
             mVec = _mm_mul_ps(mVec, b.mVec);
             return *this;
         }
+        inline SIMDVec_f & operator*= (SIMDVec_f const & b) {
+            return mula(b);
+        }
         // MMULVA
         inline SIMDVec_f & mula(SIMDVecMask<4> const & mask, SIMDVec_f const & b) {
 #if defined(__AVX512VL__)
@@ -581,6 +605,9 @@ namespace SIMD {
             __m128 t0 = _mm_set1_ps(b);
             mVec = _mm_mul_ps(mVec, t0);
             return *this;
+        }
+        inline SIMDVec_f & operator*= (float b) {
+            return mula(b);
         }
         // MMULSA
         inline SIMDVec_f & mula(SIMDVecMask<4> const & mask, float b) {
@@ -601,6 +628,9 @@ namespace SIMD {
             __m128 t0 = _mm_div_ps(mVec, b.mVec);
             return SIMDVec_f(t0);
         }
+        inline SIMDVec_f operator/ (SIMDVec_f const & b) const {
+            return div(b);
+        }
         // MDIVV
         inline SIMDVec_f div(SIMDVecMask<4> const & mask, SIMDVec_f const & b) const {
 #if defined(__AVX512VL__)
@@ -618,6 +648,9 @@ namespace SIMD {
             __m128 t0 = _mm_set1_ps(b);
             __m128 t1 = _mm_div_ps(mVec, t0);
             return SIMDVec_f(t1);
+        }
+        inline SIMDVec_f operator/ (float b) const {
+            return div(b);
         }
         // MDIVS
         inline SIMDVec_f div(SIMDVecMask<4> const & mask, float b) const {
@@ -637,6 +670,9 @@ namespace SIMD {
             mVec = _mm_div_ps(mVec, b.mVec);
             return *this;
         }
+        inline SIMDVec_f & operator/= (SIMDVec_f const & b) {
+            return diva(b);
+        }
         // MDIVVA
         inline SIMDVec_f & diva(SIMDVecMask<4> const & mask, SIMDVec_f const & b) {
 #if defined(__AVX512VL__)
@@ -654,6 +690,9 @@ namespace SIMD {
             __m128 t0 = _mm_set1_ps(b);
             mVec = _mm_div_ps(mVec, t0);
             return *this;
+        }
+        inline SIMDVec_f & operator/= (float b) {
+            return diva(b);
         }
         // MDIVSA
         inline SIMDVec_f & diva(SIMDVecMask<4> const & mask, float b) {
@@ -772,6 +811,9 @@ namespace SIMD {
 #endif
             return SIMDVecMask<4>(m0);
         }
+        inline SIMDVecMask<4> operator== (SIMDVec_f const & b) const {
+            return cmpeq(b);
+        }
         // CMPEQS
         inline SIMDVecMask<4> cmpeq(float b) const {
 #if defined(__AVX512VL__)
@@ -784,6 +826,9 @@ namespace SIMD {
 #endif
             return SIMDVecMask<4>(m0);
         }
+        inline SIMDVecMask<4> operator== (float b) const {
+            return cmpeq(b);
+        }
         // CMPNEV
         inline SIMDVecMask<4> cmpne(SIMDVec_f const & b) const {
 #if defined(__AVX512VL__)
@@ -794,6 +839,9 @@ namespace SIMD {
             __mmask8 m0 = _mm512_cmp_ps_mask(t0, t1, 12);
 #endif
             return SIMDVecMask<4>(m0);
+        }
+        inline SIMDVecMask<4> operator!= (SIMDVec_f const & b) const {
+            return cmpne(b);
         }
         // CMPNES
         inline SIMDVecMask<4> cmpne(float b) const {
@@ -807,6 +855,9 @@ namespace SIMD {
 #endif
             return SIMDVecMask<4>(m0);
         }
+        inline SIMDVecMask<4> operator!= (float b) const {
+            return cmpne(b);
+        }
         // CMPGTV
         inline SIMDVecMask<4> cmpgt(SIMDVec_f const & b) const {
 #if defined(__AVX512VL__)
@@ -817,6 +868,9 @@ namespace SIMD {
             __mmask8 m0 = _mm512_cmp_ps_mask(t0, t1, 30);
 #endif
             return SIMDVecMask<4>(m0);
+        }
+        inline SIMDVecMask<4> operator> (SIMDVec_f const & b) const {
+            return cmpgt(b);
         }
         // CMPGTS
         inline SIMDVecMask<4> cmpgt(float b) const {
@@ -830,6 +884,9 @@ namespace SIMD {
 #endif
             return SIMDVecMask<4>(m0);
         }
+        inline SIMDVecMask<4> operator> (float b) const {
+            return cmpgt(b);
+        }
         // CMPLTV
         inline SIMDVecMask<4> cmplt(SIMDVec_f const & b) const {
 #if defined(__AVX512VL__)
@@ -840,6 +897,9 @@ namespace SIMD {
             __mmask8 m0 = _mm512_cmp_ps_mask(t0, t1, 17);
 #endif
             return SIMDVecMask<4>(m0);
+        }
+        inline SIMDVecMask<4> operator< (SIMDVec_f const & b) const {
+            return cmplt(b);
         }
         // CMPLTS
         inline SIMDVecMask<4> cmplt(float b) const {
@@ -853,6 +913,9 @@ namespace SIMD {
 #endif
             return SIMDVecMask<4>(m0);
         }
+        inline SIMDVecMask<4> operator< (float b) const {
+            return cmplt(b);
+        }
         // CMPGEV
         inline SIMDVecMask<4> cmpge(SIMDVec_f const & b) const {
 #if defined(__AVX512VL__)
@@ -863,6 +926,9 @@ namespace SIMD {
             __mmask8 m0 = _mm512_cmp_ps_mask(t0, t1, 29);
 #endif
             return SIMDVecMask<4>(m0);
+        }
+        inline SIMDVecMask<4> operator>= (SIMDVec_f const & b) const {
+            return cmpge(b);
         }
         // CMPGES
         inline SIMDVecMask<4> cmpge(float b) const {
@@ -876,6 +942,9 @@ namespace SIMD {
 #endif
             return SIMDVecMask<4>(m0);
         }
+        inline SIMDVecMask<4> operator>= (float b) const {
+            return cmpge(b);
+        }
         // CMPLEV
         inline SIMDVecMask<4> cmple(SIMDVec_f const & b) const {
 #if defined(__AVX512VL__)
@@ -886,6 +955,9 @@ namespace SIMD {
             __mmask8 m0 = _mm512_cmp_ps_mask(t0, t1, 18);
 #endif
             return SIMDVecMask<4>(m0);
+        }
+        inline SIMDVecMask<4> operator<= (SIMDVec_f const & b) const {
+            return cmple(b);
         }
         // CMPLES
         inline SIMDVecMask<4> cmple(float b) const {
@@ -898,6 +970,9 @@ namespace SIMD {
             __mmask8 m0 = _mm512_cmp_ps_mask(t0, t1, 18);
 #endif
             return SIMDVecMask<4>(m0);
+        }
+        inline SIMDVecMask<4> operator<= (float b) const {
+            return cmple(b);
         }
         // CMPEV
         inline bool cmpe(SIMDVec_f const & b) const {
@@ -922,7 +997,7 @@ namespace SIMD {
 #endif
             return (m0 == 0x0F);
         }
-        //(Blend/Swizzle operations)
+
         // BLENDV
         inline SIMDVec_f blend(SIMDVecMask<4> const & mask, SIMDVec_f const & b) const {
             __m128 t0 = _mm_mask_mov_ps(mVec, mask.mMask, b.mVec);
@@ -936,6 +1011,7 @@ namespace SIMD {
         }
         // SWIZZLE
         // SWIZZLEA
+
         // HADD
         inline float hadd() const {
             __m512 t0 = _mm512_castps128_ps512(mVec);
@@ -990,6 +1066,7 @@ namespace SIMD {
             retval *= _mm512_mask_reduce_mul_ps(t1, t0);
             return retval;
         }
+
         // FMULADDV
         inline SIMDVec_f fmuladd(SIMDVec_f const & b, SIMDVec_f const & c) {
 #if defined(__AVX512VL__)
@@ -1003,8 +1080,9 @@ namespace SIMD {
 #endif
             return SIMDVec_f(t0);
         }
+
         // MFMULADDV
-        inline SIMDVec_f fmuladd(SIMDVecMask<4> const & mask, SIMDVec_f const & b, SIMDVec_f const & c) {
+        inline SIMDVec_f fmuladd(SIMDVecMask<4> const & mask, SIMDVec_f const & b, SIMDVec_f const & c) const {
 #if defined(__AVX512VL__)
             __m128 t0 = _mm_mask_fmadd_ps(mVec, mask.mMask, b.mVec, c.mVec);
 #else
@@ -1017,7 +1095,7 @@ namespace SIMD {
             return SIMDVec_f(t0);
         }
         // FMULSUBV
-        inline SIMDVec_f fmulsub(SIMDVec_f const & b, SIMDVec_f const & c) {
+        inline SIMDVec_f fmulsub(SIMDVec_f const & b, SIMDVec_f const & c) const {
 #if defined(__AVX512VL__)
             __m128 t0 = _mm_fmsub_ps(mVec, b.mVec, c.mVec);
 #else
@@ -1030,7 +1108,7 @@ namespace SIMD {
             return SIMDVec_f(t0);
         }
         // MFMULSUBV
-        inline SIMDVec_f fmulsub(SIMDVecMask<4> const & mask, SIMDVec_f const & b, SIMDVec_f const & c) {
+        inline SIMDVec_f fmulsub(SIMDVecMask<4> const & mask, SIMDVec_f const & b, SIMDVec_f const & c) const {
 #if defined(__AVX512VL__)
             __m128 t0 = _mm_mask_fmsub_ps(mVec, mask.mMask, b.mVec, c.mVec);
 #else
@@ -1043,7 +1121,7 @@ namespace SIMD {
             return SIMDVec_f(t0);
         }
         // FADDMULV
-        inline SIMDVec_f faddmul(SIMDVec_f const & b, SIMDVec_f const & c) {
+        inline SIMDVec_f faddmul(SIMDVec_f const & b, SIMDVec_f const & c) const {
 #if defined(__AVX512VL__)
             __m128 t0 = _mm_add_ps(mVec, b.mVec);
             __m128 t1 = _mm_mul_ps(t0, c.mVec);
@@ -1058,7 +1136,7 @@ namespace SIMD {
             return SIMDVec_f(t1);
         }
         // MFADDMULV
-        inline SIMDVec_f faddmul(SIMDVecMask<4> const & mask, SIMDVec_f const & b, SIMDVec_f const & c) {
+        inline SIMDVec_f faddmul(SIMDVecMask<4> const & mask, SIMDVec_f const & b, SIMDVec_f const & c) const {
 #if defined(__AVX512VL__)
             __m128 t0 = _mm_mask_add_ps(mVec, mask.mMask, mVec, b.mVec);
             __m128 t1 = _mm_mask_mul_ps(mVec, mask.mMask, t0, c.mVec);
@@ -1073,7 +1151,7 @@ namespace SIMD {
             return SIMDVec_f(t1);
         }
         // FSUBMULV
-        inline SIMDVec_f fsubmul(SIMDVec_f const & b, SIMDVec_f const & c) {
+        inline SIMDVec_f fsubmul(SIMDVec_f const & b, SIMDVec_f const & c) const {
 #if defined(__AVX512VL__)
             __m128 t0 = _mm_sub_ps(mVec, b.mVec);
             __m128 t1 = _mm_mul_ps(t0, c.mVec);
@@ -1088,7 +1166,7 @@ namespace SIMD {
             return SIMDVec_f(t1);
         }
         // MFSUBMULV
-        inline SIMDVec_f fsubmul(SIMDVecMask<4> const & mask, SIMDVec_f const & b, SIMDVec_f const & c) {
+        inline SIMDVec_f fsubmul(SIMDVecMask<4> const & mask, SIMDVec_f const & b, SIMDVec_f const & c) const {
 #if defined(__AVX512VL__)
             __m128 t0 = _mm_mask_sub_ps(mVec, mask.mMask, mVec, b.mVec);
             __m128 t1 = _mm_mask_mul_ps(mVec, mask.mMask, t0, c.mVec);
@@ -1102,6 +1180,7 @@ namespace SIMD {
 #endif
             return SIMDVec_f(t1);
         }
+
         // MAXV
         inline SIMDVec_f max(SIMDVec_f const & b) const {
             __m128 t0 = _mm_max_ps(mVec, b.mVec);
@@ -1125,7 +1204,7 @@ namespace SIMD {
             __m128 t1 = _mm_max_ps(mVec, t0);
             return SIMDVec_f(t1);
         }
-        // MMAXS  - Masked max with scalar
+        // MMAXS
         inline SIMDVec_f max(SIMDVecMask<4> const & mask, float b) const {
 #if defined(__AVX512VL__)
             __m128 t0 = _mm_set1_ps(b);
@@ -1273,6 +1352,7 @@ namespace SIMD {
         }
         // IMIN
         // MIMIN
+
         // GATHERS
         /*inline SIMDVec_f & gather(float* baseAddr, uint64_t* indices) {
             alignas(16) float raw[4] = { baseAddr[indices[0]], baseAddr[indices[1]], baseAddr[indices[2]], baseAddr[indices[3]] };
@@ -1291,10 +1371,14 @@ namespace SIMD {
         // MSCATTERS
         // SCATTERV
         // MSCATTERV
+
         // NEG
         inline SIMDVec_f neg() const {
             __m128 t0 = _mm_sub_ps(_mm_set1_ps(0.0f), mVec);
             return SIMDVec_f(t0);
+        }
+        inline SIMDVec_f operator- () const {
+            return neg();
         }
         // MNEG
         inline SIMDVec_f neg(SIMDVecMask<4> const & mask) const {
@@ -1359,6 +1443,7 @@ namespace SIMD {
         }
         // CMPEQRV
         // CMPEQRS
+
         // SQR
         inline SIMDVec_f sqr() const {
             __m128 t0 = _mm_mul_ps(mVec, mVec);
@@ -1445,12 +1530,12 @@ namespace SIMD {
             return SIMDVec_f(t1);
         }
         // TRUNC
-        SIMDVec_i<int32_t, 4> trunc() {
+        SIMDVec_i<int32_t, 4> trunc() const {
             __m128i t0 = _mm_cvttps_epi32(mVec);
             return SIMDVec_i<int32_t, 4>(t0);
         }
-        // MTRUNC
-        SIMDVec_i<int32_t, 4> trunc(SIMDVecMask<4> const & mask) {
+        // MTRUNC
+        SIMDVec_i<int32_t, 4> trunc(SIMDVecMask<4> const & mask) const {
 #if defined(__AVX512VL__)
             __m128i t0 = _mm_mask_cvttps_epi32(_mm_setzero_si128(), mask.mMask, mVec);
 #else
@@ -1641,6 +1726,7 @@ namespace SIMD {
         // MTAN
         // CTAN
         // MCTAN
+
         // PACK
         inline SIMDVec_f & pack(SIMDVec_f<float, 2> const & a, SIMDVec_f<float, 2> const & b) {
             alignas(16) float raw[4] = { a.mVec[0], a.mVec[1], b.mVec[0], b.mVec[1] };
@@ -1659,7 +1745,7 @@ namespace SIMD {
             mVec = _mm_mask_load_ps(mVec, 0xC, raw);
             return *this;
         }
-        // UNPACK   - Unpack lower and upper halfs to half-length vectors.
+        // UNPACK
         inline void unpack(SIMDVec_f<float, 2> & a, SIMDVec_f<float, 2> & b) const {
             alignas(16) float raw[4];
             _mm_store_ps(raw, mVec);
@@ -1691,6 +1777,7 @@ namespace SIMD {
         // FTOI
         inline operator SIMDVec_i<int32_t, 4>() const;
     };
+
 }
 }
 
