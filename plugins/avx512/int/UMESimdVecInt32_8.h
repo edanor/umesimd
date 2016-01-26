@@ -811,7 +811,7 @@ namespace SIMD {
             return retval;
         }
         // MHADD
-        inline int32_t hadd(SIMDVecMask<8> const mask) const {
+        inline int32_t hadd(SIMDVecMask<8> const & mask) const {
             __m512i t0 = _mm512_castsi256_si512(mVec);
             __mmask16 t1 = 0x00FF & __mmask16(mask.mMask);
             int32_t retval = _mm512_mask_reduce_add_epi32(t1, t0);
@@ -824,7 +824,7 @@ namespace SIMD {
             return retval + b;
         }
         // MHADDS
-        inline int32_t hadd(SIMDVecMask<8> const mask, int32_t b) const {
+        inline int32_t hadd(SIMDVecMask<8> const & mask, int32_t b) const {
             __m512i t0 = _mm512_castsi256_si512(mVec);
             __mmask16 t1 = 0x00FF & __mmask16(mask.mMask);
             int32_t retval = _mm512_mask_reduce_add_epi32(t1, t0);
@@ -837,7 +837,7 @@ namespace SIMD {
             return retval;
         }
         // MHMUL
-        inline int32_t hmul(SIMDVecMask<8> const mask) const {
+        inline int32_t hmul(SIMDVecMask<8> const & mask) const {
             __m512i t0 = _mm512_castsi256_si512(mVec);
             __mmask16 t1 = 0x00FF & __mmask16(mask.mMask);
             int32_t retval = _mm512_mask_reduce_mul_epi32(t1, t0);
@@ -851,7 +851,7 @@ namespace SIMD {
             return retval;
         }
         // MHMULS
-        inline int32_t hmul(SIMDVecMask<8> const mask, int32_t b) const {
+        inline int32_t hmul(SIMDVecMask<8> const & mask, int32_t b) const {
             __m512i t0 = _mm512_castsi256_si512(mVec);
             __mmask16 t1 = 0x00FF & __mmask16(mask.mMask);
             int32_t retval = b;
@@ -1376,7 +1376,7 @@ namespace SIMD {
             return retval;
         }
         // MHBAND
-        inline int32_t hband(SIMDVecMask<8> const mask) const {
+        inline int32_t hband(SIMDVecMask<8> const & mask) const {
             __m512i t0 = _mm512_castsi256_si512(mVec);
             int32_t retval = _mm512_mask_reduce_and_epi32(mask.mMask, t0);
             return retval;
@@ -1389,7 +1389,7 @@ namespace SIMD {
             return retval;
         }
         // MHBANDS
-        inline int32_t hband(SIMDVecMask<8> const mask, int32_t b) const {
+        inline int32_t hband(SIMDVecMask<8> const & mask, int32_t b) const {
             __m512i t0 = _mm512_castsi256_si512(mVec);
             int32_t retval = b;
             retval &= _mm512_mask_reduce_and_epi32(mask.mMask, t0);
@@ -1402,7 +1402,7 @@ namespace SIMD {
             return retval;
         }
         // MHBOR
-        inline int32_t hbor(SIMDVecMask<8> const mask) const {
+        inline int32_t hbor(SIMDVecMask<8> const & mask) const {
             __m512i t0 = _mm512_castsi256_si512(mVec);
             int32_t retval = _mm512_mask_reduce_or_epi32(mask.mMask, t0);
             return retval;
@@ -1415,7 +1415,7 @@ namespace SIMD {
             return retval;
         }
         // MHBORS
-        inline int32_t hbor(SIMDVecMask<8> const mask, int32_t b) const {
+        inline int32_t hbor(SIMDVecMask<8> const & mask, int32_t b) const {
             __m512i t0 = _mm512_castsi256_si512(mVec);
             int32_t retval = b;
             retval |= _mm512_mask_reduce_or_epi32(mask.mMask, t0);
@@ -1429,7 +1429,7 @@ namespace SIMD {
                    raw[4] ^ raw[5] ^ raw[6] ^ raw[7];
         }
         // MHBXOR
-        inline int32_t hbxor(SIMDVecMask<8> const mask) const {
+        inline int32_t hbxor(SIMDVecMask<8> const & mask) const {
             alignas(32) int32_t raw[8];
             _mm256_store_si256((__m256i*)raw, mVec);
             int32_t t0 = 0;
@@ -1451,7 +1451,7 @@ namespace SIMD {
                        raw[4] ^ raw[5] ^ raw[6] ^ raw[7];
         }
         // MHBXORS
-        inline int32_t hbxor(SIMDVecMask<8> const mask, int32_t b) const {
+        inline int32_t hbxor(SIMDVecMask<8> const & mask, int32_t b) const {
             alignas(32) int32_t raw[8];
             _mm256_store_si256((__m256i*)raw, mVec);
             int32_t t0 = b;
@@ -1466,7 +1466,7 @@ namespace SIMD {
             return t0;
         }
         // GATHERS
-        inline SIMDVec_i & gather(int32_t* baseAddr, uint64_t* indices) {
+        inline SIMDVec_i & gather(int32_t* baseAddr, uint32_t* indices) {
             alignas(32) int32_t raw[8] = { 
                 baseAddr[indices[0]], baseAddr[indices[1]], 
                 baseAddr[indices[2]], baseAddr[indices[3]],
@@ -1476,7 +1476,7 @@ namespace SIMD {
             return *this;
         }
         // MGATHERS
-        inline SIMDVec_i & gather(SIMDVecMask<8> const & mask, int32_t* baseAddr, uint64_t* indices) {
+        inline SIMDVec_i & gather(SIMDVecMask<8> const & mask, int32_t* baseAddr, uint32_t* indices) {
             alignas(32) int32_t rawIndices[8] = { 
                 indices[0], indices[1], indices[2], indices[3],
                 indices[4], indices[5], indices[6], indices[7] };
@@ -1523,7 +1523,7 @@ namespace SIMD {
             return *this;
         }
         // SCATTERS
-        inline int32_t* scatter(int32_t* baseAddr, uint64_t* indices) {
+        inline int32_t* scatter(int32_t* baseAddr, uint32_t* indices) {
             alignas(32) int32_t rawIndices[8] = { 
                 indices[0], indices[1], indices[2], indices[3],
                 indices[4], indices[5], indices[6], indices[7] };
@@ -1538,7 +1538,7 @@ namespace SIMD {
             return baseAddr;
         }
         // MSCATTERS
-        inline int32_t* scatter(SIMDVecMask<8> const & mask, int32_t* baseAddr, uint64_t* indices) {
+        inline int32_t* scatter(SIMDVecMask<8> const & mask, int32_t* baseAddr, uint32_t* indices) {
             alignas(32) int32_t rawIndices[8] = { 
                 indices[0], indices[1], indices[2], indices[3],
                 indices[4], indices[5], indices[6], indices[7] };

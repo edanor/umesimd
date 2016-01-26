@@ -160,7 +160,7 @@ namespace SIMD
 
         // GATHERS
         template<typename VEC_TYPE, typename SCALAR_TYPE>
-        inline VEC_TYPE & gather(VEC_TYPE & dst, SCALAR_TYPE* base, uint64_t* indices) {
+        inline VEC_TYPE & gather(VEC_TYPE & dst, SCALAR_TYPE* base, uint32_t* indices) {
             UME_EMULATION_WARNING();
             for (uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                 dst.insert( i, base[indices[i]]);
@@ -170,7 +170,7 @@ namespace SIMD
 
         // MGATHERS
         template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
-        inline VEC_TYPE & gather(MASK_TYPE const & mask, VEC_TYPE & dst, SCALAR_TYPE* base, uint64_t* indices) {
+        inline VEC_TYPE & gather(MASK_TYPE const & mask, VEC_TYPE & dst, SCALAR_TYPE* base, uint32_t* indices) {
             UME_EMULATION_WARNING();
             for (uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                 if(mask[i] == true) dst.insert( i, base[indices[i]]);
@@ -200,7 +200,7 @@ namespace SIMD
 
         // SCATTERS
         template<typename VEC_TYPE, typename SCALAR_TYPE>
-        inline SCALAR_TYPE* scatter(VEC_TYPE const & src, SCALAR_TYPE* base, uint64_t* indices) {
+        inline SCALAR_TYPE* scatter(VEC_TYPE const & src, SCALAR_TYPE* base, uint32_t* indices) {
             UME_EMULATION_WARNING();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                 base[indices[i]] = src[i];
@@ -210,7 +210,7 @@ namespace SIMD
 
         // MSCATTERS
         template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
-        inline SCALAR_TYPE* scatter(MASK_TYPE const & mask, VEC_TYPE const & src, SCALAR_TYPE* base, uint64_t* indices) {
+        inline SCALAR_TYPE* scatter(MASK_TYPE const & mask, VEC_TYPE const & src, SCALAR_TYPE* base, uint32_t* indices) {
             UME_EMULATION_WARNING();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                 if(mask[i] == true) base[indices[i]] = src[i];
@@ -5497,6 +5497,7 @@ namespace SIMD
     template<typename DERIVED_VEC_TYPE,
              typename DERIVED_UINT_VEC_TYPE,
              typename SCALAR_TYPE,
+             typename SCALAR_UINT_TYPE,
              typename MASK_TYPE>
     class SIMDVecGatherScatterInterface
     {
@@ -5504,6 +5505,7 @@ namespace SIMD
             DERIVED_VEC_TYPE, 
             DERIVED_UINT_VEC_TYPE,
             SCALAR_TYPE,
+            SCALAR_UINT_TYPE,
             MASK_TYPE> VEC_TYPE;
 
     private:
@@ -5522,12 +5524,12 @@ namespace SIMD
  
     public:
         // GATHERS
-        inline DERIVED_VEC_TYPE & gather (SCALAR_TYPE * baseAddr, uint64_t* indices) {
+        inline DERIVED_VEC_TYPE & gather (SCALAR_TYPE * baseAddr, SCALAR_UINT_TYPE* indices) {
             return EMULATED_FUNCTIONS::gather<DERIVED_VEC_TYPE, SCALAR_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this), baseAddr, indices);
         }
 
         // MGATHERS
-        inline DERIVED_VEC_TYPE & gather (MASK_TYPE const & mask, SCALAR_TYPE* baseAddr, uint64_t* indices) {
+        inline DERIVED_VEC_TYPE & gather (MASK_TYPE const & mask, SCALAR_TYPE* baseAddr, SCALAR_UINT_TYPE* indices) {
             return EMULATED_FUNCTIONS::gather<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this), baseAddr, indices);
         }
 
@@ -5542,12 +5544,12 @@ namespace SIMD
         }
 
         // SCATTERS
-        inline SCALAR_TYPE* scatter (SCALAR_TYPE* baseAddr, uint64_t* indices) {
+        inline SCALAR_TYPE* scatter (SCALAR_TYPE* baseAddr, SCALAR_UINT_TYPE* indices) {
             return EMULATED_FUNCTIONS::scatter<DERIVED_VEC_TYPE, SCALAR_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this), baseAddr, indices);
         }
 
         // MSCATTERS
-        inline SCALAR_TYPE*  scatter (MASK_TYPE const & mask, SCALAR_TYPE* baseAddr, uint64_t* indices) {
+        inline SCALAR_TYPE*  scatter (MASK_TYPE const & mask, SCALAR_TYPE* baseAddr, SCALAR_UINT_TYPE* indices) {
             return EMULATED_FUNCTIONS::scatter<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this), baseAddr, indices);
         }
 
@@ -5941,6 +5943,7 @@ namespace SIMD
             DERIVED_UINT_VEC_TYPE,   // DERIVED_VEC_TYPE
             DERIVED_UINT_VEC_TYPE,
             SCALAR_UINT_TYPE,
+            SCALAR_UINT_TYPE,
             MASK_TYPE>,
         public SIMDVecShiftRotateInterface<
             DERIVED_UINT_VEC_TYPE,   // DERIVED_VEC_TYPE
@@ -6005,6 +6008,7 @@ namespace SIMD
             DERIVED_VEC_TYPE,   // DERIVED_VEC_TYPE
             DERIVED_VEC_UINT_TYPE,   // DERIVEC_UINT_VEC_TYPE // TODO: replace this with DERIVED_VEC_TYPE when other types independant!
             SCALAR_TYPE,
+            SCALAR_UINT_TYPE,
             MASK_TYPE>,
         public SIMDVecShiftRotateInterface<
             DERIVED_VEC_TYPE,
@@ -6088,6 +6092,7 @@ namespace SIMD
             DERIVED_VEC_TYPE,   // DERIVED_VEC_TYPE
             DERIVED_VEC_UINT_TYPE,   // DERIVEC_UINT_VEC_TYPE // TODO: replace this with DERIVED_VEC_TYPE when other types independant!
             SCALAR_FLOAT_TYPE,
+            SCALAR_UINT_TYPE,
             MASK_TYPE>,
         public SIMDVecSignInterface<
             DERIVED_VEC_TYPE,

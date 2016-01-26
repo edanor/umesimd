@@ -1052,13 +1052,13 @@ namespace SIMD {
         }
 
         // GATHERS
-        inline SIMDVec_f & gather(float * baseAddr, uint64_t * indices) {
+        inline SIMDVec_f & gather(float * baseAddr, uint32_t * indices) {
             mVec[0] = baseAddr[indices[0]];
             mVec[1] = baseAddr[indices[1]];
             return *this;
         }
         // MGATHERS
-        inline SIMDVec_f & gather(SIMDVecMask<2> const & mask, float * baseAddr, uint64_t * indices) {
+        inline SIMDVec_f & gather(SIMDVecMask<2> const & mask, float * baseAddr, uint32_t * indices) {
             if (mask.mMask[0] == true) mVec[0] = baseAddr[indices[0]];
             if (mask.mMask[1] == true) mVec[1] = baseAddr[indices[1]];
             return *this;
@@ -1076,13 +1076,13 @@ namespace SIMD {
             return *this;
         }
         // SCATTERS
-        inline float * scatter(float * baseAddr, uint64_t * indices) const {
+        inline float * scatter(float * baseAddr, uint32_t * indices) const {
             baseAddr[indices[0]] = mVec[0];
             baseAddr[indices[1]] = mVec[1];
             return baseAddr;
         }
         // MSCATTERS
-        inline float * scatter(SIMDVecMask<2> const & mask, float * baseAddr, uint64_t * indices) const {
+        inline float * scatter(SIMDVecMask<2> const & mask, float * baseAddr, uint32_t * indices) const {
             if (mask.mMask[0] == true) baseAddr[indices[0]] = mVec[0];
             if (mask.mMask[1] == true) baseAddr[indices[1]] = mVec[1];
             return baseAddr;

@@ -36,6 +36,9 @@
 
 #include "../../../UMESimdInterface.h"
 
+#ifdef BLEND
+#undef BLEND
+#endif
 #define BLEND(a, b, mask) _mm_blendv_ps(a, b, _mm_castsi128_ps(mask))
 
 namespace UME {
@@ -746,7 +749,7 @@ namespace SIMD {
             return raw[0] + raw[1] + raw[2] + raw[3];
         }
         // MHADD
-        inline float hadd(SIMDVecMask<4> const mask) const {
+        inline float hadd(SIMDVecMask<4> const & mask) const {
             alignas(16) float raw[4];
             __m128 t0 = BLEND(mVec, _mm_set1_ps(0.0f), mask.mMask);
             _mm_store_ps(raw, t0);
@@ -759,7 +762,7 @@ namespace SIMD {
             return raw[0] + raw[1] + raw[2] + raw[3] + b;
         }
         // MHADDS
-        inline float hadd(SIMDVecMask<4> const mask, float b) const {
+        inline float hadd(SIMDVecMask<4> const & mask, float b) const {
             alignas(16) float raw[4];
             __m128 t0 = BLEND(mVec, _mm_set1_ps(0.0f), mask.mMask);
             _mm_store_ps(raw, t0);
@@ -772,7 +775,7 @@ namespace SIMD {
             return raw[0] * raw[1] * raw[2] * raw[3];
         }
         // MHMUL
-        inline float hmul(SIMDVecMask<4> const mask) const {
+        inline float hmul(SIMDVecMask<4> const & mask) const {
             alignas(16) float raw[4];
             __m128 t0 = BLEND(mVec, _mm_set1_ps(0.0f), mask.mMask);
             _mm_store_ps(raw, t0);
@@ -785,7 +788,7 @@ namespace SIMD {
             return raw[0] * raw[1] * raw[2] * raw[3] * b;
         }
         // MHMULS
-        inline float hmul(SIMDVecMask<4> const mask, float b) const {
+        inline float hmul(SIMDVecMask<4> const & mask, float b) const {
             alignas(16) float raw[4];
             __m128 t0 = BLEND(mVec, _mm_set1_ps(0.0f), mask.mMask);
             _mm_store_ps(raw, t0);
@@ -1171,13 +1174,19 @@ namespace SIMD {
         // PACKLO
         inline SIMDVec_f & packlo(SIMDVec_f<float, 2> const & a) {
             alignas(16) float raw[4] = { a.mVec[0], a.mVec[1], 0.0f, 0.0f };
-            mVec = _mm_mask_load_ps(mVec, 0x3, raw);
+            alignas(16) uint32_t mask_raw[4] = { 0xFFFFFFFF, 0xFFFFFFFF, 0, 0 };
+            __m128i t0 = _mm_load_si128((__m128i*)mask_raw);
+            __m128 t1 = _mm_load_ps(raw);
+            mVec = BLEND(mVec, t1, t0);
             return *this;
         }
         // PACKHI
         inline SIMDVec_f & packhi(SIMDVec_f<float, 2> const & b) {
             alignas(16) float raw[4] = { 0.0f, 0.0f, b.mVec[0], b.mVec[1] };
-            mVec = _mm_mask_load_ps(mVec, 0xC, raw);
+            alignas(16) uint32_t mask_raw[4] = { 0, 0, 0xFFFFFFFF, 0xFFFFFFFF };
+            __m128i t0 = _mm_load_si128((__m128i*)mask_raw);
+            __m128 t1 = _mm_load_ps(raw);
+            mVec = BLEND(mVec, t1, t0);
             return *this;
         }
         // UNPACK
@@ -1192,13 +1201,13 @@ namespace SIMD {
         // UNPACKLO
         inline SIMDVec_f<float, 2> unpacklo() const {
             alignas(16) float raw[4];
-            _mm_mask_store_ps(raw, 0x3, mVec);
+            _mm_store_ps(raw, mVec);
             return SIMDVec_f<float, 2>(raw[0], raw[1]);
         }
         // UNPACKHI
         inline SIMDVec_f<float, 2> unpackhi() const {
             alignas(16) float raw[4];
-            _mm_mask_store_ps(raw, 0xC, mVec);
+            _mm_store_ps(raw, mVec);
             return SIMDVec_f<float, 2>(raw[2], raw[3]);
         }
 

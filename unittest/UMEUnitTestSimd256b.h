@@ -378,7 +378,7 @@ int test_UME_SIMD8_32u(bool supressMessages)
         alignas(32) uint32_t arr[] = {10,  20,  30,  40,  50,  60,  70,  80, 
                                       90, 100, 110, 120, 130, 140, 150, 160};
         SIMD8_32u vec0(1, 2, 3, 4, 5, 6, 7, 8);
-        alignas(32) uint64_t indices[8] = {0, 3, 5, 9, 10, 11, 12, 15};
+        alignas(32) uint32_t indices[8] = {0, 3, 5, 9, 10, 11, 12, 15};
         vec0.gather(arr, indices);
         CHECK_CONDITION(vec0[0] == 10 && vec0[1] == 40 && vec0[6] == 130 && vec0[7] == 160, "GATHER");
     }
@@ -386,7 +386,7 @@ int test_UME_SIMD8_32u(bool supressMessages)
         alignas(32) uint32_t arr[] = {10,  20,  30,  40,  50,  60,  70,  80, 
                                       90, 100, 110, 120, 130, 140, 150, 160};
         SIMD8_32u vec0(1, 2, 3, 4, 5, 6, 7, 8);
-        alignas(32) uint64_t indices[8] = {0, 3, 5, 9, 10, 11, 12, 15};
+        alignas(32) uint32_t indices[8] = {0, 3, 5, 9, 10, 11, 12, 15};
         SIMDMask8 mask(true, false, true, true, true, true, false, true);
         vec0.gather(mask, arr, indices);
         CHECK_CONDITION(vec0[0] == 10 && vec0[1] == 2 && vec0[6] == 7 && vec0[7] == 160, "MGATHER");
@@ -412,7 +412,7 @@ int test_UME_SIMD8_32u(bool supressMessages)
         alignas(32) uint32_t arr[] = {10,  20,  30,  40,  50,  60,  70,  80,
                                       90, 100, 120, 120, 130, 140, 150, 160};
         SIMD8_32u vec0(1, 2, 3, 4, 5, 6, 7, 8);
-        alignas(32) uint64_t indices[8] = {0, 3, 5, 9, 10, 11, 12, 15};
+        alignas(32) uint32_t indices[8] = {0, 3, 5, 9, 10, 11, 12, 15};
         uint32_t* res = vec0.scatter(arr, indices);
         CHECK_CONDITION(res[0] == 1 && res[1] == 20 && res[11] == 6 && res[14] == 150, "SCATTER");
     }
@@ -420,7 +420,7 @@ int test_UME_SIMD8_32u(bool supressMessages)
         alignas(32) uint32_t arr[] = {10,  20,  30,  40,  50,  60,  70,  80,
                                       90, 100, 120, 120, 130, 140, 150, 160};
         SIMD8_32u vec0(1, 2, 3, 4, 5, 6, 7, 8);
-        alignas(32) uint64_t indices[8] = {0, 3, 5, 9, 10, 11, 12, 15};
+        alignas(32) uint32_t indices[8] = {0, 3, 5, 9, 10, 11, 12, 15};
         SIMDMask8 mask(true, false, true, true, true, true, false, true);
         uint32_t* res = vec0.scatter(mask, arr, indices);
         CHECK_CONDITION(res[0] == 1 && res[3] == 40 && res[12] == 130 && res[15] == 8, "MSCATTER");

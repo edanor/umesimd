@@ -947,7 +947,7 @@ namespace SIMD {
             return retval;
         }
         // MHADD
-        inline float hadd(SIMDVecMask<8> const mask) const {
+        inline float hadd(SIMDVecMask<8> const & mask) const {
             __m512 t0 = _mm512_castps256_ps512(mVec);
             __mmask16 t1 = (__mmask16)mask.mMask;
             float retval = _mm512_mask_reduce_add_ps(t1, t0);
@@ -960,7 +960,7 @@ namespace SIMD {
             return retval + b;
         }
         // MHADDS
-        inline float hadd(SIMDVecMask<8> const mask, float b) const {
+        inline float hadd(SIMDVecMask<8> const & mask, float b) const {
             __m512 t0 = _mm512_castps256_ps512(mVec);
             __mmask16 t1 = (__mmask16)mask.mMask;
             float retval = _mm512_mask_reduce_add_ps(t1, t0);
@@ -973,7 +973,7 @@ namespace SIMD {
             return retval;
         }
         // MHMUL
-        inline float hmul(SIMDVecMask<8> const mask) const {
+        inline float hmul(SIMDVecMask<8> const & mask) const {
             __m512 t0 = _mm512_castps256_ps512(mVec);
             __mmask16 t1 = (__mmask16)mask.mMask;
             float retval = _mm512_mask_reduce_mul_ps(t1, t0);
@@ -987,7 +987,7 @@ namespace SIMD {
             return retval;
         }
         // MHMULS
-        inline float hmul(SIMDVecMask<8> const mask, float b) const {
+        inline float hmul(SIMDVecMask<8> const & mask, float b) const {
             __m512 t0 = _mm512_castps256_ps512(mVec);
             __mmask16 t1 = (__mmask16)mask.mMask;
             float retval = b;
@@ -1278,13 +1278,13 @@ namespace SIMD {
         // IMIN
         // MIMIN
         // GATHERS
-        /*inline SIMDVec_f & gather(float* baseAddr, uint64_t* indices) {
+        /*inline SIMDVec_f & gather(float* baseAddr, uint32_t* indices) {
             alignas(32) float raw[8] = { baseAddr[indices[0]], baseAddr[indices[1]], baseAddr[indices[2]], baseAddr[indices[3]] };
             mVec = _mm256_load_ps(raw);
             return *this;
         }*/
         // MGATHERS
-        /*inline SIMDVec_f & gather(SIMDVecMask<8> const & mask, float* baseAddr, uint64_t* indices) {
+        /*inline SIMDVec_f & gather(SIMDVecMask<8> const & mask, float* baseAddr, uint32_t* indices) {
             alignas(32) float raw[8] = { baseAddr[indices[0]], baseAddr[indices[1]], baseAddr[indices[2]], baseAddr[indices[3]] };
             mVec = _mm256_mask_load_ps(mVec, mask.mMask, raw);
             return *this;

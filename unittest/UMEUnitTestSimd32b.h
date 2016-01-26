@@ -50,7 +50,7 @@ int test_UME_SIMD1_32f(bool supressMessages);
 
 using namespace UME::SIMD;
 
-int test_UME_SIMD32b(bool supressMessages) 
+int test_UME_SIMD32b(bool supressMessages)
 {
     int simd4_8_res = test_UME_SIMD4_8(supressMessages);
     int simd2_16_res = test_UME_SIMD2_16(supressMessages);

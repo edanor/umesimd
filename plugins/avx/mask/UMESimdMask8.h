@@ -35,6 +35,7 @@
 
 namespace UME {
 namespace SIMD {
+
     template<>
     class SIMDVecMask<8> :
         public SIMDMaskBaseInterface<
@@ -63,15 +64,17 @@ namespace SIMD {
     private:
         __m256i mMask;
 
-        inline SIMDVecMask(__m256i const & x) { mMask = x; };
+        inline explicit SIMDVecMask(__m256i const & x) { mMask = x; };
     public:
         inline SIMDVecMask() {}
 
         // Regardless of the mask representation, the interface should only allow initialization using 
         // standard bool or using equivalent mask
+        // SET-CONSTR
         inline explicit SIMDVecMask(bool m) {
             mMask = _mm256_set1_epi32(toMaskBool(m));
         }
+
         // LOAD-CONSTR
         inline explicit SIMDVecMask(bool const *p) {
             alignas(32) uint32_t raw[8];
@@ -93,7 +96,6 @@ namespace SIMD {
         }
         // EXTRACT
         inline bool extract(uint32_t index) const {
-            UME_PERFORMANCE_UNOPTIMAL_WARNING()
             alignas(32) uint32_t raw[8];
             _mm256_store_si256((__m256i*)raw, mMask);
             return raw[index] == TRUE();
@@ -103,22 +105,111 @@ namespace SIMD {
         }
         // INSERT
         inline void insert(uint32_t index, bool x) {
-            UME_PERFORMANCE_UNOPTIMAL_WARNING()
-            alignas(32) static uint32_t raw[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
+            alignas(32) static uint32_t raw[8];
             _mm256_store_si256((__m256i*)raw, mMask);
             raw[index] = toMaskBool(x);
             mMask = _mm256_load_si256((__m256i*)raw);
         }
-
+        // ASSIGNV
         inline SIMDVecMask & operator= (SIMDVecMask const & x) {
             mMask = x.mMask;
             return *this;
         }
-
+        // LANDV
+        inline SIMDVecMask land(SIMDVecMask const & b) const {
+            __m256i t0 = _mm256_and_si256(mMask, b.mMask);
+            return SIMDVecMask(t0);
+        }
+        // LANDS
+        inline SIMDVecMask land(bool b) const {
+            __m256i t0 = _mm256_set1_epi32(b ? TRUE() : FALSE());
+            __m256i t1 = _mm256_and_si256(mMask, t0);
+            return SIMDVecMask(t1);
+        }
+        // LANDVA
+        inline SIMDVecMask & landa(SIMDVecMask const & b) {
+            mMask = _mm256_and_si256(mMask, b.mMask);
+            return *this;
+        }
+        // LANDSA
+        inline SIMDVecMask & landa(bool b) {
+            __m256i t0 = _mm256_set1_epi32(b ? TRUE() : FALSE());
+            mMask = _mm256_and_si256(mMask, t0);
+            return *this;
+        }
+        // LORV
+        inline SIMDVecMask lor(SIMDVecMask const & b) const {
+            __m256i t0 = _mm256_or_si256(mMask, b.mMask);
+            return SIMDVecMask(t0);
+        }
+        // LORS
+        inline SIMDVecMask lor(bool b) const {
+            __m256i t0 = _mm256_set1_epi32(b ? TRUE() : FALSE());
+            __m256i t1 = _mm256_or_si256(mMask, t0);
+            return SIMDVecMask(t1);
+        }
+        // LORVA
+        inline SIMDVecMask & lora(SIMDVecMask const & b) {
+            mMask = _mm256_or_si256(mMask, b.mMask);
+            return *this;
+        }
+        // LORSA
+        inline SIMDVecMask & lora(bool b) {
+            __m256i t0 = _mm256_set1_epi32(b ? TRUE() : FALSE());
+            mMask = _mm256_or_si256(mMask, t0);
+            return *this;
+        }
+        // LXORV
+        inline SIMDVecMask lxor(SIMDVecMask const & b) const {
+            __m256i t0 = _mm256_xor_si256(mMask, b.mMask);
+            return SIMDVecMask(t0);
+        }
+        // LXORS
+        inline SIMDVecMask lxor(bool b) const {
+            __m256i t0 = _mm256_set1_epi32(b ? TRUE() : FALSE());
+            __m256i t1 = _mm256_xor_si256(mMask, t0);
+            return SIMDVecMask(t1);
+        }
+        // LXORVA
+        inline SIMDVecMask & lxora(SIMDVecMask const & b) {
+            mMask = _mm256_xor_si256(mMask, b.mMask);
+            return *this;
+        }
+        // LXORSA
+        inline SIMDVecMask & lxora(bool b) {
+            __m256i t0 = _mm256_set1_epi32(b ? TRUE() : FALSE());
+            mMask = _mm256_xor_si256(mMask, t0);
+            return *this;
+        }
+        // LNOT
+        inline SIMDVecMask lnot() const {
+            __m256i t0 = _mm256_set1_epi32(TRUE());
+            __m256i t1 = _mm256_xor_si256(mMask, t0);
+            return SIMDVecMask(t1);
+        }
+        // LNOTA
+        inline SIMDVecMask & lnota() {
+            __m256i t0 = _mm256_set1_epi32(TRUE());
+            mMask = _mm256_xor_si256(mMask, t0);
+            return *this;
+        }
+        // HLAND
+        inline bool hland() const {
+            alignas(32) uint32_t raw[8];
+            _mm256_store_si256((__m256i*)raw, mMask);
+            return raw[0] && raw[1] && raw[2] && raw[3] && raw[4] && raw[5] && raw[6] && raw[7];
+        }
         // HLOR
         inline bool hlor() const {
-            int t0 = _mm256_testz_si256(mMask, mMask);
-            return t0 == 0;
+            alignas(32) uint32_t raw[8];
+            _mm256_store_si256((__m256i*)raw, mMask);
+            return raw[0] || raw[1] || raw[2] || raw[3] || raw[4] || raw[5] || raw[6] || raw[7];
+        }
+        // HLXOR
+        inline bool hlxor() const {
+            alignas(32) uint32_t raw[8];
+            _mm256_store_si256((__m256i*)raw, mMask);
+            return (raw[0] ^ raw[1] ^ raw[2] ^ raw[3] ^ raw[4] ^ raw[5] ^ raw[6] ^ raw[7]) == TRUE();
         }
     };
 }

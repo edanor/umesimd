@@ -741,7 +741,7 @@ namespace SIMD {
             return t0 + t1;
         }
         // MHADD
-        inline uint32_t hadd(SIMDVecMask<32> const mask) const {
+        inline uint32_t hadd(SIMDVecMask<32> const & mask) const {
             __mmask16 m0 = mask.mMask & 0x0000FFFF;
             __mmask16 m1 = (mask.mMask & 0xFFFF0000) >> 16;
             uint32_t t0 = _mm512_mask_reduce_add_epi32(m0, mVec[0]);
@@ -755,7 +755,7 @@ namespace SIMD {
             return t0 + t1 + b;
         }
         // MHADDS
-        inline uint32_t hadd(SIMDVecMask<32> const mask, uint32_t b) const {
+        inline uint32_t hadd(SIMDVecMask<32> const & mask, uint32_t b) const {
             __mmask16 m0 = mask.mMask & 0x0000FFFF;
             __mmask16 m1 = (mask.mMask & 0xFFFF0000) >> 16;
             uint32_t t0 = _mm512_mask_reduce_add_epi32(m0, mVec[0]);
@@ -769,7 +769,7 @@ namespace SIMD {
             return t0 * t1;
         }
         // MHMUL
-        inline uint32_t hmul(SIMDVecMask<32> const mask) const {
+        inline uint32_t hmul(SIMDVecMask<32> const & mask) const {
             __mmask16 m0 = mask.mMask & 0x0000FFFF;
             __mmask16 m1 = (mask.mMask & 0xFFFF0000) >> 16;
             uint32_t t0 = _mm512_mask_reduce_add_epi32(m0, mVec[0]);
@@ -783,7 +783,7 @@ namespace SIMD {
             return b * t0 * t1;
         }
         // MHMULS
-        inline uint32_t hmul(SIMDVecMask<32> const mask, uint32_t b) const {
+        inline uint32_t hmul(SIMDVecMask<32> const & mask, uint32_t b) const {
             __mmask16 m0 = mask.mMask & 0x0000FFFF;
             __mmask16 m1 = (mask.mMask & 0xFFFF0000) >> 16;
             uint32_t t0 = _mm512_mask_reduce_add_epi32(m0, mVec[0]);
@@ -1234,7 +1234,7 @@ namespace SIMD {
             return t0;
         }
         // MHBAND
-        inline uint32_t hband(SIMDVecMask<32> const mask) const {
+        inline uint32_t hband(SIMDVecMask<32> const & mask) const {
             __mmask16 m0 = mask.mMask & 0x0000FFFF;
             __mmask16 m1 = (mask.mMask & 0xFFFF0000) >> 16;
             uint32_t t0 = _mm512_mask_reduce_and_epi32(m0, mVec[0]);
@@ -1249,7 +1249,7 @@ namespace SIMD {
             return t0;
         }
         // MHBANDS
-        inline uint32_t hband(SIMDVecMask<32> const mask, uint32_t b) const {
+        inline uint32_t hband(SIMDVecMask<32> const & mask, uint32_t b) const {
             __mmask16 m0 = mask.mMask & 0x0000FFFF;
             __mmask16 m1 = (mask.mMask & 0xFFFF0000) >> 16;
             uint32_t t0 = b;
@@ -1264,7 +1264,7 @@ namespace SIMD {
             return t0;
         }
         // MHBOR
-        inline uint32_t hbor(SIMDVecMask<32> const mask) const {
+        inline uint32_t hbor(SIMDVecMask<32> const & mask) const {
             __mmask16 m0 = mask.mMask & 0x0000FFFF;
             __mmask16 m1 = (mask.mMask & 0xFFFF0000) >> 16;
             uint32_t t0 = _mm512_mask_reduce_or_epi32(m0, mVec[0]);
@@ -1279,7 +1279,7 @@ namespace SIMD {
             return t0;
         }
         // MHBORS
-        inline uint32_t hbor(SIMDVecMask<32> const mask, uint32_t b) const {
+        inline uint32_t hbor(SIMDVecMask<32> const & mask, uint32_t b) const {
             __mmask16 m0 = mask.mMask & 0x0000FFFF;
             __mmask16 m1 = (mask.mMask & 0xFFFF0000) >> 16;
             uint32_t t0 = b;
@@ -1299,7 +1299,7 @@ namespace SIMD {
             return t0;
         }
         // MHBXOR
-        inline uint32_t hbxor(SIMDVecMask<32> const mask) const {
+        inline uint32_t hbxor(SIMDVecMask<32> const & mask) const {
             __mmask16 m0 = mask.mMask & 0x0000FFFF;
             __mmask16 m1 = (mask.mMask & 0xFFFF0000) >> 16;
             alignas(64) uint32_t raw[32];
@@ -1323,7 +1323,7 @@ namespace SIMD {
             return t0;
         }
         // MHBXORS
-        inline uint32_t hbxor(SIMDVecMask<32> const mask, uint32_t b) const {
+        inline uint32_t hbxor(SIMDVecMask<32> const & mask, uint32_t b) const {
             alignas(64) uint32_t raw[32];
             _mm512_store_si512((__m512i*)raw, mVec[0]);
             _mm512_store_si512((__m512i*)(raw + 16), mVec[1]);
@@ -1334,7 +1334,7 @@ namespace SIMD {
             return t0;
         }
         // GATHERS
-        inline SIMDVec_u & gather(uint32_t* baseAddr, uint64_t* indices) {
+        inline SIMDVec_u & gather(uint32_t* baseAddr, uint32_t* indices) {
             alignas(64) uint32_t raw[32] = { 
                 baseAddr[indices[0]], baseAddr[indices[1]],
                 baseAddr[indices[2]], baseAddr[indices[3]],
@@ -1357,7 +1357,7 @@ namespace SIMD {
             return *this;
         }
         // MGATHERS
-        inline SIMDVec_u & gather(SIMDVecMask<32> const & mask, uint32_t* baseAddr, uint64_t* indices) {
+        inline SIMDVec_u & gather(SIMDVecMask<32> const & mask, uint32_t* baseAddr, uint32_t* indices) {
             alignas(64) uint32_t raw[32] = {
                 baseAddr[indices[0]], baseAddr[indices[1]],
                 baseAddr[indices[2]], baseAddr[indices[3]],
@@ -1464,7 +1464,7 @@ namespace SIMD {
             return *this;
         }
         // SCATTERS
-        inline uint32_t* scatter(uint32_t* baseAddr, uint64_t* indices) {
+        inline uint32_t* scatter(uint32_t* baseAddr, uint32_t* indices) {
             alignas(64) uint32_t rawIndices[32] = { 
                 indices[0],  indices[1],  indices[2],  indices[3],
                 indices[4],  indices[5],  indices[6],  indices[7],
@@ -1481,7 +1481,7 @@ namespace SIMD {
             return baseAddr;
         }
         // MSCATTERS
-        inline uint32_t* scatter(SIMDVecMask<32> const & mask, uint32_t* baseAddr, uint64_t* indices) {
+        inline uint32_t* scatter(SIMDVecMask<32> const & mask, uint32_t* baseAddr, uint32_t* indices) {
             __mmask16 m0 = mask.mMask & 0x0000FFFF;
             __mmask16 m1 = (mask.mMask & 0xFFFF0000) >> 16;
             alignas(64) uint32_t rawIndices[32] = { 
