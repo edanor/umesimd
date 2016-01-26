@@ -36,9 +36,6 @@
 
 #include "../../../UMESimdInterface.h"
 
-#ifdef BLEND
-#undef BLEND
-#endif
 #define BLEND(a_256i, b_256i, mask_256i) _mm256_castps_si256( \
                                         _mm256_blendv_ps( \
                                             _mm256_castsi256_ps(a_256i), \
@@ -178,6 +175,10 @@ namespace SIMD {
         inline explicit SIMDVec_u(__m256i & x) { this->mVec = x; }
         inline explicit SIMDVec_u(const __m256i & x) { this->mVec = x; }
     public:
+
+        constexpr static uint32_t length() { return 8; }
+        constexpr static uint32_t alignment() { return 32; }
+
         // ZERO-CONSTR
         inline SIMDVec_u() {
             mVec = _mm256_setzero_si256();
@@ -280,10 +281,10 @@ namespace SIMD {
         // STORE
         // MSTORE
         // STOREA
-        inline uint32_t * storea(uint32_t * addrAligned) const {
+        /*inline uint32_t * storea(uint32_t * addrAligned) const {
             _mm256_store_si256((__m256i*)addrAligned, mVec);
             return addrAligned;
-        }
+        }*/
         // MSTOREA
         // BLENDV
         // BLENDS
@@ -1820,5 +1821,15 @@ namespace SIMD {
 
 }
 }
+
+#undef BLEND
+#undef SPLIT_CALL_UNARY
+#undef SPLIT_CALL_UNARY_MASK
+#undef SPLIT_CALL_BINARY
+#undef SPLIT_CALL_BINARY_SCALAR
+#undef SPLIT_CALL_BINARY_SCALAR2
+#undef SPLIT_CALL_BINARY_MASK
+#undef SPLIT_CALL_BINARY_SCALAR_MASK
+#undef SPLIT_CALL_BINARY_SCALAR_MASK2
 
 #endif

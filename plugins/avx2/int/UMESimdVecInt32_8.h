@@ -76,7 +76,7 @@ namespace SIMD {
         }
         // LOAD-CONSTR
         inline explicit SIMDVec_i(int32_t const *p) { this->load(p); };
-
+        // FULL-CONSTR
         inline SIMDVec_i(int32_t i0, int32_t i1, int32_t i2, int32_t i3,
                          int32_t i4, int32_t i5, int32_t i6, int32_t i7)
         {
@@ -168,10 +168,10 @@ namespace SIMD {
             _mm256_maskload_epi32((int *)p, mask.mMask);
         }
         // STOREA
-        inline int32_t * storea(int32_t * addrAligned) const {
+        /*inline int32_t * storea(int32_t * addrAligned) const {
             _mm256_store_si256((__m256i*)addrAligned, mVec);
             return addrAligned;
-        }
+        }*/
         // MSTOREA
         // BLENDV
         // BLENDS
