@@ -117,11 +117,6 @@ namespace SIMD {
         }
 #endif
 
-        // ****************************************************************************************
-        // Overloading Interface functions starts here!
-        // ****************************************************************************************
-
-        //(Initialization)
         // ASSIGNV
         inline SIMDVec_f & assign(SIMDVec_f const & b) {
             mVec = b.mVec;
@@ -150,8 +145,11 @@ namespace SIMD {
             return *this;
         }
 
-        //(Memory access)
-        // LOAD
+        // PREFETCH0
+        // PREFETCH1
+        // PREFETCH2
+
+        // LOAD
         inline SIMDVec_f & load(float const * p) {
             mVec = _mm_loadu_ps(p);
             return *this;
@@ -193,6 +191,12 @@ namespace SIMD {
             _mm_maskstore_ps(p, mask.mMask, mVec);
             return p;
         }
+
+        // BLENDV
+        // BLENDS
+        // SWIZZLE
+        // SWIZZLEA
+
         // ADDV
         inline SIMDVec_f add(SIMDVec_f const & b) const {
             __m128 t0 = _mm_add_ps(this->mVec, b.mVec);
@@ -264,9 +268,7 @@ namespace SIMD {
             return SIMDVec_f(t0);
         }
         inline SIMDVec_f operator++ (int) {
-            __m128 t0 = mVec;
-            mVec = _mm_add_ps(mVec, _mm_set1_ps(1.0f));
-            return SIMDVec_f(t0);
+            return postinc();
         }
         // MPOSTINC
         inline SIMDVec_f postinc(SIMDVecMask<4> const & mask) {
@@ -344,7 +346,6 @@ namespace SIMD {
         inline SIMDVec_f & suba(SIMDVecMask<4> const & mask, float b) {
             __m128 t0 = _mm_sub_ps(mVec, _mm_set1_ps(b));
             mVec = BLEND(mVec, t0, mask.mMask);
-
             return *this;
         }
         // SSUBV
@@ -493,7 +494,6 @@ namespace SIMD {
             mVec = _mm_blendv_ps(mVec, t1, _mm_castsi128_ps(mask.mMask));
             return *this;
         }
-
         // DIVV
         inline SIMDVec_f div(SIMDVec_f const & b) const {
             __m128 t0 = _mm_div_ps(mVec, b.mVec);
@@ -736,9 +736,6 @@ namespace SIMD {
             __m128 t0 = BLEND(mVec, _mm_set1_ps(b), mask.mMask);
             return SIMDVec_f(t0);
         }
-        // SWIZZLE
-        // SWIZZLEA
-
         // HADD
         inline float hadd() const {
             alignas(16) float raw[4];
@@ -801,7 +798,6 @@ namespace SIMD {
 #endif
             return SIMDVec_f(t0);
         }
-
         // MFMULADDV
         inline SIMDVec_f fmuladd(SIMDVecMask<4> const & mask, SIMDVec_f const & b, SIMDVec_f const & c) const {
 #ifdef FMA
@@ -961,6 +957,7 @@ namespace SIMD {
             return t2 > t3 ? t2 : t3;
         }
         // IMAX
+        // MIMAX
         // HMIN
         inline float hmin() const {
             alignas(16) float raw[4];
@@ -983,14 +980,68 @@ namespace SIMD {
         // MIMIN
 
         // GATHERS
+        inline SIMDVec_f & gather(float* baseAddr, uint32_t* indices) {
+            __m128i t0 = _mm_load_si128((__m128i*)indices);
+            mVec = _mm_i32gather_ps((const float *)baseAddr, t0, 4);
+            return *this;
+        }
         // MGATHERS
+        inline SIMDVec_f & gather(SIMDVecMask<4> const & mask, float* baseAddr, uint32_t* indices) {
+            __m128i t0 = _mm_load_si128((__m128i*)indices);
+            __m128 t1 = _mm_i32gather_ps((const float *)baseAddr, t0, 4);
+            mVec = BLEND(mVec, t1, mask.mMask);
+            return *this;
+        }
         // GATHERV
+        inline SIMDVec_f & gather(float* baseAddr, SIMDVec_u<uint32_t, 4> const & indices) {
+            mVec = _mm_i32gather_ps((const float *)baseAddr, indices.mVec, 4);
+            return *this;
+        }
         // MGATHERV
+        inline SIMDVec_f & gather(SIMDVecMask<4> const & mask, float* baseAddr, SIMDVec_u<uint32_t, 4> const & indices) {
+            __m128 t0 = _mm_i32gather_ps((const float *)baseAddr, indices.mVec, 4);
+            mVec = BLEND(mVec, t0, mask.mMask);
+            return *this;
+        }
         // SCATTERS
+        inline float* scatter(float* baseAddr, uint32_t* indices) const {
+            alignas(16) float raw[4];
+            _mm_store_ps(raw, mVec);
+            for (int i = 0; i < 4; i++) { baseAddr[indices[i]] = raw[i]; };
+            return baseAddr;
+        }
         // MSCATTERS
+        inline float* scatter(SIMDVecMask<4> const & mask, float* baseAddr, uint32_t* indices) const {
+            alignas(16) float raw[4];
+            alignas(16) uint32_t rawMask[4];
+            _mm_store_ps(raw, mVec);
+            _mm_store_si128((__m128i*) rawMask, mask.mMask);
+            for (int i = 0; i < 4; i++) { if (rawMask[i] == SIMDVecMask<4>::TRUE()) baseAddr[indices[i]] = raw[i]; };
+            return baseAddr;
+        }
         // SCATTERV
+        inline float* scatter(float* baseAddr, SIMDVec_u<uint32_t, 4> const & indices) const {
+            alignas(16) float raw[4];
+            alignas(16) uint32_t rawIndices[4];
+            _mm_store_ps(raw, mVec);
+            _mm_store_si128((__m128i*) rawIndices, indices.mVec);
+            for (int i = 0; i < 4; i++) { baseAddr[rawIndices[i]] = raw[i]; };
+            return baseAddr;
+        }
         // MSCATTERV
-
+        inline float* scatter(SIMDVecMask<4> const & mask, float* baseAddr, SIMDVec_u<uint32_t, 4> const & indices) const {
+            alignas(16) float raw[8];
+            alignas(16) uint32_t rawIndices[8];
+            alignas(16) uint32_t rawMask[8];
+            _mm_store_ps(raw, mVec);
+            _mm_store_si128((__m128i*) rawIndices, indices.mVec);
+            _mm_store_si128((__m128i*) rawMask, mask.mMask);
+            for (int i = 0; i < 4; i++) {
+                if (rawMask[i] == SIMDVecMask<4>::TRUE())
+                    baseAddr[rawIndices[i]] = raw[i];
+            };
+            return baseAddr;
+        }
         // NEG
         inline SIMDVec_f neg() const {
             __m128 t0 = _mm_sub_ps(_mm_set1_ps(0.0f), mVec);
@@ -1218,8 +1269,9 @@ namespace SIMD {
         // FTOI
         inline operator SIMDVec_i<int32_t, 4>() const;
     };
+}
+}
 
-}
-}
+#undef BLEND
 
 #endif

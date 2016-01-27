@@ -504,24 +504,22 @@ namespace SIMD {
             return *this;
         }
         // DIVV
-
         inline SIMDVec_i operator/ (SIMDVec_i const & b) const {
             return div(b);
         }
         // MDIVV
         // DIVS
-
         inline SIMDVec_i operator/ (int32_t b) const {
             return div(b);
         }
         // MDIVS
         // DIVVA
-        inline SIMDVec_i operator/= (SIMDVec_i const & b) {
+        inline SIMDVec_i & operator/= (SIMDVec_i const & b) {
             return diva(b);
         }
         // MDIVVA
         // DIVSA
-        inline SIMDVec_i operator/= (int32_t b) {
+        inline SIMDVec_i & operator/= (int32_t b) {
             return diva(b);
         }
         // MDIVSA
@@ -706,8 +704,8 @@ namespace SIMD {
             __m256i t1 = _mm256_blendv_epi8(t0, mVec, mask.mMask);
             __m256i t2 = _mm256_hadd_epi32(t1, t0);
             __m256i t3 = _mm256_hadd_epi32(t2, t0);
-            int32_t retval;/* = _mm256_extract_epi32(t2, 0);
-            retval += _mm256_extract_epi32(t2, 4);*/
+            int32_t retval = _mm256_extract_epi32(t2, 0);
+            retval += _mm256_extract_epi32(t2, 4);
             return retval + b;
         }
         // HMUL

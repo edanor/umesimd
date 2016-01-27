@@ -4785,25 +4785,25 @@ namespace SIMD
         }
 
         // DIVVA
-        inline DERIVED_VEC_TYPE diva (DERIVED_VEC_TYPE const & b) {
+        inline DERIVED_VEC_TYPE & diva (DERIVED_VEC_TYPE const & b) {
             return EMULATED_FUNCTIONS::divAssign<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
 
-        inline DERIVED_VEC_TYPE operator/= (DERIVED_VEC_TYPE const & b) {
+        inline DERIVED_VEC_TYPE & operator/= (DERIVED_VEC_TYPE const & b) {
             return diva(b);
         }
 
         // MDIVVA
-        inline DERIVED_VEC_TYPE diva (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) {
+        inline DERIVED_VEC_TYPE & diva (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) {
             return EMULATED_FUNCTIONS::divAssign<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
 
         // DIVSA
-        inline DERIVED_VEC_TYPE diva (SCALAR_TYPE b) {
+        inline DERIVED_VEC_TYPE & diva (SCALAR_TYPE b) {
             return EMULATED_FUNCTIONS::divAssign<DERIVED_VEC_TYPE, SCALAR_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
 
-        inline DERIVED_VEC_TYPE operator/= (SCALAR_TYPE b) {
+        inline DERIVED_VEC_TYPE & operator/= (SCALAR_TYPE b) {
             return diva(b);
         }
 
