@@ -54,7 +54,7 @@ namespace SIMD {
             SIMDVecSwizzle<8 >> ,
         public SIMDVecPackableInterface<
             SIMDVec_f<float, 8>,
-            SIMDVec_f<float, 4 >>
+            SIMDVec_f<float, 4>>
     {
     private:
         __m256 mVec;
@@ -66,6 +66,7 @@ namespace SIMD {
         typedef SIMDVec_u<uint32_t, 8>    VEC_UINT_TYPE;
         typedef SIMDVec_i<int32_t, 8>     VEC_INT_TYPE;
 
+        friend class SIMDVec_f<float, 16>;
     public:
         // ZERO-CONSTR
         inline SIMDVec_f() {}
@@ -837,7 +838,6 @@ namespace SIMD {
             float retval = _mm_cvtss_f32(t9);
             return retval + b;
         }
-
         // FMULADDV
         inline SIMDVec_f fmuladd(SIMDVec_f const & b, SIMDVec_f const & c) const {
 #ifdef FMA
@@ -1113,7 +1113,7 @@ namespace SIMD {
             for (int i = 0; i < 8; i++) {
                 if (rawMask[i] == SIMDVecMask<8>::TRUE())
                     baseAddr[rawIndices[i]] = raw[i];
-            };
+            }
             return baseAddr;
         }
         // NEG
@@ -1210,7 +1210,6 @@ namespace SIMD {
             return SIMDVec_f(BLEND(mVec, ret, mask.mMask));
         }
         // SQRTA
-        // SQRT
         inline SIMDVec_f & sqrta() {
             mVec = _mm256_sqrt_ps(mVec);
             return *this;

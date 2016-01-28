@@ -311,7 +311,7 @@ namespace SIMD {
     }
 
     inline SIMDVec_i<int32_t, 16>::operator SIMDVec_u<uint32_t, 16>() const {
-        return SIMDVec_u<uint32_t, 16>(this->mVecLo, this->mVecHi);
+        return SIMDVec_u<uint32_t, 16>(mVecLo, mVecHi);
     }
 
     template<>
@@ -462,8 +462,8 @@ namespace SIMD {
     }
 
     inline SIMDVec_f<float, 16>::operator SIMDVec_i<int32_t, 16>() const {
-        __m256i t0 = _mm256_cvtps_epi32(mVecLo);
-        __m256i t1 = _mm256_cvtps_epi32(mVecHi);
+        __m256i t0 = _mm256_cvtps_epi32(mVec[0]);
+        __m256i t1 = _mm256_cvtps_epi32(mVec[1]);
         return SIMDVec_i<int32_t, 16>(t0, t1);
     }
 
