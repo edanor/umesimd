@@ -179,10 +179,10 @@ namespace SIMD {
         // STORE
         // MSTORE
         // STOREA
-        inline uint32_t * storea(uint32_t * addrAligned) const {
+        /*inline uint32_t * storea(uint32_t * addrAligned) const {
             _mm256_store_si256((__m256i*)addrAligned, mVec);
             return addrAligned;
-        }
+        }*/
         // MSTOREA
         // BLENDV
         // BLENDS

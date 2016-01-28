@@ -150,8 +150,8 @@ namespace SIMD {
         }
         // MASSIGNV
         inline SIMDVec_f & assign(SIMDVecMask<16> const & mask, SIMDVec_f const & b) {
-            __m256 m0 = _mm256_castsi256_ps(mask.mMaskLo);
-            __m256 m1 = _mm256_castsi256_ps(mask.mMaskHi);
+            __m256 m0 = _mm256_castsi256_ps(mask.mMask[0]);
+            __m256 m1 = _mm256_castsi256_ps(mask.mMask[1]);
             mVecLo = _mm256_blendv_ps(mVecLo, b.mVecLo, m0);
             mVecHi = _mm256_blendv_ps(mVecHi, b.mVecHi, m1);
             return *this;
@@ -167,8 +167,8 @@ namespace SIMD {
         }
         // MASSIGNS
         inline SIMDVec_f & assign(SIMDVecMask<16> const & mask, float b) {
-            __m256 m0 = _mm256_castsi256_ps(mask.mMaskLo);
-            __m256 m1 = _mm256_castsi256_ps(mask.mMaskHi);
+            __m256 m0 = _mm256_castsi256_ps(mask.mMask[0]);
+            __m256 m1 = _mm256_castsi256_ps(mask.mMask[1]);
             __m256 t0 = _mm256_set1_ps(b);
             mVecLo = _mm256_blendv_ps(mVecLo, t0, m0);
             mVecHi = _mm256_blendv_ps(mVecHi, t0, m1);
@@ -187,8 +187,8 @@ namespace SIMD {
         inline SIMDVec_f & load(SIMDVecMask<16> const & mask, float const * p) {
             __m256 t0 = _mm256_loadu_ps(p);
             __m256 t1 = _mm256_loadu_ps(p + 8);
-            mVecLo = _mm256_blendv_ps(mVecLo, t0, _mm256_castsi256_ps(mask.mMaskLo));
-            mVecHi = _mm256_blendv_ps(mVecLo, t1, _mm256_castsi256_ps(mask.mMaskHi));
+            mVecLo = _mm256_blendv_ps(mVecLo, t0, _mm256_castsi256_ps(mask.mMask[0]));
+            mVecHi = _mm256_blendv_ps(mVecLo, t1, _mm256_castsi256_ps(mask.mMask[1]));
             return *this;
         }
         // LOADA   - Load from aligned memory to vector
@@ -201,8 +201,8 @@ namespace SIMD {
         inline SIMDVec_f & loada(SIMDVecMask<16> const & mask, float const * p) {
             __m256 t0 = _mm256_load_ps(p);
             __m256 t1 = _mm256_load_ps(p + 8);
-            mVecLo = _mm256_blendv_ps(mVecLo, t0, _mm256_castsi256_ps(mask.mMaskLo));
-            mVecHi = _mm256_blendv_ps(mVecHi, t1, _mm256_castsi256_ps(mask.mMaskHi));
+            mVecLo = _mm256_blendv_ps(mVecLo, t0, _mm256_castsi256_ps(mask.mMask[0]));
+            mVecHi = _mm256_blendv_ps(mVecHi, t1, _mm256_castsi256_ps(mask.mMask[1]));
             return *this;
         }
         // STORE   - Store vector content into memory (either aligned or unaligned)
@@ -224,8 +224,8 @@ namespace SIMD {
         inline SIMDVec_f add(SIMDVecMask<16> const & mask, SIMDVec_f const & b) const {
             __m256 t0 = _mm256_add_ps(mVecLo, b.mVecLo);
             __m256 t1 = _mm256_add_ps(mVecHi, b.mVecHi);
-            __m256 t2 = _mm256_blendv_ps(mVecLo, t0, _mm256_castsi256_ps(mask.mMaskLo));
-            __m256 t3 = _mm256_blendv_ps(mVecHi, t1, _mm256_castsi256_ps(mask.mMaskHi));
+            __m256 t2 = _mm256_blendv_ps(mVecLo, t0, _mm256_castsi256_ps(mask.mMask[0]));
+            __m256 t3 = _mm256_blendv_ps(mVecHi, t1, _mm256_castsi256_ps(mask.mMask[1]));
             return SIMDVec_f(t2, t3);
         }
         // ADDS     - Add with scalar
@@ -238,8 +238,8 @@ namespace SIMD {
         inline SIMDVec_f add(SIMDVecMask<16> const & mask, float b) const {
             __m256 t0 = _mm256_add_ps(mVecLo, _mm256_set1_ps(b));
             __m256 t1 = _mm256_add_ps(mVecHi, _mm256_set1_ps(b));
-            __m256 t2 = _mm256_blendv_ps(mVecLo, t0, _mm256_castsi256_ps(mask.mMaskLo));
-            __m256 t3 = _mm256_blendv_ps(mVecHi, t1, _mm256_castsi256_ps(mask.mMaskHi));
+            __m256 t2 = _mm256_blendv_ps(mVecLo, t0, _mm256_castsi256_ps(mask.mMask[0]));
+            __m256 t3 = _mm256_blendv_ps(mVecHi, t1, _mm256_castsi256_ps(mask.mMask[1]));
             return SIMDVec_f(t2, t3);
         }
         // ADDVA    - Add with vector and assign
@@ -252,8 +252,8 @@ namespace SIMD {
         inline SIMDVec_f & adda(SIMDVecMask<16> const & mask, SIMDVec_f const & b) {
             __m256 t0 = _mm256_add_ps(mVecLo, b.mVecLo);
             __m256 t1 = _mm256_add_ps(mVecHi, b.mVecHi);
-            mVecLo = _mm256_blendv_ps(mVecLo, t0, _mm256_castsi256_ps(mask.mMaskLo));
-            mVecHi = _mm256_blendv_ps(mVecHi, t1, _mm256_castsi256_ps(mask.mMaskHi));
+            mVecLo = _mm256_blendv_ps(mVecLo, t0, _mm256_castsi256_ps(mask.mMask[0]));
+            mVecHi = _mm256_blendv_ps(mVecHi, t1, _mm256_castsi256_ps(mask.mMask[1]));
             return *this;
         }
         // ADDSA    - Add with scalar and assign
@@ -265,8 +265,8 @@ namespace SIMD {
         inline SIMDVec_f & adda(SIMDVecMask<16> const & mask, float b) {
             __m256 t0 = _mm256_add_ps(mVecLo, _mm256_set1_ps(b));
             __m256 t1 = _mm256_add_ps(mVecHi, _mm256_set1_ps(b));
-            mVecLo = _mm256_blendv_ps(mVecLo, t0, _mm256_castsi256_ps(mask.mMaskLo));
-            mVecHi = _mm256_blendv_ps(mVecHi, t1, _mm256_castsi256_ps(mask.mMaskHi));
+            mVecLo = _mm256_blendv_ps(mVecLo, t0, _mm256_castsi256_ps(mask.mMask[0]));
+            mVecHi = _mm256_blendv_ps(mVecHi, t1, _mm256_castsi256_ps(mask.mMask[1]));
             return *this;
         }
         // SADDV    - Saturated add with vector
@@ -323,8 +323,8 @@ namespace SIMD {
         inline SIMDVec_f mul(SIMDVecMask<16> const & mask, SIMDVec_f const & b) const {
             __m256 t0 = _mm256_mul_ps(mVecLo, b.mVecLo);
             __m256 t1 = _mm256_mul_ps(mVecHi, b.mVecHi);
-            __m256 t2 = _mm256_blendv_ps(mVecLo, t0, _mm256_castsi256_ps(mask.mMaskLo));
-            __m256 t3 = _mm256_blendv_ps(mVecHi, t1, _mm256_castsi256_ps(mask.mMaskHi));
+            __m256 t2 = _mm256_blendv_ps(mVecLo, t0, _mm256_castsi256_ps(mask.mMask[0]));
+            __m256 t3 = _mm256_blendv_ps(mVecHi, t1, _mm256_castsi256_ps(mask.mMask[1]));
             return SIMDVec_f(t2, t3);
         }
         // MULS   - Multiplication with scalar
@@ -337,8 +337,8 @@ namespace SIMD {
         inline SIMDVec_f mul(SIMDVecMask<16> const & mask, float b) const {
             __m256 t0 = _mm256_mul_ps(mVecLo, _mm256_set1_ps(b));
             __m256 t1 = _mm256_mul_ps(mVecHi, _mm256_set1_ps(b));
-            __m256 t2 = _mm256_blendv_ps(mVecLo, t0, _mm256_castsi256_ps(mask.mMaskLo));
-            __m256 t3 = _mm256_blendv_ps(mVecHi, t1, _mm256_castsi256_ps(mask.mMaskHi));
+            __m256 t2 = _mm256_blendv_ps(mVecLo, t0, _mm256_castsi256_ps(mask.mMask[0]));
+            __m256 t3 = _mm256_blendv_ps(mVecHi, t1, _mm256_castsi256_ps(mask.mMask[1]));
             return SIMDVec_f(t2, t3);
         }
         // MULVA  - Multiplication with vector and assign
@@ -423,8 +423,8 @@ namespace SIMD {
             __m256 t0 = _mm256_add_ps(_mm256_mul_ps(this->mVecLo, a.mVecLo), b.mVecLo);
             __m256 t1 = _mm256_add_ps(_mm256_mul_ps(this->mVecHi, a.mVecHi), b.mVecHi);
 #endif
-            __m256 t2 = _mm256_blendv_ps(this->mVecLo, t0, _mm256_cvtepi32_ps(mask.mMaskLo));
-            __m256 t3 = _mm256_blendv_ps(this->mVecHi, t1, _mm256_cvtepi32_ps(mask.mMaskHi));
+            __m256 t2 = _mm256_blendv_ps(this->mVecLo, t0, _mm256_cvtepi32_ps(mask.mMask[0]));
+            __m256 t3 = _mm256_blendv_ps(this->mVecHi, t1, _mm256_cvtepi32_ps(mask.mMask[1]));
             return SIMDVec_f(t2, t3);
         }
         // FMULSUBV  - Fused multiply and sub (A*B - C) with vectors

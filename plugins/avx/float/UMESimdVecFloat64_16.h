@@ -208,15 +208,15 @@ namespace SIMD {
             __m256d t2 = _mm256_load_pd(p + 8);
             __m256d t3 = _mm256_load_pd(p + 12);
 
-            __m128i t4 = _mm256_extractf128_si256(mask.mMaskLo, 0);
-            __m128i t5 = _mm256_extractf128_si256(mask.mMaskLo, 1);
+            __m128i t4 = _mm256_extractf128_si256(mask.mMask[0], 0);
+            __m128i t5 = _mm256_extractf128_si256(mask.mMask[0], 1);
             __m256d mask_pd_lo = _mm256_cvtepi32_pd(t4);
             __m256d mask_pd_hi = _mm256_cvtepi32_pd(t5);
             mVecLoLo = _mm256_blendv_pd(mVecLoLo, t0, mask_pd_lo);
             mVecLoHi = _mm256_blendv_pd(mVecLoHi, t1, mask_pd_hi);
 
-            t4 = _mm256_extractf128_si256(mask.mMaskHi, 0);
-            t5 = _mm256_extractf128_si256(mask.mMaskHi, 1);
+            t4 = _mm256_extractf128_si256(mask.mMask[1], 0);
+            t5 = _mm256_extractf128_si256(mask.mMask[1], 1);
             mask_pd_lo = _mm256_cvtepi32_pd(t4);
             mask_pd_hi = _mm256_cvtepi32_pd(t5);
             mVecHiLo = _mm256_blendv_pd(mVecLoLo, t2, mask_pd_lo);
@@ -249,19 +249,19 @@ namespace SIMD {
                 __m256i epi64;
             }x;
 
-            __m128i t0 = _mm256_extractf128_si256(mask.mMaskLo, 0);
+            __m128i t0 = _mm256_extractf128_si256(mask.mMask[0], 0);
             x.pd = _mm256_cvtepi32_pd(t0);
             _mm256_maskstore_pd(p, x.epi64, mVecLoLo);
 
-            t0 = _mm256_extractf128_si256(mask.mMaskLo, 1);
+            t0 = _mm256_extractf128_si256(mask.mMask[0], 1);
             x.pd = _mm256_cvtepi32_pd(t0);
             _mm256_maskstore_pd(p + 4, x.epi64, mVecLoHi);
 
-            t0 = _mm256_extractf128_si256(mask.mMaskHi, 0);
+            t0 = _mm256_extractf128_si256(mask.mMask[1], 0);
             x.pd = _mm256_cvtepi32_pd(t0);
             _mm256_maskstore_pd(p + 8, x.epi64, mVecHiLo);
 
-            t0 = _mm256_extractf128_si256(mask.mMaskHi, 1);
+            t0 = _mm256_extractf128_si256(mask.mMask[1], 1);
             x.pd = _mm256_cvtepi32_pd(t0);
             _mm256_maskstore_pd(p + 12, x.epi64, mVecHiHi);
 
@@ -283,22 +283,22 @@ namespace SIMD {
         // MADDVA   - Masked add with vector and assign
         inline SIMDVec_f & adda(SIMDVecMask<16> const & mask, SIMDVec_f const & b) {
             __m256d t0 = _mm256_add_pd(mVecLoLo, b.mVecLoLo);
-            __m128i t1 = _mm256_extractf128_si256(mask.mMaskLo, 0);
+            __m128i t1 = _mm256_extractf128_si256(mask.mMask[0], 0);
             __m256d m0 = _mm256_cvtepi32_pd(t1);
             mVecLoLo = _mm256_blendv_pd(mVecLoLo, t0, m0);
 
             t0 = _mm256_add_pd(mVecLoHi, b.mVecLoHi);
-            t1 = _mm256_extractf128_si256(mask.mMaskLo, 1);
+            t1 = _mm256_extractf128_si256(mask.mMask[0], 1);
             m0 = _mm256_cvtepi32_pd(t1);
             mVecLoHi = _mm256_blendv_pd(mVecLoHi, t0, m0);
 
             t0 = _mm256_add_pd(mVecHiLo, b.mVecHiLo);
-            t1 = _mm256_extractf128_si256(mask.mMaskHi, 0);
+            t1 = _mm256_extractf128_si256(mask.mMask[1], 0);
             m0 = _mm256_cvtepi32_pd(t1);
             mVecHiLo = _mm256_blendv_pd(mVecHiLo, t0, m0);
 
             t0 = _mm256_add_pd(mVecHiHi, b.mVecHiHi);
-            t1 = _mm256_extractf128_si256(mask.mMaskHi, 1);
+            t1 = _mm256_extractf128_si256(mask.mMask[1], 1);
             m0 = _mm256_cvtepi32_pd(t1);
             mVecHiHi = _mm256_blendv_pd(mVecHiHi, t0, m0);
 
@@ -315,22 +315,22 @@ namespace SIMD {
         // MADDSA   - Masked add with scalar and assign
         inline SIMDVec_f & adda(SIMDVecMask<16> const & mask, double b) {
             __m256d t0 = _mm256_add_pd(mVecLoLo, _mm256_set1_pd(b));
-            __m128i t1 = _mm256_extractf128_si256(mask.mMaskLo, 0);
+            __m128i t1 = _mm256_extractf128_si256(mask.mMask[0], 0);
             __m256d m0 = _mm256_cvtepi32_pd(t1);
             mVecLoLo = _mm256_blendv_pd(mVecLoLo, t0, m0);
 
             t0 = _mm256_add_pd(mVecLoHi, _mm256_set1_pd(b));
-            t1 = _mm256_extractf128_si256(mask.mMaskLo, 1);
+            t1 = _mm256_extractf128_si256(mask.mMask[0], 1);
             m0 = _mm256_cvtepi32_pd(t1);
             mVecLoHi = _mm256_blendv_pd(mVecLoHi, t0, m0);
 
             t0 = _mm256_add_pd(mVecHiLo, _mm256_set1_pd(b));
-            t1 = _mm256_extractf128_si256(mask.mMaskHi, 0);
+            t1 = _mm256_extractf128_si256(mask.mMask[1], 0);
             m0 = _mm256_cvtepi32_pd(t1);
             mVecHiLo = _mm256_blendv_pd(mVecHiLo, t0, m0);
 
             t0 = _mm256_add_pd(mVecHiHi, _mm256_set1_pd(b));
-            t1 = _mm256_extractf128_si256(mask.mMaskHi, 1);
+            t1 = _mm256_extractf128_si256(mask.mMask[1], 1);
             m0 = _mm256_cvtepi32_pd(t1);
             mVecHiHi = _mm256_blendv_pd(mVecHiHi, t0, m0);
 

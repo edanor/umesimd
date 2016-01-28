@@ -172,8 +172,8 @@ namespace SIMD {
         SIMDVec_i abs(SIMDVecMask<16> const & mask) {
             __m128i a_lo = _mm256_extractf128_si256(mVecLo, 0);
             __m128i a_hi = _mm256_extractf128_si256(mVecLo, 1);
-            __m128i m_lo = _mm256_extractf128_si256(mask.mMaskLo, 0);
-            __m128i m_hi = _mm256_extractf128_si256(mask.mMaskLo, 1);
+            __m128i m_lo = _mm256_extractf128_si256(mask.mMask[0], 0);
+            __m128i m_hi = _mm256_extractf128_si256(mask.mMask[0], 1);
 
             __m128i r_lo = _mm_blendv_epi8(a_lo, _mm_abs_epi32(a_lo), m_lo);
             __m128i r_hi = _mm_blendv_epi8(a_hi, _mm_abs_epi32(a_hi), m_hi);
@@ -184,8 +184,8 @@ namespace SIMD {
 
             a_lo = _mm256_extractf128_si256(mVecHi, 0);
             a_hi = _mm256_extractf128_si256(mVecHi, 1);
-            m_lo = _mm256_extractf128_si256(mask.mMaskHi, 0);
-            m_hi = _mm256_extractf128_si256(mask.mMaskHi, 1);
+            m_lo = _mm256_extractf128_si256(mask.mMask[1], 0);
+            m_hi = _mm256_extractf128_si256(mask.mMask[1], 1);
 
             r_lo = _mm_blendv_epi8(a_lo, _mm_abs_epi32(a_lo), m_lo);
             r_hi = _mm_blendv_epi8(a_hi, _mm_abs_epi32(a_hi), m_hi);

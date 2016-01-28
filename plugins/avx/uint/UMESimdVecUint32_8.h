@@ -180,10 +180,7 @@ namespace SIMD {
         constexpr static uint32_t alignment() { return 32; }
 
         // ZERO-CONSTR
-        inline SIMDVec_u() {
-            mVec = _mm256_setzero_si256();
-        }
-
+        inline SIMDVec_u() {}
         // SET-CONSTR
         inline explicit SIMDVec_u(uint32_t i) {
             mVec = _mm256_set1_epi32(i);
@@ -194,7 +191,7 @@ namespace SIMD {
         }
 
         inline SIMDVec_u(uint32_t i0, uint32_t i1, uint32_t i2, uint32_t i3,
-            uint32_t i4, uint32_t i5, uint32_t i6, uint32_t i7)
+                         uint32_t i4, uint32_t i5, uint32_t i6, uint32_t i7)
         {
             mVec = _mm256_setr_epi32(i0, i1, i2, i3, i4, i5, i6, i7);
         }
@@ -278,6 +275,10 @@ namespace SIMD {
             _mm256_load_si256((__m256i *)p);
         }
         // MLOADA
+        inline SIMDVec_u & loada(SIMDVecMask<8> const & mask, uint32_t const * p) {
+            __m256i t0 = _mm256_load_si256((__m256i*)p);
+            mVec = BLEND(mVec, t0, mask.mMask);
+        }
         // STORE
         // MSTORE
         // STOREA
