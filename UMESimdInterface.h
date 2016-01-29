@@ -3867,9 +3867,9 @@ namespace SIMD
         }
 
         // MASSIGNV
-        /*inline DERIVED_MASK_TYPE & assign(DERIVED_MASK_TYPE const & mask, DERIVED_MASK_TYPE const & maskOp) {
+        inline DERIVED_MASK_TYPE & assign(DERIVED_MASK_TYPE const & mask, DERIVED_MASK_TYPE const & maskOp) {
             return EMULATED_FUNCTIONS::assign<DERIVED_MASK_TYPE, DERIVED_MASK_TYPE>(mask, static_cast<DERIVED_MASK_TYPE &>(*this), maskOp);
-        }*/
+        }
 
         // ASSIGNS
         inline DERIVED_MASK_TYPE & assign(bool scalarOp) {
@@ -3881,9 +3881,9 @@ namespace SIMD
         }
 
         // MASSIGNS
-        /*inline DERIVED_MASK_TYPE & assign(DERIVED_MASK_TYPE const & mask, bool scalarOp) {
+        inline DERIVED_MASK_TYPE & assign(DERIVED_MASK_TYPE const & mask, bool scalarOp) {
             return EMULATED_FUNCTIONS::assign<DERIVED_MASK_TYPE, bool, DERIVED_MASK_TYPE>(mask, static_cast<DERIVED_MASK_TYPE &>(*this), scalarOp);
-        }*/
+        }
 
         // LANDV
         inline DERIVED_MASK_TYPE land(DERIVED_MASK_TYPE const & maskOp) const {
