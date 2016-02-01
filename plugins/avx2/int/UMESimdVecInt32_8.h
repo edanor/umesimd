@@ -169,12 +169,28 @@ namespace SIMD {
         inline SIMDVec_i & loada(SIMDVecMask<8> const & mask, int32_t const * p) {
             _mm256_maskload_epi32((int *)p, mask.mMask);
         }
+        // STORE
+        inline int32_t * store(int32_t * p) {
+            _mm256_storeu_si256((__m256i*)p, mVec);
+            return p;
+        }
+        // MSTORE
+        inline int32_t * store(SIMDVecMask<8> const & mask, int32_t * p) {
+            __m256i t0 = _mm256_loadu_si256((__m256i*)p);
+            __m256i t1 = _mm256_blendv_epi8(t0, mVec, mask.mMask);
+            _mm256_storeu_si256((__m256i*)p, t1);
+            return p;
+        }
         // STOREA
-        /*inline int32_t * storea(int32_t * addrAligned) const {
-            _mm256_store_si256((__m256i*)addrAligned, mVec);
-            return addrAligned;
-        }*/
-        // MSTOREA
+        inline int32_t * storea(int32_t * p) {
+            _mm256_store_si256((__m256i*)p, mVec);
+            return p;
+        }
+        // MSTORE
+        inline int32_t * storea(SIMDVecMask<8> const & mask, int32_t * p) {
+            _mm256_maskstore_epi32((int*) p, mask.mMask, mVec);
+            return p;
+        }
         // BLENDV
         // BLENDS
         // SWIZZLE

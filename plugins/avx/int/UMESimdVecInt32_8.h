@@ -268,7 +268,8 @@ namespace SIMD {
         }
         // MLOAD
         inline SIMDVec_i & load(SIMDVecMask<8> const & mask, int32_t const * p) {
-            _mm256_maskload_epi32((int *)p, mask.mMask);
+            __m256i t0 = _mm256_loadu_si256((__m256i*)p);
+            mVec = BLEND(mVec, t0, mask.mMask);
             return *this;
         }
         // LOADA
@@ -277,10 +278,33 @@ namespace SIMD {
         }
         // MLOADA
         inline SIMDVec_i & loada(SIMDVecMask<8> const & mask, int32_t const * p) {
-            _mm256_maskload_epi32((int *)p, mask.mMask);
+            __m256i t0 = _mm256_load_si256((__m256i*)p);
+            mVec = BLEND(mVec, t0, mask.mMask);
+        }
+        // STORE
+        inline int32_t * store(int32_t * p) {
+            _mm256_storeu_si256((__m256i*)p, mVec);
+            return p;
+        }
+        // MSTORE
+        inline int32_t * store(SIMDVecMask<8> const & mask, int32_t * p) {
+            __m256i t0 = _mm256_loadu_si256((__m256i*)p);
+            __m256i t1 = BLEND(t0, mVec, mask.mMask);
+            _mm256_storeu_si256((__m256i*)p, t1);
+            return p;
         }
         // STOREA
-        // MSTOREA
+        inline int32_t * storea(int32_t * p) {
+            _mm256_store_si256((__m256i*)p, mVec);
+            return p;
+        }
+        // MSTORE
+        inline int32_t * storea(SIMDVecMask<8> const & mask, int32_t * p) {
+            __m256i t0 = _mm256_load_si256((__m256i*)p);
+            __m256i t1 = BLEND(t0, mVec, mask.mMask);
+            _mm256_store_si256((__m256i*)p, t1);
+            return p;
+        }
         // BLENDV
         // BLENDS
         // SWIZZLE

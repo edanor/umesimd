@@ -39,9 +39,9 @@ namespace SIMD {
     template<>
     class SIMDVecMask<8> :
         public SIMDMaskBaseInterface<
-        SIMDVecMask<8>,
-        uint32_t,
-        8>
+            SIMDVecMask<8>,
+            uint32_t,
+            8>
     {
         static uint32_t TRUE() { return 0xFFFFFFFF; };
         static uint32_t FALSE() { return 0x00000000; };
@@ -117,80 +117,122 @@ namespace SIMD {
         }
         // LANDV
         inline SIMDVecMask land(SIMDVecMask const & b) const {
-            __m256i t0 = _mm256_and_si256(mMask, b.mMask);
-            return SIMDVecMask(t0);
+            __m256 t0 = _mm256_castsi256_ps(mMask);
+            __m256 t1 = _mm256_castsi256_ps(b.mMask);
+            __m256 t2 = _mm256_and_ps(t0, t1);
+            __m256i t3 = _mm256_castps_si256(t2);
+            return SIMDVecMask(t3);
         }
         // LANDS
         inline SIMDVecMask land(bool b) const {
             __m256i t0 = _mm256_set1_epi32(b ? TRUE() : FALSE());
-            __m256i t1 = _mm256_and_si256(mMask, t0);
-            return SIMDVecMask(t1);
+            __m256 t1 = _mm256_castsi256_ps(t0);
+            __m256 t2 = _mm256_castsi256_ps(mMask);
+            __m256 t3 = _mm256_and_ps(t1, t2);
+            __m256i t4 = _mm256_castps_si256(t3);
+            return SIMDVecMask(t4);
         }
         // LANDVA
         inline SIMDVecMask & landa(SIMDVecMask const & b) {
-            mMask = _mm256_and_si256(mMask, b.mMask);
+            __m256 t0 = _mm256_castsi256_ps(mMask);
+            __m256 t1 = _mm256_castsi256_ps(b.mMask);
+            __m256 t2 = _mm256_and_ps(t0, t1);
+            mMask = _mm256_castps_si256(t2);
             return *this;
         }
         // LANDSA
         inline SIMDVecMask & landa(bool b) {
             __m256i t0 = _mm256_set1_epi32(b ? TRUE() : FALSE());
-            mMask = _mm256_and_si256(mMask, t0);
+            __m256 t1 = _mm256_castsi256_ps(mMask);
+            __m256 t2 = _mm256_castsi256_ps(t0);
+            __m256 t3 = _mm256_and_ps(t1, t2);
+            mMask = _mm256_castps_si256(t3);
             return *this;
         }
         // LORV
         inline SIMDVecMask lor(SIMDVecMask const & b) const {
-            __m256i t0 = _mm256_or_si256(mMask, b.mMask);
-            return SIMDVecMask(t0);
+            __m256 t0 = _mm256_castsi256_ps(mMask);
+            __m256 t1 = _mm256_castsi256_ps(b.mMask);
+            __m256 t2 = _mm256_or_ps(t0, t1);
+            __m256i t3 = _mm256_castps_si256(t2);
+            return SIMDVecMask(t3);
         }
         // LORS
         inline SIMDVecMask lor(bool b) const {
             __m256i t0 = _mm256_set1_epi32(b ? TRUE() : FALSE());
-            __m256i t1 = _mm256_or_si256(mMask, t0);
-            return SIMDVecMask(t1);
+            __m256 t1 = _mm256_castsi256_ps(mMask);
+            __m256 t2 = _mm256_castsi256_ps(t0);
+            __m256 t3 = _mm256_or_ps(t1, t2);
+            __m256i t4 = _mm256_castps_si256(t3);
+            return SIMDVecMask(t4);
         }
         // LORVA
         inline SIMDVecMask & lora(SIMDVecMask const & b) {
-            mMask = _mm256_or_si256(mMask, b.mMask);
+            __m256 t0 = _mm256_castsi256_ps(mMask);
+            __m256 t1 = _mm256_castsi256_ps(b.mMask);
+            __m256 t2 = _mm256_or_ps(t0, t1);
+            mMask = _mm256_castps_si256(t2);
             return *this;
         }
         // LORSA
         inline SIMDVecMask & lora(bool b) {
             __m256i t0 = _mm256_set1_epi32(b ? TRUE() : FALSE());
-            mMask = _mm256_or_si256(mMask, t0);
+            __m256 t1 = _mm256_castsi256_ps(mMask);
+            __m256 t2 = _mm256_castsi256_ps(t0);
+            __m256 t3 = _mm256_or_ps(t1, t2);
+            mMask = _mm256_castps_si256(t3);
             return *this;
         }
         // LXORV
         inline SIMDVecMask lxor(SIMDVecMask const & b) const {
-            __m256i t0 = _mm256_xor_si256(mMask, b.mMask);
-            return SIMDVecMask(t0);
+            __m256 t0 = _mm256_castsi256_ps(mMask);
+            __m256 t1 = _mm256_castsi256_ps(b.mMask);
+            __m256 t2 = _mm256_xor_ps(t0, t1);
+            __m256i t3 = _mm256_castps_si256(t2);
+            return SIMDVecMask(t3);
         }
         // LXORS
         inline SIMDVecMask lxor(bool b) const {
             __m256i t0 = _mm256_set1_epi32(b ? TRUE() : FALSE());
-            __m256i t1 = _mm256_xor_si256(mMask, t0);
-            return SIMDVecMask(t1);
+            __m256 t1 = _mm256_castsi256_ps(mMask);
+            __m256 t2 = _mm256_castsi256_ps(t0);
+            __m256 t3 = _mm256_xor_ps(t1, t2);
+            __m256i t4 = _mm256_castps_si256(t3);
+            return SIMDVecMask(t4);
         }
         // LXORVA
         inline SIMDVecMask & lxora(SIMDVecMask const & b) {
-            mMask = _mm256_xor_si256(mMask, b.mMask);
+            __m256 t0 = _mm256_castsi256_ps(mMask);
+            __m256 t1 = _mm256_castsi256_ps(b.mMask);
+            __m256 t2 = _mm256_xor_ps(t0, t1);
+            mMask = _mm256_castps_si256(t2);
             return *this;
         }
         // LXORSA
         inline SIMDVecMask & lxora(bool b) {
             __m256i t0 = _mm256_set1_epi32(b ? TRUE() : FALSE());
-            mMask = _mm256_xor_si256(mMask, t0);
+            __m256 t1 = _mm256_castsi256_ps(mMask);
+            __m256 t2 = _mm256_castsi256_ps(t0);
+            __m256 t3 = _mm256_xor_ps(t1, t2);
+            mMask = _mm256_castps_si256(t3);
             return *this;
         }
         // LNOT
         inline SIMDVecMask lnot() const {
             __m256i t0 = _mm256_set1_epi32(TRUE());
-            __m256i t1 = _mm256_xor_si256(mMask, t0);
-            return SIMDVecMask(t1);
+            __m256  t1 = _mm256_castsi256_ps(t0);
+            __m256  t2 = _mm256_castsi256_ps(mMask);
+            __m256  t3 = _mm256_xor_ps(t1, t2);
+            __m256i t4 = _mm256_castps_si256(t3);
+            return SIMDVecMask(t4);
         }
         // LNOTA
         inline SIMDVecMask & lnota() {
             __m256i t0 = _mm256_set1_epi32(TRUE());
-            mMask = _mm256_xor_si256(mMask, t0);
+            __m256  t1 = _mm256_castsi256_ps(t0);
+            __m256  t2 = _mm256_castsi256_ps(mMask);
+            __m256  t3 = _mm256_xor_ps(t1, t2);
+            mMask = _mm256_castps_si256(t3);
             return *this;
         }
         // HLAND

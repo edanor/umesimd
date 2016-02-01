@@ -527,8 +527,8 @@ namespace SIMD {
         }
         // MULV
         inline SIMDVec_f mul(SIMDVec_f const & b) const {
-            __m256 t0 = _mm256_mul_ps(this->mVec[0], b.mVec[0]);
-            __m256 t1 = _mm256_mul_ps(this->mVec[1], b.mVec[1]);
+            __m256 t0 = _mm256_mul_ps(mVec[0], b.mVec[0]);
+            __m256 t1 = _mm256_mul_ps(mVec[1], b.mVec[1]);
             return SIMDVec_f(t0, t1);
         }
         inline SIMDVec_f operator* (SIMDVec_f const & b) const {

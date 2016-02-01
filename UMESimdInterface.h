@@ -5973,11 +5973,11 @@ namespace SIMD
     public:
         // SUBV
         inline DERIVED_UINT_VEC_TYPE operator- (DERIVED_UINT_VEC_TYPE const & b) const {
-            return sub(b);
+            return this->sub(b);
         }
         // SUBS
         inline DERIVED_UINT_VEC_TYPE operator- (SCALAR_UINT_TYPE b) const {
-            return sub(b);
+            return this->sub(b);
         }
     };
 
@@ -6054,12 +6054,12 @@ namespace SIMD
 
         // SUBV
         inline DERIVED_VEC_TYPE operator- (DERIVED_VEC_TYPE const & b) const {
-            return sub(b);
+            return this->sub(b);
         }
 
         // SUBS
         inline DERIVED_VEC_TYPE operator- (SCALAR_TYPE const & b) const {
-            return sub(b);
+            return this->sub(b);
         }
 
         // NEG
@@ -6132,12 +6132,12 @@ namespace SIMD
 
         // SUBV
         inline DERIVED_VEC_TYPE operator- (DERIVED_VEC_TYPE const & b) const {
-            return sub(b);
+            return this->sub(b);
         }
         
         // SUBS
         inline DERIVED_VEC_TYPE operator- (SCALAR_FLOAT_TYPE b) const {
-            return sub(b);
+            return this->sub(b);
         }
         // NEG
         inline DERIVED_VEC_TYPE operator- () const {
