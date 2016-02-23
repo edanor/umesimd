@@ -1,7 +1,7 @@
-**Current stable release is: v0.3.1-stable**  
+**Current stable release is: v0.3.2-stable**  
 **To checkout stable release use:**  
  > git clone https://edanor@bitbucket.org/edanor/umesimd.git  
- > git checkout tags/v0.3.1-stable
+ > git checkout tags/v0.3.2-stable
 
 
 UME::SIMD is an explicit vectorization library. The library defines homogeneous interface for accessing functionality of SIMD registers of AVX, AVX2, AVX512 and IMCI (KNCNI, k1om) instruction set. 
@@ -30,7 +30,25 @@ Please refer to the wiki for introduction and additional information:
    >   [wiki pages](https://bitbucket.org/edanor/umesimd/wiki/Home)
 
    
-   
+
+**RELEASE NOTES for v0.3.2-stable**
+
+Interface:
+- reintroduced mask-assignment operations on masks
+- gather scatter using scalar types of correlated precision
+
+Performance tuning:
+AVX:
+- performance improvements: SIMDMask4, SIMD2_32x, SIMD4_32x, SIMD8_32x
+AVX2:
+- performance improvements: SIMDMask4, SIMD2_32x, SIMD4_32x, SIMD8_32x
+AVX512:
+- missing operators SIMD4_32u
+- performance improvements: SIMD4_32f
+
+Benchmarks:
+- extend benchmarks with uniform statistics
+- statistics calculate also 90% and 95% confidence intervals
    
 **RELEASE NOTES for v0.3.1-stable**
    
