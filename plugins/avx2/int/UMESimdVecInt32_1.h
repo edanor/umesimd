@@ -1195,22 +1195,22 @@ namespace SIMD {
             return *this;
         }
         // SCATTER
-        inline uint32_t* scatter(uint32_t* baseAddr, uint32_t* indices) const {
+        inline int32_t* scatter(int32_t* baseAddr, uint32_t* indices) const {
             baseAddr[indices[0]] = mVec;
             return baseAddr;
         }
         // MSCATTER
-        inline uint32_t*  scatter(SIMDVecMask<1> const & mask, uint32_t* baseAddr, uint32_t* indices) const {
+        inline int32_t* scatter(SIMDVecMask<1> const & mask, int32_t* baseAddr, uint32_t* indices) const {
             if (mask.mMask == true) baseAddr[indices[0]] = mVec;
             return baseAddr;
         }
         // SCATTERV
-        inline uint32_t*  scatter(uint32_t* baseAddr, SIMDVec_u<uint32_t, 1> const & indices) const {
+        inline int32_t* scatter(int32_t* baseAddr, SIMDVec_u<uint32_t, 1> const & indices) const {
             baseAddr[indices.mVec] = mVec;
             return baseAddr;
         }
         // MSCATTERV
-        inline uint32_t*  scatter(SIMDVecMask<1> const & mask, uint32_t* baseAddr, SIMDVec_u<uint32_t, 1> const & indices) const {
+        inline int32_t* scatter(SIMDVecMask<1> const & mask, int32_t* baseAddr, SIMDVec_u<uint32_t, 1> const & indices) const {
             if (mask.mMask == true) baseAddr[indices.mVec] = mVec;
             return baseAddr;
         }
