@@ -219,7 +219,7 @@ namespace SIMD {
         }
         // MLOADA  - Masked load from aligned memory to vector
         // STORE   - Store vector content into memory (either aligned or unaligned)
-        inline float* store(float* p) {
+        inline float* store(float* p) const {
             _mm256_storeu_ps(p, mVecLoLo);
             _mm256_storeu_ps(p + 8, mVecLoHi);
             _mm256_storeu_ps(p + 16, mVecHiLo);

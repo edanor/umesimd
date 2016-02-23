@@ -282,24 +282,24 @@ namespace SIMD {
             mVec = BLEND(mVec, t0, mask.mMask);
         }
         // STORE
-        inline int32_t * store(int32_t * p) {
+        inline int32_t * store(int32_t * p) const {
             _mm256_storeu_si256((__m256i*)p, mVec);
             return p;
         }
         // MSTORE
-        inline int32_t * store(SIMDVecMask<8> const & mask, int32_t * p) {
+        inline int32_t * store(SIMDVecMask<8> const & mask, int32_t * p) const {
             __m256i t0 = _mm256_loadu_si256((__m256i*)p);
             __m256i t1 = BLEND(t0, mVec, mask.mMask);
             _mm256_storeu_si256((__m256i*)p, t1);
             return p;
         }
         // STOREA
-        inline int32_t * storea(int32_t * p) {
+        inline int32_t * storea(int32_t * p) const {
             _mm256_store_si256((__m256i*)p, mVec);
             return p;
         }
         // MSTORE
-        inline int32_t * storea(SIMDVecMask<8> const & mask, int32_t * p) {
+        inline int32_t * storea(SIMDVecMask<8> const & mask, int32_t * p) const {
             __m256i t0 = _mm256_load_si256((__m256i*)p);
             __m256i t1 = BLEND(t0, mVec, mask.mMask);
             _mm256_store_si256((__m256i*)p, t1);

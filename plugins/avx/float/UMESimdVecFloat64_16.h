@@ -225,7 +225,7 @@ namespace SIMD {
             return *this;
         }
         // STORE   - Store vector content into memory (either aligned or unaligned)
-        inline double* store(double* p) {
+        inline double* store(double* p) const {
             _mm256_storeu_pd(p, mVecLoLo);
             _mm256_storeu_pd(p + 4, mVecLoHi);
             _mm256_storeu_pd(p + 8, mVecHiLo);
@@ -235,7 +235,7 @@ namespace SIMD {
         // MSTORE  - Masked store vector content into memory (either aligned or
         //           unaligned)
         // STOREA  - Store vector content into aligned memory
-        inline double* storea(double* p) {
+        inline double* storea(double* p) const {
             _mm256_store_pd(p, mVecLoLo);
             _mm256_store_pd(p + 4, mVecLoHi);
             _mm256_store_pd(p + 8, mVecHiLo);
@@ -243,7 +243,7 @@ namespace SIMD {
             return p;
         }
         // MSTOREA - Masked store vector content into aligned memory
-        inline double* storea(SIMDVecMask<16> const & mask, double* p) {
+        inline double* storea(SIMDVecMask<16> const & mask, double* p) const {
             union {
                 __m256d pd;
                 __m256i epi64;
