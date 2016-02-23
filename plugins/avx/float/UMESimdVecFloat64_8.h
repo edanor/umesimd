@@ -149,21 +149,29 @@ namespace SIMD {
         // MASSIGNS
 
         //(Memory access)
-        // LOAD    - Load from memory (either aligned or unaligned) to vector 
+        // LOAD
         inline SIMDVec_f & load(double const * p) {
             mVecLo = _mm256_loadu_pd(p);
             mVecHi = _mm256_loadu_pd(p + 4);
             return *this;
         }
-        // MLOAD   - Masked load from memory (either aligned or unaligned) to
-        //           vector
-        // LOADA   - Load from aligned memory to vector
+        // MLOAD
+        inline SIMDVec_f & load(SIMDVecMask<8> const & mask, double const * p) {
+            __m256d t0 = _mm256_loadu_pd(p);
+            __m128i t1 = _mm256_extractf128_si256(mask.mMask, 0);
+            mVecLo = _mm256_blendv_pd(mVecLo, t0, _mm256_cvtepi32_pd(t1));
+            __m256d t2 = _mm256_loadu_pd(p + 4);
+            __m128i t3 = _mm256_extractf128_si256(mask.mMask, 1);
+            mVecHi = _mm256_blendv_pd(mVecHi, t2, _mm256_cvtepi32_pd(t3));
+            return *this;
+        }
+        // LOADA
         inline SIMDVec_f & loada(double const * p) {
             mVecLo = _mm256_load_pd(p);
             mVecHi = _mm256_load_pd(p + 4);
             return *this;
         }
-        // MLOADA  - Masked load from aligned memory to vector
+        // MLOADA
         inline SIMDVec_f & loada(SIMDVecMask<8> const & mask, double const * p) {
             __m256d t0 = _mm256_load_pd(p);
             __m256d t1 = _mm256_load_pd(p + 4);
@@ -177,21 +185,31 @@ namespace SIMD {
             mVecHi = _mm256_blendv_pd(mVecHi, t1, mask_pd_hi);
             return *this;
         }
-        // STORE   - Store vector content into memory (either aligned or unaligned)
+        // STORE
         inline double* store(double* p) const {
             _mm256_storeu_pd(p, mVecLo);
             _mm256_storeu_pd(p + 4, mVecHi);
             return p;
         }
-        // MSTORE  - Masked store vector content into memory (either aligned or
-        //           unaligned)
-        // STOREA  - Store vector content into aligned memory
+        // MSTORE
+        inline double* store(SIMDVecMask<8> const & mask, double* p) const {
+            __m256d t0 = _mm256_loadu_pd(p);
+            __m128i t1 = _mm256_extractf128_si256(mask.mMask, 0);
+            __m256d t2 = _mm256_blendv_pd(t0, mVecLo, _mm256_cvtepi32_pd(t1));
+            _mm256_storeu_pd(p, t2);
+            __m256d t3 = _mm256_loadu_pd(p + 4);
+            __m128i t4 = _mm256_extractf128_si256(mask.mMask, 1);
+            __m256d t5 = _mm256_blendv_pd(t3, mVecHi, _mm256_cvtepi32_pd(t4));
+            _mm256_storeu_pd(p + 4, t5);
+            return p;
+        }
+        // STOREA
         inline double* storea(double* p) const {
             _mm256_store_pd(p, mVecLo);
             _mm256_store_pd(p + 4, mVecHi);
             return p;
         }
-        // MSTOREA - Masked store vector content into aligned memory
+        // MSTOREA
         inline double* storea(SIMDVecMask<8> const & mask, double* p) const {
             union {
                 __m256d pd;
