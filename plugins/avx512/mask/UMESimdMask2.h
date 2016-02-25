@@ -50,7 +50,7 @@ namespace SIMD {
         friend class SIMDVec_f<float, 2>;
         friend class SIMDVec_f<double, 2>;
     private:
-        bool mMask[2];
+        __mmask8 mMask;
 
     public:
         inline SIMDVecMask() {}
@@ -58,43 +58,41 @@ namespace SIMD {
         // Regardless of the mask representation, the interface should only allow initialization using 
         // standard bool or using equivalent mask
         inline explicit SIMDVecMask(bool m) {
-            mMask[0] = m;
-            mMask[1] = m;
+            mMask = m ? 0xFF : 0x00;
         }
 
         // LOAD-CONSTR - Construct by loading from memory
         inline explicit SIMDVecMask(bool const * p) {
-            mMask[0] = p[0];
-            mMask[1] = p[1];
+            mMask = p[0] ? 0x01 : 0x00;
+            mMask |= p[1] ? 0x02 : 0x00;
         }
 
         inline SIMDVecMask(bool m0, bool m1) {
-            mMask[0] = m0;
-            mMask[1] = m1;
+            mMask = m0 ? 0x01 : 0x00;
+            mMask |= m1 ? 0x02 : 0x00;
         }
 
         inline SIMDVecMask(SIMDVecMask const & mask) {
-            mMask[0] = mask.mMask[0];
-            mMask[1] = mask.mMask[1];
+            mMask = mask.mMask;
         }
 
         inline bool extract(uint32_t index) const {
-            return mMask[index & 1];
+            return (mMask & (1 << index)) != 0;
         }
 
         // A non-modifying element-wise access operator
         inline bool operator[] (uint32_t index) const {
-            return mMask[index & 1];
+            return (mMask & (1 << index)) != 0;
         }
 
         // Element-wise modification operator
         inline void insert(uint32_t index, bool x) {
-            mMask[index & 1] = x;
+            if (x) mMask |= (1 << index);
+            else mMask &= ~(1 << index);
         }
 
         inline SIMDVecMask & operator= (SIMDVecMask const & mask) {
-            mMask[0] = mask.mMask[0];
-            mMask[1] = mask.mMask[1];
+            mMask = mask.mMask;
             return *this;
         }
     };

@@ -215,11 +215,7 @@ namespace SIMD {
         }
         // STORE
         inline uint32_t * store(uint32_t * p) const {
-#if defined(__AVX512VL__)
-            _mm_mask_storeu_epi32(p, 0xFF, mVec);
-#else
             _mm_storeu_si128((__m128i*) p, mVec);
-#endif
             return p;
         }
         // MSTORE

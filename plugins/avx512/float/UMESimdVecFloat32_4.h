@@ -1338,6 +1338,7 @@ namespace SIMD {
             return retval;
         }
         // IMAX
+        // MIMAX
         // HMIN
         inline float hmin() const {
             __m512 t0 = _mm512_castps128_ps512(mVec);
