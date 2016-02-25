@@ -474,7 +474,7 @@ namespace SIMD {
         }
         // SUBFROMS
         inline SIMDVec_u subfrom(uint64_t b) const {
-            __m128i t0 = _mm_sub_epi32(SET1_EPI64(b), mVec);
+            __m128i t0 = _mm_sub_epi64(SET1_EPI64(b), mVec);
             return SIMDVec_u(t0);
         }
         // MSUBFROMS
@@ -503,7 +503,7 @@ namespace SIMD {
         }
         // SUBFROMSA
         inline SIMDVec_u & subfroma(uint64_t b) {
-            mVec = _mm_sub_epi32(SET1_EPI64(b), mVec);
+            mVec = _mm_sub_epi64(SET1_EPI64(b), mVec);
             return *this;
         }
         // MSUBFROMSA
@@ -547,7 +547,7 @@ namespace SIMD {
         // MPREFDEC
         inline SIMDVec_u & prefdec(SIMDVecMask<2> const & mask) {
 #if defined(__AVX512VL__)
-            mVec = _mm_mask_sub_epi32(mVec, mask.mMask, mVec, SET1_EPI64(1));
+            mVec = _mm_mask_sub_epi64(mVec, mask.mMask, mVec, SET1_EPI64(1));
 #else
             mVec = EXPAND_CALL_BINARY_SCALAR_MASK(mVec, 1, mask.mMask, _mm512_mask_sub_epi64);
 #endif
@@ -782,7 +782,7 @@ namespace SIMD {
 #if defined(__AVX512VL__)
             __mmask8 m0 = _mm_cmpeq_epu64_mask(mVec, b.mVec);
 #else
-            __mmask8 m0 = _mm512_cmpeq_epu64_mask(
+            __mmask8 m0 = 0x3 & _mm512_cmpeq_epu64_mask(
                             _mm512_castsi128_si512(mVec),
                             _mm512_castsi128_si512(b.mVec));
 #endif
@@ -995,7 +995,7 @@ namespace SIMD {
         // HMUL
         inline uint64_t hmul() const {
             __m512i t0 = _mm512_castsi128_si512(mVec);
-            uint64_t retval = _mm512_reduce_mul_epi64(t0);
+            uint64_t retval = _mm512_mask_reduce_mul_epi64(0x3, t0);
             return retval;
         }
         // MHMUL
@@ -1007,7 +1007,7 @@ namespace SIMD {
         // HMULS
         inline uint64_t hmul(uint64_t b) const {
             __m512i t0 = _mm512_castsi128_si512(mVec);
-            uint64_t retval = _mm512_reduce_mul_epi64(t0);
+            uint64_t retval = _mm512_mask_reduce_mul_epi64(0x3, t0);
             return retval * b;
         }
         // MHMULS

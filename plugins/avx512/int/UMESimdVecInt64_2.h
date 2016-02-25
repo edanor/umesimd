@@ -1011,7 +1011,7 @@ namespace SIMD {
         // HMUL
         inline int64_t hmul() const {
             __m512i t0 = _mm512_castsi128_si512(mVec);
-            int64_t retval = _mm512_reduce_mul_epi64(t0);
+            int64_t retval = _mm512_mask_reduce_mul_epi64(0x3, t0);
             return retval;
         }
         // MHMUL
@@ -1023,7 +1023,7 @@ namespace SIMD {
         // HMULS
         inline int64_t hmul(int64_t b) const {
             __m512i t0 = _mm512_castsi128_si512(mVec);
-            int64_t retval = _mm512_reduce_mul_epi64(t0);
+            int64_t retval = _mm512_mask_reduce_mul_epi64(0x3, t0);
             return retval * b;
         }
         // MHMULS
