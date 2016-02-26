@@ -39,6 +39,8 @@
 namespace UME {
 namespace SIMD {
 
+    template<> class SIMDVec_f<double, 2>;
+
     template<>
     class SIMDVec_f<float, 2> :
         public SIMDVecFloatInterface<

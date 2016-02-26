@@ -68,12 +68,10 @@ namespace SIMD {
     public:
         // ZERO-CONSTR
         inline SIMDVec_f() {}
-
         // SET-CONSTR
         inline explicit SIMDVec_f(float f) {
             mVec = _mm256_set1_ps(f);
         }
-
         // LOAD-CONSTR
         inline explicit SIMDVec_f(float const *p) { 
             mVec = _mm256_loadu_ps(p); 

@@ -56,9 +56,14 @@ namespace SIMD {
     private:
         __mmask8 mMask;
 
-        inline explicit SIMDVecMask(__mmask8 const & x) { mMask = x; };
+        inline SIMDVecMask(__mmask8 const & m) { mMask = m; }
+
     public:
         inline SIMDVecMask() {}
+
+        inline SIMDVecMask(SIMDVecMask const & mask) {
+            mMask = mask.mMask;
+        }
 
         // Regardless of the mask representation, the interface should only allow initialization using 
         // standard bool or using equivalent mask
@@ -128,7 +133,7 @@ namespace SIMD {
             p[3] = ((mMask & 8) != 0);
             return p;
         }
-        // ASSIGN
+        // ASSIGNV
         inline SIMDVecMask & operator= (SIMDVecMask const & x) {
             mMask = x.mMask;
             return *this;

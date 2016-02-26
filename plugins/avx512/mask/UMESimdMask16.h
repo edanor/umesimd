@@ -125,7 +125,7 @@ namespace SIMD {
         }
         // LOAD
         inline SIMDVecMask & load(bool const * p) {
-            mMask = 0x00;
+            mMask = 0x0000;
             if (p[0]  == true) mMask |= 0x0001;
             if (p[1]  == true) mMask |= 0x0002;
             if (p[2]  == true) mMask |= 0x0004;
@@ -145,7 +145,7 @@ namespace SIMD {
         }
         // LOADA
         inline SIMDVecMask & loada(bool const * p) {
-            mMask = 0x00;
+            mMask = 0x0000;
             if (p[0]  == true) mMask |= 0x0001;
             if (p[1]  == true) mMask |= 0x0002;
             if (p[2]  == true) mMask |= 0x0004;
@@ -279,11 +279,11 @@ namespace SIMD {
         }
         // HLAND
         inline bool hland() const {
-            return ((mMask & 0xFF) == 0xF);
+            return ((mMask & 0xFFFF) == 0xFFFF);
         }
         // HLOR
         inline bool hlor() const {
-            return ((mMask & 0xFF) != 0x0);
+            return ((mMask & 0xFFFF) != 0x0);
         }
         // HLXOR
         inline bool hlxor() const {

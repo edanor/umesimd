@@ -782,8 +782,8 @@ int test_UME_SIMD4_64f(bool supressMessages)
 
     {
         SIMD4_64f vec0(4.12, 2.34, 3.15, 8.16);
-        double expected[4] = {4.12, 0.0, 0.0, 8.16};
-        double values[4] = {0.0, 0.0, 0.0, 0.0};
+        alignas(SIMD4_64f::alignment()) double expected[4] = {4.12, 0.0, 0.0, 8.16};
+        alignas(SIMD4_64f::alignment()) double values[4] = {0.0, 0.0, 0.0, 0.0};
         SIMDMask4 mask(true, false, false, true);
         vec0.storea(mask, values);
         CHECK_CONDITION(valuesInRange(values, expected, 4, 0.1), "MSTOREA");

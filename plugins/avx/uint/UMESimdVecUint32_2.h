@@ -860,7 +860,7 @@ namespace SIMD {
         // MHMUL
         inline uint32_t hmul(SIMDVecMask<2> const & mask) const {
             uint32_t t0 = mask.mMask[0] ? mVec[0] : 1;
-            uint32_t t1 = mask.mMask[1] ? mVec[1]*t0 : t0;
+            uint32_t t1 = mask.mMask[1] ? mVec[1] * t0 : t0;
             return t1;
         }
         // HMULS
