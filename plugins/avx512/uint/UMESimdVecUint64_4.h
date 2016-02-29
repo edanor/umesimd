@@ -102,8 +102,8 @@ namespace SIMD {
             mVec = _mm256_loadu_si256((__m256i*)p);
         }
         // FULL-CONSTR
-        inline SIMDVec_u(uint64_t i0, uint64_t i1, uint64_t i2, uint64_t, uint64_t i3) {
-            _mm256_set_epi64x(i3, i2, i1, i0);
+        inline SIMDVec_u(uint64_t i0, uint64_t i1, uint64_t i2, uint64_t i3) {
+            mVec = _mm256_set_epi64x(i3, i2, i1, i0);
         }
 
         // EXTRACT

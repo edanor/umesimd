@@ -58,5 +58,6 @@
 #include "int/UMESimdVecInt64_1.h"
 #include "int/UMESimdVecInt64_2.h"
 #include "int/UMESimdVecInt64_4.h"
+#include "int/UMESimdVecInt64_8.h"
 
 #endif

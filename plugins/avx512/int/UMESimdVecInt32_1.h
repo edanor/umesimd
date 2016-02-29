@@ -62,6 +62,7 @@ namespace SIMD {
         inline SIMDVec_i() : mVec() {};
 
         // SET-CONSTR
+        // FULL-CONSTR
         inline explicit SIMDVec_i(int32_t i) {
             mVec = i;
         };
