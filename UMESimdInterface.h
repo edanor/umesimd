@@ -1390,7 +1390,7 @@ namespace SIMD
         }
 
         // ROLV
-        template<typename VEC_TYPE, typename SCALAR_TYPE, typename UINT_VEC_TYPE>
+        template<typename VEC_TYPE, typename SCALAR_TYPE, typename UINT_VEC_TYPE, typename SCALAR_UINT_TYPE>
         inline VEC_TYPE rotateBitsLeft(VEC_TYPE const & a, UINT_VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
@@ -1398,11 +1398,17 @@ namespace SIMD
             SCALAR_TYPE topBitMask = SCALAR_TYPE(1) << (bitLength - 1);
             bool topBit;
             SCALAR_TYPE shifted;
-            
+            SCALAR_TYPE raw_a[VEC_TYPE::length()];
+            SCALAR_UINT_TYPE raw_b[UINT_VEC_TYPE::length()];
+            SCALAR_TYPE raw_retval[VEC_TYPE::length()];
+
+            a.store(raw_a);
+            b.store(raw_b);
+
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
-                shifted = a[i];
+                shifted = raw_a[i];
                 // shift one bit at a time. This simplifies type dependency checks.
-                for(uint32_t j = 0; j < b[i]; j++) {
+                for(uint32_t j = 0; j < raw_b[i]; j++) {
                   if( (shifted & topBitMask) != 0) topBit = true;
                   else topBit = false;
                   
@@ -1410,8 +1416,9 @@ namespace SIMD
                   if(topBit == true) shifted |= SCALAR_TYPE(1);
                   else               shifted &= ~(SCALAR_TYPE(1)); 
                 }
-                retval.insert(i, shifted); 
+                raw_retval[i] = shifted; 
             }
+            retval.load(raw_retval);
             return retval;
         }
 
@@ -1616,19 +1623,26 @@ namespace SIMD
         }
 
         // RORV
-        template<typename VEC_TYPE, typename SCALAR_TYPE, typename UINT_VEC_TYPE>
+        template<typename VEC_TYPE, typename SCALAR_TYPE, typename UINT_VEC_TYPE, typename SCALAR_UINT_TYPE>
         inline VEC_TYPE rotateBitsRight(VEC_TYPE const & a, UINT_VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
             uint32_t bitLength = 8*sizeof(SCALAR_TYPE);
-            SCALAR_TYPE topBitMask = SCALAR_TYPE(1) << (bitLength - 1);
+            SCALAR_UINT_TYPE topBitMask = SCALAR_TYPE(1) << (bitLength - 1);
             bool bottomBit;
-            SCALAR_TYPE shifted;
+            SCALAR_UINT_TYPE shifted;
+
+            SCALAR_TYPE raw_a[VEC_TYPE::length()];
+            SCALAR_UINT_TYPE raw_b[VEC_TYPE::length()];
+            SCALAR_TYPE raw_retval[VEC_TYPE::length()];
+
+            a.store(raw_a);
+            b.store(raw_b);
 
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
-                shifted = a[i];
+                shifted = raw_a[i];
                 // shift one bit at a time. This simplifies type dependency checks.
-                for(uint32_t j = 0; j < b[i]; j++) {
+                for(uint32_t j = 0; j < raw_b[i]; j++) {
                     if( (shifted & 1) != 0) bottomBit = true;
                     else bottomBit = false;
 
@@ -1636,8 +1650,9 @@ namespace SIMD
                     if(bottomBit == true) shifted |= topBitMask;
                     else                  shifted &= ~topBitMask;
                 }
-                retval.insert(i, shifted);
+                raw_retval[i] = (SCALAR_TYPE)shifted;
             }
+            retval.load(raw_retval);
             return retval;
         }
 
@@ -5683,7 +5698,7 @@ namespace SIMD
 
         // ROLV
         inline DERIVED_VEC_TYPE rol (DERIVED_UINT_VEC_TYPE const & b) const {
-            return EMULATED_FUNCTIONS::rotateBitsLeft<DERIVED_VEC_TYPE, SCALAR_TYPE, DERIVED_UINT_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this), b);
+            return EMULATED_FUNCTIONS::rotateBitsLeft<DERIVED_VEC_TYPE, SCALAR_TYPE, DERIVED_UINT_VEC_TYPE, SCALAR_UINT_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
         // MROLV
@@ -5723,7 +5738,7 @@ namespace SIMD
 
         // RORV
         inline DERIVED_VEC_TYPE ror (DERIVED_UINT_VEC_TYPE const & b) const {
-            return EMULATED_FUNCTIONS::rotateBitsRight<DERIVED_VEC_TYPE, SCALAR_TYPE, DERIVED_UINT_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this), b);
+            return EMULATED_FUNCTIONS::rotateBitsRight<DERIVED_VEC_TYPE, SCALAR_TYPE, DERIVED_UINT_VEC_TYPE, SCALAR_UINT_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
         // MRORV
