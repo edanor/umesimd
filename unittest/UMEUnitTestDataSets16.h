@@ -282,22 +282,22 @@ struct DataSet_1_16i {
         static const int16_t MSQRT[64];
 
         // define as uint16_t, but load as int16_t
-        static const uint16_t LSHV[64];
-        static const uint16_t MLSHV[64];
-        static const uint16_t LSHS[64];
-        static const uint16_t MLSHS[64];
-        static const uint16_t RSHV[64];
-        static const uint16_t MRSHV[64];
-        static const uint16_t RSHS[64];
-        static const uint16_t MRSHS[64];
-        static const uint16_t ROLV[64];
-        static const uint16_t MROLV[64];
-        static const uint16_t ROLS[64];
-        static const uint16_t MROLS[64];
-        static const uint16_t RORV[64];
-        static const uint16_t MRORV[64];
-        static const uint16_t RORS[64];
-        static const uint16_t MRORS[64];
+        static const int16_t LSHV[64];
+        static const int16_t MLSHV[64];
+        static const int16_t LSHS[64];
+        static const int16_t MLSHS[64];
+        static const int16_t RSHV[64];
+        static const int16_t MRSHV[64];
+        static const int16_t RSHS[64];
+        static const int16_t MRSHS[64];
+        static const int16_t ROLV[64];
+        static const int16_t MROLV[64];
+        static const int16_t ROLS[64];
+        static const int16_t MROLS[64];
+        static const int16_t RORV[64];
+        static const int16_t MRORV[64];
+        static const int16_t RORS[64];
+        static const int16_t MRORS[64];
 
         static const int16_t NEG[64];
         static const int16_t MNEG[64];

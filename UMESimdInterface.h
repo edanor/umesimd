@@ -2559,7 +2559,7 @@ namespace SIMD
         template<typename SCALAR_TYPE, typename VEC_TYPE, typename MASK_TYPE>
         inline SCALAR_TYPE reduceBinaryAnd(MASK_TYPE const & mask, VEC_TYPE const & a) {
             UME_EMULATION_WARNING();
-            SCALAR_TYPE retval = (mask[0] == true) ? a[0] : ~0; // TODO: 0-initializer of scalar type
+            SCALAR_TYPE retval = (mask[0] == true) ? a[0] : (SCALAR_TYPE)-1;
             for(uint32_t i = 1; i < VEC_TYPE::length(); i++) {
                 if( mask[i] == true ) retval &= a[i];
             }

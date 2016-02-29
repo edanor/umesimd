@@ -281,23 +281,22 @@ struct DataSet_1_8i {
         static const int8_t SQRT[128];
         static const int8_t MSQRT[128];
 
-        // define as uint8_t, but load as int8_t
-        static const uint8_t LSHV[128];
-        static const uint8_t MLSHV[128];
-        static const uint8_t LSHS[128];
-        static const uint8_t MLSHS[128];
-        static const uint8_t RSHV[128];
-        static const uint8_t MRSHV[128];
-        static const uint8_t RSHS[128];
-        static const uint8_t MRSHS[128];
-        static const uint8_t ROLV[128];
-        static const uint8_t MROLV[128];
-        static const uint8_t ROLS[128];
-        static const uint8_t MROLS[128];
-        static const uint8_t RORV[128];
-        static const uint8_t MRORV[128];
-        static const uint8_t RORS[128];
-        static const uint8_t MRORS[128];
+        static const int8_t LSHV[128];
+        static const int8_t MLSHV[128];
+        static const int8_t LSHS[128];
+        static const int8_t MLSHS[128];
+        static const int8_t RSHV[128];
+        static const int8_t MRSHV[128];
+        static const int8_t RSHS[128];
+        static const int8_t MRSHS[128];
+        static const int8_t ROLV[128];
+        static const int8_t MROLV[128];
+        static const int8_t ROLS[128];
+        static const int8_t MROLS[128];
+        static const int8_t RORV[128];
+        static const int8_t MRORV[128];
+        static const int8_t RORS[128];
+        static const int8_t MRORS[128];
 
         static const int8_t NEG[128];
         static const int8_t MNEG[128];

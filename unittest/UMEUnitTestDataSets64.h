@@ -281,23 +281,22 @@ struct DataSet_1_64i {
         static const int64_t SQRT[16];
         static const int64_t MSQRT[16];
 
-        // define as uint64_t, but load as int64_t
-        static const uint64_t LSHV[16];
-        static const uint64_t MLSHV[16];
-        static const uint64_t LSHS[16];
-        static const uint64_t MLSHS[16];
-        static const uint64_t RSHV[16];
-        static const uint64_t MRSHV[16];
-        static const uint64_t RSHS[16];
-        static const uint64_t MRSHS[16];
-        static const uint64_t ROLV[16];
-        static const uint64_t MROLV[16];
-        static const uint64_t ROLS[16];
-        static const uint64_t MROLS[16];
-        static const uint64_t RORV[16];
-        static const uint64_t MRORV[16];
-        static const uint64_t RORS[16];
-        static const uint64_t MRORS[16];
+        static const int64_t LSHV[16];
+        static const int64_t MLSHV[16];
+        static const int64_t LSHS[16];
+        static const int64_t MLSHS[16];
+        static const int64_t RSHV[16];
+        static const int64_t MRSHV[16];
+        static const int64_t RSHS[16];
+        static const int64_t MRSHS[16];
+        static const int64_t ROLV[16];
+        static const int64_t MROLV[16];
+        static const int64_t ROLS[16];
+        static const int64_t MROLS[16];
+        static const int64_t RORV[16];
+        static const int64_t MRORV[16];
+        static const int64_t RORS[16];
+        static const int64_t MRORS[16];
 
         static const int64_t NEG[16];
         static const int64_t MNEG[16];
