@@ -1572,8 +1572,8 @@ namespace SIMD
         inline VEC_TYPE & rotateBitsLeftAssignScalar(VEC_TYPE & a, SCALAR_UINT_TYPE b) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
-            uint32_t bitLength = 8*sizeof(SCALAR_UINT_TYPE);
-            SCALAR_TYPE topBitMask = 1 << (bitLength - 1);
+            SCALAR_TYPE bitLength = 8*sizeof(SCALAR_UINT_TYPE);
+            SCALAR_TYPE topBitMask = SCALAR_TYPE(1) << (bitLength - 1);
             bool topBit;
             SCALAR_TYPE shifted;
                         
@@ -1599,7 +1599,7 @@ namespace SIMD
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
             uint32_t bitLength = 8*sizeof(SCALAR_UINT_TYPE);
-            SCALAR_TYPE topBitMask = 1 << (bitLength - 1);
+            SCALAR_TYPE topBitMask = SCALAR_TYPE(1) << (bitLength - 1);
             bool topBit;
             SCALAR_TYPE shifted;
                         

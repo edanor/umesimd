@@ -97,7 +97,11 @@ bool valueInRange(float value, float expectedValue, float errMargin) {
 }
 
 bool valueInRange(double value, double expectedValue, double errMargin) {
-    if(value >= 0.0f)
+    if (expectedValue == 0.0)
+    {
+        return (errMargin >= value) & ((-errMargin) <= value);
+    }
+    else if (value > 0.0f)
     {
         return ((expectedValue)*(1.0f + errMargin) >= value) 
              & ((expectedValue)*(1.0f - errMargin) <= value);
@@ -2160,7 +2164,6 @@ void genericDIVSTest()
     }
 }
 
-    
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMDIVSTest()
 {

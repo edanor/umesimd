@@ -1026,7 +1026,7 @@ int test_UME_SIMD4_32u(bool supressMessages)
         SIMD4_32u vec1(1, 0, 3, 4);
         SIMD4_32u vec2;
         vec2 = vec0.lsh(vec1);
-        CHECK_CONDITION(vec2[0] == 18 && vec2[1] == 32 && vec2[2] == 56 && vec2[3] == 96, "LSHV");
+        CHECK_CONDITION(vec2[0] == 18 && vec2[1] == 8 && vec2[2] == 56 && vec2[3] == 96, "LSHV");
     }
     {
         SIMD4_32u vec0(9, 8, 7, 6);
