@@ -374,7 +374,7 @@ void genericLANDSTest()
         m2.store(values);
         bool exact = true;
         for (int i = 0; i < VEC_LEN; i++) {
-            if (values[i] != DATA_SET::outputs::LANDS_A[i]) {
+           if (values[i] != DATA_SET::outputs::LANDS_A[i]) {
                 exact = false;
                 break;
             }
@@ -1179,9 +1179,8 @@ void genericINSERTTest()
     {
         SCALAR_TYPE values[VEC_LEN];
         VEC_TYPE vec0;
-        
-        bool exact = true;
-        for (int i = 0; i < VEC_LEN; i++) {
+
+        for (unsigned int i = 0; i < VEC_LEN; i++) {
             vec0.insert(i, DATA_SET::inputs::inputA[i]);
         }
         vec0.store(values);
@@ -1192,7 +1191,6 @@ void genericINSERTTest()
         SCALAR_TYPE values[VEC_LEN];
         VEC_TYPE vec0;
 
-        bool exact = true;
         for (uint32_t i = 0; i < VEC_LEN; i++) {
             vec0[i] = DATA_SET::inputs::inputA[i];
         }

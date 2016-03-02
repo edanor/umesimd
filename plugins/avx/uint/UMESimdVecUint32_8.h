@@ -273,12 +273,14 @@ namespace SIMD {
         }
         // LOADA
         inline SIMDVec_u & loada(uint32_t const * p) {
-            _mm256_load_si256((__m256i *)p);
+            mVec = _mm256_load_si256((__m256i *)p);
+            return *this;
         }
         // MLOADA
         inline SIMDVec_u & loada(SIMDVecMask<8> const & mask, uint32_t const * p) {
             __m256i t0 = _mm256_load_si256((__m256i*)p);
             mVec = BLEND(mVec, t0, mask.mMask);
+            return *this;
         }
         // STORE
         // MSTORE

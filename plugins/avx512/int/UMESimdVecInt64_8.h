@@ -1487,6 +1487,7 @@ namespace SIMD {
         inline int64_t* scatter(SIMDVecMask<8> const & mask, int64_t* baseAddr, int64_t* indices) const {
             __m512i t0 = _mm512_load_si512((__m512i *)indices);
             _mm512_mask_i64scatter_epi64(baseAddr, mask.mMask, t0, mVec, 8);
+            return baseAddr;
         }
         // SCATTERV
         inline int64_t* scatter(int64_t* baseAddr, SIMDVec_i const & indices) const {

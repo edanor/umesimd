@@ -70,7 +70,7 @@ namespace SIMD {
 
         // LOAD-CONSTR
         inline explicit SIMDVecMask(bool const *p) {
-            mMask = 0x0;
+            mMask = 0x0000;
             if (p[0] == true) mMask |= 0x0001;
             if (p[1] == true) mMask |= 0x0002;
             if (p[2] == true) mMask |= 0x0004;
@@ -142,6 +142,7 @@ namespace SIMD {
             if (p[13] == true) mMask |= 0x2000;
             if (p[14] == true) mMask |= 0x4000;
             if (p[15] == true) mMask |= 0x8000;
+            return *this;
         }
         // LOADA
         inline SIMDVecMask & loada(bool const * p) {
@@ -162,6 +163,7 @@ namespace SIMD {
             if (p[13] == true) mMask |= 0x2000;
             if (p[14] == true) mMask |= 0x4000;
             if (p[15] == true) mMask |= 0x8000;
+            return *this;
         }
         // STORE
         inline bool* store(bool * p) const {
@@ -216,6 +218,7 @@ namespace SIMD {
         // LANDS
         inline SIMDVecMask land(bool b) const {
             __mmask16 t0 = mMask & (b ? 0xFFFF : 0x0000);
+            return SIMDVecMask(t0);
         }
         // LANDVA
         inline SIMDVecMask & landa(SIMDVecMask const & b) {

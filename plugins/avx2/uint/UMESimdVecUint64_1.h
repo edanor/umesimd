@@ -71,10 +71,6 @@ namespace SIMD {
         inline explicit SIMDVec_u(uint64_t const *p) { 
             mVec = p[0];
         }
-        // FULL-CONSTR
-        inline SIMDVec_u(uint64_t i0, uint64_t i1) {
-            mVec = i0;
-        }
 
         // EXTRACT
         inline uint64_t extract(uint32_t index) const {

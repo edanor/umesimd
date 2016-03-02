@@ -112,6 +112,7 @@ namespace SIMD {
             if (p[1] == true) mMask |= 0x2;
             if (p[2] == true) mMask |= 0x4;
             if (p[3] == true) mMask |= 0x8;
+            return *this;
         }
         // LOADA
         inline SIMDVecMask & loada(bool const * p) {
@@ -124,6 +125,7 @@ namespace SIMD {
             if (p[5] == true) mMask |= 0x20;
             if (p[6] == true) mMask |= 0x40;
             if (p[7] == true) mMask |= 0x80;
+            return *this;
         }
         // STORE
         inline bool* store(bool * p) const {
@@ -171,6 +173,7 @@ namespace SIMD {
         }
         inline SIMDVecMask & landa(bool b) {
             mMask &= (b ? 0xFF : 0x00);
+            return *this;
         }
         // LORV
         inline SIMDVecMask lor(SIMDVecMask const & b) const {

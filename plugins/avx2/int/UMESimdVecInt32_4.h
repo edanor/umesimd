@@ -1206,10 +1206,12 @@ namespace SIMD {
         // MSCATTERS
         inline int32_t* scatter(SIMDVecMask<4> const & mask, int32_t* baseAddr, uint32_t* indices) {
             alignas(16) int32_t raw[4];
-            alignas(16) int32_t rawMask[4];
+            alignas(16) uint32_t rawMask[4];
             _mm_store_si128((__m128i*) raw, mVec);
             _mm_store_si128((__m128i*) rawMask, mask.mMask);
-            for (int i = 0; i < 4; i++) { if (rawMask[i] == SIMDVecMask<4>::TRUE()) baseAddr[indices[i]] = raw[i]; };
+            for (int i = 0; i < 4; i++) { 
+                if (rawMask[i] == SIMDVecMask<4>::TRUE()) baseAddr[indices[i]] = raw[i]; 
+            };
             return baseAddr;
         }
         // SCATTERV
@@ -1225,7 +1227,7 @@ namespace SIMD {
         inline int32_t* scatter(SIMDVecMask<4> const & mask, int32_t* baseAddr, SIMDVec_i const & indices) {
             alignas(16) int32_t raw[4];
             alignas(16) int32_t rawIndices[4];
-            alignas(16) int32_t rawMask[4];
+            alignas(16) uint32_t rawMask[4];
             _mm_store_si128((__m128i*) raw, mVec);
             _mm_store_si128((__m128i*) rawIndices, indices.mVec);
             _mm_store_si128((__m128i*) rawMask, mask.mMask);

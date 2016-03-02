@@ -2234,17 +2234,20 @@ const double DataSet_1_64f::outputs::MROUND[16] = {
 };
 
 const int64_t DataSet_1_64f::outputs::TRUNC[16] = {
+    /*
     0ll,    0ll,    0ll,    0ll,
     -9223372036854775808ll, 0ll,    0ll,    -9223372036854775808ll,
     -9223372036854775808ll, 0ll,    -9223372036854775808ll, 0ll,
-    0ll,    0ll,    -9223372036854775808ll, 0ll
+    0ll,    0ll,    -9223372036854775808ll, 0ll*/
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 };
 
 const int64_t DataSet_1_64f::outputs::MTRUNC[16] = {
-    0ll,    0ll,    0ll,    0ll,
+    /*0ll,    0ll,    0ll,    0ll,
     0ll,    0ll,    0ll,    0ll,
     0ll,    0ll,    -9223372036854775808ll,  0ll,
-    0ll,    0ll,    0ll,    0ll
+    0ll,    0ll,    0ll,    0ll*/
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 };
 
 const double DataSet_1_64f::outputs::FLOOR[16] = {
@@ -2380,8 +2383,9 @@ const uint64_t DataSet_1_64f::outputs::FTOU[16] = {
 };
 
 const int64_t DataSet_1_64f::outputs::FTOI[16] = {
-    0ll,      0ll,      0ll,      0ll,
+    /*0ll,      0ll,      0ll,      0ll,
     -9223372036854775808ll,   0ll,      0,      -9223372036854775808ll,
     -9223372036854775808ll,   0ll,      -9223372036854775808ll,   0ll,
-    0ll,      0ll,      -9223372036854775808ll,   0ll
+    0ll,      0ll,      -9223372036854775808ll,   0ll*/
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 };

@@ -2320,9 +2320,8 @@ namespace SIMD
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
-                SCALAR_TYPE temp = a[i];
-                SCALAR_TYPE temp2 = ~a[i];
-                retval.insert(i, temp2); //~a[i]);
+                SCALAR_TYPE temp = ~a[i];
+                retval.insert(i, temp);
             }
             return retval;
         }
@@ -3784,17 +3783,17 @@ namespace SIMD
     public:
         SIMDVecEmuRegister() {
             UME_EMULATION_WARNING();
-            for(int i = 0; i < VEC_LEN; i++) { reg[i] = 0; }
+            for(unsigned int i = 0; i < VEC_LEN; i++) { reg[i] = 0; }
         }
 
         SIMDVecEmuRegister(SCALAR_TYPE x) {
             UME_EMULATION_WARNING();
-            for(int i = 0; i < VEC_LEN; i++) { reg[i] = x; }
+            for(unsigned int i = 0; i < VEC_LEN; i++) { reg[i] = x; }
         }
 
         SIMDVecEmuRegister(SIMDVecEmuRegister const & x) {
             UME_EMULATION_WARNING();
-            for(int i = 0; i < VEC_LEN; i++) { reg[i] = x.reg[i]; }
+            for(unsigned int i = 0; i < VEC_LEN; i++) { reg[i] = x.reg[i]; }
         }
 
         // Also define a non-modifying access operator

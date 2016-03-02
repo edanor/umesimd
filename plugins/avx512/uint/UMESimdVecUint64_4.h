@@ -1666,6 +1666,7 @@ namespace SIMD {
                 _mm512_castsi256_si512(mVec),
                 8);
 #endif
+            return baseAddr;
         }
         // SCATTERV
         inline uint64_t* scatter(uint64_t* baseAddr, SIMDVec_u const & indices) const {

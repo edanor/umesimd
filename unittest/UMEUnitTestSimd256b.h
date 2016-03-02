@@ -513,7 +513,7 @@ int test_UME_SIMD8_32i(bool supressMessages) {
     {
         SIMD8_32i vec0(1, -2, 3, -4, 5, 6, -7, -8);
         SIMDMask8 mask(true, true, false, false, false, true, false, true);
-        SIMD8_32u vec1 = vec0.abs(mask);
+        SIMD8_32i vec1 = vec0.abs(mask);
         CHECK_CONDITION(vec1[0] == 1 && vec1[1] == 2 && vec1[6] == -7 && vec1[7] == 8, "MABS");
     }
 

@@ -722,7 +722,7 @@ namespace SIMD {
         inline SIMDVecMask<2> cmpeq (uint32_t b) const {
             bool m0 = mVec[0] == b;
             bool m1 = mVec[1] == b;
-            return SIMDVecMask<2>(m1);
+            return SIMDVecMask<2>(m0, m1);
         }
         inline SIMDVecMask<2> operator== (uint32_t b) const {
             return cmpeq(b);
@@ -758,7 +758,7 @@ namespace SIMD {
         inline SIMDVecMask<2> cmpgt (uint32_t b) const {
             bool m0 = mVec[0] > b;
             bool m1 = mVec[1] > b;
-            return SIMDVecMask<2>(m0);
+            return SIMDVecMask<2>(m0, m1);
         }
         inline SIMDVecMask<2> operator> (uint32_t b) const {
             return cmpgt(b);
@@ -767,7 +767,7 @@ namespace SIMD {
         inline SIMDVecMask<2> cmplt (SIMDVec_u const & b) const {
             bool m0 = mVec[0] < b.mVec[0];
             bool m1 = mVec[1] < b.mVec[1];
-            return SIMDVecMask<2>(m0);
+            return SIMDVecMask<2>(m0, m1);
         }
         inline SIMDVecMask<2> operator< (SIMDVec_u const & b) const {
             return cmplt(b);
@@ -794,7 +794,7 @@ namespace SIMD {
         inline SIMDVecMask<2> cmpge (uint32_t b) const {
             bool m0 = mVec[0] >= b;
             bool m1 = mVec[1] >= b;
-            return SIMDVecMask<2>(m0);
+            return SIMDVecMask<2>(m0, m1);
         }
         inline SIMDVecMask<2> operator>= (uint32_t b) const {
             return cmpge(b);
@@ -1363,7 +1363,7 @@ namespace SIMD {
         inline uint32_t hbxor(SIMDVecMask<2> const & mask) const {
             uint32_t t0 = mask.mMask[0] ? mVec[0] : 0;
             uint32_t t1 = mask.mMask[1] ? mVec[1] ^ t0 : t0;
-            return t0;
+            return t1;
         }
         // HBXORS
         inline uint32_t hbxor(uint32_t b) const {

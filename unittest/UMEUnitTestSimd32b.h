@@ -78,7 +78,7 @@ int test_UME_SIMD1_32(bool supressMessages) {
     int fail_i = test_UME_SIMD1_32i(supressMessages);
     int fail_f = test_UME_SIMD1_32f(supressMessages);
 
-    return fail_u + fail_i;
+    return fail_u + fail_i + fail_f;
 }
 
 // ****************************************************************************

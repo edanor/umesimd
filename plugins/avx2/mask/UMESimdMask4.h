@@ -120,6 +120,7 @@ namespace SIMD {
             raw[2] = p[2] ? TRUE() : FALSE();
             raw[3] = p[3] ? TRUE() : FALSE();
             mMask = _mm_load_si128((__m128i*)raw);
+            return *this;
         }
         // LOADA
         inline SIMDVecMask & loada(bool const * p) {
@@ -129,6 +130,7 @@ namespace SIMD {
             raw[2] = p[2] ? TRUE() : FALSE();
             raw[3] = p[3] ? TRUE() : FALSE();
             mMask = _mm_load_si128((__m128i*)raw);
+            return *this;
         }
         // STORE
         inline bool* store(bool * p) const {

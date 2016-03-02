@@ -170,11 +170,13 @@ namespace SIMD {
         }
         // LOADA
         inline SIMDVec_u & loada(uint32_t const * p) {
-            _mm256_load_si256((__m256i *)p);
+            mVec = _mm256_load_si256((__m256i *)p);
+            return *this;
         }
         // MLOADA
         inline SIMDVec_u & loada(SIMDVecMask<8> const & mask, uint32_t const * p) {
-            _mm256_maskload_epi32((int *)p, mask.mMask);
+            mVec = _mm256_maskload_epi32((int *)p, mask.mMask);
+            return *this;
         }
         // STORE
         // MSTORE
@@ -683,8 +685,8 @@ namespace SIMD {
             __m256i t1 = _mm256_blendv_epi8(t0, mVec, mask.mMask);
             __m256i t2 = _mm256_hadd_epi32(t1, t0);
             __m256i t3 = _mm256_hadd_epi32(t2, t0);
-            uint32_t retval = _mm256_extract_epi32(t2, 0);
-            retval += _mm256_extract_epi32(t2, 4);
+            uint32_t retval = _mm256_extract_epi32(t3, 0);
+            retval += _mm256_extract_epi32(t3, 4);
             return retval;
         }
         // HADDS
@@ -702,8 +704,8 @@ namespace SIMD {
             __m256i t1 = _mm256_blendv_epi8(t0, mVec, mask.mMask);
             __m256i t2 = _mm256_hadd_epi32(t1, t0);
             __m256i t3 = _mm256_hadd_epi32(t2, t0);
-            uint32_t retval = _mm256_extract_epi32(t2, 0);
-            retval += _mm256_extract_epi32(t2, 4);
+            uint32_t retval = _mm256_extract_epi32(t3, 0);
+            retval += _mm256_extract_epi32(t3, 4);
             return retval + b;
         }
         // HMUL

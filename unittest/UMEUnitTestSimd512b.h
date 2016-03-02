@@ -279,7 +279,7 @@ int test_UME_SIMD16_32i(bool supressMessages) {
         int32_t results[16] = { 0, 2, 2, 4, 4, 5, 6, 12, 8, 9, 14, 11, 85, 18, 14, 15};
 
         vec2 = vec0.max(vec1);
-        int i;
+        unsigned int i;
         for(i = 0; i < 16; i++) if(vec2[i] != results[i]) break;
         
         CHECK_CONDITION(i == 16, "MAXV");
@@ -293,7 +293,7 @@ int test_UME_SIMD16_32i(bool supressMessages) {
         SIMDMask16 mask(true, false, false, false, true,  true,  false, true, 
                         true, true,  true, true,  false, true, true,  true);
         vec2 = vec0.max(mask, vec1);
-        int i;
+        unsigned int i;
         for(i = 0; i < 16; i++) if(vec2[i] != results[i]) break;
         
         CHECK_CONDITION(i == 16, "MMAXV");
@@ -306,9 +306,9 @@ int test_UME_SIMD16_32i(bool supressMessages) {
         int32_t results[16] = {7, 7, 7, 7, 7, 7, 7, 7, 8, 9, 10, 11, 12, 13, 14, 15};
 
         vec2 = vec0.max(val1);
-        int i;
+        unsigned int i;
         for(i = 0; i < 16; i++) if(vec2[i] != results[i]) break;
-        
+
         CHECK_CONDITION(i == 16, "MAXS");
     }
 
@@ -320,7 +320,7 @@ int test_UME_SIMD16_32i(bool supressMessages) {
         SIMDMask16 mask(true, false, false, false, true,  true,  false, true, 
                         true, true,  true, true,  false, true, true,  true);
         vec2 = vec0.max(mask, val1);
-        int i;
+        unsigned int i;
         for(i = 0; i < 16; i++) if(vec2[i] != results[i]) break;
         
         CHECK_CONDITION(i == 16, "MMAXS");
@@ -331,7 +331,7 @@ int test_UME_SIMD16_32i(bool supressMessages) {
         SIMD16_32i vec1(-1, 2, -3, 4, -5, 5, 6, 12, 6, 7, 14, -3121412, 85, 18, 12, 0);
         int32_t results[16] = { 0, 2, 2, 4, 4, 5, 6, 12, 8, 9, 14, 11, 85, 18, 14, 15};
         vec0.maxa(vec1);
-        int i;
+        unsigned int i;
         for(i = 0; i < 16; i++) if(vec0[i] != results[i]) break;
         
         CHECK_CONDITION(i == 16, "MAXVA");
@@ -344,7 +344,7 @@ int test_UME_SIMD16_32i(bool supressMessages) {
         SIMDMask16 mask(true, false, false, false, true,  true,  false, true, 
                         true, true,  true, true,  false, true, true,  true);
         vec0.maxa(mask, vec1);
-        int i;
+        unsigned int i;
         for(i = 0; i < 16; i++) if(vec0[i] != results[i]) break;
         
         CHECK_CONDITION(i == 16, "MMAXVA");
@@ -355,7 +355,7 @@ int test_UME_SIMD16_32i(bool supressMessages) {
         int32_t    val1 = 7;
         int32_t results[16] = {7, 7, 7, 7, 7, 7, 7, 7, 8, 9, 10, 11, 12, 13, 14, 15};
         vec0.maxa(val1);
-        int i;
+        unsigned int i;
         for(i = 0; i < 16; i++) if(vec0[i] != results[i]) break;
         
         CHECK_CONDITION(i == 16, "MAXSA");
@@ -369,7 +369,7 @@ int test_UME_SIMD16_32i(bool supressMessages) {
         SIMDMask16 mask(true, false, false, false, true,  true,  false, true, 
                         true, true,  true, true,  false, true, true,  true);
         vec0.maxa(mask, val1);
-        int i;
+        unsigned int i;
         for(i = 0; i < 16; i++) if(vec0[i] != results[i]) break;
         
         CHECK_CONDITION(i == 16, "MMAXSA");
@@ -382,7 +382,7 @@ int test_UME_SIMD16_32i(bool supressMessages) {
         int32_t results[16] = { -1, 1, -3, 3, -5, 5, 6, 7, 6, 7, 10, -3121412, 12, 13, 12, 0};
 
         vec2 = vec0.min(vec1);
-        int i;
+        unsigned int i;
         for(i = 0; i < 16; i++) if(vec2[i] != results[i]) break;
         
         CHECK_CONDITION(i == 16, "MINV");
@@ -396,7 +396,7 @@ int test_UME_SIMD16_32i(bool supressMessages) {
         SIMDMask16 mask(true, false, false, false,  true,  true, false, true, 
                         true, true,  true,  true,   false, true, true,  true);
         vec2 = vec0.min(mask, vec1);
-        int i;
+        unsigned int i;
         for(i = 0; i < 16; i++) if(vec2[i] != results[i]) break;
         
         CHECK_CONDITION(i == 16, "MMINV");
@@ -409,7 +409,7 @@ int test_UME_SIMD16_32i(bool supressMessages) {
         int32_t results[16] = {0, 1, 2, 3, 4, 5, 6, 7,  7, 7, 7, 7, 7, 7, 7, 7};
 
         vec2 = vec0.min(val1);
-        int i;
+        unsigned int i;
         for(i = 0; i < 16; i++) if(vec2[i] != results[i]) break;
         
         CHECK_CONDITION(i == 16, "MINS");
@@ -423,7 +423,7 @@ int test_UME_SIMD16_32i(bool supressMessages) {
         SIMDMask16 mask(true, false, false, false, true,  true,  false, true, 
                         true, true,  true, true,  false, true, true,  true);
         vec2 = vec0.min(mask, val1);
-        int i;
+        unsigned int i;
         for(i = 0; i < 16; i++) if(vec2[i] != results[i]) break;
         
         CHECK_CONDITION(i == 16, "MMINS");
@@ -434,7 +434,7 @@ int test_UME_SIMD16_32i(bool supressMessages) {
         SIMD16_32i vec1(-1, 2, -3, 4, -5, 5, 6, 12, 6, 7, 14, -3121412, 85, 18, 12, 0);
         int32_t results[16] = { -1, 1, -3, 3, -5, 5, 6, 7, 6, 7, 10, -3121412, 12, 13, 12, 0};
         vec0.mina(vec1);
-        int i;
+        unsigned int i;
         for(i = 0; i < 16; i++) if(vec0[i] != results[i]) break;
         
         CHECK_CONDITION(i == 16, "MINVA");
@@ -447,7 +447,7 @@ int test_UME_SIMD16_32i(bool supressMessages) {
         SIMDMask16 mask(true, false, false, false, true,  true,  false, true, 
                         true, true,  true, true,  false, true, true,  true);
         vec0.mina(mask, vec1);
-        int i;
+        unsigned int i;
         for(i = 0; i < 16; i++) if(vec0[i] != results[i]) break;
         
         CHECK_CONDITION(i == 16, "MMINVA");
@@ -458,7 +458,7 @@ int test_UME_SIMD16_32i(bool supressMessages) {
         int32_t    val1 = 7;
         int32_t results[16] = {0, 1, 2, 3, 4, 5, 6, 7,  7, 7, 7, 7, 7, 7, 7, 7};
         vec0.mina(val1);
-        int i;
+        unsigned int i;
         for(i = 0; i < 16; i++) if(vec0[i] != results[i]) break;
         
         CHECK_CONDITION(i == 16, "MINSA");
@@ -472,7 +472,7 @@ int test_UME_SIMD16_32i(bool supressMessages) {
         SIMDMask16 mask(true, false, false, false, true,  true,  false, true, 
                         true, true,  true, true,  false, true, true,  true);
         vec0.mina(mask, val1);
-        int i;
+        unsigned int i;
         for(i = 0; i < 16; i++) if(vec0[i] != results[i]) break;
         
         CHECK_CONDITION(i == 16, "MMINSA");
@@ -484,8 +484,7 @@ int test_UME_SIMD16_32f(bool supressMessages)
 {
     char header[] = "UME::SIMD::SIMD16_32f test";
     INIT_TEST(header, supressMessages);
-    const int32_t VEC_LEN = 16;
-    
+
     {
         SIMD16_32f vec0;
         CHECK_CONDITION(true, "ZERO-CONSTR");

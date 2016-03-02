@@ -61,7 +61,7 @@ namespace SIMD {
         // LOAD-CONSTR - Construct by loading from memory
         inline explicit SIMDVecSwizzle(uint32_t const *p) {
             UME_EMULATION_WARNING();
-            for (int i = 0; i < SMASK_LEN; i++) {
+            for (unsigned int i = 0; i < SMASK_LEN; i++) {
                 mMaskElements[i] = p[i];
             }
         }

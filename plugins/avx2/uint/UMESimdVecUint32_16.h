@@ -306,7 +306,7 @@ namespace SIMD {
             __m256i t3 = mVec[1];
             __m256i t4 = _mm256_add_epi32(mVec[1], t0);
             mVec[1] = _mm256_blendv_epi8(mVec[1], t4, mask.mMask[1]);
-            return SIMDVec_u(t1, t4);
+            return SIMDVec_u(t1, t3);
         }
         // PREFINC
         inline SIMDVec_u & prefinc() {
@@ -852,8 +852,8 @@ namespace SIMD {
             __m256i t7 = _mm256_mullo_epi32(t5, t6);
             __m256i t8 = _mm256_shuffle_epi32(t7, 0x1);
             __m256i t9 = _mm256_mullo_epi32(t7, t8);
-            uint32_t retval  = _mm256_extract_epi32(t8, 0);
-            retval *= _mm256_extract_epi32(t8, 4);
+            uint32_t retval  = _mm256_extract_epi32(t9, 0);
+            retval *= _mm256_extract_epi32(t9, 4);
             return retval;
         }
         // HMULS
@@ -882,8 +882,8 @@ namespace SIMD {
             __m256i t7 = _mm256_mullo_epi32(t5, t6);
             __m256i t8 = _mm256_shuffle_epi32(t7, 0x1);
             __m256i t9 = _mm256_mullo_epi32(t7, t8);
-            uint32_t retval = _mm256_extract_epi32(t8, 0);
-            retval *= _mm256_extract_epi32(t8, 4);
+            uint32_t retval = _mm256_extract_epi32(t9, 0);
+            retval *= _mm256_extract_epi32(t9, 4);
             return retval * b;
         }
 

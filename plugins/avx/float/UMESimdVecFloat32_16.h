@@ -199,7 +199,7 @@ namespace SIMD {
             __m256 t0 = _mm256_load_ps(p);
             mVec[0] = _mm256_blendv_ps(mVec[0], t0, _mm256_castsi256_ps(mask.mMask[0]));
             __m256 t1 = _mm256_load_ps(p + 8);
-            mVec[1] = _mm256_blendv_ps(mVec[1], t0, _mm256_castsi256_ps(mask.mMask[1]));
+            mVec[1] = _mm256_blendv_ps(mVec[1], t1, _mm256_castsi256_ps(mask.mMask[1]));
             return *this;
         }
         // STORE
@@ -216,6 +216,7 @@ namespace SIMD {
             __m256 t3 = _mm256_blendv_ps(t1, mVec[1], _mm256_castsi256_ps(mask.mMask[1]));
             _mm256_storeu_ps(p, t2);
             _mm256_storeu_ps(p + 8, t3);
+            return p;
         }
         // STOREA
         inline float* storea(float* p) const {

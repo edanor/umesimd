@@ -68,12 +68,8 @@ namespace SIMD {
             mVec = i;
         }
         // LOAD-CONSTR
-        inline explicit SIMDVec_u(uint32_t const *p) { 
+        inline explicit SIMDVec_u(uint32_t const *p) {
             mVec = p[0];
-        }
-        // FULL-CONSTR
-        inline SIMDVec_u(uint32_t i0, uint32_t i1) {
-            mVec = i0;
         }
 
         // EXTRACT

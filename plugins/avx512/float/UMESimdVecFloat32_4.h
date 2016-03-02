@@ -1589,15 +1589,20 @@ namespace SIMD {
 #if defined (__AVX512VL__) && defined (__AVX512DQ__)
             __mmask8 m0 = _mm_fpclass_ps_mask(mVec, 0x08);
             __mmask8 m1 = _mm_fpclass_ps_mask(mVec, 0x10);
+            __mmask8 m2 = 0xF & ((~m0) & (~m1));
 #elif defined (__AVX512DQ__)
             __m512 t0 = _mm512_castps128_ps512(mVec);
             __mmask16 m0 = _mm512_fpclass_ps_mask(t0, 0x08);
-            __mmask16 m1 = _mm512_fpclass_ps_mask(t0, 0x10);
-#else 
-            // TODO: KNL
-            __mmask8 m0 = 0, m1 = 0xFF;
-#endif
+            __mmask16 m1 = _mm512_fpclass_ps_mask(t0C, 0x10);
             __mmask8 m2 = 0xF & ((~m0) & (~m1));
+#else
+            __m128i t0 = _mm_castps_si128(mVec);
+            __m128i t1 = _mm_set1_epi32(0x7F800000);
+            __m128i t2 = _mm_and_si128(t0, t1);
+            __m512i t3 = _mm512_castsi128_si512(t1);
+            __m512i t4 = _mm512_castsi128_si512(t2);
+            __mmask8 m2 = 0xF & _mm512_cmpneq_epi32_mask(t3, t4);
+#endif
             return SIMDVecMask<4>(m2);
         }
         // ISINF
@@ -1605,47 +1610,78 @@ namespace SIMD {
 #if defined (__AVX512VL__) && defined (__AVX512DQ__)
             __mmask8 m0 = _mm_fpclass_ps_mask(mVec, 0x08);
             __mmask8 m1 = _mm_fpclass_ps_mask(mVec, 0x10);
+            __mmask8 m2 = 0xF & (m0 | m1);
 #elif defined (__AVX512DQ__)
             __m512 t0 = _mm512_castps128_ps512(mVec);
             __mmask16 m0 = _mm512_fpclass_ps_mask(t0, 0x08);
             __mmask16 m1 = _mm512_fpclass_ps_mask(t0, 0x10);
-#else 
-            // TODO: KNL
-            __mmask8 m0 = 0, m1 = 0xFF;
-#endif
             __mmask8 m2 = 0xF & (m0 | m1);
+#else 
+            __m128i t0 = _mm_castps_si128(mVec);
+            __m128i t1 = _mm_set1_epi32(0x7F800000);
+            __m128i t2 = _mm_and_si128(t0, t1);
+            __m512i t3 = _mm512_castsi128_si512(t1);
+            __m512i t4 = _mm512_castsi128_si512(t2);
+            __mmask8 m0 = 0xF & _mm512_cmpeq_epi32_mask(t3, t4);
+            __m128i t5 = _mm_set1_epi32(0x007FFFFF);
+            __m128i t6 = _mm_and_si128(t0, t5);
+            __m512i t7 = _mm512_castsi128_si512(t6);
+            __mmask8 m1 = 0xF & _mm512_cmpeq_epi32_mask(t7, _mm512_setzero_epi32());
+            __mmask8 m2 = 0xF & m0 & m1;
+#endif
             return SIMDVecMask<4>(m2);
         }
         // ISAN
         inline SIMDVecMask<4> isan() const {
+            // A float is 'A number' when it is not (+/-)infinity and 
+            // when it is not NaN.
 #if defined (__AVX512VL__) && defined (__AVX512DQ__)
-            __mmask8 m0 = _mm_fpclass_ps_mask(mVec, 0x08);
-            __mmask8 m1 = _mm_fpclass_ps_mask(mVec, 0x10);
+            __mmask8 m1 = _mm_fpclass_ps_mask(mVec, 0x08);
+            __mmask8 m2 = _mm_fpclass_ps_mask(mVec, 0x10);
+            __mmask8 m3 = _mm_fpclass_ps_mask(mVec, 0x01);
+            __mmask8 m4 = _mm_fpclass_ps_mask(mVec, 0x80);
+            __mmask8 m0 = 0xF & ((~m1) & (~m2) & (~m3) & (~m4));
 #elif defined (__AVX512DQ__)
             __m512 t0 = _mm512_castps128_ps512(mVec);
-            __mmask16 m0 = _mm512_fpclass_ps_mask(t0, 0x08);
-            __mmask16 m1 = _mm512_fpclass_ps_mask(t0, 0x10);
+            __mmask16 m1 = _mm512_fpclass_ps_mask(t0, 0x08);
+            __mmask16 m2 = _mm512_fpclass_ps_mask(t0, 0x10);
+            __mmask16 m3 = _mm512_fpclass_ps_mask(t0, 0x01);
+            __mmask16 m4 = _mm512_fpclass_ps_mask(t0, 0x80);
+            __mmask8 m0 = 0xF & ((~m1) & (~m2) & (~m3) & (~m4));
 #else 
-            // TODO: KNL
-            __mmask8 m0 = 0, m1 = 0xFF;
+            __m128i t0 = _mm_castps_si128(mVec);
+            __m128i t1 = _mm_set1_epi32(0x7F800000);
+            __m128i t2 = _mm_and_si128(t0, t1);
+            __m512i t3 = _mm512_castsi128_si512(t1);
+            __m512i t4 = _mm512_castsi128_si512(t2);
+            __mmask8 m0 = 0xF & _mm512_cmpneq_epi32_mask(t3, t4);
 #endif
-            __mmask8 m2 = 0xF & ((~m0) & (~m1));
-            return SIMDVecMask<4>(m2);
+            return SIMDVecMask<4>(m0);
         }
         // ISNAN
         inline SIMDVecMask<4> isnan() const {
 #if defined (__AVX512VL__) && defined (__AVX512DQ__)
             __mmask8 m0 = _mm_fpclass_ps_mask(mVec, 0x08);
             __mmask8 m1 = _mm_fpclass_ps_mask(mVec, 0x10);
+            __mmask8 m2 = 0xF & (m0 | m1);
 #elif defined (__AVX512DQ__)
             __m512 t0 = _mm512_castps128_ps512(mVec);
             __mmask16 m0 = _mm512_fpclass_ps_mask(t0, 0x08);
             __mmask16 m1 = _mm512_fpclass_ps_mask(t0, 0x10);
-#else 
-            // TODO: KNL
-            __mmask8 m0 = 0, m1 = 0xFF;
-#endif
             __mmask8 m2 = 0xF & (m0 | m1);
+#else 
+            __m128i t0 = _mm_castps_si128(mVec);
+            __m128i t1 = _mm_set1_epi32(0x7F800000);
+            __m128i t2 = _mm_and_si128(t0, t1);
+            __m512i t3 = _mm512_castsi128_si512(t1);
+            __m512i t4 = _mm512_castsi128_si512(t2);
+            __mmask8 m0 = _mm512_cmpeq_epi32_mask(t3, t4);
+            __m128i t5 = _mm_set1_epi32(0x007FFFFF);
+            __m128i t6 = _mm_and_si128(t0, t5);
+            __m512i t7 = _mm512_castsi128_si512(t6);
+            __mmask8 m1 = _mm512_cmpneq_epi32_mask(t7, _mm512_setzero_epi32());
+            __mmask8 m2 = 0xF & ((~m0) | (m0 & m1));
+#endif
             return SIMDVecMask<4>(m2);
         }
         // ISNORM

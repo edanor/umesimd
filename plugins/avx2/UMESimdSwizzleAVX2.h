@@ -53,7 +53,7 @@ namespace SIMD {
 
         inline explicit SIMDVecSwizzle(uint32_t m0) {
             UME_EMULATION_WARNING();
-            for (int i = 0; i < SMASK_LEN; i++) {
+            for (unsigned int i = 0; i < SMASK_LEN; i++) {
                 mMaskElements[i] = m0;
             }
         }
@@ -61,7 +61,7 @@ namespace SIMD {
         // LOAD-CONSTR - Construct by loading from memory
         inline explicit SIMDVecSwizzle(uint32_t const *p) {
             UME_EMULATION_WARNING();
-            for (int i = 0; i < SMASK_LEN; i++) {
+            for (unsigned int i = 0; i < SMASK_LEN; i++) {
                 mMaskElements[i] = p[i];
             }
         }
@@ -85,7 +85,7 @@ namespace SIMD {
 
         inline SIMDVecSwizzle(SIMDVecSwizzle const & mask) {
             UME_EMULATION_WARNING();
-            for (int i = 0; i < SMASK_LEN; i++)
+            for (unsigned int i = 0; i < SMASK_LEN; i++)
             {
                 mMaskElements[i] = mask.mMaskElements[i];
             }

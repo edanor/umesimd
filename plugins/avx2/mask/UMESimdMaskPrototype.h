@@ -68,7 +68,7 @@ namespace SIMD {
         // standard bool or using equivalent mask
         inline explicit SIMDVecMask(bool m) {
             UME_EMULATION_WARNING();
-            for (int i = 0; i < VEC_LEN; i++)
+            for (unsigned int i = 0; i < VEC_LEN; i++)
             {
                 mMask[i] = m;
             }
@@ -158,7 +158,7 @@ namespace SIMD {
 
         inline SIMDVecMask(SIMDVecMask const & mask) {
             UME_EMULATION_WARNING();
-            for (int i = 0; i < VEC_LEN; i++)
+            for (unsigned int i = 0; i < VEC_LEN; i++)
             {
                 mMask[i] = mask.mMask[i];
             }
