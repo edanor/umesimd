@@ -139,4 +139,66 @@ namespace SIMD
 #include "UMESimdTraits.h"
 #include "UMESimdScalarOperators.h"
 
+namespace UME {
+    namespace SIMD {
+        template<typename SCALAR_T, uint32_t VEC_LEN>
+        struct BaseVectorType {
+        };
+
+        template<uint32_t VEC_LEN>
+        struct BaseVectorType<uint8_t, VEC_LEN> {
+            typedef typename UME::SIMD::SIMDVec_u<uint8_t, VEC_LEN> BASE_T;
+        };
+
+        template<uint32_t VEC_LEN>
+        struct BaseVectorType<uint16_t, VEC_LEN> {
+            typedef typename UME::SIMD::SIMDVec_u<uint16_t, VEC_LEN> BASE_T;
+        };
+
+        template<uint32_t VEC_LEN>
+        struct BaseVectorType<uint32_t, VEC_LEN> {
+            typedef typename UME::SIMD::SIMDVec_u<uint32_t, VEC_LEN> BASE_T;
+        };
+
+        template<uint32_t VEC_LEN>
+        struct BaseVectorType<uint64_t, VEC_LEN> {
+            typedef typename UME::SIMD::SIMDVec_u<uint64_t, VEC_LEN> BASE_T;
+        };
+
+        template<uint32_t VEC_LEN>
+        struct BaseVectorType<int8_t, VEC_LEN> {
+            typedef typename UME::SIMD::SIMDVec_i<int8_t, VEC_LEN> BASE_T;
+        };
+
+        template<uint32_t VEC_LEN>
+        struct BaseVectorType<int16_t, VEC_LEN> {
+            typedef typename UME::SIMD::SIMDVec_i<int16_t, VEC_LEN> BASE_T;
+        };
+
+        template<uint32_t VEC_LEN>
+        struct BaseVectorType<int32_t, VEC_LEN> {
+            typedef typename UME::SIMD::SIMDVec_i<int32_t, VEC_LEN> BASE_T;
+        };
+
+        template<uint32_t VEC_LEN>
+        struct BaseVectorType<int64_t, VEC_LEN> {
+            typedef typename UME::SIMD::SIMDVec_i<int64_t, VEC_LEN> BASE_T;
+        };
+
+        template<uint32_t VEC_LEN>
+        struct BaseVectorType<float, VEC_LEN> {
+            typedef typename UME::SIMD::SIMDVec_f<float, VEC_LEN> BASE_T;
+        };
+
+        template<uint32_t VEC_LEN>
+        struct BaseVectorType<double, VEC_LEN> {
+            typedef typename UME::SIMD::SIMDVec_f<double, VEC_LEN> BASE_T;
+        };
+
+        template<typename SCALAR_T, uint32_t VEC_LEN>
+        using SIMDVec = typename BaseVectorType<SCALAR_T, VEC_LEN>::BASE_T;
+    }
+}
+
+
 #endif

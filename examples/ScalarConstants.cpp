@@ -2,7 +2,19 @@
 
 // When developing a templated code, it is often easier to use 
 // scalar constants. The problem with scalar constants is, that there
-// are multiple representations of constants.
+// are multiple representations of constant literals, and each of them is 
+// interpreted differently by the compiler, for example:
+//
+//  '1' - is interpreted as 'int'
+//  '1.0' - is interpreted as 'double'
+//  '1.0f' - is interpreted as 'float'
+//
+// Compiler can perform so called 'implicit conversion' between literals
+// of different types, but for some specific values, such conversions might
+// result in incorrect result of computations. Because of that, compilers will
+// issue warnings about any implicit conversions. In order to avoid such warnings,
+// programmer should perform an 'explicit conversion' manually.
+//
 
 template<typename SCALAR_T>
 SCALAR_T scalarOffsetInit(SCALAR_T d)
