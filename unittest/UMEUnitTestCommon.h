@@ -32,7 +32,7 @@
 #define UME_UNIT_TEST_COMMON_H_
 
 #include <iostream>
-#include "../UMEBasicTypes.h"
+#include "../UMESimd.h"
 #include "UMEUnitTestDataSets8.h"
 #include "UMEUnitTestDataSets16.h"
 #include "UMEUnitTestDataSets32.h"
@@ -1338,7 +1338,9 @@ void genericADDVTest()
         VEC_TYPE vec2 = vec0.add(vec1);
         vec2.store(values);
         bool inRange = valuesInRange(values, DATA_SET::outputs::ADDV, VEC_LEN, SCALAR_TYPE(0.01f));
-        CHECK_CONDITION(inRange, "ADDV");
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange & isUnmodified), "ADDV");
     }
     {
         SCALAR_TYPE values[VEC_LEN];
@@ -1347,10 +1349,24 @@ void genericADDVTest()
         VEC_TYPE vec2 = vec0 + vec1;
         vec2.store(values);
         bool inRange = valuesInRange(values, DATA_SET::outputs::ADDV, VEC_LEN, SCALAR_TYPE(0.01f));
-        CHECK_CONDITION(inRange, "ADDV(operator+)");
-    }   
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange & isUnmodified), "ADDV(operator+)");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        VEC_TYPE vec2;
+        vec2 = UME::SIMD::FUNCTIONS::add(vec0, vec1);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::ADDV, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange & isUnmodified), "ADDV(function)");
+    }
 }
-    
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMADDVTest()
 {
@@ -1362,7 +1378,21 @@ void genericMADDVTest()
         VEC_TYPE vec2 = vec0.add(mask, vec1);
         vec2.store(values);
         bool inRange = valuesInRange(values, DATA_SET::outputs::MADDV, VEC_LEN, SCALAR_TYPE(0.01f));
-        CHECK_CONDITION(inRange, "MADDV");
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange & isUnmodified), "MADDV");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        VEC_TYPE vec2 = UME::SIMD::FUNCTIONS::add(mask, vec0, vec1);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MADDV, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange & isUnmodified), "MADDV(function)");
     }
 }
     
@@ -1375,7 +1405,9 @@ void genericADDSTest()
         VEC_TYPE vec1 = vec0.add(DATA_SET::inputs::scalarA);
         vec1.store(values);
         bool inRange = valuesInRange(values, DATA_SET::outputs::ADDS, VEC_LEN, SCALAR_TYPE(0.01f));
-        CHECK_CONDITION(inRange, "ADDS");
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange & isUnmodified), "ADDS");
     }
     {
         SCALAR_TYPE values[VEC_LEN];
@@ -1383,7 +1415,20 @@ void genericADDSTest()
         VEC_TYPE vec1 = vec0 + DATA_SET::inputs::scalarA;
         vec1.store(values);
         bool inRange = valuesInRange(values, DATA_SET::outputs::ADDS, VEC_LEN, SCALAR_TYPE(0.01f));
-        CHECK_CONDITION(inRange, "ADDS(operator+ RHS scalar");
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange & isUnmodified), "ADDS(operator+ RHS scalar)");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1;
+        vec1 = UME::SIMD::FUNCTIONS::add(vec0, DATA_SET::inputs::scalarA);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::ADDS, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange & isUnmodified), "ADDS(function - RHS scalar)");
     }
     {
         SCALAR_TYPE values[VEC_LEN];
@@ -1391,22 +1436,62 @@ void genericADDSTest()
         VEC_TYPE vec1 = DATA_SET::inputs::scalarA + vec0;
         vec1.store(values);
         bool inRange = valuesInRange(values, DATA_SET::outputs::ADDS, VEC_LEN, SCALAR_TYPE(0.01f));
-        CHECK_CONDITION(inRange, "ADDS(operator+ LHS scalar");
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange & isUnmodified), "ADDS(operator+ LHS scalar");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1;
+        vec1 = UME::SIMD::FUNCTIONS::add(DATA_SET::inputs::scalarA, vec0);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::ADDS, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange & isUnmodified), "ADDS(function - LHS scalar");
     }
 }
     
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMADDSTest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    MASK_TYPE mask(DATA_SET::inputs::maskA);
-    VEC_TYPE vec2 = vec0.add(mask, DATA_SET::inputs::scalarA);
-    vec2.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MADDS, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "MADDS");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        VEC_TYPE vec2 = vec0.add(mask, DATA_SET::inputs::scalarA);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MADDS, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange & isUnmodified), "MADDS");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        VEC_TYPE vec2 = UME::SIMD::FUNCTIONS::add(mask, vec0, DATA_SET::inputs::scalarA);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MADDS, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange & isUnmodified), "MADDS (function - RHS scalar)");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        VEC_TYPE vec2 = UME::SIMD::FUNCTIONS::add(mask, DATA_SET::inputs::scalarA, vec0);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MADDS, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        //CHECK_CONDITION((inRange & isUnmodified), "MADDS (function - LHS scalar)");
+        // TODO: MADDS with LHS requires separate test output data.
+    }
 }
-    
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericADDVATest()
 {
@@ -1532,21 +1617,46 @@ void genericPOSTINCTest()
         bool inRange1 = valuesInRange(values1, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
         CHECK_CONDITION(inRange0 && inRange1, "POSTINC(operator++(int))");
     }
+    {
+        SCALAR_TYPE values0[VEC_LEN];
+        SCALAR_TYPE values1[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1 = UME::SIMD::FUNCTIONS::postinc(vec0);
+        vec0.store(values0);
+        vec1.store(values1);
+        bool inRange0 = valuesInRange(values0, DATA_SET::outputs::POSTPREFINC, VEC_LEN, SCALAR_TYPE(0.01f));
+        bool inRange1 = valuesInRange(values1, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange0 && inRange1, "POSTINC(function)");
+    }
 }
     
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMPOSTINCTest()
 {
-    SCALAR_TYPE values0[VEC_LEN];
-    SCALAR_TYPE values1[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    MASK_TYPE mask(DATA_SET::inputs::maskA);
-    VEC_TYPE vec1 = vec0.postinc(mask);
-    vec0.store(values0);
-    vec1.store(values1);
-    bool inRange0 = valuesInRange(values0, DATA_SET::outputs::MPOSTPREFINC, VEC_LEN, SCALAR_TYPE(0.01f));
-    bool inRange1 = valuesInRange(values1, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange0 && inRange1, "MPOSTINC");
+    {
+        SCALAR_TYPE values0[VEC_LEN];
+        SCALAR_TYPE values1[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        VEC_TYPE vec1 = vec0.postinc(mask);
+        vec0.store(values0);
+        vec1.store(values1);
+        bool inRange0 = valuesInRange(values0, DATA_SET::outputs::MPOSTPREFINC, VEC_LEN, SCALAR_TYPE(0.01f));
+        bool inRange1 = valuesInRange(values1, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange0 && inRange1, "MPOSTINC");
+    }
+    {
+        SCALAR_TYPE values0[VEC_LEN];
+        SCALAR_TYPE values1[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        VEC_TYPE vec1 = UME::SIMD::FUNCTIONS::postinc(mask, vec0);
+        vec0.store(values0);
+        vec1.store(values1);
+        bool inRange0 = valuesInRange(values0, DATA_SET::outputs::MPOSTPREFINC, VEC_LEN, SCALAR_TYPE(0.01f));
+        bool inRange1 = valuesInRange(values1, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange0 && inRange1, "MPOSTINC(function)");
+    }
 }
     
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
@@ -1574,6 +1684,17 @@ void genericPREFINCTest()
         bool inRange1 = valuesInRange(values1, DATA_SET::outputs::POSTPREFINC, VEC_LEN, SCALAR_TYPE(0.01f));
         CHECK_CONDITION(inRange0 && inRange1, "PREFINC(operator++())");
     }
+    {
+        SCALAR_TYPE values0[VEC_LEN];
+        SCALAR_TYPE values1[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1 = UME::SIMD::FUNCTIONS::prefinc(vec0);
+        vec0.store(values0);
+        vec1.store(values1);
+        bool inRange0 = valuesInRange(values0, DATA_SET::outputs::POSTPREFINC, VEC_LEN, SCALAR_TYPE(0.01f));
+        bool inRange1 = valuesInRange(values1, DATA_SET::outputs::POSTPREFINC, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange0 && inRange1, "PREFINC(function)");
+    }
 }
     
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
@@ -1591,6 +1712,18 @@ void genericMPREFINCTest()
         bool inRange1 = valuesInRange(values1, DATA_SET::outputs::MPOSTPREFINC, VEC_LEN, SCALAR_TYPE(0.01f));
         CHECK_CONDITION(inRange0 && inRange1, "MPREFINC");
     }
+    {
+        SCALAR_TYPE values0[VEC_LEN];
+        SCALAR_TYPE values1[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        VEC_TYPE vec1 = UME::SIMD::FUNCTIONS::prefinc(mask, vec0);
+        vec0.store(values0);
+        vec1.store(values1);
+        bool inRange0 = valuesInRange(values0, DATA_SET::outputs::MPOSTPREFINC, VEC_LEN, SCALAR_TYPE(0.01f));
+        bool inRange1 = valuesInRange(values1, DATA_SET::outputs::MPOSTPREFINC, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange0 && inRange1, "MPREFINC(function)");
+    }
 }
     
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
@@ -1603,7 +1736,9 @@ void genericSUBVTest()
         VEC_TYPE vec2 = vec0.sub(vec1);
         vec2.store(values);
         bool inRange = valuesInRange(values, DATA_SET::outputs::SUBV, VEC_LEN, SCALAR_TYPE(0.01f));
-        CHECK_CONDITION(inRange, "SUBV");
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "SUBV");
     }
     {
         SCALAR_TYPE values[VEC_LEN];
@@ -1612,23 +1747,52 @@ void genericSUBVTest()
         VEC_TYPE vec2 = vec0 - vec1;
         vec2.store(values);
         bool inRange = valuesInRange(values, DATA_SET::outputs::SUBV, VEC_LEN, SCALAR_TYPE(0.01f));
-        CHECK_CONDITION(inRange, "SUBV(operator-)");
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "SUBV(operator-)");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        VEC_TYPE vec2 = UME::SIMD::FUNCTIONS::sub(vec0, vec1);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::SUBV, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "SUBV(function)");
     }
 }
     
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMSUBVTest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    VEC_TYPE vec1(DATA_SET::inputs::inputB);
-    MASK_TYPE mask(DATA_SET::inputs::maskA);
-    VEC_TYPE vec2 = vec0.sub(mask, vec1);
-    vec2.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MSUBV, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "MSUBV");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        VEC_TYPE vec2 = vec0.sub(mask, vec1);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MSUBV, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MSUBV");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        VEC_TYPE vec2 = UME::SIMD::FUNCTIONS::sub(mask, vec0, vec1);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MSUBV, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MSUBV(function)");
+    }
 }
-    
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericSUBSTest()
 {
@@ -1638,7 +1802,9 @@ void genericSUBSTest()
         VEC_TYPE vec1 = vec0.sub(DATA_SET::inputs::scalarA);
         vec1.store(values);
         bool inRange = valuesInRange(values, DATA_SET::outputs::SUBS, VEC_LEN, SCALAR_TYPE(0.01f));
-        CHECK_CONDITION(inRange, "SUBS");
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "SUBS");
     }
     {
         SCALAR_TYPE values[VEC_LEN];
@@ -1646,20 +1812,47 @@ void genericSUBSTest()
         VEC_TYPE vec1 = vec0 - DATA_SET::inputs::scalarA;
         vec1.store(values);
         bool inRange = valuesInRange(values, DATA_SET::outputs::SUBS, VEC_LEN, SCALAR_TYPE(0.01f));
-        CHECK_CONDITION(inRange, "SUBS(operator- RHS scalar)");
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "SUBS(operator- RHS scalar)");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1 = UME::SIMD::FUNCTIONS::sub(vec0, DATA_SET::inputs::scalarA);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::SUBS, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "SUBS(function RHS scalar)");
     }
 }
-    
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMSUBSTest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    MASK_TYPE mask(DATA_SET::inputs::maskA);
-    VEC_TYPE vec1 = vec0.sub(mask, DATA_SET::inputs::scalarA);
-    vec1.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MSUBS, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "MSUBS");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        VEC_TYPE vec1 = vec0.sub(mask, DATA_SET::inputs::scalarA);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MSUBS, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MSUBS");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        VEC_TYPE vec1 = UME::SIMD::FUNCTIONS::sub(mask, vec0, DATA_SET::inputs::scalarA);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MSUBS, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MSUBS(function -RHS scalar)");
+    }
 }
     
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
@@ -1674,7 +1867,6 @@ void genericSUBVATest()
         bool inRange = valuesInRange(values, DATA_SET::outputs::SUBV, VEC_LEN, SCALAR_TYPE(0.01f));
         CHECK_CONDITION(inRange, "SUBVA");
     }
-    
     {
         SCALAR_TYPE values[VEC_LEN];
         VEC_TYPE vec0(DATA_SET::inputs::inputA);
@@ -1755,26 +1947,34 @@ void genericMSUBSATest()
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericSUBFROMVTest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    VEC_TYPE vec1(DATA_SET::inputs::inputB);
-    VEC_TYPE vec2 = vec0.subfrom(vec1);
-    vec2.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::SUBFROMV, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "SUBFROMV");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        VEC_TYPE vec2 = vec0.subfrom(vec1);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::SUBFROMV, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "SUBFROMV");
+    }
 }
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMSUBFROMVTest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    VEC_TYPE vec1(DATA_SET::inputs::inputB);
-    MASK_TYPE mask(DATA_SET::inputs::maskA);
-    VEC_TYPE vec2 = vec0.subfrom(mask, vec1);
-    vec2.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MSUBFROMV, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "MSUBFROMV");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        VEC_TYPE vec2 = vec0.subfrom(mask, vec1);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MSUBFROMV, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MSUBFROMV");
+    }
 }
     
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
@@ -1786,7 +1986,9 @@ void genericSUBFROMSTest()
         VEC_TYPE vec2 = vec0.subfrom(DATA_SET::inputs::scalarA);
         vec2.store(values);
         bool inRange = valuesInRange(values, DATA_SET::outputs::SUBFROMS, VEC_LEN, SCALAR_TYPE(0.01f));
-        CHECK_CONDITION(inRange, "SUBFROMS");
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "SUBFROMS");
     }
     {
         SCALAR_TYPE values[VEC_LEN];
@@ -1801,15 +2003,30 @@ void genericSUBFROMSTest()
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMSUBFROMSTest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    MASK_TYPE mask(DATA_SET::inputs::maskA);
-    VEC_TYPE vec1 = vec0.subfrom(mask, DATA_SET::inputs::scalarA);
-    vec1.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MSUBFROMS, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "MSUBFROMS");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        VEC_TYPE vec1 = vec0.subfrom(mask, DATA_SET::inputs::scalarA);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MSUBFROMS, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MSUBFROMS");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        VEC_TYPE vec1 = UME::SIMD::FUNCTIONS::sub(mask, DATA_SET::inputs::scalarA, vec0);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MSUBFROMS, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MSUBFROMS (function LHS scalar)");
+    }
 }
-    
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericSUBFROMVATest()
 {
@@ -1821,7 +2038,7 @@ void genericSUBFROMVATest()
     bool inRange = valuesInRange(values, DATA_SET::outputs::SUBFROMV, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "SUBFROMVA");
 }
-    
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMSUBFROMVATest()
 {
@@ -1883,23 +2100,48 @@ void genericPOSTDECTest()
         bool inRange1 = valuesInRange(values1, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
         CHECK_CONDITION(inRange0 && inRange1, "POSTDEC(operator--(int))");
     }
+    {
+        SCALAR_TYPE values0[VEC_LEN];
+        SCALAR_TYPE values1[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1 = UME::SIMD::FUNCTIONS::postdec(vec0);
+        vec0.store(values0);
+        vec1.store(values1);
+        bool inRange0 = valuesInRange(values0, DATA_SET::outputs::POSTPREFDEC, VEC_LEN, SCALAR_TYPE(0.01f));
+        bool inRange1 = valuesInRange(values1, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange0 && inRange1, "POSTDEC(function)");
+    }
 }
     
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMPOSTDECTest()
 {
-    SCALAR_TYPE values0[VEC_LEN];
-    SCALAR_TYPE values1[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    MASK_TYPE mask(DATA_SET::inputs::maskA);
-    VEC_TYPE vec1 = vec0.postdec(mask);
-    vec0.store(values0);
-    vec1.store(values1);
-    bool inRange0 = valuesInRange(values0, DATA_SET::outputs::MPOSTPREFDEC, VEC_LEN, SCALAR_TYPE(0.01f));
-    bool inRange1 = valuesInRange(values1, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange0 && inRange1, "MPOSTDEC");
+    {
+        SCALAR_TYPE values0[VEC_LEN];
+        SCALAR_TYPE values1[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        VEC_TYPE vec1 = vec0.postdec(mask);
+        vec0.store(values0);
+        vec1.store(values1);
+        bool inRange0 = valuesInRange(values0, DATA_SET::outputs::MPOSTPREFDEC, VEC_LEN, SCALAR_TYPE(0.01f));
+        bool inRange1 = valuesInRange(values1, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange0 && inRange1, "MPOSTDEC");
+    }
+    {
+        SCALAR_TYPE values0[VEC_LEN];
+        SCALAR_TYPE values1[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        VEC_TYPE vec1 = UME::SIMD::FUNCTIONS::postdec(mask, vec0);
+        vec0.store(values0);
+        vec1.store(values1);
+        bool inRange0 = valuesInRange(values0, DATA_SET::outputs::MPOSTPREFDEC, VEC_LEN, SCALAR_TYPE(0.01f));
+        bool inRange1 = valuesInRange(values1, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange0 && inRange1, "MPOSTDEC(function)");
+    }
 }
-    
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericPREFDECTest()
 {
@@ -1925,21 +2167,46 @@ void genericPREFDECTest()
         bool inRange1 = valuesInRange(values1, DATA_SET::outputs::POSTPREFDEC, VEC_LEN, SCALAR_TYPE(0.01f));
         CHECK_CONDITION(inRange0 && inRange1, "PREFDEC(operator--())");
     }
+    {
+        SCALAR_TYPE values0[VEC_LEN];
+        SCALAR_TYPE values1[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1 = UME::SIMD::FUNCTIONS::prefdec(vec0);
+        vec0.store(values0);
+        vec1.store(values1);
+        bool inRange0 = valuesInRange(values0, DATA_SET::outputs::POSTPREFDEC, VEC_LEN, SCALAR_TYPE(0.01f));
+        bool inRange1 = valuesInRange(values1, DATA_SET::outputs::POSTPREFDEC, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange0 && inRange1, "PREFDEC(function)");
+    }
 }
     
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMPREFDECTest()
 {
-    SCALAR_TYPE values0[VEC_LEN];
-    SCALAR_TYPE values1[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    MASK_TYPE mask(DATA_SET::inputs::maskA);
-    VEC_TYPE vec1 = vec0.prefdec(mask);
-    vec0.store(values0);
-    vec1.store(values1);
-    bool inRange0 = valuesInRange(values0, DATA_SET::outputs::MPOSTPREFDEC, VEC_LEN, SCALAR_TYPE(0.01f));
-    bool inRange1 = valuesInRange(values1, DATA_SET::outputs::MPOSTPREFDEC, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange0 && inRange1, "MPREFDEC");
+    {
+        SCALAR_TYPE values0[VEC_LEN];
+        SCALAR_TYPE values1[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        VEC_TYPE vec1 = vec0.prefdec(mask);
+        vec0.store(values0);
+        vec1.store(values1);
+        bool inRange0 = valuesInRange(values0, DATA_SET::outputs::MPOSTPREFDEC, VEC_LEN, SCALAR_TYPE(0.01f));
+        bool inRange1 = valuesInRange(values1, DATA_SET::outputs::MPOSTPREFDEC, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange0 && inRange1, "MPREFDEC");
+    }
+    {
+        SCALAR_TYPE values0[VEC_LEN];
+        SCALAR_TYPE values1[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        VEC_TYPE vec1 = UME::SIMD::FUNCTIONS::prefdec(mask, vec0);
+        vec0.store(values0);
+        vec1.store(values1);
+        bool inRange0 = valuesInRange(values0, DATA_SET::outputs::MPOSTPREFDEC, VEC_LEN, SCALAR_TYPE(0.01f));
+        bool inRange1 = valuesInRange(values1, DATA_SET::outputs::MPOSTPREFDEC, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange0 && inRange1, "MPREFDEC(function)");
+    }
 }
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
@@ -1952,7 +2219,9 @@ void genericMULVTest()
         VEC_TYPE vec2 = vec0.mul(vec1);
         vec2.store(values);
         bool inRange = valuesInRange(values, DATA_SET::outputs::MULV, VEC_LEN, SCALAR_TYPE(0.01f));
-        CHECK_CONDITION(inRange, "MULV");
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MULV");
     }
     {
         SCALAR_TYPE values[VEC_LEN];
@@ -1961,23 +2230,52 @@ void genericMULVTest()
         VEC_TYPE vec2 = vec0 * vec1;
         vec2.store(values);
         bool inRange = valuesInRange(values, DATA_SET::outputs::MULV, VEC_LEN, SCALAR_TYPE(0.01f));
-        CHECK_CONDITION(inRange, "MULV(operator*)");
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MULV(operator*)");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        VEC_TYPE vec2 = UME::SIMD::FUNCTIONS::mul(vec0, vec1);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MULV, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MULV(function)");
     }
 }
-    
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMMULVTest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    VEC_TYPE vec1(DATA_SET::inputs::inputB);
-    MASK_TYPE mask(DATA_SET::inputs::maskA);
-    VEC_TYPE vec2 = vec0.mul(mask, vec1);
-    vec2.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MMULV, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "MMULV");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        VEC_TYPE vec2 = vec0.mul(mask, vec1);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MMULV, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MMULV");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        VEC_TYPE vec2 = UME::SIMD::FUNCTIONS::mul(mask, vec0, vec1);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MMULV, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MMULV(function)");
+    }
 }
-    
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMULSTest()
 {
@@ -1987,7 +2285,9 @@ void genericMULSTest()
         VEC_TYPE vec1 = vec0.mul(DATA_SET::inputs::scalarA);
         vec1.store(values);
         bool inRange = valuesInRange(values, DATA_SET::outputs::MULS, VEC_LEN, SCALAR_TYPE(0.01f));
-        CHECK_CONDITION(inRange, "MULS");
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MULS");
     }
     {
         SCALAR_TYPE values[VEC_LEN];
@@ -1995,30 +2295,59 @@ void genericMULSTest()
         VEC_TYPE vec1 = vec0 * DATA_SET::inputs::scalarA;
         vec1.store(values);
         bool inRange = valuesInRange(values, DATA_SET::outputs::MULS, VEC_LEN, SCALAR_TYPE(0.01f));
-        CHECK_CONDITION(inRange, "MULS(operator* RHS scalar)");
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MULS(operator* RHS scalar)");
     }
     {
         SCALAR_TYPE values[VEC_LEN];
         VEC_TYPE vec0(DATA_SET::inputs::inputA);
-        VEC_TYPE vec1 = DATA_SET::inputs::scalarA * vec0;
+        VEC_TYPE vec1 = UME::SIMD::FUNCTIONS::mul(vec0, DATA_SET::inputs::scalarA);
         vec1.store(values);
         bool inRange = valuesInRange(values, DATA_SET::outputs::MULS, VEC_LEN, SCALAR_TYPE(0.01f));
-        CHECK_CONDITION(inRange, "MULS(operator* LHS scalar)");
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MULS(function - RHS scalar)");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1 = UME::SIMD::FUNCTIONS::mul(DATA_SET::inputs::scalarA, vec0);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MULS, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MULS(function LHS scalar)");
     }
 }
-    
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMMULSTest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    MASK_TYPE mask(DATA_SET::inputs::maskA);
-    VEC_TYPE vec2 = vec0.mul(mask, DATA_SET::inputs::scalarA);
-    vec2.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MMULS, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "MMULS");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        VEC_TYPE vec2 = vec0.mul(mask, DATA_SET::inputs::scalarA);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MMULS, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MMULS");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        VEC_TYPE vec2 = UME::SIMD::FUNCTIONS::mul(mask, vec0, DATA_SET::inputs::scalarA);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MMULS, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MMULS(function - RHS scalar)");
+    }
 }
-        
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMULVATest()
 {
@@ -2031,7 +2360,6 @@ void genericMULVATest()
         bool inRange = valuesInRange(values, DATA_SET::outputs::MULV, VEC_LEN, SCALAR_TYPE(0.01f));
         CHECK_CONDITION(inRange, "MULVA");
     }
-    
     {
         SCALAR_TYPE values[VEC_LEN];
         VEC_TYPE vec0(DATA_SET::inputs::inputA);
@@ -2115,7 +2443,9 @@ void genericDIVVTest()
         VEC_TYPE vec2 = vec0.div(vec1);
         vec2.store(values);
         bool inRange = valuesInRange(values, DATA_SET::outputs::DIVV, VEC_LEN, SCALAR_TYPE(0.01f));
-        CHECK_CONDITION(inRange, "DIVV");
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "DIVV");
     }
     {
         SCALAR_TYPE values[VEC_LEN];
@@ -2124,23 +2454,52 @@ void genericDIVVTest()
         VEC_TYPE vec2 = vec0 / vec1;
         vec2.store(values);
         bool inRange = valuesInRange(values, DATA_SET::outputs::DIVV, VEC_LEN, SCALAR_TYPE(0.01f));
-        CHECK_CONDITION(inRange, "DIVV(operator/)");
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "DIVV(operator/)");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        VEC_TYPE vec2 = UME::SIMD::FUNCTIONS::div(vec0, vec1);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::DIVV, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "DIVV(function)");
     }
 }
-    
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMDIVVTest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    VEC_TYPE vec1(DATA_SET::inputs::inputB);
-    MASK_TYPE mask(DATA_SET::inputs::maskA);
-    VEC_TYPE vec2 = vec0.div(mask, vec1);
-    vec2.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MDIVV, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "MDIVV");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        VEC_TYPE vec2 = vec0.div(mask, vec1);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MDIVV, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MDIVV");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        VEC_TYPE vec2 = UME::SIMD::FUNCTIONS::div(mask, vec0, vec1);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MDIVV, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MDIVV(function)");
+    }
 }
-    
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericDIVSTest()
 {
@@ -2150,7 +2509,9 @@ void genericDIVSTest()
         VEC_TYPE vec1 = vec0.div(DATA_SET::inputs::scalarA);
         vec1.store(values);
         bool inRange = valuesInRange(values, DATA_SET::outputs::DIVS, VEC_LEN, SCALAR_TYPE(0.01f));
-        CHECK_CONDITION(inRange, "DIVS");
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "DIVS");
     }
     {
         SCALAR_TYPE values[VEC_LEN];
@@ -2158,22 +2519,49 @@ void genericDIVSTest()
         VEC_TYPE vec1 = vec0 / DATA_SET::inputs::scalarA;
         vec1.store(values);
         bool inRange = valuesInRange(values, DATA_SET::outputs::DIVS, VEC_LEN, SCALAR_TYPE(0.01f));
-        CHECK_CONDITION(inRange, "DIVS(operator/ RHS scalar)");
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "DIVS(operator/ RHS scalar)");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1 = UME::SIMD::FUNCTIONS::div(vec0, DATA_SET::inputs::scalarA);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::DIVS, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "DIVS(function - RHS scalar)");
     }
 }
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMDIVSTest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    MASK_TYPE mask(DATA_SET::inputs::maskA);
-    VEC_TYPE vec1 = vec0.div(mask, DATA_SET::inputs::scalarA);
-    vec1.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MDIVS, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "MDIVS");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        VEC_TYPE vec1 = vec0.div(mask, DATA_SET::inputs::scalarA);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MDIVS, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MDIVS");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        VEC_TYPE vec1 = UME::SIMD::FUNCTIONS::div(mask, vec0, DATA_SET::inputs::scalarA);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MDIVS, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MDIVS(function - RHS scalar)");
+    }
 }
-    
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericDIVVATest()
 {
@@ -2282,26 +2670,55 @@ void genericMDIVSATest()
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericRCPTest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    VEC_TYPE vec1 = vec0.rcp();
-    vec1.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::RCP, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "RCP");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1 = vec0.rcp();
+        vec1.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::RCP, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "RCP");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1 = UME::SIMD::FUNCTIONS::rcp(vec0);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::RCP, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "RCP(function)");
+    }
 }
-    
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMRCPTest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    MASK_TYPE mask(DATA_SET::inputs::maskA);
-    VEC_TYPE vec1 = vec0.rcp(mask);
-    vec1.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MRCP, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "MRCP");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        VEC_TYPE vec1 = vec0.rcp(mask);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MRCP, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MRCP");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        VEC_TYPE vec1 = UME::SIMD::FUNCTIONS::rcp(mask, vec0);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MRCP, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MRCP(function)");
+    }
 }
-    
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericRCPSTest()
 {
@@ -2311,7 +2728,9 @@ void genericRCPSTest()
         VEC_TYPE vec1 = vec0.rcp(DATA_SET::inputs::scalarA);
         vec1.store(values);
         bool inRange = valuesInRange(values, DATA_SET::outputs::RCPS, VEC_LEN, SCALAR_TYPE(0.01f));
-        CHECK_CONDITION(inRange, "RCPS");
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "RCPS");
     }
     {
         SCALAR_TYPE values[VEC_LEN];
@@ -2319,20 +2738,43 @@ void genericRCPSTest()
         VEC_TYPE vec1 = vec0.rcp(DATA_SET::inputs::scalarA);
         vec1.store(values);
         bool inRange = valuesInRange(values, DATA_SET::outputs::RCPS, VEC_LEN, SCALAR_TYPE(0.01f));
-        CHECK_CONDITION(inRange, "RCPS(operator/ LHS scalar)");
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "RCPS(operator/ LHS scalar)");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1 = UME::SIMD::FUNCTIONS::rcp(vec0, DATA_SET::inputs::scalarA);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::RCPS, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "RCPS(function)");
     }
 }
     
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMRCPSTest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    MASK_TYPE mask(DATA_SET::inputs::maskA);
-    VEC_TYPE vec1 = vec0.rcp(mask, DATA_SET::inputs::scalarA);
-    vec1.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MRCPS, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "MRCPS");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        VEC_TYPE vec1 = vec0.rcp(mask, DATA_SET::inputs::scalarA);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MRCPS, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "MRCPS");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        VEC_TYPE vec1 = UME::SIMD::FUNCTIONS::rcp(mask, vec0, DATA_SET::inputs::scalarA);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MRCPS, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "MRCPS (function)");
+    }
 }
     
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
@@ -2380,7 +2822,7 @@ void genericMRCPSATest()
     bool inRange = valuesInRange(values, DATA_SET::outputs::MRCPS, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MRCPSA");
 }
-    
+
 template<typename VEC_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericCMPEQVTest()
 {
@@ -2403,6 +2845,16 @@ void genericCMPEQVTest()
         mask.store(values);
         bool inRange = valuesExact(values, DATA_SET::outputs::CMPEQV, VEC_LEN);
         CHECK_CONDITION(inRange, "CMPEQV(operator==)");
+    }
+    {
+        bool values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        MASK_TYPE mask(true);
+        mask = UME::SIMD::FUNCTIONS::cmpeq(vec0, vec1);
+        mask.store(values);
+        bool inRange = valuesExact(values, DATA_SET::outputs::CMPEQV, VEC_LEN);
+        CHECK_CONDITION(inRange, "CMPEQV(function)");
     }
 }
 
@@ -2431,10 +2883,28 @@ void genericCMPEQSTest()
         bool values[VEC_LEN];
         VEC_TYPE vec0(DATA_SET::inputs::inputA);
         MASK_TYPE mask(true);
+        mask = UME::SIMD::FUNCTIONS::cmpeq(vec0, DATA_SET::inputs::scalarA);
+        mask.store(values);
+        bool inRange = valuesExact(values, DATA_SET::outputs::CMPEQS, VEC_LEN);
+        CHECK_CONDITION(inRange, "CMPEQS(function - RHS scalar)");
+    }
+    {
+        bool values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(true);
         mask = DATA_SET::inputs::scalarA == vec0;
         mask.store(values);
         bool inRange = valuesExact(values, DATA_SET::outputs::CMPEQS, VEC_LEN);
         CHECK_CONDITION(inRange, "CMPEQS(operator== LHS scalar)");
+    }
+    {
+        bool values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(true);
+        mask = UME::SIMD::FUNCTIONS::cmpeq(DATA_SET::inputs::scalarA, vec0);
+        mask.store(values);
+        bool inRange = valuesExact(values, DATA_SET::outputs::CMPEQS, VEC_LEN);
+        CHECK_CONDITION(inRange, "CMPEQS(function - LHS scalar)");
     }
 }
 
@@ -2460,6 +2930,16 @@ void genericCMPNEVTest()
         mask.store(values);
         bool inRange = valuesExact(values, DATA_SET::outputs::CMPNEV, VEC_LEN);
         CHECK_CONDITION(inRange, "CMPNEV(operator!=)");
+    }
+    {
+        bool values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        MASK_TYPE mask(true);
+        mask = UME::SIMD::FUNCTIONS::cmpne(vec0, vec1);
+        mask.store(values);
+        bool inRange = valuesExact(values, DATA_SET::outputs::CMPNEV, VEC_LEN);
+        CHECK_CONDITION(inRange, "CMPNEV(function)");
     }
 }
 
@@ -2488,10 +2968,28 @@ void genericCMPNESTest()
         bool values[VEC_LEN];
         VEC_TYPE vec0(DATA_SET::inputs::inputA);
         MASK_TYPE mask(true);
+        mask = UME::SIMD::FUNCTIONS::cmpne(vec0, DATA_SET::inputs::scalarA);
+        mask.store(values);
+        bool inRange = valuesExact(values, DATA_SET::outputs::CMPNES, VEC_LEN);
+        CHECK_CONDITION(inRange, "CMPNES(function - RHS scalar)");
+    }
+    {
+        bool values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(true);
         mask = DATA_SET::inputs::scalarA != vec0;
         mask.store(values);
         bool inRange = valuesExact(values, DATA_SET::outputs::CMPNES, VEC_LEN);
         CHECK_CONDITION(inRange, "CMPNES(operator!= LHS scalar)");
+    }
+    {
+        bool values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(true);
+        mask = UME::SIMD::FUNCTIONS::cmpne(DATA_SET::inputs::scalarA, vec0);
+        mask.store(values);
+        bool inRange = valuesExact(values, DATA_SET::outputs::CMPNES, VEC_LEN);
+        CHECK_CONDITION(inRange, "CMPNES(function - LHS scalar)");
     }
 }
 
@@ -2517,6 +3015,16 @@ void genericCMPGTVTest()
         mask.store(values);
         bool inRange = valuesExact(values, DATA_SET::outputs::CMPGTV, VEC_LEN);
         CHECK_CONDITION(inRange, "CMPGTV(operator>)");
+    }
+    {
+        bool values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        MASK_TYPE mask(true);
+        mask = UME::SIMD::FUNCTIONS::cmpgt(vec0, vec1);
+        mask.store(values);
+        bool inRange = valuesExact(values, DATA_SET::outputs::CMPGTV, VEC_LEN);
+        CHECK_CONDITION(inRange, "CMPGTV(function)");
     }
 
 }
@@ -2546,10 +3054,28 @@ void genericCMPGTSTest()
         bool values[VEC_LEN];
         VEC_TYPE vec0(DATA_SET::inputs::inputA);
         MASK_TYPE mask(true);
+        mask = UME::SIMD::FUNCTIONS::cmpgt(vec0, DATA_SET::inputs::scalarA);
+        mask.store(values);
+        bool inRange = valuesExact(values, DATA_SET::outputs::CMPGTS, VEC_LEN);
+        CHECK_CONDITION(inRange, "CMPGTS(function - RHS scalar)");
+    }
+    {
+        bool values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(true);
         mask = DATA_SET::inputs::scalarA > vec0;
         mask.store(values);
         bool inRange = valuesExact(values, DATA_SET::outputs::CMPLTS, VEC_LEN);
         CHECK_CONDITION(inRange, "CMPGTS(operator> LHS scalar)");
+    }
+    {
+        bool values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(true);
+        mask = UME::SIMD::FUNCTIONS::cmpgt(DATA_SET::inputs::scalarA, vec0);
+        mask.store(values);
+        bool inRange = valuesExact(values, DATA_SET::outputs::CMPLTS, VEC_LEN);
+        CHECK_CONDITION(inRange, "CMPGTS(function - LHS scalar)");
     }
 }
 
@@ -2575,6 +3101,16 @@ void genericCMPLTVTest()
         mask.store(values);
         bool inRange = valuesExact(values, DATA_SET::outputs::CMPLTV, VEC_LEN);
         CHECK_CONDITION(inRange, "CMPLTV(operator<)");
+    }
+    {
+        bool values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        MASK_TYPE mask(true);
+        mask = UME::SIMD::FUNCTIONS::cmplt(vec0, vec1);
+        mask.store(values);
+        bool inRange = valuesExact(values, DATA_SET::outputs::CMPLTV, VEC_LEN);
+        CHECK_CONDITION(inRange, "CMPLTV(function)");
     }
 }
 
@@ -2603,10 +3139,28 @@ void genericCMPLTSTest()
         bool values[VEC_LEN];
         VEC_TYPE vec0(DATA_SET::inputs::inputA);
         MASK_TYPE mask(true);
+        mask = UME::SIMD::FUNCTIONS::cmplt(vec0, DATA_SET::inputs::scalarA);
+        mask.store(values);
+        bool inRange = valuesExact(values, DATA_SET::outputs::CMPLTS, VEC_LEN);
+        CHECK_CONDITION(inRange, "CMPLTS(function - RHS scalar)");
+    }
+    {
+        bool values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(true);
         mask = DATA_SET::inputs::scalarA < vec0;
         mask.store(values);
         bool inRange = valuesExact(values, DATA_SET::outputs::CMPGTS, VEC_LEN);
         CHECK_CONDITION(inRange, "CMPLTS(operator< LHS scalar)");
+    }
+    {
+        bool values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(true);
+        mask = UME::SIMD::FUNCTIONS::cmplt(DATA_SET::inputs::scalarA, vec0);
+        mask.store(values);
+        bool inRange = valuesExact(values, DATA_SET::outputs::CMPGTS, VEC_LEN);
+        CHECK_CONDITION(inRange, "CMPLTS(function - LHS scalar)");
     }
 }
 
@@ -2632,6 +3186,16 @@ void genericCMPGEVTest()
         mask.store(values);
         bool inRange = valuesExact(values, DATA_SET::outputs::CMPGEV, VEC_LEN);
         CHECK_CONDITION(inRange, "CMPGEV(operator>=)");
+    }
+    {
+        bool values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        MASK_TYPE mask(true);
+        mask = UME::SIMD::FUNCTIONS::cmpge(vec0, vec1);
+        mask.store(values);
+        bool inRange = valuesExact(values, DATA_SET::outputs::CMPGEV, VEC_LEN);
+        CHECK_CONDITION(inRange, "CMPGEV(function)");
     }
 }
 
@@ -2660,10 +3224,28 @@ void genericCMPGESTest()
         bool values[VEC_LEN];
         VEC_TYPE vec0(DATA_SET::inputs::inputA);
         MASK_TYPE mask(true);
+        mask = UME::SIMD::FUNCTIONS::cmpge(vec0, DATA_SET::inputs::scalarA);
+        mask.store(values);
+        bool inRange = valuesExact(values, DATA_SET::outputs::CMPGES, VEC_LEN);
+        CHECK_CONDITION(inRange, "CMPGES(function RHS scalar)");
+    }
+    {
+        bool values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(true);
         mask = DATA_SET::inputs::scalarA >= vec0;
         mask.store(values);
         bool inRange = valuesExact(values, DATA_SET::outputs::CMPLES, VEC_LEN);
         CHECK_CONDITION(inRange, "CMPGES(operator>= LHS scalar)");
+    }
+    {
+        bool values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(true);
+        mask = UME::SIMD::FUNCTIONS::cmpge(DATA_SET::inputs::scalarA, vec0);
+        mask.store(values);
+        bool inRange = valuesExact(values, DATA_SET::outputs::CMPLES, VEC_LEN);
+        CHECK_CONDITION(inRange, "CMPGES(function - LHS scalar)");
     }
 }
 
@@ -2689,6 +3271,16 @@ void genericCMPLEVTest()
         mask.store(values);
         bool inRange = valuesExact(values, DATA_SET::outputs::CMPLEV, VEC_LEN);
         CHECK_CONDITION(inRange, "CMPLEV(operator<=)");
+    }
+    {
+        bool values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        MASK_TYPE mask(true);
+        mask = UME::SIMD::FUNCTIONS::cmple(vec0, vec1);
+        mask.store(values);
+        bool inRange = valuesExact(values, DATA_SET::outputs::CMPLEV, VEC_LEN);
+        CHECK_CONDITION(inRange, "CMPLEV(function)");
     }
 }
 
@@ -2717,28 +3309,66 @@ void genericCMPLESTest()
         bool values[VEC_LEN];
         VEC_TYPE vec0(DATA_SET::inputs::inputA);
         MASK_TYPE mask(true);
+        mask = UME::SIMD::FUNCTIONS::cmple(vec0, DATA_SET::inputs::scalarA);
+        mask.store(values);
+        bool inRange = valuesExact(values, DATA_SET::outputs::CMPLES, VEC_LEN);
+        CHECK_CONDITION(inRange, "CMPLES(function - LHS scalar)");
+    }
+    {
+        bool values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(true);
         mask = DATA_SET::inputs::scalarA <= vec0;
         mask.store(values);
         bool inRange = valuesExact(values, DATA_SET::outputs::CMPGES, VEC_LEN);
         CHECK_CONDITION(inRange, "CMPLES(operator<= RHS scalar)");
+    }
+    {
+        bool values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(true);
+        mask = UME::SIMD::FUNCTIONS::cmple(DATA_SET::inputs::scalarA, vec0);
+        mask.store(values);
+        bool inRange = valuesExact(values, DATA_SET::outputs::CMPGES, VEC_LEN);
+        CHECK_CONDITION(inRange, "CMPLES(function - RHS scalar)");
     }
 }
 
 template<typename VEC_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericCMPEVTest()
 {
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    VEC_TYPE vec1(DATA_SET::inputs::inputB);
-    bool value = vec0.cmpe(vec1);
-    CHECK_CONDITION(value == DATA_SET::outputs::CMPEV, "CMPEV");
+    {
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        bool value = vec0.cmpe(vec1);
+        CHECK_CONDITION(value == DATA_SET::outputs::CMPEV, "CMPEV");
+    }
+    {
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        bool value = UME::SIMD::FUNCTIONS::cmpe(vec0, vec1);
+        CHECK_CONDITION(value == DATA_SET::outputs::CMPEV, "CMPEV(function)");
+    }
 }
 
 template<typename VEC_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericCMPESTest()
 {
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    bool value = vec0.cmpe(DATA_SET::inputs::scalarA);
-    CHECK_CONDITION(value == DATA_SET::outputs::CMPES, "CMPES");
+    {
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        bool value = vec0.cmpe(DATA_SET::inputs::scalarA);
+        CHECK_CONDITION(value == DATA_SET::outputs::CMPES, "CMPES");
+    }
+    {
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        bool value = UME::SIMD::FUNCTIONS::cmpe(vec0, DATA_SET::inputs::scalarA);
+        CHECK_CONDITION(value == DATA_SET::outputs::CMPES, "CMPES(function - RHS scalar)");
+    }
+    {
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        bool value = UME::SIMD::FUNCTIONS::cmpe(DATA_SET::inputs::scalarA, vec0);
+        CHECK_CONDITION(value == DATA_SET::outputs::CMPES, "CMPES(function - LHS scalar)");
+    }
 }
  
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
@@ -2751,7 +3381,9 @@ void genericBANDVTest()
         VEC_TYPE vec2 = vec0.band(vec1);
         vec2.store(values);
         bool inRange = valuesInRange(values, DATA_SET::outputs::BANDV, VEC_LEN, SCALAR_TYPE(0.01f));
-        CHECK_CONDITION(inRange, "BANDV");
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "BANDV");
     }
     {
         SCALAR_TYPE values[VEC_LEN];
@@ -2760,21 +3392,50 @@ void genericBANDVTest()
         VEC_TYPE vec2 = vec0 & vec1;
         vec2.store(values);
         bool inRange = valuesInRange(values, DATA_SET::outputs::BANDV, VEC_LEN, SCALAR_TYPE(0.01f));
-        CHECK_CONDITION(inRange, "BANDV(operator&)");
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "BANDV(operator&)");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        VEC_TYPE vec2 = UME::SIMD::FUNCTIONS::band(vec0, vec1);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::BANDV, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "BANDV(function)");
     }
 }
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMBANDVTest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    VEC_TYPE vec1(DATA_SET::inputs::inputB);
-    MASK_TYPE mask(DATA_SET::inputs::maskA);
-    VEC_TYPE vec2 = vec0.band(mask, vec1);
-    vec2.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MBANDV, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "MBANDV");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        VEC_TYPE vec2 = vec0.band(mask, vec1);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MBANDV, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MBANDV");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        VEC_TYPE vec2 = UME::SIMD::FUNCTIONS::band(mask, vec0, vec1);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MBANDV, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MBANDV");
+    }
 }
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
@@ -2786,7 +3447,9 @@ void genericBANDSTest()
         VEC_TYPE vec2 = vec0.band(DATA_SET::inputs::scalarA);
         vec2.store(values);
         bool inRange = valuesInRange(values, DATA_SET::outputs::BANDS, VEC_LEN, SCALAR_TYPE(0.01f));
-        CHECK_CONDITION(inRange, "BANDS");
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "BANDS");
     }
     {
         SCALAR_TYPE values[VEC_LEN];
@@ -2794,7 +3457,19 @@ void genericBANDSTest()
         VEC_TYPE vec2 = vec0 & DATA_SET::inputs::scalarA;
         vec2.store(values);
         bool inRange = valuesInRange(values, DATA_SET::outputs::BANDS, VEC_LEN, SCALAR_TYPE(0.01f));
-        CHECK_CONDITION(inRange, "BANDS(operator & RHS scalar)");
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "BANDS(operator & RHS scalar)");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec2 = UME::SIMD::FUNCTIONS::band(vec0, DATA_SET::inputs::scalarA);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::BANDS, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "BANDS(function - RHS scalar)");
     }
     {
         SCALAR_TYPE values[VEC_LEN];
@@ -2802,20 +3477,59 @@ void genericBANDSTest()
         VEC_TYPE vec2 = DATA_SET::inputs::scalarA & vec0;
         vec2.store(values);
         bool inRange = valuesInRange(values, DATA_SET::outputs::BANDS, VEC_LEN, SCALAR_TYPE(0.01f));
-        CHECK_CONDITION(inRange, "BANDS(operator & LHS scalar)");
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "BANDS(operator & LHS scalar)");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec2 = UME::SIMD::FUNCTIONS::band(DATA_SET::inputs::scalarA, vec0);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::BANDS, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "BANDS(function - LHS scalar)");
     }
 }
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMBANDSTest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    MASK_TYPE mask(DATA_SET::inputs::maskA);
-    VEC_TYPE vec2 = vec0.band(mask, DATA_SET::inputs::scalarA);
-    vec2.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MBANDS, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "MBANDS");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        VEC_TYPE vec2 = vec0.band(mask, DATA_SET::inputs::scalarA);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MBANDS, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MBANDS");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        VEC_TYPE vec2 = UME::SIMD::FUNCTIONS::band(mask, vec0, DATA_SET::inputs::scalarA);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MBANDS, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MBANDS(function - RHS scalar)");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        VEC_TYPE vec2 = UME::SIMD::FUNCTIONS::band(mask, DATA_SET::inputs::scalarA, vec0);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MBANDS, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        //CHECK_CONDITION((inRange && isUnmodified), "MBANDS(function - LHS scalar)");
+        // TODO: this function requires separate output data
+    }
 }
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
@@ -2900,26 +3614,68 @@ void genericMBANDSATest()
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericBORVTest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    VEC_TYPE vec1(DATA_SET::inputs::inputB);
-    VEC_TYPE vec2 = vec0.bor(vec1);
-    vec2.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::BORV, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "BORV");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        VEC_TYPE vec2 = vec0.bor(vec1);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::BORV, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "BORV");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        VEC_TYPE vec2 = vec0 | vec1;
+        vec2.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::BORV, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "BORV(operator |)");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        VEC_TYPE vec2 = UME::SIMD::FUNCTIONS::bor(vec0, vec1);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::BORV, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "BORV(function)");
+    }
 }
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMBORVTest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    VEC_TYPE vec1(DATA_SET::inputs::inputB);
-    MASK_TYPE mask(DATA_SET::inputs::maskA);
-    VEC_TYPE vec2 = vec0.bor(mask, vec1);
-    vec2.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MBORV, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "MBORV");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        VEC_TYPE vec2 = vec0.bor(mask, vec1);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MBORV, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MBORV");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        VEC_TYPE vec2 = UME::SIMD::FUNCTIONS::bor(mask, vec0, vec1);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MBORV, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MBORV(function)");
+    }
 }
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
@@ -2931,7 +3687,9 @@ void genericBORSTest()
         VEC_TYPE vec2 = vec0.bor(DATA_SET::inputs::scalarA);
         vec2.store(values);
         bool inRange = valuesInRange(values, DATA_SET::outputs::BORS, VEC_LEN, SCALAR_TYPE(0.01f));
-        CHECK_CONDITION(inRange, "BORS");
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "BORS");
     }
     {
         SCALAR_TYPE values[VEC_LEN];
@@ -2939,7 +3697,19 @@ void genericBORSTest()
         VEC_TYPE vec2 = vec0 | DATA_SET::inputs::scalarA;
         vec2.store(values);
         bool inRange = valuesInRange(values, DATA_SET::outputs::BORS, VEC_LEN, SCALAR_TYPE(0.01f));
-        CHECK_CONDITION(inRange, "BORS(operator| RHS scalar)");
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "BORS(operator| RHS scalar)");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec2 = UME::SIMD::FUNCTIONS::bor(vec0, DATA_SET::inputs::scalarA);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::BORS, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "BORS(function - RHS scalar)");
     }
     {
         SCALAR_TYPE values[VEC_LEN];
@@ -2947,20 +3717,59 @@ void genericBORSTest()
         VEC_TYPE vec2 = DATA_SET::inputs::scalarA | vec0;
         vec2.store(values);
         bool inRange = valuesInRange(values, DATA_SET::outputs::BORS, VEC_LEN, SCALAR_TYPE(0.01f));
-        CHECK_CONDITION(inRange, "BORS(operator| LHS scalar)");
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "BORS(operator| LHS scalar)");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec2 = UME::SIMD::FUNCTIONS::bor(DATA_SET::inputs::scalarA, vec0);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::BORS, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "BORS(function - LHS scalar)");
     }
 }
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMBORSTest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    MASK_TYPE mask(DATA_SET::inputs::maskA);
-    VEC_TYPE vec2 = vec0.bor(mask, DATA_SET::inputs::scalarA);
-    vec2.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MBORS, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "MBORS");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        VEC_TYPE vec2 = vec0.bor(mask, DATA_SET::inputs::scalarA);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MBORS, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MBORS");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        VEC_TYPE vec2 = UME::SIMD::FUNCTIONS::bor(mask, vec0, DATA_SET::inputs::scalarA);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MBORS, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MBORS(function - RHS scalar)");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        VEC_TYPE vec2 = UME::SIMD::FUNCTIONS::bor(mask, DATA_SET::inputs::scalarA, vec0);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MBORS, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        //CHECK_CONDITION((inRange && isUnmodified), "MBORS(function - RHS scalar)");
+        // TODO: this test requires separate output data
+    }
 }
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
@@ -3073,7 +3882,9 @@ void genericBXORVTest()
         VEC_TYPE vec2 = vec0.bxor(vec1);
         vec2.store(values);
         bool inRange = valuesInRange(values, DATA_SET::outputs::BXORV, VEC_LEN, SCALAR_TYPE(0.01f));
-        CHECK_CONDITION(inRange, "BXORV");
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "BXORV");
     }
     {
         SCALAR_TYPE values[VEC_LEN];
@@ -3082,21 +3893,50 @@ void genericBXORVTest()
         VEC_TYPE vec2 = vec0 ^ vec1;
         vec2.store(values);
         bool inRange = valuesInRange(values, DATA_SET::outputs::BXORV, VEC_LEN, SCALAR_TYPE(0.01f));
-        CHECK_CONDITION(inRange, "BXORV(operator^");
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "BXORV(operator^");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        VEC_TYPE vec2 = UME::SIMD::FUNCTIONS::bxor(vec0, vec1);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::BXORV, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "BXORV(function");
     }
 }
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMBXORVTest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    VEC_TYPE vec1(DATA_SET::inputs::inputB);
-    MASK_TYPE mask(DATA_SET::inputs::maskA);
-    VEC_TYPE vec2 = vec0.bxor(mask, vec1);
-    vec2.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MBXORV, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "MBXORV");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        VEC_TYPE vec2 = vec0.bxor(mask, vec1);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MBXORV, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MBXORV");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        VEC_TYPE vec2 = UME::SIMD::FUNCTIONS::bxor(mask, vec0, vec1);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MBXORV, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MBXORV(function)");
+    }
 }
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
@@ -3108,7 +3948,9 @@ void genericBXORSTest()
         VEC_TYPE vec2 = vec0.bxor(DATA_SET::inputs::scalarA);
         vec2.store(values);
         bool inRange = valuesInRange(values, DATA_SET::outputs::BXORS, VEC_LEN, SCALAR_TYPE(0.01f));
-        CHECK_CONDITION(inRange, "BXORS");
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "BXORS");
     }
     {
         SCALAR_TYPE values[VEC_LEN];
@@ -3116,7 +3958,19 @@ void genericBXORSTest()
         VEC_TYPE vec2 = vec0 ^ DATA_SET::inputs::scalarA;
         vec2.store(values);
         bool inRange = valuesInRange(values, DATA_SET::outputs::BXORS, VEC_LEN, SCALAR_TYPE(0.01f));
-        CHECK_CONDITION(inRange, "BXORS(operator^ RHS scalar)");
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "BXORS(operator^ RHS scalar)");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec2 = UME::SIMD::FUNCTIONS::bxor(vec0, DATA_SET::inputs::scalarA);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::BXORS, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "BXORS(function - RHS scalar)");
     }
     {
         SCALAR_TYPE values[VEC_LEN];
@@ -3124,20 +3978,59 @@ void genericBXORSTest()
         VEC_TYPE vec2 = DATA_SET::inputs::scalarA ^ vec0;
         vec2.store(values);
         bool inRange = valuesInRange(values, DATA_SET::outputs::BXORS, VEC_LEN, SCALAR_TYPE(0.01f));
-        CHECK_CONDITION(inRange, "BXORS(operator ^ LHS scalar)");
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "BXORS(operator ^ LHS scalar)");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec2 = UME::SIMD::FUNCTIONS::bxor(DATA_SET::inputs::scalarA, vec0);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::BXORS, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "BXORS(function - LHS scalar)");
     }
 }
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMBXORSTest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    MASK_TYPE mask(DATA_SET::inputs::maskA);
-    VEC_TYPE vec2 = vec0.bxor(mask, DATA_SET::inputs::scalarA);
-    vec2.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MBXORS, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "MBXORS");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        VEC_TYPE vec2 = vec0.bxor(mask, DATA_SET::inputs::scalarA);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MBXORS, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MBXORS");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        VEC_TYPE vec2 = UME::SIMD::FUNCTIONS::bxor(mask, vec0, DATA_SET::inputs::scalarA);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MBXORS, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MBXORS(function - RHS scalar)");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        VEC_TYPE vec2 = UME::SIMD::FUNCTIONS::bxor(mask, DATA_SET::inputs::scalarA, vec0);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MBXORS, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        // CHECK_CONDITION((inRange && isUnmodified), "MBXORS(function - LHS scalar)");
+        // TODO: this test requires separate output data
+    }
 }
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
@@ -3249,7 +4142,9 @@ void genericBNOTTest()
         VEC_TYPE vec1 = vec0.bnot();
         vec1.store(values);
         bool inRange = valuesInRange(values, DATA_SET::outputs::BNOT, VEC_LEN, SCALAR_TYPE(0.01f));
-        CHECK_CONDITION(inRange, "BNOT");
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "BNOT");
     }
     {
         SCALAR_TYPE values[VEC_LEN];
@@ -3257,20 +4152,47 @@ void genericBNOTTest()
         VEC_TYPE vec1 = ~vec0;
         vec1.store(values);
         bool inRange = valuesInRange(values, DATA_SET::outputs::BNOT, VEC_LEN, SCALAR_TYPE(0.01f));
-        CHECK_CONDITION(inRange, "BNOT(operator!)");
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "BNOT(operator!)");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1 = UME::SIMD::FUNCTIONS::bnot(vec0);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::BNOT, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "BNOT(function)");
     }
 }
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMBNOTTest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    MASK_TYPE mask(DATA_SET::inputs::maskA);
-    VEC_TYPE vec1 = vec0.bnot(mask);
-    vec1.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MBNOT, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "MBNOT");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        VEC_TYPE vec1 = vec0.bnot(mask);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MBNOT, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MBNOT");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        VEC_TYPE vec1 = UME::SIMD::FUNCTIONS::bnot(mask, vec0);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MBNOT, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MBNOT(function)");
+    }
 }
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
@@ -3315,291 +4237,623 @@ void genericMBNOTATest()
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericHADDTest()
 {
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    SCALAR_TYPE value = vec0.hadd();
-    bool inRange = valueInRange(value, DATA_SET::outputs::HADD[VEC_LEN-1], SCALAR_TYPE(SCALAR_TYPE(0.01f)));
-    CHECK_CONDITION(inRange, "HADD");
+    {
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        SCALAR_TYPE value = vec0.hadd();
+        bool inRange = valueInRange(value, DATA_SET::outputs::HADD[VEC_LEN - 1], SCALAR_TYPE(SCALAR_TYPE(0.01f)));
+        CHECK_CONDITION(inRange, "HADD");
+    }
+    {
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        SCALAR_TYPE value = UME::SIMD::FUNCTIONS::hadd(vec0);
+        bool inRange = valueInRange(value, DATA_SET::outputs::HADD[VEC_LEN - 1], SCALAR_TYPE(SCALAR_TYPE(0.01f)));
+        CHECK_CONDITION(inRange, "HADD(function)");
+    }
 }
         // MHADD - Masked add elements of a vector (horizontal add)
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericHMULTest()
 {
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    SCALAR_TYPE value = vec0.hmul();
-    bool inRange = valueInRange(value, DATA_SET::outputs::HMUL[VEC_LEN-1], SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "HMUL");
+    {
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        SCALAR_TYPE value = vec0.hmul();
+        bool inRange = valueInRange(value, DATA_SET::outputs::HMUL[VEC_LEN - 1], SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "HMUL");
+    }
+    {
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        SCALAR_TYPE value = UME::SIMD::FUNCTIONS::hmul(vec0);
+        bool inRange = valueInRange(value, DATA_SET::outputs::HMUL[VEC_LEN - 1], SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "HMUL(function)");
+    }
 }
         // MHMUL - Masked multiply elements of a vector (horizontal mul)
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericHBANDTest()
 {
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    SCALAR_TYPE value = vec0.hband();
-    bool inRange = valueInRange(value, DATA_SET::outputs::HBAND[VEC_LEN-1], SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "HBAND");
+    {
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        SCALAR_TYPE value = vec0.hband();
+        bool inRange = valueInRange(value, DATA_SET::outputs::HBAND[VEC_LEN - 1], SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange , "HBAND");
+    }
+    {
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        SCALAR_TYPE value = UME::SIMD::FUNCTIONS::hband(vec0);
+        bool inRange = valueInRange(value, DATA_SET::outputs::HBAND[VEC_LEN - 1], SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange , "HBAND");
+    }
 }
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMHBANDTest()
 {
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    MASK_TYPE mask0(DATA_SET::inputs::maskA);
-    SCALAR_TYPE value = vec0.hband(mask0);
-    bool inRange = valueInRange(value, DATA_SET::outputs::MHBAND[VEC_LEN-1], SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "MHBAND");
+    {
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask0(DATA_SET::inputs::maskA);
+        SCALAR_TYPE value = vec0.hband(mask0);
+        bool inRange = valueInRange(value, DATA_SET::outputs::MHBAND[VEC_LEN - 1], SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "MHBAND");
+    }
+    {
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask0(DATA_SET::inputs::maskA);
+        SCALAR_TYPE value = UME::SIMD::FUNCTIONS::hband(mask0, vec0);
+        bool inRange = valueInRange(value, DATA_SET::outputs::MHBAND[VEC_LEN - 1], SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "MHBAND(function)");
+    }
 }
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericHBANDSTest()
 {
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    SCALAR_TYPE value = vec0.hband(DATA_SET::inputs::scalarA);
-    bool inRange = valueInRange(value, DATA_SET::outputs::HBANDS[VEC_LEN-1], SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "HBANDS");
+    {
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        SCALAR_TYPE value = vec0.hband(DATA_SET::inputs::scalarA);
+        bool inRange = valueInRange(value, DATA_SET::outputs::HBANDS[VEC_LEN - 1], SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "HBANDS");
+    }/*
+    {
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        SCALAR_TYPE value = UME::SIMD::FUNCTIONS::hband(vec0, DATA_SET::inputs::scalarA);
+        bool inRange = valueInRange(value, DATA_SET::outputs::HBANDS[VEC_LEN - 1], SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "HBANDS(function - RHS scalar)");
+    }*/
 }
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMHBANDSTest()
 {
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    MASK_TYPE mask0(DATA_SET::inputs::maskA);
-    SCALAR_TYPE value = vec0.hband(mask0, DATA_SET::inputs::scalarA);
-    bool inRange = valueInRange(value, DATA_SET::outputs::MHBANDS[VEC_LEN-1], SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "MHBANDS");
+    {
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask0(DATA_SET::inputs::maskA);
+        SCALAR_TYPE value = vec0.hband(mask0, DATA_SET::inputs::scalarA);
+        bool inRange = valueInRange(value, DATA_SET::outputs::MHBANDS[VEC_LEN - 1], SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "MHBANDS");
+    }
+    /*{
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask0(DATA_SET::inputs::maskA);
+        SCALAR_TYPE value = UME::SIMD::FUNCTIONS::hband(mask0, vec0, DATA_SET::inputs::scalarA);
+        bool inRange = valueInRange(value, DATA_SET::outputs::MHBANDS[VEC_LEN - 1], SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "MHBANDS(function - RHS scalar)");
+    }*/
 }
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericHBORTest()
 {
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    SCALAR_TYPE value = vec0.hbor();
-    bool inRange = valueInRange(value, DATA_SET::outputs::HBOR[VEC_LEN-1], SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "HBOR");
+    {
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        SCALAR_TYPE value = vec0.hbor();
+        bool inRange = valueInRange(value, DATA_SET::outputs::HBOR[VEC_LEN - 1], SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "HBOR");
+    }
+    {
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        SCALAR_TYPE value = UME::SIMD::FUNCTIONS::hbor(vec0);
+        bool inRange = valueInRange(value, DATA_SET::outputs::HBOR[VEC_LEN - 1], SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "HBOR(function)");
+    }
 }
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMHBORTest()
 {
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    MASK_TYPE mask0(DATA_SET::inputs::maskA);
-    SCALAR_TYPE value = vec0.hbor(mask0);
-    bool inRange = valueInRange(value, DATA_SET::outputs::MHBOR[VEC_LEN-1], SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "MHBOR");
+    {
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask0(DATA_SET::inputs::maskA);
+        SCALAR_TYPE value = vec0.hbor(mask0);
+        bool inRange = valueInRange(value, DATA_SET::outputs::MHBOR[VEC_LEN - 1], SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "MHBOR");
+    }
+    {
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask0(DATA_SET::inputs::maskA);
+        SCALAR_TYPE value = UME::SIMD::FUNCTIONS::hbor(mask0, vec0);
+        bool inRange = valueInRange(value, DATA_SET::outputs::MHBOR[VEC_LEN - 1], SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "MHBOR(function)");
+    }
 }
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericHBORSTest()
 {
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    SCALAR_TYPE value = vec0.hbor(DATA_SET::inputs::scalarA);
-    bool inRange = valueInRange(value, DATA_SET::outputs::HBORS[VEC_LEN-1], SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "HBORS");
+    {
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        SCALAR_TYPE value = vec0.hbor(DATA_SET::inputs::scalarA);
+        bool inRange = valueInRange(value, DATA_SET::outputs::HBORS[VEC_LEN - 1], SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "HBORS");
+    }/*
+    {
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        SCALAR_TYPE value = UME::SIMD::FUNCTIONS::hbor(vec0, DATA_SET::inputs::scalarA);
+        bool inRange = valueInRange(value, DATA_SET::outputs::HBORS[VEC_LEN - 1], SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "HBORS(function - RHS scalar)");
+    }*/
 }
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMHBORSTest()
 {
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    MASK_TYPE mask0(DATA_SET::inputs::maskA);
-    SCALAR_TYPE value = vec0.hbor(mask0, DATA_SET::inputs::scalarA);
-    bool inRange = valueInRange(value, DATA_SET::outputs::MHBORS[VEC_LEN-1], SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "MHBORS");
+    {
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask0(DATA_SET::inputs::maskA);
+        SCALAR_TYPE value = vec0.hbor(mask0, DATA_SET::inputs::scalarA);
+        bool inRange = valueInRange(value, DATA_SET::outputs::MHBORS[VEC_LEN - 1], SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "MHBORS");
+    }/*
+    {
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask0(DATA_SET::inputs::maskA);
+        SCALAR_TYPE value = UME::SIMD::FUNCTIONS::hbor(mask0, vec0, DATA_SET::inputs::scalarA);
+        bool inRange = valueInRange(value, DATA_SET::outputs::MHBORS[VEC_LEN - 1], SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "MHBORS(function - RHS scalar)");
+    }*/
 }
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericHBXORTest()
 {
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    SCALAR_TYPE value = vec0.hbxor();
-    bool inRange = valueInRange(value, DATA_SET::outputs::HBXOR[VEC_LEN-1], SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "HBXOR");
+    {
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        SCALAR_TYPE value = vec0.hbxor();
+        bool inRange = valueInRange(value, DATA_SET::outputs::HBXOR[VEC_LEN - 1], SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "HBXOR");
+    }
+    {
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        SCALAR_TYPE value = UME::SIMD::FUNCTIONS::hbxor(vec0);
+        bool inRange = valueInRange(value, DATA_SET::outputs::HBXOR[VEC_LEN - 1], SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "HBXOR(function)");
+    }
 }
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMHBXORTest()
 {
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    MASK_TYPE mask0(DATA_SET::inputs::maskA);
-    SCALAR_TYPE value = vec0.hbxor(mask0);
-    bool inRange = valueInRange(value, DATA_SET::outputs::MHBXOR[VEC_LEN-1], SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "MHBXOR");
+    {
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask0(DATA_SET::inputs::maskA);
+        SCALAR_TYPE value = vec0.hbxor(mask0);
+        bool inRange = valueInRange(value, DATA_SET::outputs::MHBXOR[VEC_LEN - 1], SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "MHBXOR");
+    }
+    {
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask0(DATA_SET::inputs::maskA);
+        SCALAR_TYPE value = UME::SIMD::FUNCTIONS::hbxor(mask0, vec0);
+        bool inRange = valueInRange(value, DATA_SET::outputs::MHBXOR[VEC_LEN - 1], SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "MHBXOR");
+    }
 }
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericHBXORSTest()
 {
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    SCALAR_TYPE value = vec0.hbxor(DATA_SET::inputs::scalarA);
-    bool inRange = valueInRange(value, DATA_SET::outputs::HBXORS[VEC_LEN-1], SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "HBXORS");
+    {
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        SCALAR_TYPE value = vec0.hbxor(DATA_SET::inputs::scalarA);
+        bool inRange = valueInRange(value, DATA_SET::outputs::HBXORS[VEC_LEN - 1], SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "HBXORS");
+    }
+    /*{
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        SCALAR_TYPE value = UME::SIMD::FUNCTIONS::hbxor(vec0, DATA_SET::inputs::scalarA);
+        bool inRange = valueInRange(value, DATA_SET::outputs::HBXORS[VEC_LEN - 1], SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "HBXORS(function - RHS scalar)");
+    }*/
 }
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMHBXORSTest()
 {
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    MASK_TYPE mask0(DATA_SET::inputs::maskA);
-    SCALAR_TYPE value = vec0.hbxor(mask0, DATA_SET::inputs::scalarA);
-    bool inRange = valueInRange(value, DATA_SET::outputs::MHBXORS[VEC_LEN-1], SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "MHBXORS");
+    {
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask0(DATA_SET::inputs::maskA);
+        SCALAR_TYPE value = vec0.hbxor(mask0, DATA_SET::inputs::scalarA);
+        bool inRange = valueInRange(value, DATA_SET::outputs::MHBXORS[VEC_LEN - 1], SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "MHBXORS");
+    }
+    /*{
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask0(DATA_SET::inputs::maskA);
+        SCALAR_TYPE value = UME::SIMD::FUNCTIONS::hbxor(mask0, vec0, DATA_SET::inputs::scalarA);
+        bool inRange = valueInRange(value, DATA_SET::outputs::MHBXORS[VEC_LEN - 1], SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "MHBXORS(function - RHS scalar)");
+    }*/
 }
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericFMULADDVTest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    VEC_TYPE vec1(DATA_SET::inputs::inputB);
-    VEC_TYPE vec2(DATA_SET::inputs::inputC);
-    VEC_TYPE vec3 = vec0.fmuladd(vec1, vec2);
-    vec3.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::FMULADDV, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "FMULADDV");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        VEC_TYPE vec2(DATA_SET::inputs::inputC);
+        VEC_TYPE vec3 = vec0.fmuladd(vec1, vec2);
+        vec3.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::FMULADDV, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "FMULADDV");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        VEC_TYPE vec2(DATA_SET::inputs::inputC);
+        VEC_TYPE vec3 = UME::SIMD::FUNCTIONS::fmuladd(vec0, vec1, vec2);
+        vec3.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::FMULADDV, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "FMULADDV(function)");
+    }
 }
     
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMFMULADDVTest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    VEC_TYPE vec1(DATA_SET::inputs::inputB);
-    VEC_TYPE vec2(DATA_SET::inputs::inputC);
-    MASK_TYPE mask(DATA_SET::inputs::maskA);
-    VEC_TYPE vec3 = vec0.fmuladd(mask, vec1, vec2);
-    vec3.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MFMULADDV, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "MFMULADDV");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        VEC_TYPE vec2(DATA_SET::inputs::inputC);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        VEC_TYPE vec3 = vec0.fmuladd(mask, vec1, vec2);
+        vec3.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MFMULADDV, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MFMULADDV");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        VEC_TYPE vec2(DATA_SET::inputs::inputC);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        VEC_TYPE vec3 = UME::SIMD::FUNCTIONS::fmuladd(mask, vec0, vec1, vec2);
+        vec3.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MFMULADDV, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MFMULADDV(function)");
+    }
 }
     
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericFMULSUBVTest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    VEC_TYPE vec1(DATA_SET::inputs::inputB);
-    VEC_TYPE vec2(DATA_SET::inputs::inputC);
-    VEC_TYPE vec3 = vec0.fmulsub(vec1, vec2);
-    vec3.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::FMULSUBV, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "FMULSUBV");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        VEC_TYPE vec2(DATA_SET::inputs::inputC);
+        VEC_TYPE vec3 = vec0.fmulsub(vec1, vec2);
+        vec3.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::FMULSUBV, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "FMULSUBV");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        VEC_TYPE vec2(DATA_SET::inputs::inputC);
+        VEC_TYPE vec3 = UME::SIMD::FUNCTIONS::fmulsub(vec0, vec1, vec2);
+        vec3.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::FMULSUBV, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "FMULSUBV(function)");
+    }
 }
-    
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMFMULSUBVTest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    VEC_TYPE vec1(DATA_SET::inputs::inputB);
-    VEC_TYPE vec2(DATA_SET::inputs::inputC);
-    MASK_TYPE mask(DATA_SET::inputs::maskA);
-    VEC_TYPE vec3 = vec0.fmulsub(mask, vec1, vec2);
-    vec3.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MFMULSUBV, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "MFMULSUBV");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        VEC_TYPE vec2(DATA_SET::inputs::inputC);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        VEC_TYPE vec3 = vec0.fmulsub(mask, vec1, vec2);
+        vec3.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MFMULSUBV, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MFMULSUBV");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        VEC_TYPE vec2(DATA_SET::inputs::inputC);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        VEC_TYPE vec3 = UME::SIMD::FUNCTIONS::fmulsub(mask, vec0, vec1, vec2);
+        vec3.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MFMULSUBV, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MFMULSUBV(function)");
+    }
 }
-    
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericFADDMULVTest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    VEC_TYPE vec1(DATA_SET::inputs::inputB);
-    VEC_TYPE vec2(DATA_SET::inputs::inputC);
-    VEC_TYPE vec3 = vec0.faddmul(vec1, vec2);
-    vec3.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::FADDMULV, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "FADDMULV");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        VEC_TYPE vec2(DATA_SET::inputs::inputC);
+        VEC_TYPE vec3 = vec0.faddmul(vec1, vec2);
+        vec3.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::FADDMULV, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "FADDMULV");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        VEC_TYPE vec2(DATA_SET::inputs::inputC);
+        VEC_TYPE vec3 = UME::SIMD::FUNCTIONS::faddmul(vec0, vec1, vec2);
+        vec3.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::FADDMULV, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "FADDMULV(function)");
+    }
 }
-    
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMFADDMULVTest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    VEC_TYPE vec1(DATA_SET::inputs::inputB);
-    VEC_TYPE vec2(DATA_SET::inputs::inputC);
-    MASK_TYPE mask(DATA_SET::inputs::maskA);
-    VEC_TYPE vec3 = vec0.faddmul(mask, vec1, vec2);
-    vec3.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MFADDMULV, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "MFADDMULV");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        VEC_TYPE vec2(DATA_SET::inputs::inputC);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        VEC_TYPE vec3 = vec0.faddmul(mask, vec1, vec2);
+        vec3.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MFADDMULV, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MFADDMULV");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        VEC_TYPE vec2(DATA_SET::inputs::inputC);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        VEC_TYPE vec3 = UME::SIMD::FUNCTIONS::faddmul(mask, vec0, vec1, vec2);
+        vec3.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MFADDMULV, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MFADDMULV(function)");
+    }
 }
-    
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericFSUBMULVTest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    VEC_TYPE vec1(DATA_SET::inputs::inputB);
-    VEC_TYPE vec2(DATA_SET::inputs::inputC);
-    VEC_TYPE vec3 = vec0.fsubmul(vec1, vec2);
-    vec3.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::FSUBMULV, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "FSUBMULV");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        VEC_TYPE vec2(DATA_SET::inputs::inputC);
+        VEC_TYPE vec3 = vec0.fsubmul(vec1, vec2);
+        vec3.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::FSUBMULV, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "FSUBMULV");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        VEC_TYPE vec2(DATA_SET::inputs::inputC);
+        VEC_TYPE vec3 = UME::SIMD::FUNCTIONS::fsubmul(vec0, vec1, vec2);
+        vec3.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::FSUBMULV, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "FSUBMULV(function)");
+    }
 }
-    
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMFSUBMULVTest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    VEC_TYPE vec1(DATA_SET::inputs::inputB);
-    VEC_TYPE vec2(DATA_SET::inputs::inputC);
-    MASK_TYPE mask(DATA_SET::inputs::maskA);
-    VEC_TYPE vec3 = vec0.fsubmul(mask, vec1, vec2);
-    vec3.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MFSUBMULV, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "MFSUBMULV");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        VEC_TYPE vec2(DATA_SET::inputs::inputC);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        VEC_TYPE vec3 = vec0.fsubmul(mask, vec1, vec2);
+        vec3.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MFSUBMULV, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MFSUBMULV");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        VEC_TYPE vec2(DATA_SET::inputs::inputC);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        VEC_TYPE vec3 = UME::SIMD::FUNCTIONS::fsubmul(mask, vec0, vec1, vec2);
+        vec3.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MFSUBMULV, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MFSUBMULV(function)");
+    }
 }
-    
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMAXVTest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    VEC_TYPE vec1(DATA_SET::inputs::inputB);
-    VEC_TYPE vec2 = vec0.max(vec1);
-    vec2.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MAXV, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "MAXV");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        VEC_TYPE vec2 = vec0.max(vec1);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MAXV, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MAXV");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        VEC_TYPE vec2 = UME::SIMD::FUNCTIONS::max(vec0, vec1);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MAXV, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MAXV(function)");
+    }
 }
     
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMMAXVTest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    VEC_TYPE vec1(DATA_SET::inputs::inputB);
-    MASK_TYPE mask(DATA_SET::inputs::maskA);
-    VEC_TYPE vec2 = vec0.max(mask, vec1);
-    vec2.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MMAXV, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "MMAXV");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        VEC_TYPE vec2 = vec0.max(mask, vec1);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MMAXV, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MMAXV");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        VEC_TYPE vec2 = UME::SIMD::FUNCTIONS::max(mask, vec0, vec1);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MMAXV, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MMAXV(function)");
+    }
 }
     
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMAXSTest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    VEC_TYPE vec1 = vec0.max(DATA_SET::inputs::scalarA);
-    vec1.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MAXS, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "MAXS");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1 = vec0.max(DATA_SET::inputs::scalarA);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MAXS, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MAXS");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1 = UME::SIMD::FUNCTIONS::max(vec0, DATA_SET::inputs::scalarA);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MAXS, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MAXS(function - RHS scalar)");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1 = UME::SIMD::FUNCTIONS::max(DATA_SET::inputs::scalarA, vec0);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MAXS, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MAXS(function - LHS scalar)");
+    }
 }
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMMAXSTest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    MASK_TYPE mask(DATA_SET::inputs::maskA);
-    VEC_TYPE vec1 = vec0.max(mask, DATA_SET::inputs::scalarA);
-    vec1.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MMAXS, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "MMAXS");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        VEC_TYPE vec1 = vec0.max(mask, DATA_SET::inputs::scalarA);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MMAXS, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MMAXS");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        VEC_TYPE vec1 = UME::SIMD::FUNCTIONS::max(mask, vec0, DATA_SET::inputs::scalarA);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MMAXS, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MMAXS(function - RHS scalar)");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        VEC_TYPE vec1 = UME::SIMD::FUNCTIONS::max(mask, DATA_SET::inputs::scalarA, vec0);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MMAXS, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        //CHECK_CONDITION((inRange && isUnmodified), "MMAXS(function - LHS scalar)");
+        // TODO: this test requires separate output data
+    }
 }
-    
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMAXVATest()
 {
@@ -3651,49 +4905,131 @@ void genericMMAXSATest()
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMINVTest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    VEC_TYPE vec1(DATA_SET::inputs::inputB);
-    VEC_TYPE vec2 = vec0.min(vec1);
-    vec2.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MINV, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "MINV");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        VEC_TYPE vec2 = vec0.min(vec1);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MINV, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MINV");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        VEC_TYPE vec2 = UME::SIMD::FUNCTIONS::min(vec0, vec1);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MINV, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MINV(function)");
+    }
 }
-    
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMMINVTest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    VEC_TYPE vec1(DATA_SET::inputs::inputB);
-    MASK_TYPE mask(DATA_SET::inputs::maskA);
-    VEC_TYPE vec2 = vec0.min(mask, vec1);
-    vec2.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MMINV, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "MMINV");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        VEC_TYPE vec2 = vec0.min(mask, vec1);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MMINV, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MMINV");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1(DATA_SET::inputs::inputB);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        VEC_TYPE vec2 = UME::SIMD::FUNCTIONS::min(mask, vec0, vec1);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MMINV, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MMINV(function)");
+    }
 }
-    
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMINSTest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    VEC_TYPE vec1 = vec0.min(DATA_SET::inputs::scalarA);
-    vec1.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MINS, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "MINS");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1 = vec0.min(DATA_SET::inputs::scalarA);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MINS, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MINS");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1 = UME::SIMD::FUNCTIONS::min(vec0, DATA_SET::inputs::scalarA);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MINS, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MINS(function - RHS scalar");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1 = UME::SIMD::FUNCTIONS::min(DATA_SET::inputs::scalarA, vec0);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MINS, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MINS(function - LHS scalar");
+    }
 }
-    
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMMINSTest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    MASK_TYPE mask(DATA_SET::inputs::maskA);
-    VEC_TYPE vec1 = vec0.min(mask, DATA_SET::inputs::scalarA);
-    vec1.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MMINS, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "MMINS");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        VEC_TYPE vec1 = vec0.min(mask, DATA_SET::inputs::scalarA);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MMINS, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MMINS");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        VEC_TYPE vec1 = UME::SIMD::FUNCTIONS::min(mask, vec0, DATA_SET::inputs::scalarA);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MMINS, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MMINS(function - RHS scalar)");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        VEC_TYPE vec1 = UME::SIMD::FUNCTIONS::min(mask, DATA_SET::inputs::scalarA, vec0);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MMINS, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        //CHECK_CONDITION((inRange && isUnmodified), "MMINS(function - LHS scalar)");
+        // TODO: this test requires separate output data
+    }
 }
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
@@ -3747,11 +5083,20 @@ void genericMMINSATest()
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericHMAXTest()
 {
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    SCALAR_TYPE value = vec0.hmax();
-    SCALAR_TYPE expected = DATA_SET::outputs::HMAX[VEC_LEN-1];
-    bool inRange = valueInRange(value, expected, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "HMAX");
+    {
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        SCALAR_TYPE value = vec0.hmax();
+        SCALAR_TYPE expected = DATA_SET::outputs::HMAX[VEC_LEN - 1];
+        bool inRange = valueInRange(value, expected, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "HMAX");
+    }
+    {
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        SCALAR_TYPE value = UME::SIMD::FUNCTIONS::hmax(vec0);
+        SCALAR_TYPE expected = DATA_SET::outputs::HMAX[VEC_LEN - 1];
+        bool inRange = valueInRange(value, expected, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "HMAX(function)");
+    }
 }
 
 // MHMAX
@@ -3759,61 +5104,152 @@ void genericHMAXTest()
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericHMINTest()
 {
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    SCALAR_TYPE value = vec0.hmin();
-    SCALAR_TYPE expected = DATA_SET::outputs::HMIN[VEC_LEN-1];
-    bool inRange = valueInRange(value, expected, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "HMIN");
+    {
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        SCALAR_TYPE value = vec0.hmin();
+        SCALAR_TYPE expected = DATA_SET::outputs::HMIN[VEC_LEN - 1];
+        bool inRange = valueInRange(value, expected, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "HMIN");
+    }
+    {
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        SCALAR_TYPE value = UME::SIMD::FUNCTIONS::hmin(vec0);
+        SCALAR_TYPE expected = DATA_SET::outputs::HMIN[VEC_LEN - 1];
+        bool inRange = valueInRange(value, expected, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "HMIN(function)");
+    }
 }
 
 // MHMIN
-
 template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericLSHVTest() 
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    UINT_VEC_TYPE vec1(DATA_SET::inputs::inputShiftA);
-    VEC_TYPE vec2 = vec0.lsh(vec1);
-    vec2.store(values);
-    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::LSHV, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "LSHV");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        UINT_VEC_TYPE vec1(DATA_SET::inputs::inputShiftA);
+        VEC_TYPE vec2 = vec0.lsh(vec1);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::LSHV, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "LSHV");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        UINT_VEC_TYPE vec1(DATA_SET::inputs::inputShiftA);
+        VEC_TYPE vec2 = UME::SIMD::FUNCTIONS::lsh(vec0, vec1);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::LSHV, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "LSHV");
+    }
 }
     
 template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMLSHVTest() 
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    UINT_VEC_TYPE vec1(DATA_SET::inputs::inputShiftA);
-    MASK_TYPE mask0(DATA_SET::inputs::maskA);
-    VEC_TYPE vec2 = vec0.lsh(mask0, vec1);
-    vec2.store(values);
-    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MLSHV, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "MLSHV");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        UINT_VEC_TYPE vec1(DATA_SET::inputs::inputShiftA);
+        MASK_TYPE mask0(DATA_SET::inputs::maskA);
+        VEC_TYPE vec2 = vec0.lsh(mask0, vec1);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MLSHV, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MLSHV");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        UINT_VEC_TYPE vec1(DATA_SET::inputs::inputShiftA);
+        MASK_TYPE mask0(DATA_SET::inputs::maskA);
+        VEC_TYPE vec2 = UME::SIMD::FUNCTIONS::lsh(mask0, vec0, vec1);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MLSHV, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MLSHV");
+    }
 }
 
 template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericLSHSTest() 
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    VEC_TYPE vec1 = vec0.lsh(DATA_SET::inputs::inputShiftScalarA);
-    vec1.store(values);
-    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::LSHS, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "LSHS");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1 = vec0.lsh(DATA_SET::inputs::inputShiftScalarA);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::LSHS, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "LSHS");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1 = UME::SIMD::FUNCTIONS::lsh(vec0, DATA_SET::inputs::inputShiftScalarA);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::LSHS, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "LSHS(function - RHS scalar)");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1 = UME::SIMD::FUNCTIONS::lsh(DATA_SET::inputs::inputShiftScalarA, vec0);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::LSHS, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        //CHECK_CONDITION((inRange && isUnmodified), "LSHS(function - LHS scalar)");
+        // TODO: this test requires separate output data
+    }
 }
-    
+
 template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMLSHSTest() 
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    MASK_TYPE mask0(DATA_SET::inputs::maskA);
-    VEC_TYPE vec1 = vec0.lsh(mask0, DATA_SET::inputs::inputShiftScalarA);
-    vec1.store(values);
-    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MLSHS, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "MLSHS");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask0(DATA_SET::inputs::maskA);
+        VEC_TYPE vec1 = vec0.lsh(mask0, DATA_SET::inputs::inputShiftScalarA);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MLSHS, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MLSHS");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask0(DATA_SET::inputs::maskA);
+        VEC_TYPE vec1 = UME::SIMD::FUNCTIONS::lsh(mask0, vec0, DATA_SET::inputs::inputShiftScalarA);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MLSHS, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MLSHS(function - RHS scalar)");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask0(DATA_SET::inputs::maskA);
+        VEC_TYPE vec1 = UME::SIMD::FUNCTIONS::lsh(mask0, DATA_SET::inputs::inputShiftScalarA, vec0);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MLSHS, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        //CHECK_CONDITION((inRange && isUnmodified), "MLSHS(function - LHS scalar)");
+        // TOOO: This test requires separate output data
+    }
 }
 
 template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
@@ -3865,63 +5301,148 @@ void genericMLSHSATest()
 } 
 
 template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
-void genericRSHVTest() 
+void genericRSHVTest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    UINT_VEC_TYPE vec1(DATA_SET::inputs::inputShiftA);
-    VEC_TYPE vec2 = vec0.rsh(vec1);
-    vec2.store(values);
-    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::RSHV, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "RSHV");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        UINT_VEC_TYPE vec1(DATA_SET::inputs::inputShiftA);
+        VEC_TYPE vec2 = vec0.rsh(vec1);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::RSHV, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "RSHV");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        UINT_VEC_TYPE vec1(DATA_SET::inputs::inputShiftA);
+        VEC_TYPE vec2 = UME::SIMD::FUNCTIONS::rsh(vec0, vec1);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::RSHV, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "RSHV(function)");
+    }
 }
     
 template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMRSHVTest() 
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    UINT_VEC_TYPE vec1(DATA_SET::inputs::inputShiftA);
-    MASK_TYPE mask0(DATA_SET::inputs::maskA);
-    VEC_TYPE vec2 = vec0.rsh(mask0, vec1);
-    vec2.store(values);
-    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MRSHV, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "MRSHV");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        UINT_VEC_TYPE vec1(DATA_SET::inputs::inputShiftA);
+        MASK_TYPE mask0(DATA_SET::inputs::maskA);
+        VEC_TYPE vec2 = vec0.rsh(mask0, vec1);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MRSHV, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MRSHV");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        UINT_VEC_TYPE vec1(DATA_SET::inputs::inputShiftA);
+        MASK_TYPE mask0(DATA_SET::inputs::maskA);
+        VEC_TYPE vec2 = UME::SIMD::FUNCTIONS::rsh(mask0, vec0, vec1);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MRSHV, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MRSHV(function)");
+    }
 }
 
 template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
-void genericRSHSTest() 
+void genericRSHSTest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    VEC_TYPE vec1 = vec0.rsh(DATA_SET::inputs::inputShiftScalarA);
-    vec1.store(values);
-    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::RSHS, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "RSHS");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1 = vec0.rsh(DATA_SET::inputs::inputShiftScalarA);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::RSHS, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "RSHS");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1 = UME::SIMD::FUNCTIONS::rsh(vec0, DATA_SET::inputs::inputShiftScalarA);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::RSHS, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "RSHS(function - RHS scalar)");
+    }
+    {/*
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1 = UME::SIMD::FUNCTIONS::rsh(DATA_SET::inputs::inputShiftScalarA, vec0);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::RSHS, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "RSHS(function - LHS scalar)");*/
+        // TODO: this test requires separate output data
+    }
 }
-    
+
 template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMRSHSTest() 
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    MASK_TYPE mask0(DATA_SET::inputs::maskA);
-    VEC_TYPE vec1 = vec0.rsh(mask0, DATA_SET::inputs::inputShiftScalarA);
-    vec1.store(values);
-    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MRSHS, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "MRSHS");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask0(DATA_SET::inputs::maskA);
+        VEC_TYPE vec1 = vec0.rsh(mask0, DATA_SET::inputs::inputShiftScalarA);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MRSHS, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MRSHS");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask0(DATA_SET::inputs::maskA);
+        VEC_TYPE vec1 = UME::SIMD::FUNCTIONS::rsh(mask0, vec0, DATA_SET::inputs::inputShiftScalarA);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MRSHS, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MRSHS(function - RHS scalar)");
+    }
+    {/*
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask0(DATA_SET::inputs::maskA);
+        VEC_TYPE vec1 = UME::SIMD::FUNCTIONS::rsh(mask0, DATA_SET::inputs::inputShiftScalarA, vec0);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MRSHS, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));*/
+        // CHECK_CONDITION((inRange && isUnmodified), "MRSHS(function - LHS scalar)");
+        // TODO: this test requires separate output data
+    }
 }
 
 template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
-void genericRSHVATest() 
+void genericRSHVATest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    UINT_VEC_TYPE vec1(DATA_SET::inputs::inputShiftA);
-    vec0.rsha(vec1);
-    vec0.store(values);
-    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::RSHV, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "RSHVA");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        UINT_VEC_TYPE vec1(DATA_SET::inputs::inputShiftA);
+        vec0.rsha(vec1);
+        vec0.store(values);
+        bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::RSHV, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "RSHVA");
+    }
 }
     
 template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
@@ -3961,51 +5482,134 @@ void genericMRSHSATest()
 } 
 
 template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
-void genericROLVTest() 
+void genericROLVTest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    UINT_VEC_TYPE vec1(DATA_SET::inputs::inputShiftA);
-    VEC_TYPE vec2 = vec0.rol(vec1);
-    vec2.store(values);
-    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::ROLV, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "ROLV");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        UINT_VEC_TYPE vec1(DATA_SET::inputs::inputShiftA);
+        VEC_TYPE vec2 = vec0.rol(vec1);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::ROLV, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "ROLV");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        UINT_VEC_TYPE vec1(DATA_SET::inputs::inputShiftA);
+        VEC_TYPE vec2 = UME::SIMD::FUNCTIONS::rol(vec0, vec1);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::ROLV, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "ROLV(function)");
+    }
 }
-    
+
 template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMROLVTest() 
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    UINT_VEC_TYPE vec1(DATA_SET::inputs::inputShiftA);
-    MASK_TYPE mask0(DATA_SET::inputs::maskA);
-    VEC_TYPE vec2 = vec0.rol(mask0, vec1);
-    vec2.store(values);
-    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MROLV, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "MROLV");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        UINT_VEC_TYPE vec1(DATA_SET::inputs::inputShiftA);
+        MASK_TYPE mask0(DATA_SET::inputs::maskA);
+        VEC_TYPE vec2 = vec0.rol(mask0, vec1);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MROLV, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MROLV");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        UINT_VEC_TYPE vec1(DATA_SET::inputs::inputShiftA);
+        MASK_TYPE mask0(DATA_SET::inputs::maskA);
+        VEC_TYPE vec2 = UME::SIMD::FUNCTIONS::rol(mask0, vec0, vec1);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MROLV, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MROLV(function)");
+    }
 }
 
 template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
-void genericROLSTest() 
+void genericROLSTest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    VEC_TYPE vec1 = vec0.rol(DATA_SET::inputs::inputShiftScalarA);
-    vec1.store(values);
-    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::ROLS, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "ROLS");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1 = vec0.rol(DATA_SET::inputs::inputShiftScalarA);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::ROLS, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "ROLS");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1 = UME::SIMD::FUNCTIONS::rol(vec0, DATA_SET::inputs::inputShiftScalarA);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::ROLS, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "ROLS(function - RHS scalar)");
+    }
+    {
+      /* SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1 = UME::SIMD::FUNCTIONS::rol(DATA_SET::inputs::inputShiftScalarA, vec0);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::ROLS, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f)); */
+        //CHECK_CONDITION((inRange && isUnmodified), "ROLS(function - LHS scalar)");
+        // TODO: this test requires separate output data
+    }
 }
-    
+
 template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMROLSTest() 
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    MASK_TYPE mask0(DATA_SET::inputs::maskA);
-    VEC_TYPE vec1 = vec0.rol(mask0, DATA_SET::inputs::inputShiftScalarA);
-    vec1.store(values);
-    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MROLS, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "MROLS");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask0(DATA_SET::inputs::maskA);
+        VEC_TYPE vec1 = vec0.rol(mask0, DATA_SET::inputs::inputShiftScalarA);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MROLS, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MROLS");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask0(DATA_SET::inputs::maskA);
+        VEC_TYPE vec1 = UME::SIMD::FUNCTIONS::rol(mask0, vec0, DATA_SET::inputs::inputShiftScalarA);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MROLS, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MROLS(function - RHS scalar)");
+    }
+    {
+        /*SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask0(DATA_SET::inputs::maskA);
+        VEC_TYPE vec1 = UME::SIMD::FUNCTIONS::rol(mask0, DATA_SET::inputs::inputShiftScalarA, vec0);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MROLS, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));*/
+        //CHECK_CONDITION((inRange && isUnmodified), "MROLS(function - LHS scalar)");
+        // TODO: this test requires separate output data
+    }
 }
 
 template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
@@ -4057,51 +5661,134 @@ void genericMROLSATest()
 } 
 
 template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
-void genericRORVTest() 
+void genericRORVTest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    UINT_VEC_TYPE vec1(DATA_SET::inputs::inputShiftA);
-    VEC_TYPE vec2 = vec0.ror(vec1);
-    vec2.store(values);
-    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::RORV, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "RORV");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        UINT_VEC_TYPE vec1(DATA_SET::inputs::inputShiftA);
+        VEC_TYPE vec2 = vec0.ror(vec1);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::RORV, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "RORV");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        UINT_VEC_TYPE vec1(DATA_SET::inputs::inputShiftA);
+        VEC_TYPE vec2 = UME::SIMD::FUNCTIONS::ror(vec0, vec1);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::RORV, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "RORV(function)");
+    }
 }
     
 template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
-void genericMRORVTest() 
+void genericMRORVTest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    UINT_VEC_TYPE vec1(DATA_SET::inputs::inputShiftA);
-    MASK_TYPE mask0(DATA_SET::inputs::maskA);
-    VEC_TYPE vec2 = vec0.ror(mask0, vec1);
-    vec2.store(values);
-    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MRORV, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "MRORV");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        UINT_VEC_TYPE vec1(DATA_SET::inputs::inputShiftA);
+        MASK_TYPE mask0(DATA_SET::inputs::maskA);
+        VEC_TYPE vec2 = vec0.ror(mask0, vec1);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MRORV, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MRORV");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        UINT_VEC_TYPE vec1(DATA_SET::inputs::inputShiftA);
+        MASK_TYPE mask0(DATA_SET::inputs::maskA);
+        VEC_TYPE vec2 = UME::SIMD::FUNCTIONS::ror(mask0, vec0, vec1);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MRORV, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MRORV(function)");
+    }
 }
 
 template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericRORSTest() 
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    VEC_TYPE vec1 = vec0.ror(DATA_SET::inputs::inputShiftScalarA);
-    vec1.store(values);
-    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::RORS, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "RORS");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1 = vec0.ror(DATA_SET::inputs::inputShiftScalarA);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::RORS, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "RORS");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1 = UME::SIMD::FUNCTIONS::ror(vec0, DATA_SET::inputs::inputShiftScalarA);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::RORS, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "RORS(function - RHS scalar)");
+    }
+    {
+        /*SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1 = UME::SIMD::FUNCTIONS::ror(DATA_SET::inputs::inputShiftScalarA, vec0);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::RORS, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));*/
+        //CHECK_CONDITION((inRange && isUnmodified), "RORS(function - LHS scalar)");
+        // TODO: this test requires separate output data
+    }
 }
     
 template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMRORSTest() 
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    MASK_TYPE mask0(DATA_SET::inputs::maskA);
-    VEC_TYPE vec1 = vec0.ror(mask0, DATA_SET::inputs::inputShiftScalarA);
-    vec1.store(values);
-    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MRORS, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "MRORS");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask0(DATA_SET::inputs::maskA);
+        VEC_TYPE vec1 = vec0.ror(mask0, DATA_SET::inputs::inputShiftScalarA);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MRORS, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "MRORS");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask0(DATA_SET::inputs::maskA);
+        VEC_TYPE vec1 = UME::SIMD::FUNCTIONS::ror(mask0, vec0, DATA_SET::inputs::inputShiftScalarA);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MRORS, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "MRORS(function - RHS scalar)");
+    }
+    {
+        /*SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask0(DATA_SET::inputs::maskA);
+        VEC_TYPE vec1 = UME::SIMD::FUNCTIONS::ror(mask0, DATA_SET::inputs::inputShiftScalarA, vec0);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MRORS, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));*/
+        //CHECK_CONDITION(inRange, "MRORS(function - LHS scalar)");
+        // TODO: this test requires separate output data
+    }
 }
 
 template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
@@ -4160,7 +5847,9 @@ void genericNEGTest()
         VEC_TYPE vec1 = vec0.neg();
         vec1.store(values);
         bool inRange = valuesInRange(values, DATA_SET::outputs::NEG, VEC_LEN, SCALAR_TYPE(0.01f));
-        CHECK_CONDITION(inRange, "NEG");
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "NEG");
     }
     {
         SCALAR_TYPE values[VEC_LEN];
@@ -4168,20 +5857,47 @@ void genericNEGTest()
         VEC_TYPE vec1 =  -vec0;
         vec1.store(values);
         bool inRange = valuesInRange(values, DATA_SET::outputs::NEG, VEC_LEN, SCALAR_TYPE(0.01f));
-        CHECK_CONDITION(inRange, "NEG(operator-)");
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "NEG(operator-)");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1 = UME::SIMD::FUNCTIONS::neg(vec0);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::NEG, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "NEG(function)");
     }
 }
     
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMNEGTest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    MASK_TYPE mask(DATA_SET::inputs::maskA);
-    VEC_TYPE vec1 = vec0.neg(mask);
-    vec1.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MNEG, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "MNEG");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        VEC_TYPE vec1 = vec0.neg(mask);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MNEG, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MNEG");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        VEC_TYPE vec1 = UME::SIMD::FUNCTIONS::neg(mask, vec0);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MNEG, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MNEG(function)");
+    }
 }
     
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
@@ -4210,24 +5926,53 @@ void genericMNEGATest()
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericABSTest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    VEC_TYPE vec1 = vec0.abs();
-    vec1.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::ABS, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "ABS");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1 = vec0.abs();
+        vec1.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::ABS, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "ABS");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1 = UME::SIMD::FUNCTIONS::abs(vec0);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::ABS, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "ABS(function)");
+    }
 }
     
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMABSTest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    MASK_TYPE mask(DATA_SET::inputs::maskA);
-    VEC_TYPE vec1 = vec0.abs(mask);
-    vec1.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MABS, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "MABS");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        VEC_TYPE vec1 = vec0.abs(mask);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MABS, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MABS");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        VEC_TYPE vec1 = UME::SIMD::FUNCTIONS::abs(mask, vec0);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MABS, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MABS(function)");
+    }
 }
     
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
@@ -4256,24 +6001,53 @@ void genericMABSATest()
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericSQRTest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    VEC_TYPE vec1 = vec0.sqr();
-    vec1.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::SQR, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "SQR");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1 = vec0.sqr();
+        vec1.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::SQR, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "SQR");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1 = UME::SIMD::FUNCTIONS::sqr(vec0);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::SQR, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "SQR(function)");
+    }
 }
     
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMSQRTest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    MASK_TYPE mask(DATA_SET::inputs::maskA);
-    VEC_TYPE vec1 = vec0.sqr(mask);
-    vec1.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MSQR, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "MSQR");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        VEC_TYPE vec1 = vec0.sqr(mask);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MSQR, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "MSQR");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        VEC_TYPE vec1 = UME::SIMD::FUNCTIONS::sqr(mask, vec0);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MSQR, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "MSQR(function)");
+    }
 }
     
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
@@ -4302,28 +6076,59 @@ void genericMSQRATest()
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericSQRTTest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    VEC_TYPE vec1 = vec0.abs();
-    VEC_TYPE vec2 = vec1.sqrt();
-    vec2.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::SQRT, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "SQRT");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1 = vec0.abs();
+        VEC_TYPE vec2 = vec1.sqrt();
+        vec2.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::SQRT, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "SQRT");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1 = vec0.abs();
+        VEC_TYPE vec2 = UME::SIMD::FUNCTIONS::sqrt(vec1);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::SQRT, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "SQRT(function)");
+    }
 }
     
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMSQRTTest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    MASK_TYPE mask(DATA_SET::inputs::maskA);
-    VEC_TYPE vec1 = vec0.abs(mask);
-    VEC_TYPE vec2 = vec1.sqrt(mask);
-    vec2.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MSQRT, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "MSQRT");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        VEC_TYPE vec1 = vec0.abs(mask);
+        VEC_TYPE vec2 = vec1.sqrt(mask);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MSQRT, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MSQRT");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        VEC_TYPE vec1 = vec0.abs(mask);
+        VEC_TYPE vec2 = UME::SIMD::FUNCTIONS::sqrt(mask, vec1);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MSQRT, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MSQRT");
+    }
 }
-    
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericSQRTATest()
 {
@@ -4352,273 +6157,577 @@ void genericMSQRTATest()
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericROUNDTest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    VEC_TYPE vec1 = vec0.round();
-    vec1.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::ROUND, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "ROUND");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1 = vec0.round();
+        vec1.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::ROUND, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "ROUND");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1 = UME::SIMD::FUNCTIONS::round(vec0);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::ROUND, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "ROUND(function)");
+    }
 }
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMROUNDTest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    MASK_TYPE mask(DATA_SET::inputs::maskA);
-    VEC_TYPE vec1 = vec0.round(mask); 
-    vec1.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MROUND, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "MROUND");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        VEC_TYPE vec1 = vec0.round(mask); 
+        vec1.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MROUND, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MROUND");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        VEC_TYPE vec1 = UME::SIMD::FUNCTIONS::round(mask, vec0);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MROUND, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MROUND(function)");
+    }
 }
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename VEC_INT_TYPE, typename SCALAR_INT_TYPE, int VEC_LEN, typename DATA_SET>
 void genericTRUNCTest()
 {
-    SCALAR_INT_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    VEC_INT_TYPE vec1 = vec0.trunc();
-    vec1.store(values);
-    bool exact = valuesExact(values, DATA_SET::outputs::TRUNC, VEC_LEN);
-    CHECK_CONDITION(exact, "TRUNC");
+    {
+        SCALAR_INT_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_INT_TYPE vec1 = vec0.trunc();
+        vec1.store(values);
+        bool exact = valuesExact(values, DATA_SET::outputs::TRUNC, VEC_LEN);
+        CHECK_CONDITION(exact, "TRUNC");
+    }
+    {
+        SCALAR_INT_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_INT_TYPE vec1 = UME::SIMD::FUNCTIONS::trunc(vec0);
+        vec1.store(values);
+        bool exact = valuesExact(values, DATA_SET::outputs::TRUNC, VEC_LEN);
+        CHECK_CONDITION(exact, "TRUNC(function)");
+    }
 }
-    
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename VEC_INT_TYPE, typename SCALAR_INT_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMTRUNCTest()
 {
-    SCALAR_INT_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    MASK_TYPE mask(DATA_SET::inputs::maskA);
-    VEC_INT_TYPE vec1 = vec0.trunc(mask); 
-    vec1.store(values);
-    bool exact = valuesExact(values, DATA_SET::outputs::MTRUNC, VEC_LEN);
-    CHECK_CONDITION(exact, "MTRUNC");
+    {
+        SCALAR_INT_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        VEC_INT_TYPE vec1 = vec0.trunc(mask);
+        vec1.store(values);
+        bool exact = valuesExact(values, DATA_SET::outputs::MTRUNC, VEC_LEN);
+        CHECK_CONDITION(exact, "MTRUNC");
+    }
+    {
+        SCALAR_INT_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        VEC_INT_TYPE vec1 = UME::SIMD::FUNCTIONS::trunc(mask, vec0);
+        vec1.store(values);
+        bool exact = valuesExact(values, DATA_SET::outputs::MTRUNC, VEC_LEN);
+        CHECK_CONDITION(exact, "MTRUNC(function)");
+    }
 }
-    
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericFLOORTest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    VEC_TYPE vec1 = vec0.floor();
-    vec1.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::FLOOR, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "FLOOR");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1 = vec0.floor();
+        vec1.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::FLOOR, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "FLOOR");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1 = UME::SIMD::FUNCTIONS::floor(vec0);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::FLOOR, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "FLOOR(function)");
+    }
 }
     
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMFLOORTest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    MASK_TYPE mask(DATA_SET::inputs::maskA);
-    VEC_TYPE vec1 = vec0.floor(mask);
-    vec1.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MFLOOR, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "MFLOOR");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        VEC_TYPE vec1 = vec0.floor(mask);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MFLOOR, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MFLOOR");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        VEC_TYPE vec1 = UME::SIMD::FUNCTIONS::floor(mask, vec0);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MFLOOR, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MFLOOR(function)");
+    }
 }
     
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericCEILTest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    VEC_TYPE vec1 = vec0.ceil();
-    vec1.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::CEIL, VEC_LEN, 0.05f);
-    CHECK_CONDITION(inRange, "CEIL");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1 = vec0.ceil();
+        vec1.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::CEIL, VEC_LEN, 0.05f);
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "CEIL");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1 = UME::SIMD::FUNCTIONS::ceil(vec0);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::CEIL, VEC_LEN, 0.05f);
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "CEIL(function)");
+    }
 }
-    
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMCEILTest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    MASK_TYPE mask(DATA_SET::inputs::maskA);
-    VEC_TYPE vec1 = vec0.ceil(mask);
-    vec1.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MCEIL, VEC_LEN, 0.05f);
-    CHECK_CONDITION(inRange, "MCEIL");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        VEC_TYPE vec1 = vec0.ceil(mask);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MCEIL, VEC_LEN, 0.05f);
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MCEIL");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        VEC_TYPE vec1 = UME::SIMD::FUNCTIONS::ceil(mask, vec0);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MCEIL, VEC_LEN, 0.05f);
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MCEIL(function)");
+    }
 }
-  
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericISFINTest()
 {
-    bool values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    MASK_TYPE mask = vec0.isfin();
-    mask.store(values);
-    bool inRange = valuesExact(values, DATA_SET::outputs::ISFIN, VEC_LEN);
-    CHECK_CONDITION(inRange, "ISFIN");
+    {
+        bool values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask = vec0.isfin();
+        mask.store(values);
+        bool inRange = valuesExact(values, DATA_SET::outputs::ISFIN, VEC_LEN);
+        CHECK_CONDITION(inRange, "ISFIN");
+    }
+    {
+        bool values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask = UME::SIMD::FUNCTIONS::isfin(vec0);
+        mask.store(values);
+        bool inRange = valuesExact(values, DATA_SET::outputs::ISFIN, VEC_LEN);
+        CHECK_CONDITION(inRange, "ISFIN(function)");
+    }
 }
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericISINFTest()
 {
-    bool values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    MASK_TYPE mask = vec0.isinf();
-    mask.store(values);
-    bool inRange = valuesExact(values, DATA_SET::outputs::ISINF, VEC_LEN);
-    CHECK_CONDITION(inRange, "ISINF");
+    {
+        bool values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask = vec0.isinf();
+        mask.store(values);
+        bool inRange = valuesExact(values, DATA_SET::outputs::ISINF, VEC_LEN);
+        CHECK_CONDITION(inRange, "ISINF");
+    }
+    {
+        bool values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask = UME::SIMD::FUNCTIONS::isinf(vec0);
+        mask.store(values);
+        bool inRange = valuesExact(values, DATA_SET::outputs::ISINF, VEC_LEN);
+        CHECK_CONDITION(inRange, "ISINF(function)");
+    }
 }
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericISANTest()
 {
-    bool values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    MASK_TYPE mask = vec0.isan();
-    mask.store(values);
-    bool inRange = valuesExact(values, DATA_SET::outputs::ISAN, VEC_LEN);
-    CHECK_CONDITION(inRange, "ISAN");
+    {
+        bool values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask = vec0.isan();
+        mask.store(values);
+        bool inRange = valuesExact(values, DATA_SET::outputs::ISAN, VEC_LEN);
+        CHECK_CONDITION(inRange, "ISAN");
+    }
+    {
+        bool values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask = UME::SIMD::FUNCTIONS::isan(vec0);
+        mask.store(values);
+        bool inRange = valuesExact(values, DATA_SET::outputs::ISAN, VEC_LEN);
+        CHECK_CONDITION(inRange, "ISAN(function)");
+    }
 }
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericISNANTest()
 {
-    bool values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    MASK_TYPE mask = vec0.isnan();
-    mask.store(values);
-    bool inRange = valuesExact(values, DATA_SET::outputs::ISNAN, VEC_LEN);
-    CHECK_CONDITION(inRange, "ISNAN");
+    {
+        bool values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask = vec0.isnan();
+        mask.store(values);
+        bool inRange = valuesExact(values, DATA_SET::outputs::ISNAN, VEC_LEN);
+        CHECK_CONDITION(inRange, "ISNAN");
+    }
+    {
+        bool values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask = UME::SIMD::FUNCTIONS::isnan(vec0);
+        mask.store(values);
+        bool inRange = valuesExact(values, DATA_SET::outputs::ISNAN, VEC_LEN);
+        CHECK_CONDITION(inRange, "ISNAN(function)");
+    }
 }
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericISNORMTest()
 {
-    bool values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    MASK_TYPE mask = vec0.isnorm();
-    mask.store(values);
-    bool inRange = valuesExact(values, DATA_SET::outputs::ISNORM, VEC_LEN);
-    CHECK_CONDITION(inRange, "ISNORM");
+    {
+        bool values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask = vec0.isnorm();
+        mask.store(values);
+        bool inRange = valuesExact(values, DATA_SET::outputs::ISNORM, VEC_LEN);
+        CHECK_CONDITION(inRange, "ISNORM");
+    }
+    {
+        bool values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask = UME::SIMD::FUNCTIONS::isnorm(vec0);
+        mask.store(values);
+        bool inRange = valuesExact(values, DATA_SET::outputs::ISNORM, VEC_LEN);
+        CHECK_CONDITION(inRange, "ISNORM(function)");
+    }
 }
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericISSUBTest()
 {
-    bool values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    MASK_TYPE mask = vec0.issub();
-    mask.store(values);
-    bool inRange = valuesExact(values, DATA_SET::outputs::ISSUB, VEC_LEN);
-    CHECK_CONDITION(inRange, "ISSUB");
+    {
+        bool values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask = vec0.issub();
+        mask.store(values);
+        bool inRange = valuesExact(values, DATA_SET::outputs::ISSUB, VEC_LEN);
+        CHECK_CONDITION(inRange, "ISSUB");
+    }
+    {
+        bool values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask = UME::SIMD::FUNCTIONS::issub(vec0);
+        mask.store(values);
+        bool inRange = valuesExact(values, DATA_SET::outputs::ISSUB, VEC_LEN);
+        CHECK_CONDITION(inRange, "ISSUB(function)");
+    }
 }
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericISZEROTest()
 {
-    bool values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    MASK_TYPE mask = vec0.iszero();
-    mask.store(values);
-    bool inRange = valuesExact(values, DATA_SET::outputs::ISZERO, VEC_LEN);
-    CHECK_CONDITION(inRange, "ISZERO");
+    {
+        bool values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask = vec0.iszero();
+        mask.store(values);
+        bool inRange = valuesExact(values, DATA_SET::outputs::ISZERO, VEC_LEN);
+        CHECK_CONDITION(inRange, "ISZERO");
+    }
+    {
+        bool values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask = UME::SIMD::FUNCTIONS::iszero(vec0);
+        mask.store(values);
+        bool inRange = valuesExact(values, DATA_SET::outputs::ISZERO, VEC_LEN);
+        CHECK_CONDITION(inRange, "ISZERO(function)");
+    }
 }
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericISZEROSUBTest()
 {
-    bool values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    MASK_TYPE mask = vec0.iszerosub();
-    mask.store(values);
-    bool inRange = valuesExact(values, DATA_SET::outputs::ISZEROSUB, VEC_LEN);
-    CHECK_CONDITION(inRange, "ISZEROSUB");
+    {
+        bool values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask = vec0.iszerosub();
+        mask.store(values);
+        bool inRange = valuesExact(values, DATA_SET::outputs::ISZEROSUB, VEC_LEN);
+        CHECK_CONDITION(inRange, "ISZEROSUB");
+    }
+    {
+        bool values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask = UME::SIMD::FUNCTIONS::iszerosub(vec0);
+        mask.store(values);
+        bool inRange = valuesExact(values, DATA_SET::outputs::ISZEROSUB, VEC_LEN);
+        CHECK_CONDITION(inRange, "ISZEROSUB(function)");
+    }
 }
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericSINTest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    VEC_TYPE vec1 = vec0.sin();
-    vec1.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::SIN, VEC_LEN, 0.1f);
-    CHECK_CONDITION(inRange, "SIN");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1 = vec0.sin();
+        vec1.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::SIN, VEC_LEN, 0.1f);
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "SIN");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1 = UME::SIMD::FUNCTIONS::sin(vec0);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::SIN, VEC_LEN, 0.1f);
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "SIN(function)");
+    }
 }
-    
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMSINTest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    MASK_TYPE mask(DATA_SET::inputs::maskA);
-    VEC_TYPE vec1 = vec0.sin(mask);
-    vec1.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MSIN, VEC_LEN, 0.1f);
-    CHECK_CONDITION(inRange, "MSIN");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        VEC_TYPE vec1 = vec0.sin(mask);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MSIN, VEC_LEN, 0.1f);
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MSIN");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        VEC_TYPE vec1 = UME::SIMD::FUNCTIONS::sin(mask, vec0);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MSIN, VEC_LEN, 0.1f);
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MSIN(function)");
+    }
 }
-    
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericCOSTest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    VEC_TYPE vec1 = vec0.cos();
-    vec1.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::COS, VEC_LEN, 0.1f);
-    CHECK_CONDITION(inRange, "COS");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1 = vec0.cos();
+        vec1.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::COS, VEC_LEN, 0.1f);
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "COS");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1 = UME::SIMD::FUNCTIONS::cos(vec0);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::COS, VEC_LEN, 0.1f);
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "COS(function)");
+    }
 }
-    
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMCOSTest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    MASK_TYPE mask(DATA_SET::inputs::maskA);
-    VEC_TYPE vec1 = vec0.cos(mask);
-    vec1.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MCOS, VEC_LEN, 0.1f);
-    CHECK_CONDITION(inRange, "MCOS");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        VEC_TYPE vec1 = vec0.cos(mask);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MCOS, VEC_LEN, 0.1f);
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MCOS");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        VEC_TYPE vec1 = UME::SIMD::FUNCTIONS::cos(mask, vec0);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MCOS, VEC_LEN, 0.1f);
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MCOS(function)");
+    }
 }
-    
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericTANTest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    VEC_TYPE vec1 = vec0.tan();
-    vec1.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::TAN, VEC_LEN, 0.1f);
-    CHECK_CONDITION(inRange, "TAN");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1 = vec0.tan();
+        vec1.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::TAN, VEC_LEN, 0.1f);
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "TAN");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1 = UME::SIMD::FUNCTIONS::tan(vec0);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::TAN, VEC_LEN, 0.1f);
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "TAN(function)");
+    }
 }
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMTANTest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    MASK_TYPE mask(DATA_SET::inputs::maskA);
-    VEC_TYPE vec1 = vec0.tan(mask);
-    vec1.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MTAN, VEC_LEN, 0.1f);
-    CHECK_CONDITION(inRange, "MTAN");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        VEC_TYPE vec1 = vec0.tan(mask);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MTAN, VEC_LEN, 0.1f);
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MTAN");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        VEC_TYPE vec1 = UME::SIMD::FUNCTIONS::tan(mask, vec0);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MTAN, VEC_LEN, 0.1f);
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MTAN(function)");
+    }
 }
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericCTANTest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    VEC_TYPE vec1 = vec0.ctan();
-    vec1.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::CTAN, VEC_LEN, 0.1f);
-    CHECK_CONDITION(inRange, "CTAN");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1 = vec0.ctan();
+        vec1.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::CTAN, VEC_LEN, 0.1f);
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "CTAN");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1 = UME::SIMD::FUNCTIONS::ctan(vec0);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::CTAN, VEC_LEN, 0.1f);
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "CTAN(function)");
+    }
 }
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMCTANTest()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    MASK_TYPE mask(DATA_SET::inputs::maskA);
-    VEC_TYPE vec1 = vec0.ctan(mask);
-    vec1.store(values);
-    bool inRange = valuesInRange(values, DATA_SET::outputs::MCTAN, VEC_LEN, 0.1f);
-    CHECK_CONDITION(inRange, "MCTAN");
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        VEC_TYPE vec1 = vec0.ctan(mask);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MCTAN, VEC_LEN, 0.1f);
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MCTAN");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        MASK_TYPE mask(DATA_SET::inputs::maskA);
+        VEC_TYPE vec1 = UME::SIMD::FUNCTIONS::ctan(mask, vec0);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::outputs::MCTAN, VEC_LEN, 0.1f);
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MCTAN(function)");
+    }
 }
 
 template<typename UINT_VEC_TYPE, typename INT_VEC_TYPE, typename INT_SCALAR_TYPE, int VEC_LEN, typename DATA_SET>

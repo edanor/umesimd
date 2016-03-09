@@ -123,6 +123,8 @@ namespace UME {
         {
         public:
             typedef uint8_t      SCALAR_T;
+            typedef uint8_t      SCALAR_UINT_T;
+            typedef SIMD1_8u     UINT_VEC_T;
             typedef SIMD1_8i     INT_VEC_T;
             typedef SIMDMask1    MASK_T;
             typedef SIMDSwizzle1 SWIZZLE_T;
@@ -135,6 +137,8 @@ namespace UME {
         {
         public:
             typedef uint8_t      SCALAR_T;
+            typedef uint8_t      SCALAR_UINT_T;
+            typedef SIMD2_8u     UINT_VEC_T;
             typedef SIMD2_8i     INT_VEC_T;
             typedef SIMDMask2    MASK_T;
             typedef SIMDSwizzle2 SWIZZLE_T;
@@ -148,6 +152,8 @@ namespace UME {
         {
         public:
             typedef uint8_t      SCALAR_T;
+            typedef uint8_t      SCALAR_UINT_T;
+            typedef SIMD4_8u     UINT_VEC_T;
             typedef SIMD4_8i     INT_VEC_T;
             typedef SIMDMask4    MASK_T;
             typedef SIMDSwizzle4 SWIZZLE_T;
@@ -161,6 +167,8 @@ namespace UME {
         {
         public:
             typedef uint8_t      SCALAR_T;
+            typedef uint8_t      SCALAR_UINT_T;
+            typedef SIMD8_8u     UINT_VEC_T;
             typedef SIMD8_8i     INT_VEC_T;
             typedef SIMDMask8    MASK_T;
             typedef SIMDSwizzle8 SWIZZLE_T;
@@ -174,6 +182,8 @@ namespace UME {
         {
         public:
             typedef uint8_t       SCALAR_T;
+            typedef uint8_t       SCALAR_UINT_T;
+            typedef SIMD16_8u     UINT_VEC_T;
             typedef SIMD16_8i     INT_VEC_T;
             typedef SIMDMask16    MASK_T;
             typedef SIMDSwizzle16 SWIZZLE_T;
@@ -187,6 +197,8 @@ namespace UME {
         {
         public:
             typedef uint8_t       SCALAR_T;
+            typedef uint8_t       SCALAR_UINT_T;
+            typedef SIMD32_8u     UINT_VEC_T;
             typedef SIMD32_8i     INT_VEC_T;
             typedef SIMDMask32    MASK_T;
             typedef SIMDSwizzle32 SWIZZLE_T;
@@ -200,6 +212,8 @@ namespace UME {
         {
         public:
             typedef uint8_t       SCALAR_T;
+            typedef uint8_t       SCALAR_UINT_T;
+            typedef SIMD64_8u     UINT_VEC_T;
             typedef SIMD64_8i     INT_VEC_T;
             typedef SIMDMask64    MASK_T;
             typedef SIMDSwizzle64 SWIZZLE_T;
@@ -213,6 +227,8 @@ namespace UME {
         {
         public:
             typedef uint8_t        SCALAR_T;
+            typedef uint8_t        SCALAR_UINT_T;
+            typedef SIMD128_8u     UINT_VEC_T;
             typedef SIMD128_8i     INT_VEC_T;
             typedef SIMDMask128    MASK_T;
             typedef SIMDSwizzle128 SWIZZLE_T;
@@ -225,6 +241,8 @@ namespace UME {
         {
         public:
             typedef uint16_t     SCALAR_T;
+            typedef uint16_t     SCALAR_UINT_T;
+            typedef SIMD1_16u    UINT_VEC_T;
             typedef SIMD1_16i    INT_VEC_T;
             typedef SIMDMask1    MASK_T;
             typedef SIMDSwizzle1 SWIZZLE_T;
@@ -237,6 +255,8 @@ namespace UME {
         {
         public:
             typedef uint16_t     SCALAR_T;
+            typedef uint16_t     SCALAR_UINT_T;
+            typedef SIMD2_16u    UINT_VEC_T;
             typedef SIMD2_16i    INT_VEC_T;
             typedef SIMDMask2    MASK_T;
             typedef SIMDSwizzle2 SWIZZLE_T;
@@ -250,6 +270,8 @@ namespace UME {
         {
         public:
             typedef uint16_t     SCALAR_T;
+            typedef uint16_t     SCALAR_UINT_T;
+            typedef SIMD4_16u    UINT_VEC_T;
             typedef SIMD4_16i    INT_VEC_T;
             typedef SIMDMask4    MASK_T;
             typedef SIMDSwizzle4 SWIZZLE_T;
@@ -263,6 +285,8 @@ namespace UME {
         {
         public:
             typedef uint16_t     SCALAR_T;
+            typedef uint16_t     SCALAR_UINT_T;
+            typedef SIMD8_16u    UINT_VEC_T;
             typedef SIMD8_16i    INT_VEC_T;
             typedef SIMDMask8    MASK_T;
             typedef SIMDSwizzle8 SWIZZLE_T;
@@ -276,6 +300,8 @@ namespace UME {
         {
         public:
             typedef uint16_t      SCALAR_T;
+            typedef uint16_t      SCALAR_UINT_T;
+            typedef SIMD16_16u     UINT_VEC_T;
             typedef SIMD16_16i    INT_VEC_T;
             typedef SIMDMask16    MASK_T;
             typedef SIMDSwizzle16 SWIZZLE_T;
@@ -289,6 +315,8 @@ namespace UME {
         {
         public:
             typedef uint16_t      SCALAR_T;
+            typedef uint16_t      SCALAR_UINT_T;
+            typedef SIMD32_16u    UINT_VEC_T;
             typedef SIMD32_16i    INT_VEC_T;
             typedef SIMDMask32    MASK_T;
             typedef SIMDSwizzle32 SWIZZLE_T;
@@ -302,6 +330,8 @@ namespace UME {
         {
         public:
             typedef uint16_t      SCALAR_T;
+            typedef uint16_t      SCALAR_UINT_T;
+            typedef SIMD64_16u    UINT_VEC_T;
             typedef SIMD64_16i    INT_VEC_T;
             typedef SIMDMask64    MASK_T;
             typedef SIMDSwizzle64 SWIZZLE_T;
@@ -314,6 +344,8 @@ namespace UME {
         {
         public:
             typedef uint32_t     SCALAR_T;
+            typedef uint32_t     SCALAR_UINT_T;
+            typedef SIMD1_32u    UINT_VEC_T;
             typedef SIMD1_32i    INT_VEC_T;
             typedef SIMDMask1    MASK_T;
             typedef SIMDSwizzle1 SWIZZLE_T;
@@ -327,6 +359,8 @@ namespace UME {
         {
         public:
             typedef uint32_t     SCALAR_T;
+            typedef uint32_t     SCALAR_UINT_T;
+            typedef SIMD2_32u    UINT_VEC_T;
             typedef SIMD2_32i    INT_VEC_T;
             typedef SIMDMask2    MASK_T;
             typedef SIMDSwizzle2 SWIZZLE_T;
@@ -340,6 +374,8 @@ namespace UME {
         {
         public:
             typedef uint32_t     SCALAR_T;
+            typedef uint32_t     SCALAR_UINT_T;
+            typedef SIMD4_32u    UINT_VEC_T;
             typedef SIMD4_32i    INT_VEC_T;
             typedef SIMDMask4    MASK_T;
             typedef SIMDSwizzle4 SWIZZLE_T;
@@ -353,6 +389,8 @@ namespace UME {
         {
         public:
             typedef uint32_t     SCALAR_T;
+            typedef uint32_t     SCALAR_UINT_T;
+            typedef SIMD8_32u    UINT_VEC_T;
             typedef SIMD8_32i    INT_VEC_T;
             typedef SIMDMask8    MASK_T;
             typedef SIMDSwizzle8 SWIZZLE_T;
@@ -366,6 +404,8 @@ namespace UME {
         {
         public:
             typedef uint32_t      SCALAR_T;
+            typedef uint32_t      SCALAR_UINT_T;
+            typedef SIMD16_32u    UINT_VEC_T;
             typedef SIMD16_32i    INT_VEC_T;
             typedef SIMDMask16    MASK_T;
             typedef SIMDSwizzle16 SWIZZLE_T;
@@ -379,6 +419,8 @@ namespace UME {
         {
         public:
             typedef uint32_t      SCALAR_T;
+            typedef uint32_t      SCALAR_UINT_T;
+            typedef SIMD32_32u    UINT_VEC_T;
             typedef SIMD32_32i    INT_VEC_T;
             typedef SIMDMask32    MASK_T;
             typedef SIMDSwizzle32 SWIZZLE_T;
@@ -392,6 +434,8 @@ namespace UME {
         {
         public:
             typedef uint64_t     SCALAR_T;
+            typedef uint64_t     SCALAR_UINT_T;
+            typedef SIMD1_64u    UINT_VEC_T;
             typedef SIMD1_64i    INT_VEC_T;
             typedef SIMDMask1    MASK_T;
             typedef SIMDSwizzle1 SWIZZLE_T;
@@ -405,6 +449,8 @@ namespace UME {
         {
         public:
             typedef uint64_t     SCALAR_T;
+            typedef uint64_t     SCALAR_UINT_T;
+            typedef SIMD2_64u    UINT_VEC_T;
             typedef SIMD2_64i    INT_VEC_T;
             typedef SIMDMask2    MASK_T;
             typedef SIMDSwizzle2 SWIZZLE_T;
@@ -418,6 +464,8 @@ namespace UME {
         {
         public:
             typedef uint64_t     SCALAR_T;
+            typedef uint64_t     SCALAR_UINT_T;
+            typedef SIMD4_64u    UINT_VEC_T;
             typedef SIMD4_64i    INT_VEC_T;
             typedef SIMDMask4    MASK_T;
             typedef SIMDSwizzle4 SWIZZLE_T;
@@ -431,6 +479,8 @@ namespace UME {
         {
         public:
             typedef uint64_t     SCALAR_T;
+            typedef uint64_t     SCALAR_UINT_T;
+            typedef SIMD8_64u    UINT_VEC_T;
             typedef SIMD8_64i    INT_VEC_T;
             typedef SIMDMask8    MASK_T;
             typedef SIMDSwizzle8 SWIZZLE_T;
@@ -444,6 +494,8 @@ namespace UME {
         {
         public:
             typedef uint64_t      SCALAR_T;
+            typedef uint64_t      SCALAR_UINT_T;
+            typedef SIMD16_64u    UINT_VEC_T;
             typedef SIMD16_64i    INT_VEC_T;
             typedef SIMDMask16    MASK_T;
             typedef SIMDSwizzle16 SWIZZLE_T;
@@ -457,7 +509,9 @@ namespace UME {
         {
         public:
             typedef int8_t       SCALAR_T;
+            typedef uint8_t      SCALAR_UINT_T;
             typedef SIMD1_8u     UINT_VEC_T;
+            typedef SIMD1_8i     INT_VEC_T;
             typedef SIMDMask1    MASK_T;
             typedef SIMDSwizzle1 SWIZZLE_T;
 
@@ -470,7 +524,9 @@ namespace UME {
         {
         public:
             typedef int8_t       SCALAR_T;
+            typedef uint8_t      SCALAR_UINT_T;
             typedef SIMD2_8u     UINT_VEC_T;
+            typedef SIMD2_8i     INT_VEC_T;
             typedef SIMDMask2    MASK_T;
             typedef SIMDSwizzle2 SWIZZLE_T;
 
@@ -483,7 +539,9 @@ namespace UME {
         {
         public:
             typedef int8_t       SCALAR_T;
+            typedef uint8_t      SCALAR_UINT_T;
             typedef SIMD4_8u     UINT_VEC_T;
+            typedef SIMD4_8i     INT_VEC_T;
             typedef SIMDMask4    MASK_T;
             typedef SIMDSwizzle4 SWIZZLE_T;
 
@@ -496,7 +554,9 @@ namespace UME {
         {
         public:
             typedef int8_t       SCALAR_T;
+            typedef uint8_t      SCALAR_UINT_T;
             typedef SIMD8_8u     UINT_VEC_T;
+            typedef SIMD8_8i     INT_VEC_T;
             typedef SIMDMask8    MASK_T;
             typedef SIMDSwizzle8 SWIZZLE_T;
 
@@ -509,7 +569,9 @@ namespace UME {
         {
         public:
             typedef int8_t        SCALAR_T;
+            typedef uint8_t       SCALAR_UINT_T;
             typedef SIMD16_8u     UINT_VEC_T;
+            typedef SIMD16_8i     INT_VEC_T;
             typedef SIMDMask16    MASK_T;
             typedef SIMDSwizzle16 SWIZZLE_T;
 
@@ -522,7 +584,9 @@ namespace UME {
         {
         public:
             typedef int8_t        SCALAR_T;
+            typedef uint8_t       SCALAR_UINT_T;
             typedef SIMD32_8u     UINT_VEC_T;
+            typedef SIMD32_8i     INT_VEC_T;
             typedef SIMDMask32    MASK_T;
             typedef SIMDSwizzle32 SWIZZLE_T;
 
@@ -535,7 +599,9 @@ namespace UME {
         {
         public:
             typedef int8_t        SCALAR_T;
+            typedef uint8_t       SCALAR_UINT_T;
             typedef SIMD64_8u     UINT_VEC_T;
+            typedef SIMD64_8i     INT_VEC_T;
             typedef SIMDMask64    MASK_T;
             typedef SIMDSwizzle64 SWIZZLE_T;
 
@@ -548,7 +614,9 @@ namespace UME {
         {
         public:
             typedef int8_t         SCALAR_T;
+            typedef uint8_t        SCALAR_UINT_T;
             typedef SIMD128_8u     UINT_VEC_T;
+            typedef SIMD128_8i     INT_VEC_T;
             typedef SIMDMask128    MASK_T;
             typedef SIMDSwizzle128 SWIZZLE_T;
 
@@ -561,7 +629,9 @@ namespace UME {
         {
         public:
             typedef int16_t      SCALAR_T;
+            typedef uint16_t     SCALAR_UINT_T;
             typedef SIMD1_16u    UINT_VEC_T;
+            typedef SIMD1_16i    INT_VEC_T;
             typedef SIMDMask1    MASK_T;
             typedef SIMDSwizzle1 SWIZZLE_T;
 
@@ -574,7 +644,9 @@ namespace UME {
         {
         public:
             typedef int16_t      SCALAR_T;
+            typedef uint16_t     SCALAR_UINT_T;
             typedef SIMD2_16u    UINT_VEC_T;
+            typedef SIMD2_16i    INT_VEC_T;
             typedef SIMDMask2    MASK_T;
             typedef SIMDSwizzle2 SWIZZLE_T;
 
@@ -587,7 +659,9 @@ namespace UME {
         {
         public:
             typedef int16_t      SCALAR_T;
+            typedef uint16_t     SCALAR_UINT_T;
             typedef SIMD4_16u    UINT_VEC_T;
+            typedef SIMD4_16i    INT_VEC_T;
             typedef SIMDMask4    MASK_T;
             typedef SIMDSwizzle4 SWIZZLE_T;
 
@@ -600,7 +674,9 @@ namespace UME {
         {
         public:
             typedef int16_t      SCALAR_T;
+            typedef uint16_t     SCALAR_UINT_T;
             typedef SIMD8_16u    UINT_VEC_T;
+            typedef SIMD8_16i    INT_VEC_T;
             typedef SIMDMask8    MASK_T;
             typedef SIMDSwizzle8 SWIZZLE_T;
 
@@ -613,7 +689,9 @@ namespace UME {
         {
         public:
             typedef int16_t       SCALAR_T;
+            typedef uint16_t      SCALAR_UINT_T;
             typedef SIMD16_16u    UINT_VEC_T;
+            typedef SIMD16_16i    INT_VEC_T;
             typedef SIMDMask16    MASK_T;
             typedef SIMDSwizzle16 SWIZZLE_T;
 
@@ -626,7 +704,9 @@ namespace UME {
         {
         public:
             typedef int16_t       SCALAR_T;
+            typedef uint16_t      SCALAR_UINT_T;
             typedef SIMD32_16u    UINT_VEC_T;
+            typedef SIMD32_16i    INT_VEC_T;
             typedef SIMDMask32    MASK_T;
             typedef SIMDSwizzle32 SWIZZLE_T;
 
@@ -639,7 +719,9 @@ namespace UME {
         {
         public:
             typedef int16_t       SCALAR_T;
+            typedef uint16_t      SCALAR_UINT_T;
             typedef SIMD64_16u    UINT_VEC_T;
+            typedef SIMD64_16i    INT_VEC_T;
             typedef SIMDMask64    MASK_T;
             typedef SIMDSwizzle64 SWIZZLE_T;
 
@@ -652,7 +734,9 @@ namespace UME {
         {
         public:
             typedef int32_t      SCALAR_T;
+            typedef uint32_t     SCALAR_UINT_T;
             typedef SIMD1_32u    UINT_VEC_T;
+            typedef SIMD1_32i    INT_VEC_T;
             typedef SIMDMask1    MASK_T;
             typedef SIMDSwizzle1 SWIZZLE_T;
 
@@ -665,7 +749,9 @@ namespace UME {
         {
         public:
             typedef int32_t      SCALAR_T;
+            typedef uint32_t     SCALAR_UINT_T;
             typedef SIMD2_32u    UINT_VEC_T;
+            typedef SIMD2_32i    INT_VEC_T;
             typedef SIMDMask2    MASK_T;
             typedef SIMDSwizzle2 SWIZZLE_T;
 
@@ -678,7 +764,9 @@ namespace UME {
         {
         public:
             typedef int32_t      SCALAR_T;
+            typedef uint32_t     SCALAR_UINT_T;
             typedef SIMD4_32u    UINT_VEC_T;
+            typedef SIMD4_32i    INT_VEC_T;
             typedef SIMDMask4    MASK_T;
             typedef SIMDSwizzle4 SWIZZLE_T;
 
@@ -691,7 +779,9 @@ namespace UME {
         {
         public:
             typedef int32_t      SCALAR_T;
+            typedef uint32_t     SCALAR_UINT_T;
             typedef SIMD8_32u    UINT_VEC_T;
+            typedef SIMD8_32i    INT_VEC_T;
             typedef SIMDMask8    MASK_T;
             typedef SIMDSwizzle8 SWIZZLE_T;
 
@@ -704,7 +794,9 @@ namespace UME {
         {
         public:
             typedef int32_t       SCALAR_T;
+            typedef uint32_t      SCALAR_UINT_T;
             typedef SIMD16_32u    UINT_VEC_T;
+            typedef SIMD16_32i    INT_VEC_T;
             typedef SIMDMask16    MASK_T;
             typedef SIMDSwizzle16 SWIZZLE_T;
 
@@ -717,7 +809,9 @@ namespace UME {
         {
         public:
             typedef int32_t       SCALAR_T;
+            typedef uint32_t      SCALAR_UINT_T;
             typedef SIMD32_32u    UINT_VEC_T;
+            typedef SIMD32_32i    INT_VEC_T;
             typedef SIMDMask32    MASK_T;
             typedef SIMDSwizzle32 SWIZZLE_T;
 
@@ -730,7 +824,9 @@ namespace UME {
         {
         public:
             typedef int64_t      SCALAR_T;
+            typedef uint64_t     SCALAR_UINT_T;
             typedef SIMD1_64u    UINT_VEC_T;
+            typedef SIMD1_64i    INT_VEC_T;
             typedef SIMDMask1    MASK_T;
             typedef SIMDSwizzle1 SWIZZLE_T;
 
@@ -743,7 +839,9 @@ namespace UME {
         {
         public:
             typedef int64_t      SCALAR_T;
+            typedef uint64_t     SCALAR_UINT_T;
             typedef SIMD2_64u    UINT_VEC_T;
+            typedef SIMD2_64i    INT_VEC_T;
             typedef SIMDMask2    MASK_T;
             typedef SIMDSwizzle2 SWIZZLE_T;
 
@@ -756,7 +854,9 @@ namespace UME {
         {
         public:
             typedef int64_t      SCALAR_T;
+            typedef uint64_t     SCALAR_UINT_T;
             typedef SIMD4_64u    UINT_VEC_T;
+            typedef SIMD4_64i    INT_VEC_T;
             typedef SIMDMask4    MASK_T;
             typedef SIMDSwizzle4 SWIZZLE_T;
 
@@ -769,7 +869,9 @@ namespace UME {
         {
         public:
             typedef int64_t      SCALAR_T;
+            typedef uint64_t     SCALAR_UINT_T;
             typedef SIMD8_64u    UINT_VEC_T;
+            typedef SIMD8_64i    INT_VEC_T;
             typedef SIMDMask8    MASK_T;
             typedef SIMDSwizzle8 SWIZZLE_T;
 
@@ -782,7 +884,9 @@ namespace UME {
         {
         public:
             typedef int64_t       SCALAR_T;
+            typedef uint64_t      SCALAR_UINT_T;
             typedef SIMD16_64u    UINT_VEC_T;
+            typedef SIMD16_64i    INT_VEC_T;
             typedef SIMDMask16    MASK_T;
             typedef SIMDSwizzle16 SWIZZLE_T;
 

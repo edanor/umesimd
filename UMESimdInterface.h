@@ -4231,6 +4231,10 @@ namespace SIMD
             mVecRef_RW.insert(mIndexRef, mVecRef_RW[mIndexRef] + scalarRhs);
         }
 
+        inline void operator-= (SCALAR_TYPE scalarRhs) {
+            mVecRef_RW.insert(mIndexRef, mVecRef_RW[mIndexRef] - scalarRhs);
+        }
+
         inline void operator*= (SCALAR_TYPE scalarRhs) {
             mVecRef_RW.insert(mIndexRef, mVecRef_RW[mIndexRef] * scalarRhs);
         }
@@ -4252,6 +4256,81 @@ namespace SIMD
         }
 
         inline operator SCALAR_TYPE() { return mVecRef_RW.extract(mIndexRef); }
+
+        // Comparison operators accept any type of scalar to allow mixing 
+        // scalar types.
+        template<typename T>
+        inline bool operator==(T const & rhs) { 
+            return mVecRef_RW.extract(mIndexRef) == rhs;
+        }
+        inline bool operator== (IntermediateIndex const & x) {
+            return mVecRef_RW.extract(mIndexRef) ==
+                x.mVecRef_RW.extract(mIndexRef);
+        }
+        template<typename T>
+        inline bool operator!=(T const & rhs) {
+            return mVecRef_RW.extract(mIndexRef) == rhs;
+        }
+        inline bool operator!= (IntermediateIndex const & x) {
+            return mVecRef_RW.extract(mIndexRef) !=
+                x.mVecRef_RW.extract(mIndexRef);
+        }
+        template<typename T>
+        inline SCALAR_TYPE operator+ (T const & x) {
+            return mVecRef_RW.extract(mIndexRef) + SCALAR_TYPE(x);
+        }
+        inline SCALAR_TYPE operator+ (IntermediateIndex const & x) {
+            return mVecRef_RW.extract(mIndexRef) +
+                x.mVecRef_RW.extract(mIndexRef);
+        }
+        template<typename T>
+        inline SCALAR_TYPE operator- (T const & x) {
+            return mVecRef_RW.extract(mIndexRef) - SCALAR_TYPE(x);
+        }
+        inline SCALAR_TYPE operator- (IntermediateIndex const & x) {
+            return mVecRef_RW.extract(mIndexRef) -
+                x.mVecRef_RW.extract(mIndexRef);
+        }
+        template<typename T>
+        inline SCALAR_TYPE operator* (T const & x) {
+            return mVecRef_RW.extract(mIndexRef) * SCALAR_TYPE(x);
+        }
+        inline SCALAR_TYPE operator* (IntermediateIndex const & x) {
+            return mVecRef_RW.extract(mIndexRef) *
+                x.mVecRef_RW.extract(mIndexRef);
+        }
+        template<typename T>
+        inline SCALAR_TYPE operator/ (T const & x) {
+            return mVecRef_RW.extract(mIndexRef) / SCALAR_TYPE(x);
+        }
+        inline SCALAR_TYPE operator/ (IntermediateIndex const & x) {
+            return mVecRef_RW.extract(mIndexRef) /
+                x.mVecRef_RW.extract(mIndexRef);
+        }
+        template<typename T>
+        inline SCALAR_TYPE operator& (T const & x) {
+            return mVecRef_RW.extract(mIndexRef) & SCALAR_TYPE(x);
+        }
+        inline SCALAR_TYPE operator& (IntermediateIndex const & x) {
+            return mVecRef_RW.extract(mIndexRef) &
+                x.mVecRef_RW.extract(mIndexRef);
+        }
+        template<typename T>
+        inline SCALAR_TYPE operator| (T const & x) {
+            return mVecRef_RW.extract(mIndexRef) | SCALAR_TYPE(x);
+        }
+        inline SCALAR_TYPE operator| (IntermediateIndex const & x) {
+            return mVecRef_RW.extract(mIndexRef) |
+                x.mVecRef_RW.extract(mIndexRef);
+        }
+        template<typename T>
+        inline SCALAR_TYPE operator^ (T const & x) {
+            return mVecRef_RW.extract(mIndexRef) ^ SCALAR_TYPE(x);
+        }
+        inline SCALAR_TYPE operator^ (IntermediateIndex const & x) {
+            return mVecRef_RW.extract(mIndexRef) ^
+                x.mVecRef_RW.extract(mIndexRef);
+        }
 
     private:
         // This object should be only constructible by the
@@ -5548,12 +5627,12 @@ namespace SIMD
         }
 
         // GATHERV
-        inline DERIVED_VEC_TYPE gather (SCALAR_TYPE * baseAddr, DERIVED_UINT_VEC_TYPE const & indices) {
+        inline DERIVED_VEC_TYPE & gather (SCALAR_TYPE * baseAddr, DERIVED_UINT_VEC_TYPE const & indices) {
             return EMULATED_FUNCTIONS::gather<DERIVED_VEC_TYPE, SCALAR_TYPE, DERIVED_UINT_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this), baseAddr, indices);
         }
 
         // MGATHERV
-        inline DERIVED_VEC_TYPE gather (MASK_TYPE const & mask, SCALAR_TYPE* baseAddr, DERIVED_UINT_VEC_TYPE const & indices) {
+        inline DERIVED_VEC_TYPE & gather (MASK_TYPE const & mask, SCALAR_TYPE* baseAddr, DERIVED_UINT_VEC_TYPE const & indices) {
             return EMULATED_FUNCTIONS::gather<DERIVED_VEC_TYPE, SCALAR_TYPE, DERIVED_UINT_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this), baseAddr, indices);
         }
 
@@ -6426,7 +6505,7 @@ namespace SIMD
     inline VEC_TYPE & addva (VEC_TYPE & src1, VEC_TYPE const & src2) {
         return src1.addva(src2);
     }
-    
+
     // How to restrict template parameter resolution to certain types only?
     template<typename VEC_TYPE>
     inline VEC_TYPE adds (float src1, VEC_TYPE const & src2) {

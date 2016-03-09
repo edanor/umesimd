@@ -412,12 +412,12 @@ namespace SIMD {
         inline SIMDVec_i() : mVec() {};
 
         // SET-CONSTR
-        inline explicit SIMDVec_i(SCALAR_INT_TYPE i) : mVec(i) {};
+        inline SIMDVec_i(SCALAR_INT_TYPE i) : mVec(i) {};
 
         // LOAD-CONSTR
         inline explicit SIMDVec_i(SCALAR_INT_TYPE const * p) { this->load(p); }
 
-        inline SIMDVec_i(SCALAR_INT_TYPE i0, SCALAR_INT_TYPE i1) {
+        inline explicit SIMDVec_i(SCALAR_INT_TYPE i0, SCALAR_INT_TYPE i1) {
             mVec.insert(0, i0);  mVec.insert(1, i1);
         }
 
