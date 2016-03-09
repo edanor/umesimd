@@ -1014,7 +1014,6 @@ namespace SIMD {
 #ifdef FMA
             __m256 t0 = _mm256_fmadd_ps(mVec[0], b.mVec[0], c.mVec[0]);
             __m256 t1 = _mm256_fmadd_ps(mVec[1], b.mVec[1], c.mVec[1]);
-            return SIMDVec_f(t0, t1);
 #else
             __m256 t0 = _mm256_add_ps(_mm256_mul_ps(mVec[0], b.mVec[0]), c.mVec[0]);
             __m256 t1 = _mm256_add_ps(_mm256_mul_ps(mVec[1], b.mVec[1]), c.mVec[1]);

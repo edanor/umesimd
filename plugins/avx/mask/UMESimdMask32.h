@@ -56,17 +56,14 @@ namespace SIMD {
         friend class SIMDVec_f<float, 32>;
         friend class SIMDVec_f<double, 32>;
     private:
-        __m256i mMaskLoLo;
-        __m256i mMaskLoHi;
-        __m256i mMaskHiLo;
-        __m256i mMaskHiHi;
+        __m256i mMask[4];
 
-        inline SIMDVecMask(__m256i const & xLoLo, __m256i const & xLoHi,
-            __m256i const & xHiLo, __m256i const & xHiHi) {
-            mMaskLoLo = xLoLo;
-            mMaskLoHi = xLoHi;
-            mMaskHiLo = xHiLo;
-            mMaskHiHi = xHiHi;
+        inline SIMDVecMask(__m256i const & x0, __m256i const & x1,
+            __m256i const & x2, __m256i const & x3) {
+            mMask[0] = x0;
+            mMask[1] = x1;
+            mMask[2] = x2;
+            mMask[3] = x3;
         };
 
     public:
@@ -75,10 +72,10 @@ namespace SIMD {
         // Regardless of the mask representation, the interface should only allow initialization using 
         // standard bool or using equivalent mask
         inline explicit SIMDVecMask(bool m) {
-            mMaskLoLo = _mm256_set1_epi32(toMaskBool(m));
-            mMaskLoHi = _mm256_set1_epi32(toMaskBool(m));
-            mMaskHiLo = _mm256_set1_epi32(toMaskBool(m));
-            mMaskHiHi = _mm256_set1_epi32(toMaskBool(m));
+            mMask[0] = _mm256_set1_epi32(toMaskBool(m));
+            mMask[1] = _mm256_set1_epi32(toMaskBool(m));
+            mMask[2] = _mm256_set1_epi32(toMaskBool(m));
+            mMask[3] = _mm256_set1_epi32(toMaskBool(m));
         }
 
         // LOAD-CONSTR - Construct by loading from memory
@@ -87,10 +84,10 @@ namespace SIMD {
             for (int i = 0; i < 32; i++) {
                 raw[i] = p[i] ? TRUE() : FALSE();
             }
-            mMaskLoLo = _mm256_loadu_si256((__m256i*)raw);
-            mMaskLoHi = _mm256_loadu_si256((__m256i*)(raw + 8));
-            mMaskHiLo = _mm256_loadu_si256((__m256i*)(raw + 16));
-            mMaskHiHi = _mm256_loadu_si256((__m256i*)(raw + 24));
+            mMask[0] = _mm256_loadu_si256((__m256i*)raw);
+            mMask[1] = _mm256_loadu_si256((__m256i*)(raw + 8));
+            mMask[2] = _mm256_loadu_si256((__m256i*)(raw + 16));
+            mMask[3] = _mm256_loadu_si256((__m256i*)(raw + 24));
         }
 
         inline SIMDVecMask(bool m0, bool m1, bool m2, bool m3,
@@ -102,29 +99,29 @@ namespace SIMD {
             bool m24, bool m25, bool m26, bool m27,
             bool m28, bool m29, bool m30, bool m31)
         {
-            mMaskLoLo = _mm256_setr_epi32(toMaskBool(m0), toMaskBool(m1),
+            mMask[0] = _mm256_setr_epi32(toMaskBool(m0), toMaskBool(m1),
                 toMaskBool(m2), toMaskBool(m3),
                 toMaskBool(m4), toMaskBool(m5),
                 toMaskBool(m6), toMaskBool(m7));
-            mMaskLoHi = _mm256_setr_epi32(toMaskBool(m8), toMaskBool(m9),
+            mMask[1] = _mm256_setr_epi32(toMaskBool(m8), toMaskBool(m9),
                 toMaskBool(m10), toMaskBool(m11),
                 toMaskBool(m12), toMaskBool(m13),
                 toMaskBool(m14), toMaskBool(m15));
-            mMaskHiLo = _mm256_setr_epi32(toMaskBool(m16), toMaskBool(m17),
+            mMask[2] = _mm256_setr_epi32(toMaskBool(m16), toMaskBool(m17),
                 toMaskBool(m18), toMaskBool(m19),
                 toMaskBool(m20), toMaskBool(m21),
                 toMaskBool(m22), toMaskBool(m23));
-            mMaskHiHi = _mm256_setr_epi32(toMaskBool(m24), toMaskBool(m25),
+            mMask[3] = _mm256_setr_epi32(toMaskBool(m24), toMaskBool(m25),
                 toMaskBool(m26), toMaskBool(m27),
                 toMaskBool(m28), toMaskBool(m29),
                 toMaskBool(m30), toMaskBool(m31));
         }
 
         inline SIMDVecMask(SIMDVecMask const & mask) {
-            mMaskLoLo = mask.mMaskLoLo;
-            mMaskLoHi = mask.mMaskLoHi;
-            mMaskHiLo = mask.mMaskHiLo;
-            mMaskHiHi = mask.mMaskHiHi;
+            mMask[0] = mask.mMask[0];
+            mMask[1] = mask.mMask[1];
+            mMask[2] = mask.mMask[2];
+            mMask[3] = mask.mMask[3];
         }
 
         inline bool extract(uint32_t index) const {
@@ -132,19 +129,19 @@ namespace SIMD {
                 alignas(32) uint32_t raw[8];
 
             if (index < 8) {
-                _mm256_store_si256((__m256i*)raw, mMaskLoLo);
+                _mm256_store_si256((__m256i*)raw, mMask[0]);
                 return raw[index] == TRUE();
             }
             else if (index < 16) {
-                _mm256_store_si256((__m256i*)raw, mMaskLoHi);
+                _mm256_store_si256((__m256i*)raw, mMask[1]);
                 return raw[index - 8] == TRUE();
             }
             else if (index < 24) {
-                _mm256_store_si256((__m256i*)raw, mMaskHiLo);
+                _mm256_store_si256((__m256i*)raw, mMask[2]);
                 return raw[index - 16] == TRUE();
             }
             else {
-                _mm256_store_si256((__m256i*)raw, mMaskHiHi);
+                _mm256_store_si256((__m256i*)raw, mMask[3]);
                 return raw[index - 24] == TRUE();
             }
         }
@@ -159,33 +156,42 @@ namespace SIMD {
             UME_PERFORMANCE_UNOPTIMAL_WARNING()
                 alignas(32) static uint32_t raw[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
             if (index < 8) {
-                _mm256_store_si256((__m256i*)raw, mMaskLoLo);
+                _mm256_store_si256((__m256i*)raw, mMask[0]);
                 raw[index] = toMaskBool(x);
-                mMaskLoLo = _mm256_load_si256((__m256i*)raw);
+                mMask[0] = _mm256_load_si256((__m256i*)raw);
             }
             else if (index < 16) {
-                _mm256_store_si256((__m256i*)raw, mMaskLoHi);
+                _mm256_store_si256((__m256i*)raw, mMask[1]);
                 raw[index - 8] = toMaskBool(x);
-                mMaskLoHi = _mm256_load_si256((__m256i*)raw);
+                mMask[1] = _mm256_load_si256((__m256i*)raw);
             }
             else if (index < 24) {
-                _mm256_store_si256((__m256i*)raw, mMaskHiLo);
+                _mm256_store_si256((__m256i*)raw, mMask[2]);
                 raw[index - 16] = toMaskBool(x);
-                mMaskHiLo = _mm256_load_si256((__m256i*)raw);
+                mMask[2] = _mm256_load_si256((__m256i*)raw);
             }
             else {
-                _mm256_store_si256((__m256i*)raw, mMaskHiHi);
+                _mm256_store_si256((__m256i*)raw, mMask[3]);
                 raw[index - 24] = toMaskBool(x);
-                mMaskHiHi = _mm256_load_si256((__m256i*)raw);
+                mMask[3] = _mm256_load_si256((__m256i*)raw);
             }
         }
 
         inline SIMDVecMask & operator= (SIMDVecMask const & x) {
-            mMaskLoLo = x.mMaskLoLo;
-            mMaskLoHi = x.mMaskLoHi;
-            mMaskHiLo = x.mMaskHiLo;
-            mMaskHiHi = x.mMaskHiHi;
+            mMask[0] = x.mMask[0];
+            mMask[1] = x.mMask[1];
+            mMask[2] = x.mMask[2];
+            mMask[3] = x.mMask[3];
             return *this;
+        }
+
+        // HLOR
+        inline bool hlor() const {
+            int t0 = _mm256_testz_si256(mMask[0], mMask[0]);
+            int t1 = _mm256_testz_si256(mMask[1], mMask[1]);
+            int t2 = _mm256_testz_si256(mMask[2], mMask[2]);
+            int t3 = _mm256_testz_si256(mMask[3], mMask[3]);
+            return (t0 == 0) | (t1 == 0) | (t2 == 0) | (t3 == 0);
         }
     };
 
