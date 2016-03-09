@@ -1537,7 +1537,7 @@ namespace SIMD {
         // MROUND
         // TRUNC
 #if defined(__AVX512DQ__)
-        inline SIMDVec_i<int64_t, 4> trunc() {
+        inline SIMDVec_i<int64_t, 4> trunc() const {
 #if defined(__AVX512VL__)
             __m256i t0 = _mm256_cvttpd_epi64(mVec);
 #else
@@ -1548,7 +1548,7 @@ namespace SIMD {
             return SIMDVec_i<int64_t, 4>(t0);
         }
         // MTRUNC
-        inline SIMDVec_i<int64_t, 4> trunc(SIMDVecMask<4> const & mask) {
+        inline SIMDVec_i<int64_t, 4> trunc(SIMDVecMask<4> const & mask) const {
 #if defined(__AVX512VL__)
             __m256i t0 = _mm256_mask_cvttpd_epi64(_mm256_setzero_si256(), mask.mMask, mVec);
 #else

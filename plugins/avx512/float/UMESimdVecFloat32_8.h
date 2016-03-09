@@ -995,7 +995,7 @@ namespace SIMD {
             return retval;
         }
         // FMULADDV
-        inline SIMDVec_f fmuladd(SIMDVec_f const & b, SIMDVec_f const & c) {
+        inline SIMDVec_f fmuladd(SIMDVec_f const & b, SIMDVec_f const & c) const {
 #if defined(__AVX512VL__)
             __m256 t0 = _mm256_mask_fmadd_ps(mVec, 0xFF, b.mVec, c.mVec);
 #else
@@ -1008,7 +1008,7 @@ namespace SIMD {
             return SIMDVec_f(t0);
         }
         // MFMULADDV
-        inline SIMDVec_f fmuladd(SIMDVecMask<8> const & mask, SIMDVec_f const & b, SIMDVec_f const & c) {
+        inline SIMDVec_f fmuladd(SIMDVecMask<8> const & mask, SIMDVec_f const & b, SIMDVec_f const & c) const {
 #if defined(__AVX512VL__)
             __m256 t0 = _mm256_mask_fmadd_ps(mVec, mask.mMask, b.mVec, c.mVec);
 #else
@@ -1021,7 +1021,7 @@ namespace SIMD {
             return SIMDVec_f(t0);
         }
         // FMULSUBV
-        inline SIMDVec_f fmulsub(SIMDVec_f const & b, SIMDVec_f const & c) {
+        inline SIMDVec_f fmulsub(SIMDVec_f const & b, SIMDVec_f const & c) const {
 #if defined(__AVX512VL__)
             __m256 t0 = _mm256_fmsub_ps(mVec, b.mVec, c.mVec);
 #else
@@ -1034,7 +1034,7 @@ namespace SIMD {
             return SIMDVec_f(t0);
         }
         // MFMULSUBV
-        inline SIMDVec_f fmulsub(SIMDVecMask<8> const & mask, SIMDVec_f const & b, SIMDVec_f const & c) {
+        inline SIMDVec_f fmulsub(SIMDVecMask<8> const & mask, SIMDVec_f const & b, SIMDVec_f const & c) const {
 #if defined(__AVX512VL__)
             __m256 t0 = _mm256_mask_fmsub_ps(mVec, mask.mMask, b.mVec, c.mVec);
 #else
@@ -1047,7 +1047,7 @@ namespace SIMD {
             return SIMDVec_f(t0);
         }
         // FADDMULV
-        inline SIMDVec_f faddmul(SIMDVec_f const & b, SIMDVec_f const & c) {
+        inline SIMDVec_f faddmul(SIMDVec_f const & b, SIMDVec_f const & c) const {
 #if defined(__AVX512VL__)
             __m256 t0 = _mm256_add_ps(mVec, b.mVec);
             __m256 t1 = _mm256_mul_ps(t0, c.mVec);
@@ -1062,7 +1062,7 @@ namespace SIMD {
             return SIMDVec_f(t1);
         }
         // MFADDMULV
-        inline SIMDVec_f faddmul(SIMDVecMask<8> const & mask, SIMDVec_f const & b, SIMDVec_f const & c) {
+        inline SIMDVec_f faddmul(SIMDVecMask<8> const & mask, SIMDVec_f const & b, SIMDVec_f const & c) const {
 #if defined(__AVX512VL__)
             __m256 t0 = _mm256_mask_add_ps(mVec, mask.mMask, mVec, b.mVec);
             __m256 t1 = _mm256_mask_mul_ps(mVec, mask.mMask, t0, c.mVec);
@@ -1077,7 +1077,7 @@ namespace SIMD {
             return SIMDVec_f(t1);
         }
         // FSUBMULV
-        inline SIMDVec_f fsubmul(SIMDVec_f const & b, SIMDVec_f const & c) {
+        inline SIMDVec_f fsubmul(SIMDVec_f const & b, SIMDVec_f const & c) const {
 #if defined(__AVX512VL__)
             __m256 t0 = _mm256_sub_ps(mVec, b.mVec);
             __m256 t1 = _mm256_mul_ps(t0, c.mVec);
@@ -1092,7 +1092,7 @@ namespace SIMD {
             return SIMDVec_f(t1);
         }
         // MFSUBMULV
-        inline SIMDVec_f fsubmul(SIMDVecMask<8> const & mask, SIMDVec_f const & b, SIMDVec_f const & c) {
+        inline SIMDVec_f fsubmul(SIMDVecMask<8> const & mask, SIMDVec_f const & b, SIMDVec_f const & c) const {
 #if defined(__AVX512VL__)
             __m256 t0 = _mm256_mask_sub_ps(mVec, mask.mMask, mVec, b.mVec);
             __m256 t1 = _mm256_mask_mul_ps(mVec, mask.mMask, t0, c.mVec);
@@ -1449,12 +1449,12 @@ namespace SIMD {
             return SIMDVec_f(t1);
         }
         // TRUNC
-        SIMDVec_i<int32_t, 8> trunc() {
+        SIMDVec_i<int32_t, 8> trunc() const {
             __m256i t0 = _mm256_cvttps_epi32(mVec);
             return SIMDVec_i<int32_t, 8>(t0);
         }
         // MTRUNC
-        SIMDVec_i<int32_t, 8> trunc(SIMDVecMask<8> const & mask) {
+        SIMDVec_i<int32_t, 8> trunc(SIMDVecMask<8> const & mask) const {
 #if defined(__AVX512VL__)
             __m256i t0 = _mm256_mask_cvttps_epi32(_mm256_setzero_si256(), mask.mMask, mVec);
 #else

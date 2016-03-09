@@ -982,12 +982,12 @@ namespace SIMD {
         // ROUND
         // MROUND
         // TRUNC
-        inline SIMDVec_i<int32_t, 1> trunc() {
+        inline SIMDVec_i<int32_t, 1> trunc() const {
             int32_t t0 = (int32_t)mVec;
             return SIMDVec_i<int32_t, 1>(t0);
         }
         // MTRUNC
-        inline SIMDVec_i<int32_t, 1> trunc(SIMDVecMask<1> const & mask) {
+        inline SIMDVec_i<int32_t, 1> trunc(SIMDVecMask<1> const & mask) const {
             int32_t t0 = mask.mMask ? (int32_t)mVec : 0;
             return SIMDVec_i<int32_t, 1>(t0);
         }

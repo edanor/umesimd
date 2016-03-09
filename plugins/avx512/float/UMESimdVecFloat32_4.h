@@ -1070,7 +1070,7 @@ namespace SIMD {
         }
 
         // FMULADDV
-        inline SIMDVec_f fmuladd(SIMDVec_f const & b, SIMDVec_f const & c) {
+        inline SIMDVec_f fmuladd(SIMDVec_f const & b, SIMDVec_f const & c) const {
 #if defined(__AVX512VL__)
             __m128 t0 = _mm_mask_fmadd_ps(mVec, 0xF, b.mVec, c.mVec);
 #else

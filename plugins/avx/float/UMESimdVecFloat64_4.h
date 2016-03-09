@@ -395,7 +395,7 @@ namespace SIMD {
             return SIMDVec_f(t0);
         }
         // MFMULADDV - Masked fused multiply and add (A*B + C) with vectors
-        inline SIMDVec_f fmuladd(SIMDVecMask<4> const & mask, SIMDVec_f const & b, SIMDVec_f const & c) {
+        inline SIMDVec_f fmuladd(SIMDVecMask<4> const & mask, SIMDVec_f const & b, SIMDVec_f const & c) const {
 #ifdef FMA
             __m256d t0 = _mm256_fmadd_pd(mVec, b.mVec, c.mVec);
 #else

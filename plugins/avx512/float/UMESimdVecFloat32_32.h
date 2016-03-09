@@ -921,13 +921,13 @@ namespace SIMD {
             return t0;
         }
         // FMULADDV
-        inline SIMDVec_f fmuladd(SIMDVec_f const & b, SIMDVec_f const & c) {
+        inline SIMDVec_f fmuladd(SIMDVec_f const & b, SIMDVec_f const & c) const {
             __m512 t0 = _mm512_fmadd_ps(mVec[0], b.mVec[0], c.mVec[0]);
             __m512 t1 = _mm512_fmadd_ps(mVec[1], b.mVec[1], c.mVec[1]);
             return SIMDVec_f(t0, t1);
         }
         // MFMULADDV
-        inline SIMDVec_f fmuladd(SIMDVecMask<32> const & mask, SIMDVec_f const & b, SIMDVec_f const & c) {
+        inline SIMDVec_f fmuladd(SIMDVecMask<32> const & mask, SIMDVec_f const & b, SIMDVec_f const & c) const {
             __mmask16 m0 = mask.mMask & 0x0000FFFF;
             __mmask16 m1 = (mask.mMask & 0xFFFF0000) >> 16;
             __m512 t0 = _mm512_mask_fmadd_ps(mVec[0], m0, b.mVec[0], c.mVec[0]);
@@ -935,13 +935,13 @@ namespace SIMD {
             return SIMDVec_f(t0, t1);
         }
         // FMULSUBV
-        inline SIMDVec_f fmulsub(SIMDVec_f const & b, SIMDVec_f const & c) {
+        inline SIMDVec_f fmulsub(SIMDVec_f const & b, SIMDVec_f const & c) const {
             __m512 t0 = _mm512_fmsub_ps(mVec[0], b.mVec[0], c.mVec[0]);
             __m512 t1 = _mm512_fmsub_ps(mVec[1], b.mVec[1], c.mVec[1]);
             return SIMDVec_f(t0, t1);
         }
         // MFMULSUBV
-        inline SIMDVec_f fmulsub(SIMDVecMask<32> const & mask, SIMDVec_f const & b, SIMDVec_f const & c) {
+        inline SIMDVec_f fmulsub(SIMDVecMask<32> const & mask, SIMDVec_f const & b, SIMDVec_f const & c) const {
             __mmask16 m0 = mask.mMask & 0x0000FFFF;
             __mmask16 m1 = (mask.mMask & 0xFFFF0000) >> 16;
             __m512 t0 = _mm512_mask_fmsub_ps(mVec[0], m0, b.mVec[0], c.mVec[0]);
@@ -949,7 +949,7 @@ namespace SIMD {
             return SIMDVec_f(t0, t1);
         }
         // FADDMULV
-        inline SIMDVec_f faddmul(SIMDVec_f const & b, SIMDVec_f const & c) {
+        inline SIMDVec_f faddmul(SIMDVec_f const & b, SIMDVec_f const & c) const {
             __m512 t0 = _mm512_add_ps(mVec[0], b.mVec[0]);
             __m512 t1 = _mm512_add_ps(mVec[1], b.mVec[1]);
             __m512 t2 = _mm512_mul_ps(t0, c.mVec[0]);
@@ -957,7 +957,7 @@ namespace SIMD {
             return SIMDVec_f(t2, t3);
         }
         // MFADDMULV
-        inline SIMDVec_f faddmul(SIMDVecMask<32> const & mask, SIMDVec_f const & b, SIMDVec_f const & c) {
+        inline SIMDVec_f faddmul(SIMDVecMask<32> const & mask, SIMDVec_f const & b, SIMDVec_f const & c) const {
             __mmask16 m0 = mask.mMask & 0x0000FFFF;
             __mmask16 m1 = (mask.mMask & 0xFFFF0000) >> 16;
             __m512 t0 = _mm512_mask_add_ps(mVec[0], m0, mVec[0], b.mVec[0]);
@@ -967,7 +967,7 @@ namespace SIMD {
             return SIMDVec_f(t2, t3);
         }
         // FSUBMULV
-        inline SIMDVec_f fsubmul(SIMDVec_f const & b, SIMDVec_f const & c) {
+        inline SIMDVec_f fsubmul(SIMDVec_f const & b, SIMDVec_f const & c) const {
             __m512 t0 = _mm512_sub_ps(mVec[0], b.mVec[0]);
             __m512 t1 = _mm512_sub_ps(mVec[1], b.mVec[1]);
             __m512 t2 = _mm512_mul_ps(t0, c.mVec[0]);
@@ -975,7 +975,7 @@ namespace SIMD {
             return SIMDVec_f(t2, t3);
         }
         // MFSUBMULV
-        inline SIMDVec_f fsubmul(SIMDVecMask<32> const & mask, SIMDVec_f const & b, SIMDVec_f const & c) {
+        inline SIMDVec_f fsubmul(SIMDVecMask<32> const & mask, SIMDVec_f const & b, SIMDVec_f const & c) const {
             __mmask16 m0 = mask.mMask & 0x0000FFFF;
             __mmask16 m1 = (mask.mMask & 0xFFFF0000) >> 16;
             __m512 t0 = _mm512_mask_sub_ps(mVec[0], m0, mVec[0], b.mVec[0]);
@@ -1290,13 +1290,13 @@ namespace SIMD {
             return SIMDVec_f(t0, t1);
         }
         // TRUNC
-        SIMDVec_i<int32_t, 32> trunc() {
+        SIMDVec_i<int32_t, 32> trunc() const {
             __m512i t0 = _mm512_cvttps_epi32(mVec[0]);
             __m512i t1 = _mm512_cvttps_epi32(mVec[1]);
             return SIMDVec_i<int32_t, 32>(t0, t1);
         }
         // MTRUNC
-        SIMDVec_i<int32_t, 32> trunc(SIMDVecMask<32> const & mask) {
+        SIMDVec_i<int32_t, 32> trunc(SIMDVecMask<32> const & mask) const {
             __mmask16 m0 = mask.mMask & 0x0000FFFF;
             __mmask16 m1 = (mask.mMask & 0xFFFF0000) >> 16;
             __m512i t0 = _mm512_setzero_epi32();

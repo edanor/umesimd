@@ -790,7 +790,7 @@ namespace SIMD {
         }
 
         // FMULADDV
-        inline SIMDVec_f fmuladd(SIMDVec_f const & b, SIMDVec_f const & c) {
+        inline SIMDVec_f fmuladd(SIMDVec_f const & b, SIMDVec_f const & c) const {
 #ifdef FMA
             __m128 t0 = _mm_fmadd_ps(mVec, b.mVec, c.mVec);
 #else

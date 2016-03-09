@@ -1165,13 +1165,13 @@ namespace SIMD {
         // ROUND
         // MROUND
         // TRUNC
-        inline SIMDVec_i<int32_t, 2> trunc() {
+        inline SIMDVec_i<int32_t, 2> trunc() const {
             int32_t t0 = (int32_t)mVec[0];
             int32_t t1 = (int32_t)mVec[1];
             return SIMDVec_i<int32_t, 2>(t0, t1);
         }
         // MTRUNC
-        inline SIMDVec_i<int32_t, 2> trunc(SIMDVecMask<2> const & mask) {
+        inline SIMDVec_i<int32_t, 2> trunc(SIMDVecMask<2> const & mask) const {
             int32_t t0 = ((mask.mMask & 0x1) != 0) ? (int32_t)mVec[0] : 0;
             int32_t t1 = ((mask.mMask & 0x2) != 0) ? (int32_t)mVec[1] : 0;
             return SIMDVec_i<int32_t, 2>(t0, t1);

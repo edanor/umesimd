@@ -153,7 +153,7 @@ namespace SIMD {
         // MASSIGNS
 
         // ABS
-        SIMDVec_i abs() {
+        SIMDVec_i abs() const {
             __m128i a_low = _mm256_extractf128_si256(mVecLo, 0);
             __m128i a_high = _mm256_extractf128_si256(mVecLo, 1);
             __m256i ret_lo = _mm256_setzero_si256();
@@ -169,7 +169,7 @@ namespace SIMD {
             return SIMDVec_i(ret_lo, ret_hi);
         }
         // MABS
-        SIMDVec_i abs(SIMDVecMask<16> const & mask) {
+        SIMDVec_i abs(SIMDVecMask<16> const & mask) const {
             __m128i a_lo = _mm256_extractf128_si256(mVecLo, 0);
             __m128i a_hi = _mm256_extractf128_si256(mVecLo, 1);
             __m128i m_lo = _mm256_extractf128_si256(mask.mMask[0], 0);

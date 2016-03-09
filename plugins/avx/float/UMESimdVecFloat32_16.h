@@ -557,7 +557,7 @@ namespace SIMD {
 
         //(Fused arithmetics)
         // FMULADDV  - Fused multiply and add (A*B + C) with vectors
-        inline SIMDVec_f fmuladd(SIMDVec_f const & a, SIMDVec_f const & b) {
+        inline SIMDVec_f fmuladd(SIMDVec_f const & a, SIMDVec_f const & b) const {
 #ifdef FMA
             __m256 t0 = _mm256_fmadd_ps(this->mVec[0], a.mVec[0], b.mVec[0]);
             __m256 t1 = _mm256_fmadd_ps(this->mVec[1], a.mVec[1], b.mVec[1]);
@@ -569,7 +569,7 @@ namespace SIMD {
 #endif
         }
         // MFMULADDV - Masked fused multiply and add (A*B + C) with vectors
-        inline SIMDVec_f fmuladd(SIMDVecMask<16> const & mask, SIMDVec_f const & a, SIMDVec_f const & b) {
+        inline SIMDVec_f fmuladd(SIMDVecMask<16> const & mask, SIMDVec_f const & a, SIMDVec_f const & b) const {
             __m256 t0 = _mm256_add_ps(_mm256_mul_ps(mVec[0], a.mVec[0]), b.mVec[0]);
             __m256 t1 = _mm256_add_ps(_mm256_mul_ps(mVec[1], a.mVec[1]), b.mVec[1]);
             __m256 t2 = _mm256_blendv_ps(mVec[0], t0, _mm256_cvtepi32_ps(mask.mMask[0]));
