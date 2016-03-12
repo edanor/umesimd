@@ -49,8 +49,14 @@ namespace SIMD {
         // This function returns a boolean value based on internal representation
         static inline bool toBool(uint32_t m) { if ((m & 0x80000000) != 0) return true; else return false; }
 
+        friend class SIMDVec_u<uint8_t, 16>;
+        friend class SIMDVec_u<uint16_t, 16>;
         friend class SIMDVec_u<uint32_t, 16>;
+        friend class SIMDVec_u<uint64_t, 16>;
+        friend class SIMDVec_i<int8_t, 16>;
+        friend class SIMDVec_i<int16_t, 16>;
         friend class SIMDVec_i<int32_t, 16>;
+        friend class SIMDVec_i<int64_t, 16>;
         friend class SIMDVec_f<float, 16>;
         friend class SIMDVec_f<double, 16>;
     private:

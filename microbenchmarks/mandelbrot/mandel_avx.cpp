@@ -9,7 +9,10 @@
 #include <immintrin.h>
 #include "mandelbrot.h"
 
+
+
 #if defined __AVX__
+
 void
 mandel_avx(unsigned char *image, const struct spec *s)
 {
