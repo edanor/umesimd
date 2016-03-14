@@ -42,9 +42,31 @@ void MandelbrotCPU2(float x1, float y1, float x2, float y2, int width, int heigh
             *image++ = count;
         }
 }
+
+void MandelbrotCPU2_64f(double x1, double y1, double x2, double y2, int width, int height, int maxIters, unsigned short * image)
+{
+    double dx = (x2 - x1) / width, dy = (y2 - y1) / height;
+    for (int j = 0; j < height; ++j)
+        for (int i = 0; i < width; ++i)
+        {
+            double cx = x1 + dx*i, cy = y1 + dy*j;
+            double x = cx, y = cy;
+            int count = 0;
+            for (count = 1; count < maxIters; ++count)
+            {
+                double x2 = x * x, y2 = y * y;
+                if (x2 + y2 >= 4)
+                    break;
+                double xy = x*y;
+                x = x2 - y2 + cx;
+                y = 2 * xy + cy;
+            }
+            *image++ = count;
+        }
+}
 #if defined __SSE2__
 // SSE based mandelbrot
-/*void MandelbrotSSE(float x1, float y1, float x2, float y2, int width, int height, int maxIters, unsigned short * image)
+/*void MandelbrotSSE2(float x1, float y1, float x2, float y2, int width, int height, int maxIters, unsigned short * image)
 {
 float dx = (x2 - x1) / width;
 float dy = (y2 - y1) / height;
