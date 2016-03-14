@@ -331,7 +331,6 @@ namespace SIMD {
         return EMULATED_FUNCTIONS::xtoy < SIMDVec_u<uint64_t, 8>, uint64_t, SIMDVec_i<int64_t, 8>>(*this);
     }
 
-    template<>
     inline SIMDVec_i<int64_t, 16>::operator SIMDVec_u<uint64_t, 16>() const {
         return EMULATED_FUNCTIONS::xtoy < SIMDVec_u<uint64_t, 16>, uint64_t, SIMDVec_i<int64_t, 16>>(*this);
     }
@@ -380,7 +379,6 @@ namespace SIMD {
         return EMULATED_FUNCTIONS::xtoy < SIMDVec_f<double, 8>, double, SIMDVec_i<int64_t, 8>>(*this);
     }
 
-    template<>
     inline SIMDVec_i<int64_t, 16>::operator SIMDVec_f<double, 16>() const {
         return EMULATED_FUNCTIONS::xtoy < SIMDVec_f<double, 16>, double, SIMDVec_i<int64_t, 16>>(*this);
     }
@@ -449,7 +447,6 @@ namespace SIMD {
         return EMULATED_FUNCTIONS::xtoy < SIMDVec_u<uint64_t, 8>, uint64_t, SIMDVec_f<double, 8>>(*this);
     }
 
-    template<>
     inline SIMDVec_f<double, 16>::operator SIMDVec_u<uint64_t, 16>() const {
         return EMULATED_FUNCTIONS::xtoy < SIMDVec_u<uint64_t, 16>, uint64_t, SIMDVec_f<double, 16>>(*this);
     }
@@ -555,7 +552,6 @@ namespace SIMD {
 #endif
     }
 
-    template<>
     inline SIMDVec_f<double, 16>::operator SIMDVec_i<int64_t, 16>() const {
         return EMULATED_FUNCTIONS::xtoy < SIMDVec_i<int64_t, 16>, int64_t, SIMDVec_f<double, 16>>(*this);
     }
@@ -905,7 +901,6 @@ namespace SIMD {
         return EMULATED_FUNCTIONS::xtoy <SIMDVec_i<int32_t, 8>, int32_t, SIMDVec_i<int64_t, 8>>(*this);
     }
 
-    template<>
     inline SIMDVec_i<int64_t, 16>::operator SIMDVec_i<int32_t, 16>() const {
         return EMULATED_FUNCTIONS::xtoy <SIMDVec_i<int32_t, 16>, int32_t, SIMDVec_i<int64_t, 16>>(*this);
     }
@@ -930,7 +925,6 @@ namespace SIMD {
         return EMULATED_FUNCTIONS::xtoy <SIMDVec_f<float, 8>, float, SIMDVec_f<double, 8>>(*this);
     }
 
-    template<>
     inline SIMDVec_f<double, 16>::operator SIMDVec_f<float, 16>() const {
         return EMULATED_FUNCTIONS::xtoy <SIMDVec_f<float, 16>, float, SIMDVec_f<double, 16>>(*this);
     }
