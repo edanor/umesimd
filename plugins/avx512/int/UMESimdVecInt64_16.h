@@ -702,12 +702,12 @@ namespace SIMD {
             int64_t t50 = _mm256_extract_epi64(t44, 1);
             int64_t t51 = _mm256_extract_epi64(t44, 2);
             int64_t t52 = _mm256_extract_epi64(t44, 3);
-            int64_t t52 = ((mask.mMask & 0x1000) == 0) ? t45 : t45 * t49;
-            int64_t t53 = ((mask.mMask & 0x2000) == 0) ? t46 : t46 * t50;
-            int64_t t54 = ((mask.mMask & 0x4000) == 0) ? t47 : t47 * t51;
-            int64_t t55 = ((mask.mMask & 0x8000) == 0) ? t48 : t48 * t52;
-            __m512i t56 = _mm512_set_epi64(t55, t54, t53, t52, t51, t50, t49, t48);
-            return SIMDVec_i(t0, t56);
+            int64_t t53 = ((mask.mMask & 0x1000) == 0) ? t45 : t45 * t49;
+            int64_t t54 = ((mask.mMask & 0x2000) == 0) ? t46 : t46 * t50;
+            int64_t t55 = ((mask.mMask & 0x4000) == 0) ? t47 : t47 * t51;
+            int64_t t56 = ((mask.mMask & 0x8000) == 0) ? t48 : t48 * t52;
+            __m512i t57 = _mm512_set_epi64(t56, t55, t54, t53, t42, t41, t40, t39);
+            return SIMDVec_i(t0, t57);
 #endif
         }
         // MULS
@@ -797,7 +797,7 @@ namespace SIMD {
             int64_t t54 = t46 * t50;
             int64_t t55 = t47 * t51;
             int64_t t56 = t48 * t52;
-            __m512i t57 = _mm512_set_epi64(t56, t55, t54, t53, t52, t51, t50, t49);
+            __m512i t57 = _mm512_set_epi64(t56, t55, t54, t53, t42, t41, t40, t39);
             return SIMDVec_i(t0, t57);
 #endif
         }
@@ -886,12 +886,12 @@ namespace SIMD {
             int64_t t50 = _mm256_extract_epi64(t44, 1);
             int64_t t51 = _mm256_extract_epi64(t44, 2);
             int64_t t52 = _mm256_extract_epi64(t44, 3);
-            int64_t t52 = ((mask.mMask & 0x1000) == 0) ? t45 : t45 * t49;
-            int64_t t53 = ((mask.mMask & 0x2000) == 0) ? t46 : t46 * t50;
-            int64_t t54 = ((mask.mMask & 0x4000) == 0) ? t47 : t47 * t51;
-            int64_t t55 = ((mask.mMask & 0x8000) == 0) ? t48 : t48 * t52;
-            __m512i t56 = _mm512_set_epi64(t55, t54, t53, t52, t51, t50, t49, t48);
-            return SIMDVec_i(t0, t56);
+            int64_t t53 = ((mask.mMask & 0x1000) == 0) ? t45 : t45 * t49;
+            int64_t t54 = ((mask.mMask & 0x2000) == 0) ? t46 : t46 * t50;
+            int64_t t55 = ((mask.mMask & 0x4000) == 0) ? t47 : t47 * t51;
+            int64_t t56 = ((mask.mMask & 0x8000) == 0) ? t48 : t48 * t52;
+            __m512i t57 = _mm512_set_epi64(t56, t55, t54, t53, t42, t41, t40, t39);
+            return SIMDVec_i(t0, t57);
 #endif
         }
         // MULVA
@@ -979,7 +979,7 @@ namespace SIMD {
             int64_t t54 = t46 * t50;
             int64_t t55 = t47 * t51;
             int64_t t56 = t48 * t52;
-            mVec[1] = = _mm512_set_epi64(t56, t55, t54, t53, t52, t51, t50, t49);
+            mVec[1] = _mm512_set_epi64(t56, t55, t54, t53, t52, t51, t50, t49);
 #endif
             return *this;
         }
@@ -1066,11 +1066,11 @@ namespace SIMD {
             int64_t t50 = _mm256_extract_epi64(t44, 1);
             int64_t t51 = _mm256_extract_epi64(t44, 2);
             int64_t t52 = _mm256_extract_epi64(t44, 3);
-            int64_t t52 = ((mask.mMask & 0x1000) == 0) ? t45 : t45 * t49;
-            int64_t t53 = ((mask.mMask & 0x2000) == 0) ? t46 : t46 * t50;
-            int64_t t54 = ((mask.mMask & 0x4000) == 0) ? t47 : t47 * t51;
-            int64_t t55 = ((mask.mMask & 0x8000) == 0) ? t48 : t48 * t52;
-            mVec[1] = _mm512_set_epi64(t55, t54, t53, t52, t51, t50, t49, t48);
+            int64_t t53 = ((mask.mMask & 0x1000) == 0) ? t45 : t45 * t49;
+            int64_t t54 = ((mask.mMask & 0x2000) == 0) ? t46 : t46 * t50;
+            int64_t t55 = ((mask.mMask & 0x4000) == 0) ? t47 : t47 * t51;
+            int64_t t56 = ((mask.mMask & 0x8000) == 0) ? t48 : t48 * t52;
+            mVec[1] = _mm512_set_epi64(t56, t55, t54, t53, t42, t41, t40, t39);
 #endif
             return *this;
         }
@@ -1245,11 +1245,11 @@ namespace SIMD {
             int64_t t50 = _mm256_extract_epi64(t44, 1);
             int64_t t51 = _mm256_extract_epi64(t44, 2);
             int64_t t52 = _mm256_extract_epi64(t44, 3);
-            int64_t t52 = ((mask.mMask & 0x1000) == 0) ? t45 : t45 * t49;
-            int64_t t53 = ((mask.mMask & 0x2000) == 0) ? t46 : t46 * t50;
-            int64_t t54 = ((mask.mMask & 0x4000) == 0) ? t47 : t47 * t51;
-            int64_t t55 = ((mask.mMask & 0x8000) == 0) ? t48 : t48 * t52;
-            mVec[1] = _mm512_set_epi64(t55, t54, t53, t52, t51, t50, t49, t48);
+            int64_t t53 = ((mask.mMask & 0x1000) == 0) ? t45 : t45 * t49;
+            int64_t t54 = ((mask.mMask & 0x2000) == 0) ? t46 : t46 * t50;
+            int64_t t55 = ((mask.mMask & 0x4000) == 0) ? t47 : t47 * t51;
+            int64_t t56 = ((mask.mMask & 0x8000) == 0) ? t48 : t48 * t52;
+            mVec[1] = _mm512_set_epi64(t56, t55, t54, t53, t42, t41, t40, t39);
 #endif
             return *this;
         }

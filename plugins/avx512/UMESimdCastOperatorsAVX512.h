@@ -553,7 +553,35 @@ namespace SIMD {
     }
 
     inline SIMDVec_f<double, 16>::operator SIMDVec_i<int64_t, 16>() const {
-        return EMULATED_FUNCTIONS::xtoy < SIMDVec_i<int64_t, 16>, int64_t, SIMDVec_f<double, 16>>(*this);
+#if defined(__AVX512DQ__)
+        __m512i t0 = _mm512_cvtpd_epi64(mVec[0]);
+        __m512i t1 = _mm512_cvtpd_epi64(mVec[1]);
+        return SIMDVec_i<int64_t, 16>(t0, t1);
+#else
+        alignas(64) double raw_64f[16];
+        alignas(64) int64_t raw_64i[16];
+        _mm512_store_pd(raw_64f, mVec[0]);
+        _mm512_store_pd(raw_64f + 8, mVec[1]);
+        raw_64i[0] = int64_t(raw_64f[0]);
+        raw_64i[1] = int64_t(raw_64f[1]);
+        raw_64i[2] = int64_t(raw_64f[2]);
+        raw_64i[3] = int64_t(raw_64f[3]);
+        raw_64i[4] = int64_t(raw_64f[4]);
+        raw_64i[5] = int64_t(raw_64f[5]);
+        raw_64i[6] = int64_t(raw_64f[6]);
+        raw_64i[7] = int64_t(raw_64f[7]);
+        raw_64i[8] = int64_t(raw_64f[8]);
+        raw_64i[9] = int64_t(raw_64f[9]);
+        raw_64i[10] = int64_t(raw_64f[10]);
+        raw_64i[11] = int64_t(raw_64f[11]);
+        raw_64i[12] = int64_t(raw_64f[12]);
+        raw_64i[13] = int64_t(raw_64f[13]);
+        raw_64i[14] = int64_t(raw_64f[14]);
+        raw_64i[15] = int64_t(raw_64f[15]);
+        __m512i t0 = _mm512_load_si512((__m512i *)raw_64i);
+        __m512i t1 = _mm512_load_si512((__m512i *)(raw_64i + 8));
+        return SIMDVec_i<int64_t, 16>(t0, t1);
+#endif
     }
 
     // PROMOTE
