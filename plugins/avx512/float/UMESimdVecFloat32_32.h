@@ -1236,6 +1236,9 @@ namespace SIMD {
             __m512 t2 = _mm512_sub_ps(t0, mVec[1]);
             return SIMDVec_f(t1, t2);
         }
+        inline SIMDVec_f operator- () const {
+            return neg();
+        }
         // MNEG
         inline SIMDVec_f neg(SIMDVecMask<32> const & mask) const {
             __mmask16 m0 = mask.mMask & 0x0000FFFF;

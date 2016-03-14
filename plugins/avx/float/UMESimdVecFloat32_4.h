@@ -1062,12 +1062,12 @@ namespace SIMD {
             return SIMDVec_f(t1);
         }
         // SQRA
-        inline SIMDVec_f & sqr() {
+        inline SIMDVec_f & sqra() {
             mVec = _mm_mul_ps(mVec, mVec);
             return *this;
         }
         // MSQRA
-        inline SIMDVec_f & sqr(SIMDVecMask<4> const & mask) {
+        inline SIMDVec_f & sqra(SIMDVecMask<4> const & mask) {
             __m128 t0 = _mm_mul_ps(mVec, mVec);
             mVec = BLEND(mVec, t0, mask.mMask);
             return *this;

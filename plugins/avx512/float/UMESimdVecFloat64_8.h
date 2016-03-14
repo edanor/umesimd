@@ -1033,7 +1033,28 @@ namespace SIMD {
         // POWS
         // MPOWS
         // ROUND
+        inline SIMDVec_f round() const {
+            __m256d t0 = _mm512_extractf64x4_pd(mVec, 0);
+            __m256d t1 = _mm512_extractf64x4_pd(mVec, 1);
+
+            __m256d t2 = _mm256_round_pd(t0, _MM_FROUND_TO_NEAREST_INT);
+            __m256d t3 = _mm256_round_pd(t1, _MM_FROUND_TO_NEAREST_INT);
+            __m512d t4 = _mm512_castpd256_pd512(t2);
+            __m512d t5 = _mm512_insertf64x4(t4, t3, 1);
+            return SIMDVec_f(t5);
+        }
         // MROUND
+        inline SIMDVec_f round(SIMDVecMask<8> const & mask) const {
+            __m256d t0 = _mm512_extractf64x4_pd(mVec, 0);
+            __m256d t1 = _mm512_extractf64x4_pd(mVec, 1);
+
+            __m256d t2 = _mm256_round_pd(t0, _MM_FROUND_TO_NEAREST_INT);
+            __m256d t3 = _mm256_round_pd(t1, _MM_FROUND_TO_NEAREST_INT);
+            __m512d t4 = _mm512_castpd256_pd512(t2);
+            __m512d t5 = _mm512_insertf64x4(t4, t3, 1);
+            __m512d t6 = _mm512_mask_mov_pd(mVec, mask.mMask, t5);
+            return SIMDVec_f(t6);
+        }
         // TRUNC
 #if defined(__AVX512DQ__)
         inline SIMDVec_i<int64_t, 8> trunc() const {

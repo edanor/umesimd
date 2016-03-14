@@ -972,15 +972,39 @@ namespace SIMD {
         // SQRA
         // MSQRA
         // SQRT
+        inline SIMDVec_f sqrt() const {
+            double t0 = std::sqrt(mVec);
+            return SIMDVec_f(t0);
+        }
         // MSQRT
+        inline SIMDVec_f sqrt(SIMDVecMask<1> const & mask) const {
+            double t0 = mask.mMask ? std::sqrt(mVec) : mVec;
+            return SIMDVec_f(t0);
+        }
         // SQRTA
+        inline SIMDVec_f & sqrta() {
+            mVec = std::sqrt(mVec);
+            return *this;
+        }
         // MSQRTA
+        inline SIMDVec_f & sqrta(SIMDVecMask<1> const & mask) {
+            mVec = mask.mMask ? std::sqrt(mVec) : mVec;
+            return *this;
+        }
         // POWV
         // MPOWV
         // POWS
         // MPOWS
         // ROUND
+        inline SIMDVec_f round() const {
+            double t0 = std::round(mVec);
+            return SIMDVec_f(t0);
+        }
         // MROUND
+        inline SIMDVec_f round(SIMDVecMask<1> const & mask) const {
+            double t0 = mask.mMask ? std::round(mVec) : mVec;
+            return SIMDVec_f(t0);
+        }
         // TRUNC
         inline SIMDVec_i<int32_t, 1> trunc() const {
             int32_t t0 = (int32_t)mVec;

@@ -1534,7 +1534,22 @@ namespace SIMD {
         // POWS
         // MPOWS
         // ROUND
+        inline SIMDVec_f round() const {
+            __m256d t0 = _mm256_round_pd(mVec, _MM_FROUND_TO_NEAREST_INT);
+            return SIMDVec_f(t0);
+        }
         // MROUND
+        inline SIMDVec_f round(SIMDVecMask<4> const & mask) const {
+            __m256d t0 = _mm256_round_pd(mVec, _MM_FROUND_TO_NEAREST_INT);
+#if defined(__AVX512VL__)
+            __m256d t1 = _mm256_mask_mov_pd(mVec, mask.mMask, t0);
+#else
+            __m512d t2 = _mm512_castpd256_pd512(t0);
+            __m512d t3 = _mm512_mask_mov_pd(t2, mask.mMask, t2);
+            __m256d t1 = _mm512_castpd512_pd256(t3);
+#endif
+            return SIMDVec_f(t1);
+        }
         // TRUNC
 #if defined(__AVX512DQ__)
         inline SIMDVec_i<int64_t, 4> trunc() const {

@@ -1140,15 +1140,45 @@ namespace SIMD {
         // SQRA
         // MSQRA
         // SQRT
+        inline SIMDVec_f sqrt() const {
+            double t0 = std::sqrt(mVec[0]);
+            double t1 = std::sqrt(mVec[1]);
+            return SIMDVec_f(t0, t1);
+        }
         // MSQRT
+        inline SIMDVec_f sqrt(SIMDVecMask<2> const & mask) const {
+            double t0 = mask.mMask[0] ? std::sqrt(mVec[0]) : mVec[0];
+            double t1 = mask.mMask[1] ? std::sqrt(mVec[1]) : mVec[1];
+            return SIMDVec_f(t0, t1);
+        }
         // SQRTA
+        inline SIMDVec_f & sqrta() {
+            mVec[0] = std::sqrt(mVec[0]);
+            mVec[1] = std::sqrt(mVec[1]);
+            return *this;
+        }
         // MSQRTA
+        inline SIMDVec_f & sqrta(SIMDVecMask<2> const & mask) {
+            mVec[0] = mask.mMask[0] ? std::sqrt(mVec[0]) : mVec[0];
+            mVec[1] = mask.mMask[1] ? std::sqrt(mVec[1]) : mVec[1];
+            return *this;
+        }
         // POWV
         // MPOWV
         // POWS
         // MPOWS
         // ROUND
+        inline SIMDVec_f round() const {
+            double t0 = std::roundf(mVec[0]);
+            double t1 = std::roundf(mVec[1]);
+            return SIMDVec_f(t0, t1);
+        }
         // MROUND
+        inline SIMDVec_f round(SIMDVecMask<2> const & mask) const {
+            double t0 = mask.mMask[0] ? std::roundf(mVec[0]) : mVec[0];
+            double t1 = mask.mMask[1] ? std::roundf(mVec[1]) : mVec[1];
+            return SIMDVec_f(t0, t1);
+        }
         // TRUNC
         inline SIMDVec_i<int32_t, 2> trunc() const {
             int32_t t0 = (int32_t)mVec[0];

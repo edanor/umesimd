@@ -1006,12 +1006,12 @@ namespace SIMD {
         // MPOWS
         // ROUND
         inline SIMDVec_f round() const {
-            __m512 t0;// = _mm512_round_ps(mVec, _MM_FROUND_TO_NEAREST_INT, _MM_EXPADJ_NONE);
+            __m512 t0 = _mm512_roundscale_ps(mVec, 0);
             return SIMDVec_f(t0);
         }
         // MROUND
         inline SIMDVec_f round(SIMDVecMask<16> const & mask) const {
-            __m512 t0;// = _mm512_round_ps(mVec, _MM_FROUND_TO_NEAREST_INT, _MM_EXPADJ_NONE);
+            __m512 t0 = _mm512_roundscale_ps(mVec, 0);
             __m512 t1 = _mm512_mask_mov_ps(mVec, mask.mMask, t0);
             return SIMDVec_f(t1);
         }
