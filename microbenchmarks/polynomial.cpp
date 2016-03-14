@@ -124,9 +124,9 @@ TIMING_RES test_scalar()
     return end - start;
 }
 
-#if defined(__AVX512F__)
+//#if defined(__AVX512F__)
 // TODO: implementation for AVX512 required
-#elif defined(__AVX2__) || defined(__AVX__)
+#if defined(__AVX2__) || defined(__AVX__)
 TIMING_RES test_avx_32f()
 {
     unsigned long long start, end; // Time measurements
@@ -525,7 +525,6 @@ void benchmarkSIMD(char * resultPrefix,
         << ", dev: " << (unsigned long long) stats.getStdDev()
         << " (speedup: " << stats.calculateSpeedup(reference) << "x)\n";
 }
-
 #if defined(__AVX2__) || defined(__AVX__)
 void benchmark_avx_32f(char * resultPrefix,
                        int iterations,
