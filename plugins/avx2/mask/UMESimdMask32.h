@@ -184,6 +184,15 @@ namespace SIMD {
             mMask[3] = x.mMask[3];
             return *this;
         }
+
+        // HLOR
+        inline bool hlor() const {
+            int t0 = _mm256_testz_si256(mMask[0], mMask[0]);
+            int t1 = _mm256_testz_si256(mMask[1], mMask[1]);
+            int t2 = _mm256_testz_si256(mMask[2], mMask[2]);
+            int t3 = _mm256_testz_si256(mMask[3], mMask[3]);
+            return (t0 == 0) | (t1 == 0) | (t2 == 0) | (t3 == 0);
+        }
     };
 }
 }

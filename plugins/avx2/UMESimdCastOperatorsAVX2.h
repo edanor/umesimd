@@ -462,7 +462,9 @@ namespace SIMD {
     }
 
     inline SIMDVec_f<double, 2>::operator SIMDVec_i<int64_t, 2>() const {
-        return EMULATED_FUNCTIONS::xtoy < SIMDVec_i<int64_t, 2>, int64_t, SIMDVec_f<double, 2>>(*this);
+        int64_t t0 = int64_t(mVec[0]);
+        int64_t t1 = int64_t(mVec[1]);
+        return SIMDVec_i<int64_t, 2>(t0, t1);
     }
 
     inline SIMDVec_f<double, 4>::operator SIMDVec_i<int64_t, 4>() const {

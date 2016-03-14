@@ -88,6 +88,10 @@ namespace SIMD {
             mMask = mask.mMask;
             return *this;
         }
+
+        inline bool hlor() const {
+            return mMask;
+        }
     };
 
 }

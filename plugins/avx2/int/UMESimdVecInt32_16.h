@@ -194,13 +194,29 @@ namespace SIMD {
             return *this;
         }
         // STORE
+        inline int32_t* store(int32_t * p) const {
+            _mm256_storeu_si256((__m256i*)p, mVec[0]);
+            _mm256_storeu_si256((__m256i*)(p + 8), mVec[1]);
+            return p;
+        }
         // MSTORE
+        inline int32_t* store(SIMDVecMask<16> const & mask, int32_t * p) const {
+            _mm256_maskstore_epi32(p, mask.mMask[0], mVec[0]);
+            _mm256_maskstore_epi32(p + 8, mask.mMask[1], mVec[1]);
+            return p;
+        }
         // STOREA
-        /*inline int32_t * storea(int32_t * addrAligned) const {
-            _mm256_store_si256((__m256i*)addrAligned, mVec[0]);
-            return addrAligned;
-        }*/
+        inline int32_t* storea(int32_t * p) const {
+            _mm256_store_si256((__m256i*)p, mVec[0]);
+            _mm256_store_si256((__m256i*)(p + 8), mVec[1]);
+            return p;
+        }
         // MSTOREA
+        inline int32_t* storea(SIMDVecMask<16> const & mask, int32_t * p) const {
+            _mm256_maskstore_epi32(p, mask.mMask[0], mVec[0]);
+            _mm256_maskstore_epi32(p + 8, mask.mMask[1], mVec[1]);
+            return p;
+        }
         // BLENDV
         // BLENDS
         // SWIZZLE 
