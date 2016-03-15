@@ -69,7 +69,7 @@ void mandel_umesimd(
     int width, 
     int height, 
     int maxIters, 
-    uint8_t * image)
+    uint16_t * image)
 {
     typedef typename UME::SIMD::SIMDTraits<VEC_T>::INT_VEC_T    INT_VEC_T;
     typedef typename UME::SIMD::SIMDTraits<VEC_T>::MASK_T       MASK_T;
@@ -147,7 +147,7 @@ void mandel_umesimd(
             ymm10i.storea((SCALAR_INT_T*)raw_outputs);
             int top = (i + VEC_LEN - 1) < width ? VEC_LEN : width & (VEC_LEN-1);
             for (int k = 0; k < top; ++k)
-                image[i + k + j*width] = (uint8_t)raw_outputs[k];
+                image[i + k + j*width] = ((uint16_t*)raw_outputs)[(sizeof(SCALAR_INT_T)/sizeof(uint16_t))*k];
 
             // next i position - increment each slot by 8
             ymm7 = ymm7 + SCALAR_T(VEC_LEN);
@@ -171,6 +171,7 @@ is_avx_supported(void)
 template<typename SIMD_T>
 void benchmarkUMESIMD(int width,
                       int height,
+                      int depth,
                       char * filename, 
                       char * resultPrefix, 
                       int iterations,
@@ -181,17 +182,17 @@ void benchmarkUMESIMD(int width,
     UME::Bitmap bmp(width, height, UME::PIXEL_TYPE_RGB);
     uint8_t* image = bmp.GetRasterData();
 
-    uint8_t *raw_image;
+    uint16_t *raw_image;
 
-    raw_image = (uint8_t *)UME::DynamicMemory::AlignedMalloc(width*height*sizeof(uint8_t), SIMD_T::alignment());
+    raw_image = (uint16_t *)UME::DynamicMemory::AlignedMalloc(width*height*sizeof(uint16_t), SIMD_T::alignment());
 
     for (int i = 0; i < iterations; i++) {
         TIMING_RES start, end;
 
-        memset(raw_image, 0, width*height *sizeof(uint8_t));
+        memset(raw_image, 0, width*height *sizeof(uint16_t));
 
         start = __rdtsc();
-        mandel_umesimd<SIMD_T>(0.29768f, 0.48364f, 0.29778f, 0.48354f, width, height, 4096, raw_image);
+        mandel_umesimd<SIMD_T>(0.29768f, 0.48364f, 0.29778f, 0.48354f, width, height, depth, raw_image);
         end = __rdtsc();
 
         stats.update(end - start);
@@ -199,9 +200,9 @@ void benchmarkUMESIMD(int width,
         // Rewrite algorithm output to BMP format
         for (int h = 0; h < height; h++) {
             for (int w = 0; w < width; w++) {
-                image[3 * (h*width + w) + 0] = raw_image[h*width + w];
-                image[3 * (h*width + w) + 1] = raw_image[h*width + w];
-                image[3 * (h*width + w) + 2] = raw_image[h*width + w];
+                image[3 * (h*width + w) + 0] = uint8_t(raw_image[h*width + w] & 0xFF);
+                image[3 * (h*width + w) + 1] = uint8_t((raw_image[h*width + w] & 0xFF00) >> 8);
+                image[3 * (h*width + w) + 2] = 0;
             }
         }
 
@@ -223,11 +224,12 @@ alignas(32) unsigned short g_raw_image[640 * 640];
 int
 main(int argc, char *argv[])
 {
-    int ITERATIONS = 100;
+    int ITERATIONS = 20;
 
     /* Config */
     int width = 640;
     int height = 640;
+    int depth = 4096;
 
     TimingStatistics stats_scalar_32f,
                      stats_scalar_64f,
@@ -264,7 +266,7 @@ main(int argc, char *argv[])
         " Algorithm parameters are:\n"
         "     image width: " << width << "\n"
         "     image height: " << height << "\n"
-        "     # of iterations: " << 4096 << "\n"
+        "     # of iterations: " << depth << "\n"
         "     # of executions per measurement: " << ITERATIONS << "\n\n";
 
     for (int i = 0; i < ITERATIONS; i++) {
@@ -273,16 +275,16 @@ main(int argc, char *argv[])
         memset(raw_image, 0, width*height *sizeof(unsigned short));
 
         start = __rdtsc();
-        MandelbrotCPU2(0.29768f, 0.48364f, 0.29778f, 0.48354f, width, height, 4096, raw_image);
+        MandelbrotCPU2(0.29768f, 0.48364f, 0.29778f, 0.48354f, width, height, depth, raw_image);
         end = __rdtsc();
 
         stats_scalar_32f.update(end - start);
 
         for (int k = 0; k < 640; k++) {
             for (int j = 0; j < 640; j++) {
-                image[3 * k * 640 + 3 * j] = (uint8_t)(raw_image[k * 640 + j]);
-                image[3 * k * 640 + 3 * j + 1] = (uint8_t)(raw_image[k * 640 + j]);
-                image[3 * k * 640 + 3 * j + 2] = (uint8_t)(raw_image[k * 640 + j]);
+                image[3 * k * 640 + 3 * j] = (uint8_t)(raw_image[k * 640 + j] & 0xFF);
+                image[3 * k * 640 + 3 * j + 1] = (uint8_t)((raw_image[k * 640 + j] & 0xFF00) >> 8);
+                image[3 * k * 640 + 3 * j + 2] = 0;
             }
         }
 
@@ -302,16 +304,16 @@ main(int argc, char *argv[])
         memset(raw_image, 0, width*height *sizeof(unsigned short));
 
         start = __rdtsc();
-        MandelbrotCPU2_64f(0.29768, 0.48364, 0.29778, 0.48354, width, height, 4096, raw_image);
+        MandelbrotCPU2_64f(0.29768, 0.48364, 0.29778, 0.48354, width, height, depth, raw_image);
         end = __rdtsc();
 
         stats_scalar_64f.update(end - start);
 
         for (int k = 0; k < 640; k++) {
             for (int j = 0; j < 640; j++) {
-                image[3 * k * 640 + 3 * j] = (uint8_t)(raw_image[k * 640 + j]);
-                image[3 * k * 640 + 3 * j + 1] = (uint8_t)(raw_image[k * 640 + j]);
-                image[3 * k * 640 + 3 * j + 2] = (uint8_t)(raw_image[k * 640 + j]);
+                image[3 * k * 640 + 3 * j] = (uint8_t)(raw_image[k * 640 + j] & 0xFF);
+                image[3 * k * 640 + 3 * j + 1] = (uint8_t)((raw_image[k * 640 + j] & 0xFF00) >> 8);
+                image[3 * k * 640 + 3 * j + 2] = 0;
             }
         }
 
@@ -331,15 +333,15 @@ main(int argc, char *argv[])
 
         memset(raw_image, 0, width*height *sizeof(unsigned short));
         start = __rdtsc();
-        //MandelbrotSSE2(0.29768f, 0.48364f, 0.29778f, 0.48354f, width, height, 4096, raw_image);
+        //MandelbrotSSE2(0.29768f, 0.48364f, 0.29778f, 0.48354f, width, height, depth, raw_image);
         end = __rdtsc();
 
         stats_sse.update(end - start);
         for (int k = 0; k < 640; k++) {
             for (int j = 0; j < 640; j++) {
-                image[3 * k * 640 + 3 * j] = (uint8_t)(raw_image[k * 640 + j]);
-                image[3 * k * 640 + 3 * j + 1] = (uint8_t)(raw_image[k * 640 + j]);
-                image[3 * k * 640 + 3 * j + 2] = (uint8_t)(raw_image[k * 640 + j]);
+                image[3 * k * 640 + 3 * j] = (uint8_t)(raw_image[k * 640 + j] & 0xFF);
+                image[3 * k * 640 + 3 * j + 1] = (uint8_t)((raw_image[k * 640 + j] & 0xFF00) >> 8);
+                image[3 * k * 640 + 3 * j + 2] = 0;
             }
         }
         // Saving to file to make sure the results generated are correct
@@ -361,15 +363,15 @@ main(int argc, char *argv[])
 
         memset(raw_image, 0, width*height *sizeof(unsigned short));
         start = __rdtsc();
-        MandelbrotAVX(0.29768f, 0.48364f, 0.29778f, 0.48354f, width, height, 4096, raw_image);
+        MandelbrotAVX(0.29768f, 0.48364f, 0.29778f, 0.48354f, width, height, depth, raw_image);
         end = __rdtsc();
 
         stats_avx2.update(end - start);
         for (int k = 0; k < 640; k++) {
             for (int j = 0; j < 640; j++) {
-                image[3 * k * 640 + 3 * j] = (uint8_t)(raw_image[k * 640 + j]);
-                image[3 * k * 640 + 3 * j + 1] = (uint8_t)(raw_image[k * 640 + j]);
-                image[3 * k * 640 + 3 * j + 2] = (uint8_t)(raw_image[k * 640 + j]);
+                image[3 * k * 640 + 3 * j] = (uint8_t)(raw_image[k * 640 + j] & 0x00FF);
+                image[3 * k * 640 + 3 * j + 1] = (uint8_t)((raw_image[k * 640 + j] & 0xFF00) >> 8);
+                image[3 * k * 640 + 3 * j + 2] = 0;
             }
         }
         // Saving to file to make sure the results generated are correct
@@ -386,18 +388,18 @@ main(int argc, char *argv[])
 #endif
 
 
-    benchmarkUMESIMD<UME::SIMD::SIMD1_32f>(width, height, "mandel_umesimd_1_32f.bmp", "SIMD code (1x32f): ", ITERATIONS, stats_scalar_32f);
-    benchmarkUMESIMD<UME::SIMD::SIMD2_32f>(width, height, "mandel_umesimd_2_32f.bmp", "SIMD code (2x32f): ", ITERATIONS, stats_scalar_32f);
-    benchmarkUMESIMD<UME::SIMD::SIMD4_32f>(width, height, "mandel_umesimd_4_32f.bmp", "SIMD code (4x32f): ", ITERATIONS, stats_scalar_32f);
-    benchmarkUMESIMD<UME::SIMD::SIMD8_32f>(width, height, "mandel_umesimd_8_32f.bmp", "SIMD code (8x32f): ", ITERATIONS, stats_scalar_32f);
-    benchmarkUMESIMD<UME::SIMD::SIMD16_32f>(width, height, "mandel_umesimd_16_32f.bmp", "SIMD code (16x32f): ", ITERATIONS, stats_scalar_32f);
-    benchmarkUMESIMD<UME::SIMD::SIMD32_32f>(width, height, "mandel_umesimd_32_32f.bmp", "SIMD code (32x32f): ", ITERATIONS, stats_scalar_32f);
+    benchmarkUMESIMD<UME::SIMD::SIMD1_32f>(width, height, depth, "mandel_umesimd_1_32f.bmp", "SIMD code (1x32f): ", ITERATIONS, stats_scalar_32f);
+    benchmarkUMESIMD<UME::SIMD::SIMD2_32f>(width, height, depth, "mandel_umesimd_2_32f.bmp", "SIMD code (2x32f): ", ITERATIONS, stats_scalar_32f);
+    benchmarkUMESIMD<UME::SIMD::SIMD4_32f>(width, height, depth, "mandel_umesimd_4_32f.bmp", "SIMD code (4x32f): ", ITERATIONS, stats_scalar_32f);
+    benchmarkUMESIMD<UME::SIMD::SIMD8_32f>(width, height, depth, "mandel_umesimd_8_32f.bmp", "SIMD code (8x32f): ", ITERATIONS, stats_scalar_32f);
+    benchmarkUMESIMD<UME::SIMD::SIMD16_32f>(width, height, depth, "mandel_umesimd_16_32f.bmp", "SIMD code (16x32f): ", ITERATIONS, stats_scalar_32f);
+    benchmarkUMESIMD<UME::SIMD::SIMD32_32f>(width, height, depth, "mandel_umesimd_32_32f.bmp", "SIMD code (32x32f): ", ITERATIONS, stats_scalar_32f);
 
-    benchmarkUMESIMD<UME::SIMD::SIMD1_64f>(width, height, "mandel_umesimd_1_64f.bmp", "SIMD code (1x64f): ", ITERATIONS, stats_scalar_32f);
-    benchmarkUMESIMD<UME::SIMD::SIMD2_64f>(width, height, "mandel_umesimd_2_64f.bmp", "SIMD code (2x64f): ", ITERATIONS, stats_scalar_32f);
-    benchmarkUMESIMD<UME::SIMD::SIMD4_64f>(width, height, "mandel_umesimd_4_64f.bmp", "SIMD code (4x64f): ", ITERATIONS, stats_scalar_32f);
-    benchmarkUMESIMD<UME::SIMD::SIMD8_64f>(width, height, "mandel_umesimd_8_64f.bmp", "SIMD code (8x64f): ", ITERATIONS, stats_scalar_32f);
-    benchmarkUMESIMD<UME::SIMD::SIMD16_64f>(width, height, "mandel_umesimd_16_64f.bmp", "SIMD code (16x64f): ", ITERATIONS, stats_scalar_32f);
+    benchmarkUMESIMD<UME::SIMD::SIMD1_64f>(width, height, depth, "mandel_umesimd_1_64f.bmp", "SIMD code (1x64f): ", ITERATIONS, stats_scalar_32f);
+    benchmarkUMESIMD<UME::SIMD::SIMD2_64f>(width, height, depth, "mandel_umesimd_2_64f.bmp", "SIMD code (2x64f): ", ITERATIONS, stats_scalar_32f);
+    benchmarkUMESIMD<UME::SIMD::SIMD4_64f>(width, height, depth, "mandel_umesimd_4_64f.bmp", "SIMD code (4x64f): ", ITERATIONS, stats_scalar_32f);
+    benchmarkUMESIMD<UME::SIMD::SIMD8_64f>(width, height, depth, "mandel_umesimd_8_64f.bmp", "SIMD code (8x64f): ", ITERATIONS, stats_scalar_32f);
+    benchmarkUMESIMD<UME::SIMD::SIMD16_64f>(width, height, depth, "mandel_umesimd_16_64f.bmp", "SIMD code (16x64f): ", ITERATIONS, stats_scalar_32f);
 
     return 0;
 }
