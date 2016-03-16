@@ -324,25 +324,25 @@ namespace SIMD {
         inline SIMDVec_f operator- (SIMDVec_f const & b) {
             return sub(b);
         }
-        // MSUBV      - Masked sub with vector
-        inline SIMDVec_f sub(SIMDVecMask<16> const & mask, SIMDVec_f const & b) {
+        // MSUBV
+        inline SIMDVec_f sub(SIMDVecMask<16> const & mask, SIMDVec_f const & b) const {
             __m512 t0 = _mm512_mask_sub_ps(mVec, mask.mMask, mVec, b.mVec);
             return SIMDVec_f(t0);
         }
         // SUBS       - Sub with scalar
-        inline SIMDVec_f sub(float b) {
+        inline SIMDVec_f sub(float b) const {
             return SIMDVec_f(_mm512_sub_ps(mVec, _mm512_set1_ps(b)));
         }
         inline SIMDVec_f operator- (float b) {
             return sub(b);
         }
-        // MSUBS      - Masked subtraction with scalar
-        inline SIMDVec_f sub(SIMDVecMask<16> const & mask, float b) {
+        // MSUBS
+        inline SIMDVec_f sub(SIMDVecMask<16> const & mask, float b) const {
             __m512 t0 = _mm512_set1_ps(b);
             __m512 t1 = _mm512_mask_sub_ps(mVec, mask.mMask, mVec, t0);
             return SIMDVec_f(t1);
         }
-        // SUBVA      - Sub with vector and assign
+        // SUBVA
         inline SIMDVec_f & suba(SIMDVec_f const & b) {
             mVec = _mm512_sub_ps(mVec, b.mVec);
             return *this;
@@ -350,12 +350,12 @@ namespace SIMD {
         inline SIMDVec_f & operator-= (SIMDVec_f const & b) {
             return suba(b);
         }
-        // MSUBVA     - Masked sub with vector and assign
+        // MSUBVA
         inline SIMDVec_f & suba(SIMDVecMask<16> const & mask, SIMDVec_f const & b) {
             mVec = _mm512_mask_sub_ps(mVec, mask.mMask, mVec, b.mVec);
             return *this;
         }
-        // SUBSA      - Sub with scalar and assign
+        // SUBSA
         inline SIMDVec_f & suba(float b) {
             mVec = _mm512_sub_ps(mVec, _mm512_set1_ps(b));
             return *this;
@@ -363,7 +363,7 @@ namespace SIMD {
         inline SIMDVec_f & operator-= (float b) {
             return suba(b);
         }
-        // MSUBSA     - Masked sub with scalar and assign
+        // MSUBSA
         inline SIMDVec_f & suba(SIMDVecMask<16> const & mask, float b) {
             __m512 t0 = _mm512_set1_ps(b);
             mVec = _mm512_mask_sub_ps(mVec, mask.mMask, mVec, t0);
@@ -763,12 +763,12 @@ namespace SIMD {
             return SIMDVec_f(t0);
         }
         // FMULSUBV  - Fused multiply and sub (A*B - C) with vectors
-        inline SIMDVec_f fmulsub(SIMDVec_f const & b, SIMDVec_f const & c) {
+        inline SIMDVec_f fmulsub(SIMDVec_f const & b, SIMDVec_f const & c) const {
             __m512 t0 = _mm512_fmsub_ps(mVec, b.mVec, c.mVec);
             return SIMDVec_f(t0);
         }
         // MFMULSUBV - Masked fused multiply and sub (A*B - C) with vectors
-        inline SIMDVec_f fmulsub(SIMDVecMask<16> const & mask, SIMDVec_f const & b, SIMDVec_f const & c) {
+        inline SIMDVec_f fmulsub(SIMDVecMask<16> const & mask, SIMDVec_f const & b, SIMDVec_f const & c) const {
             __m512 t0 = _mm512_mask_fmsub_ps(mVec, mask.mMask, b.mVec, c.mVec);
             return SIMDVec_f(t0);
         }
@@ -879,21 +879,21 @@ namespace SIMD {
             return *this;
         }
         // HMAX   - Max of elements of a vector (horizontal max)
-        inline float hmax() {
+        inline float hmax() const {
             return _mm512_reduce_gmax_ps(mVec);
         }
         // MHMAX  - Masked max of elements of a vector (horizontal max)
-        inline float hmax(SIMDVecMask<16> const & mask) {
+        inline float hmax(SIMDVecMask<16> const & mask) const {
             return _mm512_mask_reduce_gmax_ps(mask.mMask, mVec);
         }
         // IMAX   - Index of max element of a vector
         // MIMAX  - Masked index of max element of a vector
         // HMIN   - Min of elements of a vector (horizontal min)
-        inline float hmin() {
+        inline float hmin() const {
             return _mm512_reduce_gmin_ps(mVec);
         }
         // MHMIN  - Masked min of elements of a vector (horizontal min)
-        inline float hmin(SIMDVecMask<16> const & mask) {
+        inline float hmin(SIMDVecMask<16> const & mask) const {
             return _mm512_mask_reduce_gmin_ps(mask.mMask, mVec);
         }
         // IMIN   - Index of min element of a vector

@@ -187,7 +187,7 @@ namespace SIMD {
             mVec = _mm512_mask_load_epi32(mVec, mask.mMask, p);
         }
         // STORE
-        inline int32_t* store(int32_t* p) {
+        inline int32_t* store(int32_t* p) const {
             if ((uint64_t(p) % 64) == 0) {
                 _mm512_store_epi32(p, mVec);
             }
