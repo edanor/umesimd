@@ -1141,14 +1141,14 @@ namespace SIMD {
         // MSQRA
         // SQRT
         inline SIMDVec_f sqrt() const {
-            float t0 = std::sqrt(mVec[0]);
-            float t1 = std::sqrt(mVec[1]);
+            double t0 = std::sqrt(mVec[0]);
+            double t1 = std::sqrt(mVec[1]);
             return SIMDVec_f(t0, t1);
         }
         // MSQRT
         inline SIMDVec_f sqrt(SIMDVecMask<2> const & mask) const {
-            float t0 = mask.mMask[0] ? std::sqrt(mVec[0]) : mVec[0];
-            float t1 = mask.mMask[1] ? std::sqrt(mVec[1]) : mVec[1];
+            double t0 = mask.mMask[0] ? std::sqrt(mVec[0]) : mVec[0];
+            double t1 = mask.mMask[1] ? std::sqrt(mVec[1]) : mVec[1];
             return SIMDVec_f(t0, t1);
         }
         // SQRTA

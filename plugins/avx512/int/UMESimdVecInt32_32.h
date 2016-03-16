@@ -59,11 +59,7 @@ namespace SIMD {
     private:
         __m512i mVec[2];
 
-        inline explicit SIMDVec_i(__m512i & x0, __m512i & x1) { 
-            mVec[0] = x0;
-            mVec[1] = x1;
-        }
-        inline explicit SIMDVec_i(const __m512i & x0, __m512i & x1) { 
+        inline explicit SIMDVec_i(__m512i const & x0, __m512i const & x1) { 
             mVec[0] = x0;
             mVec[1] = x1;
         }

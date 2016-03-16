@@ -884,13 +884,22 @@ namespace SIMD {
             return (m0 == 0xFF);
         }
         // UNIQUE
-#if defined(__AVX512VL__) && defined(__AVX512CD__)
         inline bool unique() const {
+#if defined(__AVX512VL__) && defined(__AVX512CD__)
             __m256i t0 = _mm256_conflict_epi32(mVec);
             __mmask8 t1 = _mm256_cmpeq_epu32_mask(t0, _mm256_setzero_si256());
             return (t1 == 0xFF);
+#else
+        alignas(32) uint32_t raw[8];
+        _mm256_store_si256((__m256i*)raw, mVec);
+        for (int i = 0; i < 7; i++) {
+            for (int j = i + 1; j < 8; j++) {
+                if (raw[i] == raw[j]) return false;
+            }
         }
+        return true;
 #endif
+        }
         // HADD
         inline uint32_t hadd() const {
             __m512i t0 = _mm512_castsi256_si512(mVec);

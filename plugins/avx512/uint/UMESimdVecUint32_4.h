@@ -874,13 +874,23 @@ namespace SIMD {
             return (m0 == 0x0F);
         }
         // UNIQUE
-#if defined(__AVX512VL__) && defined(__AVX512CD__)
         inline bool unique() const {
+#if defined(__AVX512VL__) && defined(__AVX512CD__)
             __m128i t0 = _mm_conflict_epi32(mVec);
             __mmask8 m0 = _mm_cmpeq_epu32_mask(t0, _mm_setzero_si128());
             return (m0 == 0xF);
-        }
+#else
+            alignas(16) uint32_t raw[4];
+            _mm_store_si128((__m128i*)raw, mVec);
+            bool t0 = raw[0] != raw[1];
+            bool t1 = raw[0] != raw[2];
+            bool t2 = raw[0] != raw[3];
+            bool t3 = raw[1] != raw[2];
+            bool t4 = raw[1] != raw[3];
+            bool t5 = raw[2] != raw[3];
+            return t0 && t1 && t2 && t3 && t4 && t5;
 #endif
+        }
         // HADD
         inline uint32_t hadd() const {
             __m512i t0 = _mm512_castsi128_si512(mVec);

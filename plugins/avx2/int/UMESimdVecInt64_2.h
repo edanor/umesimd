@@ -1078,7 +1078,7 @@ namespace SIMD {
         }
         // MIMAX
         inline uint32_t imax(SIMDVecMask<2> const & mask) const {
-            int64_t i0 = 0xFFFFFFFFFFFFFFFF;
+            uint32_t i0 = 0xFFFFFFFF;
             int64_t t0 = std::numeric_limits<int64_t>::min();
             if(mask.mMask[0] == true) {
                 i0 = 0;
@@ -1105,7 +1105,7 @@ namespace SIMD {
         }
         // MIMIN
         inline uint32_t imin(SIMDVecMask<2> const & mask) const {
-            int64_t i0 = 0xFFFFFFFFFFFFFFFF;
+            uint32_t i0 = 0xFFFFFFFF;
             int64_t t0 = std::numeric_limits<int64_t>::max();
             if(mask.mMask[0] == true) {
                 i0 = 0;
