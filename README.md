@@ -1,7 +1,7 @@
-**Current stable release is: v0.3.2-stable**  
+**Current stable release is: v0.4.1-stable**  
 **To checkout stable release use:**  
  > git clone https://edanor@bitbucket.org/edanor/umesimd.git  
- > git checkout tags/v0.3.2-stable
+ > git checkout tags/v0.4.1-stable
 
 
 UME::SIMD is an explicit vectorization library. The library defines homogeneous interface for accessing functionality of SIMD registers of AVX, AVX2, AVX512 and IMCI (KNCNI, k1om) instruction set. 
@@ -30,7 +30,39 @@ Please refer to the wiki for introduction and additional information:
    >   [wiki pages](https://bitbucket.org/edanor/umesimd/wiki/Home)
 
    
-
+**RELEASE NOTES for v0.4.1-stable**   
+   
+Interface:   
+- Faster ROL/ROR emulation using LOAD/STORE   
+- Aliases for vector types. Now possible to use SIMDVec<BASE_T, VEC_LEN> instead of SIMDVec_u/i/f<BASE_T, VEC_LEN>   
+- Added non-member function interface. It is now possible to do:   
+        
+        add(vec_a, vec_b);
+        
+instead of:
+    
+        vec_a.add(vec_b);   
+   
+   
+Performance tuning:   
+- Major updates for AVX, AVX2 and AVX512.
+   
+Benchmarks:   
+- extended mandelbrot benchmark with 64b floating point implementation   
+- added mandelbrot2 benchmark. This benchmark is based on code available at: https://software.intel.com/en-us/articles/introduction-to-intel-advanced-vector-extensions   
+   
+   
+Fixes:   
+- KNC: add missing 'const' function qualifiers.   
+- KNL: MULV - incorrect temporaries.   
+- Fix compilation warnings with -Wall (GCC/ICC).   
+- Fix multiple errors in unit test data sets.   
+- Fix narrowing conversion errors in unit test data sets.   
+   
+Examples:   
+- Add example using scalar constant literals in templates.   
+   
+   
 **RELEASE NOTES for v0.3.2-stable**
 
 Interface:
