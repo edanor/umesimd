@@ -902,31 +902,31 @@ namespace SIMD {
         // (Mathematical functions)
         // ABS
         inline SIMDVec_f abs() const {
-            __m256d t0 = _mm256_cmp_pd(mVec, _mm256_set1_pd(0.0), 1); // compare LT '0'
-            __m256d t1 = _mm256_sub_pd(_mm256_set1_pd(0.0), mVec);
-            __m256d t2 = _mm256_blendv_pd(mVec, t1, t0);
+            __m256i t0 = _mm256_set1_epi64x(0x7FFFFFFFFFFFFFFF);
+            __m256d t1 = _mm256_castsi256_pd(t0);
+            __m256d t2 = _mm256_and_pd(t1, mVec);
             return SIMDVec_f(t2);
         }
         // MABS
         inline SIMDVec_f abs(SIMDVecMask<4> const & mask) const {
-            __m256d t0 = _mm256_cmp_pd(mVec, _mm256_set1_pd(0.0), 1); // compare LT '0'
-            __m256d t1 = _mm256_sub_pd(_mm256_set1_pd(0.0), mVec);
-            __m256d t2 = _mm256_blendv_pd(mVec, t1, t0);
+            __m256i t0 = _mm256_set1_epi64x(0x7FFFFFFFFFFFFFFF);
+            __m256d t1 = _mm256_castsi256_pd(t0);
+            __m256d t2 = _mm256_and_pd(t1, mVec);
             __m256d t3 = BLEND(mVec, t2, mask.mMask);
             return SIMDVec_f(t3);
         }
         // ABSA
         inline SIMDVec_f & absa() {
-            __m256d t0 = _mm256_cmp_pd(mVec, _mm256_set1_pd(0.0), 1); // compare LT '0'
-            __m256d t1 = _mm256_sub_pd(_mm256_set1_pd(0.0), mVec);
-            mVec = _mm256_blendv_pd(mVec, t1, t0);
+            __m256i t0 = _mm256_set1_epi64x(0x7FFFFFFFFFFFFFFF);
+            __m256d t1 = _mm256_castsi256_pd(t0);
+            mVec = _mm256_and_pd(t1, mVec);
             return *this;
         }
         // MABSA
         inline SIMDVec_f & absa(SIMDVecMask<4> const & mask) {
-            __m256d t0 = _mm256_cmp_pd(mVec, _mm256_set1_pd(0.0), 1); // compare LT '0'
-            __m256d t1 = _mm256_sub_pd(_mm256_set1_pd(0.0), mVec);
-            __m256d t2 = _mm256_blendv_pd(mVec, t1, t0);
+            __m256i t0 = _mm256_set1_epi64x(0x7FFFFFFFFFFFFFFF);
+            __m256d t1 = _mm256_castsi256_pd(t0);
+            __m256d t2 = _mm256_and_pd(t1, mVec);
             mVec = BLEND(mVec, t2, mask.mMask);
             return *this;
         }
