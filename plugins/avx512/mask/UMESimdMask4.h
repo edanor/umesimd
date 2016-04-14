@@ -135,7 +135,7 @@ namespace SIMD {
             p[3] = ((mMask & 8) != 0);
             return p;
         }
-        // ASSIGNV
+        // ASSIGN
         inline SIMDVecMask & operator= (SIMDVecMask const & x) {
             mMask = x.mMask;
             return *this;
@@ -145,65 +145,116 @@ namespace SIMD {
             __mmask8 t0 = mMask & b.mMask;
             return SIMDVecMask(t0);
         }
+        inline SIMDVecMask operator& (SIMDVecMask const & b) const {
+            return land(b);
+        }
+        inline SIMDVecMask operator&& (SIMDVecMask const & b) const {
+            return land(b);
+        }
         // LANDS
         inline SIMDVecMask land(bool b) const {
             __mmask8 t0 = mMask & (b ? 0xF : 0x0);
             return SIMDVecMask(t0);
+        }
+        inline SIMDVecMask operator& (bool b) const {
+            return land(b);
+        }
+        inline SIMDVecMask operator&& (bool b) const {
+            return land(b);
         }
         // LANDVA
         inline SIMDVecMask & landa(SIMDVecMask const & b) {
             mMask &= b.mMask;
             return *this;
         }
+        inline SIMDVecMask operator&= (SIMDVecMask const & b) {
+            return landa(b);
+        }
         // LANDSA
         inline SIMDVecMask & landa(bool b) {
             mMask &= (b ? 0xF : 0x0);
             return *this;
+        }
+        inline SIMDVecMask operator&= (bool b) {
+            return landa(b);
         }
         // LORV
         inline SIMDVecMask lor(SIMDVecMask const & b) const {
             __mmask8 t0 = mMask | b.mMask;
             return SIMDVecMask(t0);
         }
+        inline SIMDVecMask operator| (SIMDVecMask const & b) const {
+            return lor(b);
+        }
+        inline SIMDVecMask operator|| (SIMDVecMask const & b) const {
+            return lor(b);
+        }
         // LORS
         inline SIMDVecMask lor(bool b) const {
             __mmask8 t0 = mMask | (b ? 0xF : 0x0);
             return SIMDVecMask(t0);
+        }
+        inline SIMDVecMask operator| (bool b) const {
+            return lor(b);
+        }
+        inline SIMDVecMask operator|| (bool b) const {
+            return lor(b);
         }
         // LORVA
         inline SIMDVecMask & lora(SIMDVecMask const & b) {
             mMask |= b.mMask;
             return *this;
         }
+        inline SIMDVecMask & operator|= (SIMDVecMask const & b) {
+            return lora(b);
+        }
         // LORSA
         inline SIMDVecMask & lora(bool b) {
             mMask |= (b ? 0xF : 0x0);
             return *this;
+        }
+        inline SIMDVecMask & operator |= (bool b) {
+            return lora(b);
         }
         // LXORV
         inline SIMDVecMask lxor(SIMDVecMask const & b) const {
             __mmask8 t0 = mMask ^ b.mMask;
             return SIMDVecMask(t0);
         }
+        inline SIMDVecMask operator^ (SIMDVecMask const & b) const {
+            return lxor(b);
+        }
         // LXORS
         inline SIMDVecMask lxor(bool b) const {
             __mmask8 t0 = mMask ^ (b ? 0xF : 0x0);
             return SIMDVecMask(t0);
+        }
+        inline SIMDVecMask operator^ (bool b) const {
+            return lxor(b);
         }
         // LXORVA
         inline SIMDVecMask & lxora(SIMDVecMask const & b) {
             mMask ^= b.mMask;
             return *this;
         }
+        inline SIMDVecMask operator^= (SIMDVecMask const & b) {
+            return lxora(b);
+        }
         // LXORSA
         inline SIMDVecMask & lxora(bool b) {
             mMask ^= (b ? 0xF : 0x0);
             return *this;
         }
+        inline SIMDVecMask operator^= (bool b) {
+            return lxora(b);
+        }
         // LNOT
         inline SIMDVecMask lnot() const {
             __mmask8 t0 = ((~mMask) & 0xF);
             return SIMDVecMask(t0);
+        }
+        inline SIMDVecMask operator! () const {
+            return lnot();
         }
         // LNOTA
         inline SIMDVecMask & lnota() {
@@ -228,7 +279,6 @@ namespace SIMD {
             return t4;
         }
     };
-
 }
 }
 
