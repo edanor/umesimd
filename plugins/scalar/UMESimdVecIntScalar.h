@@ -49,5 +49,7 @@
 // ********************************************************************************************
 #include "int/UMESimdVecInt32_1.h"
 #include "int/UMESimdVecInt32_2.h"
+#include "int/UMESimdVecInt32_4.h"
+#include "int/UMESimdVecInt32_8.h"
 
 #endif

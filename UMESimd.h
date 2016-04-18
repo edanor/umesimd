@@ -121,20 +121,25 @@ namespace SIMD
     #define UME_ALIGNMENT_CHECK(ptr, alignment)
 #endif
 
-#if defined __AVX512F__
-    #include "plugins/UMESimdPluginAVX512.h"
-#elif defined (__MIC__)
-    #include "plugins/UMESimdPluginKNC.h"
-#elif defined __AVX2__
-    #include "plugins/UMESimdPluginAVX2.h"
-#elif defined __AVX__
-    #include "plugins/UMESimdPluginAVX.h"
-#else
-    // Use scalar emulation if not specializing
+#if defined FORCE_SCALAR
     #define USING_EMULATED_TYPES 1
     #include "plugins/UMESimdPluginScalarEmulation.h"
-#endif // INSTRUCTION SET
-
+#else
+    #if defined __AVX512F__
+        #include "plugins/UMESimdPluginAVX512.h"
+    #elif defined (__MIC__)
+        #include "plugins/UMESimdPluginKNC.h"
+    #elif defined __AVX2__
+        #include "plugins/UMESimdPluginAVX2.h"
+    #elif defined __AVX__
+        #include "plugins/UMESimdPluginAVX.h"
+    #else
+        // Use scalar emulation if not specializing
+        #define USING_EMULATED_TYPES 1
+        #include "plugins/UMESimdPluginScalarEmulation.h"
+    #endif // INSTRUCTION SET
+#endif
+    
 // Traits need to be defined after all SIMD vectors are defined. 
 #include "UMESimdTraits.h"
 #include "UMESimdScalarOperators.h"
