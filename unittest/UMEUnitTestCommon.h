@@ -38,6 +38,8 @@
 #include "UMEUnitTestDataSets32.h"
 #include "UMEUnitTestDataSets64.h"
 
+#include <random>
+
 int g_totalTests = 0;
 int g_totalFailed = 0;
 int g_testMaxId = 0;
@@ -311,6 +313,48 @@ bool valuesInRange(int32_t const *values, int32_t const *expectedValues, unsigne
 bool valuesInRange(int64_t const *values, int64_t const *expectedValues, unsigned int count, double errMargin)
 {
     return valuesExact(values, expectedValues, count);
+}
+
+// Randomization routines for random-generated tests.
+template<typename SCALAR_TYPE>
+SCALAR_TYPE randomValue(std::mt19937 & generator) {
+    std::uniform_int_distribution<SCALAR_TYPE> dist(std::numeric_limits<SCALAR_TYPE>::min(), std::numeric_limits<SCALAR_TYPE>::max());
+    return dist(generator);
+}
+
+template<>
+uint8_t randomValue<uint8_t>(std::mt19937 & generator) {
+    std::uniform_int_distribution<uint16_t> dist(0, 255);
+    return uint8_t(dist(generator));
+}
+
+template<>
+int8_t randomValue<int8_t>(std::mt19937 & generator) {
+    int16_t min = int16_t(std::numeric_limits<int8_t>::min());
+    int16_t max = int16_t(std::numeric_limits<int8_t>::max());
+
+    std::uniform_int_distribution<int16_t> dist(min, max);
+    int16_t t0 = dist(generator);
+    return int8_t(t0);
+}
+
+template<>
+float randomValue<float>(std::mt19937 & generator) {
+    std::uniform_real_distribution<float> dist(std::numeric_limits<float>::min(), std::numeric_limits<float>::max());
+    return dist(generator);
+}
+
+template<>
+double randomValue<double>(std::mt19937 & generator) {
+    std::uniform_real_distribution<double> dist(std::numeric_limits<double>::min(), std::numeric_limits<double>::max());
+    return dist(generator);
+}
+
+template<>
+bool randomValue<bool>(std::mt19937 & generator) {
+    std::uniform_int_distribution<int32_t> dist(std::numeric_limits<int32_t>::min(), std::numeric_limits<int32_t>::max());
+    int32_t t0 = dist(generator);
+    return t0 > 0;
 }
 
 template<typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
@@ -1201,7 +1245,7 @@ void genericINSERTTest()
 }
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
-void generiASSIGNVTest()
+void genericASSIGNVTest()
 {
     {
         SCALAR_TYPE values[VEC_LEN];
@@ -1224,7 +1268,7 @@ void generiASSIGNVTest()
 }
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
-void generiMASSIGNVTest()
+void genericMASSIGNVTest()
 {
     {
         SCALAR_TYPE values[VEC_LEN];
@@ -1265,7 +1309,7 @@ void generiMASSIGNVTest()
 }
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
-void generiASSIGNSTest()
+void genericASSIGNSTest()
 {
     {
         SCALAR_TYPE values[VEC_LEN];
@@ -1290,7 +1334,7 @@ void generiASSIGNSTest()
 }
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
-void generiMASSIGNSTest()
+void genericMASSIGNSTest()
 {
     {
         SCALAR_TYPE values[VEC_LEN];
@@ -1328,6 +1372,20 @@ void generiMASSIGNSTest()
         CHECK_CONDITION(inRange, "MASSIGNS");
     }
 }
+
+template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
+void genericLOAD_STORETest()
+{
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0;
+        vec0.load(DATA_SET::inputs::inputA);
+        vec0.store(values);
+        bool inRange = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange), "LOAD/STORE");
+    }
+}
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericADDVTest()
 {
@@ -1367,6 +1425,58 @@ void genericADDVTest()
     }
 }
 
+template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN>
+void genericADDVTest_random()
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    SCALAR_TYPE inputA[VEC_LEN];
+    SCALAR_TYPE inputB[VEC_LEN];
+    SCALAR_TYPE output[VEC_LEN];
+
+    for (int i = 0; i < VEC_LEN; i++) {
+        inputA[i] = randomValue<SCALAR_TYPE>(gen);
+        inputB[i] = randomValue<SCALAR_TYPE>(gen);
+        output[i] = inputA[i] + inputB[i];
+    }
+
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(inputA);
+        VEC_TYPE vec1(inputB);
+        VEC_TYPE vec2 = vec0.add(vec1);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange & isUnmodified), "ADDV gen");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(inputA);
+        VEC_TYPE vec1(inputB);
+        VEC_TYPE vec2 = vec0 + vec1;
+        vec2.store(values);
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange & isUnmodified), "ADDV(operator+) gen");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(inputA);
+        VEC_TYPE vec1(inputB);
+        VEC_TYPE vec2;
+        vec2 = UME::SIMD::FUNCTIONS::add(vec0, vec1);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange & isUnmodified), "ADDV(function) gen");
+    }
+}
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMADDVTest()
 {
@@ -1395,7 +1505,51 @@ void genericMADDVTest()
         CHECK_CONDITION((inRange & isUnmodified), "MADDV(function)");
     }
 }
-    
+
+template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN>
+void genericMADDVTest_random()
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    SCALAR_TYPE inputA[VEC_LEN];
+    SCALAR_TYPE inputB[VEC_LEN];
+    bool inputMask[VEC_LEN];
+    SCALAR_TYPE output[VEC_LEN];
+
+    for (int i = 0; i < VEC_LEN; i++) {
+        inputA[i] = randomValue<SCALAR_TYPE>(gen);
+        inputB[i] = randomValue<SCALAR_TYPE>(gen);
+        inputMask[i] = randomValue<bool>(gen);
+        output[i] = inputMask[i] ? inputA[i] + inputB[i] : inputA[i];
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(inputA);
+        VEC_TYPE vec1(inputB);
+        MASK_TYPE mask(inputMask);
+        VEC_TYPE vec2 = vec0.add(mask, vec1);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange & isUnmodified), "MADDV gen");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(inputA);
+        VEC_TYPE vec1(inputB);
+        MASK_TYPE mask(inputMask);
+        VEC_TYPE vec2;
+        vec2 = UME::SIMD::FUNCTIONS::add(mask, vec0, vec1);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange & isUnmodified), "MADDV(function) gen");
+    }
+}
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericADDSTest()
 {
@@ -1452,7 +1606,77 @@ void genericADDSTest()
         CHECK_CONDITION((inRange & isUnmodified), "ADDS(function - LHS scalar");
     }
 }
-    
+
+template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN>
+void genericADDSTest_random()
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    SCALAR_TYPE inputA[VEC_LEN];
+    SCALAR_TYPE inputB;
+    SCALAR_TYPE output[VEC_LEN];
+
+    inputB = randomValue<SCALAR_TYPE>(gen);
+    for (int i = 0; i < VEC_LEN; i++) {
+        inputA[i] = randomValue<SCALAR_TYPE>(gen);
+        output[i] = inputA[i] + inputB;
+    }
+
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(inputA);
+        VEC_TYPE vec1 = vec0.add(inputB);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange & isUnmodified), "ADDS gen");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(inputA);
+        VEC_TYPE vec1 = vec0 + inputB;
+        vec1.store(values);
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange & isUnmodified), "ADDS(operator+ RHS scalar) gen");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(inputA);
+        VEC_TYPE vec1 = inputB + vec0;
+        vec1.store(values);
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange & isUnmodified), "ADDS(operator+ LHS scalar) gen");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(inputA);
+        VEC_TYPE vec1;
+        vec1 = UME::SIMD::FUNCTIONS::add(vec0, inputB);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange & isUnmodified), "ADDV(function RHS scalar) gen");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(inputA);
+        VEC_TYPE vec1;
+        vec1 = UME::SIMD::FUNCTIONS::add(inputB, vec0);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange & isUnmodified), "ADDV(function LHS scalar) gen");
+    }
+}
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMADDSTest()
 {
@@ -1489,6 +1713,63 @@ void genericMADDSTest()
         bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
         //CHECK_CONDITION((inRange & isUnmodified), "MADDS (function - LHS scalar)");
         // TODO: MADDS with LHS requires separate test output data.
+    }
+}
+
+template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN>
+void genericMADDSTest_random()
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    SCALAR_TYPE inputA[VEC_LEN];
+    SCALAR_TYPE inputB;
+    SCALAR_TYPE output[VEC_LEN];
+    SCALAR_TYPE outputLHS[VEC_LEN];
+    bool inputMask[VEC_LEN];
+
+    inputB = randomValue<SCALAR_TYPE>(gen);
+    for (int i = 0; i < VEC_LEN; i++) {
+        inputA[i] = randomValue<SCALAR_TYPE>(gen);
+        inputMask[i] = randomValue<bool>(gen);
+        output[i] = inputMask[i] ? inputA[i] + inputB : inputA[i];
+        outputLHS[i] = inputMask[i] ? inputA[i] + inputB : inputB;
+    }
+
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(inputA);
+        MASK_TYPE mask(inputMask);
+        VEC_TYPE vec1 = vec0.add(mask, inputB);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange & isUnmodified), "MADDS gen");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(inputA);
+        VEC_TYPE vec1;
+        MASK_TYPE mask(inputMask);
+        vec1 = UME::SIMD::FUNCTIONS::add(mask, vec0, inputB);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange & isUnmodified), "MADDS(function RHS scalar) gen");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(inputA);
+        VEC_TYPE vec1;
+        MASK_TYPE mask(inputMask);
+        vec1 = UME::SIMD::FUNCTIONS::add(mask, inputB, vec0);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, outputLHS, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange & isUnmodified), "MADDS(function LHS scalar) gen");
     }
 }
 
@@ -1592,6 +1873,59 @@ void genericMADDSATest()
     }
 }
 
+template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN>
+void genericSADDVTest_random() {
+
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    SCALAR_TYPE inputA[VEC_LEN];
+    SCALAR_TYPE inputB[VEC_LEN];
+    SCALAR_TYPE output[VEC_LEN];
+
+    SCALAR_TYPE maxVal = std::numeric_limits<SCALAR_TYPE>::max();
+    SCALAR_TYPE minVal = std::numeric_limits<SCALAR_TYPE>::min();
+
+    for (int i = 0; i < VEC_LEN; i++) {
+        inputA[i] = randomValue<SCALAR_TYPE>(gen);
+        inputB[i] = randomValue<SCALAR_TYPE>(gen);
+
+        if (inputA[i] > 0 && inputB[i] > 0) {
+            output[i] = ((maxVal - inputA[i]) < inputB[i]) ?  maxVal : inputA[i] + inputB[i];
+        }
+        else if (inputA[i] < 0 && inputB[i] < 0) {
+            output[i] = ((minVal - inputA[i]) > inputB[i]) ? minVal : inputA[i] + inputB[i];
+        }
+        else {
+            output[i] = inputA[i] + inputB[i];
+        }
+    }
+
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(inputA);
+        VEC_TYPE vec1(inputB);
+        VEC_TYPE vec2 = vec0.sadd(vec1);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange & isUnmodified), "SADDV gen");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(inputA);
+        VEC_TYPE vec1(inputB);
+        VEC_TYPE vec2;
+        vec2 = UME::SIMD::FUNCTIONS::sadd(vec0, vec1);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange & isUnmodified), "SADDV(function) gen");
+    }
+}
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericPOSTINCTest()
 {
@@ -1658,7 +1992,7 @@ void genericMPOSTINCTest()
         CHECK_CONDITION(inRange0 && inRange1, "MPOSTINC(function)");
     }
 }
-    
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericPREFINCTest()
 {
@@ -4250,7 +4584,8 @@ void genericHADDTest()
         CHECK_CONDITION(inRange, "HADD(function)");
     }
 }
-        // MHADD - Masked add elements of a vector (horizontal add)
+
+// MHADD - Masked add elements of a vector (horizontal add)
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericHMULTest()
 {
@@ -4267,6 +4602,39 @@ void genericHMULTest()
         CHECK_CONDITION(inRange, "HMUL(function)");
     }
 }
+
+template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN>
+void genericHMULTest_random()
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    SCALAR_TYPE inputA[VEC_LEN];
+    SCALAR_TYPE output;
+
+    for (int i = 0; i < VEC_LEN; i++) {
+        inputA[i] = randomValue<SCALAR_TYPE>(gen);
+    }
+
+    output = inputA[0];
+    for (int i = 1; i < VEC_LEN; i++) {
+        output *= inputA[i];
+    }
+
+    {
+        VEC_TYPE vec0(inputA);
+        SCALAR_TYPE value = vec0.hmul();
+        bool inRange = valueInRange(value, output, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange), "HMUL gen");
+    }
+    {
+        VEC_TYPE vec0(inputA);
+        SCALAR_TYPE value = UME::SIMD::FUNCTIONS::hmul(vec0);
+        bool inRange = valueInRange(value, output, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange), "HMUL(function) gen");
+    }
+}
+
         // MHMUL - Masked multiply elements of a vector (horizontal mul)
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
@@ -6227,6 +6595,37 @@ void genericTRUNCTest()
     }
 }
 
+template<typename VEC_TYPE, typename SCALAR_TYPE, typename VEC_INT_TYPE, typename SCALAR_INT_TYPE, int VEC_LEN>
+void genericTRUNCTest_random()
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    SCALAR_TYPE inputA[VEC_LEN];
+    SCALAR_INT_TYPE output[VEC_LEN];
+
+    for (int i = 0; i < VEC_LEN; i++) {
+        inputA[i] = randomValue<SCALAR_TYPE>(gen);
+        output[i] = SCALAR_INT_TYPE(inputA[i]);
+    }
+    {
+        SCALAR_INT_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(inputA);
+        VEC_INT_TYPE vec1 = vec0.trunc();
+        vec1.store(values);
+        bool exact = valuesExact(values, output, VEC_LEN);
+        CHECK_CONDITION(exact, "TRUNC gen");
+    }
+    {
+        SCALAR_INT_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(inputA);
+        VEC_INT_TYPE vec1 = UME::SIMD::FUNCTIONS::trunc(vec0);
+        vec1.store(values);
+        bool exact = valuesExact(values, output, VEC_LEN);
+        CHECK_CONDITION(exact, "TRUNC(function) gen");
+    }
+}
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename VEC_INT_TYPE, typename SCALAR_INT_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMTRUNCTest()
 {
@@ -6247,6 +6646,43 @@ void genericMTRUNCTest()
         vec1.store(values);
         bool exact = valuesExact(values, DATA_SET::outputs::MTRUNC, VEC_LEN);
         CHECK_CONDITION(exact, "MTRUNC(function)");
+    }
+}
+
+template<typename VEC_TYPE, typename SCALAR_TYPE, typename VEC_INT_TYPE, typename SCALAR_INT_TYPE, typename MASK_TYPE, int VEC_LEN>
+void genericMTRUNCTest_random()
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    SCALAR_TYPE inputA[VEC_LEN];
+    SCALAR_INT_TYPE output[VEC_LEN];
+    bool maskInput[VEC_LEN];
+
+    for (int i = 0; i < VEC_LEN; i++) {
+        inputA[i] = randomValue<SCALAR_TYPE>(gen);
+        maskInput[i] = randomValue<bool>(gen);
+
+        output[i] = maskInput[i] ? SCALAR_INT_TYPE(inputA[i]) : SCALAR_INT_TYPE(0);
+    }
+
+    {
+        SCALAR_INT_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(inputA);
+        MASK_TYPE mask(maskInput);
+        VEC_INT_TYPE vec1 = vec0.trunc(mask);
+        vec1.store(values);
+        bool exact = valuesExact(values, output, VEC_LEN);
+        CHECK_CONDITION(exact, "MTRUNC gen");
+    }
+    {
+        SCALAR_INT_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(inputA);
+        MASK_TYPE mask(maskInput);
+        VEC_INT_TYPE vec1 = UME::SIMD::FUNCTIONS::trunc(mask, vec0);
+        vec1.store(values);
+        bool exact = valuesExact(values, output, VEC_LEN);
+        CHECK_CONDITION(exact, "MTRUNC(function) gen");
     }
 }
 
@@ -6522,6 +6958,195 @@ void genericISZEROSUBTest()
     }
 }
 
+template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN>
+void genericEXPTest_random()
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    SCALAR_TYPE inputA[VEC_LEN];
+    SCALAR_TYPE output[VEC_LEN];
+
+    for (int i = 0; i < VEC_LEN; i++) {
+        inputA[i] = randomValue<SCALAR_TYPE>(gen);
+        output[i] = std::exp(inputA[i]);
+    }
+
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(inputA);
+        VEC_TYPE vec1 = vec0.exp();
+        vec1.store(values);
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange & isUnmodified), "EXP gen");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(inputA);
+        VEC_TYPE vec1;
+        vec1 = UME::SIMD::FUNCTIONS::exp(vec0);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange & isUnmodified), "EXP(function) gen");
+    }
+}
+
+template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN>
+void genericMEXPTest_random()
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    SCALAR_TYPE inputA[VEC_LEN];
+    SCALAR_TYPE output[VEC_LEN];
+    bool inputMask[VEC_LEN];
+
+    for (int i = 0; i < VEC_LEN; i++) {
+        inputA[i] = randomValue<SCALAR_TYPE>(gen);
+        inputMask[i] = randomValue<bool>(gen);
+        output[i] = inputMask[i] ? std::exp(inputA[i]) : inputA[i];
+    }
+
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(inputA);
+        MASK_TYPE mask(inputMask);
+        VEC_TYPE vec1 = vec0.exp(mask);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange & isUnmodified), "MEXP gen");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(inputA);
+        MASK_TYPE mask(inputMask);
+        VEC_TYPE vec1;
+        vec1 = UME::SIMD::FUNCTIONS::exp(mask, vec0);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange & isUnmodified), "MEXP(function) gen");
+    }
+}
+
+template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN>
+void genericLOGTest_random()
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    SCALAR_TYPE inputA[VEC_LEN];
+    SCALAR_TYPE output[VEC_LEN];
+
+    for (int i = 0; i < VEC_LEN; i++) {
+        inputA[i] = randomValue<SCALAR_TYPE>(gen);
+        output[i] = std::log(inputA[i]);
+    }
+
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(inputA);
+        VEC_TYPE vec1 = vec0.log();
+        vec1.store(values);
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange & isUnmodified), "LOG gen");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(inputA);
+        VEC_TYPE vec1;
+        vec1 = UME::SIMD::FUNCTIONS::log(vec0);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange & isUnmodified), "LOG(function) gen");
+    }
+}
+
+template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN>
+void genericLOG2Test_random()
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    SCALAR_TYPE inputA[VEC_LEN];
+    SCALAR_TYPE output[VEC_LEN];
+
+    for (int i = 0; i < VEC_LEN; i++) {
+        inputA[i] = randomValue<SCALAR_TYPE>(gen);
+        output[i] = std::log2(inputA[i]);
+    }
+
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(inputA);
+        VEC_TYPE vec1 = vec0.log2();
+        vec1.store(values);
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange & isUnmodified), "LOG2 gen");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(inputA);
+        VEC_TYPE vec1;
+        vec1 = UME::SIMD::FUNCTIONS::log2(vec0);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange & isUnmodified), "LOG2(function) gen");
+    }
+}
+
+template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN>
+void genericLOG10Test_random()
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    SCALAR_TYPE inputA[VEC_LEN];
+    SCALAR_TYPE output[VEC_LEN];
+
+    for (int i = 0; i < VEC_LEN; i++) {
+        inputA[i] = randomValue<SCALAR_TYPE>(gen);
+        output[i] = std::log10(inputA[i]);
+    }
+
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(inputA);
+        VEC_TYPE vec1 = vec0.log10();
+        vec1.store(values);
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange & isUnmodified), "LOG10 gen");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(inputA);
+        VEC_TYPE vec1;
+        vec1 = UME::SIMD::FUNCTIONS::log10(vec0);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange & isUnmodified), "LOG10(function) gen");
+    }
+}
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericSINTest()
 {
@@ -6544,6 +7169,43 @@ void genericSINTest()
         vec0.store(values);
         bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
         CHECK_CONDITION((inRange && isUnmodified), "SIN(function)");
+    }
+}
+
+template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN>
+void genericSINTest_random()
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    SCALAR_TYPE inputA[VEC_LEN];
+    SCALAR_TYPE output[VEC_LEN];
+
+    for (int i = 0; i < VEC_LEN; i++) {
+        inputA[i] = randomValue<SCALAR_TYPE>(gen);
+        output[i] = std::sin(inputA[i]);
+    }
+
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(inputA);
+        VEC_TYPE vec1 = vec0.sin();
+        vec1.store(values);
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange & isUnmodified), "SIN gen");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(inputA);
+        VEC_TYPE vec1;
+        vec1 = UME::SIMD::FUNCTIONS::sin(vec0);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange & isUnmodified), "SIN(function) gen");
     }
 }
 
@@ -6599,6 +7261,43 @@ void genericCOSTest()
     }
 }
 
+template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN>
+void genericCOSTest_random()
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    SCALAR_TYPE inputA[VEC_LEN];
+    SCALAR_TYPE output[VEC_LEN];
+
+    for (int i = 0; i < VEC_LEN; i++) {
+        inputA[i] = randomValue<SCALAR_TYPE>(gen);
+        output[i] = std::cos(inputA[i]);
+    }
+
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(inputA);
+        VEC_TYPE vec1 = vec0.cos();
+        vec1.store(values);
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange & isUnmodified), "COS gen");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(inputA);
+        VEC_TYPE vec1;
+        vec1 = UME::SIMD::FUNCTIONS::cos(vec0);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange & isUnmodified), "COS(function) gen");
+    }
+}
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMCOSTest()
 {
@@ -6651,6 +7350,43 @@ void genericTANTest()
     }
 }
 
+template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN>
+void genericTANTest_random()
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    SCALAR_TYPE inputA[VEC_LEN];
+    SCALAR_TYPE output[VEC_LEN];
+
+    for (int i = 0; i < VEC_LEN; i++) {
+        inputA[i] = randomValue<SCALAR_TYPE>(gen);
+        output[i] = std::tan(inputA[i]);
+    }
+
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(inputA);
+        VEC_TYPE vec1 = vec0.tan();
+        vec1.store(values);
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange & isUnmodified), "TAN gen");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(inputA);
+        VEC_TYPE vec1;
+        vec1 = UME::SIMD::FUNCTIONS::tan(vec0);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange & isUnmodified), "TAN(function) gen");
+    }
+}
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMTANTest()
 {
@@ -6700,6 +7436,43 @@ void genericCTANTest()
         vec0.store(values);
         bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
         CHECK_CONDITION((inRange && isUnmodified), "CTAN(function)");
+    }
+}
+
+template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN>
+void genericCTANTest_random()
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    SCALAR_TYPE inputA[VEC_LEN];
+    SCALAR_TYPE output[VEC_LEN];
+
+    for (int i = 0; i < VEC_LEN; i++) {
+        inputA[i] = randomValue<SCALAR_TYPE>(gen);
+        output[i] = SCALAR_TYPE(1.0f)/std::tan(inputA[i]);
+    }
+
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(inputA);
+        VEC_TYPE vec1 = vec0.ctan();
+        vec1.store(values);
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange & isUnmodified), "CTAN gen");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(inputA);
+        VEC_TYPE vec1;
+        vec1 = UME::SIMD::FUNCTIONS::ctan(vec0);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange & isUnmodified), "CTAN(function) gen");
     }
 }
 
@@ -6790,6 +7563,29 @@ void genericFTOUTest()
     CHECK_CONDITION(inRange, "FTOU");
 }
 
+template<typename FLOAT_VEC_TYPE, typename FLOAT_SCALAR_TYPE, typename UINT_VEC_TYPE, typename UINT_SCALAR_TYPE, int VEC_LEN>
+void genericFTOUTest_random()
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    FLOAT_SCALAR_TYPE inputA[VEC_LEN];
+    UINT_SCALAR_TYPE output[VEC_LEN];
+    
+    for (int i = 0; i < VEC_LEN; i++) {
+        inputA[i] = randomValue<FLOAT_SCALAR_TYPE>(gen);
+        output[i] = UINT_SCALAR_TYPE(inputA[i]);
+    }
+    {
+        UINT_SCALAR_TYPE values[VEC_LEN];
+        FLOAT_VEC_TYPE vec0(inputA);
+        UINT_VEC_TYPE vec1 = UINT_VEC_TYPE(vec0);
+        vec1.store(values);
+        bool exact = valuesExact(values, output, VEC_LEN);
+        CHECK_CONDITION(exact, "FTOU gen");
+    }
+}
+
 template<typename FLOAT_VEC_TYPE, typename INT_VEC_TYPE, typename INT_SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericFTOITest()
 {
@@ -6800,6 +7596,29 @@ void genericFTOITest()
     vec1.store(intValues);
     bool inRange = valuesInRange(intValues, DATA_SET::outputs::FTOI, VEC_LEN, 0.1f);
     CHECK_CONDITION(inRange, "FTOI");
+}
+
+template<typename FLOAT_VEC_TYPE, typename FLOAT_SCALAR_TYPE, typename INT_VEC_TYPE, typename INT_SCALAR_TYPE, int VEC_LEN>
+void genericFTOITest_random()
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    FLOAT_SCALAR_TYPE inputA[VEC_LEN];
+    INT_SCALAR_TYPE output[VEC_LEN];
+
+    for (int i = 0; i < VEC_LEN; i++) {
+        inputA[i] = randomValue<FLOAT_SCALAR_TYPE>(gen);
+        output[i] = INT_SCALAR_TYPE(inputA[i]);
+    }
+    {
+        INT_SCALAR_TYPE values[VEC_LEN];
+        FLOAT_VEC_TYPE vec0(inputA);
+        INT_VEC_TYPE vec1 = INT_VEC_TYPE(vec0);
+        vec1.store(values);
+        bool exact = valuesExact(values, output, VEC_LEN);
+        CHECK_CONDITION(exact, "FTOI gen");
+    }
 }
 
 template<typename VEC_TYPE_X, typename SCALAR_TYPE_X, typename VEC_TYPE_Y, typename SCALAR_TYPE_Y, int VEC_LEN, typename DATA_SET>
@@ -6854,32 +7673,35 @@ void genericBaseInterfaceTest()
 {   
     genericINSERTTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
     genericEXTRACTTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
-    generiASSIGNVTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
-    generiMASSIGNVTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
-    generiASSIGNSTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
-    generiMASSIGNSTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericASSIGNVTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
+    genericMASSIGNVTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericASSIGNSTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
+    genericMASSIGNSTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
     // PREFETCH0
     // PREFETCH1
     // PREFETCH2
-    // LOAD
+    genericLOAD_STORETest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
     // MLOAD
+    // MSTORE
     // LOADA
     // MLOADA
-    // STORE
-    // MSTORE
     // STOREA
     // MSTOREA
     // SWIZZLE
     // SWIZZLEA
     genericADDVTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
+    genericADDVTest_random<VEC_TYPE, SCALAR_TYPE, VEC_LEN>();
     genericMADDVTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericMADDVTest_random<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN>();
     genericADDSTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
+    genericADDSTest_random<VEC_TYPE, SCALAR_TYPE, VEC_LEN>();
     genericMADDSTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericMADDSTest_random<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN>();
     genericADDVATest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
     genericMADDVATest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
     genericADDSATest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
     genericMADDSATest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
-    // SADDV
+    genericSADDVTest_random<VEC_TYPE, SCALAR_TYPE, VEC_LEN>();
     // MSADDV
     // SADDS
     // MSADDS
@@ -6966,7 +7788,8 @@ void genericBaseInterfaceTest()
     // MHADD
     // HADDS
     // MHADDS
-    genericHMULTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
+    //genericHMULTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
+    genericHMULTest_random<VEC_TYPE, SCALAR_TYPE, VEC_LEN>();
     // MHMUL
     // HMULS
     // MHMULS
@@ -7124,8 +7947,10 @@ void genericFloatInterfaceTest()
 {
     genericROUNDTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
     genericMROUNDTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
-    genericTRUNCTest<VEC_TYPE, SCALAR_TYPE, VEC_INT_TYPE, SCALAR_INT_TYPE, VEC_LEN, DATA_SET>();
-    genericMTRUNCTest<VEC_TYPE, SCALAR_TYPE, VEC_INT_TYPE, SCALAR_INT_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    //genericTRUNCTest<VEC_TYPE, SCALAR_TYPE, VEC_INT_TYPE, SCALAR_INT_TYPE, VEC_LEN, DATA_SET>();
+    genericTRUNCTest_random<VEC_TYPE, SCALAR_TYPE, VEC_INT_TYPE, SCALAR_INT_TYPE, VEC_LEN>();
+    //genericMTRUNCTest<VEC_TYPE, SCALAR_TYPE, VEC_INT_TYPE, SCALAR_INT_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericMTRUNCTest_random<VEC_TYPE, SCALAR_TYPE, VEC_INT_TYPE, SCALAR_INT_TYPE, MASK_TYPE, VEC_LEN>();
     genericFLOORTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
     genericMFLOORTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
     genericCEILTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
@@ -7148,14 +7973,24 @@ void genericFloatInterfaceTest()
     genericSQRTATest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
     genericMSQRTATest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
     
-    genericSINTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
-    genericMSINTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
-    genericCOSTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
-    genericMCOSTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
-    genericTANTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
-    genericMTANTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
-    genericCTANTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
-    genericMCTANTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericEXPTest_random<VEC_TYPE, SCALAR_TYPE, VEC_LEN>();
+    genericMEXPTest_random<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN>();
+    genericLOGTest_random<VEC_TYPE, SCALAR_TYPE, VEC_LEN>();
+    genericLOG2Test_random<VEC_TYPE, SCALAR_TYPE, VEC_LEN>();
+    genericLOG10Test_random<VEC_TYPE, SCALAR_TYPE, VEC_LEN>();
+
+    //genericSINTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
+    genericSINTest_random<VEC_TYPE, SCALAR_TYPE, VEC_LEN>();
+    //genericMSINTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    //genericCOSTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
+    genericCOSTest_random<VEC_TYPE, SCALAR_TYPE, VEC_LEN>();
+    //genericMCOSTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    //genericTANTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
+    genericTANTest_random<VEC_TYPE, SCALAR_TYPE, VEC_LEN>();
+    //genericMTANTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    //genericCTANTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
+    genericCTANTest_random<VEC_TYPE, SCALAR_TYPE, VEC_LEN>();
+    //genericMCTANTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
 }
 
 template<typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
@@ -7267,8 +8102,10 @@ void genericFloatTest() {
     genericGatherScatterInterfaceTest<FLOAT_VEC_TYPE, FLOAT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET> ();
     genericSignInterfaceTest<FLOAT_VEC_TYPE, FLOAT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
     genericFloatInterfaceTest<FLOAT_VEC_TYPE, FLOAT_SCALAR_TYPE, INT_VEC_TYPE, INT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
-    genericFTOUTest<FLOAT_VEC_TYPE, UINT_VEC_TYPE, UINT_SCALAR_TYPE, VEC_LEN, DATA_SET>();
-    genericFTOITest<FLOAT_VEC_TYPE, INT_VEC_TYPE, INT_SCALAR_TYPE, VEC_LEN, DATA_SET>();
+    //genericFTOUTest<FLOAT_VEC_TYPE, UINT_VEC_TYPE, UINT_SCALAR_TYPE, VEC_LEN, DATA_SET>();
+    genericFTOUTest_random<FLOAT_VEC_TYPE, FLOAT_SCALAR_TYPE, UINT_VEC_TYPE, UINT_SCALAR_TYPE, VEC_LEN>();
+    //genericFTOITest<FLOAT_VEC_TYPE, INT_VEC_TYPE, INT_SCALAR_TYPE, VEC_LEN, DATA_SET>();
+    genericFTOITest_random<FLOAT_VEC_TYPE, FLOAT_SCALAR_TYPE, INT_VEC_TYPE, INT_SCALAR_TYPE, VEC_LEN>();
 }
 
 #endif
