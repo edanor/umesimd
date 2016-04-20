@@ -397,7 +397,7 @@ namespace SIMD {
             return SIMDVec_u(t0, t1);
         }
         inline SIMDVec_u operator- (uint32_t b) const {
-            return this->sub(b);
+            return sub(b);
         }
         // MSUBS
         inline SIMDVec_u sub(SIMDVecMask<2> const & mask, uint32_t b) const {

@@ -188,7 +188,7 @@ namespace SIMD {
         // MSTOREA
         inline uint32_t* storea(SIMDVecMask<2> const & mask, uint32_t* p) const {
             if (mask.mMask[0] == true) p[0] = mVec[0];
-            if (mask.mMask[1] == true) p[0] = mVec[1];
+            if (mask.mMask[1] == true) p[1] = mVec[1];
             return p;
         }
 
@@ -860,7 +860,7 @@ namespace SIMD {
         // MHMUL
         inline uint32_t hmul(SIMDVecMask<2> const & mask) const {
             uint32_t t0 = mask.mMask[0] ? mVec[0] : 1;
-            uint32_t t1 = mask.mMask[1] ? mVec[1]*t0 : t0;
+            uint32_t t1 = mask.mMask[1] ? mVec[1] * t0 : t0;
             return t1;
         }
         // HMULS

@@ -188,7 +188,7 @@ namespace SIMD {
         // MSTOREA
         inline uint32_t* storea(SIMDVecMask<2> const & mask, uint32_t* p) const {
             if (mask.mMask[0] == true) p[0] = mVec[0];
-            if (mask.mMask[1] == true) p[0] = mVec[1];
+            if (mask.mMask[1] == true) p[1] = mVec[1];
             return p;
         }
 
@@ -397,7 +397,7 @@ namespace SIMD {
             return SIMDVec_u(t0, t1);
         }
         inline SIMDVec_u operator- (uint32_t b) const {
-            return this->sub(b);
+            return sub(b);
         }
         // MSUBS
         inline SIMDVec_u sub(SIMDVecMask<2> const & mask, uint32_t b) const {

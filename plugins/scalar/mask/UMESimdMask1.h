@@ -44,7 +44,9 @@ namespace SIMD {
         1>
     {
         friend class SIMDVec_u<uint32_t, 1>;
+        friend class SIMDVec_u<uint64_t, 1>;
         friend class SIMDVec_i<int32_t, 1>;
+        friend class SIMDVec_i<int64_t, 1>;
         friend class SIMDVec_f<float, 1>;
         friend class SIMDVec_f<double, 1>;
     private:
@@ -85,6 +87,11 @@ namespace SIMD {
         inline SIMDVecMask & operator= (SIMDVecMask const & mask) {
             mMask = mask.mMask;
             return *this;
+        }
+
+        // HLOR
+        inline bool hlor() const {
+            return mMask;
         }
     };
 

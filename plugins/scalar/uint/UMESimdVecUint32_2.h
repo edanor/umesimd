@@ -397,7 +397,7 @@ namespace SIMD {
             return SIMDVec_u(t0, t1);
         }
         inline SIMDVec_u operator- (uint32_t b) const {
-            return this->sub(b);
+            return sub(b);
         }
         // MSUBS
         inline SIMDVec_u sub(SIMDVecMask<2> const & mask, uint32_t b) const {
@@ -860,7 +860,7 @@ namespace SIMD {
         // MHMUL
         inline uint32_t hmul(SIMDVecMask<2> const & mask) const {
             uint32_t t0 = mask.mMask[0] ? mVec[0] : 1;
-            uint32_t t1 = mask.mMask[1] ? mVec[1]*t0 : t0;
+            uint32_t t1 = mask.mMask[1] ? mVec[1] * t0 : t0;
             return t1;
         }
         // HMULS

@@ -57,6 +57,7 @@ namespace SIMD {
         friend class SIMDVec_f<float, 2>;
         friend class SIMDVec_f<double, 2>;
 
+        friend class SIMDVec_i<int32_t, 4>;
     private:
         int32_t mVec[2];
 
