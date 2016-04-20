@@ -393,9 +393,19 @@ namespace SIMD
             VEC_TYPE retval;
             decltype(a.extract(0)) temp = 0;
             // maximum value
-            decltype(a.extract(0)) satValue = std::numeric_limits<decltype(a.extract(0))>::max();
+            decltype(a.extract(0)) maxValue = std::numeric_limits<decltype(a.extract(0))>::max();
+            decltype(a.extract(0)) minValue = std::numeric_limits<decltype(a.extract(0))>::min();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
-                temp = (a[i] > (satValue - b[i])) ? satValue : (a[i] + b[i]);
+                if (a[i] > 0 && b[i] > 0) {
+                    temp = a[i] > (maxValue - b[i]) ? maxValue : (a[i] + b[i]);
+                }
+                else if (a[i] < 0 && b[i] < 0) {
+                    temp = a[i] < (minValue - b[i]) ? minValue : (a[i] + b[i]);
+                }
+                else
+                {
+                    temp = a[i] + b[i];
+                }
                 retval.insert(i, temp);
             }
             return retval;
@@ -4269,7 +4279,7 @@ namespace SIMD
         }
         template<typename T>
         inline bool operator!=(T const & rhs) {
-            return mVecRef_RW.extract(mIndexRef) == rhs;
+            return mVecRef_RW.extract(mIndexRef) != rhs;
         }
         inline bool operator!= (IntermediateIndex const & x) {
             return mVecRef_RW.extract(mIndexRef) !=
