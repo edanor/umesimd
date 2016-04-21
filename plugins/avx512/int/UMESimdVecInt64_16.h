@@ -207,8 +207,8 @@ namespace SIMD {
 
         // LOAD
         inline SIMDVec_i & load(int64_t const *p) {
-            mVec[0] = _mm512_loadu_si512((const __m512i *)p);
-            mVec[1] = _mm512_loadu_si512((const __m512i *)p + 8);
+            mVec[0] = _mm512_loadu_si512(p);
+            mVec[1] = _mm512_loadu_si512(p + 8);
             return *this;
         }
         // MLOAD
@@ -219,8 +219,8 @@ namespace SIMD {
         }
         // LOADA
         inline SIMDVec_i & loada(int64_t const *p) {
-            mVec[0] = _mm512_load_si512((const __m512i *) p);
-            mVec[1] = _mm512_load_si512((const __m512i *) p + 8);
+            mVec[0] = _mm512_load_si512(p);
+            mVec[1] = _mm512_load_si512(p + 8);
             return *this;
         }
         // MLOADA
@@ -231,8 +231,8 @@ namespace SIMD {
         }
         // STORE
         inline int64_t* store(int64_t* p) const {
-            _mm512_storeu_si512((__m512i *)p, mVec[0]);
-            _mm512_storeu_si512((__m512i *)(p + 8), mVec[1]);
+            _mm512_storeu_si512(p, mVec[0]);
+            _mm512_storeu_si512(p + 8, mVec[1]);
             return p;
         }
         // MSTORE
@@ -243,14 +243,14 @@ namespace SIMD {
         }
         // STOREA
         inline int64_t* storea(int64_t* p) const {
-            _mm512_store_si512((__m512i *)p, mVec[0]);
-            _mm512_store_si512((__m512i *)(p + 8), mVec[1]);
+            _mm512_store_si512(p, mVec[0]);
+            _mm512_store_si512(p + 8, mVec[1]);
             return p;
         }
         // MSTOREA
         inline int64_t* storea(SIMDVecMask<16> const & mask, int64_t* p) const {
             _mm512_mask_store_epi64(p, mask.mMask & 0xFF, mVec[0]);
-            _mm512_mask_store_epi64((p + 8), ((mask.mMask & 0xFF00) >> 8), mVec[1]);
+            _mm512_mask_store_epi64(p + 8, ((mask.mMask & 0xFF00) >> 8), mVec[1]);
             return p;
         }
 
@@ -584,7 +584,6 @@ namespace SIMD {
             int64_t t28 = t20 * t24;
             __m512i t0 = _mm512_set_epi64(t28, t27, t26, t25, t14, t13, t12, t11);
 
-
             __m256i t29 = _mm512_extracti64x4_epi64(mVec[1], 0);
             __m256i t30 = _mm512_extracti64x4_epi64(b.mVec[1], 0);
             int64_t t31 = _mm256_extract_epi64(t29, 0);
@@ -613,7 +612,7 @@ namespace SIMD {
             int64_t t54 = t46 * t50;
             int64_t t55 = t47 * t51;
             int64_t t56 = t48 * t52;
-            __m512i t57 = _mm512_set_epi64(t56, t55, t54, t53, t52, t51, t50, t49);
+            __m512i t57 = _mm512_set_epi64(t56, t55, t54, t53, t42, t41, t40, t39);
             return SIMDVec_i(t0, t57);
 #endif
         }
@@ -979,7 +978,7 @@ namespace SIMD {
             int64_t t54 = t46 * t50;
             int64_t t55 = t47 * t51;
             int64_t t56 = t48 * t52;
-            mVec[1] = _mm512_set_epi64(t56, t55, t54, t53, t52, t51, t50, t49);
+            mVec[1] = _mm512_set_epi64(t56, t55, t54, t53, t42, t41, t40, t39);
 #endif
             return *this;
         }
@@ -1158,7 +1157,7 @@ namespace SIMD {
             int64_t t54 = t46 * t50;
             int64_t t55 = t47 * t51;
             int64_t t56 = t48 * t52;
-            mVec[1] = _mm512_set_epi64(t56, t55, t54, t53, t52, t51, t50, t49);
+            mVec[1] = _mm512_set_epi64(t56, t55, t54, t53, t42, t41, t40, t39);
 #endif
             return *this;
         }

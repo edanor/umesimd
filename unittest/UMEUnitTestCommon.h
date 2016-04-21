@@ -2097,7 +2097,59 @@ void genericSUBVTest()
         CHECK_CONDITION((inRange && isUnmodified), "SUBV(function)");
     }
 }
-    
+
+template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN>
+void genericSUBVTest_random()
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    SCALAR_TYPE inputA[VEC_LEN];
+    SCALAR_TYPE inputB[VEC_LEN];
+    SCALAR_TYPE output[VEC_LEN];
+
+    for (int i = 0; i < VEC_LEN; i++) {
+        inputA[i] = randomValue<SCALAR_TYPE>(gen);
+        inputB[i] = randomValue<SCALAR_TYPE>(gen);
+        output[i] = inputA[i] - inputB[i];
+    }
+
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(inputA);
+        VEC_TYPE vec1(inputB);
+        VEC_TYPE vec2 = vec0.sub(vec1);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange & isUnmodified), "SUBV gen");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(inputA);
+        VEC_TYPE vec1(inputB);
+        VEC_TYPE vec2 = vec0 - vec1;
+        vec2.store(values);
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange & isUnmodified), "SUBV(operator-) gen");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(inputA);
+        VEC_TYPE vec1(inputB);
+        VEC_TYPE vec2;
+        vec2 = UME::SIMD::FUNCTIONS::sub(vec0, vec1);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange & isUnmodified), "SUBV(function) gen");
+    }
+}
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMSUBVTest()
 {
@@ -4636,7 +4688,6 @@ void genericHMULTest_random()
 }
 
         // MHMUL - Masked multiply elements of a vector (horizontal mul)
-
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericHBANDTest()
 {
@@ -7714,6 +7765,7 @@ void genericBaseInterfaceTest()
     genericPREFINCTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
     genericMPREFINCTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
     genericSUBVTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
+    genericSUBVTest_random<VEC_TYPE, SCALAR_TYPE, VEC_LEN>();
     genericMSUBVTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
     genericSUBSTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
     genericMSUBSTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();

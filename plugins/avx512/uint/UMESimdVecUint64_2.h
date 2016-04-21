@@ -298,7 +298,7 @@ namespace SIMD {
 #if defined(__AVX512VL__)
             __m128i t0 = _mm_mask_add_epi64(mVec, mask.mMask, mVec, SET1_EPI64(b));
 #else
-            __m128i t0 = EXPAND_CALL_BINARY_SCALAR_MASK(mVec, mask.mMask, b, _mm512_mask_add_epi64);
+            __m128i t0 = EXPAND_CALL_BINARY_SCALAR_MASK(mVec, b, mask.mMask, _mm512_mask_add_epi64);
 #endif
             return SIMDVec_u(t0);
         }
@@ -332,7 +332,7 @@ namespace SIMD {
 #if defined(__AVX512VL__)
             mVec = _mm_mask_add_epi64(mVec, mask.mMask, mVec, SET1_EPI64(b));
 #else
-            mVec = EXPAND_CALL_BINARY_SCALAR_MASK(mVec, mask.mMask, b, _mm512_mask_add_epi64);
+            mVec = EXPAND_CALL_BINARY_SCALAR_MASK(mVec, b, mask.mMask, _mm512_mask_add_epi64);
 #endif
             return *this;
         }

@@ -393,23 +393,65 @@ namespace SIMD {
     }
 
     inline SIMDVec_f<float, 4>::operator SIMDVec_u<uint32_t, 4>() const {
-        __m128i t0 = _mm_castps_si128(mVec);
+#if defined(__AVX512DQ__)
+#if defined(__AVX512VL__)
+        __m128i t0 = _mm_cvtps_epu32(mVec);
         return SIMDVec_u<uint32_t, 4>(t0);
+#else
+        __m512  t0 = _mm512_castps128_ps512(mVec);
+        __m512i t1 = _mm512_cvtps_epu32(t0);
+        __m128i t2 = _mm512_castsi512_si128(t1);
+        return SIMDVec_u<uint32_t, 4>(t2);
+#endif
+#else
+        alignas(16) float raw_32f[4];
+        alignas(16) uint32_t raw_32i[4];
+        _mm_store_ps(raw_32f, mVec);
+        raw_32i[0] = uint32_t(raw_32f[0]);
+        raw_32i[1] = uint32_t(raw_32f[1]);
+        raw_32i[2] = uint32_t(raw_32f[2]);
+        raw_32i[3] = uint32_t(raw_32f[3]);
+        __m128i t0 = _mm_load_si128((__m128i *)raw_32i);
+        return SIMDVec_u<uint32_t, 4>(t0);
+#endif
     }
 
     inline SIMDVec_f<float, 8>::operator SIMDVec_u<uint32_t, 8>() const {
-        __m256i t0 = _mm256_castps_si256(mVec);
+#if defined(__AVX512DQ__)
+#if defined(__AVX512VL__)
+        __m256i t0 = _mm256_cvtps_epu32(mVec);
         return SIMDVec_u<uint32_t, 8>(t0);
+#else
+        __m512  t0 = _mm512_castps256_ps512(mVec);
+        __m512i t1 = _mm512_cvtps_epu32(t0);
+        __m256i t2 = _mm512_castsi512_si256(t1);
+        return SIMDVec_u<uint32_t, 8>(t2);
+#endif
+#else
+        alignas(32) float raw_32f[8];
+        alignas(32) uint32_t raw_32i[8];
+        _mm256_store_ps(raw_32f, mVec);
+        raw_32i[0] = uint32_t(raw_32f[0]);
+        raw_32i[1] = uint32_t(raw_32f[1]);
+        raw_32i[2] = uint32_t(raw_32f[2]);
+        raw_32i[3] = uint32_t(raw_32f[3]);
+        raw_32i[4] = uint32_t(raw_32f[4]);
+        raw_32i[5] = uint32_t(raw_32f[5]);
+        raw_32i[6] = uint32_t(raw_32f[6]);
+        raw_32i[7] = uint32_t(raw_32f[7]);
+        __m256i t0 = _mm256_load_si256((__m256i *)raw_32i);
+        return SIMDVec_u<uint32_t, 8>(t0);
+#endif
     }
 
     inline SIMDVec_f<float, 16>::operator SIMDVec_u<uint32_t, 16>() const {
-        __m512i t0 = _mm512_castps_si512(mVec);
+        __m512i t0 = _mm512_cvtps_epu32(mVec);
         return SIMDVec_u<uint32_t, 16>(t0);
     }
 
     inline SIMDVec_f<float, 32>::operator SIMDVec_u<uint32_t, 32>() const {
-        __m512i t0 = _mm512_castps_si512(mVec[0]);
-        __m512i t1 = _mm512_castps_si512(mVec[1]);
+        __m512i t0 = _mm512_cvtps_epu32(mVec[0]);
+        __m512i t1 = _mm512_cvtps_epu32(mVec[1]);
         return SIMDVec_u<uint32_t, 32>(t0, t1);
     }
 
@@ -423,7 +465,7 @@ namespace SIMD {
         __m128i t0 = _mm_cvtpd_epu64(mVec);
         return SIMDVec_u<uint64_t, 2>(t0);
 #else
-        __m512d t0 = _mm512_castpd128_pd512(mVeC);
+        __m512d t0 = _mm512_castpd128_pd512(mVec);
         __m512i t1 = _mm512_cvtpd_epu64(t0);
         __m128i t2 = _mm512_castsi512_si128(t1);
         return SIMDVec_u<uint64_t, 2>(t2);

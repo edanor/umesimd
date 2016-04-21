@@ -1574,15 +1574,18 @@ namespace SIMD {
         }
         // MCEIL
         inline SIMDVec_f ceil(SIMDVecMask<4> const & mask) const {
-            __m128 t0 = _mm_ceil_ps(mVec);
 #if defined(__AVX512VL__)
+            __m128 t0 = _mm_ceil_ps(mVec);
             __m128 t1 = _mm_mask_mov_ps(mVec, mask.mMask, t0);
-#else
-            __m512 t2 = _mm512_castps128_ps512(t0);
-            __m512 t3 = _mm512_mask_mov_ps(t2, mask.mMask, t2);
-            __m128 t1 = _mm512_castps512_ps128(t3);
-#endif
             return SIMDVec_f(t1);
+#else
+            __m128 t0 = _mm_ceil_ps(mVec);
+            __m512 t1 = _mm512_castps128_ps512(mVec);
+            __m512 t2 = _mm512_castps128_ps512(t0);
+            __m512 t3 = _mm512_mask_mov_ps(t1, mask.mMask, t2);
+            __m128 t4 = _mm512_castps512_ps128(t3);
+            return SIMDVec_f(t4);
+#endif
         }
         // ISFIN
         inline SIMDVecMask<4> isfin() const {
