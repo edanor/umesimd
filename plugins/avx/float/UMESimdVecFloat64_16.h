@@ -252,10 +252,10 @@ namespace SIMD {
         //(Memory access)
         // LOAD
         inline SIMDVec_f & load(double const * p) {
-            mVec[0] = _mm256_load_pd(p);
-            mVec[1] = _mm256_load_pd(p + 4);
-            mVec[2] = _mm256_load_pd(p + 8);
-            mVec[3] = _mm256_load_pd(p + 12);
+            mVec[0] = _mm256_loadu_pd(p);
+            mVec[1] = _mm256_loadu_pd(p + 4);
+            mVec[2] = _mm256_loadu_pd(p + 8);
+            mVec[3] = _mm256_loadu_pd(p + 12);
             return *this;
         }
         // MLOAD
