@@ -544,16 +544,15 @@ namespace SIMD {
         //(Comparison operations)
         // CMPEQV
         inline SIMDVecMask<4> cmpeq(SIMDVec_f const & b) const {
-            __m256d m0 = _mm256_cmp_pd(mVec, b.mVec, 0);
-            __m256i m1 = _mm256_castpd_si256(m0);
-            __m128i m2 = _mm256_extractf128_si256(m1, 0x00); // Select first halve
-            __m128i m3 = _mm256_extractf128_si256(m1, 0x01); // Select second halve
-            __m128i t0 = _mm_setr_epi32(0xFFFFFFFF, 0, 0xFFFFFFFF, 0); // Selector for odd.
-            __m128i m4 = _mm_and_si128(m2, t0); // Select elements 0 and 1
-            __m128i t1 = _mm_setr_epi32(0, 0xFFFFFFFF, 0, 0xFFFFFFFF); // Selector for even.
-            __m128i m5 = _mm_and_si128(m2, t1); // Select elements 2 and 3
-            __m128i m6 = _mm_or_si128(m4, m5);
-            return SIMDVecMask<4>(m6);
+                __m256d m0 = _mm256_cmp_pd(mVec, b.mVec, 0);
+            __m256  m1 = _mm256_castpd_ps(m0);
+            __m128  m2 = _mm256_extractf128_ps(m1, 0);
+            __m128  m3 = _mm256_extractf128_ps(m1, 1);
+            __m128  m4 = _mm_permute_ps(m2, 0x08); // permute 02xx
+            __m128  m5 = _mm_permute_ps(m3, 0x80); // permute xx02
+            __m128  m6 = _mm_blend_ps(m4, m5, 0xC); // blend {m4[0], m4[1], m5[2], m6[2]}
+            __m128i m7 = _mm_castps_si128(m6);
+            return SIMDVecMask<4>(m7);
         }
         inline SIMDVecMask<4> operator== (SIMDVec_f const & b) const {
             return cmpeq(b);
@@ -561,15 +560,14 @@ namespace SIMD {
         // CMPEQS
         inline SIMDVecMask<4> cmpeq(double b) const {
             __m256d m0 = _mm256_cmp_pd(mVec, _mm256_set1_pd(b), 0);
-            __m256i m1 = _mm256_castpd_si256(m0);
-            __m128i m2 = _mm256_extractf128_si256(m1, 0x00); // Select first halve
-            __m128i m3 = _mm256_extractf128_si256(m1, 0x01); // Select second halve
-            __m128i t0 = _mm_setr_epi32(0xFFFFFFFF, 0, 0xFFFFFFFF, 0); // Selector for odd.
-            __m128i m4 = _mm_and_si128(m2, t0); // Select elements 0 and 1
-            __m128i t1 = _mm_setr_epi32(0, 0xFFFFFFFF, 0, 0xFFFFFFFF); // Selector for even.
-            __m128i m5 = _mm_and_si128(m2, t1); // Select elements 2 and 3
-            __m128i m6 = _mm_or_si128(m4, m5);
-            return SIMDVecMask<4>(m6);
+            __m256  m1 = _mm256_castpd_ps(m0);
+            __m128  m2 = _mm256_extractf128_ps(m1, 0);
+            __m128  m3 = _mm256_extractf128_ps(m1, 1);
+            __m128  m4 = _mm_permute_ps(m2, 0x08); // permute 02xx
+            __m128  m5 = _mm_permute_ps(m3, 0x80); // permute xx02
+            __m128  m6 = _mm_blend_ps(m4, m5, 0xC); // blend {m4[0], m4[1], m5[2], m6[2]}
+            __m128i m7 = _mm_castps_si128(m6);
+            return SIMDVecMask<4>(m7);
         }
         inline SIMDVecMask<4> operator== (double b) const {
             return cmpeq(b);
@@ -577,15 +575,14 @@ namespace SIMD {
         // CMPNEV
         inline SIMDVecMask<4> cmpne(SIMDVec_f const & b) const {
             __m256d m0 = _mm256_cmp_pd(mVec, b.mVec, 12);
-            __m256i m1 = _mm256_castpd_si256(m0);
-            __m128i m2 = _mm256_extractf128_si256(m1, 0x00); // Select first halve
-            __m128i m3 = _mm256_extractf128_si256(m1, 0x01); // Select second halve
-            __m128i t0 = _mm_setr_epi32(0xFFFFFFFF, 0, 0xFFFFFFFF, 0); // Selector for odd.
-            __m128i m4 = _mm_and_si128(m2, t0); // Select elements 0 and 1
-            __m128i t1 = _mm_setr_epi32(0, 0xFFFFFFFF, 0, 0xFFFFFFFF); // Selector for even.
-            __m128i m5 = _mm_and_si128(m2, t1); // Select elements 2 and 3
-            __m128i m6 = _mm_or_si128(m4, m5);
-            return SIMDVecMask<4>(m6);
+            __m256  m1 = _mm256_castpd_ps(m0);
+            __m128  m2 = _mm256_extractf128_ps(m1, 0);
+            __m128  m3 = _mm256_extractf128_ps(m1, 1);
+            __m128  m4 = _mm_permute_ps(m2, 0x08); // permute 02xx
+            __m128  m5 = _mm_permute_ps(m3, 0x80); // permute xx02
+            __m128  m6 = _mm_blend_ps(m4, m5, 0xC); // blend {m4[0], m4[1], m5[2], m6[2]}
+            __m128i m7 = _mm_castps_si128(m6);
+            return SIMDVecMask<4>(m7);
         }
         inline SIMDVecMask<4> operator!= (SIMDVec_f const & b) const {
             return cmpne(b);
@@ -593,15 +590,14 @@ namespace SIMD {
         // CMPNES
         inline SIMDVecMask<4> cmpne(double b) const {
             __m256d m0 = _mm256_cmp_pd(mVec, _mm256_set1_pd(b), 12);
-            __m256i m1 = _mm256_castpd_si256(m0);
-            __m128i m2 = _mm256_extractf128_si256(m1, 0x00); // Select first halve
-            __m128i m3 = _mm256_extractf128_si256(m1, 0x01); // Select second halve
-            __m128i t0 = _mm_setr_epi32(0xFFFFFFFF, 0, 0xFFFFFFFF, 0); // Selector for odd.
-            __m128i m4 = _mm_and_si128(m2, t0); // Select elements 0 and 1
-            __m128i t1 = _mm_setr_epi32(0, 0xFFFFFFFF, 0, 0xFFFFFFFF); // Selector for even.
-            __m128i m5 = _mm_and_si128(m2, t1); // Select elements 2 and 3
-            __m128i m6 = _mm_or_si128(m4, m5);
-            return SIMDVecMask<4>(m6);
+            __m256  m1 = _mm256_castpd_ps(m0);
+            __m128  m2 = _mm256_extractf128_ps(m1, 0);
+            __m128  m3 = _mm256_extractf128_ps(m1, 1);
+            __m128  m4 = _mm_permute_ps(m2, 0x08); // permute 02xx
+            __m128  m5 = _mm_permute_ps(m3, 0x80); // permute xx02
+            __m128  m6 = _mm_blend_ps(m4, m5, 0xC); // blend {m4[0], m4[1], m5[2], m6[2]}
+            __m128i m7 = _mm_castps_si128(m6);
+            return SIMDVecMask<4>(m7);
         }
         inline SIMDVecMask<4> operator!= (double b) const {
             return cmpne(b);
