@@ -1169,14 +1169,14 @@ namespace SIMD {
         // MPOWS
         // ROUND
         inline SIMDVec_f round() const {
-            double t0 = std::roundf(mVec[0]);
-            double t1 = std::roundf(mVec[1]);
+            double t0 = std::round(mVec[0]);
+            double t1 = std::round(mVec[1]);
             return SIMDVec_f(t0, t1);
         }
         // MROUND
         inline SIMDVec_f round(SIMDVecMask<2> const & mask) const {
-            double t0 = mask.mMask[0] ? std::roundf(mVec[0]) : mVec[0];
-            double t1 = mask.mMask[1] ? std::roundf(mVec[1]) : mVec[1];
+            double t0 = mask.mMask[0] ? std::round(mVec[0]) : mVec[0];
+            double t1 = mask.mMask[1] ? std::round(mVec[1]) : mVec[1];
             return SIMDVec_f(t0, t1);
         }
         // TRUNC
