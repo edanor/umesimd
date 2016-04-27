@@ -1589,24 +1589,13 @@ namespace SIMD {
         }
         // ISFIN
         inline SIMDVecMask<4> isfin() const {
-#if defined (__AVX512VL__) && defined (__AVX512DQ__)
-            __mmask8 m0 = _mm_fpclass_ps_mask(mVec, 0x08);
-            __mmask8 m1 = _mm_fpclass_ps_mask(mVec, 0x10);
-            __mmask8 m2 = 0xF & ((~m0) & (~m1));
-#elif defined (__AVX512DQ__)
-            __m512 t0 = _mm512_castps128_ps512(mVec);
-            __mmask16 m0 = _mm512_fpclass_ps_mask(t0, 0x08);
-            __mmask16 m1 = _mm512_fpclass_ps_mask(t0C, 0x10);
-            __mmask8 m2 = 0xF & ((~m0) & (~m1));
-#else
             __m128i t0 = _mm_castps_si128(mVec);
             __m128i t1 = _mm_set1_epi32(0x7F800000);
             __m128i t2 = _mm_and_si128(t0, t1);
             __m512i t3 = _mm512_castsi128_si512(t1);
             __m512i t4 = _mm512_castsi128_si512(t2);
-            __mmask8 m2 = 0xF & _mm512_cmpneq_epi32_mask(t3, t4);
-#endif
-            return SIMDVecMask<4>(m2);
+            __mmask8 t5 = 0xF & _mm512_cmpneq_epi32_mask(t3, t4);
+            return SIMDVecMask<4>(t5);
         }
         // ISINF
         inline SIMDVecMask<4> isinf() const {
@@ -1644,6 +1633,7 @@ namespace SIMD {
             __mmask8 m3 = _mm_fpclass_ps_mask(mVec, 0x01);
             __mmask8 m4 = _mm_fpclass_ps_mask(mVec, 0x80);
             __mmask8 m0 = 0xF & ((~m1) & (~m2) & (~m3) & (~m4));
+            return SIMDVecMask<4>(m0);
 #elif defined (__AVX512DQ__)
             __m512 t0 = _mm512_castps128_ps512(mVec);
             __mmask16 m1 = _mm512_fpclass_ps_mask(t0, 0x08);
@@ -1651,41 +1641,50 @@ namespace SIMD {
             __mmask16 m3 = _mm512_fpclass_ps_mask(t0, 0x01);
             __mmask16 m4 = _mm512_fpclass_ps_mask(t0, 0x80);
             __mmask8 m0 = 0xF & ((~m1) & (~m2) & (~m3) & (~m4));
-#else 
-            __m128i t0 = _mm_castps_si128(mVec);
-            __m128i t1 = _mm_set1_epi32(0x7F800000);
-            __m128i t2 = _mm_and_si128(t0, t1);
-            __m512i t3 = _mm512_castsi128_si512(t1);
-            __m512i t4 = _mm512_castsi128_si512(t2);
-            __mmask8 m0 = 0xF & _mm512_cmpneq_epi32_mask(t3, t4);
-#endif
             return SIMDVecMask<4>(m0);
+#else
+            __m512i t0 = _mm512_castps_si512(_mm512_castps128_ps512(mVec));
+            __m512i t1 = _mm512_set1_epi32(0x7F800000);
+            __m512i t2 = _mm512_and_epi32(t0, t1);
+            __mmask16 t3 = _mm512_cmpneq_epi32_mask(t2, t1);   // is finite
+
+            __m512i t4 = _mm512_set1_epi32(0x007FFFFF);
+            __m512i t5 = _mm512_and_epi32(t4, t0);
+            __m512i t6 = _mm512_setzero_epi32();
+            __mmask16 t7 = _mm512_cmpeq_epi32_mask(t2, t1);
+            __mmask16 t8 = _mm512_cmpneq_epi32_mask(t5, t6);
+            __mmask16 t9 = ~(t7 & t8);                         // is not NaN
+
+            __mmask8 t10 = 0xF & t3 & t9;
+            return SIMDVecMask<4>(t10);
+#endif
         }
         // ISNAN
         inline SIMDVecMask<4> isnan() const {
 #if defined (__AVX512VL__) && defined (__AVX512DQ__)
-            __mmask8 m0 = _mm_fpclass_ps_mask(mVec, 0x08);
-            __mmask8 m1 = _mm_fpclass_ps_mask(mVec, 0x10);
+            __mmask8 m0 = _mm_fpclass_ps_mask(mVec, 0x01);
+            __mmask8 m1 = _mm_fpclass_ps_mask(mVec, 0x80);
             __mmask8 m2 = 0xF & (m0 | m1);
+            return SIMDVecMask<4>(m2);
 #elif defined (__AVX512DQ__)
             __m512 t0 = _mm512_castps128_ps512(mVec);
-            __mmask16 m0 = _mm512_fpclass_ps_mask(t0, 0x08);
-            __mmask16 m1 = _mm512_fpclass_ps_mask(t0, 0x10);
+            __mmask16 m0 = _mm512_fpclass_ps_mask(t0, 0x01);
+            __mmask16 m1 = _mm512_fpclass_ps_mask(t0, 0x80);
             __mmask8 m2 = 0xF & (m0 | m1);
-#else 
-            __m128i t0 = _mm_castps_si128(mVec);
-            __m128i t1 = _mm_set1_epi32(0x7F800000);
-            __m128i t2 = _mm_and_si128(t0, t1);
-            __m512i t3 = _mm512_castsi128_si512(t1);
-            __m512i t4 = _mm512_castsi128_si512(t2);
-            __mmask8 m0 = _mm512_cmpeq_epi32_mask(t3, t4);
-            __m128i t5 = _mm_set1_epi32(0x007FFFFF);
-            __m128i t6 = _mm_and_si128(t0, t5);
-            __m512i t7 = _mm512_castsi128_si512(t6);
-            __mmask8 m1 = _mm512_cmpneq_epi32_mask(t7, _mm512_setzero_epi32());
-            __mmask8 m2 = 0xF & ((~m0) | (m0 & m1));
-#endif
             return SIMDVecMask<4>(m2);
+#else 
+            __m512 t0 = _mm512_castps128_ps512(mVec);
+            __m512i t1 = _mm512_castps_si512(t0);
+            __m512i t2 = _mm512_set1_epi32(0x7F800000);
+            __m512i t3 = _mm512_and_epi32(t1, t2);
+            __m512i t4 = _mm512_set1_epi32(0xFF800000);
+            __m512i t5 = _mm512_andnot_epi32(t4, t1);
+            __m512i t6 = _mm512_setzero_epi32();
+            __mmask16 t7 = _mm512_cmpeq_epi32_mask(t3, t2);
+            __mmask16 t8 = _mm512_cmpneq_epi32_mask(t5, t6);
+            __mmask8 t9 = t7 & t8 & 0xF;
+            return SIMDVecMask<4>(t9);
+#endif
         }
         // ISNORM
         inline SIMDVecMask<4> isnorm() const {
@@ -1697,6 +1696,8 @@ namespace SIMD {
             __mmask8 m4 = ~_mm_fpclass_ps_mask(mVec, 0x10);
             __mmask8 m5 = ~_mm_fpclass_ps_mask(mVec, 0x20);
             __mmask8 m6 = ~_mm_fpclass_ps_mask(mVec, 0x80);
+            __mmask8 m7 = 0xF & m0 & m1 & m2 & m3 & m4 & m5 & m6;
+            return SIMDVecMask<4>(m7);
 #elif defined (__AVX512DQ__)
             __m512 t0 = _mm512_castps128_ps512(mVec);
             __mmask8 m0 = ~_mm512_fpclass_ps_mask(t0, 0x01);
@@ -1706,41 +1707,77 @@ namespace SIMD {
             __mmask8 m4 = ~_mm512_fpclass_ps_mask(t0, 0x10);
             __mmask8 m5 = ~_mm512_fpclass_ps_mask(t0, 0x20);
             __mmask8 m6 = ~_mm512_fpclass_ps_mask(t0, 0x80);
-#else 
-            // TODO: KNL
-            __mmask8 m0 = 0, m1 = 0, m2 = 0, m3 = 0, m4 = 0, m5 = 0, m6 = 0;
-#endif
             __mmask8 m7 = 0xF & m0 & m1 & m2 & m3 & m4 & m5 & m6;
             return SIMDVecMask<4>(m7);
+#else 
+            __m512i t0 = _mm512_castps_si512(_mm512_castps128_ps512(mVec));
+            __m512i t1 = _mm512_set1_epi32(0x7F800000);
+            __m512i t2 = _mm512_and_epi32(t0, t1);
+            __mmask16 t3 = _mm512_cmpneq_epi32_mask(t2, t1);   // is not finite
+
+            __m512i t4 = _mm512_set1_epi32(0x007FFFFF);
+            __m512i t5 = _mm512_and_epi32(t4, t0);
+            __m512i t6 = _mm512_setzero_epi32();
+            __mmask16 t7 = _mm512_cmpeq_epi32_mask(t2, t1);
+            __mmask16 t8 = _mm512_cmpneq_epi32_mask(t5, t6);
+            __mmask16 t9 = ~(t7 & t8);                         // is not NaN
+
+            __mmask16 t10 = _mm512_cmpeq_epi32_mask(t2, t6);
+            __mmask16 t11 = _mm512_cmpneq_epi32_mask(t5, t6);
+            __mmask16 t12 = ~(t10 & t11);                      // is not subnormal
+
+            __m512i t14 = _mm512_or_epi32(t2, t5);
+            __mmask16 t15 = _mm512_cmpneq_epi32_mask(t6, t14);      // is not zero
+
+            __mmask8 t16 = 0xF & (t3 & t9 & t12 & t15);
+            return SIMDVecMask<4>(t16);
+#endif
         }
         // ISSUB
         inline SIMDVecMask<4> issub() const {
 #if defined (__AVX512VL__) && defined (__AVX512DQ__)
             __mmask8 m0 = 0xF & _mm_fpclass_ps_mask(mVec, 0x20);
+            return SIMDVecMask<4>(m0);
 #elif defined (__AVX512DQ__)
             __m512 t0 = _mm512_castps128_ps512(mVec);
             __mmask8 m0 = 0xF & _mm512_fpclass_ps_mask(t0, 0x20);
-#else 
-            // TODO: KNL
-            __mmask8 m0 = 0;
-#endif
             return SIMDVecMask<4>(m0);
+#else 
+            __m512 t0 = _mm512_castps128_ps512(mVec);
+            __m512i t1 = _mm512_castps_si512(t0);
+            __m512i t2 = _mm512_set1_epi32(0x7F800000);
+            __m512i t3 = _mm512_and_epi32(t1, t2);
+            __m512i t4 = _mm512_setzero_epi32();
+            __mmask16 t5 = _mm512_cmpeq_epi32_mask(t3, t4);
+            __m512i t6 = _mm512_set1_epi32(0x007FFFFF);
+            __m512i t7 = _mm512_and_epi32(t1, t6);
+            __mmask16 t8 = _mm512_cmpneq_epi32_mask(t7, t4);
+            __mmask8 t9 = t5 & t8 & 0xF;
+            return SIMDVecMask<4>(t9);
+#endif
         }
         // ISZERO
         inline SIMDVecMask<4> iszero() const {
 #if defined (__AVX512VL__) && defined (__AVX512DQ__)
             __mmask8 m0 = _mm_fpclass_ps_mask(mVec, 0x02);
             __mmask8 m1 = _mm_fpclass_ps_mask(mVec, 0x04);
+            __mmask8 m2 = 0xF & (m0 | m1);
+            return SIMDVecMask<4>(m2);
 #elif defined (__AVX512DQ__)
             __m512 t0 = _mm512_castps128_ps512(mVec);
             __mmask8 m0 = _mm512_fpclass_ps_mask(t0, 0x02);
             __mmask8 m1 = _mm512_fpclass_ps_mask(t0, 0x04);
-#else 
-            // TODO: KNL
-            __mmask8 m0 = 0, m1 = 0;
-#endif
             __mmask8 m2 = 0xF & (m0 | m1);
             return SIMDVecMask<4>(m2);
+#else 
+            __m512  t0 = _mm512_castps128_ps512(mVec);
+            __m512i t1 = _mm512_castps_si512(t0);
+            __m512i t2 = _mm512_set1_epi32(0x7FFFFFFF);
+            __m512i t3 = _mm512_and_epi32(t1, t2);
+            __mmask16 t4 = _mm512_cmpeq_epi32_mask(t3, _mm512_setzero_epi32());
+            __mmask8 t5 = 0xF & (t4);
+            return SIMDVecMask<4>(t5);
+#endif
         }
         // ISZEROSUB
         inline SIMDVecMask<4> iszerosub() const {

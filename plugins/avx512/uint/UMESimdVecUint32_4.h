@@ -1641,7 +1641,7 @@ namespace SIMD {
         // MSCATTERV
         inline uint32_t* scatter(SIMDVecMask<4> const & mask, uint32_t* baseAddr, SIMDVec_u const & indices) {
 #if defined(__AVX512VL__)
-            _mm_mask_i32scatter_epi32(baseAddr, mask.mMask, indices.mVec, mVec, 1);
+            _mm_mask_i32scatter_epi32(baseAddr, mask.mMask, indices.mVec, mVec, 4);
 #else
             __m512i t0 = _mm512_castsi128_si512(mVec);
             __m512i t1 = _mm512_castsi128_si512(indices.mVec);

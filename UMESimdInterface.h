@@ -3435,7 +3435,7 @@ namespace SIMD
                 UME_EMULATION_WARNING();
                 MASK_TYPE retval;
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
-                    retval.insert(i, !std::isnan(a[i]));
+                    retval.insert(i, (!std::isnan(a[i]) && !std::isinf(a[i])));
                 }
                 return retval;
             }

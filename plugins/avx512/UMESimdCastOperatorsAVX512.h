@@ -393,66 +393,79 @@ namespace SIMD {
     }
 
     inline SIMDVec_f<float, 4>::operator SIMDVec_u<uint32_t, 4>() const {
-#if defined(__AVX512DQ__)
 #if defined(__AVX512VL__)
-        __m128i t0 = _mm_cvtps_epu32(mVec);
-        return SIMDVec_u<uint32_t, 4>(t0);
+        // C++: Truncation is default rounding mode for floating-integer conversion.
+        __m128 t0 = _mm_round_ps(mVec, _MM_FROUND_TO_ZERO | _MM_FROUND_NO_EXC);
+        __m128i t1 = _mm_cvtps_epu32(t0);
+        // AVX512: VCVTPS2UDQ returns 2^32-1 when converted value cannot be represented in the destination
+        //         format, and when 'floating-point invalid exception' is masked.
+        // C++: value returned by float->uint32_t casts for invalid FP numbers is '0'.
+        __mmask8 t2 = _mm_cmpeq_epu32_mask(t1, _mm_set1_epi32(0xFFFFFFFF));
+        __m128i t3 = _mm_mask_blend_epi32(t2, t1, _mm_setzero_si128());
+        return SIMDVec_u<uint32_t, 4>(t3);
 #else
-        __m512  t0 = _mm512_castps128_ps512(mVec);
-        __m512i t1 = _mm512_cvtps_epu32(t0);
-        __m128i t2 = _mm512_castsi512_si128(t1);
-        return SIMDVec_u<uint32_t, 4>(t2);
+        __m512 t0 = _mm512_castps128_ps512(mVec);
+        // C++: Truncation is default rounding mode for floating-integer conversion.
+        __m512i t1 = _mm512_cvt_roundps_epu32(t0, _MM_FROUND_TO_ZERO | _MM_FROUND_NO_EXC);
+        // AVX512: VCVTPS2UDQ returns 2^32-1 when converted value cannot be represented in the destination
+        //         format, and when 'floating-point invalid exception' is masked.
+        // C++: value returned by float->uint32_t casts for invalid FP numbers is '0'.
+        __mmask16 t2 = _mm512_cmpeq_epu32_mask(t1, _mm512_set1_epi32(0xFFFFFFFF));
+        __m512i t3 = _mm512_mask_blend_epi32(t2, t1, _mm512_setzero_epi32());
+        __m128i t4 = _mm512_castsi512_si128(t3);
+        return SIMDVec_u<uint32_t, 4>(t4);
 #endif
-#else
-        alignas(16) float raw_32f[4];
-        alignas(16) uint32_t raw_32i[4];
-        _mm_store_ps(raw_32f, mVec);
-        raw_32i[0] = uint32_t(raw_32f[0]);
-        raw_32i[1] = uint32_t(raw_32f[1]);
-        raw_32i[2] = uint32_t(raw_32f[2]);
-        raw_32i[3] = uint32_t(raw_32f[3]);
-        __m128i t0 = _mm_load_si128((__m128i *)raw_32i);
-        return SIMDVec_u<uint32_t, 4>(t0);
-#endif
+
     }
 
     inline SIMDVec_f<float, 8>::operator SIMDVec_u<uint32_t, 8>() const {
-#if defined(__AVX512DQ__)
 #if defined(__AVX512VL__)
-        __m256i t0 = _mm256_cvtps_epu32(mVec);
-        return SIMDVec_u<uint32_t, 8>(t0);
+        // C++: Truncation is default rounding mode for floating-integer conversion.
+        __m256 t0 = _mm256_round_ps(mVec, _MM_FROUND_TO_ZERO | _MM_FROUND_NO_EXC);
+        __m256i t1 = _mm256_cvtps_epu32(t0);
+        // AVX512: VCVTPS2UDQ returns 2^32-1 when converted value cannot be represented in the destination
+        //         format, and when 'floating-point invalid exception' is masked.
+        // C++: value returned by float->uint32_t casts for invalid FP numbers is '0'.
+        __mmask8 t2 = _mm256_cmpeq_epu32_mask(t1, _mm256_set1_epi32(0xFFFFFFFF));
+        __m256i t3 = _mm256_mask_blend_epi32(t2, t1, _mm256_setzero_si256());
+        return SIMDVec_u<uint32_t, 8>(t3);
 #else
-        __m512  t0 = _mm512_castps256_ps512(mVec);
-        __m512i t1 = _mm512_cvtps_epu32(t0);
-        __m256i t2 = _mm512_castsi512_si256(t1);
-        return SIMDVec_u<uint32_t, 8>(t2);
-#endif
-#else
-        alignas(32) float raw_32f[8];
-        alignas(32) uint32_t raw_32i[8];
-        _mm256_store_ps(raw_32f, mVec);
-        raw_32i[0] = uint32_t(raw_32f[0]);
-        raw_32i[1] = uint32_t(raw_32f[1]);
-        raw_32i[2] = uint32_t(raw_32f[2]);
-        raw_32i[3] = uint32_t(raw_32f[3]);
-        raw_32i[4] = uint32_t(raw_32f[4]);
-        raw_32i[5] = uint32_t(raw_32f[5]);
-        raw_32i[6] = uint32_t(raw_32f[6]);
-        raw_32i[7] = uint32_t(raw_32f[7]);
-        __m256i t0 = _mm256_load_si256((__m256i *)raw_32i);
-        return SIMDVec_u<uint32_t, 8>(t0);
+        __m512 t0 = _mm512_castps256_ps512(mVec);
+        // C++: Truncation is default rounding mode for floating-integer conversion.
+        __m512i t1 = _mm512_cvt_roundps_epu32(t0, _MM_FROUND_TO_ZERO | _MM_FROUND_NO_EXC);
+        // AVX512: VCVTPS2UDQ returns 2^32-1 when converted value cannot be represented in the destination
+        //         format, and when 'floating-point invalid exception' is masked.
+        // C++: value returned by float->uint32_t casts for invalid FP numbers is '0'.
+        __mmask16 t2 = _mm512_cmpeq_epu32_mask(t1, _mm512_set1_epi32(0xFFFFFFFF));
+        __m512i t3 = _mm512_mask_blend_epi32(t2, t1, _mm512_setzero_epi32());
+        __m256i t4 = _mm512_castsi512_si256(t3);
+        return SIMDVec_u<uint32_t, 8>(t4);
 #endif
     }
 
     inline SIMDVec_f<float, 16>::operator SIMDVec_u<uint32_t, 16>() const {
-        __m512i t0 = _mm512_cvtps_epu32(mVec);
-        return SIMDVec_u<uint32_t, 16>(t0);
+        // C++: Truncation is default rounding mode for floating-integer conversion.
+        __m512i t0 = _mm512_cvt_roundps_epu32(mVec, _MM_FROUND_TO_ZERO | _MM_FROUND_NO_EXC);
+        // AVX512: VCVTPS2UDQ returns 2^32-1 when converted value cannot be represented in the destination
+        //         format, and when 'floating-point invalid exception' is masked.
+        // C++: value returned by float->uint32_t casts for invalid FP numbers is '0'.
+        __mmask16 t1  = _mm512_cmpeq_epu32_mask(t0, _mm512_set1_epi32(0xFFFFFFFF));
+        __m512i t2 = _mm512_mask_blend_epi32(t1, t0, _mm512_setzero_epi32());
+        return SIMDVec_u<uint32_t, 16>(t2);
     }
 
     inline SIMDVec_f<float, 32>::operator SIMDVec_u<uint32_t, 32>() const {
-        __m512i t0 = _mm512_cvtps_epu32(mVec[0]);
-        __m512i t1 = _mm512_cvtps_epu32(mVec[1]);
-        return SIMDVec_u<uint32_t, 32>(t0, t1);
+        // C++: Truncation is default rounding mode for floating-integer conversion.
+        __m512i t0 = _mm512_cvt_roundps_epu32(mVec[0], _MM_FROUND_TO_ZERO | _MM_FROUND_NO_EXC);
+        __m512i t1 = _mm512_cvt_roundps_epu32(mVec[1], _MM_FROUND_TO_ZERO | _MM_FROUND_NO_EXC);
+        // AVX512: VCVTPS2UDQ returns 2^32-1 when converted value cannot be represented in the destination
+        //         format, and when 'floating-point invalid exception' is masked.
+        // C++: value returned by float->uint32_t casts for invalid FP numbers is '0'.
+        __mmask16 t2 = _mm512_cmpeq_epu32_mask(t0, _mm512_set1_epi32(0xFFFFFFFF));
+        __mmask16 t3 = _mm512_cmpeq_epu32_mask(t1, _mm512_set1_epi32(0xFFFFFFFF));
+        __m512i t4 = _mm512_mask_blend_epi32(t2, t0, _mm512_setzero_epi32());
+        __m512i t5 = _mm512_mask_blend_epi32(t3, t1, _mm512_setzero_epi32());
+        return SIMDVec_u<uint32_t, 32>(t4, t5);
     }
 
     inline SIMDVec_f<double, 1>::operator SIMDVec_u<uint64_t, 1>() const {
@@ -461,15 +474,16 @@ namespace SIMD {
 
     inline SIMDVec_f<double, 2>::operator SIMDVec_u<uint64_t, 2>() const {
 #if defined(__AVX512DQ__)
-#if defined(__AVX512VL__)
-        __m128i t0 = _mm_cvtpd_epu64(mVec);
-        return SIMDVec_u<uint64_t, 2>(t0);
-#else
+        // C++: Truncation is default rounding mode for floating-integer conversion.
         __m512d t0 = _mm512_castpd128_pd512(mVec);
-        __m512i t1 = _mm512_cvtpd_epu64(t0);
-        __m128i t2 = _mm512_castsi512_si128(t1);
-        return SIMDVec_u<uint64_t, 2>(t2);
-#endif
+        __m512i t1 = _mm512_cvt_roundpd_epu64(t0, _MM_FROUND_TO_ZERO | _MM_FROUND_NO_EXC);
+        // AVX512: VCVTPS2UDQ returns 2^64-1 when converted value cannot be represented in the destination
+        //         format, and when 'floating-point invalid exception' is masked.
+        // C++: value returned by double->uint64_t casts for invalid FP numbers is '0'.
+        __mmask16 t2 = _mm512_cmpeq_epu32_mask(t1, _mm512_set1_epi32(0xFFFFFFFF));
+        __m512i t3 = _mm512_mask_blend_epi32(t2, t1, _mm512_setzero_epi32());
+        __m128i t4 = _mm512_castsi512_si128(t3);
+        return SIMDVec_u<uint64_t, 2>(t4);
 #else
         alignas(16) double raw_64f[2];
         alignas(16) uint64_t raw_64i[2];

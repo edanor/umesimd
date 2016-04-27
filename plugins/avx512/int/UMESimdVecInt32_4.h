@@ -1514,7 +1514,7 @@ namespace SIMD {
             alignas(16) int32_t rawIndices[4] = { indices[0], indices[1], indices[2], indices[3] };
             __m128i t0 = _mm_load_si128((__m128i *) rawIndices);
 #if defined(__AVX512VL__)
-            _mm_i32scatter_epi32(baseAddr, t0, mVec, 1);
+            _mm_i32scatter_epi32(baseAddr, t0, mVec, 4);
 #else
             __m512i t1 = _mm512_castsi128_si512(t0);
             __m512i t2 = _mm512_castsi128_si512(mVec);
@@ -1527,7 +1527,7 @@ namespace SIMD {
             alignas(16) int32_t rawIndices[4] = { indices[0], indices[1], indices[2], indices[3] };
 #if defined(__AVX512VL__)
             __m128i t0 = _mm_mask_load_epi32(_mm_set1_epi32(0), mask.mMask, (__m128i *) rawIndices);
-            _mm_mask_i32scatter_epi32(baseAddr, mask.mMask, t0, mVec, 1);
+            _mm_mask_i32scatter_epi32(baseAddr, mask.mMask, t0, mVec, 4);
 #else
             __m128i t0 = _mm_load_si128((__m128i *) rawIndices);
             __m128i m0 = mask8_to_m128i(mask.mMask);
@@ -1541,7 +1541,7 @@ namespace SIMD {
         // SCATTERV
         inline int32_t* scatter(int32_t* baseAddr, SIMDVec_u<uint32_t, 4> const & indices) {
 #if defined(__AVX512VL__)
-            _mm_i32scatter_epi32(baseAddr, indices.mVec, mVec, 1);
+            _mm_i32scatter_epi32(baseAddr, indices.mVec, mVec, 4);
 #else
             alignas(16) uint32_t rawIndices[4];
             alignas(16) uint32_t rawValues[4];
