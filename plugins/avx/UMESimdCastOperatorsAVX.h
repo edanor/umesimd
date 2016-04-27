@@ -348,7 +348,8 @@ namespace SIMD {
     }
 
     inline SIMDVec_i<int32_t, 8>::operator SIMDVec_f<float, 8>() const {
-        return EMULATED_FUNCTIONS::xtoy < SIMDVec_f<float, 8>, float, SIMDVec_i<int32_t, 8>>(*this);
+        __m256 t0 = _mm256_cvtepi32_ps(mVec);
+        return SIMDVec_f<float, 8>(t0);
     }
 
     inline SIMDVec_i<int32_t, 16>::operator SIMDVec_f<float, 16>() const {
@@ -364,19 +365,67 @@ namespace SIMD {
     }
 
     inline SIMDVec_i<int64_t, 2>::operator SIMDVec_f<double, 2>() const {
-        return EMULATED_FUNCTIONS::xtoy < SIMDVec_f<double, 2>, double, SIMDVec_i<int64_t, 2>>(*this);
+        return SIMDVec_f<double, 2>(double(mVec[0]), double(mVec[1]));
     }
 
     inline SIMDVec_i<int64_t, 4>::operator SIMDVec_f<double, 4>() const {
-        return EMULATED_FUNCTIONS::xtoy < SIMDVec_f<double, 4>, double, SIMDVec_i<int64_t, 4>>(*this);
+        alignas(32) int64_t raw_i[4];
+        alignas(32) double raw_d[4];
+        _mm256_store_si256((__m256i*)raw_i, mVec);
+        raw_d[0] = double(raw_i[0]);
+        raw_d[1] = double(raw_i[1]);
+        raw_d[2] = double(raw_i[2]);
+        raw_d[3] = double(raw_i[3]);
+        __m256d t0 = _mm256_load_pd(raw_d);
+        return SIMDVec_f<double, 4>(t0);
     }
 
     inline SIMDVec_i<int64_t, 8>::operator SIMDVec_f<double, 8>() const {
-        return EMULATED_FUNCTIONS::xtoy < SIMDVec_f<double, 8>, double, SIMDVec_i<int64_t, 8>>(*this);
+        alignas(32) int64_t raw_i[8];
+        alignas(32) double raw_d[8];
+        _mm256_store_si256((__m256i*)&raw_i[0], mVec[0]);
+        _mm256_store_si256((__m256i*)&raw_i[4], mVec[1]);
+        raw_d[0] = double(raw_i[0]);
+        raw_d[1] = double(raw_i[1]);
+        raw_d[2] = double(raw_i[2]);
+        raw_d[3] = double(raw_i[3]);
+        raw_d[4] = double(raw_i[4]);
+        raw_d[5] = double(raw_i[5]);
+        raw_d[6] = double(raw_i[6]);
+        raw_d[7] = double(raw_i[7]);
+        __m256d t0 = _mm256_load_pd(&raw_d[0]);
+        __m256d t1 = _mm256_load_pd(&raw_d[4]);
+        return SIMDVec_f<double, 8>(t0, t1);
     }
 
     inline SIMDVec_i<int64_t, 16>::operator SIMDVec_f<double, 16>() const {
-        return EMULATED_FUNCTIONS::xtoy < SIMDVec_f<double, 16>, double, SIMDVec_i<int64_t, 16>>(*this);
+        alignas(32) int64_t raw_i[16];
+        alignas(32) double raw_d[16];
+        _mm256_store_si256((__m256i*)&raw_i[0], mVec[0]);
+        _mm256_store_si256((__m256i*)&raw_i[4], mVec[1]);
+        _mm256_store_si256((__m256i*)&raw_i[8], mVec[2]);
+        _mm256_store_si256((__m256i*)&raw_i[12], mVec[3]);
+        raw_d[0] = double(raw_i[0]);
+        raw_d[1] = double(raw_i[1]);
+        raw_d[2] = double(raw_i[2]);
+        raw_d[3] = double(raw_i[3]);
+        raw_d[4] = double(raw_i[4]);
+        raw_d[5] = double(raw_i[5]);
+        raw_d[6] = double(raw_i[6]);
+        raw_d[7] = double(raw_i[7]);
+        raw_d[8] = double(raw_i[8]);
+        raw_d[9] = double(raw_i[9]);
+        raw_d[10] = double(raw_i[10]);
+        raw_d[11] = double(raw_i[11]);
+        raw_d[12] = double(raw_i[12]);
+        raw_d[13] = double(raw_i[13]);
+        raw_d[14] = double(raw_i[14]);
+        raw_d[15] = double(raw_i[15]);
+        __m256d t0 = _mm256_load_pd(&raw_d[0]);
+        __m256d t1 = _mm256_load_pd(&raw_d[4]);
+        __m256d t2 = _mm256_load_pd(&raw_d[8]);
+        __m256d t3 = _mm256_load_pd(&raw_d[12]);
+        return SIMDVec_f<double, 16>(t0, t1, t2, t3);
     }
 
     // FTOU

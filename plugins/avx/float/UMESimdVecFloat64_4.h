@@ -72,6 +72,10 @@ namespace SIMD {
             SIMDVec_f<double, 4>,
             SIMDVec_f<double, 2 >>
     {
+        friend class SIMDVec_u<uint64_t, 4>;
+        friend class SIMDVec_i<int64_t, 4>;
+
+        friend class SIMDVec_f<double, 8>;
     private:
         __m256d mVec;
 
@@ -892,8 +896,17 @@ namespace SIMD {
             __m256d t1 = BLEND(mVec, t0, mask.mMask);
             return SIMDVec_f(t1);
         }
-        // NEGA  - Negate signed values and assign
-        // MNEGA - Masked negate signed values and assign
+        inline SIMDVec_f & nega() {
+            mVec = _mm256_sub_pd(_mm256_set1_pd(0.0), mVec);
+            return *this;
+        }
+
+        // MNEGA
+        inline SIMDVec_f & nega(SIMDVecMask<4> const & mask) {
+            __m256d t0 = _mm256_sub_pd(_mm256_set1_pd(0.0), mVec);
+            mVec = BLEND(mVec, t0, mask.mMask);
+            return *this;
+        }
 
         // (Mathematical functions)
         // ABS

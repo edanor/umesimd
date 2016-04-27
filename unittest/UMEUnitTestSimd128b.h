@@ -3191,7 +3191,7 @@ int test_UME_SIMD4_32f(bool supressMessages)
         SIMDMask4 mask;
         vec0.loada((const float*)&init[0]);
         mask = vec0.isan();
-        CHECK_CONDITION(mask[0] == true && mask[1] == false && mask[2] == false && mask[3] == true, "ISAN");
+        CHECK_CONDITION(mask[0] == false && mask[1] == false && mask[2] == false && mask[3] == true, "ISAN");
     }
     {
         alignas(16) uint32_t init[4] = { 0x7F800000, 0xFF800001, 0x7F800123, 0xFF700456 };

@@ -1417,9 +1417,9 @@ namespace SIMD {
         // PACKLO
         // PACKHI
         // UNPACK
-        void unpack(SIMDVec_u<uint32_t, 1> & a, SIMDVec_u<uint32_t, 1> & b) const {
+        /*void unpack(SIMDVec_u<uint32_t, 1> & a, SIMDVec_u<uint32_t, 1> & b) const {
             a.insert(0, mVec);
-        }
+        }*/
         // UNPACKLO
         // UNPACKHI
 

@@ -47,9 +47,9 @@
                       int(x & 0x00000000FFFFFFFF), \
                       int((x & 0xFFFFFFFF00000000) >> 32), \
                       int(x & 0x00000000FFFFFFFF), \
-                      int((x & 0xFFFFFFFF00000000) >> 32));
+                      int((x & 0xFFFFFFFF00000000) >> 32))
 #else
-#define SET1_EPI64(x) _mm256_set1_epi64x(x);
+#define SET1_EPI64(x) _mm256_set1_epi64x(x)
 #endif
 
 #define BLEND(a_256i, b_256i, mask_128i) \
@@ -583,9 +583,51 @@ namespace SIMD {
         // MIMIN
 
         // BANDV
+        inline SIMDVec_i band(SIMDVec_i const & b) const {
+            __m256 t0 = _mm256_castsi256_ps(mVec);
+            __m256 t1 = _mm256_castsi256_ps(b.mVec);
+            __m256 t2 = _mm256_and_ps(t0, t1);
+            __m256i t3 = _mm256_castps_si256(t2);
+            return SIMDVec_i(t3);
+        }
+        inline SIMDVec_i operator& (SIMDVec_i const & b) const {
+            return band(b);
+        }
+        inline SIMDVec_i operator&& (SIMDVec_i const & b) const {
+            return band(b);
+        }
         // MBANDV
+        inline SIMDVec_i band(SIMDVecMask<4> const & mask, SIMDVec_i const & b) const {
+            __m256 t0 = _mm256_castsi256_ps(mVec);
+            __m256 t1 = _mm256_castsi256_ps(b.mVec);
+            __m256 t2 = _mm256_and_ps(t0, t1);
+            __m256i t3 = _mm256_castps_si256(t2);
+            __m256i t4 = BLEND(mVec, t3, mask.mMask);
+            return SIMDVec_i(t4);
+        }
         // BANDS
+        inline SIMDVec_i band(int64_t b) const {
+            __m256 t0 = _mm256_castsi256_ps(mVec);
+            __m256 t1 = _mm256_castsi256_ps(SET1_EPI64(b));
+            __m256 t2 = _mm256_and_ps(t0, t1);
+            __m256i t3 = _mm256_castps_si256(t2);
+            return SIMDVec_i(t3);
+        }
+        inline SIMDVec_i operator& (int64_t b) const {
+            return band(b);
+        }
+        inline SIMDVec_i operator&& (int64_t b) const {
+            return band(b);
+        }
         // MBANDS
+        inline SIMDVec_i band(SIMDVecMask<4> const & mask, int64_t b) const {
+            __m256 t0 = _mm256_castsi256_ps(mVec);
+            __m256 t1 = _mm256_castsi256_ps(SET1_EPI64(b));
+            __m256 t2 = _mm256_and_ps(t0, t1);
+            __m256i t3 = _mm256_castps_si256(t2);
+            __m256i t4 = BLEND(mVec, t3, mask.mMask);
+            return SIMDVec_i(t4);
+        }
         // BANDVA
         // MBANDVA
         // BANDSA

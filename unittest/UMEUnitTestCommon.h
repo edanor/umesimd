@@ -2179,6 +2179,50 @@ void genericMSUBVTest()
     }
 }
 
+template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN>
+void genericMSUBVTest_random()
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    SCALAR_TYPE inputA[VEC_LEN];
+    SCALAR_TYPE inputB[VEC_LEN];
+    bool inputMask[VEC_LEN];
+    SCALAR_TYPE output[VEC_LEN];
+
+    for (int i = 0; i < VEC_LEN; i++) {
+        inputA[i] = randomValue<SCALAR_TYPE>(gen);
+        inputB[i] = randomValue<SCALAR_TYPE>(gen);
+        inputMask[i] = randomValue<bool>(gen);
+        output[i] = inputMask[i] ? inputA[i] - inputB[i] : inputA[i];
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(inputA);
+        VEC_TYPE vec1(inputB);
+        MASK_TYPE mask(inputMask);
+        VEC_TYPE vec2 = vec0.sub(mask, vec1);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange & isUnmodified), "MSUBV gen");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(inputA);
+        VEC_TYPE vec1(inputB);
+        MASK_TYPE mask(inputMask);
+        VEC_TYPE vec2;
+        vec2 = UME::SIMD::FUNCTIONS::sub(mask, vec0, vec1);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange & isUnmodified), "MSUBV(function) gen");
+    }
+}
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericSUBSTest()
 {
@@ -7635,6 +7679,7 @@ void genericFTOUTest_random()
         bool exact = valuesExact(values, output, VEC_LEN);
         CHECK_CONDITION(exact, "FTOU gen");
     }
+    //EXTEND THIS TEST WITH FIXED RANGE THAT CAN BE REPRESENTED AS UNSINGED
 }
 
 template<typename FLOAT_VEC_TYPE, typename INT_VEC_TYPE, typename INT_SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
@@ -7767,6 +7812,7 @@ void genericBaseInterfaceTest()
     genericSUBVTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
     genericSUBVTest_random<VEC_TYPE, SCALAR_TYPE, VEC_LEN>();
     genericMSUBVTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericMSUBVTest_random<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN>();
     genericSUBSTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
     genericMSUBSTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
     genericSUBVATest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
