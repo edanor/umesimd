@@ -173,15 +173,36 @@ namespace SIMD {
         // ****************************************************************************************
 
         // ASSIGNV
+        inline SIMDVec_i & assign(SIMDVec_i const & b) {
+            mVec[0] = b.mVec[0];
+            mVec[1] = b.mVec[1];
+            return *this;
+        }
         inline SIMDVec_i & operator=(SIMDVec_i const & b) {
             return assign(b);
         }
         // MASSIGNV
+        inline SIMDVec_i & assign(SIMDVecMask<8> const & mask, SIMDVec_i const & b) {
+            mVec[0] = BLEND_LO(mVec[0], b.mVec[0], mask.mMask);
+            mVec[1] = BLEND_HI(mVec[1], b.mVec[1], mask.mMask);
+            return *this;
+        }
         // ASSIGNS
+        inline SIMDVec_i & assign(int64_t b) {
+            mVec[0] = SET1_EPI64(b);
+            mVec[1] = SET1_EPI64(b);
+            return *this;
+        }
         inline SIMDVec_i & operator= (int64_t b) {
             return assign(b);
         }
         // MASSIGNS
+        inline SIMDVec_i & assign(SIMDVecMask<8> const & mask, int64_t b) {
+            __m256i t0 = SET1_EPI64(b);
+            mVec[0] = BLEND_LO(mVec[0], t0, mask.mMask);
+            mVec[1] = BLEND_HI(mVec[1], t0, mask.mMask);
+            return *this;
+        }
 
         // PREFETCH0
         // PREFETCH1
@@ -251,7 +272,18 @@ namespace SIMD {
         }
 
         // BLENDV
+        inline SIMDVec_i blend(SIMDVecMask<8> const & mask, SIMDVec_i const & b) const {
+            __m256i t0 = BLEND_LO(mVec[0], b.mVec[0], mask.mMask);
+            __m256i t1 = BLEND_HI(mVec[1], b.mVec[1], mask.mMask);
+            return SIMDVec_i(t0, t1);
+        }
         // BLENDS
+        inline SIMDVec_i blend(SIMDVecMask<8> const & mask, int64_t b) const {
+            __m256i t0 = SET1_EPI64(b);
+            __m256i t1 = BLEND_LO(mVec[0], t0, mask.mMask);
+            __m256i t2 = BLEND_HI(mVec[1], t0, mask.mMask);
+            return SIMDVec_i(t1, t2);
+        }
         // SWIZZLE
         // SWIZZLEA
 

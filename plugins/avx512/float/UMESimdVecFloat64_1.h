@@ -1005,7 +1005,6 @@ namespace SIMD {
             double t0 = mask.mMask ? std::round(mVec) : mVec;
             return SIMDVec_f(t0);
         }
-        // MROUND
         // TRUNC
         inline SIMDVec_i<int64_t, 1> trunc() const {
             int64_t t0 = (int64_t)mVec;

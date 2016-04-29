@@ -1069,36 +1069,32 @@ namespace SIMD {
         }
         // ABS
         inline SIMDVec_f abs() const {
-            __m128 t0 = _mm_set1_ps(0.0f);
-            __m128 t1 = _mm_cmplt_ps(mVec, t0);
-            __m128 t2 = _mm_sub_ps(t0, mVec);
-            __m128 t3 = _mm_blendv_ps(mVec, t2, t1);
-            return SIMDVec_f(t3);
+            __m128i t0 = _mm_set1_epi32(0x7FFFFFFF);
+            __m128 t1 = _mm_castsi128_ps(t0);
+            __m128 t2 = _mm_and_ps(t1, mVec);
+            return SIMDVec_f(t2);
         }
         // MABS
         inline SIMDVec_f abs(SIMDVecMask<4> const & mask) const {
-            __m128 t0 = _mm_set1_ps(0.0f);
-            __m128 t1 = _mm_cmplt_ps(mVec, t0);
-            __m128 t2 = _mm_sub_ps(t0, mVec);
-            __m128 t3 = _mm_blendv_ps(mVec, t2, t1);
-            __m128 t4 = BLEND(mVec, t3, mask.mMask);
-            return SIMDVec_f(t4);
+            __m128i t0 = _mm_set1_epi32(0x7FFFFFFF);
+            __m128 t1 = _mm_castsi128_ps(t0);
+            __m128 t2 = _mm_and_ps(t1, mVec);
+            __m128 t3 = BLEND(mVec, t2, mask.mMask);
+            return SIMDVec_f(t3);
         }
         // ABSA
-        inline SIMDVec_f & abs() {
-            __m128 t0 = _mm_set1_ps(0.0f);
-            __m128 t1 = _mm_cmplt_ps(mVec, t0);
-            __m128 t2 = _mm_sub_ps(t0, mVec);
-            mVec = _mm_blendv_ps(mVec, t2, t1);
+        inline SIMDVec_f & absa() {
+            __m128i t0 = _mm_set1_epi32(0x7FFFFFFF);
+            __m128 t1 = _mm_castsi128_ps(t0);
+            mVec = _mm_and_ps(t1, mVec);
             return *this;
         }
         // MABSA
-        inline SIMDVec_f & abs(SIMDVecMask<4> const & mask) {
-            __m128 t0 = _mm_set1_ps(0.0f);
-            __m128 t1 = _mm_cmplt_ps(mVec, t0);
-            __m128 t2 = _mm_sub_ps(t0, mVec);
-            __m128 t3 = _mm_blendv_ps(mVec, t2, t1);
-            mVec = BLEND(mVec, t3, mask.mMask);
+        inline SIMDVec_f & absa(SIMDVecMask<4> const & mask) {
+            __m128i t0 = _mm_set1_epi32(0x7FFFFFFF);
+            __m128 t1 = _mm_castsi128_ps(t0);
+            __m128 t2 = _mm_and_ps(t1, mVec);
+            mVec = BLEND(mVec, t2, mask.mMask);
             return *this;
         }
         // CMPEQRV
@@ -1116,12 +1112,12 @@ namespace SIMD {
             return SIMDVec_f(t1);
         }
         // SQRA
-        inline SIMDVec_f & sqr() {
+        inline SIMDVec_f & sqra() {
             mVec = _mm_mul_ps(mVec, mVec);
             return *this;
         }
         // MSQRA
-        inline SIMDVec_f & sqr(SIMDVecMask<4> const & mask) {
+        inline SIMDVec_f & sqra(SIMDVecMask<4> const & mask) {
             __m128 t0 = _mm_mul_ps(mVec, mVec);
             mVec = BLEND(mVec, t0, mask.mMask);
             return *this;

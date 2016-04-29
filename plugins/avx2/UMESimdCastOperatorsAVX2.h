@@ -439,22 +439,32 @@ namespace SIMD {
     }
 
     inline SIMDVec_f<float, 8>::operator SIMDVec_i<int32_t, 8>() const {
-        __m256i t0 = _mm256_cvtps_epi32(mVec);
-        return SIMDVec_i<int32_t, 8>(t0);
+        // C++: Truncation is default rounding mode for floating-integer conversion.
+        __m256 t0 = _mm256_round_ps(mVec, _MM_FROUND_TO_ZERO | _MM_FROUND_NO_EXC);
+        __m256i t1 = _mm256_cvtps_epi32(t0);
+        return SIMDVec_i<int32_t, 8>(t1);
     }
 
     inline SIMDVec_f<float, 16>::operator SIMDVec_i<int32_t, 16>() const {
-        __m256i t0 = _mm256_cvtps_epi32(mVec[0]);
-        __m256i t1 = _mm256_cvtps_epi32(mVec[1]);
-        return SIMDVec_i<int32_t, 16>(t0, t1);
+        // C++: Truncation is default rounding mode for floating-integer conversion.
+        __m256 t0 = _mm256_round_ps(mVec[0], _MM_FROUND_TO_ZERO | _MM_FROUND_NO_EXC);
+        __m256 t1 = _mm256_round_ps(mVec[1], _MM_FROUND_TO_ZERO | _MM_FROUND_NO_EXC);
+        __m256i t2 = _mm256_cvtps_epi32(t0);
+        __m256i t3 = _mm256_cvtps_epi32(t1);
+        return SIMDVec_i<int32_t, 16>(t2, t3);
     }
 
     inline SIMDVec_f<float, 32>::operator SIMDVec_i<int32_t, 32>() const {
-        __m256i t0 = _mm256_cvtps_epi32(mVec[0]);
-        __m256i t1 = _mm256_cvtps_epi32(mVec[1]);
-        __m256i t2 = _mm256_cvtps_epi32(mVec[2]);
-        __m256i t3 = _mm256_cvtps_epi32(mVec[3]);
-        return SIMDVec_i<int32_t, 32>(t0, t1, t2, t3);
+        // C++: Truncation is default rounding mode for floating-integer conversion.
+        __m256 t0 = _mm256_round_ps(mVec[0], _MM_FROUND_TO_ZERO | _MM_FROUND_NO_EXC);
+        __m256 t1 = _mm256_round_ps(mVec[1], _MM_FROUND_TO_ZERO | _MM_FROUND_NO_EXC);
+        __m256 t2 = _mm256_round_ps(mVec[2], _MM_FROUND_TO_ZERO | _MM_FROUND_NO_EXC);
+        __m256 t3 = _mm256_round_ps(mVec[3], _MM_FROUND_TO_ZERO | _MM_FROUND_NO_EXC);
+        __m256i t4 = _mm256_cvtps_epi32(t0);
+        __m256i t5 = _mm256_cvtps_epi32(t1);
+        __m256i t6 = _mm256_cvtps_epi32(t2);
+        __m256i t7 = _mm256_cvtps_epi32(t3);
+        return SIMDVec_i<int32_t, 32>(t4, t5, t6, t7);
     }
 
     inline SIMDVec_f<double, 1>::operator SIMDVec_i<int64_t, 1>() const {
@@ -468,43 +478,66 @@ namespace SIMD {
     }
 
     inline SIMDVec_f<double, 4>::operator SIMDVec_i<int64_t, 4>() const {
-        __m128i t0 = _mm_cvtepi32_epi64(_mm_cvtpd_epi32(_mm256_extractf128_pd(mVec, 0)));
-        __m128i t1 = _mm_cvtepi32_epi64(_mm_cvtpd_epi32(_mm256_extractf128_pd(mVec, 1)));
-        __m256i t2 = _mm256_castsi128_si256(t0);
-        t2 = _mm256_insertf128_si256(t2, t1, 1);
-        return SIMDVec_i<int64_t, 4>(t2);
+        // C++: Truncation is default rounding mode for floating-integer conversion.
+        alignas(32) double raw_64f[4];
+        alignas(32) int64_t raw_64i[4];
+        _mm256_store_pd(raw_64f, mVec);
+        raw_64i[0] = int64_t(raw_64f[0]);
+        raw_64i[1] = int64_t(raw_64f[1]);
+        raw_64i[2] = int64_t(raw_64f[2]);
+        raw_64i[3] = int64_t(raw_64f[3]);
+        __m256i t0 = _mm256_load_si256((__m256i *)raw_64i);
+        return SIMDVec_i<int64_t, 4>(t0);
     }
 
     inline SIMDVec_f<double, 8>::operator SIMDVec_i<int64_t, 8>() const {
-        __m128i t0 = _mm_cvtepi32_epi64(_mm_cvtpd_epi32(_mm256_extractf128_pd(mVec[0], 0)));
-        __m128i t1 = _mm_cvtepi32_epi64(_mm_cvtpd_epi32(_mm256_extractf128_pd(mVec[0], 1)));
-        __m256i t2 = _mm256_castsi128_si256(t0);
-        t2 = _mm256_insertf128_si256(t2, t1, 1);
-        __m128i t3 = _mm_cvtepi32_epi64(_mm_cvtpd_epi32(_mm256_extractf128_pd(mVec[1], 0)));
-        __m128i t4 = _mm_cvtepi32_epi64(_mm_cvtpd_epi32(_mm256_extractf128_pd(mVec[1], 1)));
-        __m256i t5 = _mm256_castsi128_si256(t3);
-        t5 = _mm256_insertf128_si256(t5, t4, 1);
-        return SIMDVec_i<int64_t, 8>(t2, t5);
+        // C++: Truncation is default rounding mode for floating-integer conversion.
+        alignas(32) double raw_64f[8];
+        alignas(32) int64_t raw_64i[8];
+        _mm256_store_pd(raw_64f, mVec[0]);
+        raw_64i[0] = int64_t(raw_64f[0]);
+        raw_64i[1] = int64_t(raw_64f[1]);
+        raw_64i[2] = int64_t(raw_64f[2]);
+        raw_64i[3] = int64_t(raw_64f[3]);
+        _mm256_store_pd(raw_64f + 4, mVec[1]);
+        raw_64i[4] = int64_t(raw_64f[4]);
+        raw_64i[5] = int64_t(raw_64f[5]);
+        raw_64i[6] = int64_t(raw_64f[6]);
+        raw_64i[7] = int64_t(raw_64f[7]);
+        __m256i t0 = _mm256_load_si256((__m256i *)raw_64i);
+        __m256i t1 = _mm256_load_si256((__m256i *)(raw_64i + 4));
+        return SIMDVec_i<int64_t, 8>(t0, t1);
     }
 
     inline SIMDVec_f<double, 16>::operator SIMDVec_i<int64_t, 16>() const {
-        __m128i t0 = _mm_cvtepi32_epi64(_mm_cvtpd_epi32(_mm256_extractf128_pd(mVec[0], 0)));
-        __m128i t1 = _mm_cvtepi32_epi64(_mm_cvtpd_epi32(_mm256_extractf128_pd(mVec[0], 1)));
-        __m256i t2 = _mm256_castsi128_si256(t0);
-        t2 = _mm256_insertf128_si256(t2, t1, 1);
-        __m128i t3 = _mm_cvtepi32_epi64(_mm_cvtpd_epi32(_mm256_extractf128_pd(mVec[1], 0)));
-        __m128i t4 = _mm_cvtepi32_epi64(_mm_cvtpd_epi32(_mm256_extractf128_pd(mVec[1], 1)));
-        __m256i t5 = _mm256_castsi128_si256(t3);
-        t5 = _mm256_insertf128_si256(t5, t4, 1);
-        __m128i t6 = _mm_cvtepi32_epi64(_mm_cvtpd_epi32(_mm256_extractf128_pd(mVec[2], 0)));
-        __m128i t7 = _mm_cvtepi32_epi64(_mm_cvtpd_epi32(_mm256_extractf128_pd(mVec[2], 1)));
-        __m256i t8 = _mm256_castsi128_si256(t6);
-        t8 = _mm256_insertf128_si256(t8, t7, 1);
-        __m128i t9 = _mm_cvtepi32_epi64(_mm_cvtpd_epi32(_mm256_extractf128_pd(mVec[3], 0)));
-        __m128i t10 = _mm_cvtepi32_epi64(_mm_cvtpd_epi32(_mm256_extractf128_pd(mVec[3], 1)));
-        __m256i t11 = _mm256_castsi128_si256(t9);
-        t11 = _mm256_insertf128_si256(t11, t10, 1);
-        return SIMDVec_i<int64_t, 16>(t2, t5, t8, t11);
+        // C++: Truncation is default rounding mode for floating-integer conversion.
+        alignas(64) double raw_64f[16];
+        alignas(64) int64_t raw_64i[16];
+        _mm256_store_pd(raw_64f, mVec[0]);
+        _mm256_store_pd(raw_64f + 4, mVec[1]);
+        _mm256_store_pd(raw_64f + 8, mVec[2]);
+        _mm256_store_pd(raw_64f + 12, mVec[3]);
+        raw_64i[0] = int64_t(raw_64f[0]);
+        raw_64i[1] = int64_t(raw_64f[1]);
+        raw_64i[2] = int64_t(raw_64f[2]);
+        raw_64i[3] = int64_t(raw_64f[3]);
+        raw_64i[4] = int64_t(raw_64f[4]);
+        raw_64i[5] = int64_t(raw_64f[5]);
+        raw_64i[6] = int64_t(raw_64f[6]);
+        raw_64i[7] = int64_t(raw_64f[7]);
+        raw_64i[8] = int64_t(raw_64f[8]);
+        raw_64i[9] = int64_t(raw_64f[9]);
+        raw_64i[10] = int64_t(raw_64f[10]);
+        raw_64i[11] = int64_t(raw_64f[11]);
+        raw_64i[12] = int64_t(raw_64f[12]);
+        raw_64i[13] = int64_t(raw_64f[13]);
+        raw_64i[14] = int64_t(raw_64f[14]);
+        raw_64i[15] = int64_t(raw_64f[15]);
+        __m256i t0 = _mm256_load_si256((__m256i *)raw_64i);
+        __m256i t1 = _mm256_load_si256((__m256i *)(raw_64i + 4));
+        __m256i t2 = _mm256_load_si256((__m256i *)(raw_64i + 8));
+        __m256i t3 = _mm256_load_si256((__m256i *)(raw_64i + 12));
+        return SIMDVec_i<int64_t, 16>(t0, t1, t2, t3);
     }
 
     // PROMOTE
@@ -759,7 +792,7 @@ namespace SIMD {
     }
 
     inline SIMDVec_u<uint64_t, 1>::operator SIMDVec_u<uint32_t, 1>() const {
-        return SIMDVec_u<uint32_t, 1>(uint32_t(this->mVec));
+        return SIMDVec_u<uint32_t, 1>(uint32_t(mVec));
     }
 
     inline SIMDVec_u<uint64_t, 2>::operator SIMDVec_u<uint32_t, 2>() const {

@@ -443,8 +443,8 @@ namespace SIMD {
         inline SIMDVec_f subfrom(SIMDVecMask<8> const & mask, SIMDVec_f const & b) const {
             __m256d t0 = _mm256_sub_pd(b.mVec[0], mVec[0]);
             __m256d t1 = _mm256_sub_pd(b.mVec[1], mVec[1]);
-            __m256d t2 = BLEND_LO(mVec[0], t0, mask.mMask);
-            __m256d t3 = BLEND_HI(mVec[1], t1, mask.mMask);
+            __m256d t2 = BLEND_LO(b.mVec[0], t0, mask.mMask);
+            __m256d t3 = BLEND_HI(b.mVec[1], t1, mask.mMask);
             return SIMDVec_f(t2, t3);
         }
         // SUBFROMS

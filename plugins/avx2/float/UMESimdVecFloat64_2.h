@@ -1169,27 +1169,27 @@ namespace SIMD {
         // MPOWS
         // ROUND
         inline SIMDVec_f round() const {
-            float t0 = std::roundf(mVec[0]);
-            float t1 = std::roundf(mVec[1]);
+            double t0 = std::round(mVec[0]);
+            double t1 = std::round(mVec[1]);
             return SIMDVec_f(t0, t1);
         }
         // MROUND
         inline SIMDVec_f round(SIMDVecMask<2> const & mask) const {
-            float t0 = mask.mMask[0] ? std::roundf(mVec[0]) : mVec[0];
-            float t1 = mask.mMask[1] ? std::roundf(mVec[1]) : mVec[1];
+            double t0 = mask.mMask[0] ? std::round(mVec[0]) : mVec[0];
+            double t1 = mask.mMask[1] ? std::round(mVec[1]) : mVec[1];
             return SIMDVec_f(t0, t1);
         }
         // TRUNC
-        inline SIMDVec_i<int32_t, 2> trunc() const {
-            int32_t t0 = (int32_t)mVec[0];
-            int32_t t1 = (int32_t)mVec[1];
-            return SIMDVec_i<int32_t, 2>(t0, t1);
+        inline SIMDVec_i<int64_t, 2> trunc() const {
+            int64_t t0 = (int64_t)mVec[0];
+            int64_t t1 = (int64_t)mVec[1];
+            return SIMDVec_i<int64_t, 2>(t0, t1);
         }
         // MTRUNC
-        inline SIMDVec_i<int32_t, 2> trunc(SIMDVecMask<2> const & mask) const {
-            int32_t t0 = mask.mMask[0] ? (int32_t)mVec[0] : 0;
-            int32_t t1 = mask.mMask[1] ? (int32_t)mVec[1] : 0;
-            return SIMDVec_i<int32_t, 2>(t0, t1);
+        inline SIMDVec_i<int64_t, 2> trunc(SIMDVecMask<2> const & mask) const {
+            int64_t t0 = mask.mMask[0] ? (int64_t)mVec[0] : 0;
+            int64_t t1 = mask.mMask[1] ? (int64_t)mVec[1] : 0;
+            return SIMDVec_i<int64_t, 2>(t0, t1);
         }
         // FLOOR
         // MFLOOR

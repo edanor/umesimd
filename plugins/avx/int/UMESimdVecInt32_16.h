@@ -162,6 +162,7 @@ namespace SIMD {
         // LOAD
         inline SIMDVec_i & load(int32_t const * p) {
             mVec[0] = _mm256_loadu_si256((__m256i*)p);
+            mVec[1] = _mm256_loadu_si256((__m256i*)(p + 8));
             return *this;
         }
         // MLOAD

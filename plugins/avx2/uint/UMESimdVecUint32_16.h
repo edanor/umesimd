@@ -837,7 +837,6 @@ namespace SIMD {
             __m256i t6 = _mm256_shuffle_epi32(t5, 0x1);
             __m256i t7 = _mm256_mullo_epi32(t5, t6);
             uint32_t retval = _mm256_extract_epi32(t7, 0);
-            retval *= _mm256_extract_epi32(t7, 4);
             return retval;
         }
         // MHMUL
@@ -853,7 +852,6 @@ namespace SIMD {
             __m256i t8 = _mm256_shuffle_epi32(t7, 0x1);
             __m256i t9 = _mm256_mullo_epi32(t7, t8);
             uint32_t retval  = _mm256_extract_epi32(t9, 0);
-            retval *= _mm256_extract_epi32(t9, 4);
             return retval;
         }
         // HMULS
@@ -867,7 +865,6 @@ namespace SIMD {
             __m256i t6 = _mm256_shuffle_epi32(t5, 0x1);
             __m256i t7 = _mm256_mullo_epi32(t5, t6);
             uint32_t retval = _mm256_extract_epi32(t7, 0);
-            retval *= _mm256_extract_epi32(t7, 4);
             return retval * b;
         }
         // MHMULS
@@ -883,7 +880,6 @@ namespace SIMD {
             __m256i t8 = _mm256_shuffle_epi32(t7, 0x1);
             __m256i t9 = _mm256_mullo_epi32(t7, t8);
             uint32_t retval = _mm256_extract_epi32(t9, 0);
-            retval *= _mm256_extract_epi32(t9, 4);
             return retval * b;
         }
 
