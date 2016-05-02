@@ -293,20 +293,10 @@ namespace SIMD {
             __m256d t2 = _mm256_load_pd(p + 8);
             __m256d t3 = _mm256_load_pd(p + 12);
 
-            __m128i t4 = _mm256_extractf128_si256(mask.mMask[0], 0);
-            __m128i t5 = _mm256_extractf128_si256(mask.mMask[0], 1);
-            __m256d mask_pd_lo = _mm256_cvtepi32_pd(t4);
-            __m256d mask_pd_hi = _mm256_cvtepi32_pd(t5);
-            mVec[0] = _mm256_blendv_pd(mVec[0], t0, mask_pd_lo);
-            mVec[1] = _mm256_blendv_pd(mVec[1], t1, mask_pd_hi);
-
-            t4 = _mm256_extractf128_si256(mask.mMask[1], 0);
-            t5 = _mm256_extractf128_si256(mask.mMask[1], 1);
-            mask_pd_lo = _mm256_cvtepi32_pd(t4);
-            mask_pd_hi = _mm256_cvtepi32_pd(t5);
-            mVec[2] = _mm256_blendv_pd(mVec[0], t2, mask_pd_lo);
-            mVec[3] = _mm256_blendv_pd(mVec[1], t3, mask_pd_hi);
-
+            mVec[0] = BLEND_LO(mVec[0], t0, mask.mMask[0]);
+            mVec[1] = BLEND_HI(mVec[1], t1, mask.mMask[0]);
+            mVec[2] = BLEND_LO(mVec[2], t2, mask.mMask[1]);
+            mVec[3] = BLEND_HI(mVec[3], t3, mask.mMask[1]);
             return *this;
         }
         // STORE

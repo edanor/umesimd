@@ -165,7 +165,8 @@ namespace SIMD {
         }
         // MLOAD
         inline SIMDVec_u & load(SIMDVecMask<8> const & mask, uint32_t const * p) {
-            _mm256_maskload_epi32((int *)p, mask.mMask);
+            __m256i t0 = _mm256_loadu_si256((__m256i*)p);
+            mVec = _mm256_blendv_epi8(mVec, t0, mask.mMask);
             return *this;
         }
         // LOADA
@@ -175,7 +176,8 @@ namespace SIMD {
         }
         // MLOADA
         inline SIMDVec_u & loada(SIMDVecMask<8> const & mask, uint32_t const * p) {
-            mVec = _mm256_maskload_epi32((int *)p, mask.mMask);
+            __m256i t0 = _mm256_load_si256((__m256i*)p);
+            mVec = _mm256_blendv_epi8(mVec, t0, mask.mMask);
             return *this;
         }
         // STORE

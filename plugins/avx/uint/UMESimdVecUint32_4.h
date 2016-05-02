@@ -180,7 +180,7 @@ namespace SIMD {
         }
         // MSTORE
         inline uint32_t * store(SIMDVecMask<4> const & mask, uint32_t * p) const {
-            __m128i t0 = _mm_load_si128((__m128i*)p);
+            __m128i t0 = _mm_loadu_si128((__m128i*)p);
             __m128i t1 = _mm_blendv_epi8(t0, mVec, mask.mMask);
             _mm_storeu_si128((__m128i*) p, t1);
             return p;

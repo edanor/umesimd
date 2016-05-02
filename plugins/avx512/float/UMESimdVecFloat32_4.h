@@ -169,7 +169,10 @@ namespace SIMD {
         }
         // MLOAD
         inline SIMDVec_f & load(SIMDVecMask<4> const & mask, float const * p) {
+#if defined(__AVX512VL__)
             mVec = _mm_mask_loadu_ps(mVec, mask.mMask, p);
+#else
+#endif
             return *this;
         }
         // LOADA
@@ -179,7 +182,10 @@ namespace SIMD {
         }
         // MLOADA
         inline SIMDVec_f & loada(SIMDVecMask<4> const & mask, float const * p) {
+#if defined(__AVX512VL__)
             mVec = _mm_mask_loadu_ps(mVec, mask.mMask, p);
+#else
+#endif
             return *this;
         }
         // STORE
@@ -189,7 +195,10 @@ namespace SIMD {
         }
         // MSTORE
         inline float* store(SIMDVecMask<4> const & mask, float * p) const {
+#if defined(__AVX512VL__)
             _mm_mask_storeu_ps(p, mask.mMask, mVec);
+#else
+#endif
             return p;
         }
         // STOREA
@@ -199,7 +208,10 @@ namespace SIMD {
         }
         // MSTOREA
         inline float* storea(SIMDVecMask<4> const & mask, float * p) const {
+#if defined(__AVX512VL__)
             _mm_mask_store_ps(p, mask.mMask, mVec);
+#else
+#endif
             return p;
         }
         // ADDV

@@ -182,7 +182,10 @@ namespace SIMD {
         }
         // MLOADA
         inline SIMDVec_i & loada(SIMDVecMask<8> const & mask, int32_t const * p) {
+#if defined(__AVX512VL__)
             mVec = _mm256_mask_load_epi32(mVec, mask.mMask, p);
+#else
+#endif
             return *this;
         }
         // STORE
@@ -196,7 +199,10 @@ namespace SIMD {
         }
         // MSTORE
         inline int32_t * store(SIMDVecMask<8> const & mask, int32_t * p) const {
+#if defined(__AVX512VL__)
             _mm256_mask_storeu_epi32(p, mask.mMask, mVec);
+#else
+#endif
             return p;
         }
         // STOREA
@@ -206,7 +212,10 @@ namespace SIMD {
         }
         // MSTOREA
         inline int32_t * storea(SIMDVecMask<8> const & mask, int32_t * p) const {
+#if defined(__AVX512VL__)
             _mm256_mask_store_epi32(p, mask.mMask, mVec);
+#else
+#endif
             return p;
         }
         // BLENDV

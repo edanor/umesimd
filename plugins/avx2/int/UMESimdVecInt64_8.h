@@ -196,7 +196,7 @@ namespace SIMD {
         // MLOAD
         inline SIMDVec_i & load(SIMDVecMask<8> const & mask, int64_t const * p) {
             __m256i t0 = _mm256_loadu_si256((__m256i*)p);
-            __m256i t1 = _mm256_loadu_si256((__m256i*)p);
+            __m256i t1 = _mm256_loadu_si256((__m256i*)(p + 4));
 
             mVec[0] = BLEND_LO(mVec[0], t0, mask.mMask);
             mVec[1] = BLEND_HI(mVec[1], t1, mask.mMask);

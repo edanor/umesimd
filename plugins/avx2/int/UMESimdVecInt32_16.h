@@ -177,8 +177,10 @@ namespace SIMD {
         }
         // MLOAD
         inline SIMDVec_i & load(SIMDVecMask<16> const & mask, int32_t const * p) {
-            mVec[0] = _mm256_maskload_epi32((int *)p, mask.mMask[0]);
-            mVec[1] = _mm256_maskload_epi32((int *)(p + 8), mask.mMask[1]);
+            __m256i t0 = _mm256_loadu_si256((__m256i*)p);
+            __m256i t1 = _mm256_loadu_si256((__m256i*)(p + 8));
+            mVec[0] = _mm256_blendv_epi8(mVec[0], t0, mask.mMask[0]);
+            mVec[1] = _mm256_blendv_epi8(mVec[1], t1, mask.mMask[1]);
             return *this;
         }
         // LOADA
@@ -189,8 +191,10 @@ namespace SIMD {
         }
         // MLOADA
         inline SIMDVec_i & loada(SIMDVecMask<16> const & mask, int32_t const * p) {
-            mVec[0] = _mm256_maskload_epi32((int *)p, mask.mMask[0]);
-            mVec[1] = _mm256_maskload_epi32((int *)(p + 8), mask.mMask[1]);
+            __m256i t0 = _mm256_load_si256((__m256i*)p);
+            __m256i t1 = _mm256_load_si256((__m256i*)(p + 8));
+            mVec[0] = _mm256_blendv_epi8(mVec[0], t0, mask.mMask[0]);
+            mVec[1] = _mm256_blendv_epi8(mVec[1], t1, mask.mMask[1]);
             return *this;
         }
         // STORE

@@ -188,7 +188,7 @@ namespace SIMD {
         // MSTOREA
         inline uint64_t* storea(SIMDVecMask<2> const & mask, uint64_t* p) const {
             if (mask.mMask[0] == true) p[0] = mVec[0];
-            if (mask.mMask[1] == true) p[0] = mVec[1];
+            if (mask.mMask[1] == true) p[1] = mVec[1];
             return p;
         }
 

@@ -1386,6 +1386,151 @@ void genericLOAD_STORETest()
     }
 }
 
+template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN>
+void genericMLOADTest_random()
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    SCALAR_TYPE inputA[VEC_LEN];
+    SCALAR_TYPE inputB[VEC_LEN];
+    SCALAR_TYPE output[VEC_LEN];
+    bool inputMask[VEC_LEN];
+
+    for (int i = 0; i < VEC_LEN; i++) {
+        inputA[i] = randomValue<SCALAR_TYPE>(gen);
+        inputB[i] = randomValue<SCALAR_TYPE>(gen);
+        inputMask[i] = randomValue<bool>(gen);
+
+        output[i] = inputMask[i] ? inputB[i] : inputA[i];
+    }
+
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(inputA);
+        MASK_TYPE mask(inputMask);
+
+        vec0.load(mask, inputB);
+        vec0.store(values);
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange), "MLOAD");
+    }
+}
+
+template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN>
+void genericMSTORETest_random()
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    SCALAR_TYPE inputA[VEC_LEN];
+    SCALAR_TYPE inputB[VEC_LEN];
+    SCALAR_TYPE output[VEC_LEN];
+    bool inputMask[VEC_LEN];
+
+    for (int i = 0; i < VEC_LEN; i++) {
+        inputA[i] = randomValue<SCALAR_TYPE>(gen);
+        inputB[i] = randomValue<SCALAR_TYPE>(gen);
+        inputMask[i] = randomValue<bool>(gen);
+
+        output[i] = inputMask[i] ? inputB[i] : 0;
+    }
+
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(inputA);
+        MASK_TYPE mask(inputMask);
+
+        memset(values, 0, sizeof(SCALAR_TYPE)*VEC_LEN);
+
+        vec0.load(inputB);
+        vec0.store(mask, values);
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange), "MSTORE");
+    }
+}
+
+template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
+void genericLOADA_STOREATest()
+{
+    {
+        alignas(VEC_TYPE::alignment()) SCALAR_TYPE aligned_in[VEC_LEN];
+        alignas(VEC_TYPE::alignment()) SCALAR_TYPE values[VEC_LEN];
+
+        for (int i = 0; i < VEC_LEN; i++) aligned_in[i] = DATA_SET::inputs::inputA[i];
+
+        VEC_TYPE vec0;
+        vec0.loada(aligned_in);
+        vec0.storea(values);
+        bool inRange = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange), "LOADA/STOREA");
+    }
+}
+
+template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN>
+void genericMLOADATest_random()
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    alignas(VEC_TYPE::alignment()) SCALAR_TYPE inputA[VEC_LEN];
+    alignas(VEC_TYPE::alignment()) SCALAR_TYPE inputB[VEC_LEN];
+    alignas(VEC_TYPE::alignment()) SCALAR_TYPE output[VEC_LEN];
+    alignas(MASK_TYPE::alignment()) bool inputMask[VEC_LEN];
+
+    for (int i = 0; i < VEC_LEN; i++) {
+        inputA[i] = randomValue<SCALAR_TYPE>(gen);
+        inputB[i] = randomValue<SCALAR_TYPE>(gen);
+        inputMask[i] = randomValue<bool>(gen);
+
+        output[i] = inputMask[i] ? inputB[i] : inputA[i];
+    }
+
+    {
+        alignas(VEC_TYPE::alignment()) SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(inputA);
+        MASK_TYPE mask(inputMask);
+
+        vec0.loada(mask, inputB);
+        vec0.storea(values);
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange), "MLOADA");
+    }
+}
+
+template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN>
+void genericMSTOREATest_random()
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    alignas(VEC_TYPE::alignment()) SCALAR_TYPE inputA[VEC_LEN];
+    alignas(VEC_TYPE::alignment()) SCALAR_TYPE inputB[VEC_LEN];
+    alignas(VEC_TYPE::alignment()) SCALAR_TYPE output[VEC_LEN];
+    alignas(MASK_TYPE::alignment()) bool inputMask[VEC_LEN];
+
+    for (int i = 0; i < VEC_LEN; i++) {
+        inputA[i] = randomValue<SCALAR_TYPE>(gen);
+        inputB[i] = randomValue<SCALAR_TYPE>(gen);
+        inputMask[i] = randomValue<bool>(gen);
+
+        output[i] = inputMask[i] ? inputB[i] : 0;
+    }
+
+    {
+        alignas(VEC_TYPE::alignment()) SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(inputA);
+        MASK_TYPE mask(inputMask);
+
+        memset(values, 0, sizeof(SCALAR_TYPE)*VEC_LEN);
+
+        vec0.loada(inputB);
+        vec0.storea(mask, values);
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange), "MSTOREA");
+    }
+}
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericADDVTest()
 {
@@ -7777,12 +7922,11 @@ void genericBaseInterfaceTest()
     // PREFETCH1
     // PREFETCH2
     genericLOAD_STORETest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
-    // MLOAD
-    // MSTORE
-    // LOADA
-    // MLOADA
-    // STOREA
-    // MSTOREA
+    genericMLOADTest_random<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN>();
+    genericMSTORETest_random<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN>();
+    genericLOADA_STOREATest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
+    genericMLOADATest_random<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN>();
+    genericMSTOREATest_random<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN>();
     // SWIZZLE
     // SWIZZLEA
     genericADDVTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
