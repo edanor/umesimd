@@ -3812,7 +3812,9 @@ namespace SIMD
             return temp; 
         }
             
-        inline void insert(uint32_t index, SCALAR_TYPE value){ reg[index] = value; }
+        inline void insert(uint32_t index, SCALAR_TYPE value){
+            reg[index] = value; 
+        }
     };
 
     template<uint32_t MASK_LEN>
@@ -3867,7 +3869,7 @@ namespace SIMD
         }
 
         // LOADA
-        inline DERIVED_MASK_TYPE & loadAligned(bool const * addrAligned) {
+        inline DERIVED_MASK_TYPE & loada(bool const * addrAligned) {
             return EMULATED_FUNCTIONS::loadAligned<DERIVED_MASK_TYPE, bool>(static_cast<DERIVED_MASK_TYPE &>(*this), addrAligned);
         }
 
