@@ -49,7 +49,7 @@ namespace SIMD
     {
         // ASSIGN
         template<typename VEC_TYPE>
-        inline VEC_TYPE & assign(VEC_TYPE & dst, VEC_TYPE const & src) {
+        UME_FORCE_INLINE VEC_TYPE & assign(VEC_TYPE & dst, VEC_TYPE const & src) {
             UME_EMULATION_WARNING();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                 dst.insert(i, src[i]);
@@ -59,7 +59,7 @@ namespace SIMD
 
         // MASSIGN
         template<typename VEC_TYPE, typename MASK_TYPE>
-        inline VEC_TYPE & assign(MASK_TYPE const & mask, VEC_TYPE & dst, VEC_TYPE const & src) {
+        UME_FORCE_INLINE VEC_TYPE & assign(MASK_TYPE const & mask, VEC_TYPE & dst, VEC_TYPE const & src) {
             UME_EMULATION_WARNING();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                 if(mask[i] == true) dst.insert(i, src[i]);
@@ -69,7 +69,7 @@ namespace SIMD
 
         // ASSIGNS
         template<typename VEC_TYPE, typename SCALAR_TYPE>
-        inline VEC_TYPE & assign(VEC_TYPE & dst, SCALAR_TYPE src) {
+        UME_FORCE_INLINE VEC_TYPE & assign(VEC_TYPE & dst, SCALAR_TYPE src) {
             UME_EMULATION_WARNING();
             for( uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                 dst.insert(i, src);
@@ -79,7 +79,7 @@ namespace SIMD
 
         // MASSIGNS
         template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
-        inline VEC_TYPE & assign(MASK_TYPE const & mask, VEC_TYPE & dst, SCALAR_TYPE src) {
+        UME_FORCE_INLINE VEC_TYPE & assign(MASK_TYPE const & mask, VEC_TYPE & dst, SCALAR_TYPE src) {
             UME_EMULATION_WARNING();
             for( uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                 if(mask[i] == true) dst.insert(i, src);
@@ -89,7 +89,7 @@ namespace SIMD
 
         // LOAD
         template<typename VEC_TYPE, typename SCALAR_TYPE>
-        inline VEC_TYPE & load(VEC_TYPE & dst, SCALAR_TYPE const * p) {
+        UME_FORCE_INLINE VEC_TYPE & load(VEC_TYPE & dst, SCALAR_TYPE const * p) {
             UME_EMULATION_WARNING();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                 dst.insert(i, p[i]);
@@ -99,7 +99,7 @@ namespace SIMD
 
         // MLOAD
         template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
-        inline VEC_TYPE & load(MASK_TYPE const & mask, VEC_TYPE & dst, SCALAR_TYPE const * p) {
+        UME_FORCE_INLINE VEC_TYPE & load(MASK_TYPE const & mask, VEC_TYPE & dst, SCALAR_TYPE const * p) {
             UME_EMULATION_WARNING();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++)
             {
@@ -110,21 +110,21 @@ namespace SIMD
 
         // LOADA
         template<typename VEC_TYPE, typename SCALAR_TYPE>
-        inline VEC_TYPE & loadAligned(VEC_TYPE & dst, SCALAR_TYPE const * p) {
+        UME_FORCE_INLINE VEC_TYPE & loadAligned(VEC_TYPE & dst, SCALAR_TYPE const * p) {
             UME_ALIGNMENT_CHECK(p, VEC_TYPE::alignment());
             return EMULATED_FUNCTIONS::load<VEC_TYPE, SCALAR_TYPE>(dst, p);
         }
 
         // MLOADA
         template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
-        inline VEC_TYPE & loadAligned(MASK_TYPE const & mask, VEC_TYPE & dst, SCALAR_TYPE const * p) {
+        UME_FORCE_INLINE VEC_TYPE & loadAligned(MASK_TYPE const & mask, VEC_TYPE & dst, SCALAR_TYPE const * p) {
             UME_ALIGNMENT_CHECK(p, VEC_TYPE::alignment());
             return EMULATED_FUNCTIONS::load<VEC_TYPE, SCALAR_TYPE, MASK_TYPE>(mask, dst, p);
         }
 
         // STORE
         template<typename VEC_TYPE, typename SCALAR_TYPE>
-        inline SCALAR_TYPE* store(VEC_TYPE const & src, SCALAR_TYPE * p) {
+        UME_FORCE_INLINE SCALAR_TYPE* store(VEC_TYPE const & src, SCALAR_TYPE * p) {
             UME_EMULATION_WARNING();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++)
             {
@@ -135,7 +135,7 @@ namespace SIMD
 
         // MSTORE
         template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
-        inline SCALAR_TYPE* store(MASK_TYPE const & mask, VEC_TYPE const & src, SCALAR_TYPE * p) {
+        UME_FORCE_INLINE SCALAR_TYPE* store(MASK_TYPE const & mask, VEC_TYPE const & src, SCALAR_TYPE * p) {
             UME_EMULATION_WARNING();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++)
             {
@@ -146,21 +146,21 @@ namespace SIMD
 
         // STOREA
         template<typename VEC_TYPE, typename SCALAR_TYPE>
-        inline SCALAR_TYPE* storeAligned(VEC_TYPE const & src, SCALAR_TYPE *p) {
+        UME_FORCE_INLINE SCALAR_TYPE* storeAligned(VEC_TYPE const & src, SCALAR_TYPE *p) {
             UME_ALIGNMENT_CHECK(p, VEC_TYPE::alignment());
             return store<VEC_TYPE, SCALAR_TYPE>(src, p); 
         }
 
         // MSTOREA
         template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
-        inline SCALAR_TYPE* storeAligned(MASK_TYPE const & mask, VEC_TYPE const & src, SCALAR_TYPE *p) {
+        UME_FORCE_INLINE SCALAR_TYPE* storeAligned(MASK_TYPE const & mask, VEC_TYPE const & src, SCALAR_TYPE *p) {
             UME_ALIGNMENT_CHECK(p, VEC_TYPE::alignment());
             return store<MASK_TYPE, VEC_TYPE, SCALAR_TYPE>(mask, src, p);
         }
 
         // GATHERS
         template<typename VEC_TYPE, typename SCALAR_TYPE>
-        inline VEC_TYPE & gather(VEC_TYPE & dst, SCALAR_TYPE* base, uint32_t* indices) {
+        UME_FORCE_INLINE VEC_TYPE & gather(VEC_TYPE & dst, SCALAR_TYPE* base, uint32_t* indices) {
             UME_EMULATION_WARNING();
             for (uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                 dst.insert( i, base[indices[i]]);
@@ -170,7 +170,7 @@ namespace SIMD
 
         // MGATHERS
         template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
-        inline VEC_TYPE & gather(MASK_TYPE const & mask, VEC_TYPE & dst, SCALAR_TYPE* base, uint32_t* indices) {
+        UME_FORCE_INLINE VEC_TYPE & gather(MASK_TYPE const & mask, VEC_TYPE & dst, SCALAR_TYPE* base, uint32_t* indices) {
             UME_EMULATION_WARNING();
             for (uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                 if(mask[i] == true) dst.insert( i, base[indices[i]]);
@@ -180,7 +180,7 @@ namespace SIMD
 
         // GATHERV
         template<typename VEC_TYPE, typename SCALAR_TYPE, typename UINT_VEC_TYPE>
-        inline VEC_TYPE & gather(VEC_TYPE & dst, SCALAR_TYPE* base, UINT_VEC_TYPE const & indices) {
+        UME_FORCE_INLINE VEC_TYPE & gather(VEC_TYPE & dst, SCALAR_TYPE* base, UINT_VEC_TYPE const & indices) {
             UME_EMULATION_WARNING();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                 dst.insert(i, base[indices[i]]);
@@ -190,7 +190,7 @@ namespace SIMD
 
         // MGATHERV
         template<typename VEC_TYPE, typename SCALAR_TYPE, typename UINT_VEC_TYPE, typename MASK_TYPE>
-        inline VEC_TYPE & gather(MASK_TYPE const & mask, VEC_TYPE & dst, SCALAR_TYPE* base, UINT_VEC_TYPE const & indices) {
+        UME_FORCE_INLINE VEC_TYPE & gather(MASK_TYPE const & mask, VEC_TYPE & dst, SCALAR_TYPE* base, UINT_VEC_TYPE const & indices) {
             UME_EMULATION_WARNING();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                 if(mask[i] == true) dst.insert(i, base[indices[i]]);
@@ -200,7 +200,7 @@ namespace SIMD
 
         // SCATTERS
         template<typename VEC_TYPE, typename SCALAR_TYPE>
-        inline SCALAR_TYPE* scatter(VEC_TYPE const & src, SCALAR_TYPE* base, uint32_t* indices) {
+        UME_FORCE_INLINE SCALAR_TYPE* scatter(VEC_TYPE const & src, SCALAR_TYPE* base, uint32_t* indices) {
             UME_EMULATION_WARNING();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                 base[indices[i]] = src[i];
@@ -210,7 +210,7 @@ namespace SIMD
 
         // MSCATTERS
         template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
-        inline SCALAR_TYPE* scatter(MASK_TYPE const & mask, VEC_TYPE const & src, SCALAR_TYPE* base, uint32_t* indices) {
+        UME_FORCE_INLINE SCALAR_TYPE* scatter(MASK_TYPE const & mask, VEC_TYPE const & src, SCALAR_TYPE* base, uint32_t* indices) {
             UME_EMULATION_WARNING();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                 if(mask[i] == true) base[indices[i]] = src[i];
@@ -220,7 +220,7 @@ namespace SIMD
 
         // SCATTERV
         template<typename VEC_TYPE, typename SCALAR_TYPE, typename UINT_VEC_TYPE>
-        inline SCALAR_TYPE* scatter(VEC_TYPE const & src, SCALAR_TYPE* base, UINT_VEC_TYPE const & indices) {
+        UME_FORCE_INLINE SCALAR_TYPE* scatter(VEC_TYPE const & src, SCALAR_TYPE* base, UINT_VEC_TYPE const & indices) {
             UME_EMULATION_WARNING();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++)
             {
@@ -231,7 +231,7 @@ namespace SIMD
 
         // MSCATTERV
         template<typename VEC_TYPE, typename SCALAR_TYPE, typename UINT_VEC_TYPE, typename MASK_TYPE>
-        inline SCALAR_TYPE* scatter(MASK_TYPE const & mask, VEC_TYPE const & src, SCALAR_TYPE* base, UINT_VEC_TYPE const & indices) {
+        UME_FORCE_INLINE SCALAR_TYPE* scatter(MASK_TYPE const & mask, VEC_TYPE const & src, SCALAR_TYPE* base, UINT_VEC_TYPE const & indices) {
             UME_EMULATION_WARNING();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++)
             {
@@ -242,7 +242,7 @@ namespace SIMD
 
         // PACK
         template<typename VEC_TYPE, typename VEC_HALF_TYPE>
-        inline VEC_TYPE & pack(VEC_TYPE & dst, VEC_HALF_TYPE const & src1, VEC_HALF_TYPE const & src2) {
+        UME_FORCE_INLINE VEC_TYPE & pack(VEC_TYPE & dst, VEC_HALF_TYPE const & src1, VEC_HALF_TYPE const & src2) {
             UME_EMULATION_WARNING();
             for(uint32_t i = 0; i < VEC_HALF_TYPE::length(); i++) {
                 dst.insert(i, src1[i]);
@@ -253,7 +253,7 @@ namespace SIMD
 
         // PACKLO
         template<typename VEC_TYPE, typename VEC_HALF_TYPE>
-        inline VEC_TYPE & packLow(VEC_TYPE & dst, VEC_HALF_TYPE const & src1) {
+        UME_FORCE_INLINE VEC_TYPE & packLow(VEC_TYPE & dst, VEC_HALF_TYPE const & src1) {
             UME_EMULATION_WARNING();
             for(uint32_t i = 0; i < VEC_HALF_TYPE::length(); i++) {
                 dst.insert(i, src1[i]);
@@ -263,7 +263,7 @@ namespace SIMD
 
         // PACKHI
         template<typename VEC_TYPE, typename VEC_HALF_TYPE>
-        inline VEC_TYPE & packHigh(VEC_TYPE & dst, VEC_HALF_TYPE const & src1) {
+        UME_FORCE_INLINE VEC_TYPE & packHigh(VEC_TYPE & dst, VEC_HALF_TYPE const & src1) {
             UME_EMULATION_WARNING();
             for(uint32_t i = VEC_HALF_TYPE::length(); i < VEC_TYPE::length(); i++) {
                 dst.insert(i, src1[i - VEC_HALF_TYPE::length()]);
@@ -273,7 +273,7 @@ namespace SIMD
         
         // UNPACK
         template<typename VEC_TYPE, typename VEC_HALF_TYPE>
-        inline void unpack(VEC_TYPE const & src, VEC_HALF_TYPE & dst1, VEC_HALF_TYPE & dst2) {
+        UME_FORCE_INLINE void unpack(VEC_TYPE const & src, VEC_HALF_TYPE & dst1, VEC_HALF_TYPE & dst2) {
             UME_EMULATION_WARNING();
             uint32_t halfLength = VEC_HALF_TYPE::length();
             for(uint32_t i = 0; i < halfLength; i++) {
@@ -284,7 +284,7 @@ namespace SIMD
 
         // UNPACKLO
         template<typename VEC_TYPE, typename VEC_HALF_TYPE>
-        inline VEC_HALF_TYPE unpackLow(VEC_TYPE const & src) {
+        UME_FORCE_INLINE VEC_HALF_TYPE unpackLow(VEC_TYPE const & src) {
             UME_EMULATION_WARNING();
             VEC_HALF_TYPE retval;
             for(uint32_t i = 0; i < VEC_HALF_TYPE::length(); i++) {
@@ -295,7 +295,7 @@ namespace SIMD
 
         // UNPACKHI
         template<typename VEC_TYPE, typename VEC_HALF_TYPE>
-        inline VEC_HALF_TYPE unpackHigh(VEC_TYPE const & src) {
+        UME_FORCE_INLINE VEC_HALF_TYPE unpackHigh(VEC_TYPE const & src) {
             UME_EMULATION_WARNING();
             VEC_HALF_TYPE retval;
             for(uint32_t i = 0; i < VEC_HALF_TYPE::length(); i++) {
@@ -306,7 +306,7 @@ namespace SIMD
 
         // ADDV
         template<typename VEC_TYPE>
-        inline VEC_TYPE add (VEC_TYPE const & a, VEC_TYPE const & b) {
+        UME_FORCE_INLINE VEC_TYPE add (VEC_TYPE const & a, VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -317,7 +317,7 @@ namespace SIMD
         
         // MADDV
         template<typename VEC_TYPE, typename MASK_TYPE>
-        inline VEC_TYPE add (MASK_TYPE const & mask, VEC_TYPE const & a, VEC_TYPE const & b) {
+        UME_FORCE_INLINE VEC_TYPE add (MASK_TYPE const & mask, VEC_TYPE const & a, VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -328,7 +328,7 @@ namespace SIMD
 
         // ADDS
         template<typename VEC_TYPE, typename SCALAR_TYPE>
-        inline VEC_TYPE addScalar (VEC_TYPE const & a, SCALAR_TYPE b) {
+        UME_FORCE_INLINE VEC_TYPE addScalar (VEC_TYPE const & a, SCALAR_TYPE b) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -339,7 +339,7 @@ namespace SIMD
 
         // MADDS
         template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
-        inline VEC_TYPE addScalar (MASK_TYPE const & mask, VEC_TYPE const & a, SCALAR_TYPE b) {
+        UME_FORCE_INLINE VEC_TYPE addScalar (MASK_TYPE const & mask, VEC_TYPE const & a, SCALAR_TYPE b) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -350,7 +350,7 @@ namespace SIMD
 
         // ADDVA
         template<typename VEC_TYPE>
-        inline VEC_TYPE & addAssign (VEC_TYPE & a, VEC_TYPE const & b) {
+        UME_FORCE_INLINE VEC_TYPE & addAssign (VEC_TYPE & a, VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) { a.insert(i, (a[i] + b[i])); }
             return a;
@@ -358,7 +358,7 @@ namespace SIMD
 
         // MADDVA
         template<typename VEC_TYPE, typename MASK_TYPE>
-        inline VEC_TYPE & addAssign (MASK_TYPE const & mask, VEC_TYPE & a, VEC_TYPE const & b) {
+        UME_FORCE_INLINE VEC_TYPE & addAssign (MASK_TYPE const & mask, VEC_TYPE & a, VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                 if(mask[i] == true) a.insert(i, (a[i] + b[i]));
@@ -368,7 +368,7 @@ namespace SIMD
 
         // ADDSA
         template<typename VEC_TYPE, typename SCALAR_TYPE>
-        inline VEC_TYPE & addAssignScalar (VEC_TYPE & a, SCALAR_TYPE const & b) {
+        UME_FORCE_INLINE VEC_TYPE & addAssignScalar (VEC_TYPE & a, SCALAR_TYPE const & b) {
             UME_EMULATION_WARNING();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                 a.insert(i, (a[i] + b));
@@ -378,7 +378,7 @@ namespace SIMD
 
         // MADDSA
         template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
-        inline VEC_TYPE & addAssignScalar (MASK_TYPE const & mask, VEC_TYPE & a, SCALAR_TYPE const & b) {
+        UME_FORCE_INLINE VEC_TYPE & addAssignScalar (MASK_TYPE const & mask, VEC_TYPE & a, SCALAR_TYPE const & b) {
             UME_EMULATION_WARNING();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                 if(mask[i] == true) a.insert(i, a[i] + b);
@@ -388,7 +388,7 @@ namespace SIMD
 
         // SADDV
         template<typename VEC_TYPE>
-        inline VEC_TYPE addSaturated (VEC_TYPE const & a, VEC_TYPE const & b) {
+        UME_FORCE_INLINE VEC_TYPE addSaturated (VEC_TYPE const & a, VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
             decltype(a.extract(0)) temp = 0;
@@ -413,7 +413,7 @@ namespace SIMD
 
         // MSADDV
         template<typename VEC_TYPE, typename MASK_TYPE>
-        inline VEC_TYPE addSaturated (MASK_TYPE const & mask, VEC_TYPE const & a, VEC_TYPE const & b) {
+        UME_FORCE_INLINE VEC_TYPE addSaturated (MASK_TYPE const & mask, VEC_TYPE const & a, VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
             decltype(a.extract(0)) temp = 0;
@@ -433,7 +433,7 @@ namespace SIMD
 
         // SADDS
         template<typename VEC_TYPE, typename SCALAR_TYPE>
-        inline VEC_TYPE addSaturatedScalar (VEC_TYPE const & a, SCALAR_TYPE b) {
+        UME_FORCE_INLINE VEC_TYPE addSaturatedScalar (VEC_TYPE const & a, SCALAR_TYPE b) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
             decltype(a.extract(0)) temp = 0;
@@ -448,7 +448,7 @@ namespace SIMD
 
         // MSADDS
         template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
-        inline VEC_TYPE addSaturatedScalar (MASK_TYPE const & mask, VEC_TYPE const & a, SCALAR_TYPE b) {
+        UME_FORCE_INLINE VEC_TYPE addSaturatedScalar (MASK_TYPE const & mask, VEC_TYPE const & a, SCALAR_TYPE b) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
             decltype(a.extract(0)) temp = 0;
@@ -468,7 +468,7 @@ namespace SIMD
 
         // SADDVA
         template<typename VEC_TYPE>
-        inline VEC_TYPE & addSaturatedAssign(VEC_TYPE & a, VEC_TYPE const & b) {
+        UME_FORCE_INLINE VEC_TYPE & addSaturatedAssign(VEC_TYPE & a, VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             decltype(a.extract(0)) temp = 0;
             // maximum value
@@ -482,7 +482,7 @@ namespace SIMD
         
         // MSADDVA
         template<typename VEC_TYPE, typename MASK_TYPE>
-        inline VEC_TYPE & addSaturatedAssign(MASK_TYPE const & mask, VEC_TYPE & a, VEC_TYPE const & b) {
+        UME_FORCE_INLINE VEC_TYPE & addSaturatedAssign(MASK_TYPE const & mask, VEC_TYPE & a, VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             decltype(a.extract(0)) temp = 0;
             // maximum value
@@ -498,7 +498,7 @@ namespace SIMD
 
         // SADDSA
         template<typename VEC_TYPE, typename SCALAR_TYPE>
-        inline VEC_TYPE & addSaturatedScalarAssign(VEC_TYPE & a, SCALAR_TYPE b) {
+        UME_FORCE_INLINE VEC_TYPE & addSaturatedScalarAssign(VEC_TYPE & a, SCALAR_TYPE b) {
             UME_EMULATION_WARNING();
             decltype(a.extract(0)) temp = 0;
             // maximum value
@@ -512,7 +512,7 @@ namespace SIMD
 
         // MSADDSA
         template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
-        inline VEC_TYPE & addSaturatedScalarAssign(MASK_TYPE const & mask, VEC_TYPE & a, SCALAR_TYPE b) {
+        UME_FORCE_INLINE VEC_TYPE & addSaturatedScalarAssign(MASK_TYPE const & mask, VEC_TYPE & a, SCALAR_TYPE b) {
             UME_EMULATION_WARNING();
             decltype(a.extract(0)) temp = 0;
             // maximum value
@@ -528,7 +528,7 @@ namespace SIMD
 
         // POSTINC
         template<typename VEC_TYPE>
-        inline VEC_TYPE postfixIncrement(VEC_TYPE & a) {
+        UME_FORCE_INLINE VEC_TYPE postfixIncrement(VEC_TYPE & a) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval = a;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -539,7 +539,7 @@ namespace SIMD
 
         // MPOSTINC
         template<typename VEC_TYPE, typename MASK_TYPE>
-        inline VEC_TYPE postfixIncrement(MASK_TYPE const & mask, VEC_TYPE & a) {
+        UME_FORCE_INLINE VEC_TYPE postfixIncrement(MASK_TYPE const & mask, VEC_TYPE & a) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval = a;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -550,7 +550,7 @@ namespace SIMD
 
         // PREFINC
         template<typename VEC_TYPE>
-        inline VEC_TYPE & prefixIncrement(VEC_TYPE & a) {
+        UME_FORCE_INLINE VEC_TYPE & prefixIncrement(VEC_TYPE & a) {
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++)
             {
                 a.insert(i, a[i] + 1);
@@ -560,7 +560,7 @@ namespace SIMD
 
         // MPREFINC
         template<typename VEC_TYPE, typename MASK_TYPE>
-        inline VEC_TYPE & prefixIncrement(MASK_TYPE const & mask, VEC_TYPE & a) {
+        UME_FORCE_INLINE VEC_TYPE & prefixIncrement(MASK_TYPE const & mask, VEC_TYPE & a) {
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++)
             {
                 if(mask[i] == true) a.insert(i, a[i] + 1);
@@ -570,7 +570,7 @@ namespace SIMD
 
         // SUBV
         template<typename VEC_TYPE>
-        inline VEC_TYPE sub ( VEC_TYPE const & a, VEC_TYPE const & b) {
+        UME_FORCE_INLINE VEC_TYPE sub ( VEC_TYPE const & a, VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -581,7 +581,7 @@ namespace SIMD
 
         // MSUBV
         template<typename VEC_TYPE, typename MASK_TYPE>
-        inline VEC_TYPE sub ( MASK_TYPE const & mask, VEC_TYPE const & a, VEC_TYPE const & b) {
+        UME_FORCE_INLINE VEC_TYPE sub ( MASK_TYPE const & mask, VEC_TYPE const & a, VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -593,7 +593,7 @@ namespace SIMD
 
         // SUBS
         template<typename VEC_TYPE, typename SCALAR_TYPE>
-        inline VEC_TYPE subScalar ( VEC_TYPE const & a, SCALAR_TYPE b) {
+        UME_FORCE_INLINE VEC_TYPE subScalar ( VEC_TYPE const & a, SCALAR_TYPE b) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -604,7 +604,7 @@ namespace SIMD
 
         // MSUBS
         template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
-        inline VEC_TYPE subScalar ( MASK_TYPE const & mask, VEC_TYPE const & a, SCALAR_TYPE b) {
+        UME_FORCE_INLINE VEC_TYPE subScalar ( MASK_TYPE const & mask, VEC_TYPE const & a, SCALAR_TYPE b) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -616,7 +616,7 @@ namespace SIMD
 
         // SUBFROMV
         template<typename VEC_TYPE>
-        inline VEC_TYPE subFrom (VEC_TYPE const & a, VEC_TYPE const & b) {
+        UME_FORCE_INLINE VEC_TYPE subFrom (VEC_TYPE const & a, VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -627,7 +627,7 @@ namespace SIMD
 
         // MSUBFROMV
         template<typename VEC_TYPE, typename MASK_TYPE>
-        inline VEC_TYPE subFrom (MASK_TYPE const & mask, VEC_TYPE const & a, VEC_TYPE const & b) {
+        UME_FORCE_INLINE VEC_TYPE subFrom (MASK_TYPE const & mask, VEC_TYPE const & a, VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -639,7 +639,7 @@ namespace SIMD
 
         // SUBFROMS
         template<typename VEC_TYPE, typename SCALAR_TYPE>
-        inline VEC_TYPE subFromScalar (SCALAR_TYPE a, VEC_TYPE const & b) {
+        UME_FORCE_INLINE VEC_TYPE subFromScalar (SCALAR_TYPE a, VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -650,7 +650,7 @@ namespace SIMD
 
         // MSUBFROMS
         template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
-        inline VEC_TYPE subFromScalar (MASK_TYPE const & mask, SCALAR_TYPE a, VEC_TYPE const & b) {
+        UME_FORCE_INLINE VEC_TYPE subFromScalar (MASK_TYPE const & mask, SCALAR_TYPE a, VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -662,7 +662,7 @@ namespace SIMD
 
         // SUBFROMVA
         template<typename VEC_TYPE>
-        inline VEC_TYPE & subFromAssign (VEC_TYPE const & a, VEC_TYPE & b) {
+        UME_FORCE_INLINE VEC_TYPE & subFromAssign (VEC_TYPE const & a, VEC_TYPE & b) {
             UME_EMULATION_WARNING();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                 b.insert(i, a[i] - b[i]);
@@ -672,7 +672,7 @@ namespace SIMD
 
         // MSUBFROMVA
         template<typename VEC_TYPE, typename MASK_TYPE>
-        inline VEC_TYPE & subFromAssign (MASK_TYPE const & mask, VEC_TYPE const & a, VEC_TYPE & b) {
+        UME_FORCE_INLINE VEC_TYPE & subFromAssign (MASK_TYPE const & mask, VEC_TYPE const & a, VEC_TYPE & b) {
             UME_EMULATION_WARNING();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                 if(mask[i] == true) b.insert(i, a[i] - b[i]);
@@ -683,7 +683,7 @@ namespace SIMD
 
         // SUBFROMSA
         template<typename VEC_TYPE, typename SCALAR_TYPE>
-        inline VEC_TYPE & subFromScalarAssign (SCALAR_TYPE a, VEC_TYPE & b) {
+        UME_FORCE_INLINE VEC_TYPE & subFromScalarAssign (SCALAR_TYPE a, VEC_TYPE & b) {
             UME_EMULATION_WARNING();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                 b.insert(i, a - b[i]);
@@ -693,7 +693,7 @@ namespace SIMD
 
         // MSUBFROMSA
         template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
-        inline VEC_TYPE & subFromScalarAssign (MASK_TYPE const & mask, SCALAR_TYPE a, VEC_TYPE & b) {
+        UME_FORCE_INLINE VEC_TYPE & subFromScalarAssign (MASK_TYPE const & mask, SCALAR_TYPE a, VEC_TYPE & b) {
             UME_EMULATION_WARNING();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                 if(mask[i] == true) b.insert(i, a - b[i]);
@@ -704,7 +704,7 @@ namespace SIMD
 
         // NEG
         template<typename VEC_TYPE>
-        inline VEC_TYPE unaryMinus (VEC_TYPE const & a) {
+        UME_FORCE_INLINE VEC_TYPE unaryMinus (VEC_TYPE const & a) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -715,7 +715,7 @@ namespace SIMD
 
         // MNEG
         template<typename VEC_TYPE, typename MASK_TYPE>
-        inline VEC_TYPE unaryMinus (MASK_TYPE const & mask, VEC_TYPE const & a) {
+        UME_FORCE_INLINE VEC_TYPE unaryMinus (MASK_TYPE const & mask, VEC_TYPE const & a) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -727,7 +727,7 @@ namespace SIMD
 
         // NEGA
         template<typename VEC_TYPE>
-        inline VEC_TYPE & unaryMinusAssign (VEC_TYPE & a) {
+        UME_FORCE_INLINE VEC_TYPE & unaryMinusAssign (VEC_TYPE & a) {
             UME_EMULATION_WARNING();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                 a.insert(i, -a[i]);
@@ -737,7 +737,7 @@ namespace SIMD
 
         // MNEGA
         template<typename VEC_TYPE, typename MASK_TYPE>
-        inline VEC_TYPE & unaryMinusAssign (MASK_TYPE const & mask, VEC_TYPE & a) {
+        UME_FORCE_INLINE VEC_TYPE & unaryMinusAssign (MASK_TYPE const & mask, VEC_TYPE & a) {
             UME_EMULATION_WARNING();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                 if( mask[i] == true ) a.insert(i, -a[i]);
@@ -747,7 +747,7 @@ namespace SIMD
             
         // SUBVA
         template<typename VEC_TYPE>
-        inline VEC_TYPE & subAssign (VEC_TYPE & dst, VEC_TYPE const & b)
+        UME_FORCE_INLINE VEC_TYPE & subAssign (VEC_TYPE & dst, VEC_TYPE const & b)
         {
             UME_EMULATION_WARNING();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -758,7 +758,7 @@ namespace SIMD
 
         // MSUBVA
         template<typename VEC_TYPE, typename MASK_TYPE>
-        inline VEC_TYPE & subAssign (MASK_TYPE const & mask, VEC_TYPE & dst, VEC_TYPE const & b) {
+        UME_FORCE_INLINE VEC_TYPE & subAssign (MASK_TYPE const & mask, VEC_TYPE & dst, VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                 if(mask[i] == true ) dst.insert(i, dst[i] - b[i]);
@@ -768,7 +768,7 @@ namespace SIMD
 
         // SUBSA
         template<typename VEC_TYPE, typename SCALAR_TYPE>
-        inline VEC_TYPE & subAssign (VEC_TYPE & dst, SCALAR_TYPE b) {
+        UME_FORCE_INLINE VEC_TYPE & subAssign (VEC_TYPE & dst, SCALAR_TYPE b) {
             UME_EMULATION_WARNING();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                 dst.insert(i, dst[i] - b);
@@ -778,7 +778,7 @@ namespace SIMD
 
         // MSUBSA
         template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
-        inline VEC_TYPE & subAssign (MASK_TYPE const & mask, VEC_TYPE & dst, SCALAR_TYPE b) {
+        UME_FORCE_INLINE VEC_TYPE & subAssign (MASK_TYPE const & mask, VEC_TYPE & dst, SCALAR_TYPE b) {
             UME_EMULATION_WARNING();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                 if(mask[i] == true) dst.insert(i, dst[i] - b);
@@ -788,7 +788,7 @@ namespace SIMD
 
         // SSUBV
         template<typename VEC_TYPE>
-        inline VEC_TYPE subSaturated (VEC_TYPE const & a, VEC_TYPE const & b) {
+        UME_FORCE_INLINE VEC_TYPE subSaturated (VEC_TYPE const & a, VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
             decltype(a.extract(0)) temp = 0;
@@ -803,7 +803,7 @@ namespace SIMD
 
         // MSSUBV
         template<typename VEC_TYPE, typename MASK_TYPE>
-        inline VEC_TYPE subSaturated (MASK_TYPE const & mask, VEC_TYPE const & a, VEC_TYPE const & b) {
+        UME_FORCE_INLINE VEC_TYPE subSaturated (MASK_TYPE const & mask, VEC_TYPE const & a, VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
             decltype(a.extract(0)) temp = 0;
@@ -823,7 +823,7 @@ namespace SIMD
 
         // SSUBS
         template<typename VEC_TYPE, typename SCALAR_TYPE>
-        inline VEC_TYPE subSaturated (VEC_TYPE const & a, SCALAR_TYPE b) {
+        UME_FORCE_INLINE VEC_TYPE subSaturated (VEC_TYPE const & a, SCALAR_TYPE b) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
             decltype(a.extract(0)) temp = 0;
@@ -838,7 +838,7 @@ namespace SIMD
 
         // MSSUBS
         template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
-        inline VEC_TYPE subSaturated (MASK_TYPE const & mask, VEC_TYPE const & a, SCALAR_TYPE b) {
+        UME_FORCE_INLINE VEC_TYPE subSaturated (MASK_TYPE const & mask, VEC_TYPE const & a, SCALAR_TYPE b) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
             decltype(a.extract(0)) temp = 0;
@@ -858,7 +858,7 @@ namespace SIMD
 
         // SSUBVA
         template<typename VEC_TYPE>
-        inline VEC_TYPE & subSaturatedAssign (VEC_TYPE & a, VEC_TYPE const & b) {
+        UME_FORCE_INLINE VEC_TYPE & subSaturatedAssign (VEC_TYPE & a, VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             decltype(a.extract(0)) temp = 0;
             // maximum value
@@ -872,7 +872,7 @@ namespace SIMD
 
         // MSSUBV
         template<typename VEC_TYPE, typename MASK_TYPE>
-        inline VEC_TYPE & subSaturatedAssign (MASK_TYPE const & mask, VEC_TYPE & a, VEC_TYPE const & b) {
+        UME_FORCE_INLINE VEC_TYPE & subSaturatedAssign (MASK_TYPE const & mask, VEC_TYPE & a, VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             decltype(a.extract(0)) temp = 0;
             // maximum value
@@ -888,7 +888,7 @@ namespace SIMD
 
         // SSUBS
         template<typename VEC_TYPE, typename SCALAR_TYPE>
-        inline VEC_TYPE & subSaturatedScalarAssign (VEC_TYPE & a, SCALAR_TYPE b) {
+        UME_FORCE_INLINE VEC_TYPE & subSaturatedScalarAssign (VEC_TYPE & a, SCALAR_TYPE b) {
             UME_EMULATION_WARNING();
             decltype(a.extract(0)) temp = 0;
             // maximum value
@@ -902,7 +902,7 @@ namespace SIMD
 
         // MSSUBS
         template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
-        inline VEC_TYPE & subSaturatedScalarAssign (MASK_TYPE const & mask, VEC_TYPE & a, SCALAR_TYPE b) {
+        UME_FORCE_INLINE VEC_TYPE & subSaturatedScalarAssign (MASK_TYPE const & mask, VEC_TYPE & a, SCALAR_TYPE b) {
             UME_EMULATION_WARNING();
             decltype(a.extract(0)) temp = 0;
             // maximum value
@@ -918,7 +918,7 @@ namespace SIMD
 
         // POSTDEC
         template<typename VEC_TYPE>
-        inline VEC_TYPE postfixDecrement(VEC_TYPE & a) {
+        UME_FORCE_INLINE VEC_TYPE postfixDecrement(VEC_TYPE & a) {
             VEC_TYPE retval = a;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                 a.insert(i, a[i] - 1);
@@ -928,7 +928,7 @@ namespace SIMD
 
         // MPOSTDEC
         template<typename VEC_TYPE, typename MASK_TYPE>
-        inline VEC_TYPE postfixDecrement(MASK_TYPE const & mask, VEC_TYPE & a) {
+        UME_FORCE_INLINE VEC_TYPE postfixDecrement(MASK_TYPE const & mask, VEC_TYPE & a) {
             VEC_TYPE retval = a;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                 if(mask[i] == true) a.insert(i, a[i] - 1);
@@ -938,7 +938,7 @@ namespace SIMD
 
         // PREFDEC
         template<typename VEC_TYPE>
-        inline VEC_TYPE & prefixDecrement(VEC_TYPE & a) {
+        UME_FORCE_INLINE VEC_TYPE & prefixDecrement(VEC_TYPE & a) {
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                 a.insert(i, a[i]-1 );
             }
@@ -947,7 +947,7 @@ namespace SIMD
 
         // MPREFDEC
         template<typename VEC_TYPE, typename MASK_TYPE>
-        inline VEC_TYPE & prefixDecrement(MASK_TYPE const & mask, VEC_TYPE & a) {
+        UME_FORCE_INLINE VEC_TYPE & prefixDecrement(MASK_TYPE const & mask, VEC_TYPE & a) {
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                 if(mask[i] == true) a.insert(i, a[i]-1 );
             }
@@ -956,7 +956,7 @@ namespace SIMD
             
         // MULV
         template<typename VEC_TYPE>
-        inline VEC_TYPE mult (VEC_TYPE const & a, VEC_TYPE const & b) {
+        UME_FORCE_INLINE VEC_TYPE mult (VEC_TYPE const & a, VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++)
@@ -968,7 +968,7 @@ namespace SIMD
 
         // MMULV
         template<typename VEC_TYPE, typename MASK_TYPE>
-        inline VEC_TYPE mult (MASK_TYPE const & mask, VEC_TYPE const & a, VEC_TYPE const & b) {
+        UME_FORCE_INLINE VEC_TYPE mult (MASK_TYPE const & mask, VEC_TYPE const & a, VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -979,7 +979,7 @@ namespace SIMD
 
         // MULS
         template<typename VEC_TYPE, typename SCALAR_TYPE>
-        inline VEC_TYPE mult (VEC_TYPE const & a, SCALAR_TYPE b) {
+        UME_FORCE_INLINE VEC_TYPE mult (VEC_TYPE const & a, SCALAR_TYPE b) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -990,7 +990,7 @@ namespace SIMD
 
         // MMULS
         template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
-        inline VEC_TYPE mult (MASK_TYPE const & mask, VEC_TYPE const & a, SCALAR_TYPE b) {
+        UME_FORCE_INLINE VEC_TYPE mult (MASK_TYPE const & mask, VEC_TYPE const & a, SCALAR_TYPE b) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -1001,7 +1001,7 @@ namespace SIMD
 
         // MULVA
         template<typename VEC_TYPE>
-        inline VEC_TYPE & multAssign (VEC_TYPE & dst, VEC_TYPE const & b) {
+        UME_FORCE_INLINE VEC_TYPE & multAssign (VEC_TYPE & dst, VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                 dst.insert(i, dst[i] * b[i]);
@@ -1011,7 +1011,7 @@ namespace SIMD
 
         // MMULVA
         template<typename VEC_TYPE, typename MASK_TYPE>
-        inline VEC_TYPE & multAssign (MASK_TYPE const & mask, VEC_TYPE & dst, VEC_TYPE const & b) {
+        UME_FORCE_INLINE VEC_TYPE & multAssign (MASK_TYPE const & mask, VEC_TYPE & dst, VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                 if(mask[i] == true) dst.insert(i, dst[i] * b[i]);
@@ -1021,7 +1021,7 @@ namespace SIMD
 
         // MULSA
         template<typename VEC_TYPE, typename SCALAR_TYPE>
-        inline VEC_TYPE & multAssign (VEC_TYPE & dst, SCALAR_TYPE const & b) {
+        UME_FORCE_INLINE VEC_TYPE & multAssign (VEC_TYPE & dst, SCALAR_TYPE const & b) {
             UME_EMULATION_WARNING();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                 dst.insert(i, dst[i] * b);
@@ -1031,7 +1031,7 @@ namespace SIMD
 
         // MMULSA
         template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
-        inline VEC_TYPE & multAssign (MASK_TYPE const & mask, VEC_TYPE & dst, SCALAR_TYPE const & b) {
+        UME_FORCE_INLINE VEC_TYPE & multAssign (MASK_TYPE const & mask, VEC_TYPE & dst, SCALAR_TYPE const & b) {
             UME_EMULATION_WARNING();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                 if(mask[i] == true) dst.insert(i, dst[i] * b);
@@ -1041,7 +1041,7 @@ namespace SIMD
 
         // DIVV
         template<typename VEC_TYPE>
-        inline VEC_TYPE div (VEC_TYPE const & a, VEC_TYPE const & b) {
+        UME_FORCE_INLINE VEC_TYPE div (VEC_TYPE const & a, VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -1052,7 +1052,7 @@ namespace SIMD
 
         // MDIVV
         template<typename VEC_TYPE, typename MASK_TYPE>
-        inline VEC_TYPE div (MASK_TYPE const & mask, VEC_TYPE const & a, VEC_TYPE const & b) {
+        UME_FORCE_INLINE VEC_TYPE div (MASK_TYPE const & mask, VEC_TYPE const & a, VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -1063,7 +1063,7 @@ namespace SIMD
 
         // DIVS
         template<typename VEC_TYPE, typename SCALAR_TYPE>
-        inline VEC_TYPE div (VEC_TYPE const & a, SCALAR_TYPE b) {
+        UME_FORCE_INLINE VEC_TYPE div (VEC_TYPE const & a, SCALAR_TYPE b) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -1074,7 +1074,7 @@ namespace SIMD
 
         // MDIVS
         template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
-        inline VEC_TYPE div (MASK_TYPE const & mask, VEC_TYPE const & a, SCALAR_TYPE b) {
+        UME_FORCE_INLINE VEC_TYPE div (MASK_TYPE const & mask, VEC_TYPE const & a, SCALAR_TYPE b) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -1085,7 +1085,7 @@ namespace SIMD
 
         // RCP
         template<typename VEC_TYPE, typename SCALAR_TYPE>
-        inline VEC_TYPE div (SCALAR_TYPE a, VEC_TYPE const & b) {
+        UME_FORCE_INLINE VEC_TYPE div (SCALAR_TYPE a, VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -1096,7 +1096,7 @@ namespace SIMD
 
         // MRPC
         template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
-        inline VEC_TYPE div (MASK_TYPE const & mask, SCALAR_TYPE a, VEC_TYPE const & b) {
+        UME_FORCE_INLINE VEC_TYPE div (MASK_TYPE const & mask, SCALAR_TYPE a, VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -1107,7 +1107,7 @@ namespace SIMD
 
         // DIVVA
         template<typename VEC_TYPE>
-        inline VEC_TYPE & divAssign(VEC_TYPE & a, VEC_TYPE const & b) {
+        UME_FORCE_INLINE VEC_TYPE & divAssign(VEC_TYPE & a, VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                 a.insert(i, a[i]/b[i] );
@@ -1117,7 +1117,7 @@ namespace SIMD
 
         // MDIVVA
         template<typename VEC_TYPE, typename MASK_TYPE>
-        inline VEC_TYPE & divAssign(MASK_TYPE const & mask, VEC_TYPE & a, VEC_TYPE const & b) {
+        UME_FORCE_INLINE VEC_TYPE & divAssign(MASK_TYPE const & mask, VEC_TYPE & a, VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                 if(mask[i] == true) a.insert(i, a[i]/b[i] );
@@ -1127,7 +1127,7 @@ namespace SIMD
             
         // DIVSA
         template<typename VEC_TYPE, typename SCALAR_TYPE>
-        inline VEC_TYPE & divAssign(VEC_TYPE & a, SCALAR_TYPE b) {
+        UME_FORCE_INLINE VEC_TYPE & divAssign(VEC_TYPE & a, SCALAR_TYPE b) {
             UME_EMULATION_WARNING();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                 a.insert(i, a[i]/b );
@@ -1137,7 +1137,7 @@ namespace SIMD
 
         // MDIVSA
         template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
-        inline VEC_TYPE & divAssign(MASK_TYPE const & mask, VEC_TYPE & a, SCALAR_TYPE b) {
+        UME_FORCE_INLINE VEC_TYPE & divAssign(MASK_TYPE const & mask, VEC_TYPE & a, SCALAR_TYPE b) {
             UME_EMULATION_WARNING();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                 if(mask[i] == true) a.insert(i, a[i]/b);
@@ -1147,7 +1147,7 @@ namespace SIMD
 
         // RCP
         template<typename VEC_TYPE>
-        inline VEC_TYPE rcp(VEC_TYPE const & b) {
+        UME_FORCE_INLINE VEC_TYPE rcp(VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -1158,7 +1158,7 @@ namespace SIMD
 
         // MRCP
         template<typename VEC_TYPE, typename MASK_TYPE>
-        inline VEC_TYPE rcp(MASK_TYPE const & mask, VEC_TYPE const & b) {
+        UME_FORCE_INLINE VEC_TYPE rcp(MASK_TYPE const & mask, VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -1170,7 +1170,7 @@ namespace SIMD
 
         // RCPS
         template<typename VEC_TYPE, typename SCALAR_TYPE>
-        inline VEC_TYPE rcpScalar(SCALAR_TYPE a, VEC_TYPE const & b) {
+        UME_FORCE_INLINE VEC_TYPE rcpScalar(SCALAR_TYPE a, VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -1181,7 +1181,7 @@ namespace SIMD
 
         // MRCPS
         template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
-        inline VEC_TYPE rcpScalar(MASK_TYPE const & mask, SCALAR_TYPE a, VEC_TYPE const & b) {
+        UME_FORCE_INLINE VEC_TYPE rcpScalar(MASK_TYPE const & mask, SCALAR_TYPE a, VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -1193,7 +1193,7 @@ namespace SIMD
 
         // RCPA
         template<typename VEC_TYPE>
-        inline VEC_TYPE & rcpAssign(VEC_TYPE & b) {
+        UME_FORCE_INLINE VEC_TYPE & rcpAssign(VEC_TYPE & b) {
             UME_EMULATION_WARNING();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                 b.insert(i, decltype(b.extract(0))(1.0)/b[i]);
@@ -1203,7 +1203,7 @@ namespace SIMD
 
         // MRCPA
         template<typename VEC_TYPE, typename MASK_TYPE>
-        inline VEC_TYPE & rcpAssign(MASK_TYPE const & mask, VEC_TYPE & b) {
+        UME_FORCE_INLINE VEC_TYPE & rcpAssign(MASK_TYPE const & mask, VEC_TYPE & b) {
             UME_EMULATION_WARNING();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                 if(mask[i] == true) b.insert(i, decltype(b.extract(0))(1.0)/b[i]);
@@ -1213,7 +1213,7 @@ namespace SIMD
 
         // RCPSA
         template<typename VEC_TYPE, typename SCALAR_TYPE>
-        inline VEC_TYPE & rcpScalarAssign(SCALAR_TYPE a, VEC_TYPE & b) {
+        UME_FORCE_INLINE VEC_TYPE & rcpScalarAssign(SCALAR_TYPE a, VEC_TYPE & b) {
             UME_EMULATION_WARNING();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                 b.insert(i, a/b[i]);
@@ -1223,7 +1223,7 @@ namespace SIMD
 
         // MRCPSA
         template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
-        inline VEC_TYPE & rcpScalarAssign(MASK_TYPE const & mask, SCALAR_TYPE a, VEC_TYPE & b) {
+        UME_FORCE_INLINE VEC_TYPE & rcpScalarAssign(MASK_TYPE const & mask, SCALAR_TYPE a, VEC_TYPE & b) {
             UME_EMULATION_WARNING();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                 if(mask[i] == true) b.insert(i, a/b[i]);
@@ -1233,7 +1233,7 @@ namespace SIMD
 
         // LSHV
         template<typename VEC_TYPE, typename UINT_VEC_TYPE>
-        inline VEC_TYPE shiftBitsLeft(VEC_TYPE const & a, UINT_VEC_TYPE const & b) {
+        UME_FORCE_INLINE VEC_TYPE shiftBitsLeft(VEC_TYPE const & a, UINT_VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -1244,7 +1244,7 @@ namespace SIMD
 
         // MLSHV
         template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename MASK_TYPE>
-        inline VEC_TYPE shiftBitsLeft(MASK_TYPE const & mask, VEC_TYPE const & a, UINT_VEC_TYPE const & b) {
+        UME_FORCE_INLINE VEC_TYPE shiftBitsLeft(MASK_TYPE const & mask, VEC_TYPE const & a, UINT_VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -1255,7 +1255,7 @@ namespace SIMD
 
         // LSHS
         template<typename VEC_TYPE, typename SCALAR_UINT_TYPE>
-        inline VEC_TYPE shiftBitsLeftScalar(VEC_TYPE const & a, SCALAR_UINT_TYPE b) {
+        UME_FORCE_INLINE VEC_TYPE shiftBitsLeftScalar(VEC_TYPE const & a, SCALAR_UINT_TYPE b) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -1266,7 +1266,7 @@ namespace SIMD
 
         // MLSHS
         template<typename VEC_TYPE, typename SCALAR_UINT_TYPE, typename MASK_TYPE>
-        inline VEC_TYPE shiftBitsLeftScalar(MASK_TYPE const & mask, VEC_TYPE const & a, SCALAR_UINT_TYPE b) {
+        UME_FORCE_INLINE VEC_TYPE shiftBitsLeftScalar(MASK_TYPE const & mask, VEC_TYPE const & a, SCALAR_UINT_TYPE b) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -1277,7 +1277,7 @@ namespace SIMD
 
         // LSHVA
         template<typename VEC_TYPE, typename UINT_VEC_TYPE>
-        inline VEC_TYPE & shiftBitsLeftAssign(VEC_TYPE & a, UINT_VEC_TYPE const & b) {
+        UME_FORCE_INLINE VEC_TYPE & shiftBitsLeftAssign(VEC_TYPE & a, UINT_VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                 a.insert(i, (a[i] << b[i]));
@@ -1287,7 +1287,7 @@ namespace SIMD
 
         // MLSHVA
         template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename MASK_TYPE>
-        inline VEC_TYPE & shiftBitsLeftAssign(MASK_TYPE const & mask, VEC_TYPE & a, UINT_VEC_TYPE const & b) {
+        UME_FORCE_INLINE VEC_TYPE & shiftBitsLeftAssign(MASK_TYPE const & mask, VEC_TYPE & a, UINT_VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                 if(mask[i] == true) a.insert(i, a[i]<<b[i] );
@@ -1297,7 +1297,7 @@ namespace SIMD
 
         // LSHSA
         template<typename VEC_TYPE, typename SCALAR_UINT_TYPE>
-        inline VEC_TYPE & shiftBitsLeftAssignScalar(VEC_TYPE & a, SCALAR_UINT_TYPE b) {
+        UME_FORCE_INLINE VEC_TYPE & shiftBitsLeftAssignScalar(VEC_TYPE & a, SCALAR_UINT_TYPE b) {
             UME_EMULATION_WARNING();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                 a.insert(i, (a[i] << b) );
@@ -1307,7 +1307,7 @@ namespace SIMD
 
         // MLSHSA
         template<typename VEC_TYPE, typename SCALAR_UINT_TYPE, typename MASK_TYPE>
-        inline VEC_TYPE & shiftBitsLeftAssignScalar(MASK_TYPE const & mask, VEC_TYPE & a, SCALAR_UINT_TYPE b) {
+        UME_FORCE_INLINE VEC_TYPE & shiftBitsLeftAssignScalar(MASK_TYPE const & mask, VEC_TYPE & a, SCALAR_UINT_TYPE b) {
             UME_EMULATION_WARNING();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                 if(mask[i] == true) a.insert(i, (a[i] << b) );
@@ -1317,7 +1317,7 @@ namespace SIMD
 
         // RSHV
         template<typename VEC_TYPE, typename UINT_VEC_TYPE>
-        inline VEC_TYPE shiftBitsRight(VEC_TYPE const & a, UINT_VEC_TYPE const & b) {
+        UME_FORCE_INLINE VEC_TYPE shiftBitsRight(VEC_TYPE const & a, UINT_VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -1328,7 +1328,7 @@ namespace SIMD
 
         // MRSHV
         template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename MASK_TYPE>
-        inline VEC_TYPE shiftBitsRight(MASK_TYPE const & mask, VEC_TYPE const & a, UINT_VEC_TYPE const & b) {
+        UME_FORCE_INLINE VEC_TYPE shiftBitsRight(MASK_TYPE const & mask, VEC_TYPE const & a, UINT_VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -1339,7 +1339,7 @@ namespace SIMD
 
         // RSHS
         template<typename VEC_TYPE, typename SCALAR_UINT_TYPE>
-        inline VEC_TYPE shiftBitsRightScalar(VEC_TYPE const & a, SCALAR_UINT_TYPE b) {
+        UME_FORCE_INLINE VEC_TYPE shiftBitsRightScalar(VEC_TYPE const & a, SCALAR_UINT_TYPE b) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -1350,7 +1350,7 @@ namespace SIMD
 
         // MRSHS
         template<typename VEC_TYPE, typename SCALAR_UINT_TYPE, typename MASK_TYPE>
-        inline VEC_TYPE shiftBitsRightScalar(MASK_TYPE const & mask, VEC_TYPE const & a, SCALAR_UINT_TYPE b) {
+        UME_FORCE_INLINE VEC_TYPE shiftBitsRightScalar(MASK_TYPE const & mask, VEC_TYPE const & a, SCALAR_UINT_TYPE b) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -1361,7 +1361,7 @@ namespace SIMD
 
         // RSHVA
         template<typename VEC_TYPE, typename UINT_VEC_TYPE>
-        inline VEC_TYPE & shiftBitsRightAssign(VEC_TYPE & a, UINT_VEC_TYPE const & b) {
+        UME_FORCE_INLINE VEC_TYPE & shiftBitsRightAssign(VEC_TYPE & a, UINT_VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                 a.insert(i, (a[i] >> b[i]));
@@ -1371,7 +1371,7 @@ namespace SIMD
 
         // MRSHVA
         template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename MASK_TYPE>
-        inline VEC_TYPE & shiftBitsRightAssign(MASK_TYPE const & mask, VEC_TYPE & a, UINT_VEC_TYPE const & b) {
+        UME_FORCE_INLINE VEC_TYPE & shiftBitsRightAssign(MASK_TYPE const & mask, VEC_TYPE & a, UINT_VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                 if(mask[i] == true) a.insert(i, (a[i] >> b[i]) );
@@ -1381,7 +1381,7 @@ namespace SIMD
 
         // RSHSA
         template<typename VEC_TYPE, typename SCALAR_UINT_TYPE>
-        inline VEC_TYPE & shiftBitsRightAssignScalar(VEC_TYPE & a, SCALAR_UINT_TYPE b) {
+        UME_FORCE_INLINE VEC_TYPE & shiftBitsRightAssignScalar(VEC_TYPE & a, SCALAR_UINT_TYPE b) {
             UME_EMULATION_WARNING();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                 a.insert(i, (a[i] >> b) );
@@ -1391,7 +1391,7 @@ namespace SIMD
 
         // MSRHSA
         template<typename VEC_TYPE, typename SCALAR_UINT_TYPE, typename MASK_TYPE>
-        inline VEC_TYPE & shiftBitsRightAssignScalar(MASK_TYPE const & mask, VEC_TYPE & a, SCALAR_UINT_TYPE b) {
+        UME_FORCE_INLINE VEC_TYPE & shiftBitsRightAssignScalar(MASK_TYPE const & mask, VEC_TYPE & a, SCALAR_UINT_TYPE b) {
             UME_EMULATION_WARNING();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                 if(mask[i] == true) a.insert(i, (a[i] >> b) );
@@ -1401,7 +1401,7 @@ namespace SIMD
 
         // ROLV
         template<typename VEC_TYPE, typename SCALAR_TYPE, typename UINT_VEC_TYPE, typename SCALAR_UINT_TYPE>
-        inline VEC_TYPE rotateBitsLeft(VEC_TYPE const & a, UINT_VEC_TYPE const & b) {
+        UME_FORCE_INLINE VEC_TYPE rotateBitsLeft(VEC_TYPE const & a, UINT_VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
             uint32_t bitLength = 8*sizeof(SCALAR_TYPE);
@@ -1434,7 +1434,7 @@ namespace SIMD
 
         // MROLV
         template<typename VEC_TYPE, typename SCALAR_TYPE, typename UINT_VEC_TYPE, typename MASK_TYPE>
-        inline VEC_TYPE rotateBitsLeft(MASK_TYPE const & mask, VEC_TYPE const & a, UINT_VEC_TYPE const & b) {
+        UME_FORCE_INLINE VEC_TYPE rotateBitsLeft(MASK_TYPE const & mask, VEC_TYPE const & a, UINT_VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
             uint32_t bitLength = 8*sizeof(SCALAR_TYPE);
@@ -1467,7 +1467,7 @@ namespace SIMD
 
         // ROLS
         template<typename VEC_TYPE, typename SCALAR_TYPE, typename SCALAR_UINT_TYPE>
-        inline VEC_TYPE rotateBitsLeftScalar(VEC_TYPE const & a, SCALAR_UINT_TYPE b) {
+        UME_FORCE_INLINE VEC_TYPE rotateBitsLeftScalar(VEC_TYPE const & a, SCALAR_UINT_TYPE b) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
             uint32_t bitLength = 8*sizeof(SCALAR_TYPE);
@@ -1492,7 +1492,7 @@ namespace SIMD
 
         // MROLS
         template<typename VEC_TYPE, typename SCALAR_TYPE, typename SCALAR_UINT_TYPE,  typename MASK_TYPE>
-        inline VEC_TYPE rotateBitsLeftScalar(MASK_TYPE const & mask, VEC_TYPE const & a, SCALAR_UINT_TYPE b) {
+        UME_FORCE_INLINE VEC_TYPE rotateBitsLeftScalar(MASK_TYPE const & mask, VEC_TYPE const & a, SCALAR_UINT_TYPE b) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
             uint32_t bitLength = 8*sizeof(SCALAR_TYPE);
@@ -1524,7 +1524,7 @@ namespace SIMD
 
         // ROLVA
         template<typename VEC_TYPE, typename SCALAR_TYPE, typename UINT_VEC_TYPE>
-        inline VEC_TYPE & rotateBitsLeftAssign(VEC_TYPE & a, UINT_VEC_TYPE const & b) {
+        UME_FORCE_INLINE VEC_TYPE & rotateBitsLeftAssign(VEC_TYPE & a, UINT_VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
             uint32_t bitLength = 8*sizeof(SCALAR_TYPE);
@@ -1550,7 +1550,7 @@ namespace SIMD
 
         // MROLVA
         template<typename VEC_TYPE, typename SCALAR_TYPE, typename UINT_VEC_TYPE, typename MASK_TYPE>
-        inline VEC_TYPE & rotateBitsLeftAssign(MASK_TYPE const & mask, VEC_TYPE & a, UINT_VEC_TYPE const & b) {
+        UME_FORCE_INLINE VEC_TYPE & rotateBitsLeftAssign(MASK_TYPE const & mask, VEC_TYPE & a, UINT_VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
             uint32_t bitLength = 8*sizeof(SCALAR_TYPE);
@@ -1579,7 +1579,7 @@ namespace SIMD
 
         // ROLSA
         template<typename VEC_TYPE, typename SCALAR_TYPE, typename SCALAR_UINT_TYPE>
-        inline VEC_TYPE & rotateBitsLeftAssignScalar(VEC_TYPE & a, SCALAR_UINT_TYPE b) {
+        UME_FORCE_INLINE VEC_TYPE & rotateBitsLeftAssignScalar(VEC_TYPE & a, SCALAR_UINT_TYPE b) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
             SCALAR_TYPE bitLength = 8*sizeof(SCALAR_UINT_TYPE);
@@ -1605,7 +1605,7 @@ namespace SIMD
 
         // MROLSA
         template<typename VEC_TYPE, typename SCALAR_TYPE, typename SCALAR_UINT_TYPE, typename MASK_TYPE>
-        inline VEC_TYPE & rotateBitsLeftAssignScalar(MASK_TYPE const & mask, VEC_TYPE & a, SCALAR_UINT_TYPE b) {
+        UME_FORCE_INLINE VEC_TYPE & rotateBitsLeftAssignScalar(MASK_TYPE const & mask, VEC_TYPE & a, SCALAR_UINT_TYPE b) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
             uint32_t bitLength = 8*sizeof(SCALAR_UINT_TYPE);
@@ -1634,7 +1634,7 @@ namespace SIMD
 
         // RORV
         template<typename VEC_TYPE, typename SCALAR_TYPE, typename UINT_VEC_TYPE, typename SCALAR_UINT_TYPE>
-        inline VEC_TYPE rotateBitsRight(VEC_TYPE const & a, UINT_VEC_TYPE const & b) {
+        UME_FORCE_INLINE VEC_TYPE rotateBitsRight(VEC_TYPE const & a, UINT_VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
             uint32_t bitLength = 8*sizeof(SCALAR_TYPE);
@@ -1668,7 +1668,7 @@ namespace SIMD
 
         // MRORV
         template<typename VEC_TYPE, typename SCALAR_TYPE, typename UINT_VEC_TYPE, typename MASK_TYPE>
-        inline VEC_TYPE rotateBitsRight(MASK_TYPE const & mask, VEC_TYPE const & a, UINT_VEC_TYPE const & b) {
+        UME_FORCE_INLINE VEC_TYPE rotateBitsRight(MASK_TYPE const & mask, VEC_TYPE const & a, UINT_VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
             uint32_t bitLength = 8*sizeof(SCALAR_TYPE);
@@ -1697,7 +1697,7 @@ namespace SIMD
 
         // RORS
         template<typename VEC_TYPE, typename SCALAR_TYPE, typename SCALAR_UINT_TYPE>
-        inline VEC_TYPE rotateBitsRightScalar(VEC_TYPE const & a, SCALAR_UINT_TYPE b) {
+        UME_FORCE_INLINE VEC_TYPE rotateBitsRightScalar(VEC_TYPE const & a, SCALAR_UINT_TYPE b) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
             uint32_t bitLength = 8*sizeof(SCALAR_TYPE);
@@ -1723,7 +1723,7 @@ namespace SIMD
 
         // MRORS
         template<typename VEC_TYPE, typename SCALAR_TYPE, typename SCALAR_UINT_TYPE, typename MASK_TYPE>
-        inline VEC_TYPE rotateBitsRightScalar(MASK_TYPE const & mask, VEC_TYPE const & a, SCALAR_UINT_TYPE b) {
+        UME_FORCE_INLINE VEC_TYPE rotateBitsRightScalar(MASK_TYPE const & mask, VEC_TYPE const & a, SCALAR_UINT_TYPE b) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
             uint32_t bitLength = 8*sizeof(SCALAR_TYPE);
@@ -1752,7 +1752,7 @@ namespace SIMD
 
         // RORVA
         template<typename VEC_TYPE, typename SCALAR_TYPE, typename UINT_VEC_TYPE >
-        inline VEC_TYPE & rotateBitsRightAssign(VEC_TYPE & a, UINT_VEC_TYPE const & b) {
+        UME_FORCE_INLINE VEC_TYPE & rotateBitsRightAssign(VEC_TYPE & a, UINT_VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             uint32_t bitLength = 8*sizeof(SCALAR_TYPE);
             SCALAR_TYPE topBitMask = SCALAR_TYPE(1) << (bitLength - 1);
@@ -1777,7 +1777,7 @@ namespace SIMD
 
         // MRORVA
         template<typename VEC_TYPE, typename SCALAR_TYPE, typename UINT_VEC_TYPE, typename MASK_TYPE>
-        inline VEC_TYPE & rotateBitsRightAssign(MASK_TYPE const & mask, VEC_TYPE & a, UINT_VEC_TYPE const & b) {
+        UME_FORCE_INLINE VEC_TYPE & rotateBitsRightAssign(MASK_TYPE const & mask, VEC_TYPE & a, UINT_VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             uint32_t bitLength = 8*sizeof(SCALAR_TYPE);
             SCALAR_TYPE topBitMask = SCALAR_TYPE(1) << (bitLength - 1);
@@ -1805,7 +1805,7 @@ namespace SIMD
 
         // RORSA
         template<typename VEC_TYPE, typename SCALAR_TYPE, typename SCALAR_UINT_TYPE> 
-        inline VEC_TYPE & rotateBitsRightAssignScalar(VEC_TYPE &  a, SCALAR_UINT_TYPE const & b) {
+        UME_FORCE_INLINE VEC_TYPE & rotateBitsRightAssignScalar(VEC_TYPE &  a, SCALAR_UINT_TYPE const & b) {
             UME_EMULATION_WARNING();
             uint32_t bitLength = 8*sizeof(SCALAR_TYPE);
             SCALAR_TYPE topBitMask = SCALAR_TYPE(1) << (bitLength - 1);
@@ -1830,7 +1830,7 @@ namespace SIMD
 
         // MRORSA
         template<typename VEC_TYPE, typename SCALAR_TYPE, typename SCALAR_UINT_TYPE, typename MASK_TYPE> 
-        inline VEC_TYPE & rotateBitsRightAssignScalar(MASK_TYPE const & mask, VEC_TYPE &  a, SCALAR_UINT_TYPE const & b) {
+        UME_FORCE_INLINE VEC_TYPE & rotateBitsRightAssignScalar(MASK_TYPE const & mask, VEC_TYPE &  a, SCALAR_UINT_TYPE const & b) {
             UME_EMULATION_WARNING();
             uint32_t bitLength = 8*sizeof(SCALAR_TYPE);
             SCALAR_TYPE topBitMask = SCALAR_TYPE(1) << (bitLength - 1);
@@ -1858,7 +1858,7 @@ namespace SIMD
 
         // CMPEQV
         template<typename MASK_TYPE, typename VEC_TYPE>
-        inline MASK_TYPE isEqual(VEC_TYPE const & a, VEC_TYPE const & b) {
+        UME_FORCE_INLINE MASK_TYPE isEqual(VEC_TYPE const & a, VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             MASK_TYPE retval;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -1869,7 +1869,7 @@ namespace SIMD
 
         // CMPEQS
         template<typename MASK_TYPE, typename VEC_TYPE, typename SCALAR_TYPE>
-        inline MASK_TYPE isEqual(VEC_TYPE const & a, SCALAR_TYPE b) {
+        UME_FORCE_INLINE MASK_TYPE isEqual(VEC_TYPE const & a, SCALAR_TYPE b) {
             UME_EMULATION_WARNING();
             MASK_TYPE retval;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -1880,7 +1880,7 @@ namespace SIMD
 
         // CMPNEV
         template<typename MASK_TYPE, typename VEC_TYPE>
-        inline MASK_TYPE isNotEqual (VEC_TYPE const & a, VEC_TYPE const & b) {
+        UME_FORCE_INLINE MASK_TYPE isNotEqual (VEC_TYPE const & a, VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             MASK_TYPE retval;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -1891,7 +1891,7 @@ namespace SIMD
 
         // CMPNES
         template<typename MASK_TYPE, typename VEC_TYPE, typename SCALAR_TYPE>
-        inline MASK_TYPE isNotEqual (VEC_TYPE const & a, SCALAR_TYPE b) {
+        UME_FORCE_INLINE MASK_TYPE isNotEqual (VEC_TYPE const & a, SCALAR_TYPE b) {
             UME_EMULATION_WARNING();
             MASK_TYPE retval;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -1902,7 +1902,7 @@ namespace SIMD
 
         // CMPGTV
         template<typename MASK_TYPE, typename VEC_TYPE>
-        inline MASK_TYPE isGreater (VEC_TYPE const & a, VEC_TYPE const & b) {
+        UME_FORCE_INLINE MASK_TYPE isGreater (VEC_TYPE const & a, VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             MASK_TYPE retval;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -1913,7 +1913,7 @@ namespace SIMD
 
         // CMPGTS
         template<typename MASK_TYPE, typename VEC_TYPE, typename SCALAR_TYPE>
-        inline MASK_TYPE isGreater (VEC_TYPE const & a, SCALAR_TYPE b) {
+        UME_FORCE_INLINE MASK_TYPE isGreater (VEC_TYPE const & a, SCALAR_TYPE b) {
             UME_EMULATION_WARNING();
             MASK_TYPE retval;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -1924,7 +1924,7 @@ namespace SIMD
 
         // CMPLTV
         template<typename MASK_TYPE, typename VEC_TYPE>
-        inline MASK_TYPE isLesser(VEC_TYPE const & a, VEC_TYPE const & b) {
+        UME_FORCE_INLINE MASK_TYPE isLesser(VEC_TYPE const & a, VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             MASK_TYPE retval;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -1935,7 +1935,7 @@ namespace SIMD
 
         // CMPLTS
         template<typename MASK_TYPE, typename VEC_TYPE, typename SCALAR_TYPE>
-        inline MASK_TYPE isLesser(VEC_TYPE const & a, SCALAR_TYPE b) {
+        UME_FORCE_INLINE MASK_TYPE isLesser(VEC_TYPE const & a, SCALAR_TYPE b) {
             UME_EMULATION_WARNING();
             MASK_TYPE retval;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -1946,7 +1946,7 @@ namespace SIMD
 
         // CMPGEV
         template<typename MASK_TYPE, typename VEC_TYPE>
-        inline MASK_TYPE isGreaterEqual(VEC_TYPE const & a, VEC_TYPE const & b) {
+        UME_FORCE_INLINE MASK_TYPE isGreaterEqual(VEC_TYPE const & a, VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             MASK_TYPE retval;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -1957,7 +1957,7 @@ namespace SIMD
 
         // CMPGES
         template<typename MASK_TYPE, typename VEC_TYPE, typename SCALAR_TYPE>
-        inline MASK_TYPE isGreaterEqual(VEC_TYPE const & a, SCALAR_TYPE b) {
+        UME_FORCE_INLINE MASK_TYPE isGreaterEqual(VEC_TYPE const & a, SCALAR_TYPE b) {
             UME_EMULATION_WARNING();
             MASK_TYPE retval;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -1968,7 +1968,7 @@ namespace SIMD
 
         // CMPLEV
         template<typename MASK_TYPE, typename VEC_TYPE>
-        inline MASK_TYPE isLesserEqual(VEC_TYPE const & a, VEC_TYPE const & b) {
+        UME_FORCE_INLINE MASK_TYPE isLesserEqual(VEC_TYPE const & a, VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             MASK_TYPE retval;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -1979,7 +1979,7 @@ namespace SIMD
 
         // CMPLES
         template<typename MASK_TYPE, typename VEC_TYPE, typename SCALAR_TYPE>
-        inline MASK_TYPE isLesserEqual(VEC_TYPE const & a, SCALAR_TYPE b) {
+        UME_FORCE_INLINE MASK_TYPE isLesserEqual(VEC_TYPE const & a, SCALAR_TYPE b) {
             UME_EMULATION_WARNING();
             MASK_TYPE retval;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -1990,7 +1990,7 @@ namespace SIMD
 
         // CMPEV 
         template<typename VEC_TYPE>
-        inline bool isExact(VEC_TYPE const & a, VEC_TYPE const & b) {
+        UME_FORCE_INLINE bool isExact(VEC_TYPE const & a, VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             bool retval = true;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -2004,7 +2004,7 @@ namespace SIMD
 
         // CMPEQRV
         template<typename MASK_TYPE, typename VEC_TYPE>
-        inline MASK_TYPE isEqualInRange(VEC_TYPE const & a, VEC_TYPE const & b, VEC_TYPE const & margin) {
+        UME_FORCE_INLINE MASK_TYPE isEqualInRange(VEC_TYPE const & a, VEC_TYPE const & b, VEC_TYPE const & margin) {
             UME_EMULATION_WARNING();
             MASK_TYPE retval;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -2018,7 +2018,7 @@ namespace SIMD
 
         // CMPEQRS
         template<typename MASK_TYPE, typename VEC_TYPE, typename SCALAR_TYPE>
-        inline MASK_TYPE isEqualInRange(VEC_TYPE const & a, VEC_TYPE const & b, SCALAR_TYPE margin) {
+        UME_FORCE_INLINE MASK_TYPE isEqualInRange(VEC_TYPE const & a, VEC_TYPE const & b, SCALAR_TYPE margin) {
             UME_EMULATION_WARNING();
             MASK_TYPE retval;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -2032,7 +2032,7 @@ namespace SIMD
 
         // UNIQUE
         template<typename VEC_TYPE>
-        inline bool unique(VEC_TYPE const & a) {
+        UME_FORCE_INLINE bool unique(VEC_TYPE const & a) {
             UME_EMULATION_WARNING();
             bool retval = true;
             for (uint32_t i = 0; i < VEC_TYPE::length()-1; i++) {
@@ -2052,7 +2052,7 @@ namespace SIMD
 
         // ANDV
         template<typename VEC_TYPE>
-        inline VEC_TYPE binaryAnd (VEC_TYPE const & a, VEC_TYPE const & b) {
+        UME_FORCE_INLINE VEC_TYPE binaryAnd (VEC_TYPE const & a, VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -2063,7 +2063,7 @@ namespace SIMD
 
         // MANDV
         template<typename VEC_TYPE, typename MASK_TYPE>
-        inline VEC_TYPE binaryAnd (MASK_TYPE const & mask, VEC_TYPE const & a, VEC_TYPE const & b) {
+        UME_FORCE_INLINE VEC_TYPE binaryAnd (MASK_TYPE const & mask, VEC_TYPE const & a, VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -2074,7 +2074,7 @@ namespace SIMD
 
         // ANDS
         template<typename VEC_TYPE, typename SCALAR_TYPE>
-        inline VEC_TYPE binaryAnd (VEC_TYPE const & a, SCALAR_TYPE b) {
+        UME_FORCE_INLINE VEC_TYPE binaryAnd (VEC_TYPE const & a, SCALAR_TYPE b) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -2085,7 +2085,7 @@ namespace SIMD
 
         // MANDS
         template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
-        inline VEC_TYPE binaryAnd (MASK_TYPE const & mask, VEC_TYPE const & a, SCALAR_TYPE b) {
+        UME_FORCE_INLINE VEC_TYPE binaryAnd (MASK_TYPE const & mask, VEC_TYPE const & a, SCALAR_TYPE b) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -2096,7 +2096,7 @@ namespace SIMD
 
         // binaryAnd (scalar, VEC) -> VEC
         template<typename VEC_TYPE, typename SCALAR_TYPE>
-        inline VEC_TYPE binaryAnd (SCALAR_TYPE a, VEC_TYPE const & b) {
+        UME_FORCE_INLINE VEC_TYPE binaryAnd (SCALAR_TYPE a, VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -2107,7 +2107,7 @@ namespace SIMD
 
         // binaryAnd (MASK, scalar, VEC) -> VEC
         template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
-        inline VEC_TYPE binaryAnd (MASK_TYPE const & mask, SCALAR_TYPE a, VEC_TYPE const & b) {
+        UME_FORCE_INLINE VEC_TYPE binaryAnd (MASK_TYPE const & mask, SCALAR_TYPE a, VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -2118,7 +2118,7 @@ namespace SIMD
 
         // ANDVA
         template<typename VEC_TYPE>
-        inline VEC_TYPE & binaryAndAssign (VEC_TYPE & a, VEC_TYPE const & b) {
+        UME_FORCE_INLINE VEC_TYPE & binaryAndAssign (VEC_TYPE & a, VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                 a.insert(i, a[i] & b[i]);
@@ -2128,7 +2128,7 @@ namespace SIMD
 
         // MANDVA
         template<typename VEC_TYPE, typename MASK_TYPE>
-        inline VEC_TYPE & binaryAndAssign (MASK_TYPE const & mask, VEC_TYPE & a, VEC_TYPE const & b) {
+        UME_FORCE_INLINE VEC_TYPE & binaryAndAssign (MASK_TYPE const & mask, VEC_TYPE & a, VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                 if(mask[i] == true) a.insert(i, a[i] & b[i]);
@@ -2138,7 +2138,7 @@ namespace SIMD
 
         // ANDSA
         template<typename VEC_TYPE, typename SCALAR_TYPE>
-        inline VEC_TYPE & binaryAndAssign (VEC_TYPE & a, SCALAR_TYPE b) {
+        UME_FORCE_INLINE VEC_TYPE & binaryAndAssign (VEC_TYPE & a, SCALAR_TYPE b) {
             UME_EMULATION_WARNING();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                 a.insert(i, a[i] & b);
@@ -2148,7 +2148,7 @@ namespace SIMD
 
         // MANDSA 
         template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
-        inline VEC_TYPE & binaryAndAssign(MASK_TYPE const & mask, VEC_TYPE & a, SCALAR_TYPE b) {
+        UME_FORCE_INLINE VEC_TYPE & binaryAndAssign(MASK_TYPE const & mask, VEC_TYPE & a, SCALAR_TYPE b) {
             UME_EMULATION_WARNING();
             for (uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                 if (mask[i] == true) a.insert(i, a[i] & b);
@@ -2158,7 +2158,7 @@ namespace SIMD
 
         // ORV
         template<typename VEC_TYPE>
-        inline VEC_TYPE binaryOr (VEC_TYPE const & a, VEC_TYPE const & b) {
+        UME_FORCE_INLINE VEC_TYPE binaryOr (VEC_TYPE const & a, VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -2169,7 +2169,7 @@ namespace SIMD
 
         // MORV
         template<typename VEC_TYPE, typename MASK_TYPE>
-        inline VEC_TYPE binaryOr (MASK_TYPE const & mask, VEC_TYPE const & a, VEC_TYPE const & b) {
+        UME_FORCE_INLINE VEC_TYPE binaryOr (MASK_TYPE const & mask, VEC_TYPE const & a, VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -2180,7 +2180,7 @@ namespace SIMD
 
         // ORS
         template<typename VEC_TYPE, typename SCALAR_TYPE>
-        inline VEC_TYPE binaryOr (VEC_TYPE const & a, SCALAR_TYPE b) {
+        UME_FORCE_INLINE VEC_TYPE binaryOr (VEC_TYPE const & a, SCALAR_TYPE b) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -2191,7 +2191,7 @@ namespace SIMD
 
         // MORS
         template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
-        inline VEC_TYPE binaryOr (MASK_TYPE const & mask, VEC_TYPE const & a, SCALAR_TYPE b) {
+        UME_FORCE_INLINE VEC_TYPE binaryOr (MASK_TYPE const & mask, VEC_TYPE const & a, SCALAR_TYPE b) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -2202,7 +2202,7 @@ namespace SIMD
 
         // ORVA
         template<typename VEC_TYPE>
-        inline VEC_TYPE & binaryOrAssign (VEC_TYPE & a, VEC_TYPE const & b) {
+        UME_FORCE_INLINE VEC_TYPE & binaryOrAssign (VEC_TYPE & a, VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                 a.insert(i, a[i] | b[i]);
@@ -2212,7 +2212,7 @@ namespace SIMD
 
         // MORVA
         template<typename VEC_TYPE, typename MASK_TYPE>
-        inline VEC_TYPE & binaryOrAssign (MASK_TYPE const & mask, VEC_TYPE & a, VEC_TYPE const & b) {
+        UME_FORCE_INLINE VEC_TYPE & binaryOrAssign (MASK_TYPE const & mask, VEC_TYPE & a, VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                 if(mask[i] == true) a.insert(i, a[i] | b[i]);
@@ -2222,7 +2222,7 @@ namespace SIMD
 
         // ORSA
         template<typename VEC_TYPE, typename SCALAR_TYPE>
-        inline VEC_TYPE & binaryOrAssign (VEC_TYPE & a, SCALAR_TYPE b) {
+        UME_FORCE_INLINE VEC_TYPE & binaryOrAssign (VEC_TYPE & a, SCALAR_TYPE b) {
             UME_EMULATION_WARNING();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                 a.insert(i, a[i] | b);
@@ -2232,7 +2232,7 @@ namespace SIMD
 
         // MORSA
         template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
-        inline VEC_TYPE & binaryOrAssign (MASK_TYPE const & mask, VEC_TYPE & a, SCALAR_TYPE b) {
+        UME_FORCE_INLINE VEC_TYPE & binaryOrAssign (MASK_TYPE const & mask, VEC_TYPE & a, SCALAR_TYPE b) {
             UME_EMULATION_WARNING();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                 if(mask[i] == true) a.insert(i, a[i] | b);
@@ -2242,7 +2242,7 @@ namespace SIMD
 
         // XORV
         template<typename VEC_TYPE>
-        inline VEC_TYPE binaryXor (VEC_TYPE const & a, VEC_TYPE const & b) {
+        UME_FORCE_INLINE VEC_TYPE binaryXor (VEC_TYPE const & a, VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -2253,7 +2253,7 @@ namespace SIMD
 
         // MXORV
         template<typename VEC_TYPE, typename MASK_TYPE>
-        inline VEC_TYPE binaryXor (MASK_TYPE const & mask, VEC_TYPE const & a, VEC_TYPE const & b) {
+        UME_FORCE_INLINE VEC_TYPE binaryXor (MASK_TYPE const & mask, VEC_TYPE const & a, VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -2264,7 +2264,7 @@ namespace SIMD
 
         // XORS
         template<typename VEC_TYPE, typename SCALAR_TYPE>
-        inline VEC_TYPE binaryXor (VEC_TYPE const & a, SCALAR_TYPE b) {
+        UME_FORCE_INLINE VEC_TYPE binaryXor (VEC_TYPE const & a, SCALAR_TYPE b) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -2275,7 +2275,7 @@ namespace SIMD
 
         // MXORS
         template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
-        inline VEC_TYPE binaryXor (MASK_TYPE const & mask, VEC_TYPE const & a, SCALAR_TYPE b) {
+        UME_FORCE_INLINE VEC_TYPE binaryXor (MASK_TYPE const & mask, VEC_TYPE const & a, SCALAR_TYPE b) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -2286,7 +2286,7 @@ namespace SIMD
 
         // XORVA
         template<typename VEC_TYPE>
-        inline VEC_TYPE & binaryXorAssign (VEC_TYPE & a, VEC_TYPE const & b) {
+        UME_FORCE_INLINE VEC_TYPE & binaryXorAssign (VEC_TYPE & a, VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                 a.insert(i, a[i] ^ b[i]);
@@ -2296,7 +2296,7 @@ namespace SIMD
 
         // MXORVA
         template<typename VEC_TYPE, typename MASK_TYPE>
-        inline VEC_TYPE & binaryXorAssign (MASK_TYPE const & mask, VEC_TYPE & a, VEC_TYPE const & b) {
+        UME_FORCE_INLINE VEC_TYPE & binaryXorAssign (MASK_TYPE const & mask, VEC_TYPE & a, VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                 if(mask[i] == true) a.insert(i, a[i] ^ b[i]);
@@ -2306,7 +2306,7 @@ namespace SIMD
 
         // XORSA
         template<typename VEC_TYPE, typename SCALAR_TYPE>
-        inline VEC_TYPE & binaryXorAssign (VEC_TYPE & a, SCALAR_TYPE b) {
+        UME_FORCE_INLINE VEC_TYPE & binaryXorAssign (VEC_TYPE & a, SCALAR_TYPE b) {
             UME_EMULATION_WARNING();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                 a.insert(i, a[i] ^ b);
@@ -2316,7 +2316,7 @@ namespace SIMD
 
         // MXORSA
         template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
-        inline VEC_TYPE & binaryXorAssign (MASK_TYPE const & mask, VEC_TYPE & a, SCALAR_TYPE b) {
+        UME_FORCE_INLINE VEC_TYPE & binaryXorAssign (MASK_TYPE const & mask, VEC_TYPE & a, SCALAR_TYPE b) {
             UME_EMULATION_WARNING();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                 if(mask[i] == true) a.insert(i, a[i] ^ b);
@@ -2326,7 +2326,7 @@ namespace SIMD
 
         // BNOT
         template<typename VEC_TYPE, typename SCALAR_TYPE>
-        inline VEC_TYPE binaryNot (VEC_TYPE const & a) {
+        UME_FORCE_INLINE VEC_TYPE binaryNot (VEC_TYPE const & a) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -2338,7 +2338,7 @@ namespace SIMD
 
         // MBNOT
         template<typename VEC_TYPE, typename MASK_TYPE>
-        inline VEC_TYPE binaryNot (MASK_TYPE const & mask, VEC_TYPE const & a) {
+        UME_FORCE_INLINE VEC_TYPE binaryNot (MASK_TYPE const & mask, VEC_TYPE const & a) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -2349,7 +2349,7 @@ namespace SIMD
 
         // BNOTA
         template<typename VEC_TYPE>
-        inline VEC_TYPE & binaryNotAssign (VEC_TYPE & a) {
+        UME_FORCE_INLINE VEC_TYPE & binaryNotAssign (VEC_TYPE & a) {
             UME_EMULATION_WARNING();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                 a.insert(i, ~a[i]);
@@ -2359,7 +2359,7 @@ namespace SIMD
 
         // MBNOTA
         template<typename VEC_TYPE, typename MASK_TYPE>
-        inline VEC_TYPE & binaryNotAssign (MASK_TYPE const & mask, VEC_TYPE & a) {
+        UME_FORCE_INLINE VEC_TYPE & binaryNotAssign (MASK_TYPE const & mask, VEC_TYPE & a) {
             UME_EMULATION_WARNING();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                 if(mask[i] == true) a.insert(i, ~a[i]);
@@ -2369,7 +2369,7 @@ namespace SIMD
 
         // LNOT
         template<typename MASK_TYPE>
-        inline MASK_TYPE logicalNot(MASK_TYPE const & mask) {
+        UME_FORCE_INLINE MASK_TYPE logicalNot(MASK_TYPE const & mask) {
             UME_EMULATION_WARNING();
             MASK_TYPE retval(false);
             for(uint32_t i = 0; i < MASK_TYPE::length(); i++) {
@@ -2380,7 +2380,7 @@ namespace SIMD
 
         // LNOTA
         template<typename MASK_TYPE>
-        inline MASK_TYPE & logicalNotAssign(MASK_TYPE & mask) {
+        UME_FORCE_INLINE MASK_TYPE & logicalNotAssign(MASK_TYPE & mask) {
             UME_EMULATION_WARNING();
             for(uint32_t i = 0; i < MASK_TYPE::length(); i++) {
                 mask.insert(i, !mask[i]);
@@ -2390,7 +2390,7 @@ namespace SIMD
 
         // BLENDV
         template<typename VEC_TYPE, typename MASK_TYPE>
-        inline VEC_TYPE blend (MASK_TYPE const & mask, VEC_TYPE const & a, VEC_TYPE const & b) {
+        UME_FORCE_INLINE VEC_TYPE blend (MASK_TYPE const & mask, VEC_TYPE const & a, VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -2401,7 +2401,7 @@ namespace SIMD
 
         // BLENDS
         template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
-        inline VEC_TYPE blend (MASK_TYPE const & mask, VEC_TYPE const & a, SCALAR_TYPE b) {
+        UME_FORCE_INLINE VEC_TYPE blend (MASK_TYPE const & mask, VEC_TYPE const & a, SCALAR_TYPE b) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -2412,7 +2412,7 @@ namespace SIMD
 
         // SWIZZLE
         template<typename VEC_TYPE, typename SWIZZLE_MASK_TYPE>
-        inline VEC_TYPE swizzle(SWIZZLE_MASK_TYPE const & sMask, VEC_TYPE const & a) {
+        UME_FORCE_INLINE VEC_TYPE swizzle(SWIZZLE_MASK_TYPE const & sMask, VEC_TYPE const & a) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -2423,7 +2423,7 @@ namespace SIMD
 
         // SWIZZLEA
         template<typename VEC_TYPE, typename SWIZZLE_MASK_TYPE>
-        inline VEC_TYPE & swizzleAssign(SWIZZLE_MASK_TYPE const & sMask, VEC_TYPE & a) {
+        UME_FORCE_INLINE VEC_TYPE & swizzleAssign(SWIZZLE_MASK_TYPE const & sMask, VEC_TYPE & a) {
             UME_EMULATION_WARNING();
             VEC_TYPE temp(a);
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -2434,7 +2434,7 @@ namespace SIMD
 
         // reduceAdd(VEC) -> scalar
         template<typename SCALAR_TYPE, typename VEC_TYPE>
-        inline SCALAR_TYPE reduceAdd (VEC_TYPE const & a) {
+        UME_FORCE_INLINE SCALAR_TYPE reduceAdd (VEC_TYPE const & a) {
             UME_EMULATION_WARNING();
             SCALAR_TYPE retval = a[0];
             for(uint32_t i = 1; i < VEC_TYPE::length(); i++) {
@@ -2445,7 +2445,7 @@ namespace SIMD
 
         // reduceAdd(MASK, VEC) -> scalar
         template<typename SCALAR_TYPE, typename VEC_TYPE, typename MASK_TYPE>
-        inline SCALAR_TYPE reduceAdd (MASK_TYPE const & mask, VEC_TYPE const & a) {
+        UME_FORCE_INLINE SCALAR_TYPE reduceAdd (MASK_TYPE const & mask, VEC_TYPE const & a) {
             UME_EMULATION_WARNING();
             SCALAR_TYPE retval = a[0];
             for(uint32_t i = 1; i < VEC_TYPE::length(); i++) {
@@ -2456,7 +2456,7 @@ namespace SIMD
 
         // reduceAdd (scalar, VEC) -> scalar
         template<typename SCALAR_TYPE, typename VEC_TYPE>
-        inline SCALAR_TYPE reduceAdd (SCALAR_TYPE & a, VEC_TYPE const & b) {
+        UME_FORCE_INLINE SCALAR_TYPE reduceAdd (SCALAR_TYPE & a, VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             SCALAR_TYPE retval = a;
             for(uint32_t i = 0; i <VEC_TYPE::length(); i++) {
@@ -2467,7 +2467,7 @@ namespace SIMD
 
         // reduceAdd(MASK, scalar, VEC) -> scalar
         template<typename SCALAR_TYPE, typename VEC_TYPE, typename MASK_TYPE>
-        inline SCALAR_TYPE reduceAdd (MASK_TYPE const & mask, SCALAR_TYPE a, VEC_TYPE const & b) {
+        UME_FORCE_INLINE SCALAR_TYPE reduceAdd (MASK_TYPE const & mask, SCALAR_TYPE a, VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             SCALAR_TYPE retval = a;
             for(uint32_t i = 0; i <VEC_TYPE::length(); i++) {
@@ -2478,7 +2478,7 @@ namespace SIMD
 
         // reduceMult(VEC) -> scalar
         template<typename SCALAR_TYPE, typename VEC_TYPE>
-        inline SCALAR_TYPE reduceMult (VEC_TYPE const & a) {
+        UME_FORCE_INLINE SCALAR_TYPE reduceMult (VEC_TYPE const & a) {
             UME_EMULATION_WARNING();
             SCALAR_TYPE retval = a[0];
             for(uint32_t i = 1; i < VEC_TYPE::length(); i++) {
@@ -2489,7 +2489,7 @@ namespace SIMD
 
         // reduceMult(MASK, VEC) -> scalar
         template<typename SCALAR_TYPE, typename VEC_TYPE, typename MASK_TYPE>
-        inline SCALAR_TYPE reduceMult (MASK_TYPE const & mask, VEC_TYPE const & a) {
+        UME_FORCE_INLINE SCALAR_TYPE reduceMult (MASK_TYPE const & mask, VEC_TYPE const & a) {
             UME_EMULATION_WARNING();
             SCALAR_TYPE retval = (mask[0] == true) ? a[0] : 0; // TODO: replace 0 with const expr returning zero depending on SCALAR type.
             for(uint32_t i = 1; i < VEC_TYPE::length(); i++) {
@@ -2500,7 +2500,7 @@ namespace SIMD
 
         // reduceMult(scalar, VEC) -> scalar
         template<typename SCALAR_TYPE, typename VEC_TYPE>
-        inline SCALAR_TYPE reduceMultScalar (SCALAR_TYPE a, VEC_TYPE const & b) {
+        UME_FORCE_INLINE SCALAR_TYPE reduceMultScalar (SCALAR_TYPE a, VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             SCALAR_TYPE retval = a;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -2511,7 +2511,7 @@ namespace SIMD
 
         // reduceMult(MASK, scalar, VEC) -> scalar
         template<typename SCALAR_TYPE, typename VEC_TYPE, typename MASK_TYPE>
-        inline SCALAR_TYPE reduceMultScalar (MASK_TYPE const & mask, SCALAR_TYPE a, VEC_TYPE const & b) {
+        UME_FORCE_INLINE SCALAR_TYPE reduceMultScalar (MASK_TYPE const & mask, SCALAR_TYPE a, VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             SCALAR_TYPE retval = a;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -2522,7 +2522,7 @@ namespace SIMD
 
         // HLAND
         template<typename MASK_TYPE>
-        inline bool reduceLogicalAnd(MASK_TYPE const & a) {
+        UME_FORCE_INLINE bool reduceLogicalAnd(MASK_TYPE const & a) {
             UME_EMULATION_WARNING();
             bool retval = a[0];
             for(uint32_t i = 1; i < MASK_TYPE::length(); i++) {
@@ -2533,7 +2533,7 @@ namespace SIMD
 
         // HLOR
         template<typename MASK_TYPE>
-        inline bool reduceLogicalOr(MASK_TYPE const & a) {
+        UME_FORCE_INLINE bool reduceLogicalOr(MASK_TYPE const & a) {
             UME_EMULATION_WARNING();
             bool retval = a[0];
             for(uint32_t i = 1; i < MASK_TYPE::length(); i++) {
@@ -2544,7 +2544,7 @@ namespace SIMD
 
         // HLXOR
         template<typename MASK_TYPE>
-        inline bool reduceLogicalXor(MASK_TYPE const & a) {
+        UME_FORCE_INLINE bool reduceLogicalXor(MASK_TYPE const & a) {
             UME_EMULATION_WARNING();
             bool retval = a[0];
             for(uint32_t i = 1; i < MASK_TYPE::length(); i++) {
@@ -2555,7 +2555,7 @@ namespace SIMD
 
         // reduceBinaryAnd (VEC) -> scalar
         template<typename SCALAR_TYPE, typename VEC_TYPE>
-        inline SCALAR_TYPE reduceBinaryAnd(VEC_TYPE const & a) {
+        UME_FORCE_INLINE SCALAR_TYPE reduceBinaryAnd(VEC_TYPE const & a) {
             UME_EMULATION_WARNING();
             SCALAR_TYPE retval = a[0];
             for(uint32_t i = 1; i < VEC_TYPE::length(); i++) {
@@ -2566,7 +2566,7 @@ namespace SIMD
 
         // reduceBinaryAnd (MASK, VEC) -> scalar
         template<typename SCALAR_TYPE, typename VEC_TYPE, typename MASK_TYPE>
-        inline SCALAR_TYPE reduceBinaryAnd(MASK_TYPE const & mask, VEC_TYPE const & a) {
+        UME_FORCE_INLINE SCALAR_TYPE reduceBinaryAnd(MASK_TYPE const & mask, VEC_TYPE const & a) {
             UME_EMULATION_WARNING();
             SCALAR_TYPE retval = (mask[0] == true) ? a[0] : (SCALAR_TYPE)-1;
             for(uint32_t i = 1; i < VEC_TYPE::length(); i++) {
@@ -2577,7 +2577,7 @@ namespace SIMD
 
         // reduceBinaryAnd (scalar, VEC) -> scalar
         template<typename SCALAR_TYPE, typename VEC_TYPE>
-        inline SCALAR_TYPE reduceBinaryAndScalar(SCALAR_TYPE a, VEC_TYPE const & b) {
+        UME_FORCE_INLINE SCALAR_TYPE reduceBinaryAndScalar(SCALAR_TYPE a, VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             SCALAR_TYPE retval = a;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -2588,7 +2588,7 @@ namespace SIMD
 
         // reduceBinaryAnd (MASK, scalar, VEC) -> scalar
         template<typename SCALAR_TYPE, typename VEC_TYPE, typename MASK_TYPE>
-        inline SCALAR_TYPE reduceBinaryAndScalar(MASK_TYPE const & mask, SCALAR_TYPE a, VEC_TYPE const & b) {
+        UME_FORCE_INLINE SCALAR_TYPE reduceBinaryAndScalar(MASK_TYPE const & mask, SCALAR_TYPE a, VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             SCALAR_TYPE retval = a;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -2599,7 +2599,7 @@ namespace SIMD
 
         // reduceBinaryOr (VEC) -> scalar
         template<typename SCALAR_TYPE, typename VEC_TYPE>
-        inline SCALAR_TYPE reduceBinaryOr (VEC_TYPE const & a) {
+        UME_FORCE_INLINE SCALAR_TYPE reduceBinaryOr (VEC_TYPE const & a) {
             UME_EMULATION_WARNING();
             SCALAR_TYPE retval = a[0];
             for(uint32_t i = 1; i < VEC_TYPE::length(); i++) {
@@ -2610,7 +2610,7 @@ namespace SIMD
 
         // reduceBinaryOr (MASK, VEC) -> scalar
         template<typename SCALAR_TYPE, typename VEC_TYPE, typename MASK_TYPE>
-        inline SCALAR_TYPE reduceBinaryOr (MASK_TYPE const & mask, VEC_TYPE const & a) {
+        UME_FORCE_INLINE SCALAR_TYPE reduceBinaryOr (MASK_TYPE const & mask, VEC_TYPE const & a) {
             UME_EMULATION_WARNING();
             SCALAR_TYPE retval = (mask[0] == true) ? a[0] : 0; // TODO: 0-initializer of SCALAR_TYPE
             for(uint32_t i = 1; i < VEC_TYPE::length(); i++) {
@@ -2621,7 +2621,7 @@ namespace SIMD
 
         // reduceBinaryOr (scalar, VEC) -> scalar
         template<typename SCALAR_TYPE, typename VEC_TYPE>
-        inline SCALAR_TYPE reduceBinaryOrScalar (SCALAR_TYPE a, VEC_TYPE const & b) {
+        UME_FORCE_INLINE SCALAR_TYPE reduceBinaryOrScalar (SCALAR_TYPE a, VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             SCALAR_TYPE retval = a;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -2632,7 +2632,7 @@ namespace SIMD
 
         // reduceBinaryOr (MASK, scalar, VEC) -> scalar
         template<typename SCALAR_TYPE, typename VEC_TYPE, typename MASK_TYPE>
-        inline SCALAR_TYPE reduceBinaryOrScalar (MASK_TYPE const & mask, SCALAR_TYPE a, VEC_TYPE const & b) {
+        UME_FORCE_INLINE SCALAR_TYPE reduceBinaryOrScalar (MASK_TYPE const & mask, SCALAR_TYPE a, VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             SCALAR_TYPE retval = a;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -2643,7 +2643,7 @@ namespace SIMD
 
         // reduceBinaryXor() -> scalar
         template<typename SCALAR_TYPE, typename VEC_TYPE>
-        inline SCALAR_TYPE reduceBinaryXor(VEC_TYPE const & a) {
+        UME_FORCE_INLINE SCALAR_TYPE reduceBinaryXor(VEC_TYPE const & a) {
             UME_EMULATION_WARNING();
             SCALAR_TYPE retval = 0;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) { 
@@ -2654,7 +2654,7 @@ namespace SIMD
 
         // reduceBinaryXor(MASK) -> scalar
         template<typename SCALAR_TYPE, typename VEC_TYPE, typename MASK_TYPE>
-        inline SCALAR_TYPE reduceBinaryXor(MASK_TYPE const & mask, VEC_TYPE const & a) {
+        UME_FORCE_INLINE SCALAR_TYPE reduceBinaryXor(MASK_TYPE const & mask, VEC_TYPE const & a) {
             UME_EMULATION_WARNING();
             SCALAR_TYPE retval = 0;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) { 
@@ -2665,7 +2665,7 @@ namespace SIMD
 
         // reduceBinaryXor(scalar) -> scalar
         template<typename SCALAR_TYPE, typename VEC_TYPE>
-        inline SCALAR_TYPE reduceBinaryXorScalar(SCALAR_TYPE a, VEC_TYPE const & b) {
+        UME_FORCE_INLINE SCALAR_TYPE reduceBinaryXorScalar(SCALAR_TYPE a, VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             SCALAR_TYPE retval = a;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) { 
@@ -2676,7 +2676,7 @@ namespace SIMD
 
         // reduceBinaryXor(MASK, scalar) -> scalar
         template<typename SCALAR_TYPE, typename VEC_TYPE, typename MASK_TYPE>
-        inline SCALAR_TYPE reduceBinaryXorScalar(MASK_TYPE const & mask, SCALAR_TYPE a, VEC_TYPE const & b) {
+        UME_FORCE_INLINE SCALAR_TYPE reduceBinaryXorScalar(MASK_TYPE const & mask, SCALAR_TYPE a, VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             SCALAR_TYPE retval = a;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) { 
@@ -2687,7 +2687,7 @@ namespace SIMD
 
         // xTOy (UTOI, ITOU, UTOF, FTOU, PROMOTE, DEGRADE)
         template<typename VEC_Y_TYPE, typename SCALAR_Y_TYPE, typename VEC_X_TYPE>
-        inline VEC_Y_TYPE xtoy(VEC_X_TYPE const & a) {
+        UME_FORCE_INLINE VEC_Y_TYPE xtoy(VEC_X_TYPE const & a) {
             UME_EMULATION_WARNING();
             static_assert(VEC_X_TYPE::length() == VEC_Y_TYPE::length(),
                 "Cannot cast between vectors of different lengths");
@@ -2705,7 +2705,7 @@ namespace SIMD
         {
             // MAXV
             template<typename VEC_TYPE>
-            inline VEC_TYPE max(VEC_TYPE const & a, VEC_TYPE const & b) {
+            UME_FORCE_INLINE VEC_TYPE max(VEC_TYPE const & a, VEC_TYPE const & b) {
                 UME_EMULATION_WARNING();
                 VEC_TYPE retval;
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -2716,7 +2716,7 @@ namespace SIMD
 
             // MMAXV
             template<typename VEC_TYPE, typename MASK_TYPE>
-            inline VEC_TYPE max(MASK_TYPE const & mask, VEC_TYPE const & a, VEC_TYPE const & b) {
+            UME_FORCE_INLINE VEC_TYPE max(MASK_TYPE const & mask, VEC_TYPE const & a, VEC_TYPE const & b) {
                 UME_EMULATION_WARNING();
                 VEC_TYPE retval;
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -2728,7 +2728,7 @@ namespace SIMD
 
             // MAXS
             template<typename VEC_TYPE, typename SCALAR_TYPE>
-            inline VEC_TYPE maxScalar(VEC_TYPE const & a, SCALAR_TYPE b) {
+            UME_FORCE_INLINE VEC_TYPE maxScalar(VEC_TYPE const & a, SCALAR_TYPE b) {
                 UME_EMULATION_WARNING();
                 VEC_TYPE retval;
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -2739,7 +2739,7 @@ namespace SIMD
 
             // MMAXS
             template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
-            inline VEC_TYPE maxScalar(MASK_TYPE const & mask, VEC_TYPE const & a, SCALAR_TYPE b) {
+            UME_FORCE_INLINE VEC_TYPE maxScalar(MASK_TYPE const & mask, VEC_TYPE const & a, SCALAR_TYPE b) {
                 UME_EMULATION_WARNING();
                 VEC_TYPE retval;
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -2751,7 +2751,7 @@ namespace SIMD
 
             // MAXVA
             template<typename VEC_TYPE>
-            inline VEC_TYPE & maxAssign(VEC_TYPE & a, VEC_TYPE const & b) {
+            UME_FORCE_INLINE VEC_TYPE & maxAssign(VEC_TYPE & a, VEC_TYPE const & b) {
                 UME_EMULATION_WARNING();
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                     if(b[i] > a[i])a.insert(i, b[i]);
@@ -2761,7 +2761,7 @@ namespace SIMD
 
             // MMAXVA
             template<typename VEC_TYPE, typename MASK_TYPE>
-            inline VEC_TYPE & maxAssign(MASK_TYPE const & mask, VEC_TYPE & a, VEC_TYPE const & b) {
+            UME_FORCE_INLINE VEC_TYPE & maxAssign(MASK_TYPE const & mask, VEC_TYPE & a, VEC_TYPE const & b) {
                 UME_EMULATION_WARNING();
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                     if(mask[i] ==true && (b[i] > a[i]))a.insert(i, b[i]);
@@ -2771,7 +2771,7 @@ namespace SIMD
 
             // MAXSA
             template<typename VEC_TYPE, typename SCALAR_TYPE>
-            inline VEC_TYPE & maxScalarAssign(VEC_TYPE & a, SCALAR_TYPE b) {
+            UME_FORCE_INLINE VEC_TYPE & maxScalarAssign(VEC_TYPE & a, SCALAR_TYPE b) {
                 UME_EMULATION_WARNING();
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                     if(b > a[i]) a.insert(i, b);
@@ -2781,7 +2781,7 @@ namespace SIMD
 
             // MMAXSA
             template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
-            inline VEC_TYPE & maxScalarAssign(MASK_TYPE const & mask, VEC_TYPE & a, SCALAR_TYPE b) {
+            UME_FORCE_INLINE VEC_TYPE & maxScalarAssign(MASK_TYPE const & mask, VEC_TYPE & a, SCALAR_TYPE b) {
                 UME_EMULATION_WARNING();
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                     if(mask[i] == true && (b > a[i])) a.insert(i, b);
@@ -2791,7 +2791,7 @@ namespace SIMD
 
             // MINS
             template<typename VEC_TYPE, typename SCALAR_TYPE>
-            inline VEC_TYPE minScalar(VEC_TYPE const & a, SCALAR_TYPE b) {
+            UME_FORCE_INLINE VEC_TYPE minScalar(VEC_TYPE const & a, SCALAR_TYPE b) {
                 UME_EMULATION_WARNING();
                 VEC_TYPE retval;
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -2802,7 +2802,7 @@ namespace SIMD
 
             // MMINS
             template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
-            inline VEC_TYPE minScalar(MASK_TYPE const & mask, VEC_TYPE const & a, SCALAR_TYPE b) {
+            UME_FORCE_INLINE VEC_TYPE minScalar(MASK_TYPE const & mask, VEC_TYPE const & a, SCALAR_TYPE b) {
                 UME_EMULATION_WARNING();
                 VEC_TYPE retval(std::numeric_limits<SCALAR_TYPE>::max());
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -2814,7 +2814,7 @@ namespace SIMD
 
             // MINV
             template<typename VEC_TYPE>
-            inline VEC_TYPE min(VEC_TYPE const & a, VEC_TYPE const & b) {
+            UME_FORCE_INLINE VEC_TYPE min(VEC_TYPE const & a, VEC_TYPE const & b) {
                 UME_EMULATION_WARNING();
                 VEC_TYPE retval;
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -2825,7 +2825,7 @@ namespace SIMD
 
             // MMINV
             template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
-            inline VEC_TYPE min(MASK_TYPE const & mask, VEC_TYPE const & a, VEC_TYPE const & b) {
+            UME_FORCE_INLINE VEC_TYPE min(MASK_TYPE const & mask, VEC_TYPE const & a, VEC_TYPE const & b) {
                 UME_EMULATION_WARNING();
                 VEC_TYPE retval(std::numeric_limits<SCALAR_TYPE>::max());
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -2837,7 +2837,7 @@ namespace SIMD
 
             // MINSA
             template<typename VEC_TYPE, typename SCALAR_TYPE>
-            inline VEC_TYPE & minScalarAssign(VEC_TYPE & a, SCALAR_TYPE b) {
+            UME_FORCE_INLINE VEC_TYPE & minScalarAssign(VEC_TYPE & a, SCALAR_TYPE b) {
                 UME_EMULATION_WARNING();
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                     if(b < a[i]) a.insert(i, b);
@@ -2847,7 +2847,7 @@ namespace SIMD
 
             // MMINSA
             template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
-            inline VEC_TYPE & minScalarAssign(MASK_TYPE const & mask, VEC_TYPE & a, SCALAR_TYPE b) {
+            UME_FORCE_INLINE VEC_TYPE & minScalarAssign(MASK_TYPE const & mask, VEC_TYPE & a, SCALAR_TYPE b) {
                 UME_EMULATION_WARNING();
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                     if(mask[i] == true && (b < a[i])) a.insert(i, b);
@@ -2857,7 +2857,7 @@ namespace SIMD
 
             // MINVA
             template<typename VEC_TYPE>
-            inline VEC_TYPE & minAssign(VEC_TYPE & a, VEC_TYPE const & b) {
+            UME_FORCE_INLINE VEC_TYPE & minAssign(VEC_TYPE & a, VEC_TYPE const & b) {
                 UME_EMULATION_WARNING();
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                     if(b[i] < a[i]) a.insert(i, b[i]);
@@ -2867,7 +2867,7 @@ namespace SIMD
 
             // MMINVA
             template<typename VEC_TYPE, typename MASK_TYPE>
-            inline VEC_TYPE & minAssign(MASK_TYPE const & mask, VEC_TYPE & a, VEC_TYPE const & b) {
+            UME_FORCE_INLINE VEC_TYPE & minAssign(MASK_TYPE const & mask, VEC_TYPE & a, VEC_TYPE const & b) {
                 UME_EMULATION_WARNING();
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                     if(mask[i] == true && (b[i] < a[i])) a.insert(i, b[i]);
@@ -2877,7 +2877,7 @@ namespace SIMD
 
             // HMAX
             template<typename SCALAR_TYPE, typename VEC_TYPE>
-            inline SCALAR_TYPE reduceMax(VEC_TYPE const & a) {
+            UME_FORCE_INLINE SCALAR_TYPE reduceMax(VEC_TYPE const & a) {
                 UME_EMULATION_WARNING();
                 SCALAR_TYPE retval = a[0];
                 for(uint32_t i = 1; i < VEC_TYPE::length(); i++) {
@@ -2888,7 +2888,7 @@ namespace SIMD
 
             // MHMAX
             template<typename SCALAR_TYPE, typename VEC_TYPE, typename MASK_TYPE>
-            inline SCALAR_TYPE reduceMax(MASK_TYPE const & mask, VEC_TYPE const & a) {
+            UME_FORCE_INLINE SCALAR_TYPE reduceMax(MASK_TYPE const & mask, VEC_TYPE const & a) {
                 UME_EMULATION_WARNING();
                 SCALAR_TYPE retval = std::numeric_limits<SCALAR_TYPE>::min();
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -2899,7 +2899,7 @@ namespace SIMD
 
             // HMAXS
             template<typename SCALAR_TYPE, typename VEC_TYPE>
-            inline SCALAR_TYPE reduceMax(SCALAR_TYPE a, VEC_TYPE const & b) {
+            UME_FORCE_INLINE SCALAR_TYPE reduceMax(SCALAR_TYPE a, VEC_TYPE const & b) {
                 UME_EMULATION_WARNING();
                 SCALAR_TYPE retval = a;
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -2910,7 +2910,7 @@ namespace SIMD
 
             // MHMAXS
             template<typename SCALAR_TYPE, typename VEC_TYPE, typename MASK_TYPE>
-            inline SCALAR_TYPE reduceMax(MASK_TYPE const & mask, SCALAR_TYPE a, VEC_TYPE const & b) {
+            UME_FORCE_INLINE SCALAR_TYPE reduceMax(MASK_TYPE const & mask, SCALAR_TYPE a, VEC_TYPE const & b) {
                 UME_EMULATION_WARNING();
                 SCALAR_TYPE retval = a;
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -2921,7 +2921,7 @@ namespace SIMD
 
             // IMAX
             template<typename VEC_TYPE, typename SCALAR_TYPE>
-            inline uint32_t indexMax(VEC_TYPE const & a) {
+            UME_FORCE_INLINE uint32_t indexMax(VEC_TYPE const & a) {
                 UME_EMULATION_WARNING();
                 uint32_t indexMax = 0;
                 SCALAR_TYPE maxVal = a[0];
@@ -2936,7 +2936,7 @@ namespace SIMD
 
             // MIMAX
             template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
-            inline uint32_t indexMax(MASK_TYPE const & mask, VEC_TYPE const & a) {
+            UME_FORCE_INLINE uint32_t indexMax(MASK_TYPE const & mask, VEC_TYPE const & a) {
                 UME_EMULATION_WARNING();
                 uint32_t indexMax = 0xFFFFFFFF;
                 SCALAR_TYPE maxVal = std::numeric_limits<SCALAR_TYPE>::min();
@@ -2951,7 +2951,7 @@ namespace SIMD
 
             // HMIN
             template<typename SCALAR_TYPE, typename VEC_TYPE> 
-            inline SCALAR_TYPE reduceMin(VEC_TYPE const & a) {
+            UME_FORCE_INLINE SCALAR_TYPE reduceMin(VEC_TYPE const & a) {
                 UME_EMULATION_WARNING();
                 SCALAR_TYPE retval = a[0];
                 for(uint32_t i = 1; i < VEC_TYPE::length(); i++) {
@@ -2962,7 +2962,7 @@ namespace SIMD
 
             // MHMIN
             template<typename SCALAR_TYPE, typename VEC_TYPE, typename MASK_TYPE>
-            inline SCALAR_TYPE reduceMin(MASK_TYPE const & mask, VEC_TYPE const & a) {
+            UME_FORCE_INLINE SCALAR_TYPE reduceMin(MASK_TYPE const & mask, VEC_TYPE const & a) {
                 UME_EMULATION_WARNING();
                 SCALAR_TYPE retval = std::numeric_limits<SCALAR_TYPE>::max();
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -2973,7 +2973,7 @@ namespace SIMD
 
             // IMIN
             template<typename VEC_TYPE, typename SCALAR_TYPE>
-            inline uint32_t indexMin(VEC_TYPE const & a) {
+            UME_FORCE_INLINE uint32_t indexMin(VEC_TYPE const & a) {
                 UME_EMULATION_WARNING();
                 uint32_t indexMin = 0;
                 SCALAR_TYPE minVal = std::numeric_limits<SCALAR_TYPE>::max();
@@ -2988,7 +2988,7 @@ namespace SIMD
 
             // MIMIN
             template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
-            inline uint32_t indexMin(MASK_TYPE const & mask, VEC_TYPE const & a) {
+            UME_FORCE_INLINE uint32_t indexMin(MASK_TYPE const & mask, VEC_TYPE const & a) {
                 UME_EMULATION_WARNING();
                 uint32_t indexMin = 0xFFFFFFFF;
                 SCALAR_TYPE minVal = std::numeric_limits<SCALAR_TYPE>::max();
@@ -3003,7 +3003,7 @@ namespace SIMD
 
             // ABS
             template<typename VEC_TYPE>
-            inline VEC_TYPE abs(VEC_TYPE const & a) {
+            UME_FORCE_INLINE VEC_TYPE abs(VEC_TYPE const & a) {
                 UME_EMULATION_WARNING();
                 VEC_TYPE retval;
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -3015,7 +3015,7 @@ namespace SIMD
 
             // MABS
             template<typename VEC_TYPE, typename MASK_TYPE>
-            inline VEC_TYPE abs(MASK_TYPE const & mask, VEC_TYPE const & a) {
+            UME_FORCE_INLINE VEC_TYPE abs(MASK_TYPE const & mask, VEC_TYPE const & a) {
                 UME_EMULATION_WARNING();
                 VEC_TYPE retval;
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -3027,7 +3027,7 @@ namespace SIMD
 
             // ABSA
             template<typename VEC_TYPE>
-            inline VEC_TYPE & absAssign(VEC_TYPE & a) {
+            UME_FORCE_INLINE VEC_TYPE & absAssign(VEC_TYPE & a) {
                 UME_EMULATION_WARNING();
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                     // abs for floating point numbers is non-trivial. Using std::abs for reliability.
@@ -3038,7 +3038,7 @@ namespace SIMD
 
             // MABSA
             template<typename VEC_TYPE, typename MASK_TYPE>
-            inline VEC_TYPE absAssign(MASK_TYPE const & mask, VEC_TYPE & a) {
+            UME_FORCE_INLINE VEC_TYPE absAssign(MASK_TYPE const & mask, VEC_TYPE & a) {
                 UME_EMULATION_WARNING();
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                     // abs for floating point numbers is non-trivial. Using std::abs for reliability.
@@ -3049,7 +3049,7 @@ namespace SIMD
 
             // SQR
             template<typename VEC_TYPE>
-            inline VEC_TYPE sqr(VEC_TYPE const & a) {
+            UME_FORCE_INLINE VEC_TYPE sqr(VEC_TYPE const & a) {
                 UME_EMULATION_WARNING();
                 VEC_TYPE retval;
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -3060,7 +3060,7 @@ namespace SIMD
             
             // MSQR
             template<typename VEC_TYPE, typename MASK_TYPE>
-            inline VEC_TYPE sqr(MASK_TYPE const & mask, VEC_TYPE const & a) {
+            UME_FORCE_INLINE VEC_TYPE sqr(MASK_TYPE const & mask, VEC_TYPE const & a) {
                 UME_EMULATION_WARNING();
                 VEC_TYPE retval;
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -3072,7 +3072,7 @@ namespace SIMD
             
             // SQRA
             template<typename VEC_TYPE>
-            inline VEC_TYPE & sqrAssign(VEC_TYPE & a) {
+            UME_FORCE_INLINE VEC_TYPE & sqrAssign(VEC_TYPE & a) {
                 UME_EMULATION_WARNING();
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                     a.insert(i, a[i] * a[i]);
@@ -3082,7 +3082,7 @@ namespace SIMD
             
             // MSQRA
             template<typename VEC_TYPE, typename MASK_TYPE>
-            inline VEC_TYPE & sqrAssign(MASK_TYPE const & mask, VEC_TYPE & a) {
+            UME_FORCE_INLINE VEC_TYPE & sqrAssign(MASK_TYPE const & mask, VEC_TYPE & a) {
                 UME_EMULATION_WARNING();
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                     if(mask[i] == true) a.insert(i, a[i] * a[i]);
@@ -3092,7 +3092,7 @@ namespace SIMD
 
             // SQRT
             template<typename VEC_TYPE>
-            inline VEC_TYPE sqrt(VEC_TYPE const & a) {
+            UME_FORCE_INLINE VEC_TYPE sqrt(VEC_TYPE const & a) {
                 UME_EMULATION_WARNING();
                 VEC_TYPE retval;
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -3103,7 +3103,7 @@ namespace SIMD
             
             // MSQRT
             template<typename VEC_TYPE, typename MASK_TYPE>
-            inline VEC_TYPE sqrt(MASK_TYPE const & mask, VEC_TYPE const & a) {
+            UME_FORCE_INLINE VEC_TYPE sqrt(MASK_TYPE const & mask, VEC_TYPE const & a) {
                 UME_EMULATION_WARNING();
                 VEC_TYPE retval;
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -3114,7 +3114,7 @@ namespace SIMD
 
             // SQRTA
             template<typename VEC_TYPE>
-            inline VEC_TYPE & sqrtAssign (VEC_TYPE & a) {
+            UME_FORCE_INLINE VEC_TYPE & sqrtAssign (VEC_TYPE & a) {
                 UME_EMULATION_WARNING();
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                     a.insert(i, std::sqrt(a[i]));
@@ -3124,7 +3124,7 @@ namespace SIMD
 
             // MSQRTA
             template<typename VEC_TYPE, typename MASK_TYPE>
-            inline VEC_TYPE & sqrtAssign(MASK_TYPE const & mask, VEC_TYPE & a) {
+            UME_FORCE_INLINE VEC_TYPE & sqrtAssign(MASK_TYPE const & mask, VEC_TYPE & a) {
                 UME_EMULATION_WARNING();
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                     if(mask[i] == true) a.insert(i, std::sqrt(a[i]));
@@ -3134,7 +3134,7 @@ namespace SIMD
 
             // RSQRT
             template<typename VEC_TYPE>
-            inline VEC_TYPE rsqrt(VEC_TYPE const & a) {
+            UME_FORCE_INLINE VEC_TYPE rsqrt(VEC_TYPE const & a) {
                 UME_EMULATION_WARNING();
                 VEC_TYPE retval;
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -3144,7 +3144,7 @@ namespace SIMD
             }
             // MRSQRT
             template<typename VEC_TYPE, typename MASK_TYPE>
-            inline VEC_TYPE rsqrt(MASK_TYPE const & mask, VEC_TYPE const & a) {
+            UME_FORCE_INLINE VEC_TYPE rsqrt(MASK_TYPE const & mask, VEC_TYPE const & a) {
                 UME_EMULATION_WARNING();
                 VEC_TYPE retval;
                 decltype(retval.extract(0)) temp;
@@ -3156,7 +3156,7 @@ namespace SIMD
             }
             // RSQRTA
             template<typename VEC_TYPE>
-            inline VEC_TYPE & rsqrtAssign (VEC_TYPE & a) {
+            UME_FORCE_INLINE VEC_TYPE & rsqrtAssign (VEC_TYPE & a) {
                 UME_EMULATION_WARNING();
                 decltype(a.extract(0)) temp;
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -3167,7 +3167,7 @@ namespace SIMD
             }
             // MRSQRTA
             template<typename VEC_TYPE, typename MASK_TYPE>
-            inline VEC_TYPE & rsqrtAssign(MASK_TYPE const & mask, VEC_TYPE & a) {
+            UME_FORCE_INLINE VEC_TYPE & rsqrtAssign(MASK_TYPE const & mask, VEC_TYPE & a) {
                 UME_EMULATION_WARNING();
                 decltype(a.extract(0)) temp;
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -3179,7 +3179,7 @@ namespace SIMD
             
             // POWV
             template<typename VEC_TYPE>
-            inline VEC_TYPE pow(VEC_TYPE const & a, VEC_TYPE const & b) {
+            UME_FORCE_INLINE VEC_TYPE pow(VEC_TYPE const & a, VEC_TYPE const & b) {
                 UME_EMULATION_WARNING();
                 VEC_TYPE retval;
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -3190,7 +3190,7 @@ namespace SIMD
 
             // MPOWV
             template<typename VEC_TYPE, typename MASK_TYPE>
-            inline VEC_TYPE pow(MASK_TYPE const & mask, VEC_TYPE const & a, VEC_TYPE const & b) {
+            UME_FORCE_INLINE VEC_TYPE pow(MASK_TYPE const & mask, VEC_TYPE const & a, VEC_TYPE const & b) {
                 UME_EMULATION_WARNING();
                 VEC_TYPE retval;
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -3202,7 +3202,7 @@ namespace SIMD
 
             // POWS
             template<typename VEC_TYPE, typename SCALAR_TYPE>
-            inline VEC_TYPE pows(VEC_TYPE const & a, SCALAR_TYPE b) {
+            UME_FORCE_INLINE VEC_TYPE pows(VEC_TYPE const & a, SCALAR_TYPE b) {
                 UME_EMULATION_WARNING();
                 VEC_TYPE retval;
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -3213,7 +3213,7 @@ namespace SIMD
 
             // MPOWS
             template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
-            inline VEC_TYPE pows(MASK_TYPE const & mask, VEC_TYPE const & a, SCALAR_TYPE b) {
+            UME_FORCE_INLINE VEC_TYPE pows(MASK_TYPE const & mask, VEC_TYPE const & a, SCALAR_TYPE b) {
                 UME_EMULATION_WARNING();
                 VEC_TYPE retval;
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -3225,7 +3225,7 @@ namespace SIMD
             
             // ROUND
             template<typename VEC_TYPE>
-            inline VEC_TYPE round(VEC_TYPE const & a) {
+            UME_FORCE_INLINE VEC_TYPE round(VEC_TYPE const & a) {
                 UME_EMULATION_WARNING();
                 VEC_TYPE retval;
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -3236,7 +3236,7 @@ namespace SIMD
             
             // MROUND
             template<typename VEC_TYPE, typename MASK_TYPE>
-            inline VEC_TYPE round(MASK_TYPE const & mask, VEC_TYPE const & a) {
+            UME_FORCE_INLINE VEC_TYPE round(MASK_TYPE const & mask, VEC_TYPE const & a) {
                 UME_EMULATION_WARNING();
                 VEC_TYPE retval;
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -3248,7 +3248,7 @@ namespace SIMD
             
             // TRUNC
             template<typename VEC_TYPE, typename INT_VEC_TYPE>
-            inline INT_VEC_TYPE truncToInt(VEC_TYPE const & a) {
+            UME_FORCE_INLINE INT_VEC_TYPE truncToInt(VEC_TYPE const & a) {
                 UME_EMULATION_WARNING();
                 INT_VEC_TYPE retval;
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -3259,7 +3259,7 @@ namespace SIMD
             
             // MTRUNC
             template<typename VEC_TYPE, typename INT_VEC_TYPE, typename MASK_TYPE>
-            inline INT_VEC_TYPE truncToInt(MASK_TYPE const & mask, VEC_TYPE const & a) {
+            UME_FORCE_INLINE INT_VEC_TYPE truncToInt(MASK_TYPE const & mask, VEC_TYPE const & a) {
                 UME_EMULATION_WARNING();
                 INT_VEC_TYPE retval;
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -3271,7 +3271,7 @@ namespace SIMD
             
             // FLOOR
             template<typename VEC_TYPE>
-            inline VEC_TYPE floor(VEC_TYPE const & a) {
+            UME_FORCE_INLINE VEC_TYPE floor(VEC_TYPE const & a) {
                 UME_EMULATION_WARNING();
                 VEC_TYPE retval;
                 for(uint32_t i = 0; i < VEC_TYPE::length();i++) {
@@ -3282,7 +3282,7 @@ namespace SIMD
 
             // MFLOOR
             template<typename VEC_TYPE, typename MASK_TYPE>
-            inline VEC_TYPE floor(MASK_TYPE const & mask, VEC_TYPE const & a) {
+            UME_FORCE_INLINE VEC_TYPE floor(MASK_TYPE const & mask, VEC_TYPE const & a) {
                 UME_EMULATION_WARNING();
                 VEC_TYPE retval;
                 for(uint32_t i = 0; i < VEC_TYPE::length();i++) {
@@ -3294,7 +3294,7 @@ namespace SIMD
             
             // CEIL
             template<typename VEC_TYPE>
-            inline VEC_TYPE ceil(VEC_TYPE const & a) {
+            UME_FORCE_INLINE VEC_TYPE ceil(VEC_TYPE const & a) {
                 UME_EMULATION_WARNING();
                 VEC_TYPE retval;
                 for(uint32_t i = 0; i < VEC_TYPE::length();i++) {
@@ -3305,7 +3305,7 @@ namespace SIMD
 
             // MCEIL
             template<typename VEC_TYPE, typename MASK_TYPE>
-            inline VEC_TYPE ceil(MASK_TYPE const & mask, VEC_TYPE const & a) {
+            UME_FORCE_INLINE VEC_TYPE ceil(MASK_TYPE const & mask, VEC_TYPE const & a) {
                 UME_EMULATION_WARNING();
                 VEC_TYPE retval;
                 for(uint32_t i = 0; i < VEC_TYPE::length();i++) {
@@ -3317,7 +3317,7 @@ namespace SIMD
             
             // FMULADDV
             template<typename VEC_TYPE>
-            inline VEC_TYPE fmuladd(VEC_TYPE const & a, VEC_TYPE const & b, VEC_TYPE const & c) {
+            UME_FORCE_INLINE VEC_TYPE fmuladd(VEC_TYPE const & a, VEC_TYPE const & b, VEC_TYPE const & c) {
                 UME_EMULATION_WARNING();
                 VEC_TYPE retval;
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -3328,7 +3328,7 @@ namespace SIMD
 
             // MFMULADDV
             template<typename VEC_TYPE, typename MASK_TYPE>
-            inline VEC_TYPE fmuladd(MASK_TYPE const & mask, VEC_TYPE const & a, VEC_TYPE const & b, VEC_TYPE const & c) {
+            UME_FORCE_INLINE VEC_TYPE fmuladd(MASK_TYPE const & mask, VEC_TYPE const & a, VEC_TYPE const & b, VEC_TYPE const & c) {
                 UME_EMULATION_WARNING();
                 VEC_TYPE retval;
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -3340,7 +3340,7 @@ namespace SIMD
             
             // FADDMULV
             template<typename VEC_TYPE>
-            inline VEC_TYPE faddmul(VEC_TYPE const & a, VEC_TYPE const & b, VEC_TYPE const & c) {
+            UME_FORCE_INLINE VEC_TYPE faddmul(VEC_TYPE const & a, VEC_TYPE const & b, VEC_TYPE const & c) {
                 UME_EMULATION_WARNING();
                 VEC_TYPE retval;
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -3351,7 +3351,7 @@ namespace SIMD
 
             // MFADDMULV
             template<typename VEC_TYPE, typename MASK_TYPE>
-            inline VEC_TYPE faddmul(MASK_TYPE const & mask, VEC_TYPE const & a, VEC_TYPE const & b, VEC_TYPE const & c) {
+            UME_FORCE_INLINE VEC_TYPE faddmul(MASK_TYPE const & mask, VEC_TYPE const & a, VEC_TYPE const & b, VEC_TYPE const & c) {
                 UME_EMULATION_WARNING();
                 VEC_TYPE retval;
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -3363,7 +3363,7 @@ namespace SIMD
 
             // FMULSUBV
             template<typename VEC_TYPE>
-            inline VEC_TYPE fmulsub(VEC_TYPE const & a, VEC_TYPE const & b, VEC_TYPE const & c) {
+            UME_FORCE_INLINE VEC_TYPE fmulsub(VEC_TYPE const & a, VEC_TYPE const & b, VEC_TYPE const & c) {
                 UME_EMULATION_WARNING();
                 VEC_TYPE retval;
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -3374,7 +3374,7 @@ namespace SIMD
 
             // MFMULSUBV
             template<typename VEC_TYPE, typename MASK_TYPE>
-            inline VEC_TYPE fmulsub(MASK_TYPE const & mask, VEC_TYPE const & a, VEC_TYPE const & b, VEC_TYPE const & c) {
+            UME_FORCE_INLINE VEC_TYPE fmulsub(MASK_TYPE const & mask, VEC_TYPE const & a, VEC_TYPE const & b, VEC_TYPE const & c) {
                 UME_EMULATION_WARNING();
                 VEC_TYPE retval;
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -3386,7 +3386,7 @@ namespace SIMD
 
             // FSUBMULV
             template<typename VEC_TYPE>
-            inline VEC_TYPE fsubmul(VEC_TYPE const & a, VEC_TYPE const & b, VEC_TYPE const & c) {
+            UME_FORCE_INLINE VEC_TYPE fsubmul(VEC_TYPE const & a, VEC_TYPE const & b, VEC_TYPE const & c) {
                 UME_EMULATION_WARNING();
                 VEC_TYPE retval;
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -3397,7 +3397,7 @@ namespace SIMD
 
             // MFSUBMULV
             template<typename VEC_TYPE, typename MASK_TYPE>
-            inline VEC_TYPE fsubmul(MASK_TYPE const & mask, VEC_TYPE const & a, VEC_TYPE const & b, VEC_TYPE const & c) {
+            UME_FORCE_INLINE VEC_TYPE fsubmul(MASK_TYPE const & mask, VEC_TYPE const & a, VEC_TYPE const & b, VEC_TYPE const & c) {
                 UME_EMULATION_WARNING();
                 VEC_TYPE retval;
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -3409,7 +3409,7 @@ namespace SIMD
 
             // ISFIN
             template<typename VEC_TYPE, typename MASK_TYPE>
-            inline MASK_TYPE isfin(VEC_TYPE const & a) {
+            UME_FORCE_INLINE MASK_TYPE isfin(VEC_TYPE const & a) {
                 UME_EMULATION_WARNING();
                 MASK_TYPE retval;
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -3420,7 +3420,7 @@ namespace SIMD
 
             // ISINF
             template<typename VEC_TYPE, typename MASK_TYPE>
-            inline MASK_TYPE isinf(VEC_TYPE const & a) {
+            UME_FORCE_INLINE MASK_TYPE isinf(VEC_TYPE const & a) {
                 UME_EMULATION_WARNING();
                 MASK_TYPE retval;
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -3431,7 +3431,7 @@ namespace SIMD
 
             // ISAN
             template<typename VEC_TYPE, typename MASK_TYPE>
-            inline MASK_TYPE isan(VEC_TYPE const & a) {
+            UME_FORCE_INLINE MASK_TYPE isan(VEC_TYPE const & a) {
                 UME_EMULATION_WARNING();
                 MASK_TYPE retval;
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -3442,7 +3442,7 @@ namespace SIMD
 
             // ISNAN
             template<typename VEC_TYPE, typename MASK_TYPE>
-            inline MASK_TYPE isnan(VEC_TYPE const & a) {
+            UME_FORCE_INLINE MASK_TYPE isnan(VEC_TYPE const & a) {
                 UME_EMULATION_WARNING();
                 MASK_TYPE retval;
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -3453,7 +3453,7 @@ namespace SIMD
 
             // ISNORM
             template<typename VEC_TYPE, typename MASK_TYPE>
-            inline MASK_TYPE isnorm(VEC_TYPE const & a) {
+            UME_FORCE_INLINE MASK_TYPE isnorm(VEC_TYPE const & a) {
                 UME_EMULATION_WARNING();
                 MASK_TYPE retval;
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -3464,7 +3464,7 @@ namespace SIMD
 
             // ISSUB
             template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
-            inline MASK_TYPE issub(VEC_TYPE const & a) {
+            UME_FORCE_INLINE MASK_TYPE issub(VEC_TYPE const & a) {
                 UME_EMULATION_WARNING();
                 MASK_TYPE retval;
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -3480,7 +3480,7 @@ namespace SIMD
 
             // ISZERO
             template<typename VEC_TYPE, typename MASK_TYPE>
-            inline MASK_TYPE iszero(VEC_TYPE const & a) {
+            UME_FORCE_INLINE MASK_TYPE iszero(VEC_TYPE const & a) {
                 UME_EMULATION_WARNING();
                 MASK_TYPE retval;
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -3491,7 +3491,7 @@ namespace SIMD
 
             // ISZEROSUB
             template<typename VEC_TYPE, typename MASK_TYPE>
-            inline MASK_TYPE iszerosub(VEC_TYPE const & a) {
+            UME_FORCE_INLINE MASK_TYPE iszerosub(VEC_TYPE const & a) {
                 UME_EMULATION_WARNING();
                 MASK_TYPE retval;
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -3507,7 +3507,7 @@ namespace SIMD
 
             // EXP
             template<typename VEC_TYPE>
-            inline VEC_TYPE exp (VEC_TYPE const & a) {
+            UME_FORCE_INLINE VEC_TYPE exp (VEC_TYPE const & a) {
                 UME_EMULATION_WARNING();
                 VEC_TYPE retval;
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -3518,7 +3518,7 @@ namespace SIMD
 
             // MEXP
             template<typename VEC_TYPE, typename MASK_TYPE>
-            inline VEC_TYPE exp (MASK_TYPE const & mask, VEC_TYPE const & a) {
+            UME_FORCE_INLINE VEC_TYPE exp (MASK_TYPE const & mask, VEC_TYPE const & a) {
                 UME_EMULATION_WARNING();
                 VEC_TYPE retval;
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -3529,7 +3529,7 @@ namespace SIMD
 
             // SIN
             template<typename VEC_TYPE>
-            inline VEC_TYPE sin (VEC_TYPE const & a) {
+            UME_FORCE_INLINE VEC_TYPE sin (VEC_TYPE const & a) {
                 UME_EMULATION_WARNING();
                 VEC_TYPE retval;
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -3540,7 +3540,7 @@ namespace SIMD
 
             // MSIN
             template<typename VEC_TYPE, typename MASK_TYPE>
-            inline VEC_TYPE sin (MASK_TYPE const & mask, VEC_TYPE const & a) {
+            UME_FORCE_INLINE VEC_TYPE sin (MASK_TYPE const & mask, VEC_TYPE const & a) {
                 UME_EMULATION_WARNING();
                 VEC_TYPE retval;
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -3551,7 +3551,7 @@ namespace SIMD
 
             // COS
             template<typename VEC_TYPE>
-            inline VEC_TYPE cos (VEC_TYPE const & a) {
+            UME_FORCE_INLINE VEC_TYPE cos (VEC_TYPE const & a) {
                 UME_EMULATION_WARNING();
                 VEC_TYPE retval;
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -3562,7 +3562,7 @@ namespace SIMD
 
             // MCOS
             template<typename VEC_TYPE, typename MASK_TYPE>
-            inline VEC_TYPE cos (MASK_TYPE const & mask, VEC_TYPE const & a) {
+            UME_FORCE_INLINE VEC_TYPE cos (MASK_TYPE const & mask, VEC_TYPE const & a) {
                 UME_EMULATION_WARNING();
                 VEC_TYPE retval;
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -3573,7 +3573,7 @@ namespace SIMD
 
             // TAN
             template<typename VEC_TYPE>
-            inline VEC_TYPE tan (VEC_TYPE const & a) {
+            UME_FORCE_INLINE VEC_TYPE tan (VEC_TYPE const & a) {
                 UME_EMULATION_WARNING();
                 VEC_TYPE retval;
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -3584,7 +3584,7 @@ namespace SIMD
 
             // MTAN
             template<typename VEC_TYPE, typename MASK_TYPE>
-            inline VEC_TYPE tan (MASK_TYPE const & mask, VEC_TYPE const & a) {
+            UME_FORCE_INLINE VEC_TYPE tan (MASK_TYPE const & mask, VEC_TYPE const & a) {
                 UME_EMULATION_WARNING();
                 VEC_TYPE retval;
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -3596,7 +3596,7 @@ namespace SIMD
 
             // CTAN
             template<typename VEC_TYPE>
-            inline VEC_TYPE ctan (VEC_TYPE const & a) {
+            UME_FORCE_INLINE VEC_TYPE ctan (VEC_TYPE const & a) {
                 UME_EMULATION_WARNING();
                 VEC_TYPE retval;
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -3607,7 +3607,7 @@ namespace SIMD
 
             // MCTAN
             template<typename VEC_TYPE, typename MASK_TYPE>
-            inline VEC_TYPE ctan (MASK_TYPE const & mask, VEC_TYPE const & a) {
+            UME_FORCE_INLINE VEC_TYPE ctan (MASK_TYPE const & mask, VEC_TYPE const & a) {
                 UME_EMULATION_WARNING();
                 VEC_TYPE retval;
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -3619,7 +3619,7 @@ namespace SIMD
 
             // ATAN
             template<typename VEC_TYPE>
-            inline VEC_TYPE atan(VEC_TYPE const & a) {
+            UME_FORCE_INLINE VEC_TYPE atan(VEC_TYPE const & a) {
                 UME_EMULATION_WARNING();
                 VEC_TYPE retval;
                 for (uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -3630,7 +3630,7 @@ namespace SIMD
 
             // ATAN2
             template<typename VEC_TYPE>
-            inline VEC_TYPE atan2(VEC_TYPE const & a, VEC_TYPE const & b) {
+            UME_FORCE_INLINE VEC_TYPE atan2(VEC_TYPE const & a, VEC_TYPE const & b) {
                 UME_EMULATION_WARNING();
                 VEC_TYPE retval;
                 for (uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -3641,7 +3641,7 @@ namespace SIMD
 
             // LOG
             template<typename VEC_TYPE>
-            inline VEC_TYPE log(VEC_TYPE const & a) {
+            UME_FORCE_INLINE VEC_TYPE log(VEC_TYPE const & a) {
                 UME_EMULATION_WARNING();
                 VEC_TYPE retval;
                 for (uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -3652,7 +3652,7 @@ namespace SIMD
 
             // LOG10
             template<typename VEC_TYPE>
-            inline VEC_TYPE log10(VEC_TYPE const & a) {
+            UME_FORCE_INLINE VEC_TYPE log10(VEC_TYPE const & a) {
                 UME_EMULATION_WARNING();
                 VEC_TYPE retval;
                 for (uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -3663,7 +3663,7 @@ namespace SIMD
 
             // LOG2
             template<typename VEC_TYPE>
-            inline VEC_TYPE log2(VEC_TYPE const & a) {
+            UME_FORCE_INLINE VEC_TYPE log2(VEC_TYPE const & a) {
                 UME_EMULATION_WARNING();
                 VEC_TYPE retval;
                 for (uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -3722,11 +3722,11 @@ namespace SIMD
     {
         // Declarations only. These operators should be overriden in derived types.
         // EXTRACT
-        inline bool extract(uint32_t index);
+        UME_FORCE_INLINE bool extract(uint32_t index);
         // EXTRACT
-        inline bool operator[] (uint32_t index);
+        UME_FORCE_INLINE bool operator[] (uint32_t index);
         // INSERT
-        inline void insert(uint32_t index, uint32_t value);
+        UME_FORCE_INLINE void insert(uint32_t index, uint32_t value);
 
     protected:
         ~SIMDSwizzleMaskBaseInterface() {};
@@ -3775,13 +3775,13 @@ namespace SIMD
         // define cast operator
         operator SCALAR_TYPE() const { return mValue; };
          /*      
-        inline ScalarTypeWrapper & operator=(ScalarTypeWrapper const & x){
+        UME_FORCE_INLINE ScalarTypeWrapper & operator=(ScalarTypeWrapper const & x){
             mValue = x.mValue;
             return *this;
         }*/
 
         // Also define a non-modifying access operator
-        inline SCALAR_TYPE operator[] (uint32_t index) const { return mValue; }
+        UME_FORCE_INLINE SCALAR_TYPE operator[] (uint32_t index) const { return mValue; }
     };
 
     // This class represents a vector of VEC_LEN scalars and is used for emulation.
@@ -3807,12 +3807,12 @@ namespace SIMD
         }
 
         // Also define a non-modifying access operator
-        inline SCALAR_TYPE operator[] (uint32_t index) const { 
+        UME_FORCE_INLINE SCALAR_TYPE operator[] (uint32_t index) const { 
             SCALAR_TYPE temp = reg[index];    
             return temp; 
         }
             
-        inline void insert(uint32_t index, SCALAR_TYPE value){
+        UME_FORCE_INLINE void insert(uint32_t index, SCALAR_TYPE value){
             reg[index] = value; 
         }
     };
@@ -3847,11 +3847,11 @@ namespace SIMD
     class SIMDMaskBaseInterface {
         // Declarations only. These operators should be overriden in derived types.
         // EXTRACT
-        inline bool extract(uint32_t index);
+        UME_FORCE_INLINE bool extract(uint32_t index);
         // EXTRACT
-        inline bool operator[] (uint32_t index);
+        UME_FORCE_INLINE bool operator[] (uint32_t index);
         // INSERT
-        inline void insert(uint32_t index, bool value);
+        UME_FORCE_INLINE void insert(uint32_t index, bool value);
 
     protected:
         ~SIMDMaskBaseInterface() {}
@@ -3864,249 +3864,249 @@ namespace SIMD
         constexpr static int alignment() { return MASK_LEN*sizeof(MASK_BASE_TYPE); }
 
         // LOAD
-        inline DERIVED_MASK_TYPE & load(bool const * addr) {
+        UME_FORCE_INLINE DERIVED_MASK_TYPE & load(bool const * addr) {
             return EMULATED_FUNCTIONS::load<DERIVED_MASK_TYPE, bool>(static_cast<DERIVED_MASK_TYPE &>(*this), addr);
         }
 
         // LOADA
-        inline DERIVED_MASK_TYPE & loada(bool const * addrAligned) {
+        UME_FORCE_INLINE DERIVED_MASK_TYPE & loada(bool const * addrAligned) {
             return EMULATED_FUNCTIONS::loadAligned<DERIVED_MASK_TYPE, bool>(static_cast<DERIVED_MASK_TYPE &>(*this), addrAligned);
         }
 
         // STORE
-        inline bool* store(bool* addr) const {
+        UME_FORCE_INLINE bool* store(bool* addr) const {
             return EMULATED_FUNCTIONS::store<DERIVED_MASK_TYPE, bool>(static_cast<DERIVED_MASK_TYPE const &>(*this), addr);
         }
 
         // STOREA
-        inline bool* storea(bool* addrAligned) const {
+        UME_FORCE_INLINE bool* storea(bool* addrAligned) const {
             return EMULATED_FUNCTIONS::storeAligned<DERIVED_MASK_TYPE, bool>(static_cast<DERIVED_MASK_TYPE const &>(*this), addrAligned);
         }
 
         // ASSIGNV
-        inline DERIVED_MASK_TYPE & assign(DERIVED_MASK_TYPE const & maskOp) {
+        UME_FORCE_INLINE DERIVED_MASK_TYPE & assign(DERIVED_MASK_TYPE const & maskOp) {
             return EMULATED_FUNCTIONS::assign<DERIVED_MASK_TYPE>(static_cast<DERIVED_MASK_TYPE &>(*this), maskOp);
         }
 
-        inline DERIVED_MASK_TYPE & operator= (DERIVED_MASK_TYPE const & maskOp) {
+        UME_FORCE_INLINE DERIVED_MASK_TYPE & operator= (DERIVED_MASK_TYPE const & maskOp) {
             return assign(maskOp);
         }
 
         // MASSIGNV
-        inline DERIVED_MASK_TYPE & assign(DERIVED_MASK_TYPE const & mask, DERIVED_MASK_TYPE const & maskOp) {
+        UME_FORCE_INLINE DERIVED_MASK_TYPE & assign(DERIVED_MASK_TYPE const & mask, DERIVED_MASK_TYPE const & maskOp) {
             return EMULATED_FUNCTIONS::assign<DERIVED_MASK_TYPE, DERIVED_MASK_TYPE>(mask, static_cast<DERIVED_MASK_TYPE &>(*this), maskOp);
         }
 
         // ASSIGNS
-        inline DERIVED_MASK_TYPE & assign(bool scalarOp) {
+        UME_FORCE_INLINE DERIVED_MASK_TYPE & assign(bool scalarOp) {
             return EMULATED_FUNCTIONS::assign<DERIVED_MASK_TYPE, bool>(static_cast<DERIVED_MASK_TYPE &>(*this), scalarOp);
         }
 
-        inline DERIVED_MASK_TYPE & operator= (bool scalarOp) {
+        UME_FORCE_INLINE DERIVED_MASK_TYPE & operator= (bool scalarOp) {
             return assign(scalarOp);
         }
 
         // MASSIGNS
-        inline DERIVED_MASK_TYPE & assign(DERIVED_MASK_TYPE const & mask, bool scalarOp) {
+        UME_FORCE_INLINE DERIVED_MASK_TYPE & assign(DERIVED_MASK_TYPE const & mask, bool scalarOp) {
             return EMULATED_FUNCTIONS::assign<DERIVED_MASK_TYPE, bool, DERIVED_MASK_TYPE>(mask, static_cast<DERIVED_MASK_TYPE &>(*this), scalarOp);
         }
 
         // LANDV
-        inline DERIVED_MASK_TYPE land(DERIVED_MASK_TYPE const & maskOp) const {
+        UME_FORCE_INLINE DERIVED_MASK_TYPE land(DERIVED_MASK_TYPE const & maskOp) const {
             return EMULATED_FUNCTIONS::binaryAnd<DERIVED_MASK_TYPE>(static_cast<DERIVED_MASK_TYPE const &>(*this), maskOp);
         }
 
-        inline DERIVED_MASK_TYPE operator& (DERIVED_MASK_TYPE const & maskOp) const {
+        UME_FORCE_INLINE DERIVED_MASK_TYPE operator& (DERIVED_MASK_TYPE const & maskOp) const {
             return land(maskOp);
         }
 
-        inline DERIVED_MASK_TYPE operator&& (DERIVED_MASK_TYPE const & maskOp) const {
+        UME_FORCE_INLINE DERIVED_MASK_TYPE operator&& (DERIVED_MASK_TYPE const & maskOp) const {
             return land(maskOp);
         }
 
         // LANDS
-        inline DERIVED_MASK_TYPE land(bool value) const {
+        UME_FORCE_INLINE DERIVED_MASK_TYPE land(bool value) const {
             return EMULATED_FUNCTIONS::binaryAnd<DERIVED_MASK_TYPE>(static_cast<DERIVED_MASK_TYPE const &>(*this), value);
         }
 
-        inline DERIVED_MASK_TYPE operator& (bool value) const {
+        UME_FORCE_INLINE DERIVED_MASK_TYPE operator& (bool value) const {
             return land(value);
         }
 
-        inline DERIVED_MASK_TYPE operator&& (bool value) const {
+        UME_FORCE_INLINE DERIVED_MASK_TYPE operator&& (bool value) const {
             return land(value);
         }
 
         // LANDVA
-        inline DERIVED_MASK_TYPE & landa(DERIVED_MASK_TYPE const & maskOp) {
+        UME_FORCE_INLINE DERIVED_MASK_TYPE & landa(DERIVED_MASK_TYPE const & maskOp) {
             return EMULATED_FUNCTIONS::binaryAndAssign<DERIVED_MASK_TYPE>(static_cast<DERIVED_MASK_TYPE &>(*this), maskOp);
         }
 
-        inline DERIVED_MASK_TYPE & operator&= (DERIVED_MASK_TYPE const & maskOp) {
+        UME_FORCE_INLINE DERIVED_MASK_TYPE & operator&= (DERIVED_MASK_TYPE const & maskOp) {
             return landa(maskOp);
         }
 
         // LANDSA
-        inline DERIVED_MASK_TYPE & landa(bool value) {
+        UME_FORCE_INLINE DERIVED_MASK_TYPE & landa(bool value) {
             return EMULATED_FUNCTIONS::binaryAndAssign<DERIVED_MASK_TYPE, bool>(static_cast<DERIVED_MASK_TYPE &>(*this), value);
         }
 
-        inline DERIVED_MASK_TYPE & operator&= (bool value) {
+        UME_FORCE_INLINE DERIVED_MASK_TYPE & operator&= (bool value) {
             return landa(value);
         }
 
         // LORV
-        inline DERIVED_MASK_TYPE lor(DERIVED_MASK_TYPE const & maskOp) const {
+        UME_FORCE_INLINE DERIVED_MASK_TYPE lor(DERIVED_MASK_TYPE const & maskOp) const {
             return EMULATED_FUNCTIONS::binaryOr<DERIVED_MASK_TYPE>(static_cast<DERIVED_MASK_TYPE const &>(*this), maskOp);
         }
 
-        inline DERIVED_MASK_TYPE operator| (DERIVED_MASK_TYPE const & maskOp) const {
+        UME_FORCE_INLINE DERIVED_MASK_TYPE operator| (DERIVED_MASK_TYPE const & maskOp) const {
             return lor(maskOp);
         }
 
-        inline DERIVED_MASK_TYPE operator|| (DERIVED_MASK_TYPE const & maskOp) const {
+        UME_FORCE_INLINE DERIVED_MASK_TYPE operator|| (DERIVED_MASK_TYPE const & maskOp) const {
             return lor(maskOp);
         }
 
         // LORS
-        inline DERIVED_MASK_TYPE lor(bool value) const {
+        UME_FORCE_INLINE DERIVED_MASK_TYPE lor(bool value) const {
             return EMULATED_FUNCTIONS::binaryOr<DERIVED_MASK_TYPE>(static_cast<DERIVED_MASK_TYPE const &>(*this), value);
         }
 
-        inline DERIVED_MASK_TYPE operator| (bool value) const {
+        UME_FORCE_INLINE DERIVED_MASK_TYPE operator| (bool value) const {
             return EMULATED_FUNCTIONS::binaryOr<DERIVED_MASK_TYPE, bool>(static_cast<DERIVED_MASK_TYPE const &>(*this), value);
         }
 
-        inline DERIVED_MASK_TYPE operator|| (bool value) const {
+        UME_FORCE_INLINE DERIVED_MASK_TYPE operator|| (bool value) const {
             return EMULATED_FUNCTIONS::binaryOr<DERIVED_MASK_TYPE, bool>(static_cast<DERIVED_MASK_TYPE const &>(*this), value);
         }
 
         // LORVA
-        inline DERIVED_MASK_TYPE & lora(DERIVED_MASK_TYPE const & maskOp) {
+        UME_FORCE_INLINE DERIVED_MASK_TYPE & lora(DERIVED_MASK_TYPE const & maskOp) {
             return EMULATED_FUNCTIONS::binaryOrAssign<DERIVED_MASK_TYPE>(static_cast<DERIVED_MASK_TYPE &>(*this), maskOp);
         }
 
-        inline DERIVED_MASK_TYPE & operator|= (DERIVED_MASK_TYPE const & maskOp) {
+        UME_FORCE_INLINE DERIVED_MASK_TYPE & operator|= (DERIVED_MASK_TYPE const & maskOp) {
             return lora(maskOp);
         }
 
         // LORSA
-        inline DERIVED_MASK_TYPE & lora(bool value) {
+        UME_FORCE_INLINE DERIVED_MASK_TYPE & lora(bool value) {
             return EMULATED_FUNCTIONS::binaryOrAssign<DERIVED_MASK_TYPE, bool>(static_cast<DERIVED_MASK_TYPE &>(*this), value);
         }
 
-        inline DERIVED_MASK_TYPE & operator|= (bool value) {
+        UME_FORCE_INLINE DERIVED_MASK_TYPE & operator|= (bool value) {
             return lora(value);
         }
 
         // LXORV
-        inline DERIVED_MASK_TYPE lxor(DERIVED_MASK_TYPE const & maskOp) const {
+        UME_FORCE_INLINE DERIVED_MASK_TYPE lxor(DERIVED_MASK_TYPE const & maskOp) const {
             return EMULATED_FUNCTIONS::binaryXor<DERIVED_MASK_TYPE>(static_cast<DERIVED_MASK_TYPE const &>(*this), maskOp);
         }
 
-        inline DERIVED_MASK_TYPE operator^ (DERIVED_MASK_TYPE const & maskOp) const {
+        UME_FORCE_INLINE DERIVED_MASK_TYPE operator^ (DERIVED_MASK_TYPE const & maskOp) const {
             return lxor(maskOp);
         }
 
         // LXORS
-        inline DERIVED_MASK_TYPE lxor(bool value) const {
+        UME_FORCE_INLINE DERIVED_MASK_TYPE lxor(bool value) const {
             return EMULATED_FUNCTIONS::binaryXor<DERIVED_MASK_TYPE, bool>(static_cast<DERIVED_MASK_TYPE const &>(*this), value);
         }
 
-        inline DERIVED_MASK_TYPE operator^ (bool value) const {
+        UME_FORCE_INLINE DERIVED_MASK_TYPE operator^ (bool value) const {
             return lxor(value);
         }
 
         // LXORVA
-        inline DERIVED_MASK_TYPE & lxora(DERIVED_MASK_TYPE const & maskOp) {
+        UME_FORCE_INLINE DERIVED_MASK_TYPE & lxora(DERIVED_MASK_TYPE const & maskOp) {
             return EMULATED_FUNCTIONS::binaryXorAssign<DERIVED_MASK_TYPE>(static_cast<DERIVED_MASK_TYPE &>(*this), maskOp);
         }
 
-        inline DERIVED_MASK_TYPE & operator^= (DERIVED_MASK_TYPE const & maskOp) {
+        UME_FORCE_INLINE DERIVED_MASK_TYPE & operator^= (DERIVED_MASK_TYPE const & maskOp) {
             return lxora(maskOp);
         }
 
         // LXORSA
-        inline DERIVED_MASK_TYPE & lxora(bool value) {
+        UME_FORCE_INLINE DERIVED_MASK_TYPE & lxora(bool value) {
             return EMULATED_FUNCTIONS::binaryXorAssign<DERIVED_MASK_TYPE, bool>(static_cast<DERIVED_MASK_TYPE &>(*this), value);
         }
 
-        inline DERIVED_MASK_TYPE & operator^= (bool value) {
+        UME_FORCE_INLINE DERIVED_MASK_TYPE & operator^= (bool value) {
             return lxora(value);
         }
 
         // LNOT
-        inline DERIVED_MASK_TYPE lnot () const {
+        UME_FORCE_INLINE DERIVED_MASK_TYPE lnot () const {
             return EMULATED_FUNCTIONS::logicalNot<DERIVED_MASK_TYPE>(static_cast<DERIVED_MASK_TYPE const &>(*this));
         }
         
-        inline DERIVED_MASK_TYPE operator!() const {
+        UME_FORCE_INLINE DERIVED_MASK_TYPE operator!() const {
             return lnot();
         }
 
         // LNOTA
-        inline DERIVED_MASK_TYPE & lnota () {
+        UME_FORCE_INLINE DERIVED_MASK_TYPE & lnota () {
             return EMULATED_FUNCTIONS::logicalNotAssign<DERIVED_MASK_TYPE>(static_cast<DERIVED_MASK_TYPE &>(*this));
         }
 
         // CMPEQV
-        inline DERIVED_MASK_TYPE cmpeq(DERIVED_MASK_TYPE const & b) const {
+        UME_FORCE_INLINE DERIVED_MASK_TYPE cmpeq(DERIVED_MASK_TYPE const & b) const {
             return EMULATED_FUNCTIONS::isEqual<DERIVED_MASK_TYPE, DERIVED_MASK_TYPE>(static_cast<DERIVED_MASK_TYPE const &>(*this), b);
         }
 
-        inline DERIVED_MASK_TYPE operator== (DERIVED_MASK_TYPE const & b) const {
+        UME_FORCE_INLINE DERIVED_MASK_TYPE operator== (DERIVED_MASK_TYPE const & b) const {
             return cmpeq(b);
         }
 
         // CMPEQS
-        inline DERIVED_MASK_TYPE cmpeq(bool b) const {
+        UME_FORCE_INLINE DERIVED_MASK_TYPE cmpeq(bool b) const {
             return EMULATED_FUNCTIONS::isEqual<DERIVED_MASK_TYPE, DERIVED_MASK_TYPE, bool>(static_cast<DERIVED_MASK_TYPE const &>(*this), b);
         }
 
-        inline DERIVED_MASK_TYPE operator== (bool b) const {
+        UME_FORCE_INLINE DERIVED_MASK_TYPE operator== (bool b) const {
             return cmpeq(b);
         }
 
         // CMPNEV
-        inline DERIVED_MASK_TYPE cmpne(DERIVED_MASK_TYPE const & b) const {
+        UME_FORCE_INLINE DERIVED_MASK_TYPE cmpne(DERIVED_MASK_TYPE const & b) const {
             return EMULATED_FUNCTIONS::isNotEqual<DERIVED_MASK_TYPE, DERIVED_MASK_TYPE>(static_cast<DERIVED_MASK_TYPE const &>(*this), b);
         }
 
-        inline DERIVED_MASK_TYPE operator!= (DERIVED_MASK_TYPE const & b) const {
+        UME_FORCE_INLINE DERIVED_MASK_TYPE operator!= (DERIVED_MASK_TYPE const & b) const {
             return cmpne(b);
         }
 
         // CMPNES
-        inline DERIVED_MASK_TYPE cmpne(bool b) const {
+        UME_FORCE_INLINE DERIVED_MASK_TYPE cmpne(bool b) const {
             return EMULATED_FUNCTIONS::isNotEqual<DERIVED_MASK_TYPE, DERIVED_MASK_TYPE, bool>(static_cast<DERIVED_MASK_TYPE const &>(*this), b);
         }
 
-        inline DERIVED_MASK_TYPE operator!= (bool b) const {
+        UME_FORCE_INLINE DERIVED_MASK_TYPE operator!= (bool b) const {
             return  cmpne(b);
         }
 
         // HLAND
-        inline bool hland() const {
+        UME_FORCE_INLINE bool hland() const {
             return EMULATED_FUNCTIONS::reduceLogicalAnd<DERIVED_MASK_TYPE>(static_cast<DERIVED_MASK_TYPE const &>(*this));
         }
 
         // HLOR
-        inline bool hlor() const {
+        UME_FORCE_INLINE bool hlor() const {
             return EMULATED_FUNCTIONS::reduceLogicalOr<DERIVED_MASK_TYPE>(static_cast<DERIVED_MASK_TYPE const &>(*this));
         }
 
         // HLXOR
-        inline bool hlxor() const {
+        UME_FORCE_INLINE bool hlxor() const {
             return EMULATED_FUNCTIONS::reduceLogicalXor<DERIVED_MASK_TYPE>(static_cast<DERIVED_MASK_TYPE const &>(*this));
         }
 
         // CMPEV
-        inline bool cmpe(DERIVED_MASK_TYPE const & mask) const {
+        UME_FORCE_INLINE bool cmpe(DERIVED_MASK_TYPE const & mask) const {
             return EMULATED_FUNCTIONS::isExact<DERIVED_MASK_TYPE>(static_cast<DERIVED_MASK_TYPE const &>(*this), mask);
         }
 
         // CMPES
-        inline bool cmpe(bool b) const {
+        UME_FORCE_INLINE bool cmpe(bool b) const {
             return EMULATED_FUNCTIONS::isExact<DERIVED_MASK_TYPE>(static_cast<DERIVED_MASK_TYPE const &>(*this), DERIVED_MASK_TYPE(b));
         }
     };
@@ -4124,82 +4124,82 @@ namespace SIMD
     class IntermediateMask {
     public:
         // MASSIGNV
-        inline void operator=(VEC_TYPE const & vecRhs) const {
+        UME_FORCE_INLINE void operator=(VEC_TYPE const & vecRhs) const {
             mVecRef.assign(mMaskRef, vecRhs);
         }
 
         // MASSIGNS
-        inline void operator=(SCALAR_TYPE scalarRhs) const {
+        UME_FORCE_INLINE void operator=(SCALAR_TYPE scalarRhs) const {
             mVecRef.assign(mMaskRef, scalarRhs);
         }
 
         // MADDVA
-        inline void operator+=(VEC_TYPE const & vecRhs) const {
+        UME_FORCE_INLINE void operator+=(VEC_TYPE const & vecRhs) const {
             mVecRef.adda(mMaskRef, vecRhs);
         }
 
         // MADDSA
-        inline void operator+=(SCALAR_TYPE scalarRhs) const {
+        UME_FORCE_INLINE void operator+=(SCALAR_TYPE scalarRhs) const {
             mVecRef.adda(mMaskRef, scalarRhs);
         }
 
         // MSUBVA
-        inline void operator-= (VEC_TYPE const & vecRhs) const {
+        UME_FORCE_INLINE void operator-= (VEC_TYPE const & vecRhs) const {
             mVecRef.suba(mMaskRef, vecRhs);
         }
 
         // MSUBSA
-        inline void operator-=(SCALAR_TYPE scalarRhs) const {
+        UME_FORCE_INLINE void operator-=(SCALAR_TYPE scalarRhs) const {
             mVecRef.suba(mMaskRef, scalarRhs);
         }
 
         // MMULVA
-        inline void operator*= (VEC_TYPE const & vecRhs) const {
+        UME_FORCE_INLINE void operator*= (VEC_TYPE const & vecRhs) const {
             mVecRef.mula(mMaskRef, vecRhs);
         }
 
         // MMULSA
-        inline void operator*=(SCALAR_TYPE scalarRhs) const {
+        UME_FORCE_INLINE void operator*=(SCALAR_TYPE scalarRhs) const {
             mVecRef.mula(mMaskRef, scalarRhs);
         }
 
         // MDIVVA
-        inline void operator/= (VEC_TYPE const & vecRhs) const {
+        UME_FORCE_INLINE void operator/= (VEC_TYPE const & vecRhs) const {
             mVecRef.diva(mMaskRef, vecRhs);
         }
 
         // MDIVSA
-        inline void operator/=(SCALAR_TYPE scalarRhs) const {
+        UME_FORCE_INLINE void operator/=(SCALAR_TYPE scalarRhs) const {
             mVecRef.diva(mMaskRef, scalarRhs);
         }
 
         // MBANDVA
-        inline void operator&= (VEC_TYPE const & vecRhs) const {
+        UME_FORCE_INLINE void operator&= (VEC_TYPE const & vecRhs) const {
             mVecRef.banda(mMaskRef, vecRhs);
         }
 
         // MBANDSA
-        inline void operator&=(SCALAR_TYPE scalarRhs) const {
+        UME_FORCE_INLINE void operator&=(SCALAR_TYPE scalarRhs) const {
             mVecRef.banda(mMaskRef, scalarRhs);
         }
 
         // MBORVA
-        inline void operator|= (VEC_TYPE const & vecRhs) const {
+        UME_FORCE_INLINE void operator|= (VEC_TYPE const & vecRhs) const {
             mVecRef.bora(mMaskRef, vecRhs);
         }
 
         // MBORSA
-        inline void operator|=(SCALAR_TYPE scalarRhs) const {
+        UME_FORCE_INLINE void operator|=(SCALAR_TYPE scalarRhs) const {
             mVecRef.bora(mMaskRef, scalarRhs);
         }
 
         // MBXORVA
-        inline void operator^= (VEC_TYPE const & vecRhs) const {
+        UME_FORCE_INLINE void operator^= (VEC_TYPE const & vecRhs) const {
             mVecRef.bxora(mMaskRef, vecRhs);
         }
 
         // MBXORSA
-        inline void operator^=(SCALAR_TYPE scalarRhs) const {
+        UME_FORCE_INLINE void operator^=(SCALAR_TYPE scalarRhs) const {
             mVecRef.bxora(mMaskRef, scalarRhs);
         }
 
@@ -4213,7 +4213,7 @@ namespace SIMD
     private:
         friend VEC_TYPE;
 
-        inline explicit IntermediateMask(MASK_TYPE const & mask, VEC_TYPE & vec) : mMaskRef(mask), mVecRef(vec) {}
+        UME_FORCE_INLINE explicit IntermediateMask(MASK_TYPE const & mask, VEC_TYPE & vec) : mMaskRef(mask), mVecRef(vec) {}
 
         MASK_TYPE const & mMaskRef;
         VEC_TYPE & mVecRef;
@@ -4235,111 +4235,111 @@ namespace SIMD
     class IntermediateIndex {
     public:
         // MASSIGNS
-        inline void operator= (SCALAR_TYPE scalarRhs) {
+        UME_FORCE_INLINE void operator= (SCALAR_TYPE scalarRhs) {
             mVecRef_RW.insert(mIndexRef, scalarRhs);
         }
 
-        inline void operator+= (SCALAR_TYPE scalarRhs) {
+        UME_FORCE_INLINE void operator+= (SCALAR_TYPE scalarRhs) {
             mVecRef_RW.insert(mIndexRef, mVecRef_RW[mIndexRef] + scalarRhs);
         }
 
-        inline void operator-= (SCALAR_TYPE scalarRhs) {
+        UME_FORCE_INLINE void operator-= (SCALAR_TYPE scalarRhs) {
             mVecRef_RW.insert(mIndexRef, mVecRef_RW[mIndexRef] - scalarRhs);
         }
 
-        inline void operator*= (SCALAR_TYPE scalarRhs) {
+        UME_FORCE_INLINE void operator*= (SCALAR_TYPE scalarRhs) {
             mVecRef_RW.insert(mIndexRef, mVecRef_RW[mIndexRef] * scalarRhs);
         }
 
-        inline void operator/= (SCALAR_TYPE scalarRhs) {
+        UME_FORCE_INLINE void operator/= (SCALAR_TYPE scalarRhs) {
             mVecRef_RW.insert(mIndexRef, mVecRef_RW[mIndexRef] / scalarRhs);
         }
 
-        inline void operator&= (SCALAR_TYPE scalarRhs) {
+        UME_FORCE_INLINE void operator&= (SCALAR_TYPE scalarRhs) {
             mVecRef_RW.insert(mIndexRef, mVecRef_RW[mIndexRef] & scalarRhs);
         }
 
-        inline void operator|= (SCALAR_TYPE scalarRhs) {
+        UME_FORCE_INLINE void operator|= (SCALAR_TYPE scalarRhs) {
             mVecRef_RW.insert(mIndexRef, mVecRef_RW[mIndexRef] | scalarRhs);
         }
 
-        inline void operator^= (SCALAR_TYPE scalarRhs) {
+        UME_FORCE_INLINE void operator^= (SCALAR_TYPE scalarRhs) {
             mVecRef_RW.insert(mIndexRef, mVecRef_RW[mIndexRef] ^ scalarRhs);
         }
 
-        inline operator SCALAR_TYPE() { return mVecRef_RW.extract(mIndexRef); }
+        UME_FORCE_INLINE operator SCALAR_TYPE() { return mVecRef_RW.extract(mIndexRef); }
 
         // Comparison operators accept any type of scalar to allow mixing 
         // scalar types.
         template<typename T>
-        inline bool operator==(T const & rhs) { 
+        UME_FORCE_INLINE bool operator==(T const & rhs) { 
             return mVecRef_RW.extract(mIndexRef) == rhs;
         }
-        inline bool operator== (IntermediateIndex const & x) {
+        UME_FORCE_INLINE bool operator== (IntermediateIndex const & x) {
             return mVecRef_RW.extract(mIndexRef) ==
                 x.mVecRef_RW.extract(mIndexRef);
         }
         template<typename T>
-        inline bool operator!=(T const & rhs) {
+        UME_FORCE_INLINE bool operator!=(T const & rhs) {
             return mVecRef_RW.extract(mIndexRef) != rhs;
         }
-        inline bool operator!= (IntermediateIndex const & x) {
+        UME_FORCE_INLINE bool operator!= (IntermediateIndex const & x) {
             return mVecRef_RW.extract(mIndexRef) !=
                 x.mVecRef_RW.extract(mIndexRef);
         }
         template<typename T>
-        inline SCALAR_TYPE operator+ (T const & x) {
+        UME_FORCE_INLINE SCALAR_TYPE operator+ (T const & x) {
             return mVecRef_RW.extract(mIndexRef) + SCALAR_TYPE(x);
         }
-        inline SCALAR_TYPE operator+ (IntermediateIndex const & x) {
+        UME_FORCE_INLINE SCALAR_TYPE operator+ (IntermediateIndex const & x) {
             return mVecRef_RW.extract(mIndexRef) +
                 x.mVecRef_RW.extract(mIndexRef);
         }
         template<typename T>
-        inline SCALAR_TYPE operator- (T const & x) {
+        UME_FORCE_INLINE SCALAR_TYPE operator- (T const & x) {
             return mVecRef_RW.extract(mIndexRef) - SCALAR_TYPE(x);
         }
-        inline SCALAR_TYPE operator- (IntermediateIndex const & x) {
+        UME_FORCE_INLINE SCALAR_TYPE operator- (IntermediateIndex const & x) {
             return mVecRef_RW.extract(mIndexRef) -
                 x.mVecRef_RW.extract(mIndexRef);
         }
         template<typename T>
-        inline SCALAR_TYPE operator* (T const & x) {
+        UME_FORCE_INLINE SCALAR_TYPE operator* (T const & x) {
             return mVecRef_RW.extract(mIndexRef) * SCALAR_TYPE(x);
         }
-        inline SCALAR_TYPE operator* (IntermediateIndex const & x) {
+        UME_FORCE_INLINE SCALAR_TYPE operator* (IntermediateIndex const & x) {
             return mVecRef_RW.extract(mIndexRef) *
                 x.mVecRef_RW.extract(mIndexRef);
         }
         template<typename T>
-        inline SCALAR_TYPE operator/ (T const & x) {
+        UME_FORCE_INLINE SCALAR_TYPE operator/ (T const & x) {
             return mVecRef_RW.extract(mIndexRef) / SCALAR_TYPE(x);
         }
-        inline SCALAR_TYPE operator/ (IntermediateIndex const & x) {
+        UME_FORCE_INLINE SCALAR_TYPE operator/ (IntermediateIndex const & x) {
             return mVecRef_RW.extract(mIndexRef) /
                 x.mVecRef_RW.extract(mIndexRef);
         }
         template<typename T>
-        inline SCALAR_TYPE operator& (T const & x) {
+        UME_FORCE_INLINE SCALAR_TYPE operator& (T const & x) {
             return mVecRef_RW.extract(mIndexRef) & SCALAR_TYPE(x);
         }
-        inline SCALAR_TYPE operator& (IntermediateIndex const & x) {
+        UME_FORCE_INLINE SCALAR_TYPE operator& (IntermediateIndex const & x) {
             return mVecRef_RW.extract(mIndexRef) &
                 x.mVecRef_RW.extract(mIndexRef);
         }
         template<typename T>
-        inline SCALAR_TYPE operator| (T const & x) {
+        UME_FORCE_INLINE SCALAR_TYPE operator| (T const & x) {
             return mVecRef_RW.extract(mIndexRef) | SCALAR_TYPE(x);
         }
-        inline SCALAR_TYPE operator| (IntermediateIndex const & x) {
+        UME_FORCE_INLINE SCALAR_TYPE operator| (IntermediateIndex const & x) {
             return mVecRef_RW.extract(mIndexRef) |
                 x.mVecRef_RW.extract(mIndexRef);
         }
         template<typename T>
-        inline SCALAR_TYPE operator^ (T const & x) {
+        UME_FORCE_INLINE SCALAR_TYPE operator^ (T const & x) {
             return mVecRef_RW.extract(mIndexRef) ^ SCALAR_TYPE(x);
         }
-        inline SCALAR_TYPE operator^ (IntermediateIndex const & x) {
+        UME_FORCE_INLINE SCALAR_TYPE operator^ (IntermediateIndex const & x) {
             return mVecRef_RW.extract(mIndexRef) ^
                 x.mVecRef_RW.extract(mIndexRef);
         }
@@ -4356,7 +4356,7 @@ namespace SIMD
 
         friend VEC_TYPE;
 
-        inline explicit IntermediateIndex(uint32_t index, VEC_TYPE & vec) : mIndexRef(index), mVecRef_RW(vec) {}
+        UME_FORCE_INLINE explicit IntermediateIndex(uint32_t index, VEC_TYPE & vec) : mIndexRef(index), mVecRef_RW(vec) {}
 
         uint32_t mIndexRef;
         VEC_TYPE & mVecRef_RW;
@@ -4416,103 +4416,103 @@ namespace SIMD
         static DERIVED_VEC_TYPE one() { return DERIVED_VEC_TYPE(SCALAR_TYPE(1)); }
 
         // PREFETCH0
-        static inline void prefetch0(SCALAR_TYPE const *p) {
+        static UME_FORCE_INLINE void prefetch0(SCALAR_TYPE const *p) {
             // DO NOTHING!
         }
 
         // PREFETCH1
-        static inline void prefetch1(SCALAR_TYPE const *p) {
+        static UME_FORCE_INLINE void prefetch1(SCALAR_TYPE const *p) {
             // DO NOTHING!
         }
 
         // PREFETCH2
-        static inline void prefetch2(SCALAR_TYPE const *p) {
+        static UME_FORCE_INLINE void prefetch2(SCALAR_TYPE const *p) {
             // DO NOTHING!
         }
 
         // ASSIGNV
-        inline DERIVED_VEC_TYPE & assign (DERIVED_VEC_TYPE const & src) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & assign (DERIVED_VEC_TYPE const & src) {
             return EMULATED_FUNCTIONS::assign<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this), src);
         }
-        inline DERIVED_VEC_TYPE & operator= (DERIVED_VEC_TYPE const & src) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & operator= (DERIVED_VEC_TYPE const & src) {
             return assign(src);
         }
 
         // MASSIGNV
-        inline DERIVED_VEC_TYPE & assign (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & src) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & assign (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & src) {
             return EMULATED_FUNCTIONS::assign<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this), src);
         }
 
         // ASSIGNS
-        inline DERIVED_VEC_TYPE & assign (SCALAR_TYPE value) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & assign (SCALAR_TYPE value) {
             return EMULATED_FUNCTIONS::assign<DERIVED_VEC_TYPE, SCALAR_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this), value);
         }
-        inline DERIVED_VEC_TYPE & operator= (SCALAR_TYPE value) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & operator= (SCALAR_TYPE value) {
             return assign(value);
         }
 
         // MASSIGNS
-        inline DERIVED_VEC_TYPE & assign (MASK_TYPE const & mask, SCALAR_TYPE value) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & assign (MASK_TYPE const & mask, SCALAR_TYPE value) {
             return EMULATED_FUNCTIONS::assign<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this), value);
         }
 
         // LOAD
-        inline DERIVED_VEC_TYPE & load (SCALAR_TYPE const *p) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & load (SCALAR_TYPE const *p) {
             return EMULATED_FUNCTIONS::load<DERIVED_VEC_TYPE, SCALAR_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this), p);
         }
 
         // MLOAD
-        inline DERIVED_VEC_TYPE & load (MASK_TYPE const & mask, SCALAR_TYPE const * p) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & load (MASK_TYPE const & mask, SCALAR_TYPE const * p) {
             return EMULATED_FUNCTIONS::load<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this), p);
         }
 
         // LOADA
-        inline DERIVED_VEC_TYPE & loada (SCALAR_TYPE const * p) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & loada (SCALAR_TYPE const * p) {
             return EMULATED_FUNCTIONS::loadAligned<DERIVED_VEC_TYPE, SCALAR_TYPE>(static_cast<DERIVED_VEC_TYPE &>(*this), p);
         }
 
         // MLOADA
-        inline DERIVED_VEC_TYPE & loada (MASK_TYPE const & mask, SCALAR_TYPE const *p) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & loada (MASK_TYPE const & mask, SCALAR_TYPE const *p) {
             return EMULATED_FUNCTIONS::loadAligned<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this), p);
         }
 
         // STORE
-        inline SCALAR_TYPE* store (SCALAR_TYPE* p) const {
+        UME_FORCE_INLINE SCALAR_TYPE* store (SCALAR_TYPE* p) const {
             return EMULATED_FUNCTIONS::store<DERIVED_VEC_TYPE, SCALAR_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this), p);
         }
 
         // MSTORE
-        inline SCALAR_TYPE* store (MASK_TYPE const & mask, SCALAR_TYPE* p) const {
+        UME_FORCE_INLINE SCALAR_TYPE* store (MASK_TYPE const & mask, SCALAR_TYPE* p) const {
             return EMULATED_FUNCTIONS::store<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this), p);
         }
 
         // STOREA
-        inline SCALAR_TYPE* storea (SCALAR_TYPE* p) const {
+        UME_FORCE_INLINE SCALAR_TYPE* storea (SCALAR_TYPE* p) const {
             return EMULATED_FUNCTIONS::store<DERIVED_VEC_TYPE, SCALAR_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this), p);
         }
 
         // MSTOREA
-        inline SCALAR_TYPE* storea (MASK_TYPE const & mask, SCALAR_TYPE* p) const {
+        UME_FORCE_INLINE SCALAR_TYPE* storea (MASK_TYPE const & mask, SCALAR_TYPE* p) const {
            return EMULATED_FUNCTIONS::store<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this), p);
         }
 
         // EXTRACT
         // This method should be provided for all derived classes and cannot be defined
         // as generic.
-        inline SCALAR_TYPE extract(uint32_t index) const;
+        UME_FORCE_INLINE SCALAR_TYPE extract(uint32_t index) const;
 
         // INSERT
         // This method should be provided for all derived classes and cannot be defined
         // as generic.
-        inline DERIVED_VEC_TYPE & insert(uint32_t index, SCALAR_TYPE value);
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & insert(uint32_t index, SCALAR_TYPE value);
 
         // BLENDV
-        inline DERIVED_VEC_TYPE blend (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE blend (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) const {
             return EMULATED_FUNCTIONS::blend<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
         // BLENDS
-        inline DERIVED_VEC_TYPE blend (MASK_TYPE const & mask, SCALAR_TYPE b) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE blend (MASK_TYPE const & mask, SCALAR_TYPE b) const {
             return EMULATED_FUNCTIONS::blend<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
@@ -4527,596 +4527,596 @@ namespace SIMD
         }
 
         // ADDV
-        inline DERIVED_VEC_TYPE add (DERIVED_VEC_TYPE const & b) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE add (DERIVED_VEC_TYPE const & b) const {
             return EMULATED_FUNCTIONS::add<DERIVED_VEC_TYPE> ( static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
-        inline DERIVED_VEC_TYPE operator+ (DERIVED_VEC_TYPE const & b) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE operator+ (DERIVED_VEC_TYPE const & b) const {
             return add(b);
         }
 
         // MADDV
-        inline DERIVED_VEC_TYPE add (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE add (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) const {
             return EMULATED_FUNCTIONS::add<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
         // ADDS
-        inline DERIVED_VEC_TYPE add (SCALAR_TYPE b) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE add (SCALAR_TYPE b) const {
             return EMULATED_FUNCTIONS::addScalar<DERIVED_VEC_TYPE, SCALAR_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
-        inline DERIVED_VEC_TYPE operator+ (SCALAR_TYPE b) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE operator+ (SCALAR_TYPE b) const {
             return add(b);
         }
 
         // MADDS
-        inline DERIVED_VEC_TYPE add(MASK_TYPE const & mask, SCALAR_TYPE b) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE add(MASK_TYPE const & mask, SCALAR_TYPE b) const {
             return EMULATED_FUNCTIONS::addScalar<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
         // ADDVA
-        inline DERIVED_VEC_TYPE & adda (DERIVED_VEC_TYPE const & b) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & adda (DERIVED_VEC_TYPE const & b) {
             return EMULATED_FUNCTIONS::addAssign<DERIVED_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
 
-        inline DERIVED_VEC_TYPE & operator+= (DERIVED_VEC_TYPE const & b) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & operator+= (DERIVED_VEC_TYPE const & b) {
             return adda(b);
         }
 
         // MADDVA
-        inline DERIVED_VEC_TYPE & adda (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & adda (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) {
             return EMULATED_FUNCTIONS::addAssign<DERIVED_VEC_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
 
         // ADDSA
-        inline DERIVED_VEC_TYPE & adda (SCALAR_TYPE b) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & adda (SCALAR_TYPE b) {
             return EMULATED_FUNCTIONS::addAssignScalar<DERIVED_VEC_TYPE, SCALAR_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
 
-        inline DERIVED_VEC_TYPE & operator+= (SCALAR_TYPE b) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & operator+= (SCALAR_TYPE b) {
             return adda(b);
         }
 
         // MADDSA
-        inline DERIVED_VEC_TYPE & adda (MASK_TYPE const & mask, SCALAR_TYPE b) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & adda (MASK_TYPE const & mask, SCALAR_TYPE b) {
             return EMULATED_FUNCTIONS::addAssignScalar<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
 
         // SADDV
-        inline DERIVED_VEC_TYPE sadd(DERIVED_VEC_TYPE const & b) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE sadd(DERIVED_VEC_TYPE const & b) const {
             return EMULATED_FUNCTIONS::addSaturated<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         } 
 
         // MSADDV
-        inline DERIVED_VEC_TYPE sadd(MASK_TYPE const & mask, DERIVED_VEC_TYPE b) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE sadd(MASK_TYPE const & mask, DERIVED_VEC_TYPE b) const {
             return EMULATED_FUNCTIONS::addSaturated<DERIVED_VEC_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
         // SADDS
-        inline DERIVED_VEC_TYPE sadd(SCALAR_TYPE b) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE sadd(SCALAR_TYPE b) const {
             return EMULATED_FUNCTIONS::addSaturatedScalar<DERIVED_VEC_TYPE, SCALAR_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
         // MSADDS
-        inline DERIVED_VEC_TYPE sadd(MASK_TYPE const & mask, SCALAR_TYPE b) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE sadd(MASK_TYPE const & mask, SCALAR_TYPE b) const {
             return EMULATED_FUNCTIONS::addSaturatedScalar<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
         // SADDVA
-        inline DERIVED_VEC_TYPE & sadda(DERIVED_VEC_TYPE const & b) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & sadda(DERIVED_VEC_TYPE const & b) {
             return EMULATED_FUNCTIONS::addSaturatedAssign<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
 
         // MSADDVA
-        inline DERIVED_VEC_TYPE & sadda(MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & sadda(MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) {
             return EMULATED_FUNCTIONS::addSaturatedAssign<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
 
         // SADDSA
-        inline DERIVED_VEC_TYPE & sadda(SCALAR_TYPE b) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & sadda(SCALAR_TYPE b) {
             return EMULATED_FUNCTIONS::addSaturatedScalarAssign<DERIVED_VEC_TYPE, SCALAR_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
 
         // MSADDSA
-        inline DERIVED_VEC_TYPE & sadda(MASK_TYPE const & mask, SCALAR_TYPE b) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & sadda(MASK_TYPE const & mask, SCALAR_TYPE b) {
             return EMULATED_FUNCTIONS::addSaturatedScalarAssign<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
 
         // POSTINC
-        inline DERIVED_VEC_TYPE postinc () {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE postinc () {
             return EMULATED_FUNCTIONS::postfixIncrement<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this));
         }
 
-        inline DERIVED_VEC_TYPE operator++ (int) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE operator++ (int) {
             return postinc();
         }
 
         // MPOSTINC
-        inline DERIVED_VEC_TYPE postinc (MASK_TYPE const & mask) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE postinc (MASK_TYPE const & mask) {
             return EMULATED_FUNCTIONS::postfixIncrement<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this));
         }
 
         // PREFINC
-        inline DERIVED_VEC_TYPE & prefinc () {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & prefinc () {
             return EMULATED_FUNCTIONS::prefixIncrement<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this));
         }
 
-        inline DERIVED_VEC_TYPE & operator++ () {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & operator++ () {
             return prefinc();
         }
 
         // MPREFINC
-        inline DERIVED_VEC_TYPE & prefinc (MASK_TYPE const & mask) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & prefinc (MASK_TYPE const & mask) {
             return EMULATED_FUNCTIONS::prefixIncrement<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this));
         }
 
         // SUBV
-        inline DERIVED_VEC_TYPE sub (DERIVED_VEC_TYPE const & b) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE sub (DERIVED_VEC_TYPE const & b) const {
             return EMULATED_FUNCTIONS::sub<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
         // MSUBV
-        inline DERIVED_VEC_TYPE sub (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE sub (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) const {
             return EMULATED_FUNCTIONS::sub<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
         // SUBS
-        inline DERIVED_VEC_TYPE sub (SCALAR_TYPE b) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE sub (SCALAR_TYPE b) const {
             return EMULATED_FUNCTIONS::subScalar<DERIVED_VEC_TYPE, SCALAR_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
         // MSUBS
-        inline DERIVED_VEC_TYPE sub (MASK_TYPE const & mask, SCALAR_TYPE b) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE sub (MASK_TYPE const & mask, SCALAR_TYPE b) const {
             return EMULATED_FUNCTIONS::subScalar<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
         // SUBVA
-        inline DERIVED_VEC_TYPE & suba (DERIVED_VEC_TYPE const & b) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & suba (DERIVED_VEC_TYPE const & b) {
             return EMULATED_FUNCTIONS::subAssign<DERIVED_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
 
-        inline DERIVED_VEC_TYPE & operator-= (DERIVED_VEC_TYPE const & b) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & operator-= (DERIVED_VEC_TYPE const & b) {
             return suba(b);
         }
 
         // MSUBVA
-        inline DERIVED_VEC_TYPE & suba (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & suba (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) {
             return EMULATED_FUNCTIONS::subAssign<DERIVED_VEC_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
 
         // SUBSA
-        inline DERIVED_VEC_TYPE & suba (SCALAR_TYPE b) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & suba (SCALAR_TYPE b) {
             return EMULATED_FUNCTIONS::subAssign<DERIVED_VEC_TYPE, SCALAR_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
-        inline DERIVED_VEC_TYPE & operator-= (SCALAR_TYPE b) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & operator-= (SCALAR_TYPE b) {
             return suba(b);
         }
 
         // MSUBSA
-        inline DERIVED_VEC_TYPE & suba (MASK_TYPE const & mask, SCALAR_TYPE b) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & suba (MASK_TYPE const & mask, SCALAR_TYPE b) {
             return EMULATED_FUNCTIONS::subAssign<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
 
         // SSUBV
-        inline DERIVED_VEC_TYPE ssub (DERIVED_VEC_TYPE const & b) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE ssub (DERIVED_VEC_TYPE const & b) const {
             return EMULATED_FUNCTIONS::subSaturated<DERIVED_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
         // MSSUBV
-        inline DERIVED_VEC_TYPE ssub (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE ssub (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) const {
             return EMULATED_FUNCTIONS::subSaturated<DERIVED_VEC_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
         // SSUBS
-        inline DERIVED_VEC_TYPE ssub (SCALAR_TYPE b) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE ssub (SCALAR_TYPE b) const {
             return EMULATED_FUNCTIONS::subSaturated<DERIVED_VEC_TYPE, SCALAR_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
         // MSSUBS
-        inline DERIVED_VEC_TYPE ssub (MASK_TYPE const & mask, SCALAR_TYPE b) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE ssub (MASK_TYPE const & mask, SCALAR_TYPE b) const {
             return EMULATED_FUNCTIONS::subSaturated<DERIVED_VEC_TYPE, SCALAR_TYPE>(mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
         // SSUBVA
-        inline DERIVED_VEC_TYPE & ssuba (DERIVED_VEC_TYPE const & b) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & ssuba (DERIVED_VEC_TYPE const & b) {
             return EMULATED_FUNCTIONS::subSaturatedAssign<DERIVED_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
 
         // MSSUBVA
-        inline DERIVED_VEC_TYPE & ssuba (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & ssuba (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) {
             return EMULATED_FUNCTIONS::subSaturatedAssign<DERIVED_VEC_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
 
         // SSUBSA
-        inline DERIVED_VEC_TYPE & ssuba (SCALAR_TYPE b) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & ssuba (SCALAR_TYPE b) {
             return EMULATED_FUNCTIONS::subSaturatedScalarAssign<DERIVED_VEC_TYPE, SCALAR_TYPE>(static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
 
         // MSSUBSA
-        inline DERIVED_VEC_TYPE & ssuba (MASK_TYPE const & mask, SCALAR_TYPE b) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & ssuba (MASK_TYPE const & mask, SCALAR_TYPE b) {
             return EMULATED_FUNCTIONS::subSaturatedScalarAssign<DERIVED_VEC_TYPE, SCALAR_TYPE>(mask, static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
 
         // SUBFROMV
-        inline DERIVED_VEC_TYPE subfrom (DERIVED_VEC_TYPE const & a) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE subfrom (DERIVED_VEC_TYPE const & a) const {
             return EMULATED_FUNCTIONS::subFrom<DERIVED_VEC_TYPE>(a, static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // MSUBFROMV
-        inline DERIVED_VEC_TYPE subfrom (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & a) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE subfrom (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & a) const {
             return EMULATED_FUNCTIONS::subFrom<DERIVED_VEC_TYPE, MASK_TYPE>(mask, a, static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // SUBFROMS
-        inline DERIVED_VEC_TYPE subfrom (SCALAR_TYPE a) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE subfrom (SCALAR_TYPE a) const {
             return EMULATED_FUNCTIONS::subFromScalar<DERIVED_VEC_TYPE, SCALAR_TYPE>(a, static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // MSUBFROMS
-        inline DERIVED_VEC_TYPE subfrom (MASK_TYPE const & mask, SCALAR_TYPE a) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE subfrom (MASK_TYPE const & mask, SCALAR_TYPE a) const {
             return EMULATED_FUNCTIONS::subFromScalar<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE>(mask, a, static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // SUBFROMVA
-        inline DERIVED_VEC_TYPE & subfroma (DERIVED_VEC_TYPE const & a) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & subfroma (DERIVED_VEC_TYPE const & a) {
             return EMULATED_FUNCTIONS::subFromAssign<DERIVED_VEC_TYPE>(a, static_cast<DERIVED_VEC_TYPE &>(*this));
         }
 
         // MSUBFROMVA
-        inline DERIVED_VEC_TYPE & subfroma (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & a) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & subfroma (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & a) {
             return EMULATED_FUNCTIONS::subFromAssign<DERIVED_VEC_TYPE, MASK_TYPE>(mask, a, static_cast<DERIVED_VEC_TYPE &>(*this));
         }
 
         // SUBFROMSA
-        inline DERIVED_VEC_TYPE & subfroma (SCALAR_TYPE a) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & subfroma (SCALAR_TYPE a) {
             return EMULATED_FUNCTIONS::subFromScalarAssign<DERIVED_VEC_TYPE, SCALAR_TYPE>(a, static_cast<DERIVED_VEC_TYPE &>(*this));
         }
 
         // MSUBFROMSA
-        inline DERIVED_VEC_TYPE & subfroma (MASK_TYPE const & mask, SCALAR_TYPE a) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & subfroma (MASK_TYPE const & mask, SCALAR_TYPE a) {
             return EMULATED_FUNCTIONS::subFromScalarAssign<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE>(mask, a, static_cast<DERIVED_VEC_TYPE &>(*this));
         }
 
         // POSTDEC
-        inline DERIVED_VEC_TYPE postdec () {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE postdec () {
             return EMULATED_FUNCTIONS::postfixDecrement<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this));
         }
 
-        inline DERIVED_VEC_TYPE operator-- (int) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE operator-- (int) {
             return postdec();
         }
 
         // MPOSTDEC
-        inline DERIVED_VEC_TYPE postdec (MASK_TYPE const & mask) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE postdec (MASK_TYPE const & mask) {
             return EMULATED_FUNCTIONS::postfixDecrement<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this));
         }
 
         // PREFDEC
-        inline DERIVED_VEC_TYPE & prefdec() {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & prefdec() {
             return EMULATED_FUNCTIONS::prefixDecrement<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this));
         }
         
-        inline DERIVED_VEC_TYPE & operator-- () {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & operator-- () {
             return prefdec();
         }
 
         // MPREFDEC
-        inline DERIVED_VEC_TYPE & prefdec (MASK_TYPE const & mask) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & prefdec (MASK_TYPE const & mask) {
             return EMULATED_FUNCTIONS::prefixDecrement<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this));
         }
 
         // MULV
-        inline DERIVED_VEC_TYPE mul (DERIVED_VEC_TYPE const & b) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE mul (DERIVED_VEC_TYPE const & b) const {
             return EMULATED_FUNCTIONS::mult<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
-        inline DERIVED_VEC_TYPE operator* (DERIVED_VEC_TYPE const & b) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE operator* (DERIVED_VEC_TYPE const & b) const {
             return mul(b);
         }
 
         // MMULV
-        inline DERIVED_VEC_TYPE mul (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE mul (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) const {
             return EMULATED_FUNCTIONS::mult<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
         // MULS
-        inline DERIVED_VEC_TYPE mul (SCALAR_TYPE b) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE mul (SCALAR_TYPE b) const {
             return EMULATED_FUNCTIONS::mult<DERIVED_VEC_TYPE, SCALAR_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
-        inline DERIVED_VEC_TYPE operator* (SCALAR_TYPE b) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE operator* (SCALAR_TYPE b) const {
             return mul(b);
         }
 
         // MMULS
-        inline DERIVED_VEC_TYPE mul (MASK_TYPE const & mask, SCALAR_TYPE b) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE mul (MASK_TYPE const & mask, SCALAR_TYPE b) const {
             return EMULATED_FUNCTIONS::mult<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
         // MULVA
-        inline DERIVED_VEC_TYPE & mula (DERIVED_VEC_TYPE const & b) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & mula (DERIVED_VEC_TYPE const & b) {
             return EMULATED_FUNCTIONS::multAssign<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
 
-        inline DERIVED_VEC_TYPE & operator*= (DERIVED_VEC_TYPE const & b) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & operator*= (DERIVED_VEC_TYPE const & b) {
             return mula(b);
         }
 
         // MMULVA
-        inline DERIVED_VEC_TYPE & mula (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & mula (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) {
             return EMULATED_FUNCTIONS::multAssign<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
 
         // MULSA
-        inline DERIVED_VEC_TYPE & mula (SCALAR_TYPE b) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & mula (SCALAR_TYPE b) {
             return EMULATED_FUNCTIONS::multAssign<DERIVED_VEC_TYPE, SCALAR_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
 
-        inline DERIVED_VEC_TYPE & operator*= (SCALAR_TYPE b) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & operator*= (SCALAR_TYPE b) {
             return mula(b);
         }
 
         // MMULSA
-        inline DERIVED_VEC_TYPE & mula (MASK_TYPE const & mask, SCALAR_TYPE b) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & mula (MASK_TYPE const & mask, SCALAR_TYPE b) {
             return EMULATED_FUNCTIONS::multAssign<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
 
         // DIVV
-        inline DERIVED_VEC_TYPE div (DERIVED_VEC_TYPE const & b) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE div (DERIVED_VEC_TYPE const & b) const {
             return EMULATED_FUNCTIONS::div<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
-        inline DERIVED_VEC_TYPE operator/ (DERIVED_VEC_TYPE const & b) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE operator/ (DERIVED_VEC_TYPE const & b) const {
             return div(b);
         }
 
         // MDIVV
-        inline DERIVED_VEC_TYPE div (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE div (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) const {
             return EMULATED_FUNCTIONS::div<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
         // DIVS
-        inline DERIVED_VEC_TYPE div (SCALAR_TYPE b) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE div (SCALAR_TYPE b) const {
             return EMULATED_FUNCTIONS::div<DERIVED_VEC_TYPE, SCALAR_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
-        inline DERIVED_VEC_TYPE operator/ (SCALAR_TYPE b) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE operator/ (SCALAR_TYPE b) const {
             return div(b);
         }
 
         // MDIVS
-        inline DERIVED_VEC_TYPE div (MASK_TYPE const & mask, SCALAR_TYPE b) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE div (MASK_TYPE const & mask, SCALAR_TYPE b) const {
             return EMULATED_FUNCTIONS::div<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
         // DIVVA
-        inline DERIVED_VEC_TYPE & diva (DERIVED_VEC_TYPE const & b) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & diva (DERIVED_VEC_TYPE const & b) {
             return EMULATED_FUNCTIONS::divAssign<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
 
-        inline DERIVED_VEC_TYPE & operator/= (DERIVED_VEC_TYPE const & b) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & operator/= (DERIVED_VEC_TYPE const & b) {
             return diva(b);
         }
 
         // MDIVVA
-        inline DERIVED_VEC_TYPE & diva (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & diva (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) {
             return EMULATED_FUNCTIONS::divAssign<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
 
         // DIVSA
-        inline DERIVED_VEC_TYPE & diva (SCALAR_TYPE b) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & diva (SCALAR_TYPE b) {
             return EMULATED_FUNCTIONS::divAssign<DERIVED_VEC_TYPE, SCALAR_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
 
-        inline DERIVED_VEC_TYPE & operator/= (SCALAR_TYPE b) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & operator/= (SCALAR_TYPE b) {
             return diva(b);
         }
 
         // MDIVSA
-        inline DERIVED_VEC_TYPE & diva (MASK_TYPE const & mask, SCALAR_TYPE b) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & diva (MASK_TYPE const & mask, SCALAR_TYPE b) {
             return EMULATED_FUNCTIONS::divAssign<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
 
         // RCP
-        inline DERIVED_VEC_TYPE rcp () const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE rcp () const {
             return EMULATED_FUNCTIONS::rcp<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // MRCP
-        inline DERIVED_VEC_TYPE rcp (MASK_TYPE const & mask) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE rcp (MASK_TYPE const & mask) const {
             return EMULATED_FUNCTIONS::rcp<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // RCPS
-        inline DERIVED_VEC_TYPE rcp (SCALAR_TYPE a) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE rcp (SCALAR_TYPE a) const {
             return EMULATED_FUNCTIONS::rcpScalar<DERIVED_VEC_TYPE, SCALAR_TYPE> (a, static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // MRCPS
-        inline DERIVED_VEC_TYPE rcp (MASK_TYPE const & mask, SCALAR_TYPE a) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE rcp (MASK_TYPE const & mask, SCALAR_TYPE a) const {
             return EMULATED_FUNCTIONS::rcpScalar<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE> (mask, a, static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // RCPA
-        inline DERIVED_VEC_TYPE & rcpa () {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & rcpa () {
             return EMULATED_FUNCTIONS::rcpAssign<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this));
         }
 
         // MRCPA
-        inline DERIVED_VEC_TYPE & rcpa (MASK_TYPE const & mask) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & rcpa (MASK_TYPE const & mask) {
             return EMULATED_FUNCTIONS::rcpAssign<DERIVED_VEC_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this));
         }
 
         // RCPSA
-        inline DERIVED_VEC_TYPE & rcpa (SCALAR_TYPE a) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & rcpa (SCALAR_TYPE a) {
             return EMULATED_FUNCTIONS::rcpScalarAssign<DERIVED_VEC_TYPE, SCALAR_TYPE> (a, static_cast<DERIVED_VEC_TYPE &>(*this));
         }
 
         // MRCPSA
-        inline DERIVED_VEC_TYPE & rcpa (MASK_TYPE const & mask, SCALAR_TYPE a) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & rcpa (MASK_TYPE const & mask, SCALAR_TYPE a) {
             return EMULATED_FUNCTIONS::rcpScalarAssign<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE> (mask, a, static_cast<DERIVED_VEC_TYPE &>(*this));
         }
 
         // CMPEQV
-        inline MASK_TYPE cmpeq (DERIVED_VEC_TYPE const & b) const {
+        UME_FORCE_INLINE MASK_TYPE cmpeq (DERIVED_VEC_TYPE const & b) const {
             return EMULATED_FUNCTIONS::isEqual<MASK_TYPE, DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
-        inline MASK_TYPE operator== (DERIVED_VEC_TYPE const & b) const {
+        UME_FORCE_INLINE MASK_TYPE operator== (DERIVED_VEC_TYPE const & b) const {
             return cmpeq(b);
         }
 
         // CMPEQS
-        inline MASK_TYPE cmpeq (SCALAR_TYPE b) const {
+        UME_FORCE_INLINE MASK_TYPE cmpeq (SCALAR_TYPE b) const {
             return EMULATED_FUNCTIONS::isEqual<MASK_TYPE, DERIVED_VEC_TYPE, SCALAR_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
-        inline MASK_TYPE operator== (SCALAR_TYPE b) const {
+        UME_FORCE_INLINE MASK_TYPE operator== (SCALAR_TYPE b) const {
             return cmpeq(b);
         }
 
         // CMPNEV
-        inline MASK_TYPE cmpne (DERIVED_VEC_TYPE const & b) const {
+        UME_FORCE_INLINE MASK_TYPE cmpne (DERIVED_VEC_TYPE const & b) const {
             return EMULATED_FUNCTIONS::isNotEqual<MASK_TYPE, DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
-        inline MASK_TYPE operator!= (DERIVED_VEC_TYPE const & b) const {
+        UME_FORCE_INLINE MASK_TYPE operator!= (DERIVED_VEC_TYPE const & b) const {
             return cmpne(b);
         }
 
         // CMPNES
-        inline MASK_TYPE cmpne (SCALAR_TYPE b) const {
+        UME_FORCE_INLINE MASK_TYPE cmpne (SCALAR_TYPE b) const {
             return EMULATED_FUNCTIONS::isNotEqual<MASK_TYPE, DERIVED_VEC_TYPE, SCALAR_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
-        inline MASK_TYPE operator!= (SCALAR_TYPE b) const {
+        UME_FORCE_INLINE MASK_TYPE operator!= (SCALAR_TYPE b) const {
             return cmpne(b);
         }
 
         // CMPGTV
-        inline MASK_TYPE cmpgt (DERIVED_VEC_TYPE const & b) const {
+        UME_FORCE_INLINE MASK_TYPE cmpgt (DERIVED_VEC_TYPE const & b) const {
             return EMULATED_FUNCTIONS::isGreater<MASK_TYPE, DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
-        inline MASK_TYPE operator> (DERIVED_VEC_TYPE const & b) const {
+        UME_FORCE_INLINE MASK_TYPE operator> (DERIVED_VEC_TYPE const & b) const {
             return cmpgt(b);
         }
 
         // CMPGTS
-        inline MASK_TYPE cmpgt (SCALAR_TYPE b) const {
+        UME_FORCE_INLINE MASK_TYPE cmpgt (SCALAR_TYPE b) const {
             return EMULATED_FUNCTIONS::isGreater<MASK_TYPE, DERIVED_VEC_TYPE, SCALAR_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
-        inline MASK_TYPE operator> (SCALAR_TYPE b) const {
+        UME_FORCE_INLINE MASK_TYPE operator> (SCALAR_TYPE b) const {
             return cmpgt(b);
         }
 
         // CMPLTV
-        inline MASK_TYPE cmplt (DERIVED_VEC_TYPE const & b) const {
+        UME_FORCE_INLINE MASK_TYPE cmplt (DERIVED_VEC_TYPE const & b) const {
             return EMULATED_FUNCTIONS::isLesser<MASK_TYPE, DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
-        inline MASK_TYPE operator< (DERIVED_VEC_TYPE const & b) const {
+        UME_FORCE_INLINE MASK_TYPE operator< (DERIVED_VEC_TYPE const & b) const {
             return cmplt(b);
         }
 
         // CMPLTS
-        inline MASK_TYPE cmplt (SCALAR_TYPE b) const {
+        UME_FORCE_INLINE MASK_TYPE cmplt (SCALAR_TYPE b) const {
             return EMULATED_FUNCTIONS::isLesser<MASK_TYPE, DERIVED_VEC_TYPE, SCALAR_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
-        inline MASK_TYPE operator< (SCALAR_TYPE b) const {
+        UME_FORCE_INLINE MASK_TYPE operator< (SCALAR_TYPE b) const {
             return cmplt(b);
         }
 
         // CMPGEV
-        inline MASK_TYPE cmpge (DERIVED_VEC_TYPE const & b) const {
+        UME_FORCE_INLINE MASK_TYPE cmpge (DERIVED_VEC_TYPE const & b) const {
             return EMULATED_FUNCTIONS::isGreaterEqual<MASK_TYPE, DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
-        inline MASK_TYPE operator>= (DERIVED_VEC_TYPE const & b) const {
+        UME_FORCE_INLINE MASK_TYPE operator>= (DERIVED_VEC_TYPE const & b) const {
             return cmpge(b);
         }
 
         // CMPGES
-        inline MASK_TYPE cmpge (SCALAR_TYPE b) const {
+        UME_FORCE_INLINE MASK_TYPE cmpge (SCALAR_TYPE b) const {
             return EMULATED_FUNCTIONS::isGreaterEqual<MASK_TYPE, DERIVED_VEC_TYPE, SCALAR_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
-        inline MASK_TYPE operator>= (SCALAR_TYPE b) const {
+        UME_FORCE_INLINE MASK_TYPE operator>= (SCALAR_TYPE b) const {
             return cmpge(b);
         }
 
         // CMPLEV
-        inline MASK_TYPE cmple (DERIVED_VEC_TYPE const & b) const {
+        UME_FORCE_INLINE MASK_TYPE cmple (DERIVED_VEC_TYPE const & b) const {
             return EMULATED_FUNCTIONS::isLesserEqual<MASK_TYPE, DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
-        inline MASK_TYPE operator<= (DERIVED_VEC_TYPE const & b) const {
+        UME_FORCE_INLINE MASK_TYPE operator<= (DERIVED_VEC_TYPE const & b) const {
             return cmple(b);
         }
 
         // CMPLES
-        inline MASK_TYPE cmple (SCALAR_TYPE b) const {
+        UME_FORCE_INLINE MASK_TYPE cmple (SCALAR_TYPE b) const {
             return EMULATED_FUNCTIONS::isLesserEqual<MASK_TYPE, DERIVED_VEC_TYPE, SCALAR_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
-        inline MASK_TYPE operator<= (SCALAR_TYPE b) const {
+        UME_FORCE_INLINE MASK_TYPE operator<= (SCALAR_TYPE b) const {
             return cmple(b);
         }
 
         // CMPEV
-        inline bool cmpe (DERIVED_VEC_TYPE const & b) const {
+        UME_FORCE_INLINE bool cmpe (DERIVED_VEC_TYPE const & b) const {
             return EMULATED_FUNCTIONS::isExact<DERIVED_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
         // CMPES
-        inline bool cmpe (SCALAR_TYPE b) const {
+        UME_FORCE_INLINE bool cmpe (SCALAR_TYPE b) const {
             return EMULATED_FUNCTIONS::isExact<DERIVED_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this), DERIVED_VEC_TYPE(b));
         }
 
         // UNIQUE
-        inline bool unique() const {
+        UME_FORCE_INLINE bool unique() const {
             return EMULATED_FUNCTIONS::unique<DERIVED_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // HADD
-        inline SCALAR_TYPE hadd () const {
+        UME_FORCE_INLINE SCALAR_TYPE hadd () const {
             return EMULATED_FUNCTIONS::reduceAdd<SCALAR_TYPE, DERIVED_VEC_TYPE>( static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // MHADD
-        inline SCALAR_TYPE hadd (MASK_TYPE const & mask) const {
+        UME_FORCE_INLINE SCALAR_TYPE hadd (MASK_TYPE const & mask) const {
             return EMULATED_FUNCTIONS::reduceAdd<SCALAR_TYPE, DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &> (*this));
         }
 
         // HADDS
-        inline SCALAR_TYPE hadd (SCALAR_TYPE b) const {
+        UME_FORCE_INLINE SCALAR_TYPE hadd (SCALAR_TYPE b) const {
             return EMULATED_FUNCTIONS::reduceAdd<SCALAR_TYPE, DERIVED_VEC_TYPE>(b, static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // MHADDS
-        inline SCALAR_TYPE hadd (MASK_TYPE const & mask, SCALAR_TYPE b) const {
+        UME_FORCE_INLINE SCALAR_TYPE hadd (MASK_TYPE const & mask, SCALAR_TYPE b) const {
             return EMULATED_FUNCTIONS::reduceAdd<SCALAR_TYPE, DERIVED_VEC_TYPE, MASK_TYPE> (mask, b, static_cast<DERIVED_VEC_TYPE const &> (*this));
         }
 
         // HMUL
-        inline SCALAR_TYPE hmul () const {
+        UME_FORCE_INLINE SCALAR_TYPE hmul () const {
             return EMULATED_FUNCTIONS::reduceMult<SCALAR_TYPE, DERIVED_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // MHMUL
-        inline SCALAR_TYPE hmul (MASK_TYPE const & mask) const {
+        UME_FORCE_INLINE SCALAR_TYPE hmul (MASK_TYPE const & mask) const {
             return EMULATED_FUNCTIONS::reduceMult<SCALAR_TYPE, DERIVED_VEC_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // HMULS
-        inline SCALAR_TYPE hmul (SCALAR_TYPE a) const {
+        UME_FORCE_INLINE SCALAR_TYPE hmul (SCALAR_TYPE a) const {
             return EMULATED_FUNCTIONS::reduceMultScalar<SCALAR_TYPE, DERIVED_VEC_TYPE>(a, static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // MHMULS
-        inline SCALAR_TYPE hmul (MASK_TYPE const & mask, SCALAR_TYPE a) const {
+        UME_FORCE_INLINE SCALAR_TYPE hmul (MASK_TYPE const & mask, SCALAR_TYPE a) const {
             return EMULATED_FUNCTIONS::reduceMultScalar<SCALAR_TYPE, DERIVED_VEC_TYPE, MASK_TYPE>(mask, a, static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
@@ -5125,42 +5125,42 @@ namespace SIMD
         // ******************************************************************
 
         // FMULADDV
-        inline DERIVED_VEC_TYPE fmuladd(DERIVED_VEC_TYPE const & b, DERIVED_VEC_TYPE const & c) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE fmuladd(DERIVED_VEC_TYPE const & b, DERIVED_VEC_TYPE const & c) const {
             return EMULATED_FUNCTIONS::MATH::fmuladd<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this), b, c);
         }
 
         // MFMULADDV
-        inline DERIVED_VEC_TYPE fmuladd(MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b, DERIVED_VEC_TYPE const & c) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE fmuladd(MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b, DERIVED_VEC_TYPE const & c) const {
             return EMULATED_FUNCTIONS::MATH::fmuladd<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b, c);
         }
 
         // FMULSUBV
-        inline DERIVED_VEC_TYPE fmulsub(DERIVED_VEC_TYPE const & b, DERIVED_VEC_TYPE const & c) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE fmulsub(DERIVED_VEC_TYPE const & b, DERIVED_VEC_TYPE const & c) const {
             return EMULATED_FUNCTIONS::MATH::fmulsub<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this), b, c);
         }
 
         // MFMULSUBV
-        inline DERIVED_VEC_TYPE fmulsub(MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b, DERIVED_VEC_TYPE const & c) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE fmulsub(MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b, DERIVED_VEC_TYPE const & c) const {
             return EMULATED_FUNCTIONS::MATH::fmulsub<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b, c);
         }
 
         // FADDMULV
-        inline DERIVED_VEC_TYPE faddmul(DERIVED_VEC_TYPE const & b, DERIVED_VEC_TYPE const & c) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE faddmul(DERIVED_VEC_TYPE const & b, DERIVED_VEC_TYPE const & c) const {
             return EMULATED_FUNCTIONS::MATH::faddmul<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this), b, c);
         }
 
         // MFADDMULV
-        inline DERIVED_VEC_TYPE faddmul(MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b, DERIVED_VEC_TYPE const & c) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE faddmul(MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b, DERIVED_VEC_TYPE const & c) const {
             return EMULATED_FUNCTIONS::MATH::faddmul<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b, c);
         }
         
         // FSUBMULV
-        inline DERIVED_VEC_TYPE fsubmul(DERIVED_VEC_TYPE const & b, DERIVED_VEC_TYPE const & c) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE fsubmul(DERIVED_VEC_TYPE const & b, DERIVED_VEC_TYPE const & c) const {
             return EMULATED_FUNCTIONS::MATH::fsubmul<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this), b, c);
         }
 
         // MFSUBMULV
-        inline DERIVED_VEC_TYPE fsubmul(MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b, DERIVED_VEC_TYPE const & c) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE fsubmul(MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b, DERIVED_VEC_TYPE const & c) const {
             return EMULATED_FUNCTIONS::MATH::fsubmul<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b, c);
         }
 
@@ -5169,122 +5169,122 @@ namespace SIMD
         // ******************************************************************
 
         // MAXV
-        inline DERIVED_VEC_TYPE max (DERIVED_VEC_TYPE const & b) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE max (DERIVED_VEC_TYPE const & b) const {
             return EMULATED_FUNCTIONS::MATH::max<DERIVED_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
         // MMAXV
-        inline DERIVED_VEC_TYPE max (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE max (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) const {
             return EMULATED_FUNCTIONS::MATH::max<DERIVED_VEC_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
         // MAXS
-        inline DERIVED_VEC_TYPE max (SCALAR_TYPE b) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE max (SCALAR_TYPE b) const {
             return EMULATED_FUNCTIONS::MATH::maxScalar<DERIVED_VEC_TYPE, SCALAR_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
         // MMAXS
-        inline DERIVED_VEC_TYPE max (MASK_TYPE const & mask, SCALAR_TYPE b) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE max (MASK_TYPE const & mask, SCALAR_TYPE b) const {
             return EMULATED_FUNCTIONS::MATH::maxScalar<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
         // MAXVA
-        inline DERIVED_VEC_TYPE & maxa (DERIVED_VEC_TYPE const & b) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & maxa (DERIVED_VEC_TYPE const & b) {
             return EMULATED_FUNCTIONS::MATH::maxAssign<DERIVED_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
 
         // MMAXVA
-        inline DERIVED_VEC_TYPE & maxa (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & maxa (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) {
             return EMULATED_FUNCTIONS::MATH::maxAssign<DERIVED_VEC_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
 
         // MAXSA
-        inline DERIVED_VEC_TYPE & maxa (SCALAR_TYPE b) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & maxa (SCALAR_TYPE b) {
             return EMULATED_FUNCTIONS::MATH::maxScalarAssign<DERIVED_VEC_TYPE, SCALAR_TYPE>(static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
 
         // MMAXSA
-        inline DERIVED_VEC_TYPE & maxa (MASK_TYPE const & mask, SCALAR_TYPE b) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & maxa (MASK_TYPE const & mask, SCALAR_TYPE b) {
             return EMULATED_FUNCTIONS::MATH::maxScalarAssign<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
 
         // MINV
-        inline DERIVED_VEC_TYPE min (DERIVED_VEC_TYPE const & b) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE min (DERIVED_VEC_TYPE const & b) const {
             return EMULATED_FUNCTIONS::MATH::min<DERIVED_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
         // MMINV
-        inline DERIVED_VEC_TYPE min (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE min (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) const {
             return EMULATED_FUNCTIONS::MATH::min<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
         // MINS
-        inline DERIVED_VEC_TYPE min (SCALAR_TYPE b) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE min (SCALAR_TYPE b) const {
             return EMULATED_FUNCTIONS::MATH::minScalar<DERIVED_VEC_TYPE, SCALAR_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
         // MMINS
-        inline DERIVED_VEC_TYPE min (MASK_TYPE const & mask, SCALAR_TYPE b) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE min (MASK_TYPE const & mask, SCALAR_TYPE b) const {
             return EMULATED_FUNCTIONS::MATH::minScalar<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
         // MINVA
-        inline DERIVED_VEC_TYPE & mina (DERIVED_VEC_TYPE const & b) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & mina (DERIVED_VEC_TYPE const & b) {
             return EMULATED_FUNCTIONS::MATH::minAssign<DERIVED_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
 
         // MMINVA
-        inline DERIVED_VEC_TYPE & mina (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & mina (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) {
             return EMULATED_FUNCTIONS::MATH::minAssign<DERIVED_VEC_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
 
         // MINSA
-        inline DERIVED_VEC_TYPE & mina (SCALAR_TYPE b) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & mina (SCALAR_TYPE b) {
             return EMULATED_FUNCTIONS::MATH::minScalarAssign<DERIVED_VEC_TYPE, SCALAR_TYPE>(static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
 
         // MMINSA
-        inline DERIVED_VEC_TYPE & mina (MASK_TYPE const & mask, SCALAR_TYPE b) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & mina (MASK_TYPE const & mask, SCALAR_TYPE b) {
             return EMULATED_FUNCTIONS::MATH::minScalarAssign<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
 
         // HMAX
-        inline SCALAR_TYPE hmax () const {
+        UME_FORCE_INLINE SCALAR_TYPE hmax () const {
             return EMULATED_FUNCTIONS::MATH::reduceMax<SCALAR_TYPE, DERIVED_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // MHMAX
-        inline SCALAR_TYPE hmax (MASK_TYPE const & mask) const {
+        UME_FORCE_INLINE SCALAR_TYPE hmax (MASK_TYPE const & mask) const {
             return EMULATED_FUNCTIONS::MATH::reduceMax<SCALAR_TYPE, DERIVED_VEC_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // IMAX
-        inline uint32_t imax() const {
+        UME_FORCE_INLINE uint32_t imax() const {
             return EMULATED_FUNCTIONS::MATH::indexMax<DERIVED_VEC_TYPE, SCALAR_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // MIMAX
-        inline uint32_t imax(MASK_TYPE const & mask) const {
+        UME_FORCE_INLINE uint32_t imax(MASK_TYPE const & mask) const {
             return EMULATED_FUNCTIONS::MATH::indexMax<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // HMIN
-        inline SCALAR_TYPE hmin() const {
+        UME_FORCE_INLINE SCALAR_TYPE hmin() const {
             return EMULATED_FUNCTIONS::MATH::reduceMin<SCALAR_TYPE, DERIVED_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // MHMIN
-        inline SCALAR_TYPE hmin(MASK_TYPE const & mask) const {
+        UME_FORCE_INLINE SCALAR_TYPE hmin(MASK_TYPE const & mask) const {
             return EMULATED_FUNCTIONS::MATH::reduceMin<SCALAR_TYPE, DERIVED_VEC_TYPE>(mask, static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // IMIN
-        inline uint32_t imin() const {
+        UME_FORCE_INLINE uint32_t imin() const {
             return EMULATED_FUNCTIONS::MATH::indexMin<DERIVED_VEC_TYPE, SCALAR_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // MIMIN
-        inline uint32_t imin(MASK_TYPE const & mask) const {
+        UME_FORCE_INLINE uint32_t imin(MASK_TYPE const & mask) const {
             return EMULATED_FUNCTIONS::MATH::indexMin<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
     };
@@ -5310,283 +5310,283 @@ namespace SIMD
     private:
         // Forbid assignment-initialization of vector using scalar values
         // TODO: is this necessary?
-        inline VEC_TYPE & operator= (const int8_t & x) { }
-        inline VEC_TYPE & operator= (const int16_t & x) { }
-        inline VEC_TYPE & operator= (const int32_t & x) { }
-        inline VEC_TYPE & operator= (const int64_t & x) { }
-        inline VEC_TYPE & operator= (const uint8_t & x) { }
-        inline VEC_TYPE & operator= (const uint16_t & x) { }
-        inline VEC_TYPE & operator= (const uint32_t & x) { }
-        inline VEC_TYPE & operator= (const uint64_t & x) { }
-        inline VEC_TYPE & operator= (const float & x) { }
-        inline VEC_TYPE & operator= (const double & x) { }
+        UME_FORCE_INLINE VEC_TYPE & operator= (const int8_t & x) { }
+        UME_FORCE_INLINE VEC_TYPE & operator= (const int16_t & x) { }
+        UME_FORCE_INLINE VEC_TYPE & operator= (const int32_t & x) { }
+        UME_FORCE_INLINE VEC_TYPE & operator= (const int64_t & x) { }
+        UME_FORCE_INLINE VEC_TYPE & operator= (const uint8_t & x) { }
+        UME_FORCE_INLINE VEC_TYPE & operator= (const uint16_t & x) { }
+        UME_FORCE_INLINE VEC_TYPE & operator= (const uint32_t & x) { }
+        UME_FORCE_INLINE VEC_TYPE & operator= (const uint64_t & x) { }
+        UME_FORCE_INLINE VEC_TYPE & operator= (const float & x) { }
+        UME_FORCE_INLINE VEC_TYPE & operator= (const double & x) { }
  
     public:
         // BANDV
-        inline DERIVED_VEC_TYPE band (DERIVED_VEC_TYPE const & b) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE band (DERIVED_VEC_TYPE const & b) const {
             return EMULATED_FUNCTIONS::binaryAnd<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
-        inline DERIVED_VEC_TYPE operator& (DERIVED_VEC_TYPE const & b) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE operator& (DERIVED_VEC_TYPE const & b) const {
             return band(b);
         }
 
-        inline DERIVED_VEC_TYPE operator&& (DERIVED_VEC_TYPE const & b) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE operator&& (DERIVED_VEC_TYPE const & b) const {
             return band(b);
         }
 
         // MBANDV
-        inline DERIVED_VEC_TYPE band (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE band (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) const {
             return EMULATED_FUNCTIONS::binaryAnd<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
         // BANDS
-        inline DERIVED_VEC_TYPE band (SCALAR_TYPE b) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE band (SCALAR_TYPE b) const {
             return EMULATED_FUNCTIONS::binaryAnd<DERIVED_VEC_TYPE, SCALAR_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
-        inline DERIVED_VEC_TYPE operator& (SCALAR_TYPE b) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE operator& (SCALAR_TYPE b) const {
             return band(b);
         }
         /*
-        inline DERIVED_VEC_TYPE operator&& (SCALAR_TYPE b) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE operator&& (SCALAR_TYPE b) const {
             return band(b);
         }*/
 
         // MBANDS
-        inline DERIVED_VEC_TYPE band (MASK_TYPE const & mask, SCALAR_TYPE b) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE band (MASK_TYPE const & mask, SCALAR_TYPE b) const {
             return EMULATED_FUNCTIONS::binaryAnd<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
         // BANDVA
-        inline DERIVED_VEC_TYPE & banda (DERIVED_VEC_TYPE const & b) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & banda (DERIVED_VEC_TYPE const & b) {
             return EMULATED_FUNCTIONS::binaryAndAssign<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
 
-        inline DERIVED_VEC_TYPE & operator&= (DERIVED_VEC_TYPE const & b) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & operator&= (DERIVED_VEC_TYPE const & b) {
             return banda(b);
         }
 
         // MBANDVA
-        inline DERIVED_VEC_TYPE & banda (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & banda (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) {
             return EMULATED_FUNCTIONS::binaryAndAssign<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
         
         // BANDSA
-        inline DERIVED_VEC_TYPE & banda (SCALAR_TYPE b) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & banda (SCALAR_TYPE b) {
             return EMULATED_FUNCTIONS::binaryAndAssign<DERIVED_VEC_TYPE, SCALAR_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
 
-        inline DERIVED_VEC_TYPE & operator&= (bool b) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & operator&= (bool b) {
             return banda(b);
         }
 
         // MBANDSA
-        inline DERIVED_VEC_TYPE & banda (MASK_TYPE const & mask, SCALAR_TYPE b) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & banda (MASK_TYPE const & mask, SCALAR_TYPE b) {
             return EMULATED_FUNCTIONS::binaryAndAssign<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
 
         // BORV
-        inline DERIVED_VEC_TYPE bor ( DERIVED_VEC_TYPE const & b) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE bor ( DERIVED_VEC_TYPE const & b) const {
             return EMULATED_FUNCTIONS::binaryOr<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
-        inline DERIVED_VEC_TYPE operator| ( DERIVED_VEC_TYPE const & b) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE operator| ( DERIVED_VEC_TYPE const & b) const {
             return bor(b);
         }
 
-        inline DERIVED_VEC_TYPE operator|| (DERIVED_VEC_TYPE const & b) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE operator|| (DERIVED_VEC_TYPE const & b) const {
             return bor(b);
         }
 
         // MBORV
-        inline DERIVED_VEC_TYPE bor ( MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE bor ( MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) const {
             return EMULATED_FUNCTIONS::binaryOr<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
         // BORS
-        inline DERIVED_VEC_TYPE bor (SCALAR_TYPE b) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE bor (SCALAR_TYPE b) const {
             return EMULATED_FUNCTIONS::binaryOr<DERIVED_VEC_TYPE, SCALAR_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
-        inline DERIVED_VEC_TYPE operator| (SCALAR_TYPE b) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE operator| (SCALAR_TYPE b) const {
             return bor(b);
         }
 
-        inline DERIVED_VEC_TYPE operator|| (SCALAR_TYPE b) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE operator|| (SCALAR_TYPE b) const {
             return bor(b);
         }
 
         // MBORS
-        inline DERIVED_VEC_TYPE bor (MASK_TYPE const & mask, SCALAR_TYPE b) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE bor (MASK_TYPE const & mask, SCALAR_TYPE b) const {
             return EMULATED_FUNCTIONS::binaryOr<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
         // BORVA
-        inline DERIVED_VEC_TYPE & bora (DERIVED_VEC_TYPE const & b) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & bora (DERIVED_VEC_TYPE const & b) {
             return EMULATED_FUNCTIONS::binaryOrAssign<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
 
-        inline DERIVED_VEC_TYPE & operator|= (DERIVED_VEC_TYPE const & b) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & operator|= (DERIVED_VEC_TYPE const & b) {
             return bora(b);
         }
 
         // MBORVA
-        inline DERIVED_VEC_TYPE & bora (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & bora (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) {
             return EMULATED_FUNCTIONS::binaryOrAssign<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
 
         // BORSA
-        inline DERIVED_VEC_TYPE & bora (SCALAR_TYPE b) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & bora (SCALAR_TYPE b) {
             return EMULATED_FUNCTIONS::binaryOrAssign<DERIVED_VEC_TYPE, SCALAR_TYPE>(static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
 
-        inline DERIVED_VEC_TYPE & operator|= (SCALAR_TYPE b) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & operator|= (SCALAR_TYPE b) {
             return bora(b);
         }
 
         // MBORSA
-        inline DERIVED_VEC_TYPE & bora (MASK_TYPE const & mask, SCALAR_TYPE b) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & bora (MASK_TYPE const & mask, SCALAR_TYPE b) {
             return EMULATED_FUNCTIONS::binaryOrAssign<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
 
         // BXORV
-        inline DERIVED_VEC_TYPE bxor (DERIVED_VEC_TYPE const & b) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE bxor (DERIVED_VEC_TYPE const & b) const {
             return EMULATED_FUNCTIONS::binaryXor<DERIVED_VEC_TYPE> ( static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
         
-        inline DERIVED_VEC_TYPE operator^ (DERIVED_VEC_TYPE const & b) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE operator^ (DERIVED_VEC_TYPE const & b) const {
             return bxor(b);
         }
 
         // MBXORV
-        inline DERIVED_VEC_TYPE bxor (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE bxor (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) const {
             return EMULATED_FUNCTIONS::binaryXor<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
         // BXORS
-        inline DERIVED_VEC_TYPE bxor (SCALAR_TYPE b) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE bxor (SCALAR_TYPE b) const {
             return EMULATED_FUNCTIONS::binaryXor<DERIVED_VEC_TYPE, SCALAR_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
-        inline DERIVED_VEC_TYPE operator^ (SCALAR_TYPE b) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE operator^ (SCALAR_TYPE b) const {
             return bxor(b);
         }
 
         // MBXORS
-        inline DERIVED_VEC_TYPE bxor (MASK_TYPE const & mask, SCALAR_TYPE b) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE bxor (MASK_TYPE const & mask, SCALAR_TYPE b) const {
             return EMULATED_FUNCTIONS::binaryXor<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
         // BXORVA
-        inline DERIVED_VEC_TYPE & bxora (DERIVED_VEC_TYPE const & b) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & bxora (DERIVED_VEC_TYPE const & b) {
             return EMULATED_FUNCTIONS::binaryXorAssign<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
         
-        inline DERIVED_VEC_TYPE & operator^= (DERIVED_VEC_TYPE const & b) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & operator^= (DERIVED_VEC_TYPE const & b) {
             return bxora(b);
         }
 
         // MBXORVA
-        inline DERIVED_VEC_TYPE & bxora (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & bxora (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) {
             return EMULATED_FUNCTIONS::binaryXorAssign<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
 
         // BXORSA
-        inline DERIVED_VEC_TYPE & bxora (SCALAR_TYPE b) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & bxora (SCALAR_TYPE b) {
             return EMULATED_FUNCTIONS::binaryXorAssign<DERIVED_VEC_TYPE, SCALAR_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
 
-        inline DERIVED_VEC_TYPE & operator^= (SCALAR_TYPE b) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & operator^= (SCALAR_TYPE b) {
             return bxora(b);
         }
 
         // MBXORSA
-        inline DERIVED_VEC_TYPE & bxora (MASK_TYPE const & mask, SCALAR_TYPE b) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & bxora (MASK_TYPE const & mask, SCALAR_TYPE b) {
             return EMULATED_FUNCTIONS::binaryXorAssign<DERIVED_VEC_TYPE,SCALAR_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
 
         // BNOT
-        inline DERIVED_VEC_TYPE bnot () const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE bnot () const {
             return EMULATED_FUNCTIONS::binaryNot<DERIVED_VEC_TYPE, SCALAR_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
     
-        inline DERIVED_VEC_TYPE operator~ () const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE operator~ () const {
             return bnot();
         }
 
         // MBNOT
-        inline DERIVED_VEC_TYPE bnot (MASK_TYPE const & mask) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE bnot (MASK_TYPE const & mask) const {
             return EMULATED_FUNCTIONS::binaryNot<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // BNOTA
-        inline DERIVED_VEC_TYPE & bnota () {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & bnota () {
             return EMULATED_FUNCTIONS::binaryNotAssign<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this));
         }
 
         // MBNOTA
-        inline DERIVED_VEC_TYPE & bnota (MASK_TYPE const & mask) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & bnota (MASK_TYPE const & mask) {
             return EMULATED_FUNCTIONS::binaryNotAssign<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this));
         }
 
         // HBAND
-        inline SCALAR_TYPE hband ()const  {
+        UME_FORCE_INLINE SCALAR_TYPE hband ()const  {
             return EMULATED_FUNCTIONS::reduceBinaryAnd<SCALAR_TYPE, DERIVED_VEC_TYPE>( static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // MHBAND
-        inline SCALAR_TYPE hband (MASK_TYPE const & mask) const {
+        UME_FORCE_INLINE SCALAR_TYPE hband (MASK_TYPE const & mask) const {
             return EMULATED_FUNCTIONS::reduceBinaryAnd<SCALAR_TYPE, DERIVED_VEC_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // HBANDS
-        inline SCALAR_TYPE hband (SCALAR_TYPE a) const {
+        UME_FORCE_INLINE SCALAR_TYPE hband (SCALAR_TYPE a) const {
             return EMULATED_FUNCTIONS::reduceBinaryAndScalar<SCALAR_TYPE, DERIVED_VEC_TYPE>(a, static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // MHBANDS
-        inline SCALAR_TYPE hband (MASK_TYPE const & mask, SCALAR_TYPE a) const {
+        UME_FORCE_INLINE SCALAR_TYPE hband (MASK_TYPE const & mask, SCALAR_TYPE a) const {
             return EMULATED_FUNCTIONS::reduceBinaryAndScalar<SCALAR_TYPE, DERIVED_VEC_TYPE, MASK_TYPE>(mask, a, static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // HBOR
-        inline SCALAR_TYPE hbor () const {
+        UME_FORCE_INLINE SCALAR_TYPE hbor () const {
             return EMULATED_FUNCTIONS::reduceBinaryOr<SCALAR_TYPE, DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // MHBOR
-        inline SCALAR_TYPE hbor (MASK_TYPE const & mask) const {
+        UME_FORCE_INLINE SCALAR_TYPE hbor (MASK_TYPE const & mask) const {
             return EMULATED_FUNCTIONS::reduceBinaryOr<SCALAR_TYPE, DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // HBORS
-        inline SCALAR_TYPE hbor (SCALAR_TYPE a) const {
+        UME_FORCE_INLINE SCALAR_TYPE hbor (SCALAR_TYPE a) const {
             return EMULATED_FUNCTIONS::reduceBinaryOrScalar<SCALAR_TYPE, DERIVED_VEC_TYPE> (a, static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // MHBORS
-        inline SCALAR_TYPE hbor (MASK_TYPE const & mask, SCALAR_TYPE a) const {
+        UME_FORCE_INLINE SCALAR_TYPE hbor (MASK_TYPE const & mask, SCALAR_TYPE a) const {
             return EMULATED_FUNCTIONS::reduceBinaryOrScalar<SCALAR_TYPE, DERIVED_VEC_TYPE, MASK_TYPE> (mask, a, static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
         
         // HBXOR
-        inline SCALAR_TYPE hbxor () const {
+        UME_FORCE_INLINE SCALAR_TYPE hbxor () const {
             return EMULATED_FUNCTIONS::reduceBinaryXor<SCALAR_TYPE, DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // MHBXOR
-        inline SCALAR_TYPE hbxor (MASK_TYPE const & mask) const {
+        UME_FORCE_INLINE SCALAR_TYPE hbxor (MASK_TYPE const & mask) const {
             return EMULATED_FUNCTIONS::reduceBinaryXor<SCALAR_TYPE, DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // HBXORS
-        inline SCALAR_TYPE hbxor (SCALAR_TYPE a) const {
+        UME_FORCE_INLINE SCALAR_TYPE hbxor (SCALAR_TYPE a) const {
             return EMULATED_FUNCTIONS::reduceBinaryXorScalar<SCALAR_TYPE, DERIVED_VEC_TYPE> (a, static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // MHBXORS
-        inline SCALAR_TYPE hbxor (MASK_TYPE const & mask, SCALAR_TYPE a) const {
+        UME_FORCE_INLINE SCALAR_TYPE hbxor (MASK_TYPE const & mask, SCALAR_TYPE a) const {
             return EMULATED_FUNCTIONS::reduceBinaryXorScalar<SCALAR_TYPE, DERIVED_VEC_TYPE> (mask, a, static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
     };
@@ -5616,55 +5616,55 @@ namespace SIMD
     private:
         // Forbid assignment-initialization of vector using scalar values
         // TODO: is this necessary?
-        inline VEC_TYPE & operator= (const int8_t & x) { }
-        inline VEC_TYPE & operator= (const int16_t & x) { }
-        inline VEC_TYPE & operator= (const int32_t & x) { }
-        inline VEC_TYPE & operator= (const int64_t & x) { }
-        inline VEC_TYPE & operator= (const uint8_t & x) { }
-        inline VEC_TYPE & operator= (const uint16_t & x) { }
-        inline VEC_TYPE & operator= (const uint32_t & x) { }
-        inline VEC_TYPE & operator= (const uint64_t & x) { }
-        inline VEC_TYPE & operator= (const float & x) { }
-        inline VEC_TYPE & operator= (const double & x) { }
+        UME_FORCE_INLINE VEC_TYPE & operator= (const int8_t & x) { }
+        UME_FORCE_INLINE VEC_TYPE & operator= (const int16_t & x) { }
+        UME_FORCE_INLINE VEC_TYPE & operator= (const int32_t & x) { }
+        UME_FORCE_INLINE VEC_TYPE & operator= (const int64_t & x) { }
+        UME_FORCE_INLINE VEC_TYPE & operator= (const uint8_t & x) { }
+        UME_FORCE_INLINE VEC_TYPE & operator= (const uint16_t & x) { }
+        UME_FORCE_INLINE VEC_TYPE & operator= (const uint32_t & x) { }
+        UME_FORCE_INLINE VEC_TYPE & operator= (const uint64_t & x) { }
+        UME_FORCE_INLINE VEC_TYPE & operator= (const float & x) { }
+        UME_FORCE_INLINE VEC_TYPE & operator= (const double & x) { }
  
     public:
         // GATHERS
-        inline DERIVED_VEC_TYPE & gather (SCALAR_TYPE * baseAddr, SCALAR_UINT_TYPE* indices) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & gather (SCALAR_TYPE * baseAddr, SCALAR_UINT_TYPE* indices) {
             return EMULATED_FUNCTIONS::gather<DERIVED_VEC_TYPE, SCALAR_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this), baseAddr, indices);
         }
 
         // MGATHERS
-        inline DERIVED_VEC_TYPE & gather (MASK_TYPE const & mask, SCALAR_TYPE* baseAddr, SCALAR_UINT_TYPE* indices) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & gather (MASK_TYPE const & mask, SCALAR_TYPE* baseAddr, SCALAR_UINT_TYPE* indices) {
             return EMULATED_FUNCTIONS::gather<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this), baseAddr, indices);
         }
 
         // GATHERV
-        inline DERIVED_VEC_TYPE & gather (SCALAR_TYPE * baseAddr, DERIVED_UINT_VEC_TYPE const & indices) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & gather (SCALAR_TYPE * baseAddr, DERIVED_UINT_VEC_TYPE const & indices) {
             return EMULATED_FUNCTIONS::gather<DERIVED_VEC_TYPE, SCALAR_TYPE, DERIVED_UINT_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this), baseAddr, indices);
         }
 
         // MGATHERV
-        inline DERIVED_VEC_TYPE & gather (MASK_TYPE const & mask, SCALAR_TYPE* baseAddr, DERIVED_UINT_VEC_TYPE const & indices) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & gather (MASK_TYPE const & mask, SCALAR_TYPE* baseAddr, DERIVED_UINT_VEC_TYPE const & indices) {
             return EMULATED_FUNCTIONS::gather<DERIVED_VEC_TYPE, SCALAR_TYPE, DERIVED_UINT_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this), baseAddr, indices);
         }
 
         // SCATTERS
-        inline SCALAR_TYPE* scatter (SCALAR_TYPE* baseAddr, SCALAR_UINT_TYPE* indices) {
+        UME_FORCE_INLINE SCALAR_TYPE* scatter (SCALAR_TYPE* baseAddr, SCALAR_UINT_TYPE* indices) {
             return EMULATED_FUNCTIONS::scatter<DERIVED_VEC_TYPE, SCALAR_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this), baseAddr, indices);
         }
 
         // MSCATTERS
-        inline SCALAR_TYPE*  scatter (MASK_TYPE const & mask, SCALAR_TYPE* baseAddr, SCALAR_UINT_TYPE* indices) {
+        UME_FORCE_INLINE SCALAR_TYPE*  scatter (MASK_TYPE const & mask, SCALAR_TYPE* baseAddr, SCALAR_UINT_TYPE* indices) {
             return EMULATED_FUNCTIONS::scatter<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this), baseAddr, indices);
         }
 
         // SCATTERV
-        inline SCALAR_TYPE*  scatter (SCALAR_TYPE* baseAddr, DERIVED_UINT_VEC_TYPE const & indices) {
+        UME_FORCE_INLINE SCALAR_TYPE*  scatter (SCALAR_TYPE* baseAddr, DERIVED_UINT_VEC_TYPE const & indices) {
             return EMULATED_FUNCTIONS::scatter<DERIVED_VEC_TYPE, SCALAR_TYPE, DERIVED_UINT_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this), baseAddr, indices);
         }
 
         // MSCATTERV
-        inline SCALAR_TYPE*  scatter (MASK_TYPE const & mask, SCALAR_TYPE* baseAddr, DERIVED_UINT_VEC_TYPE const & indices) {
+        UME_FORCE_INLINE SCALAR_TYPE*  scatter (MASK_TYPE const & mask, SCALAR_TYPE* baseAddr, DERIVED_UINT_VEC_TYPE const & indices) {
             return EMULATED_FUNCTIONS::scatter<DERIVED_VEC_TYPE, SCALAR_TYPE, DERIVED_UINT_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this), baseAddr, indices);
         }       
     };
@@ -5694,175 +5694,175 @@ namespace SIMD
     private:
         // Forbid assignment-initialization of vector using scalar values
         // TODO: is this necessary?
-        inline VEC_TYPE & operator= (const int8_t & x) { }
-        inline VEC_TYPE & operator= (const int16_t & x) { }
-        inline VEC_TYPE & operator= (const int32_t & x) { }
-        inline VEC_TYPE & operator= (const int64_t & x) { }
-        inline VEC_TYPE & operator= (const uint8_t & x) { }
-        inline VEC_TYPE & operator= (const uint16_t & x) { }
-        inline VEC_TYPE & operator= (const uint32_t & x) { }
-        inline VEC_TYPE & operator= (const uint64_t & x) { }
-        inline VEC_TYPE & operator= (const float & x) { }
-        inline VEC_TYPE & operator= (const double & x) { }
+        UME_FORCE_INLINE VEC_TYPE & operator= (const int8_t & x) { }
+        UME_FORCE_INLINE VEC_TYPE & operator= (const int16_t & x) { }
+        UME_FORCE_INLINE VEC_TYPE & operator= (const int32_t & x) { }
+        UME_FORCE_INLINE VEC_TYPE & operator= (const int64_t & x) { }
+        UME_FORCE_INLINE VEC_TYPE & operator= (const uint8_t & x) { }
+        UME_FORCE_INLINE VEC_TYPE & operator= (const uint16_t & x) { }
+        UME_FORCE_INLINE VEC_TYPE & operator= (const uint32_t & x) { }
+        UME_FORCE_INLINE VEC_TYPE & operator= (const uint64_t & x) { }
+        UME_FORCE_INLINE VEC_TYPE & operator= (const float & x) { }
+        UME_FORCE_INLINE VEC_TYPE & operator= (const double & x) { }
  
     public:
         // LSHV
-        inline DERIVED_VEC_TYPE lsh (DERIVED_UINT_VEC_TYPE const & b) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE lsh (DERIVED_UINT_VEC_TYPE const & b) const {
             return EMULATED_FUNCTIONS::shiftBitsLeft<DERIVED_VEC_TYPE, DERIVED_UINT_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
         // MLSHV
-        inline DERIVED_VEC_TYPE lsh (MASK_TYPE const & mask, DERIVED_UINT_VEC_TYPE const & b) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE lsh (MASK_TYPE const & mask, DERIVED_UINT_VEC_TYPE const & b) const {
             return EMULATED_FUNCTIONS::shiftBitsLeft<DERIVED_VEC_TYPE, DERIVED_UINT_VEC_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
         // LSHS
-        inline DERIVED_VEC_TYPE lsh (SCALAR_UINT_TYPE b) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE lsh (SCALAR_UINT_TYPE b) const {
             return EMULATED_FUNCTIONS::shiftBitsLeftScalar<DERIVED_VEC_TYPE, SCALAR_UINT_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
         // MLSHS
-        inline DERIVED_VEC_TYPE lsh (MASK_TYPE const & mask, SCALAR_UINT_TYPE b) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE lsh (MASK_TYPE const & mask, SCALAR_UINT_TYPE b) const {
             return EMULATED_FUNCTIONS::shiftBitsLeftScalar<DERIVED_VEC_TYPE, SCALAR_UINT_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
         // LSHVA
-        inline DERIVED_VEC_TYPE & lsha (DERIVED_UINT_VEC_TYPE const & b) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & lsha (DERIVED_UINT_VEC_TYPE const & b) {
             return EMULATED_FUNCTIONS::shiftBitsLeftAssign<DERIVED_VEC_TYPE, DERIVED_UINT_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
 
         // MLSHVA
-        inline DERIVED_VEC_TYPE & lsha (MASK_TYPE const & mask, DERIVED_UINT_VEC_TYPE const & b) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & lsha (MASK_TYPE const & mask, DERIVED_UINT_VEC_TYPE const & b) {
             return EMULATED_FUNCTIONS::shiftBitsLeftAssign<DERIVED_VEC_TYPE, DERIVED_UINT_VEC_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
 
         // LSHSA
-        inline DERIVED_VEC_TYPE & lsha (SCALAR_UINT_TYPE b) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & lsha (SCALAR_UINT_TYPE b) {
             return EMULATED_FUNCTIONS::shiftBitsLeftAssignScalar<DERIVED_VEC_TYPE, SCALAR_UINT_TYPE>(static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
 
         // MLSHSA
-        inline DERIVED_VEC_TYPE & lsha (MASK_TYPE const & mask, SCALAR_UINT_TYPE b) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & lsha (MASK_TYPE const & mask, SCALAR_UINT_TYPE b) {
             return EMULATED_FUNCTIONS::shiftBitsLeftAssignScalar<DERIVED_VEC_TYPE, SCALAR_UINT_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
 
         // RSHV
-        inline DERIVED_VEC_TYPE rsh (DERIVED_UINT_VEC_TYPE const & b) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE rsh (DERIVED_UINT_VEC_TYPE const & b) const {
             return EMULATED_FUNCTIONS::shiftBitsRight<DERIVED_VEC_TYPE, DERIVED_UINT_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
         // MRSHV
-        inline DERIVED_VEC_TYPE rsh (MASK_TYPE const & mask, DERIVED_UINT_VEC_TYPE const & b) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE rsh (MASK_TYPE const & mask, DERIVED_UINT_VEC_TYPE const & b) const {
             return EMULATED_FUNCTIONS::shiftBitsRight<DERIVED_VEC_TYPE, DERIVED_UINT_VEC_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
         // RSHS
-        inline DERIVED_VEC_TYPE rsh (SCALAR_UINT_TYPE b) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE rsh (SCALAR_UINT_TYPE b) const {
             return EMULATED_FUNCTIONS::shiftBitsRightScalar<DERIVED_VEC_TYPE, SCALAR_UINT_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
         // MRSHS
-        inline DERIVED_VEC_TYPE rsh (MASK_TYPE const & mask, SCALAR_UINT_TYPE b) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE rsh (MASK_TYPE const & mask, SCALAR_UINT_TYPE b) const {
             return EMULATED_FUNCTIONS::shiftBitsRightScalar<DERIVED_VEC_TYPE, SCALAR_UINT_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
         // RSHVA
-        inline DERIVED_VEC_TYPE & rsha (DERIVED_UINT_VEC_TYPE const & b) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & rsha (DERIVED_UINT_VEC_TYPE const & b) {
             return EMULATED_FUNCTIONS::shiftBitsRightAssign<DERIVED_VEC_TYPE, DERIVED_UINT_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
 
         // MRSHVA
-        inline DERIVED_VEC_TYPE & rsha (MASK_TYPE const & mask, DERIVED_UINT_VEC_TYPE const & b) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & rsha (MASK_TYPE const & mask, DERIVED_UINT_VEC_TYPE const & b) {
             return EMULATED_FUNCTIONS::shiftBitsRightAssign<DERIVED_VEC_TYPE, DERIVED_UINT_VEC_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
 
         // RSHSA
-        inline DERIVED_VEC_TYPE & rsha (SCALAR_UINT_TYPE b) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & rsha (SCALAR_UINT_TYPE b) {
             return EMULATED_FUNCTIONS::shiftBitsRightAssignScalar<DERIVED_VEC_TYPE, SCALAR_UINT_TYPE>(static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
 
         // MRSHSA
-        inline DERIVED_VEC_TYPE & rsha (MASK_TYPE const & mask, SCALAR_UINT_TYPE b) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & rsha (MASK_TYPE const & mask, SCALAR_UINT_TYPE b) {
             return EMULATED_FUNCTIONS::shiftBitsRightAssignScalar<DERIVED_VEC_TYPE, SCALAR_UINT_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
 
         // ROLV
-        inline DERIVED_VEC_TYPE rol (DERIVED_UINT_VEC_TYPE const & b) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE rol (DERIVED_UINT_VEC_TYPE const & b) const {
             return EMULATED_FUNCTIONS::rotateBitsLeft<DERIVED_VEC_TYPE, SCALAR_TYPE, DERIVED_UINT_VEC_TYPE, SCALAR_UINT_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
         // MROLV
-        inline DERIVED_VEC_TYPE rol (MASK_TYPE const & mask, DERIVED_UINT_VEC_TYPE const & b) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE rol (MASK_TYPE const & mask, DERIVED_UINT_VEC_TYPE const & b) const {
             return EMULATED_FUNCTIONS::rotateBitsLeft<DERIVED_VEC_TYPE, SCALAR_TYPE, DERIVED_UINT_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
         // ROLS
-        inline DERIVED_VEC_TYPE rol (SCALAR_UINT_TYPE b) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE rol (SCALAR_UINT_TYPE b) const {
             return EMULATED_FUNCTIONS::rotateBitsLeftScalar<DERIVED_VEC_TYPE, SCALAR_TYPE, SCALAR_UINT_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
         // MROLS
-        inline DERIVED_VEC_TYPE rol (MASK_TYPE const & mask, SCALAR_UINT_TYPE b) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE rol (MASK_TYPE const & mask, SCALAR_UINT_TYPE b) const {
             return EMULATED_FUNCTIONS::rotateBitsLeftScalar<DERIVED_VEC_TYPE, SCALAR_TYPE, SCALAR_UINT_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
         // ROLVA
-        inline DERIVED_VEC_TYPE & rola (DERIVED_UINT_VEC_TYPE const & b) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & rola (DERIVED_UINT_VEC_TYPE const & b) {
             return EMULATED_FUNCTIONS::rotateBitsLeftAssign<DERIVED_VEC_TYPE, SCALAR_TYPE, DERIVED_UINT_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
 
         // MROLVA
-        inline DERIVED_VEC_TYPE & rola (MASK_TYPE const & mask, DERIVED_UINT_VEC_TYPE const & b) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & rola (MASK_TYPE const & mask, DERIVED_UINT_VEC_TYPE const & b) {
             return EMULATED_FUNCTIONS::rotateBitsLeftAssign<DERIVED_VEC_TYPE, SCALAR_TYPE, DERIVED_UINT_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
 
         // ROLSA
-        inline DERIVED_VEC_TYPE & rola (SCALAR_UINT_TYPE b) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & rola (SCALAR_UINT_TYPE b) {
             return EMULATED_FUNCTIONS::rotateBitsLeftAssignScalar<DERIVED_VEC_TYPE, SCALAR_TYPE, SCALAR_UINT_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
 
         // MROLSA
-        inline DERIVED_VEC_TYPE & rola (MASK_TYPE const & mask, SCALAR_UINT_TYPE b) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & rola (MASK_TYPE const & mask, SCALAR_UINT_TYPE b) {
             return EMULATED_FUNCTIONS::rotateBitsLeftAssignScalar<DERIVED_VEC_TYPE, SCALAR_TYPE, SCALAR_UINT_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
 
         // RORV
-        inline DERIVED_VEC_TYPE ror (DERIVED_UINT_VEC_TYPE const & b) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE ror (DERIVED_UINT_VEC_TYPE const & b) const {
             return EMULATED_FUNCTIONS::rotateBitsRight<DERIVED_VEC_TYPE, SCALAR_TYPE, DERIVED_UINT_VEC_TYPE, SCALAR_UINT_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
         // MRORV
-        inline DERIVED_VEC_TYPE ror (MASK_TYPE const & mask, DERIVED_UINT_VEC_TYPE const & b) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE ror (MASK_TYPE const & mask, DERIVED_UINT_VEC_TYPE const & b) const {
             return EMULATED_FUNCTIONS::rotateBitsRight<DERIVED_VEC_TYPE, SCALAR_TYPE, DERIVED_UINT_VEC_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
         // RORS
-        inline DERIVED_VEC_TYPE ror (SCALAR_UINT_TYPE b) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE ror (SCALAR_UINT_TYPE b) const {
             return EMULATED_FUNCTIONS::rotateBitsRightScalar<DERIVED_VEC_TYPE, SCALAR_TYPE, SCALAR_UINT_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
         // MRORS
-        inline DERIVED_VEC_TYPE ror (MASK_TYPE const & mask, SCALAR_UINT_TYPE b) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE ror (MASK_TYPE const & mask, SCALAR_UINT_TYPE b) const {
             return EMULATED_FUNCTIONS::rotateBitsRightScalar<DERIVED_VEC_TYPE, SCALAR_TYPE, SCALAR_UINT_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
         // RORVA
-        inline DERIVED_VEC_TYPE rora (DERIVED_UINT_VEC_TYPE const & b) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE rora (DERIVED_UINT_VEC_TYPE const & b) {
             return EMULATED_FUNCTIONS::rotateBitsRightAssign<DERIVED_VEC_TYPE, SCALAR_TYPE, DERIVED_UINT_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
 
         // MRORVA
-        inline DERIVED_VEC_TYPE rora (MASK_TYPE const & mask, DERIVED_UINT_VEC_TYPE const & b) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE rora (MASK_TYPE const & mask, DERIVED_UINT_VEC_TYPE const & b) {
             return EMULATED_FUNCTIONS::rotateBitsRightAssign<DERIVED_VEC_TYPE, SCALAR_TYPE, DERIVED_UINT_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
 
         // RORSA
-        inline DERIVED_VEC_TYPE rora (SCALAR_UINT_TYPE b) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE rora (SCALAR_UINT_TYPE b) {
             return EMULATED_FUNCTIONS::rotateBitsRightAssignScalar<DERIVED_VEC_TYPE, SCALAR_TYPE, SCALAR_UINT_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
 
         // MRORSA
-        inline DERIVED_VEC_TYPE rora (MASK_TYPE const & mask, SCALAR_UINT_TYPE b) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE rora (MASK_TYPE const & mask, SCALAR_UINT_TYPE b) {
             return EMULATED_FUNCTIONS::rotateBitsRightAssignScalar<DERIVED_VEC_TYPE, SCALAR_TYPE, SCALAR_UINT_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
     };
@@ -5888,16 +5888,16 @@ namespace SIMD
     private:
         // Forbid assignment-initialization of vector using scalar values
         // TODO: is this necessary?
-        inline VEC_TYPE & operator= (const int8_t & x) { }
-        inline VEC_TYPE & operator= (const int16_t & x) { }
-        inline VEC_TYPE & operator= (const int32_t & x) { }
-        inline VEC_TYPE & operator= (const int64_t & x) { }
-        inline VEC_TYPE & operator= (const uint8_t & x) { }
-        inline VEC_TYPE & operator= (const uint16_t & x) { }
-        inline VEC_TYPE & operator= (const uint32_t & x) { }
-        inline VEC_TYPE & operator= (const uint64_t & x) { }
-        inline VEC_TYPE & operator= (const float & x) { }
-        inline VEC_TYPE & operator= (const double & x) { }
+        UME_FORCE_INLINE VEC_TYPE & operator= (const int8_t & x) { }
+        UME_FORCE_INLINE VEC_TYPE & operator= (const int16_t & x) { }
+        UME_FORCE_INLINE VEC_TYPE & operator= (const int32_t & x) { }
+        UME_FORCE_INLINE VEC_TYPE & operator= (const int64_t & x) { }
+        UME_FORCE_INLINE VEC_TYPE & operator= (const uint8_t & x) { }
+        UME_FORCE_INLINE VEC_TYPE & operator= (const uint16_t & x) { }
+        UME_FORCE_INLINE VEC_TYPE & operator= (const uint32_t & x) { }
+        UME_FORCE_INLINE VEC_TYPE & operator= (const uint64_t & x) { }
+        UME_FORCE_INLINE VEC_TYPE & operator= (const float & x) { }
+        UME_FORCE_INLINE VEC_TYPE & operator= (const double & x) { }
 
     public:
 
@@ -5969,56 +5969,56 @@ namespace SIMD
     private:
         // Forbid assignment-initialization of vector using scalar values
         // TODO: is this necessary?
-        inline VEC_TYPE & operator= (const int8_t & x) { }
-        inline VEC_TYPE & operator= (const int16_t & x) { }
-        inline VEC_TYPE & operator= (const int32_t & x) { }
-        inline VEC_TYPE & operator= (const int64_t & x) { }
-        inline VEC_TYPE & operator= (const uint8_t & x) { }
-        inline VEC_TYPE & operator= (const uint16_t & x) { }
-        inline VEC_TYPE & operator= (const uint32_t & x) { }
-        inline VEC_TYPE & operator= (const uint64_t & x) { }
-        inline VEC_TYPE & operator= (const float & x) { }
-        inline VEC_TYPE & operator= (const double & x) { }
+        UME_FORCE_INLINE VEC_TYPE & operator= (const int8_t & x) { }
+        UME_FORCE_INLINE VEC_TYPE & operator= (const int16_t & x) { }
+        UME_FORCE_INLINE VEC_TYPE & operator= (const int32_t & x) { }
+        UME_FORCE_INLINE VEC_TYPE & operator= (const int64_t & x) { }
+        UME_FORCE_INLINE VEC_TYPE & operator= (const uint8_t & x) { }
+        UME_FORCE_INLINE VEC_TYPE & operator= (const uint16_t & x) { }
+        UME_FORCE_INLINE VEC_TYPE & operator= (const uint32_t & x) { }
+        UME_FORCE_INLINE VEC_TYPE & operator= (const uint64_t & x) { }
+        UME_FORCE_INLINE VEC_TYPE & operator= (const float & x) { }
+        UME_FORCE_INLINE VEC_TYPE & operator= (const double & x) { }
  
     public:
 
         // NEG
-        inline DERIVED_VEC_TYPE neg () const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE neg () const {
             return EMULATED_FUNCTIONS::unaryMinus<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // MNEG
-        inline DERIVED_VEC_TYPE neg (MASK_TYPE const & mask) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE neg (MASK_TYPE const & mask) const {
             return EMULATED_FUNCTIONS::unaryMinus<DERIVED_VEC_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // NEGA
-        inline DERIVED_VEC_TYPE & nega() {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & nega() {
             return EMULATED_FUNCTIONS::unaryMinusAssign<DERIVED_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE &>(*this));
         }
 
         // MNEGA
-        inline DERIVED_VEC_TYPE & nega(MASK_TYPE const & mask) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & nega(MASK_TYPE const & mask) {
             return EMULATED_FUNCTIONS::unaryMinusAssign<DERIVED_VEC_TYPE>(mask, static_cast<DERIVED_VEC_TYPE &>(*this));
         }
 
         // ABS
-        inline DERIVED_VEC_TYPE abs () const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE abs () const {
             return EMULATED_FUNCTIONS::MATH::abs<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // MABS
-        inline DERIVED_VEC_TYPE abs (MASK_TYPE const & mask) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE abs (MASK_TYPE const & mask) const {
             return EMULATED_FUNCTIONS::MATH::abs<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // ABSA
-        inline DERIVED_VEC_TYPE absa () {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE absa () {
             return EMULATED_FUNCTIONS::MATH::absAssign<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this));
         }
 
         // MABSA
-        inline DERIVED_VEC_TYPE absa (MASK_TYPE const & mask) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE absa (MASK_TYPE const & mask) {
             return EMULATED_FUNCTIONS::MATH::absAssign<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this));
         }
     };
@@ -6069,7 +6069,7 @@ namespace SIMD
         // Forbid assignment-initialization of vector using scalar values
  
         //SCALAR_UINT_TYPE operator[] (SCALAR_UINT_TYPE index) const; // Declaration only! This operator has to be implemented in derived class.
-        inline DERIVED_UINT_VEC_TYPE & insert(uint32_t index, SCALAR_UINT_TYPE value); // Declaration only! This operator has to be implemented in derived class.
+        UME_FORCE_INLINE DERIVED_UINT_VEC_TYPE & insert(uint32_t index, SCALAR_UINT_TYPE value); // Declaration only! This operator has to be implemented in derived class.
 
     protected:
             
@@ -6077,11 +6077,11 @@ namespace SIMD
         ~SIMDVecUnsignedInterface() {};
     public:
         // SUBV
-        inline DERIVED_UINT_VEC_TYPE operator- (DERIVED_UINT_VEC_TYPE const & b) const {
+        UME_FORCE_INLINE DERIVED_UINT_VEC_TYPE operator- (DERIVED_UINT_VEC_TYPE const & b) const {
             return this->sub(b);
         }
         // SUBS
-        inline DERIVED_UINT_VEC_TYPE operator- (SCALAR_UINT_TYPE b) const {
+        UME_FORCE_INLINE DERIVED_UINT_VEC_TYPE operator- (SCALAR_UINT_TYPE b) const {
             return this->sub(b);
         }
     };
@@ -6137,19 +6137,19 @@ namespace SIMD
     private:
         // Forbid assignment-initialization of vector using scalar values
         // TODO: is this necessary?
-        inline VEC_TYPE & operator= (const int8_t & x) { }
-        inline VEC_TYPE & operator= (const int16_t & x) { }
-        inline VEC_TYPE & operator= (const int32_t & x) { }
-        inline VEC_TYPE & operator= (const int64_t & x) { }
-        inline VEC_TYPE & operator= (const uint8_t & x) { }
-        inline VEC_TYPE & operator= (const uint16_t & x) { }
-        inline VEC_TYPE & operator= (const uint32_t & x) { }
-        inline VEC_TYPE & operator= (const uint64_t & x) { }
-        inline VEC_TYPE & operator= (const float & x) { }
-        inline VEC_TYPE & operator= (const double & x) { }
+        UME_FORCE_INLINE VEC_TYPE & operator= (const int8_t & x) { }
+        UME_FORCE_INLINE VEC_TYPE & operator= (const int16_t & x) { }
+        UME_FORCE_INLINE VEC_TYPE & operator= (const int32_t & x) { }
+        UME_FORCE_INLINE VEC_TYPE & operator= (const int64_t & x) { }
+        UME_FORCE_INLINE VEC_TYPE & operator= (const uint8_t & x) { }
+        UME_FORCE_INLINE VEC_TYPE & operator= (const uint16_t & x) { }
+        UME_FORCE_INLINE VEC_TYPE & operator= (const uint32_t & x) { }
+        UME_FORCE_INLINE VEC_TYPE & operator= (const uint64_t & x) { }
+        UME_FORCE_INLINE VEC_TYPE & operator= (const float & x) { }
+        UME_FORCE_INLINE VEC_TYPE & operator= (const double & x) { }
         
         SCALAR_TYPE operator[] (SCALAR_UINT_TYPE index) const; // Declaration only! This operator has to be implemented in derived class.
-        inline DERIVED_VEC_TYPE & insert (uint32_t index, SCALAR_TYPE value); // Declaration only! This operator has to be implemented in derived class.
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & insert (uint32_t index, SCALAR_TYPE value); // Declaration only! This operator has to be implemented in derived class.
     protected:
             
         // Making destructor protected prohibits this class from being instantiated. Effectively this class can only be used as a base class.
@@ -6158,17 +6158,17 @@ namespace SIMD
         // Everything already handled by other interface classes
 
         // SUBV
-        inline DERIVED_VEC_TYPE operator- (DERIVED_VEC_TYPE const & b) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE operator- (DERIVED_VEC_TYPE const & b) const {
             return this->sub(b);
         }
 
         // SUBS
-        inline DERIVED_VEC_TYPE operator- (SCALAR_TYPE const & b) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE operator- (SCALAR_TYPE const & b) const {
             return this->sub(b);
         }
 
         // NEG
-        inline DERIVED_VEC_TYPE operator- () const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE operator- () const {
             return this->neg();
         }
     };
@@ -6216,36 +6216,36 @@ namespace SIMD
 
         // Forbid assignment-initialization of vector using scalar values
         // TODO: is this necessary?
-        inline VEC_TYPE & operator= (const int8_t & x) { }
-        inline VEC_TYPE & operator= (const int16_t & x) { }
-        inline VEC_TYPE & operator= (const int32_t & x) { }
-        inline VEC_TYPE & operator= (const int64_t & x) { }
-        inline VEC_TYPE & operator= (const uint8_t & x) { }
-        inline VEC_TYPE & operator= (const uint16_t & x) { }
-        inline VEC_TYPE & operator= (const uint32_t & x) { }
-        inline VEC_TYPE & operator= (const uint64_t & x) { }
-        inline VEC_TYPE & operator= (const float & x) { }
-        inline VEC_TYPE & operator= (const double & x) { }
+        UME_FORCE_INLINE VEC_TYPE & operator= (const int8_t & x) { }
+        UME_FORCE_INLINE VEC_TYPE & operator= (const int16_t & x) { }
+        UME_FORCE_INLINE VEC_TYPE & operator= (const int32_t & x) { }
+        UME_FORCE_INLINE VEC_TYPE & operator= (const int64_t & x) { }
+        UME_FORCE_INLINE VEC_TYPE & operator= (const uint8_t & x) { }
+        UME_FORCE_INLINE VEC_TYPE & operator= (const uint16_t & x) { }
+        UME_FORCE_INLINE VEC_TYPE & operator= (const uint32_t & x) { }
+        UME_FORCE_INLINE VEC_TYPE & operator= (const uint64_t & x) { }
+        UME_FORCE_INLINE VEC_TYPE & operator= (const float & x) { }
+        UME_FORCE_INLINE VEC_TYPE & operator= (const double & x) { }
  
     protected:
         // Making destructor protected prohibits this class from being instantiated. Effectively this class can only be used as a base class.
         ~SIMDVecFloatInterface() {};
         
         SCALAR_FLOAT_TYPE operator[] (SCALAR_UINT_TYPE index) const; // Declaration only! This operator has to be implemented in derived class.
-        inline DERIVED_VEC_TYPE & insert(uint32_t index, SCALAR_FLOAT_TYPE value); // Declaration only! This operator has to be implemented in derived class.
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & insert(uint32_t index, SCALAR_FLOAT_TYPE value); // Declaration only! This operator has to be implemented in derived class.
     public:
 
         // SUBV
-        inline DERIVED_VEC_TYPE operator- (DERIVED_VEC_TYPE const & b) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE operator- (DERIVED_VEC_TYPE const & b) const {
             return this->sub(b);
         }
         
         // SUBS
-        inline DERIVED_VEC_TYPE operator- (SCALAR_FLOAT_TYPE b) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE operator- (SCALAR_FLOAT_TYPE b) const {
             return this->sub(b);
         }
         // NEG
-        inline DERIVED_VEC_TYPE operator- () const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE operator- () const {
             return EMULATED_FUNCTIONS::unaryMinus<DERIVED_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
@@ -6254,253 +6254,253 @@ namespace SIMD
         // ********************************************************************
 
         // SQR
-        inline DERIVED_VEC_TYPE sqr () const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE sqr () const {
             return EMULATED_FUNCTIONS::MATH::sqr<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // MSQR
-        inline DERIVED_VEC_TYPE sqr (MASK_TYPE const & mask) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE sqr (MASK_TYPE const & mask) const {
             return EMULATED_FUNCTIONS::MATH::sqr<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // SQRA
-        inline DERIVED_VEC_TYPE & sqra () {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & sqra () {
             return EMULATED_FUNCTIONS::MATH::sqrAssign<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this));
         }
 
         // MSQRA
-        inline DERIVED_VEC_TYPE & sqra (MASK_TYPE const & mask) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & sqra (MASK_TYPE const & mask) {
             return EMULATED_FUNCTIONS::MATH::sqrAssign<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this));
         }
 
         // SQRT
-        inline DERIVED_VEC_TYPE sqrt () const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE sqrt () const {
             return EMULATED_FUNCTIONS::MATH::sqrt<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
         
         // MSQRT
-        inline DERIVED_VEC_TYPE sqrt (MASK_TYPE const & mask) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE sqrt (MASK_TYPE const & mask) const {
             return EMULATED_FUNCTIONS::MATH::sqrt<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
         
         // SQRTA
-        inline DERIVED_VEC_TYPE & sqrta () {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & sqrta () {
             return EMULATED_FUNCTIONS::MATH::sqrtAssign<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this));
         }
         
         // MSQRTA
-        inline DERIVED_VEC_TYPE & sqrta (MASK_TYPE const & mask) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & sqrta (MASK_TYPE const & mask) {
             return EMULATED_FUNCTIONS::MATH::sqrtAssign<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this));
         }
 
         // RSQRT
-        inline DERIVED_VEC_TYPE rsqrt () const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE rsqrt () const {
             return EMULATED_FUNCTIONS::MATH::rsqrt<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // MRSQRT
-        inline DERIVED_VEC_TYPE rsqrt (MASK_TYPE const & mask) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE rsqrt (MASK_TYPE const & mask) const {
             return EMULATED_FUNCTIONS::MATH::rsqrt<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // SQRTA
-        inline DERIVED_VEC_TYPE & rsqrta () {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & rsqrta () {
             return EMULATED_FUNCTIONS::MATH::rsqrtAssign<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this));
         }
 
         // MSQRTA
-        inline DERIVED_VEC_TYPE & rsqrta (MASK_TYPE const & mask) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & rsqrta (MASK_TYPE const & mask) {
             return EMULATED_FUNCTIONS::MATH::rsqrtAssign<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this));
         }
         
         // POWV
         // Disabled, see Issue #10
-        //inline DERIVED_VEC_TYPE pow (DERIVED_VEC_TYPE const & b) const {
+        //UME_FORCE_INLINE DERIVED_VEC_TYPE pow (DERIVED_VEC_TYPE const & b) const {
         //    return EMULATED_FUNCTIONS::MATH::pow<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         // }
 
         // MPOWV    
         // Disabled, see Issue #10    
-        //inline DERIVED_VEC_TYPE pow (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) const {
+        //UME_FORCE_INLINE DERIVED_VEC_TYPE pow (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) const {
         //    return EMULATED_FUNCTIONS::MATH::pow<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         //}
 
         // POWS
         // Disabled, see Issue #10
-        //inline DERIVED_VEC_TYPE pow (SCALAR_FLOAT_TYPE b) const {
+        //UME_FORCE_INLINE DERIVED_VEC_TYPE pow (SCALAR_FLOAT_TYPE b) const {
         //    return EMULATED_FUNCTIONS::MATH::pows<DERIVED_VEC_TYPE, SCALAR_FLOAT_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         //}
 
         // MPOWS
         // Disabled, see Issue #10
-        //inline DERIVED_VEC_TYPE pow (MASK_TYPE const & mask, SCALAR_FLOAT_TYPE b) const {
+        //UME_FORCE_INLINE DERIVED_VEC_TYPE pow (MASK_TYPE const & mask, SCALAR_FLOAT_TYPE b) const {
         //    return EMULATED_FUNCTIONS::MATH::pows<DERIVED_VEC_TYPE, SCALAR_FLOAT_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         //}
 
         // ROUND
-        inline DERIVED_VEC_TYPE round () const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE round () const {
             return EMULATED_FUNCTIONS::MATH::round<DERIVED_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
         
         // MROUND
-        inline DERIVED_VEC_TYPE round (MASK_TYPE const & mask) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE round (MASK_TYPE const & mask) const {
             return EMULATED_FUNCTIONS::MATH::round<DERIVED_VEC_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
         
         // TRUNC
-        inline DERIVED_VEC_INT_TYPE trunc () const {
+        UME_FORCE_INLINE DERIVED_VEC_INT_TYPE trunc () const {
             return EMULATED_FUNCTIONS::MATH::truncToInt<DERIVED_VEC_TYPE, DERIVED_VEC_INT_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // MTRUNC
-        inline DERIVED_VEC_INT_TYPE trunc (MASK_TYPE const & mask) const {
+        UME_FORCE_INLINE DERIVED_VEC_INT_TYPE trunc (MASK_TYPE const & mask) const {
             return EMULATED_FUNCTIONS::MATH::truncToInt<DERIVED_VEC_TYPE, DERIVED_VEC_INT_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // FLOOR
-        inline DERIVED_VEC_TYPE floor () const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE floor () const {
             return EMULATED_FUNCTIONS::MATH::floor<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // MFLOOR
-        inline DERIVED_VEC_TYPE floor (MASK_TYPE const & mask) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE floor (MASK_TYPE const & mask) const {
             return EMULATED_FUNCTIONS::MATH::floor<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // CEIL
-        inline DERIVED_VEC_TYPE ceil () const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE ceil () const {
             return EMULATED_FUNCTIONS::MATH::ceil<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // MCEIL
-        inline DERIVED_VEC_TYPE ceil (MASK_TYPE const & mask) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE ceil (MASK_TYPE const & mask) const {
             return EMULATED_FUNCTIONS::MATH::ceil<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // ISFIN
-        inline MASK_TYPE isfin () const {
+        UME_FORCE_INLINE MASK_TYPE isfin () const {
             return EMULATED_FUNCTIONS::MATH::isfin<DERIVED_VEC_TYPE, MASK_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // ISINF
-        inline MASK_TYPE isinf () const {
+        UME_FORCE_INLINE MASK_TYPE isinf () const {
             return EMULATED_FUNCTIONS::MATH::isinf<DERIVED_VEC_TYPE, MASK_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // ISAN
-        inline MASK_TYPE isan () const {
+        UME_FORCE_INLINE MASK_TYPE isan () const {
             return EMULATED_FUNCTIONS::MATH::isan<DERIVED_VEC_TYPE, MASK_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // ISNAN
-        inline MASK_TYPE isnan () const {
+        UME_FORCE_INLINE MASK_TYPE isnan () const {
             return EMULATED_FUNCTIONS::MATH::isnan<DERIVED_VEC_TYPE, MASK_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // ISNORM
-        inline MASK_TYPE isnorm() const {
+        UME_FORCE_INLINE MASK_TYPE isnorm() const {
             return EMULATED_FUNCTIONS::MATH::isnorm<DERIVED_VEC_TYPE, MASK_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // ISSUB
-        inline MASK_TYPE issub () const {
+        UME_FORCE_INLINE MASK_TYPE issub () const {
             return EMULATED_FUNCTIONS::MATH::issub<DERIVED_VEC_TYPE, SCALAR_FLOAT_TYPE, MASK_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // ISZERO
-        inline MASK_TYPE iszero () const {
+        UME_FORCE_INLINE MASK_TYPE iszero () const {
             return EMULATED_FUNCTIONS::MATH::iszero<DERIVED_VEC_TYPE, MASK_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // ISZEROSUB
-        inline MASK_TYPE iszerosub () const {
+        UME_FORCE_INLINE MASK_TYPE iszerosub () const {
             return EMULATED_FUNCTIONS::MATH::iszerosub<DERIVED_VEC_TYPE, MASK_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // EXP
-        inline DERIVED_VEC_TYPE exp () const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE exp () const {
             return EMULATED_FUNCTIONS::MATH::exp<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // MEXP
-        inline DERIVED_VEC_TYPE exp (MASK_TYPE const & mask) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE exp (MASK_TYPE const & mask) const {
             return EMULATED_FUNCTIONS::MATH::exp<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // LOG
-        inline DERIVED_VEC_TYPE log() const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE log() const {
             return EMULATED_FUNCTIONS::MATH::log<DERIVED_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // LOG10
-        inline DERIVED_VEC_TYPE log10() const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE log10() const {
             return EMULATED_FUNCTIONS::MATH::log10<DERIVED_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // LOG2
-        inline DERIVED_VEC_TYPE log2() const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE log2() const {
             return EMULATED_FUNCTIONS::MATH::log2<DERIVED_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // SIN
-        inline DERIVED_VEC_TYPE sin () const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE sin () const {
             return EMULATED_FUNCTIONS::MATH::sin<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // MSIN
-        inline DERIVED_VEC_TYPE sin (MASK_TYPE const & mask)const  {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE sin (MASK_TYPE const & mask)const  {
             return EMULATED_FUNCTIONS::MATH::sin<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // COS
-        inline DERIVED_VEC_TYPE cos () const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE cos () const {
             return EMULATED_FUNCTIONS::MATH::cos<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // MCOS
-        inline DERIVED_VEC_TYPE cos (MASK_TYPE const & mask) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE cos (MASK_TYPE const & mask) const {
             return EMULATED_FUNCTIONS::MATH::cos<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // SINCOS
-        inline void sincos(DERIVED_VEC_TYPE & sinvec, DERIVED_VEC_TYPE & cosvec) const {
+        UME_FORCE_INLINE void sincos(DERIVED_VEC_TYPE & sinvec, DERIVED_VEC_TYPE & cosvec) const {
             sinvec = EMULATED_FUNCTIONS::MATH::sin<DERIVED_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this));
             cosvec = EMULATED_FUNCTIONS::MATH::cos<DERIVED_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // MSINCOS
-        inline void sincos(MASK_TYPE const & mask, DERIVED_VEC_TYPE & sinvec, DERIVED_VEC_TYPE & cosvec) const {
+        UME_FORCE_INLINE void sincos(MASK_TYPE const & mask, DERIVED_VEC_TYPE & sinvec, DERIVED_VEC_TYPE & cosvec) const {
             sinvec = EMULATED_FUNCTIONS::MATH::sin<DERIVED_VEC_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE const &>(*this));
             cosvec = EMULATED_FUNCTIONS::MATH::cos<DERIVED_VEC_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // TAN
-        inline DERIVED_VEC_TYPE tan () const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE tan () const {
             return EMULATED_FUNCTIONS::MATH::tan<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // MTAN
-        inline DERIVED_VEC_TYPE tan (MASK_TYPE const & mask) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE tan (MASK_TYPE const & mask) const {
             return EMULATED_FUNCTIONS::MATH::tan<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // CTAN
-        inline DERIVED_VEC_TYPE ctan () const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE ctan () const {
             return EMULATED_FUNCTIONS::MATH::ctan<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // MCTAN
-        inline DERIVED_VEC_TYPE ctan (MASK_TYPE const & mask) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE ctan (MASK_TYPE const & mask) const {
             return EMULATED_FUNCTIONS::MATH::ctan<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // ATAN
-        inline DERIVED_VEC_TYPE atan() const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE atan() const {
             return EMULATED_FUNCTIONS::MATH::atan<DERIVED_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // ATAN2
-        inline DERIVED_VEC_TYPE atan2(DERIVED_VEC_TYPE const & b) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE atan2(DERIVED_VEC_TYPE const & b) const {
             return EMULATED_FUNCTIONS::MATH::atan2<DERIVED_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
 
@@ -6509,23 +6509,23 @@ namespace SIMD
     // This is just an experimental setup! Providing functions like this to handle interface
     // is possible although it will be pretty extensive in number of necessary declarations.
     template<typename VEC_TYPE>
-    inline VEC_TYPE addv (VEC_TYPE const & src1, VEC_TYPE const & src2) {
+    UME_FORCE_INLINE VEC_TYPE addv (VEC_TYPE const & src1, VEC_TYPE const & src2) {
         return src1.add(src2);
     }
 
     template<typename VEC_TYPE>
-    inline VEC_TYPE & addva (VEC_TYPE & src1, VEC_TYPE const & src2) {
+    UME_FORCE_INLINE VEC_TYPE & addva (VEC_TYPE & src1, VEC_TYPE const & src2) {
         return src1.addva(src2);
     }
 
     // How to restrict template parameter resolution to certain types only?
     template<typename VEC_TYPE>
-    inline VEC_TYPE adds (float src1, VEC_TYPE const & src2) {
+    UME_FORCE_INLINE VEC_TYPE adds (float src1, VEC_TYPE const & src2) {
         return src2.add(src1);
     }
     
     template<typename VEC_TYPE>
-    inline VEC_TYPE adds (VEC_TYPE const & src1, float src2) {
+    UME_FORCE_INLINE VEC_TYPE adds (VEC_TYPE const & src1, float src2) {
         return src1.add(src2);
     }
 } // namespace UME::SIMD

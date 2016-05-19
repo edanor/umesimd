@@ -121,6 +121,8 @@ namespace SIMD
     #define UME_ALIGNMENT_CHECK(ptr, alignment)
 #endif
 
+#include "UMEInline.h"
+
 #if defined FORCE_SCALAR
     #define USING_EMULATED_TYPES 1
     #include "plugins/UMESimdPluginScalarEmulation.h"
@@ -139,7 +141,7 @@ namespace SIMD
         #include "plugins/UMESimdPluginScalarEmulation.h"
     #endif // INSTRUCTION SET
 #endif
-    
+
 // Traits need to be defined after all SIMD vectors are defined. 
 #include "UMESimdTraits.h"
 #include "UMESimdScalarOperators.h"
