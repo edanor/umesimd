@@ -235,7 +235,7 @@ namespace SIMD {
         inline bool hland() const {
             alignas(32) uint32_t raw[16];
             _mm256_store_si256((__m256i*)raw, mMask[0]);
-            _mm256_store_si256((__m256i*)raw, mMask[1]);
+            _mm256_store_si256((__m256i*)&raw[8], mMask[1]);
             return raw[0] && raw[1] && raw[2] && raw[3] && raw[4] && raw[5] && raw[6] && raw[7]
                 && raw[8] && raw[9] && raw[10] && raw[11] && raw[12] && raw[13] && raw[14] && raw[15];
         }
