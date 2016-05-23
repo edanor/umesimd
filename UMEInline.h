@@ -39,8 +39,8 @@
 #define UME_FORCE_INLINE inline __attribute__ ((always_inline))
 #define UME_NEVER_INLINE __attribute__ ((noinline))
 #elif defined(__GNUC__)
-//#define UME_FORCE_INLINE __attribute__ ((always_inline))
-//#define UME_NEVER_INLINE __attribute__ ((noinline))
+#define UME_FORCE_INLINE inline __attribute__ ((always_inline))
+#define UME_NEVER_INLINE __attribute__ ((noinline))
 #else
 // Default fallback: if the compiler is unrecognized, simply try to ask it to inline.
 #define UME_FORCE_INLINE inline
