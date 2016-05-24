@@ -1146,23 +1146,23 @@ namespace SIMD
         }
 
         // RCP
-        template<typename VEC_TYPE>
+        template<typename VEC_TYPE, typename SCALAR_TYPE>
         UME_FORCE_INLINE VEC_TYPE rcp(VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
-                retval.insert(i, decltype(retval.extract(0))(1.0)/b[i]);
+                retval.insert(i, SCALAR_TYPE(1.0)/b[i]);
             }
             return retval;
         }
 
         // MRCP
-        template<typename VEC_TYPE, typename MASK_TYPE>
+        template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
         UME_FORCE_INLINE VEC_TYPE rcp(MASK_TYPE const & mask, VEC_TYPE const & b) {
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
-                if(mask[i] == true) retval.insert(i, decltype(retval.extract(0))(1.0)/b[i]);
+                if(mask[i] == true) retval.insert(i, SCALAR_TYPE(1.0)/b[i]);
                 else retval.insert(i, b[i]);
             }
             return retval;
@@ -1192,21 +1192,21 @@ namespace SIMD
         }
 
         // RCPA
-        template<typename VEC_TYPE>
+        template<typename VEC_TYPE, typename SCALAR_TYPE>
         UME_FORCE_INLINE VEC_TYPE & rcpAssign(VEC_TYPE & b) {
             UME_EMULATION_WARNING();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
-                b.insert(i, decltype(b.extract(0))(1.0)/b[i]);
+                b.insert(i, SCALAR_TYPE(1.0)/b[i]);
             }
             return b;
         }
 
         // MRCPA
-        template<typename VEC_TYPE, typename MASK_TYPE>
+        template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
         UME_FORCE_INLINE VEC_TYPE & rcpAssign(MASK_TYPE const & mask, VEC_TYPE & b) {
             UME_EMULATION_WARNING();
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
-                if(mask[i] == true) b.insert(i, decltype(b.extract(0))(1.0)/b[i]);
+                if(mask[i] == true) b.insert(i, SCALAR_TYPE(1.0)/b[i]);
             }
             return b;
         }
@@ -3133,45 +3133,45 @@ namespace SIMD
             }
 
             // RSQRT
-            template<typename VEC_TYPE>
+            template<typename VEC_TYPE, typename SCALAR_TYPE>
             UME_FORCE_INLINE VEC_TYPE rsqrt(VEC_TYPE const & a) {
                 UME_EMULATION_WARNING();
                 VEC_TYPE retval;
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
-                    retval.insert(i, decltype(retval.extract(0))(1.0)/std::sqrt(a[i])); 
+                    retval.insert(i, SCALAR_TYPE(1.0)/std::sqrt(a[i])); 
                 }
                 return retval;
             }
             // MRSQRT
-            template<typename VEC_TYPE, typename MASK_TYPE>
+            template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
             UME_FORCE_INLINE VEC_TYPE rsqrt(MASK_TYPE const & mask, VEC_TYPE const & a) {
                 UME_EMULATION_WARNING();
                 VEC_TYPE retval;
                 decltype(retval.extract(0)) temp;
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
-                    temp = decltype(retval.extract(0))(1.0)/std::sqrt(a[i]);
+                    temp = SCALAR_TYPE (1.0)/std::sqrt(a[i]);
                     retval.insert(i, (mask[i] == true) ? temp : a[i]);
                 }
                 return retval;
             }
             // RSQRTA
-            template<typename VEC_TYPE>
+            template<typename VEC_TYPE, typename SCALAR_TYPE>
             UME_FORCE_INLINE VEC_TYPE & rsqrtAssign (VEC_TYPE & a) {
                 UME_EMULATION_WARNING();
                 decltype(a.extract(0)) temp;
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
-                    temp = decltype(a.extract(0))(1.0)/std::sqrt(a[i]);
+                    temp = SCALAR_TYPE(1.0)/std::sqrt(a[i]);
                     a.insert(i, temp);
                 }
                 return a;
             }
             // MRSQRTA
-            template<typename VEC_TYPE, typename MASK_TYPE>
+            template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
             UME_FORCE_INLINE VEC_TYPE & rsqrtAssign(MASK_TYPE const & mask, VEC_TYPE & a) {
                 UME_EMULATION_WARNING();
                 decltype(a.extract(0)) temp;
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
-                    temp = decltype(a.extract(0))(1.0)/std::sqrt(a[i]);
+                    temp = SCALAR_TYPE(1.0)/std::sqrt(a[i]);
                     if(mask[i] == true) a.insert(i, temp);
                 }
                 return a;
@@ -3247,23 +3247,23 @@ namespace SIMD
             }
             
             // TRUNC
-            template<typename VEC_TYPE, typename INT_VEC_TYPE>
+            template<typename VEC_TYPE, typename SCALAR_TYPE, typename INT_VEC_TYPE>
             UME_FORCE_INLINE INT_VEC_TYPE truncToInt(VEC_TYPE const & a) {
                 UME_EMULATION_WARNING();
                 INT_VEC_TYPE retval;
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
-                    retval.insert(i, decltype(retval.extract(0))(std::trunc(a[i])));
+                    retval.insert(i, SCALAR_TYPE(std::trunc(a[i])));
                 }
                 return retval;
             }
             
             // MTRUNC
-            template<typename VEC_TYPE, typename INT_VEC_TYPE, typename MASK_TYPE>
+            template<typename VEC_TYPE, typename SCALAR_TYPE, typename INT_VEC_TYPE, typename MASK_TYPE>
             UME_FORCE_INLINE INT_VEC_TYPE truncToInt(MASK_TYPE const & mask, VEC_TYPE const & a) {
                 UME_EMULATION_WARNING();
                 INT_VEC_TYPE retval;
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
-                    if(mask[i] == true) retval.insert(i, decltype(retval.extract(0))(std::trunc(a[i])));
+                    if(mask[i] == true) retval.insert(i, SCALAR_TYPE(std::trunc(a[i])));
                     else retval.insert(i, 0);
                 }
                 return retval;
@@ -3479,23 +3479,23 @@ namespace SIMD
             }
 
             // ISZERO
-            template<typename VEC_TYPE, typename MASK_TYPE>
+            template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
             UME_FORCE_INLINE MASK_TYPE iszero(VEC_TYPE const & a) {
                 UME_EMULATION_WARNING();
                 MASK_TYPE retval;
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
-                    retval.insert(i, (a[i] == (decltype(a.extract(0))(0.0))));
+                    retval.insert(i, (a[i] == SCALAR_TYPE(0.0)));
                 }
                 return retval;
             }
 
             // ISZEROSUB
-            template<typename VEC_TYPE, typename MASK_TYPE>
+            template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
             UME_FORCE_INLINE MASK_TYPE iszerosub(VEC_TYPE const & a) {
                 UME_EMULATION_WARNING();
                 MASK_TYPE retval;
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
-                    bool isZero = (a[i] == (decltype(a.extract(0))(0.0)));
+                    bool isZero = (a[i] == SCALAR_TYPE(0.0));
                     bool isNormal = std::isnormal(a[i]);
                     bool isFinite = std::isfinite(a[i]);
                     bool isNan = std::isnan(a[i]);
@@ -3595,23 +3595,23 @@ namespace SIMD
             }
 
             // CTAN
-            template<typename VEC_TYPE>
+            template<typename VEC_TYPE, typename SCALAR_TYPE>
             UME_FORCE_INLINE VEC_TYPE ctan (VEC_TYPE const & a) {
                 UME_EMULATION_WARNING();
                 VEC_TYPE retval;
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
-                    retval.insert(i, decltype(retval.extract(0))(1.0)/std::tan(a[i]));
+                    retval.insert(i, SCALAR_TYPE(1.0)/std::tan(a[i]));
                 }
                 return retval;
             }
 
             // MCTAN
-            template<typename VEC_TYPE, typename MASK_TYPE>
+            template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
             UME_FORCE_INLINE VEC_TYPE ctan (MASK_TYPE const & mask, VEC_TYPE const & a) {
                 UME_EMULATION_WARNING();
                 VEC_TYPE retval;
                 for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
-                    if(mask[i] == true) retval.insert(i, decltype(retval.extract(0))(1.0)/std::tan(a[i]));
+                    if(mask[i] == true) retval.insert(i, SCALAR_TYPE(1.0)/std::tan(a[i]));
                     else retval.insert(i, a[i]);
                 }
                 return retval;
@@ -4919,12 +4919,12 @@ namespace SIMD
 
         // RCP
         UME_FORCE_INLINE DERIVED_VEC_TYPE rcp () const {
-            return EMULATED_FUNCTIONS::rcp<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this));
+            return EMULATED_FUNCTIONS::rcp<DERIVED_VEC_TYPE, SCALAR_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // MRCP
         UME_FORCE_INLINE DERIVED_VEC_TYPE rcp (MASK_TYPE const & mask) const {
-            return EMULATED_FUNCTIONS::rcp<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this));
+            return EMULATED_FUNCTIONS::rcp<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // RCPS
@@ -4939,12 +4939,12 @@ namespace SIMD
 
         // RCPA
         UME_FORCE_INLINE DERIVED_VEC_TYPE & rcpa () {
-            return EMULATED_FUNCTIONS::rcpAssign<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this));
+            return EMULATED_FUNCTIONS::rcpAssign<DERIVED_VEC_TYPE, SCALAR_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this));
         }
 
         // MRCPA
         UME_FORCE_INLINE DERIVED_VEC_TYPE & rcpa (MASK_TYPE const & mask) {
-            return EMULATED_FUNCTIONS::rcpAssign<DERIVED_VEC_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this));
+            return EMULATED_FUNCTIONS::rcpAssign<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this));
         }
 
         // RCPSA
@@ -6295,22 +6295,22 @@ namespace SIMD
 
         // RSQRT
         UME_FORCE_INLINE DERIVED_VEC_TYPE rsqrt () const {
-            return EMULATED_FUNCTIONS::MATH::rsqrt<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this));
+            return EMULATED_FUNCTIONS::MATH::rsqrt<DERIVED_VEC_TYPE, SCALAR_FLOAT_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // MRSQRT
         UME_FORCE_INLINE DERIVED_VEC_TYPE rsqrt (MASK_TYPE const & mask) const {
-            return EMULATED_FUNCTIONS::MATH::rsqrt<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this));
+            return EMULATED_FUNCTIONS::MATH::rsqrt<DERIVED_VEC_TYPE, SCALAR_FLOAT_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // SQRTA
         UME_FORCE_INLINE DERIVED_VEC_TYPE & rsqrta () {
-            return EMULATED_FUNCTIONS::MATH::rsqrtAssign<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this));
+            return EMULATED_FUNCTIONS::MATH::rsqrtAssign<DERIVED_VEC_TYPE, SCALAR_FLOAT_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this));
         }
 
         // MSQRTA
         UME_FORCE_INLINE DERIVED_VEC_TYPE & rsqrta (MASK_TYPE const & mask) {
-            return EMULATED_FUNCTIONS::MATH::rsqrtAssign<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this));
+            return EMULATED_FUNCTIONS::MATH::rsqrtAssign<DERIVED_VEC_TYPE, SCALAR_FLOAT_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this));
         }
         
         // POWV
@@ -6349,12 +6349,12 @@ namespace SIMD
         
         // TRUNC
         UME_FORCE_INLINE DERIVED_VEC_INT_TYPE trunc () const {
-            return EMULATED_FUNCTIONS::MATH::truncToInt<DERIVED_VEC_TYPE, DERIVED_VEC_INT_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this));
+            return EMULATED_FUNCTIONS::MATH::truncToInt<DERIVED_VEC_TYPE, SCALAR_FLOAT_TYPE, DERIVED_VEC_INT_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // MTRUNC
         UME_FORCE_INLINE DERIVED_VEC_INT_TYPE trunc (MASK_TYPE const & mask) const {
-            return EMULATED_FUNCTIONS::MATH::truncToInt<DERIVED_VEC_TYPE, DERIVED_VEC_INT_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE const &>(*this));
+            return EMULATED_FUNCTIONS::MATH::truncToInt<DERIVED_VEC_TYPE, SCALAR_FLOAT_TYPE, DERIVED_VEC_INT_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // FLOOR
@@ -6409,12 +6409,12 @@ namespace SIMD
 
         // ISZERO
         UME_FORCE_INLINE MASK_TYPE iszero () const {
-            return EMULATED_FUNCTIONS::MATH::iszero<DERIVED_VEC_TYPE, MASK_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this));
+            return EMULATED_FUNCTIONS::MATH::iszero<DERIVED_VEC_TYPE, SCALAR_FLOAT_TYPE, MASK_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // ISZEROSUB
         UME_FORCE_INLINE MASK_TYPE iszerosub () const {
-            return EMULATED_FUNCTIONS::MATH::iszerosub<DERIVED_VEC_TYPE, MASK_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this));
+            return EMULATED_FUNCTIONS::MATH::iszerosub<DERIVED_VEC_TYPE, SCALAR_FLOAT_TYPE, MASK_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // EXP
@@ -6486,12 +6486,12 @@ namespace SIMD
 
         // CTAN
         UME_FORCE_INLINE DERIVED_VEC_TYPE ctan () const {
-            return EMULATED_FUNCTIONS::MATH::ctan<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this));
+            return EMULATED_FUNCTIONS::MATH::ctan<DERIVED_VEC_TYPE, SCALAR_FLOAT_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // MCTAN
         UME_FORCE_INLINE DERIVED_VEC_TYPE ctan (MASK_TYPE const & mask) const {
-            return EMULATED_FUNCTIONS::MATH::ctan<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this));
+            return EMULATED_FUNCTIONS::MATH::ctan<DERIVED_VEC_TYPE, SCALAR_FLOAT_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // ATAN

@@ -387,7 +387,7 @@ namespace SIMD {
         inline SIMDVec_i sadd(SIMDVecMask<4> const & mask, int32_t b) const {
             const int32_t MAX_VAL = std::numeric_limits<int32_t>::max();
             const int32_t MIN_VAL = std::numeric_limits<int32_t>::min();
-            int32_t t[2];
+            int32_t t[4];
 
             for (int i = 0; i < 4; i++) {
                 if (mask.mMask[i] == true)
