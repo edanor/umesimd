@@ -906,7 +906,7 @@ namespace SIMD {
         }
         // MIMAX
         inline uint32_t imax(SIMDVecMask<1> const & mask) const {
-            return mask.mMask ? 0 : 0xFFFFFFFFFFFFFFFF;
+            return mask.mMask ? 0 : std::numeric_limits<uint32_t>::max();
         }
         // HMIN
         inline uint64_t hmin() const {
@@ -923,7 +923,7 @@ namespace SIMD {
         }
         // MIMIN
         inline uint32_t imin(SIMDVecMask<1> const & mask) const {
-            return mask.mMask ? 0 : 0xFFFFFFFFFFFFFFFF;
+            return mask.mMask ? 0 : std::numeric_limits<uint32_t>::max();
         }
 
         // BANDV
