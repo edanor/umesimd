@@ -2394,7 +2394,7 @@ namespace SIMD
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
-                retval.insert(i, mask[i] ? a[i] : b[i]);
+                retval.insert(i, mask[i] ? b[i] : a[i]);
             }
             return retval;
         }
@@ -2405,7 +2405,7 @@ namespace SIMD
             UME_EMULATION_WARNING();
             VEC_TYPE retval;
             for(uint32_t i = 0; i < VEC_TYPE::length(); i++) {
-                retval.insert(i, mask[i] ? a[i] : b);
+                retval.insert(i, mask[i] ? b[i] : a);
             }
             return retval;
         }
