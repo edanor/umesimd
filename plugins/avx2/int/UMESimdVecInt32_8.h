@@ -196,7 +196,16 @@ namespace SIMD {
             return p;
         }
         // BLENDV
+        inline SIMDVec_i blend(SIMDVecMask<8> const & mask, SIMDVec_i const & b) const {
+            __m256i t0 = _mm256_blendv_epi8(mVec, b.mVec, mask.mMask);
+            return SIMDVec_i(t0);
+        }
         // BLENDS
+        inline SIMDVec_i blend(SIMDVecMask<8> const & mask, int32_t b) const {
+            __m256i t0 = _mm256_set1_epi32(b);
+            __m256i t1 = _mm256_blendv_epi8(mVec, t1, mask.mMask);
+            return SIMDVec_i(t0);
+        }
         // SWIZZLE
         // SWIZZLEA
 

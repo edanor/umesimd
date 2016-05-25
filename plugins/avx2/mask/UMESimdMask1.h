@@ -89,6 +89,55 @@ namespace SIMD {
             return *this;
         }
 
+        // LANDV
+        // LANDS
+        // LANDVA
+        // LANDSA
+        
+        // LORV
+        inline SIMDVecMask lor(SIMDVecMask const & mask) const {
+            bool t0 = mMask || mask.mMask;
+            return SIMDVecMask(t0);
+        }
+
+        inline SIMDVecMask operator| (SIMDVecMask const & mask) const {
+            return lor(mask);
+        }
+
+        inline SIMDVecMask operator|| (SIMDVecMask const & mask) const {
+            return lor(mask);
+        }
+
+        // LORS
+        inline SIMDVecMask lor(bool value) const {
+            bool t0 = mMask || value;
+            return SIMDVecMask(t0);
+        }
+
+        inline SIMDVecMask operator| (bool value) const {
+            return lor(value);
+        }
+
+        inline SIMDVecMask operator|| (bool value) const {
+            return lor(value);
+        }
+
+        // LORVA
+        // LORSA
+        // LXORV
+        // LXORS
+        // LXORVA
+        // LXORSA
+
+        // LNOT
+        inline SIMDVecMask lnot () const {
+            return SIMDVecMask(!mMask);
+        }
+        
+        inline SIMDVecMask operator!() const {
+            return lnot();
+        }
+        
         // HLOR
         inline bool hlor() const {
             return mMask;

@@ -227,7 +227,17 @@ namespace SIMD {
         }
 
         // BLENDV
+        inline SIMDVec_f blend(SIMDVecMask<16> const & mask, SIMDVec_f const & b) const {
+            __m256 t0 = BLEND(mVec[0], b.mVec[0], mask.mMask[0]);
+            __m256 t1 = BLEND(mVec[1], b.mVec[1], mask.mMask[1]);
+            return SIMDVec_f(t0, t1);
+        }
         // BLENDS
+        inline SIMDVec_f blend(SIMDVecMask<16> const & mask, float b) const {
+            __m256 t0 = BLEND(mVec[0], _mm256_set1_ps(b), mask.mMask[0]);
+            __m256 t1 = BLEND(mVec[1], _mm256_set1_ps(b), mask.mMask[1]);
+            return SIMDVec_f(t0, t1);
+        }
         // SWIZZLE
         // SWIZZLEA
 

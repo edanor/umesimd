@@ -120,16 +120,31 @@ namespace SIMD {
             __m256i t0 = _mm256_and_si256(mMask, b.mMask);
             return SIMDVecMask(t0);
         }
+        inline SIMDVecMask operator& (SIMDVecMask const & b) const {
+            return land(b);
+        }
+        inline SIMDVecMask operator&& (SIMDVecMask const & b) const {
+            return land(b);
+        }
         // LANDS
         inline SIMDVecMask land(bool b) const {
             __m256i t0 = _mm256_set1_epi32(b ? TRUE() : FALSE());
             __m256i t1 = _mm256_and_si256(mMask, t0);
             return SIMDVecMask(t1);
         }
+        inline SIMDVecMask operator& (bool b) const {
+            return land(b);
+        }
+        inline SIMDVecMask operator&& (bool b) const {
+            return land(b);
+        }
         // LANDVA
         inline SIMDVecMask & landa(SIMDVecMask const & b) {
             mMask = _mm256_and_si256(mMask, b.mMask);
             return *this;
+        }
+        inline SIMDVecMask operator&= (SIMDVecMask const & b) {
+            return landa(b);
         }
         // LANDSA
         inline SIMDVecMask & landa(bool b) {
@@ -137,10 +152,19 @@ namespace SIMD {
             mMask = _mm256_and_si256(mMask, t0);
             return *this;
         }
+        inline SIMDVecMask operator&= (bool b) {
+            return landa(b);
+        }
         // LORV
         inline SIMDVecMask lor(SIMDVecMask const & b) const {
             __m256i t0 = _mm256_or_si256(mMask, b.mMask);
             return SIMDVecMask(t0);
+        }
+        inline SIMDVecMask operator| (SIMDVecMask const & b) const {
+            return lor(b);
+        }
+        inline SIMDVecMask operator|| (SIMDVecMask const & b) const {
+            return lor(b);
         }
         // LORS
         inline SIMDVecMask lor(bool b) const {
@@ -148,10 +172,19 @@ namespace SIMD {
             __m256i t1 = _mm256_or_si256(mMask, t0);
             return SIMDVecMask(t1);
         }
+        inline SIMDVecMask operator| (bool b) const {
+            return lor(b);
+        }
+        inline SIMDVecMask operator|| (bool b) const {
+            return lor(b);
+        }
         // LORVA
         inline SIMDVecMask & lora(SIMDVecMask const & b) {
             mMask = _mm256_or_si256(mMask, b.mMask);
             return *this;
+        }
+        inline SIMDVecMask & operator|= (SIMDVecMask const & b) {
+            return lora(b);
         }
         // LORSA
         inline SIMDVecMask & lora(bool b) {
@@ -159,10 +192,16 @@ namespace SIMD {
             mMask = _mm256_or_si256(mMask, t0);
             return *this;
         }
+        inline SIMDVecMask & operator |= (bool b) {
+            return lora(b);
+        }
         // LXORV
         inline SIMDVecMask lxor(SIMDVecMask const & b) const {
             __m256i t0 = _mm256_xor_si256(mMask, b.mMask);
             return SIMDVecMask(t0);
+        }
+        inline SIMDVecMask operator^ (SIMDVecMask const & b) const {
+            return lxor(b);
         }
         // LXORS
         inline SIMDVecMask lxor(bool b) const {
@@ -170,10 +209,16 @@ namespace SIMD {
             __m256i t1 = _mm256_xor_si256(mMask, t0);
             return SIMDVecMask(t1);
         }
+        inline SIMDVecMask operator^ (bool b) const {
+            return lxor(b);
+        }
         // LXORVA
         inline SIMDVecMask & lxora(SIMDVecMask const & b) {
             mMask = _mm256_xor_si256(mMask, b.mMask);
             return *this;
+        }
+        inline SIMDVecMask operator^= (SIMDVecMask const & b) {
+            return lxora(b);
         }
         // LXORSA
         inline SIMDVecMask & lxora(bool b) {
@@ -181,11 +226,17 @@ namespace SIMD {
             mMask = _mm256_xor_si256(mMask, t0);
             return *this;
         }
+        inline SIMDVecMask operator^= (bool b) {
+            return lxora(b);
+        }
         // LNOT
         inline SIMDVecMask lnot() const {
             __m256i t0 = _mm256_set1_epi32(TRUE());
             __m256i t1 = _mm256_xor_si256(mMask, t0);
             return SIMDVecMask(t1);
+        }
+        inline SIMDVecMask operator! () const {
+            return lnot();
         }
         // LNOTA
         inline SIMDVecMask & lnota() {

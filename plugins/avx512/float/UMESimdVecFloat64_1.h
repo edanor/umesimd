@@ -178,12 +178,12 @@ namespace SIMD {
 
         // BLENDV
         inline SIMDVec_f blend(SIMDVecMask<1> const & mask, SIMDVec_f const & b) const {
-            double t0 = (mask.mMask == true) ? mVec : b.mVec;
+            double t0 = (mask.mMask == true) ? b.mVec : mVec;
             return SIMDVec_f(t0);
         }
         // BLENDS
         inline SIMDVec_f blend(SIMDVecMask<1> const & mask, double b) const {
-            double t0 = (mask.mMask == true) ? mVec : b;
+            double t0 = (mask.mMask == true) ? b : mVec;
             return SIMDVec_f(t0);
         }
         // SWIZZLE
