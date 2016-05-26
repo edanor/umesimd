@@ -175,8 +175,8 @@ int main()
         "SIMD version uses following operations: \n"
         "   32/64f vectors: SET-CONSTR, LOAD-CONSTR, DIVV (operator /), MULV (operator*),\n"
         "                   MULS (operator*), BLENDV, FMULADDV, SQRT, CMPLTV (operator <),\n"
-        "                   CMPGTV (operator >=), FTOI\n"
-        "   32/64i vectors: COPY-CONST, STORE, DEGRADE\n"
+        "                   CMPGTV (operator >=), FTOI, SSTORE\n"
+        "   32/64i vectors: COPY-CONST, SSTORE, DEGRADE\n"
         "     # of executions per measurement: " << ITERATIONS << "\n\n";
 
 
