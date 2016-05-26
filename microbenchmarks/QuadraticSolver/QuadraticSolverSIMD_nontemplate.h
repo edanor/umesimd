@@ -79,9 +79,9 @@ UME_FORCE_INLINE void QuadSolveSIMD8_32f(
     r2 = r3.blend(mask2, r2);
 
     SIMD8_32i int_roots(nr);
-    int_roots.store(roots);
-    r1.store(x1);
-    r2.store(x2);
+    int_roots.sstore(roots);
+    r1.sstore(x1);
+    r2.sstore(x2);
 }
 
 UME_NEVER_INLINE TIMING_RES run_SIMD_nontemplate()

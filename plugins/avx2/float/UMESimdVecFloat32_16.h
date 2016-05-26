@@ -201,6 +201,25 @@ namespace SIMD {
             mVec[1] = BLEND(mVec[1], t1, mask.mMask[1]);
             return *this;
         }
+        // SLOAD
+        inline SIMDVec_f & sload(float const * p) {
+            __m256i t0 = _mm256_stream_load_si256((__m256i*)p);
+            __m256i t1 = _mm256_stream_load_si256((__m256i*)(p + 8));
+            mVec[0] = _mm256_castsi256_ps(t0);
+            mVec[1] = _mm256_castsi256_ps(t1);
+            return *this;
+        }
+        // MSLOAD
+        inline SIMDVec_f & sload(SIMDVecMask<16> const & mask, float const * p) {
+            __m256i t0 = _mm256_stream_load_si256((__m256i*)p);
+            __m256i t1 = _mm256_stream_load_si256((__m256i*)(p + 8));
+            __m256 t2 = _mm256_castsi256_ps(t0);
+            __m256 t3 = _mm256_castsi256_ps(t1);
+            mVec[0] = BLEND(mVec[0], t2, mask.mMask[0]);
+            mVec[1] = BLEND(mVec[1], t3, mask.mMask[1]);
+            return *this;
+        }
+
         // STORE
         inline float* store(float* p) const {
             _mm256_storeu_ps(p, mVec[0]);
@@ -223,6 +242,24 @@ namespace SIMD {
         inline float* storea(SIMDVecMask<16> const & mask, float* p) const {
             _mm256_maskstore_ps(p, mask.mMask[0], mVec[0]);
             _mm256_maskstore_ps(p + 8, mask.mMask[1], mVec[1]);
+            return p;
+        }
+        // SSTORE
+        inline float* sstore(float* p) const {
+            _mm256_stream_ps(p, mVec[0]);
+            _mm256_stream_ps(p + 8, mVec[1]);
+            return p;
+        }
+        // MSSTORE
+        inline float* sstore(SIMDVecMask<16> const & mask, float* p) const {
+            __m256i t0 = _mm256_stream_load_si256((__m256i*)p);
+            __m256i t1 = _mm256_stream_load_si256((__m256i*)(p + 8));
+            __m256 t2 = _mm256_castsi256_ps(t0);
+            __m256 t3 = _mm256_castsi256_ps(t1);
+            __m256 t4 = BLEND(t2, mVec[0], mask.mMask[0]);
+            __m256 t5 = BLEND(t3, mVec[1], mask.mMask[1]);
+            _mm256_stream_ps(p, t4);
+            _mm256_stream_ps(p + 8, t5);
             return p;
         }
 

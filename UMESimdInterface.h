@@ -4476,6 +4476,16 @@ namespace SIMD
             return EMULATED_FUNCTIONS::loadAligned<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this), p);
         }
 
+        // SLOAD
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & sload(SCALAR_TYPE const *p) {
+            return EMULATED_FUNCTIONS::load<DERIVED_VEC_TYPE, SCALAR_TYPE>(static_cast<DERIVED_VEC_TYPE &>(*this), p);
+        }
+
+        // MSLOAD
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & sload(MASK_TYPE const & mask, SCALAR_TYPE const *p) {
+            return EMULATED_FUNCTIONS::load<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE &>(*this), p);
+        }
+
         // STORE
         UME_FORCE_INLINE SCALAR_TYPE* store (SCALAR_TYPE* p) const {
             return EMULATED_FUNCTIONS::store<DERIVED_VEC_TYPE, SCALAR_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this), p);
@@ -4494,6 +4504,16 @@ namespace SIMD
         // MSTOREA
         UME_FORCE_INLINE SCALAR_TYPE* storea (MASK_TYPE const & mask, SCALAR_TYPE* p) const {
            return EMULATED_FUNCTIONS::store<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this), p);
+        }
+
+        // SSTORE
+        UME_FORCE_INLINE SCALAR_TYPE* sstore(SCALAR_TYPE *p) const {
+            return EMULATED_FUNCTIONS::store<DERIVED_VEC_TYPE, SCALAR_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this), p);
+        }
+
+        // MSSTORE
+        UME_FORCE_INLINE SCALAR_TYPE* sstore(MASK_TYPE const & mask, SCALAR_TYPE *p) const {
+            return EMULATED_FUNCTIONS::store<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE const &>(*this), p);
         }
 
         // EXTRACT

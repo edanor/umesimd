@@ -82,9 +82,9 @@ UME_FORCE_INLINE void QuadSolveSIMD(
 
     INT_VEC_T int_roots(nr);
     UME::SIMD::SIMDVec<int, INT_VEC_T::length()> int_roots2(int_roots);
-    int_roots2.store(roots);
-    r1.store(x1);
-    r2.store(x2);
+    int_roots2.sstore(roots);
+    r1.sstore(x1);
+    r2.sstore(x2);
 }
 
 template<typename FLOAT_T, uint32_t LENGTH>

@@ -172,6 +172,20 @@ namespace SIMD {
             mVec = BLEND(mVec, t0, mask.mMask);
             return *this;
         }
+        // SLOAD
+        inline SIMDVec_f & sload(float const * p) {
+            __m256i t0 = _mm256_stream_load_si256((__m256i*)p);
+            mVec = _mm256_castsi256_ps(t0);
+            return *this;
+        }
+        // MSLOAD
+        inline SIMDVec_f & sload(SIMDVecMask<8> const & mask, float const * p) {
+            __m256i t0 = _mm256_stream_load_si256((__m256i*)p);
+            __m256 t1 = _mm256_castsi256_ps(t0);
+            mVec = BLEND(mVec, t1, mask.mMask);
+            return *this;
+        }
+
         // STORE
         inline float* store(float* p) const {
             _mm256_storeu_ps(p, mVec);
@@ -190,6 +204,19 @@ namespace SIMD {
         // MSTOREA
         inline float* storea(SIMDVecMask<8> const & mask, float* p) const {
             _mm256_maskstore_ps(p, mask.mMask, mVec);
+            return p;
+        }
+        // SSTORE
+        inline float* sstore(float* p) const {
+            _mm256_stream_ps(p, mVec);
+            return p;
+        }
+        // MSSTORE
+        inline float* sstore(SIMDVecMask<8> const & mask, float* p) const {
+            __m256i t0 = _mm256_stream_load_si256((__m256i*)p);
+            __m256 t1 = _mm256_castsi256_ps(t0);
+            __m256 t2 = BLEND(t1, mVec, mask.mMask);
+            _mm256_stream_ps(p, t2);
             return p;
         }
 

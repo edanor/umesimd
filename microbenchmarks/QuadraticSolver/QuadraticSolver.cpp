@@ -191,7 +191,7 @@ int main()
     std::cout << "AVX2 intrinsic code (float, 8): unavailable\n";
 #endif
 
-    //benchmarkSIMD_nontemplate("UME::SIMD (float, 8) nontemplate:", ITERATIONS, ref);
+    benchmarkSIMD_nontemplate("UME::SIMD (float, 8) nontemplate:", ITERATIONS, ref);
 
     benchmarkSIMD<float, 1>("UME::SIMD (float, 1): ", ITERATIONS, ref);
     benchmarkSIMD<float, 2>("UME::SIMD (float, 2): ", ITERATIONS, ref);
