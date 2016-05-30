@@ -173,15 +173,36 @@ namespace SIMD {
         // ****************************************************************************************
 
         // ASSIGNV
+        inline SIMDVec_i & assign(SIMDVec_i const & b) {
+            mVec[0] = b.mVec[0];
+            mVec[1] = b.mVec[1];
+            return *this;
+        }
         inline SIMDVec_i & operator=(SIMDVec_i const & b) {
             return assign(b);
         }
         // MASSIGNV
+        inline SIMDVec_i & assign(SIMDVecMask<8> const & mask, SIMDVec_i const & b) {
+            mVec[0] = BLEND_LO(mVec[0], b.mVec[0], mask.mMask);
+            mVec[1] = BLEND_HI(mVec[1], b.mVec[1], mask.mMask);
+            return *this;
+        }
         // ASSIGNS
+        inline SIMDVec_i & assign(int64_t b) {
+            mVec[0] = SET1_EPI64(b);
+            mVec[1] = SET1_EPI64(b);
+            return *this;
+        }
         inline SIMDVec_i & operator= (int64_t b) {
             return assign(b);
         }
         // MASSIGNS
+        inline SIMDVec_i & assign(SIMDVecMask<8> const & mask, int64_t b) {
+            __m256i t0 = SET1_EPI64(b);
+            mVec[0] = BLEND_LO(mVec[0], t0, mask.mMask);
+            mVec[1] = BLEND_HI(mVec[1], t0, mask.mMask);
+            return *this;
+        }
 
         // PREFETCH0
         // PREFETCH1
@@ -255,10 +276,43 @@ namespace SIMD {
         // SWIZZLE
         // SWIZZLEA
 
-        // ADDV
-        // MADDV
-        // ADDS
-        // MADDS
+
+        // ADDV
+        inline SIMDVec_i add(SIMDVec_i const & b) const {
+            __m256i t0 = _mm256_add_epi64(mVec[0], b.mVec[0]);
+            __m256i t1 = _mm256_add_epi64(mVec[1], b.mVec[1]);
+            return SIMDVec_i(t0, t1);
+        }
+        inline SIMDVec_i operator+ (SIMDVec_i const & b) const {
+            return add(b);
+        }
+        // MADDV
+        inline SIMDVec_i add(SIMDVecMask<8> const & mask, SIMDVec_i const & b) const {
+            __m256i t0 = _mm256_add_epi64(mVec[0], b.mVec[0]);
+            __m256i t1 = _mm256_add_epi64(mVec[1], b.mVec[1]);
+            __m256i t2 = BLEND_LO(mVec[0], t0, mask.mMask);
+            __m256i t3 = BLEND_HI(mVec[1], t1, mask.mMask);
+            return SIMDVec_i(t2, t3);
+        }
+        // ADDS
+        inline SIMDVec_i add(double b) const {
+            __m256i t0 = SET1_EPI64(b);
+            __m256i t1 = _mm256_add_epi64(mVec[0], t0);
+            __m256i t2 = _mm256_add_epi64(mVec[1], t0);
+            return SIMDVec_i(t1, t2);
+        }
+        inline SIMDVec_i operator+ (double b) const {
+            return add(b);
+        }
+        // MADDS
+        inline SIMDVec_i add(SIMDVecMask<8> const & mask, double b) const {
+            __m256i t0 = SET1_EPI64(b);
+            __m256i t1 = _mm256_add_epi64(mVec[0], t0);
+            __m256i t2 = _mm256_add_epi64(mVec[1], t0);
+            __m256i t3 = BLEND_LO(mVec[0], t1, mask.mMask);
+            __m256i t4 = BLEND_HI(mVec[1], t2, mask.mMask);
+            return SIMDVec_i(t3, t4);
+        }
         // ADDVA
         // MADDVA
         // ADDSA
@@ -276,13 +330,77 @@ namespace SIMD {
         // PREFINC
         // MPREFINC
         // SUBV
-        // MSUBV
-        // SUBS
-        // MSUBS
+        inline SIMDVec_i sub(SIMDVec_i const & b) const {
+            __m256i t0 = _mm256_sub_epi64(mVec[0], b.mVec[0]);
+            __m256i t1 = _mm256_sub_epi64(mVec[1], b.mVec[1]);
+            return SIMDVec_i(t0, t1);
+        }
+        inline SIMDVec_i operator- (SIMDVec_i const & b) const {
+            return sub(b);
+        }
+        // MSUBV
+        inline SIMDVec_i sub(SIMDVecMask<8> const & mask, SIMDVec_i const & b) const {
+            __m256i t0 = _mm256_sub_epi64(mVec[0], b.mVec[0]);
+            __m256i t1 = _mm256_sub_epi64(mVec[1], b.mVec[1]);
+            __m256i t2 = BLEND_LO(mVec[0], t0, mask.mMask);
+            __m256i t3 = BLEND_HI(mVec[1], t1, mask.mMask);
+            return SIMDVec_i(t2, t3);
+        }
+        // SUBS
+        inline SIMDVec_i sub(double b) const {
+            __m256i t0 = SET1_EPI64(b);
+            __m256i t1 = _mm256_sub_epi64(mVec[0], t0);
+            __m256i t2 = _mm256_sub_epi64(mVec[1], t0);
+            return SIMDVec_i(t1, t2);
+        }
+        inline SIMDVec_i operator- (double b) const {
+            return sub(b);
+        }
+        // MSUBS
+        inline SIMDVec_i sub(SIMDVecMask<8> const & mask, double b) const {
+            __m256i t0 = SET1_EPI64(b);
+            __m256i t1 = _mm256_sub_epi64(mVec[0], t0);
+            __m256i t2 = _mm256_sub_epi64(mVec[1], t0);
+            __m256i t3 = BLEND_LO(mVec[0], t1, mask.mMask);
+            __m256i t4 = BLEND_HI(mVec[1], t2, mask.mMask);
+            return SIMDVec_i(t3, t4);
+        }
         // SUBVA
-        // MSUBVA
-        // SUBSA
-        // MSUBSA
+        inline SIMDVec_i suba(SIMDVec_i const & b) {
+            mVec[0] = _mm256_sub_epi64(mVec[0], b.mVec[0]);
+            mVec[1] = _mm256_sub_epi64(mVec[1], b.mVec[1]);
+            return *this;
+        }
+        inline SIMDVec_i operator-= (SIMDVec_i const & b) {
+            return suba(b);
+        }
+        // MSUBVA
+        inline SIMDVec_i suba(SIMDVecMask<8> const & mask, SIMDVec_i const & b) {
+            __m256i t0 = _mm256_sub_epi64(mVec[0], b.mVec[0]);
+            __m256i t1 = _mm256_sub_epi64(mVec[1], b.mVec[1]);
+            mVec[0] = BLEND_LO(mVec[0], t0, mask.mMask);
+            mVec[1] = BLEND_HI(mVec[1], t1, mask.mMask);
+            return *this;
+        }
+        // SUBSA
+        inline SIMDVec_i suba(double b) {
+            __m256i t0 = SET1_EPI64(b);
+            mVec[0] = _mm256_sub_epi64(mVec[0], t0);
+            mVec[1] = _mm256_sub_epi64(mVec[1], t0);
+            return *this;
+        }
+        inline SIMDVec_i operator-= (double b) {
+            return suba(b);
+        }
+        // MSUBSA
+        inline SIMDVec_i suba(SIMDVecMask<8> const & mask, double b) {
+            __m256i t0 = SET1_EPI64(b);
+            __m256i t1 = _mm256_sub_epi64(mVec[0], t0);
+            __m256i t2 = _mm256_sub_epi64(mVec[1], t0);
+            mVec[0] = BLEND_LO(mVec[0], t1, mask.mMask);
+            mVec[1] = BLEND_HI(mVec[1], t2, mask.mMask);
+            return *this;
+        }
         // SSUBV
         // MSSUBV
         // SSUBS
@@ -292,9 +410,35 @@ namespace SIMD {
         // SSUBSA
         // MSSUBSA
         // SUBFROMV
+        inline SIMDVec_i subfrom(SIMDVec_i const & b) const {
+            __m256i t0 = _mm256_sub_epi64(b.mVec[0], mVec[0]);
+            __m256i t1 = _mm256_sub_epi64(b.mVec[1], mVec[1]);
+            return SIMDVec_i(t0, t1);
+        }
         // MSUBFROMV
+        inline SIMDVec_i subfrom(SIMDVecMask<8> const & mask, SIMDVec_i const & b) const {
+            __m256i t0 = _mm256_sub_epi64(b.mVec[0], mVec[0]);
+            __m256i t1 = _mm256_sub_epi64(b.mVec[1], mVec[1]);
+            __m256i t2 = BLEND_LO(b.mVec[0], t0, mask.mMask);
+            __m256i t3 = BLEND_LO(b.mVec[1], t1, mask.mMask);
+            return SIMDVec_i(t2, t3);
+        }
         // SUBFROMS
+        inline SIMDVec_i subfrom(int64_t b) const {
+            __m256i t0 = SET1_EPI64(b);
+            __m256i t1 = _mm256_sub_epi64(t0, mVec[0]);
+            __m256i t2 = _mm256_sub_epi64(t0, mVec[1]);
+            return SIMDVec_i(t1, t2);
+        }
         // MSUBFROMS
+        inline SIMDVec_i subfrom(SIMDVecMask<8> const & mask, int64_t b) const {
+            __m256i t0 = SET1_EPI64(b);
+            __m256i t1 = _mm256_sub_epi64(t0, mVec[0]);
+            __m256i t2 = _mm256_sub_epi64(t0, mVec[1]);
+            __m256i t3 = BLEND_LO(t0, t1, mask.mMask);
+            __m256i t4 = BLEND_LO(t0, t2, mask.mMask);
+            return SIMDVec_i(t3, t4);
+        }
         // SUBFROMVA
         // MSUBFROMVA
         // SUBFROMSA
@@ -385,9 +529,41 @@ namespace SIMD {
         // MIMIN
 
         // BANDV
+        inline SIMDVec_i band(SIMDVec_i const & b) const {
+            __m256i t0 = _mm256_and_si256(mVec[0], b.mVec[0]);
+            __m256i t1 = _mm256_and_si256(mVec[1], b.mVec[1]);
+            return SIMDVec_i(t0, t1);
+        }
+        inline SIMDVec_i operator& (SIMDVec_i const & b) const {
+            return band(b);
+        }
         // MBANDV
+        inline SIMDVec_i band(SIMDVecMask<8> const & mask, SIMDVec_i const & b) const {
+            __m256i t0 = _mm256_and_si256(mVec[0], b.mVec[0]);
+            __m256i t1 = _mm256_and_si256(mVec[1], b.mVec[1]);
+            __m256i t2 = BLEND_LO(mVec[0], t0, mask.mMask);
+            __m256i t3 = BLEND_HI(mVec[1], t1, mask.mMask);
+            return SIMDVec_i(t2, t3);
+        }
         // BANDS
+        inline SIMDVec_i band(int64_t b) const {
+            __m256i t0 = SET1_EPI64(b);
+            __m256i t1 = _mm256_and_si256(mVec[0], t0);
+            __m256i t2 = _mm256_and_si256(mVec[1], t0);
+            return SIMDVec_i(t1, t2);
+        }
+        inline SIMDVec_i operator& (int64_t b) const {
+            return band(b);
+        }
         // MBANDS
+        inline SIMDVec_i band(SIMDVecMask<8> const & mask, int64_t b) const {
+            __m256i t0 = SET1_EPI64(b);
+            __m256i t1 = _mm256_and_si256(mVec[0], t0);
+            __m256i t2 = _mm256_and_si256(mVec[1], t0);
+            __m256i t3 = BLEND_LO(mVec[0], t1, mask.mMask);
+            __m256i t4 = BLEND_HI(mVec[1], t2, mask.mMask);
+            return SIMDVec_i(t3, t4);
+        }
         // BANDVA
         // MBANDVA
         // BANDSA
@@ -468,6 +644,9 @@ namespace SIMD {
         // MRORSA
 
         // NEG
+        inline SIMDVec_i operator- () const {
+            return neg();
+        }
         // MNEG
         // NEGA
         // MNEGA
@@ -500,5 +679,6 @@ namespace SIMD {
 #undef SET1_EPI64
 #undef BLEND_LO
 #undef BLEND_HI
+#undef SPLIT_CALL_BINARY
 
 #endif

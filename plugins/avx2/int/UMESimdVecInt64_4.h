@@ -98,8 +98,6 @@
                                 _mm256_extractf128_si256(b_256i, 1)), \
                             0x1)
 
-
-
 #define SPLIT_CALL_BINARY_MASK(a_256i, b_256i, mask_256i, binary_op) \
                 _mm256_insertf128_si256(\
                     _mm256_castsi128_si256(\
