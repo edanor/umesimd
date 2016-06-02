@@ -31,7 +31,7 @@
 #ifndef QUADRATIC_SOLVER_SIMD_NONTEMPLATE_H_
 #define QUADRATIC_SOLVER_SIMD_NONTEMPLATE_H_
 
-UME_FORCE_INLINE void QuadSolveSIMD8_32f(
+UME_NEVER_INLINE void QuadSolveSIMD8_32f(
 #if defined(_MSC_VER)
     const float* __restrict a,
     const float* __restrict b,

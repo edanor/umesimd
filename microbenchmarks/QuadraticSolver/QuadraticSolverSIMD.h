@@ -32,7 +32,7 @@
 #define QUADRATIC_SOLVER_SIMD_H_
 
 template <typename SCALAR_FLOAT_T, typename FLOAT_VEC_T, typename INT_VEC_T>
-UME_FORCE_INLINE void QuadSolveSIMD(
+UME_NEVER_INLINE void QuadSolveSIMD(
 #if defined(_MSC_VER)
     const SCALAR_FLOAT_T* __restrict a,
     const SCALAR_FLOAT_T* __restrict b,
@@ -51,7 +51,6 @@ UME_FORCE_INLINE void QuadSolveSIMD(
     )
 {
     typedef typename UME::SIMD::SIMDTraits<FLOAT_VEC_T>::MASK_T MASK_T;
-    typedef typename UME::SIMD::SIMDTraits<FLOAT_VEC_T>::INT_VEC_T INT_VEC_T;
 
     FLOAT_VEC_T one(1.0f);
     FLOAT_VEC_T va(&a[0]);
@@ -82,9 +81,9 @@ UME_FORCE_INLINE void QuadSolveSIMD(
 
     INT_VEC_T int_roots(nr);
     UME::SIMD::SIMDVec<int, INT_VEC_T::length()> int_roots2(int_roots);
-    int_roots2.sstore(roots);
-    r1.sstore(x1);
-    r2.sstore(x2);
+    int_roots2.store(roots);
+    r1.store(x1);
+    r2.store(x2);
 }
 
 template<typename FLOAT_T, uint32_t LENGTH>
@@ -92,7 +91,6 @@ UME_NEVER_INLINE TIMING_RES run_SIMD()
 {
     typedef typename UME::SIMD::SIMDVec<FLOAT_T, LENGTH>                FLOAT_VEC_T;
     typedef typename UME::SIMD::SIMDTraits<FLOAT_VEC_T>::INT_VEC_T      INT_VEC_T;
-    typedef typename UME::SIMD::SIMDTraits<FLOAT_VEC_T>::SCALAR_T       FLOAT_T;
     typedef typename UME::SIMD::SIMDTraits<FLOAT_VEC_T>::SCALAR_INT_T   INT_T;
 
     unsigned long long start, end; // Time measurements

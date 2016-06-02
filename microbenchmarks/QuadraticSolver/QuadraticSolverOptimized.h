@@ -12,7 +12,7 @@
 // of UME::SIMD.
 
 template <typename T>
-UME_FORCE_INLINE void QuadSolveOptimized(const T& a, const T& b, const T& c, T &x1, T &x2, int& roots) {
+UME_NEVER_INLINE void QuadSolveOptimized(const T& a, const T& b, const T& c, T &x1, T &x2, int& roots) {
     T a_inv = T(1.0) / a;
     T delta = b * b - T(4.0) * a * c;
     T s = (b >= 0) ? T(1.0) : T(-1.0);

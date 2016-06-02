@@ -12,7 +12,7 @@
 // of UME::SIMD.
 
 template <typename T>
-UME_FORCE_INLINE int QuadSolveNaive(T a, T b, T c, T &x1, T &x2) {
+UME_NEVER_INLINE int QuadSolveNaive(T a, T b, T c, T &x1, T &x2) {
     T delta = b * b - T(4.0) * a * c;
 
     if (delta < 0.0)
@@ -36,7 +36,7 @@ UME_FORCE_INLINE int QuadSolveNaive(T a, T b, T c, T &x1, T &x2) {
 }
 
 template<typename FLOAT_T, typename INT_T>
-TIMING_RES run_scalar_naive()
+UME_NEVER_INLINE TIMING_RES run_scalar_naive()
 {
     unsigned long long start, end; // Time measurements
 

@@ -169,21 +169,21 @@ int main()
 {
     int ITERATIONS = 20;
 
-    std::cout << "The result is amount of time it takes to calculate solution of quadratic equations.\n"
+    std::cout << "The result is amount of time it takes to calculate solution of: " << ARRAY_SIZE << " quadratic equations.\n"
         "All timing results in clock cycles. \n"
         "Speedup calculated with scalar floating point result as reference.\n\n"
         "SIMD version uses following operations: \n"
         "   32/64f vectors: SET-CONSTR, LOAD-CONSTR, DIVV (operator /), MULV (operator*),\n"
         "                   MULS (operator*), BLENDV, FMULADDV, SQRT, CMPLTV (operator <),\n"
-        "                   CMPGTV (operator >=), FTOI, SSTORE\n"
-        "   32/64i vectors: COPY-CONST, SSTORE, DEGRADE\n"
+        "                   CMPGTV (operator >=), FTOI, STORE\n"
+        "   32/64i vectors: COPY-CONST, STORE, DEGRADE\n"
         "     # of executions per measurement: " << ITERATIONS << "\n\n";
 
 
     TimingStatistics ref;
 
     ref = benchmarkScalarNaiveFloat(std::string("Scalar naive (float):"), ITERATIONS);
-    benchmarkScalarOptimized<float>("Scalar optimized (float):", ITERATIONS, ref);
+    //benchmarkScalarOptimized<float>("Scalar optimized (float):", ITERATIONS, ref);
 
 #ifdef __AVX2__
     benchmarkAVX2("AVX2 intrinsic code (float, 8):", ITERATIONS, ref);
@@ -191,7 +191,7 @@ int main()
     std::cout << "AVX2 intrinsic code (float, 8): unavailable\n";
 #endif
 
-    benchmarkSIMD_nontemplate("UME::SIMD (float, 8) nontemplate:", ITERATIONS, ref);
+    //benchmarkSIMD_nontemplate("UME::SIMD (float, 8) nontemplate:", ITERATIONS, ref);
 
     benchmarkSIMD<float, 1>("UME::SIMD (float, 1): ", ITERATIONS, ref);
     benchmarkSIMD<float, 2>("UME::SIMD (float, 2): ", ITERATIONS, ref);
@@ -201,7 +201,7 @@ int main()
     benchmarkSIMD<float, 32>("UME::SIMD (float, 32): ", ITERATIONS, ref);
 
     benchmarkScalarNaiveDouble(std::string("Scalar naive (double): "), ITERATIONS, ref);
-    benchmarkScalarOptimized<double>("Scalar optimized (double): ", ITERATIONS, ref);
+    //benchmarkScalarOptimized<double>("Scalar optimized (double): ", ITERATIONS, ref);
     benchmarkSIMD<double, 1>("UME::SIMD (double, 1): ", ITERATIONS, ref);
     benchmarkSIMD<double, 2>("UME::SIMD (double, 2): ", ITERATIONS, ref);
     benchmarkSIMD<double, 4>("UME::SIMD (double, 4): ", ITERATIONS, ref);

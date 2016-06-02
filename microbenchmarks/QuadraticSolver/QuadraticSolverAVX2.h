@@ -14,7 +14,12 @@
 #ifdef __AVX2__
 // explicit AVX2 code using intrinsics
 
-UME_FORCE_INLINE void QuadSolveAVX2(
+// When using inlining, the intel compiler is using "streaming stores" optimization.
+// This optimization doesn't make sense in the context of this algorithm, because it is more
+// likely, that quadratic equation will be solved as a part of the bigger computational kernel.
+// If streaming operations are generated for such kernels, the result will be a slow-down instead of speedup.
+// Force inline on every kernel being benchmarked. While there will be some function-call overhead, this will only introduce systematic error, the same (ideally) for all configurations.
+UME_NEVER_INLINE void QuadSolveAVX2(
     const float* __restrict__ a,
     const float* __restrict__ b,
     const float* __restrict__ c,
