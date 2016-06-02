@@ -1919,16 +1919,29 @@ namespace SIMD {
             a.mVec = _mm256_extracti64x2_epi64(mVec, 0);
             b.mVec = _mm256_extracti64x2_epi64(mVec, 1);
 #else
-
+            a.mVec = _mm256_extractf128_si256(mVec, 0);
+            b.mVec = _mm256_extractf128_si256(mVec, 1);
 #endif
         }
         // UNPACKLO
-        SIMDVec_i<int64_t, 1> unpacklo() const {
-            return SIMDVec_i<int64_t, 1> (mVec[0]);
+        SIMDVec_i<int64_t, 2> unpacklo() const {
+#if defined (__AVX512VL__)
+            __m128i t0 = _mm256_extracti64x2_epi64(mVec, 0);
+            return SIMDVec_i<int64_t, 2> (t0);
+#else
+            __m128i t0 = _mm256_extractf128_si256(mVec, 0);
+            return SIMDVec_i<int64_t, 2> (t0);
+#endif
         }
         // UNPACKHI
-        SIMDVec_i<int64_t, 1> unpackhi() const {
-            return SIMDVec_i<int64_t, 1> (mVec[1]);
+        SIMDVec_i<int64_t, 2> unpackhi() const {
+#if defined (__AVX512VL__)
+            __m128i t0 = _mm256_extracti64x2_epi64(mVec, 1);
+            return SIMDVec_i<int64_t, 2> (t0);
+#else
+            __m128i t0 = _mm256_extractf128_si256(mVec, 1);
+            return SIMDVec_i<int64_t, 2> (t0);
+#endif
         }
 
         // PROMOTE

@@ -1879,30 +1879,33 @@ namespace SIMD {
 
         // PACK
         inline SIMDVec_i & pack(SIMDVec_i<int64_t, 1> const & a, SIMDVec_i<int64_t, 1> const & b) {
-            mVec[0] = a[0];
-            mVec[1] = b[0];
+            __m128i t0 = _mm_cvtsi64_si128(a[0]);
+            __m128i t1 = _mm_cvtsi64_si128(b[0]);
+            mVec = _mm_unpacklo_epi64(t0, t1);
             return *this;
         }
         // PACKLO
-        inline SIMDVec_i packlo(SIMDVec_i<int64_t, 1> const & a) {
-            return SIMDVec_i(a[0], mVec[1]);
+        inline SIMDVec_i & packlo(SIMDVec_i<int64_t, 1> const & a) {
+            mVec = _mm_insert_epi64(mVec, a[0], 0);
+            return *this;
         }
         // PACKHI
-        inline SIMDVec_i packhi(SIMDVec_i<int64_t, 1> const & b) {
-            return SIMDVec_i(mVec[0], b[0]);
+        inline SIMDVec_i & packhi(SIMDVec_i<int64_t, 1> const & b) {
+            mVec = _mm_insert_epi64(mVec, b[0], 1);
+            return *this;
         }
         // UNPACK
         void unpack(SIMDVec_i<int64_t, 1> & a, SIMDVec_i<int64_t, 1> & b) const {
-            a.insert(0, mVec[0]);
-            b.insert(0, mVec[1]);
+            a.insert(0, _mm_extract_epi64(mVec, 0));
+            b.insert(0, _mm_extract_epi64(mVec, 1));
         }
         // UNPACKLO
         SIMDVec_i<int64_t, 1> unpacklo() const {
-            return SIMDVec_i<int64_t, 1> (mVec[0]);
+            return SIMDVec_i<int64_t, 1> (_mm_extract_epi64(mVec, 0));
         }
         // UNPACKHI
         SIMDVec_i<int64_t, 1> unpackhi() const {
-            return SIMDVec_i<int64_t, 1> (mVec[1]);
+            return SIMDVec_i<int64_t, 1> (_mm_extract_epi64(mVec, 1));
         }
 
         // PROMOTE

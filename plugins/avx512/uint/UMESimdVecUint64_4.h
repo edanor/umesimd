@@ -1823,17 +1823,17 @@ namespace SIMD {
         // PACKLO
         // PACKHI
         // UNPACK
-        void unpack(SIMDVec_u<uint64_t, 1> & a, SIMDVec_u<uint64_t, 1> & b) const {
-            a.insert(0, mVec[0]);
-            b.insert(0, mVec[1]);
+        void unpack(SIMDVec_u<uint64_t, 2> & a, SIMDVec_u<uint64_t, 2> & b) const {
+            a.mVec = _mm256_extractf128_si256(mVec, 0);
+            b.mVec = _mm256_extractf128_si256(mVec, 1);
         }
         // UNPACKLO
-        SIMDVec_u<uint64_t, 1> unpacklo() const {
-            return SIMDVec_u<uint64_t, 1> (mVec[0]);
+        SIMDVec_u<uint64_t, 2> unpacklo() const {
+            return SIMDVec_u<uint64_t, 2> (_mm256_extractf128_si256(mVec, 0));
         }
         // UNPACKHI
-        SIMDVec_u<uint64_t, 1> unpackhi() const {
-            return SIMDVec_u<uint64_t, 1> (mVec[1]);
+        SIMDVec_u<uint64_t, 2> unpackhi() const {
+            return SIMDVec_u<uint64_t, 2> (_mm256_extractf128_si256(mVec, 1));
         }
 
         // PROMOTE
