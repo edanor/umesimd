@@ -1,7 +1,7 @@
-**Current stable release is: v0.4.1-stable**  
+**Current stable release is: v0.5.1-stable**  
 **To checkout stable release use:**  
  > git clone https://edanor@bitbucket.org/edanor/umesimd.git  
- > git checkout tags/v0.4.1-stable
+ > git checkout tags/v0.5.1-stable
 
 
 UME::SIMD is an explicit vectorization library. The library defines homogeneous interface for accessing functionality of SIMD registers of AVX, AVX2, AVX512 and IMCI (KNCNI, k1om) instruction set. 
@@ -30,39 +30,83 @@ Please refer to the wiki for introduction and additional information:
    >   [wiki pages](https://bitbucket.org/edanor/umesimd/wiki/Home)
 
    
+   
+**RELEASE NOTES for v0.5.1-stable**   
+Interface:
+- Fix function name for mask interface LOAD.
+- Inverse logic for BLEND operations.
+- Add Non-temporal load/store operations (SSTORE/SLOAD). 
+
+Performance tuning:
+AVX:
+- SIMD4_64f + SIMDMask4 
+- simplify ABS 
+- AVX: enable performance for SIMDx_64
+
+AVX2:
+- SIMD4_64f + SIMDMask4 
+
+AVX512:
+- AVX512: MASK4 + MASK8 add missing operators. 
+- SIMD1_64f TRUNC/MTRUNC 
+- SIMD16_64x
+
+scalar:
+- Add specialized implementation for SIMD4/8x32. 
+
+Benchmarks:
+- Add QuadraticSolver microbenchmark.
+- Add 'SINCOS' benchmark.
+- Update displayed information.
+- Modifications to prohibit streaming-stores optimization.
+
+Fixes:
+- KNC: add missing 'const' function qualifiers. 
+- Incorrect mask used for write mask operator. 
+- AVX: Incorrect logic for CMPLT 
+- SIMD8_64f replace fast reciprocal with precise one. 
+- AVX2: incorrect intermediate mask used when '()' enabled 
+- FIX: Saturated addition scalar emulation kernel. 
+- AVX: SIMD16_64f - use unaligned load instructions. 
+- AVX: FTOI - use C++ compatible conversions. 
+- AVX: ROUND - use double precision version of std::round
+- AVX: SIMD4_64f: CMPEQ/CMPNE incorrect masks returned.
+- AVX2: fix unitialized memory bug in avx2 hland function
+- Fix compilation errors using GCC/Clang
+- AVX512: Incorrect kernels for pack/unpack
+
+Examples:
+- 
+
+Tests:
+- Use random generated tests for badly defined scenarios.
+- Add unit tests for MLOAD/MSTORE
+
+Internal code:
+- Force inlining on interface and emulation. New defines: UME_FORCE_INLINE, UME_NEVER_INLINE
+- Remove declspec from interface emulation.
+- Add template specialization forward declarations.
+- Split emulation into pure scalar and vector based.
+- Propagate scalar emulation changes to plugins.
+
 **RELEASE NOTES for v0.4.1-stable**   
    
 Interface:   
-- Faster ROL/ROR emulation using LOAD/STORE   
-- Aliases for vector types. Now possible to use SIMDVec<BASE_T, VEC_LEN> instead of SIMDVec_u/i/f<BASE_T, VEC_LEN>   
-- Added non-member function interface. It is now possible to do:   
-        
-        add(vec_a, vec_b);
-        
-instead of:
-    
-        vec_a.add(vec_b);   
    
    
-Performance tuning:   
-- Major updates for AVX, AVX2 and AVX512.
+Performance tuning:  
    
 Benchmarks:   
-- extended mandelbrot benchmark with 64b floating point implementation   
-- added mandelbrot2 benchmark. This benchmark is based on code available at: https://software.intel.com/en-us/articles/introduction-to-intel-advanced-vector-extensions   
-   
    
 Fixes:   
-- KNC: add missing 'const' function qualifiers.   
-- KNL: MULV - incorrect temporaries.   
-- Fix compilation warnings with -Wall (GCC/ICC).   
-- Fix multiple errors in unit test data sets.   
-- Fix narrowing conversion errors in unit test data sets.   
-   
+
 Examples:   
-- Add example using scalar constant literals in templates.   
+
+Tests:
    
-   
+Internal code:
+
+
 **RELEASE NOTES for v0.3.2-stable**
 
 Interface:
