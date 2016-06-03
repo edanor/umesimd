@@ -309,7 +309,7 @@ namespace SIMD {
         }
         // MSTORE
         inline int64_t * store(SIMDVecMask<4> const & mask, int64_t * p) const {
-            __m256i t0 = _mm256_load_si256((__m256i*)p);
+            __m256i t0 = _mm256_loadu_si256((__m256i*)p);
             __m256i t1 = BLEND(t0, mVec, mask.mMask);
             _mm256_storeu_si256((__m256i*) p, t1);
             return p;
