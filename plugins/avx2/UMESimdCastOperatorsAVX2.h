@@ -427,7 +427,7 @@ namespace SIMD {
     inline SIMDVec_f<float, 8>::operator SIMDVec_u<uint32_t, 8>() const {
         // C++: Truncation is default rounding mode for floating-integer conversion.
         __m256 t0 = _mm256_round_ps(mVec, _MM_FROUND_TO_ZERO | _MM_FROUND_NO_EXC);
-        __m256i t1 = _mm256_cvtps_epu32(t0);
+        __m256i t1 = _mm256_cvtps_epi32(t0);
         return SIMDVec_u<uint32_t, 8>(t1);
     }
 

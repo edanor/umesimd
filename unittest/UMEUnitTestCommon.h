@@ -4803,7 +4803,72 @@ void genericMBNOTATest()
  
         //(Blend/Swizzle operations)
         // BLENDV   - Blend (mix) two vectors
-        // BLENDS   - Blend (mix) vector with scalar (promoted to vector)
+
+template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN>
+void genericBLENDVTest_random()
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    SCALAR_TYPE inputA[VEC_LEN];
+    SCALAR_TYPE inputB[VEC_LEN];
+    bool inputMask[VEC_LEN];
+    SCALAR_TYPE output[VEC_LEN];
+
+    for (int i = 0; i < VEC_LEN; i++) {
+        inputA[i] = randomValue<SCALAR_TYPE>(gen);
+        inputB[i] = randomValue<SCALAR_TYPE>(gen);
+        inputMask[i] = randomValue<bool>(gen);
+
+        output[i] = inputMask[i] ? inputB[i] : inputA[i];
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(inputA);
+        VEC_TYPE vec1(inputB);
+        MASK_TYPE mask0(inputMask);
+
+        VEC_TYPE vec2 = vec0.blend(mask0, vec1);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec1.store(values);
+        isUnmodified &= valuesInRange(values, inputB, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange & isUnmodified), "BLENDV gen");
+    }
+}
+template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN>
+void genericBLENDSTest_random()
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    SCALAR_TYPE inputA[VEC_LEN];
+    SCALAR_TYPE inputB = randomValue<SCALAR_TYPE>(gen);
+    bool inputMask[VEC_LEN];
+    SCALAR_TYPE output[VEC_LEN];
+
+
+    for (int i = 0; i < VEC_LEN; i++) {
+        inputA[i] = randomValue<SCALAR_TYPE>(gen);
+        inputMask[i] = randomValue<bool>(gen);
+
+        output[i] = inputMask[i] ? inputB : inputA[i];
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(inputA);
+        MASK_TYPE mask0(inputMask);
+
+        VEC_TYPE vec2 = vec0.blend(mask0, inputB);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange & isUnmodified), "BLENDS gen");
+    }
+}
         // assign
         // SWIZZLE  - Swizzle (reorder/permute) vector elements
         // SWIZZLEA - Swizzle (reorder/permute) vector elements and assign
@@ -7929,6 +7994,7 @@ void genericBaseInterfaceTest()
     genericMSTOREATest_random<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN>();
     // SWIZZLE
     // SWIZZLEA
+    genericBLENDVTest_random<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN>();
     genericADDVTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
     genericADDVTest_random<VEC_TYPE, SCALAR_TYPE, VEC_LEN>();
     genericMADDVTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
