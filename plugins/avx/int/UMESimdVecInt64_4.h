@@ -593,9 +593,6 @@ namespace SIMD {
         inline SIMDVec_i operator& (SIMDVec_i const & b) const {
             return band(b);
         }
-        inline SIMDVec_i operator&& (SIMDVec_i const & b) const {
-            return band(b);
-        }
         // MBANDV
         inline SIMDVec_i band(SIMDVecMask<4> const & mask, SIMDVec_i const & b) const {
             __m256 t0 = _mm256_castsi256_ps(mVec);
@@ -614,9 +611,6 @@ namespace SIMD {
             return SIMDVec_i(t3);
         }
         inline SIMDVec_i operator& (int64_t b) const {
-            return band(b);
-        }
-        inline SIMDVec_i operator&& (int64_t b) const {
             return band(b);
         }
         // MBANDS

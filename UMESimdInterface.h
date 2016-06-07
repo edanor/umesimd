@@ -1675,7 +1675,7 @@ namespace SIMD
             return SCALAR_EMULATION::MATH::indexMin<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
     };
-    
+
     // ***************************************************************************
     // *
     // *    Definition of Bitwise Interface. Bitwise operations can only be
@@ -1715,10 +1715,6 @@ namespace SIMD
         }
 
         UME_FORCE_INLINE DERIVED_VEC_TYPE operator& (DERIVED_VEC_TYPE const & b) const {
-            return band(b);
-        }
-
-        UME_FORCE_INLINE DERIVED_VEC_TYPE operator&& (DERIVED_VEC_TYPE const & b) const {
             return band(b);
         }
 
@@ -1779,10 +1775,6 @@ namespace SIMD
         }
 
         UME_FORCE_INLINE DERIVED_VEC_TYPE operator| ( DERIVED_VEC_TYPE const & b) const {
-            return bor(b);
-        }
-
-        UME_FORCE_INLINE DERIVED_VEC_TYPE operator|| (DERIVED_VEC_TYPE const & b) const {
             return bor(b);
         }
 
@@ -1977,7 +1969,153 @@ namespace SIMD
             return SCALAR_EMULATION::reduceBinaryXorScalar<SCALAR_TYPE, DERIVED_VEC_TYPE> (mask, a, static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
     };
-    
+
+
+    // ***************************************************************************
+    // *
+    // *    Definition of Integer Interface. Integer operations can only be
+    // *    performed on integer (signed and unsigned) data types in C++.
+    // *    While making certain operations (such as bitwise) on floating points is sometimes
+    // *    necessary, it is not safe and not portable. 
+    // *
+    // ***************************************************************************
+    template<typename DERIVED_VEC_TYPE,
+             typename SCALAR_TYPE,
+             typename MASK_TYPE>
+    class SIMDVecIntegerInterface : 
+        public SIMDVecBitwiseInterface<
+            DERIVED_VEC_TYPE,
+            SCALAR_TYPE,
+            MASK_TYPE>
+    {
+        typedef SIMDVecIntegerInterface<
+            DERIVED_VEC_TYPE, 
+            SCALAR_TYPE,
+            MASK_TYPE> VEC_TYPE;
+
+    private:
+        // Forbid assignment-initialization of vector using scalar values
+        // TODO: is this necessary?
+        UME_FORCE_INLINE VEC_TYPE & operator= (const int8_t & x) { }
+        UME_FORCE_INLINE VEC_TYPE & operator= (const int16_t & x) { }
+        UME_FORCE_INLINE VEC_TYPE & operator= (const int32_t & x) { }
+        UME_FORCE_INLINE VEC_TYPE & operator= (const int64_t & x) { }
+        UME_FORCE_INLINE VEC_TYPE & operator= (const uint8_t & x) { }
+        UME_FORCE_INLINE VEC_TYPE & operator= (const uint16_t & x) { }
+        UME_FORCE_INLINE VEC_TYPE & operator= (const uint32_t & x) { }
+        UME_FORCE_INLINE VEC_TYPE & operator= (const uint64_t & x) { }
+        UME_FORCE_INLINE VEC_TYPE & operator= (const float & x) { }
+        UME_FORCE_INLINE VEC_TYPE & operator= (const double & x) { }
+ 
+    public:
+        // REMV
+        UME_FORCE_INLINE DERIVED_VEC_TYPE rem(DERIVED_VEC_TYPE const & b) const {
+            return SCALAR_EMULATION::reminder<DERIVED_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this), b);
+        }
+        UME_FORCE_INLINE DERIVED_VEC_TYPE operator% (DERIVED_VEC_TYPE const & b) const {
+            return rem(b);
+        }
+
+        // MREMV
+        UME_FORCE_INLINE DERIVED_VEC_TYPE rem(MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) const {
+            return SCALAR_EMULATION::reminder<DERIVED_VEC_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
+        }
+
+        // REMS
+        UME_FORCE_INLINE DERIVED_VEC_TYPE rem(SCALAR_TYPE b) const {
+            return SCALAR_EMULATION::reminder<DERIVED_VEC_TYPE, SCALAR_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this), b);
+        }
+        UME_FORCE_INLINE DERIVED_VEC_TYPE operator% (SCALAR_TYPE b) const {
+            return rem(b);
+        }
+
+        // MREMS
+        UME_FORCE_INLINE DERIVED_VEC_TYPE rem(MASK_TYPE const & mask, SCALAR_TYPE b) const {
+            return SCALAR_EMULATION::reminder<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
+        }
+
+        // REMVA
+        UME_FORCE_INLINE DERIVED_VEC_TYPE rema(DERIVED_VEC_TYPE const & b) {
+            return SCALAR_EMULATION::reminderAssign<DERIVED_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this), b);
+        }
+        UME_FORCE_INLINE DERIVED_VEC_TYPE operator%= (DERIVED_VEC_TYPE const & b) {
+            return rema(b);
+        }
+
+        // MREMVA
+        UME_FORCE_INLINE DERIVED_VEC_TYPE rema(MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) {
+            return SCALAR_EMULATION::reminderAssign<DERIVED_VEC_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
+        }
+
+        // REMSA
+        UME_FORCE_INLINE DERIVED_VEC_TYPE rema(SCALAR_TYPE b) {
+            return SCALAR_EMULATION::reminderAssign<DERIVED_VEC_TYPE, SCALAR_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this), b);
+        }
+        UME_FORCE_INLINE DERIVED_VEC_TYPE operator%= (SCALAR_TYPE b) {
+            return rema(b);
+        }
+        // MREMSA
+        UME_FORCE_INLINE DERIVED_VEC_TYPE rema(MASK_TYPE const & mask, SCALAR_TYPE b) {
+            return SCALAR_EMULATION::reminderAssign<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
+        }
+
+        // LANDV
+        UME_FORCE_INLINE MASK_TYPE land(DERIVED_VEC_TYPE const & b) const {
+            // C++ standard says:
+            // "A prvalue of arithmetic, unscoped enumeration, pointer, or pointer to member type can be converted to a
+            //    prvalue of type bool.A zero value, null pointer value, or null member pointer value is converted to false;
+            //    any other value is converted to true.A prvalue of type std::nullptr_t can be converted to a prvalue of
+            //    type bool; the resulting value is false."
+            MASK_TYPE t0 = SCALAR_EMULATION::isNotEqual<MASK_TYPE, DERIVED_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this), 0);
+            MASK_TYPE t1 = SCALAR_EMULATION::isNotEqual<MASK_TYPE, DERIVED_VEC_TYPE>(b, 0);
+            MASK_TYPE t2 = SCALAR_EMULATION::binaryAnd<MASK_TYPE>(t0, t1);
+            return t2;
+        }
+        UME_FORCE_INLINE MASK_TYPE operator&& (DERIVED_VEC_TYPE const & b) const {
+            return land(b);
+        }
+
+        // LANDS
+        UME_FORCE_INLINE MASK_TYPE land(bool b) const {
+            // LAND with scalar operators can simply use booleans. C++ standard should take
+            // care of boolean conversions from any other expressions.
+            MASK_TYPE t0 = SCALAR_EMULATION::isNotEqual<MASK_TYPE, DERIVED_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this), 0);
+            MASK_TYPE t1 = SCALAR_EMULATION::binaryAnd<MASK_TYPE>(t0, b);
+            return t1;
+        }
+        UME_FORCE_INLINE MASK_TYPE operator&& (bool b) const {
+            return land(b);
+        }
+
+        // LORV
+        UME_FORCE_INLINE MASK_TYPE lor(DERIVED_VEC_TYPE const & b) const {
+            // C++ standard says:
+            // "A prvalue of arithmetic, unscoped enumeration, pointer, or pointer to member type can be converted to a
+            //    prvalue of type bool.A zero value, null pointer value, or null member pointer value is converted to false;
+            //    any other value is converted to true.A prvalue of type std::nullptr_t can be converted to a prvalue of
+            //    type bool; the resulting value is false."
+            MASK_TYPE t0 = SCALAR_EMULATION::isNotEqual<MASK_TYPE, DERIVED_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this), 0);
+            MASK_TYPE t1 = SCALAR_EMULATION::isNotEqual<MASK_TYPE, DERIVED_VEC_TYPE>(b, 0);
+            MASK_TYPE t2 = SCALAR_EMULATION::binaryOr<MASK_TYPE>(t0, t1);
+            return t2;
+        }
+        UME_FORCE_INLINE MASK_TYPE operator|| (DERIVED_VEC_TYPE const & b) const {
+            return lor(b);
+        }
+
+        // LORS
+        UME_FORCE_INLINE MASK_TYPE lor(bool b) const {
+            // LAND with scalar operators can simply use booleans. C++ standard should take
+            // care of boolean conversions from any other expressions.
+            MASK_TYPE t0 = SCALAR_EMULATION::isNotEqual<MASK_TYPE, DERIVED_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this), 0);
+            MASK_TYPE t1 = SCALAR_EMULATION::binaryOr<MASK_TYPE>(t0, b);
+            return t1;
+        }
+        UME_FORCE_INLINE MASK_TYPE operator|| (bool b) const {
+            return lor(b);
+        }
+    };
+
     // ***************************************************************************
     // *
     // *    Definition of Gather/Scatter interface. This interface creates
@@ -2427,7 +2565,7 @@ namespace SIMD
             VEC_LEN,
             MASK_TYPE,
             SWIZZLE_MASK_TYPE>,
-        public SIMDVecBitwiseInterface<
+        public SIMDVecIntegerInterface<
             DERIVED_UINT_VEC_TYPE,
             SCALAR_UINT_TYPE,
             MASK_TYPE>,
@@ -2492,7 +2630,7 @@ namespace SIMD
             VEC_LEN,
             MASK_TYPE,
             SWIZZLE_MASK_TYPE>,
-        public SIMDVecBitwiseInterface<
+        public SIMDVecIntegerInterface<
             DERIVED_VEC_TYPE,
             SCALAR_TYPE,
             MASK_TYPE>,

@@ -407,6 +407,52 @@ void genericLANDVTest()
     }
 }
 
+template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN>
+void genericLANDVTest_random()
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    {
+        bool values[VEC_LEN];
+        bool outputs[VEC_LEN];
+        SCALAR_TYPE inputA[VEC_LEN];
+        SCALAR_TYPE inputB[VEC_LEN];
+
+        for (int i = 0; i < VEC_LEN; i++)
+        {
+            inputA[i] = randomValue<SCALAR_TYPE>(gen);
+            inputB[i] = randomValue<SCALAR_TYPE>(gen);
+            outputs[i] = inputA[i] && inputB[i];
+        }
+        VEC_TYPE t0(inputA);
+        VEC_TYPE t1(inputB);
+        // Return type of LAND should be a mask, regardless of VEC_TYPE.
+        auto t2 = t0.land(t1); 
+        t2.store(values);
+        CHECK_CONDITION(valuesExact(values, outputs, VEC_LEN), "LANDV gen");
+    }
+    {
+        bool values[VEC_LEN];
+        bool outputs[VEC_LEN];
+        SCALAR_TYPE inputA[VEC_LEN];
+        SCALAR_TYPE inputB[VEC_LEN];
+
+        for (int i = 0; i < VEC_LEN; i++)
+        {
+            inputA[i] = randomValue<SCALAR_TYPE>(gen);
+            inputB[i] = randomValue<SCALAR_TYPE>(gen);
+            outputs[i] = inputA[i] && inputB[i];
+        }
+        VEC_TYPE t0(inputA);
+        VEC_TYPE t1(inputB);
+        // Return type of LAND should be a mask, regardless of VEC_TYPE.
+        auto t2 = t0 && t1;
+        t2.store(values);
+        CHECK_CONDITION(valuesExact(values, outputs, VEC_LEN), "LANDV gen (operator &&)");
+    }
+}
+
 template<typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericLANDSTest()
 {
@@ -679,6 +725,52 @@ void genericLORVTest()
             }
         }
         CHECK_CONDITION(exact, "LORV(operator ||)");
+    }
+}
+
+template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN>
+void genericLORVTest_random()
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    {
+        bool values[VEC_LEN];
+        bool outputs[VEC_LEN];
+        SCALAR_TYPE inputA[VEC_LEN];
+        SCALAR_TYPE inputB[VEC_LEN];
+
+        for (int i = 0; i < VEC_LEN; i++)
+        {
+            inputA[i] = randomValue<SCALAR_TYPE>(gen);
+            inputB[i] = randomValue<SCALAR_TYPE>(gen);
+            outputs[i] = inputA[i] || inputB[i];
+        }
+        VEC_TYPE t0(inputA);
+        VEC_TYPE t1(inputB);
+        // Return type of LAND should be a mask, regardless of VEC_TYPE.
+        auto t2 = t0.lor(t1);
+        t2.store(values);
+        CHECK_CONDITION(valuesExact(values, outputs, VEC_LEN), "LORV gen");
+    }
+    {
+        bool values[VEC_LEN];
+        bool outputs[VEC_LEN];
+        SCALAR_TYPE inputA[VEC_LEN];
+        SCALAR_TYPE inputB[VEC_LEN];
+
+        for (int i = 0; i < VEC_LEN; i++)
+        {
+            inputA[i] = randomValue<SCALAR_TYPE>(gen);
+            inputB[i] = randomValue<SCALAR_TYPE>(gen);
+            outputs[i] = inputA[i] || inputB[i];
+        }
+        VEC_TYPE t0(inputA);
+        VEC_TYPE t1(inputB);
+        // Return type of LAND should be a mask, regardless of VEC_TYPE.
+        auto t2 = t0 || t1;
+        t2.store(values);
+        CHECK_CONDITION(valuesExact(values, outputs, VEC_LEN), "LORV gen (operator ||)");
     }
 }
 
@@ -2429,7 +2521,7 @@ void genericMSUBSTest()
         CHECK_CONDITION((inRange && isUnmodified), "MSUBS(function -RHS scalar)");
     }
 }
-    
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericSUBVATest()
 {
@@ -3241,7 +3333,213 @@ void genericMDIVSATest()
         CHECK_CONDITION(inRange, "MDIVSA(vec[mask] \\=)");
     }
 }
-    
+
+template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN>
+void genericREMVTest_random()
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    SCALAR_TYPE inputA[VEC_LEN];
+    SCALAR_TYPE inputB[VEC_LEN];
+    SCALAR_TYPE output[VEC_LEN];
+
+    for (int i = 0; i < VEC_LEN; i++) {
+        // C++ standard says:
+        // "The binary / operator yields the quotient, and the binary % operator 
+        //  yields the remainder from the division of the first expression by the
+        //  second. If the second operand of / or % is zero the behavior is undefined. 
+        //  For integral operands the / operator yields the algebraic quotient with any 
+        //  fractional part discarded; if the quotient a/b is representable in the type 
+        //  of the result, (a/b)*b + a%b is equal to a."
+        // And also:
+        // "If both operands are nonnegative then the remainder is nonnegative; 
+        //  if not, the sign of the remainder is implementation-defined."
+        // This means we can only check this operation for non-negative left operand
+        // and positive, non-zero right operand.
+        do {
+            inputA[i] = randomValue<SCALAR_TYPE>(gen);
+        } while (inputA[i] < 0);
+        do {
+            inputB[i] = randomValue<SCALAR_TYPE>(gen);
+        } while (inputB[i] <= 0);
+        output[i] = inputA[i] % inputB[i];
+    }
+
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(inputA);
+        VEC_TYPE vec1(inputB);
+        VEC_TYPE vec2 = vec0.rem(vec1);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange & isUnmodified), "REMV gen");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(inputA);
+        VEC_TYPE vec1(inputB);
+        VEC_TYPE vec2 = vec0 % vec1;
+        vec2.store(values);
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange & isUnmodified), "REMV(operator%) gen");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(inputA);
+        VEC_TYPE vec1(inputB);
+        VEC_TYPE vec2;
+        vec2 = UME::SIMD::FUNCTIONS::rem(vec0, vec1);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange & isUnmodified), "REMV(function) gen");
+    }
+}
+
+template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN>
+void genericMREMVTest_random()
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    SCALAR_TYPE inputA[VEC_LEN];
+    SCALAR_TYPE inputB[VEC_LEN];
+    SCALAR_TYPE output[VEC_LEN];
+    bool inputMask[VEC_LEN];
+
+    for (int i = 0; i < VEC_LEN; i++) {
+        // C++ standard says:
+        // "The binary / operator yields the quotient, and the binary % operator 
+        //  yields the remainder from the division of the first expression by the
+        //  second. If the second operand of / or % is zero the behavior is undefined. 
+        //  For integral operands the / operator yields the algebraic quotient with any 
+        //  fractional part discarded; if the quotient a/b is representable in the type 
+        //  of the result, (a/b)*b + a%b is equal to a."
+        // And also:
+        // "If both operands are nonnegative then the remainder is nonnegative; 
+        //  if not, the sign of the remainder is implementation-defined."
+        // This means we can only check this operation for non-negative left operand
+        // and positive, non-zero right operand.
+        do {
+            inputA[i] = randomValue<SCALAR_TYPE>(gen);
+        }
+        while(inputA[i] < 0);
+        do {
+            inputB[i] = randomValue<SCALAR_TYPE>(gen);
+        } while (inputB[i] <= 0);
+        inputMask[i] = randomValue<bool>(gen);
+        output[i] = inputMask[i] ? (inputA[i] % inputB[i]) : inputA[i];
+    }
+
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(inputA);
+        VEC_TYPE vec1(inputB);
+        MASK_TYPE mask(inputMask);
+        VEC_TYPE vec2 = vec0.rem(mask, vec1);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange & isUnmodified), "MREMV gen");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(inputA);
+        VEC_TYPE vec1(inputB);
+        MASK_TYPE mask(inputMask);
+        VEC_TYPE vec2;
+        vec2 = UME::SIMD::FUNCTIONS::rem(mask, vec0, vec1);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange & isUnmodified), "MREMV(function) gen");
+    }
+}
+
+template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN>
+void genericREMSTest_random()
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    SCALAR_TYPE inputA[VEC_LEN];
+    SCALAR_TYPE inputB;
+    SCALAR_TYPE output[VEC_LEN];
+
+    do {
+        inputB = randomValue<SCALAR_TYPE>(gen);
+    } while (inputB <= 0);
+
+    for (int i = 0; i < VEC_LEN; i++) {
+        do {
+            inputA[i] = randomValue<SCALAR_TYPE>(gen);
+        } while (inputA[i] < 0);
+        output[i] = inputA[i] % inputB;
+    }
+
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(inputA);
+        VEC_TYPE vec1 = vec0.rem(inputB);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange & isUnmodified), "REMS gen");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(inputA);
+        VEC_TYPE vec1 = vec0 % inputB;
+        vec1.store(values);
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange & isUnmodified), "REMS(operator% RHS scalar) gen");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(inputA);
+        VEC_TYPE vec1;
+        vec1 = UME::SIMD::FUNCTIONS::rem(vec0, inputB);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange & isUnmodified), "REMS(function RHS scalar) gen");
+    }
+
+    do {
+        inputB = randomValue<SCALAR_TYPE>(gen);
+    } while (inputB < 0);
+
+    for (int i = 0; i < VEC_LEN; i++) {
+        do {
+            inputA[i] = randomValue<SCALAR_TYPE>(gen);
+        } while (inputA[i] <= 0);
+        output[i] = inputB % inputA[i];
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(inputA);
+        VEC_TYPE vec1;
+        vec1 = UME::SIMD::FUNCTIONS::rem(inputB, vec0);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange & isUnmodified), "REMS(function LHS scalar) gen");
+    }
+}
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericRCPTest()
 {
@@ -8143,8 +8441,16 @@ void genericBaseInterfaceTest()
 }
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
-void genericBitwiseInterfaceTest()
+void genericIntegerInterfaceTest()
 {
+    genericREMVTest_random<VEC_TYPE, SCALAR_TYPE, VEC_LEN>();
+    genericMREMVTest_random<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN>();
+    genericREMSTest_random<VEC_TYPE, SCALAR_TYPE, VEC_LEN>();
+
+    genericLANDVTest_random<VEC_TYPE, SCALAR_TYPE, VEC_LEN>();
+    genericLORVTest_random<VEC_TYPE, SCALAR_TYPE, VEC_LEN>();
+
+    // Bitwise interface tests
     genericBANDVTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
     genericMBANDVTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
     genericBANDSTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
@@ -8304,10 +8610,12 @@ void genericFloatInterfaceTest()
 template<typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMaskTest() {
     genericLANDVTest<MASK_TYPE, VEC_LEN, DATA_SET> ();
+    genericLANDVTest_random<MASK_TYPE, bool, VEC_LEN>();
     genericLANDSTest<MASK_TYPE, VEC_LEN, DATA_SET> ();
     genericLANDVATest<MASK_TYPE, VEC_LEN, DATA_SET> ();
     genericLANDSATest<MASK_TYPE, VEC_LEN, DATA_SET>();
     genericLORVTest<MASK_TYPE, VEC_LEN, DATA_SET> ();
+    genericLORVTest_random<MASK_TYPE, bool, VEC_LEN>();
     genericLORSTest<MASK_TYPE, VEC_LEN, DATA_SET> ();
     genericLORVATest<MASK_TYPE, VEC_LEN, DATA_SET> ();
     genericLORSATest<MASK_TYPE, VEC_LEN, DATA_SET>();
@@ -8334,7 +8642,7 @@ template<
         typename DATA_SET>
 void genericUintTest() {
     genericBaseInterfaceTest<UINT_VEC_TYPE, UINT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET> ();
-    genericBitwiseInterfaceTest<UINT_VEC_TYPE, UINT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET> ();
+    genericIntegerInterfaceTest<UINT_VEC_TYPE, UINT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET> ();
     genericGatherScatterInterfaceTest<UINT_VEC_TYPE, UINT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET> ();
     genericShiftRotateInterfaceTest<UINT_VEC_TYPE, UINT_VEC_TYPE, UINT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
     genericUTOITest<UINT_VEC_TYPE, INT_VEC_TYPE, INT_SCALAR_TYPE, VEC_LEN, DATA_SET> ();
@@ -8352,7 +8660,7 @@ template<
     typename DATA_SET>
     void genericUintTest() {
     genericBaseInterfaceTest<UINT_VEC_TYPE, UINT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
-    genericBitwiseInterfaceTest<UINT_VEC_TYPE, UINT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericIntegerInterfaceTest<UINT_VEC_TYPE, UINT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
     genericGatherScatterInterfaceTest<UINT_VEC_TYPE, UINT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
     genericShiftRotateInterfaceTest<UINT_VEC_TYPE, UINT_VEC_TYPE, UINT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
     genericUTOITest<UINT_VEC_TYPE, INT_VEC_TYPE, INT_SCALAR_TYPE, VEC_LEN, DATA_SET>();
@@ -8370,7 +8678,7 @@ template<
         typename DATA_SET>
 void genericIntTest() {
     genericBaseInterfaceTest<INT_VEC_TYPE, INT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET> ();
-    genericBitwiseInterfaceTest<INT_VEC_TYPE, INT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET> ();
+    genericIntegerInterfaceTest<INT_VEC_TYPE, INT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET> ();
     genericGatherScatterInterfaceTest<INT_VEC_TYPE, INT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET> ();
     genericShiftRotateInterfaceTest<INT_VEC_TYPE, UINT_VEC_TYPE, INT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
     genericSignInterfaceTest<INT_VEC_TYPE, INT_SCALAR_TYPE  , MASK_TYPE, VEC_LEN, DATA_SET>();
@@ -8388,7 +8696,7 @@ template<
     typename DATA_SET>
 void genericIntTest() {
     genericBaseInterfaceTest<INT_VEC_TYPE, INT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
-    genericBitwiseInterfaceTest<INT_VEC_TYPE, INT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericIntegerInterfaceTest<INT_VEC_TYPE, INT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
     genericGatherScatterInterfaceTest<INT_VEC_TYPE, INT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
     genericShiftRotateInterfaceTest<INT_VEC_TYPE, UINT_VEC_TYPE, INT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
     genericSignInterfaceTest<INT_VEC_TYPE, INT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();

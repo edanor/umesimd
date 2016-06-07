@@ -1080,6 +1080,90 @@ namespace SCALAR_EMULATION
         return retval;
     }
 
+    // REMV
+    template<typename VEC_TYPE>
+    UME_FORCE_INLINE VEC_TYPE reminder(VEC_TYPE const & a, VEC_TYPE const & b) {
+        UME_EMULATION_WARNING();
+        VEC_TYPE retval;
+        for (uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+            retval.insert(i, a[i] % b[i]);
+        }
+        return retval;
+    }
+
+    // MREMV
+    template<typename VEC_TYPE, typename MASK_TYPE>
+    UME_FORCE_INLINE VEC_TYPE reminder(MASK_TYPE const & mask, VEC_TYPE const & a, VEC_TYPE const & b) {
+        UME_EMULATION_WARNING();
+        VEC_TYPE retval;
+        for (uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+            retval.insert(i, (mask[i] == true) ? (a[i] % b[i]) : a[i]);
+        }
+        return retval;
+    }
+
+    // REMS
+    template<typename VEC_TYPE, typename SCALAR_TYPE>
+    UME_FORCE_INLINE VEC_TYPE reminder(VEC_TYPE const & a, SCALAR_TYPE b) {
+        UME_EMULATION_WARNING();
+        VEC_TYPE retval;
+        for (uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+            retval.insert(i, a[i] % b);
+        }
+        return retval;
+    }
+
+    // MREMS
+    template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
+    UME_FORCE_INLINE VEC_TYPE reminder(MASK_TYPE const & mask, VEC_TYPE const & a, SCALAR_TYPE b) {
+        UME_EMULATION_WARNING();
+        VEC_TYPE retval;
+        for (uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+            retval.insert(i, (mask[i] == true) ? (a[i] % b) : a[i]);
+        }
+        return retval;
+    }
+
+    // REMVA
+    template<typename VEC_TYPE>
+    UME_FORCE_INLINE VEC_TYPE & reminderAssign(VEC_TYPE & a, VEC_TYPE const & b) {
+        UME_EMULATION_WARNING();
+        for (uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+            a.insert(i, a[i] % b[i]);
+        }
+        return a;
+    }
+
+    // MREMVA
+    template<typename VEC_TYPE, typename MASK_TYPE>
+    UME_FORCE_INLINE VEC_TYPE & reminderAssign(MASK_TYPE const & mask, VEC_TYPE & a, VEC_TYPE const & b) {
+        UME_EMULATION_WARNING();
+        for (uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+            a.insert(i, (mask[i] == true) ? (a[i] % b[i]) : a[i]);
+        }
+        return a;
+    }
+
+    // REMSA
+    template<typename VEC_TYPE, typename SCALAR_TYPE>
+    UME_FORCE_INLINE VEC_TYPE & reminderAssign(VEC_TYPE & a, SCALAR_TYPE b) {
+        UME_EMULATION_WARNING();
+        for (uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+            a.insert(i, a[i] % b);
+        }
+        return a;
+    }
+
+    // MREMSA
+    template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
+    UME_FORCE_INLINE VEC_TYPE reminderAssign(MASK_TYPE const & mask, VEC_TYPE & a, SCALAR_TYPE b) {
+        UME_EMULATION_WARNING();
+        for (uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+            a.insert(i, (mask[i] == true) ? (a[i] % b) : a[i]);
+        }
+        return a;
+    }
+
     // RCP
     template<typename VEC_TYPE, typename SCALAR_TYPE>
     UME_FORCE_INLINE VEC_TYPE div(SCALAR_TYPE a, VEC_TYPE const & b) {

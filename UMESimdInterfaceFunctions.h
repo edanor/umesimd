@@ -151,6 +151,25 @@ namespace FUNCTIONS
     template<typename VEC_T>
     inline VEC_T div(typename UME::SIMD::SIMDTraits<VEC_T>::MASK_T const & mask, typename UME::SIMD::SIMDTraits<VEC_T>::SCALAR_T const & src1, VEC_T const & src2) { return src2.rcp(mask, src1); }
 
+    // REMV
+    template<typename VEC_T>
+    inline VEC_T rem(VEC_T const & src1, VEC_T const & src2) { return src1.rem(src2); }
+    // REMS, rhs scalar
+    template<typename VEC_T>
+    inline VEC_T rem(VEC_T const & src1, typename UME::SIMD::SIMDTraits<VEC_T>::SCALAR_T const & src2) { return src1.rem(src2); }
+    // REMS, lhs scalar
+    template<typename VEC_T>
+    inline VEC_T rem(typename UME::SIMD::SIMDTraits<VEC_T>::SCALAR_T const & src1, VEC_T const & src2) { return (VEC_T(src1)).rem(src2); }
+    // MREMV
+    template<typename VEC_T>
+    inline VEC_T rem(typename UME::SIMD::SIMDTraits<VEC_T>::MASK_T const & mask, VEC_T const & src1, VEC_T const & src2) { return src1.rem(mask, src2); }
+    // MREMS, rhs scalar
+    template<typename VEC_T>
+    inline VEC_T rem(typename UME::SIMD::SIMDTraits<VEC_T>::MASK_T const & mask, VEC_T const & src1, typename UME::SIMD::SIMDTraits<VEC_T>::SCALAR_T const & src2) { return src1.rem(mask, src2); };
+    // MREMS, lhs scalar
+    template<typename VEC_T>
+    inline VEC_T rem(typename UME::SIMD::SIMDTraits<VEC_T>::MASK_T const & mask, typename UME::SIMD::SIMDTraits<VEC_T>::SCALAR_T const & src1, VEC_T const & src2) { return VEC_T(src1).rem(mask, src2); };
+
     // RCP
     template<typename VEC_T>
     inline VEC_T rcp(VEC_T const & src1) { return src1.rcp(); }
