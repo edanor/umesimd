@@ -622,6 +622,10 @@ namespace SIMD
             mVecRef_RW.insert(mIndexRef, mVecRef_RW[mIndexRef] / scalarRhs);
         }
 
+        UME_FORCE_INLINE void operator%= (SCALAR_TYPE scalarRhs) {
+            mVecRef_RW.insert(mIndexRef, mVecRef_RW[mIndexRef] % scalarRhs);
+        }
+
         UME_FORCE_INLINE void operator&= (SCALAR_TYPE scalarRhs) {
             mVecRef_RW.insert(mIndexRef, mVecRef_RW[mIndexRef] & scalarRhs);
         }
@@ -692,6 +696,14 @@ namespace SIMD
         }
         UME_FORCE_INLINE SCALAR_TYPE operator/ (IntermediateIndex const & x) {
             return mVecRef_RW.extract(mIndexRef) /
+                x.mVecRef_RW.extract(mIndexRef);
+        }
+        template<typename T>
+        UME_FORCE_INLINE SCALAR_TYPE operator% (T const & x) {
+            return mVecRef_RW.extract(mIndexRef) % SCALAR_TYPE(x);
+        }
+        UME_FORCE_INLINE SCALAR_TYPE operator% (IntermediateIndex const & x) {
+            return mVecRef_RW.extract(mIndexRef) %
                 x.mVecRef_RW.extract(mIndexRef);
         }
         template<typename T>
