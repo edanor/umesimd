@@ -5090,11 +5090,293 @@ void genericMBNOTATest()
     bool inRange = valuesInRange(values, DATA_SET::outputs::MBNOT, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MBNOTA");
 }
- 
-        // (Pack/Unpack operations - not available for SIMD1)
-        // PACK     - assign vector with two half-length vectors
+
+// This test needs to be wrapped around in a class since it is not possible to provide
+// partial specialization for non-member function template. Such specialization is necessary
+// for covering SIMD1
+template < typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN>
+class genericPACKTest_random {
+public:
+    // (Pack/Unpack operations - not available for SIMD1)
+    static void run()
+    {
+        std::random_device rd;
+        std::mt19937 gen(rd());
+
+        SCALAR_TYPE output[VEC_LEN];
+        SCALAR_TYPE values[VEC_LEN];
+        SCALAR_TYPE inputLow[VEC_LEN / 2];
+        SCALAR_TYPE inputHigh[VEC_LEN / 2];
+
+        for (int i = 0; i < VEC_LEN / 2; i++) {
+            inputLow[i] = randomValue<SCALAR_TYPE>(gen);
+            inputHigh[i] = randomValue<SCALAR_TYPE>(gen);
+            output[i] = inputLow[i];
+            output[i + VEC_LEN / 2] = inputHigh[i];
+        }
+
+        typename UME::SIMD::SIMDTraits<VEC_TYPE>::HALF_LEN_VEC_T vec0(inputLow);
+        typename UME::SIMD::SIMDTraits<VEC_TYPE>::HALF_LEN_VEC_T vec1(inputHigh);
+
+        VEC_TYPE vec2;
+
+        vec2.pack(vec0, vec1);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "PACK");
+    }
+};
+
+// Provide partial specialization for SIMD1 types
+template <typename VEC_TYPE, typename SCALAR_TYPE>
+class genericPACKTest_random<VEC_TYPE, SCALAR_TYPE, 1> {
+public:
+    static void run()
+    {
+        // do nothing
+    }
+};
+
         // PACKLO   - assign lower half of a vector with a half-length vector
-        // PACKHI   - assign upper half of a vector with a half-length vector
+        // This test needs to be wrapped around in a class since it is not possible to provide
+        // partial specialization for non-member function template. Such specialization is necessary
+        // for covering SIMD1
+template < typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN>
+class genericPACKLOTest_random {
+public:
+    // (Pack/Unpack operations - not available for SIMD1)
+    static void run()
+    {
+        std::random_device rd;
+        std::mt19937 gen(rd());
+
+        SCALAR_TYPE output[VEC_LEN];
+        SCALAR_TYPE values[VEC_LEN];
+        SCALAR_TYPE inputA[VEC_LEN];
+        SCALAR_TYPE inputLow[VEC_LEN / 2];
+
+        int i = 0;
+        for (i = 0; i < VEC_LEN / 2; i++) {
+            inputLow[i] = randomValue<SCALAR_TYPE>(gen);
+            inputA[i] = randomValue<SCALAR_TYPE>(gen);
+            output[i] = inputLow[i];
+        }
+        for (; i < VEC_LEN; i++) {
+            inputA[i] = randomValue<SCALAR_TYPE>(gen);
+            output[i] = inputA[i];
+        }
+
+        typename UME::SIMD::SIMDTraits<VEC_TYPE>::HALF_LEN_VEC_T vec0(inputLow);
+        VEC_TYPE vec1(inputA);
+
+        vec1.packlo(vec0);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "PACKLO");
+    }
+};
+
+// Provide partial specialization for SIMD1 types
+template <typename VEC_TYPE, typename SCALAR_TYPE>
+class genericPACKLOTest_random<VEC_TYPE, SCALAR_TYPE, 1> {
+public:
+    static void run()
+    {
+        // do nothing
+    }
+};
+
+
+// PACKLO   - assign lower half of a vector with a half-length vector
+// This test needs to be wrapped around in a class since it is not possible to provide
+// partial specialization for non-member function template. Such specialization is necessary
+// for covering SIMD1
+template < typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN>
+class genericPACKHITest_random {
+public:
+    // (Pack/Unpack operations - not available for SIMD1)
+    static void run()
+    {
+        std::random_device rd;
+        std::mt19937 gen(rd());
+
+        SCALAR_TYPE output[VEC_LEN];
+        SCALAR_TYPE values[VEC_LEN];
+        SCALAR_TYPE inputA[VEC_LEN];
+        SCALAR_TYPE inputLow[VEC_LEN / 2];
+
+        int i = 0;
+        for (i = 0; i < VEC_LEN / 2; i++) {
+            inputLow[i] = randomValue<SCALAR_TYPE>(gen);
+            inputA[i] = randomValue<SCALAR_TYPE>(gen);
+            output[i] = inputA[i];
+        }
+        for (; i < VEC_LEN; i++) {
+            inputA[i] = randomValue<SCALAR_TYPE>(gen);
+            output[i] = inputLow[i - VEC_LEN/2];
+        }
+
+        typename UME::SIMD::SIMDTraits<VEC_TYPE>::HALF_LEN_VEC_T vec0(inputLow);
+        VEC_TYPE vec1(inputA);
+
+        vec1.packhi(vec0);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "PACKHI");
+    }
+};
+
+// Provide partial specialization for SIMD1 types
+template <typename VEC_TYPE, typename SCALAR_TYPE>
+class genericPACKHITest_random<VEC_TYPE, SCALAR_TYPE, 1> {
+public:
+    static void run()
+    {
+        // do nothing
+    }
+};
+
+
+// This test needs to be wrapped around in a class since it is not possible to provide
+// partial specialization for non-member function template. Such specialization is necessary
+// for covering SIMD1
+template < typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN>
+class genericUNPACKTest_random {
+public:
+    // (Pack/Unpack operations - not available for SIMD1)
+    static void run()
+    {
+        std::random_device rd;
+        std::mt19937 gen(rd());
+
+        SCALAR_TYPE input[VEC_LEN];
+        SCALAR_TYPE values[VEC_LEN / 2];
+        SCALAR_TYPE outputLow[VEC_LEN / 2];
+        SCALAR_TYPE outputHigh[VEC_LEN / 2];
+
+        for (int i = 0; i < VEC_LEN; i++) {
+            input[i] = randomValue<SCALAR_TYPE>(gen);
+        }
+
+        for (int i = 0; i < VEC_LEN / 2; i++) {
+            outputLow[i] = input[i];
+            outputHigh[i] = input[i + VEC_LEN / 2];
+        }
+
+        typename UME::SIMD::SIMDTraits<VEC_TYPE>::HALF_LEN_VEC_T vec0;
+        typename UME::SIMD::SIMDTraits<VEC_TYPE>::HALF_LEN_VEC_T vec1;
+
+        VEC_TYPE vec2(input);
+
+        vec2.unpack(vec0, vec1);
+        vec0.store(values);
+        bool inRangeLow = valuesInRange(values, outputLow, VEC_LEN/2, SCALAR_TYPE(0.01f));
+        vec1.store(values);
+        bool inRangeHigh = valuesInRange(values, outputHigh, VEC_LEN/2, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRangeLow && inRangeHigh, "UNPACK");
+    }
+};
+
+// Provide partial specialization for SIMD1 types
+template <typename VEC_TYPE, typename SCALAR_TYPE>
+class genericUNPACKTest_random<VEC_TYPE, SCALAR_TYPE, 1> {
+public:
+    static void run()
+    {
+        // do nothing
+    }
+};
+
+// This test needs to be wrapped around in a class since it is not possible to provide
+// partial specialization for non-member function template. Such specialization is necessary
+// for covering SIMD1
+template < typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN>
+class genericUNPACKLOTest_random {
+public:
+    // (Pack/Unpack operations - not available for SIMD1)
+    static void run()
+    {
+        std::random_device rd;
+        std::mt19937 gen(rd());
+
+        SCALAR_TYPE input[VEC_LEN];
+        SCALAR_TYPE values[VEC_LEN / 2];
+        SCALAR_TYPE outputLow[VEC_LEN / 2];
+
+        for (int i = 0; i < VEC_LEN; i++) {
+            input[i] = randomValue<SCALAR_TYPE>(gen);
+        }
+
+        for (int i = 0; i < VEC_LEN / 2; i++) {
+            outputLow[i] = input[i];
+        }
+
+        typename UME::SIMD::SIMDTraits<VEC_TYPE>::HALF_LEN_VEC_T vec0;
+
+        VEC_TYPE vec1(input);
+
+        vec0 = vec1.unpacklo();
+        vec0.store(values);
+        bool inRangeLow = valuesInRange(values, outputLow, VEC_LEN / 2, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRangeLow, "UNPACKLO");
+    }
+};
+
+// Provide partial specialization for SIMD1 types
+template <typename VEC_TYPE, typename SCALAR_TYPE>
+class genericUNPACKLOTest_random<VEC_TYPE, SCALAR_TYPE, 1> {
+public:
+    static void run()
+    {
+        // do nothing
+    }
+};
+
+// This test needs to be wrapped around in a class since it is not possible to provide
+// partial specialization for non-member function template. Such specialization is necessary
+// for covering SIMD1
+template < typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN>
+class genericUNPACKHITest_random {
+public:
+    // (Pack/Unpack operations - not available for SIMD1)
+    static void run()
+    {
+        std::random_device rd;
+        std::mt19937 gen(rd());
+
+        SCALAR_TYPE input[VEC_LEN];
+        SCALAR_TYPE values[VEC_LEN / 2];
+        SCALAR_TYPE outputHi[VEC_LEN / 2];
+
+        for (int i = 0; i < VEC_LEN; i++) {
+            input[i] = randomValue<SCALAR_TYPE>(gen);
+        }
+
+        for (int i = 0; i < VEC_LEN / 2; i++) {
+            outputHi[i] = input[i + VEC_LEN/2];
+        }
+
+        typename UME::SIMD::SIMDTraits<VEC_TYPE>::HALF_LEN_VEC_T vec0;
+
+        VEC_TYPE vec1(input);
+
+        vec0 = vec1.unpackhi();
+        vec0.store(values);
+        bool inRangeHigh = valuesInRange(values, outputHi, VEC_LEN / 2, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRangeHigh, "UNPACKHi");
+    }
+};
+
+// Provide partial specialization for SIMD1 types
+template <typename VEC_TYPE, typename SCALAR_TYPE>
+class genericUNPACKHITest_random<VEC_TYPE, SCALAR_TYPE, 1> {
+public:
+    static void run()
+    {
+        // do nothing
+    }
+};
+
         // UNPACK   - Unpack lower and upper halfs to half-length vectors.
         // UNPACKLO - Unpack lower half and return as a half-length vector.
         // UNPACKHI - Unpack upper half and return as a half-length vector.
@@ -8671,6 +8953,16 @@ void genericFloatInterfaceTest()
     //genericMCTANTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
 }
 
+template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN>
+void genericPackableInterfaceTest() {
+    genericPACKTest_random<VEC_TYPE, SCALAR_TYPE, VEC_LEN>::run();
+    genericPACKLOTest_random<VEC_TYPE, SCALAR_TYPE, VEC_LEN>::run();
+    genericPACKHITest_random<VEC_TYPE, SCALAR_TYPE, VEC_LEN>::run();
+    genericUNPACKTest_random<VEC_TYPE, SCALAR_TYPE, VEC_LEN>::run();
+    genericUNPACKLOTest_random<VEC_TYPE, SCALAR_TYPE, VEC_LEN>::run();
+    genericUNPACKHITest_random<VEC_TYPE, SCALAR_TYPE, VEC_LEN>::run();
+}
+
 template<typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMaskTest() {
     genericLANDVTest<MASK_TYPE, VEC_LEN, DATA_SET> ();
@@ -8711,6 +9003,7 @@ void genericUintTest() {
     genericShiftRotateInterfaceTest<UINT_VEC_TYPE, UINT_VEC_TYPE, UINT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
     genericUTOITest<UINT_VEC_TYPE, INT_VEC_TYPE, INT_SCALAR_TYPE, VEC_LEN, DATA_SET> ();
     genericUTOFTest<UINT_VEC_TYPE, FLOAT_VEC_TYPE, FLOAT_SCALAR_TYPE, VEC_LEN, DATA_SET> ();
+    genericPackableInterfaceTest<UINT_VEC_TYPE, UINT_SCALAR_TYPE, VEC_LEN>();
 }
 
 // Special version for scalars that don't have corresponding float scalar (e.g. uint8_t)
@@ -8728,6 +9021,7 @@ template<
     genericGatherScatterInterfaceTest<UINT_VEC_TYPE, UINT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
     genericShiftRotateInterfaceTest<UINT_VEC_TYPE, UINT_VEC_TYPE, UINT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
     genericUTOITest<UINT_VEC_TYPE, INT_VEC_TYPE, INT_SCALAR_TYPE, VEC_LEN, DATA_SET>();
+    genericPackableInterfaceTest<INT_VEC_TYPE, INT_SCALAR_TYPE, VEC_LEN>();
 }
 
 template<
@@ -8786,6 +9080,7 @@ void genericFloatTest() {
     genericFTOUTest_random<FLOAT_VEC_TYPE, FLOAT_SCALAR_TYPE, UINT_VEC_TYPE, UINT_SCALAR_TYPE, VEC_LEN>();
     //genericFTOITest<FLOAT_VEC_TYPE, INT_VEC_TYPE, INT_SCALAR_TYPE, VEC_LEN, DATA_SET>();
     genericFTOITest_random<FLOAT_VEC_TYPE, FLOAT_SCALAR_TYPE, INT_VEC_TYPE, INT_SCALAR_TYPE, VEC_LEN>();
+    genericPackableInterfaceTest<FLOAT_VEC_TYPE, FLOAT_SCALAR_TYPE, VEC_LEN>();
 }
 
 #endif

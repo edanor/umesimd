@@ -1728,12 +1728,12 @@ namespace SIMD {
             b.insert(1, mVec[3]);
         }
         // UNPACKLO
-        inline SIMDVec_f<float, 1> unpacklo() const {
-            return SIMDVec_f<float, 1>(mVec[0]);
+        inline SIMDVec_f<float, 2> unpacklo() const {
+            return SIMDVec_f<float, 2>(mVec[0]);
         }
         // UNPACKHI
-        inline SIMDVec_f<float, 1> unpackhi() const {
-            return SIMDVec_f<float, 1>(mVec[1]);
+        inline SIMDVec_f<float, 2> unpackhi() const {
+            return SIMDVec_f<float, 2>(mVec[1]);
         }
 
         // PROMOTE
