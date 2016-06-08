@@ -634,6 +634,14 @@ namespace SIMD
             mVecRef_RW.insert(mIndexRef, mVecRef_RW[mIndexRef] ^ scalarRhs);
         }
 
+        UME_FORCE_INLINE void operator<<= (SCALAR_TYPE scalarRhs) {
+            mVecRef_RW.insert(mIndexRef, mVecRef_RW[mIndexRef] << scalarRhs);
+        }
+
+        UME_FORCE_INLINE void operator>>= (SCALAR_TYPE scalarRhs) {
+            mVecRef_RW.insert(mIndexRef, mVecRef_RW[mIndexRef] >> scalarRhs);
+        }
+
         UME_FORCE_INLINE operator SCALAR_TYPE() { return mVecRef_RW.extract(mIndexRef); }
 
         // Comparison operators accept any type of scalar to allow mixing 
@@ -708,6 +716,22 @@ namespace SIMD
         }
         UME_FORCE_INLINE SCALAR_TYPE operator^ (IntermediateIndex const & x) {
             return mVecRef_RW.extract(mIndexRef) ^
+                x.mVecRef_RW.extract(mIndexRef);
+        }
+        template<typename T>
+        UME_FORCE_INLINE SCALAR_TYPE operator<< (T const & x) {
+            return mVecRef_RW.extract(mIndexRef) << SCALAR_TYPE(x);
+        }
+        UME_FORCE_INLINE SCALAR_TYPE operator<< (IntermediateIndex const & x) {
+            return mVecRef_RW.extract(mIndexRef) <<
+                x.mVecRef_RW.extract(mIndexRef);
+        }
+        template<typename T>
+        UME_FORCE_INLINE SCALAR_TYPE operator>> (T const & x) {
+            return mVecRef_RW.extract(mIndexRef) >> SCALAR_TYPE(x);
+        }
+        UME_FORCE_INLINE SCALAR_TYPE operator>> (IntermediateIndex const & x) {
+            return mVecRef_RW.extract(mIndexRef) >>
                 x.mVecRef_RW.extract(mIndexRef);
         }
 
@@ -2235,6 +2259,9 @@ namespace SIMD
         UME_FORCE_INLINE DERIVED_VEC_TYPE lsh (DERIVED_UINT_VEC_TYPE const & b) const {
             return SCALAR_EMULATION::shiftBitsLeft<DERIVED_VEC_TYPE, DERIVED_UINT_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
+        UME_FORCE_INLINE DERIVED_VEC_TYPE operator<< (DERIVED_UINT_VEC_TYPE const & b) const {
+            return lsh(b);
+        }
 
         // MLSHV
         UME_FORCE_INLINE DERIVED_VEC_TYPE lsh (MASK_TYPE const & mask, DERIVED_UINT_VEC_TYPE const & b) const {
@@ -2244,6 +2271,9 @@ namespace SIMD
         // LSHS
         UME_FORCE_INLINE DERIVED_VEC_TYPE lsh (SCALAR_UINT_TYPE b) const {
             return SCALAR_EMULATION::shiftBitsLeftScalar<DERIVED_VEC_TYPE, SCALAR_UINT_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this), b);
+        }
+        UME_FORCE_INLINE DERIVED_VEC_TYPE operator<< (SCALAR_UINT_TYPE b) const {
+            return lsh(b);
         }
 
         // MLSHS
@@ -2255,6 +2285,9 @@ namespace SIMD
         UME_FORCE_INLINE DERIVED_VEC_TYPE & lsha (DERIVED_UINT_VEC_TYPE const & b) {
             return SCALAR_EMULATION::shiftBitsLeftAssign<DERIVED_VEC_TYPE, DERIVED_UINT_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
+        UME_FORCE_INLINE DERIVED_VEC_TYPE operator<<= (DERIVED_UINT_VEC_TYPE const & b) {
+            return lsha(b);
+        }
 
         // MLSHVA
         UME_FORCE_INLINE DERIVED_VEC_TYPE & lsha (MASK_TYPE const & mask, DERIVED_UINT_VEC_TYPE const & b) {
@@ -2264,6 +2297,9 @@ namespace SIMD
         // LSHSA
         UME_FORCE_INLINE DERIVED_VEC_TYPE & lsha (SCALAR_UINT_TYPE b) {
             return SCALAR_EMULATION::shiftBitsLeftAssignScalar<DERIVED_VEC_TYPE, SCALAR_UINT_TYPE>(static_cast<DERIVED_VEC_TYPE &>(*this), b);
+        }
+        UME_FORCE_INLINE DERIVED_VEC_TYPE operator<<= (SCALAR_UINT_TYPE b) {
+            return lsha(b);
         }
 
         // MLSHSA
@@ -2275,6 +2311,9 @@ namespace SIMD
         UME_FORCE_INLINE DERIVED_VEC_TYPE rsh (DERIVED_UINT_VEC_TYPE const & b) const {
             return SCALAR_EMULATION::shiftBitsRight<DERIVED_VEC_TYPE, DERIVED_UINT_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
+        UME_FORCE_INLINE DERIVED_VEC_TYPE operator>> (DERIVED_UINT_VEC_TYPE const & b) const {
+            return rsh(b);
+        }
 
         // MRSHV
         UME_FORCE_INLINE DERIVED_VEC_TYPE rsh (MASK_TYPE const & mask, DERIVED_UINT_VEC_TYPE const & b) const {
@@ -2284,6 +2323,9 @@ namespace SIMD
         // RSHS
         UME_FORCE_INLINE DERIVED_VEC_TYPE rsh (SCALAR_UINT_TYPE b) const {
             return SCALAR_EMULATION::shiftBitsRightScalar<DERIVED_VEC_TYPE, SCALAR_UINT_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this), b);
+        }
+        UME_FORCE_INLINE DERIVED_VEC_TYPE operator>> (SCALAR_UINT_TYPE b) const {
+            return rsh(b);
         }
 
         // MRSHS
@@ -2295,6 +2337,9 @@ namespace SIMD
         UME_FORCE_INLINE DERIVED_VEC_TYPE & rsha (DERIVED_UINT_VEC_TYPE const & b) {
             return SCALAR_EMULATION::shiftBitsRightAssign<DERIVED_VEC_TYPE, DERIVED_UINT_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
+        UME_FORCE_INLINE DERIVED_VEC_TYPE operator>>= (DERIVED_UINT_VEC_TYPE const & b) {
+            return rsha(b);
+        }
 
         // MRSHVA
         UME_FORCE_INLINE DERIVED_VEC_TYPE & rsha (MASK_TYPE const & mask, DERIVED_UINT_VEC_TYPE const & b) {
@@ -2304,6 +2349,9 @@ namespace SIMD
         // RSHSA
         UME_FORCE_INLINE DERIVED_VEC_TYPE & rsha (SCALAR_UINT_TYPE b) {
             return SCALAR_EMULATION::shiftBitsRightAssignScalar<DERIVED_VEC_TYPE, SCALAR_UINT_TYPE>(static_cast<DERIVED_VEC_TYPE &>(*this), b);
+        }
+        UME_FORCE_INLINE DERIVED_VEC_TYPE operator>>= (SCALAR_UINT_TYPE b) {
+            return rsha(b);
         }
 
         // MRSHSA

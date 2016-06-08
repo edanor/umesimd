@@ -6117,6 +6117,17 @@ void genericLSHVTest()
         bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
         CHECK_CONDITION((inRange && isUnmodified), "LSHV");
     }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        UINT_VEC_TYPE vec1(DATA_SET::inputs::inputShiftA);
+        VEC_TYPE vec2 = vec0 << vec1;
+        vec2.store(values);
+        bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::LSHV, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "LSHV (operator<<)");
+    }
 }
     
 template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
@@ -6174,12 +6185,33 @@ void genericLSHSTest()
     {
         SCALAR_TYPE values[VEC_LEN];
         VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1 = vec0 << DATA_SET::inputs::inputShiftScalarA;
+        vec1.store(values);
+        bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::LSHS, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "LSHS(operator<< RHS scalar)");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
         VEC_TYPE vec1 = UME::SIMD::FUNCTIONS::lsh(DATA_SET::inputs::inputShiftScalarA, vec0);
         vec1.store(values);
         bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::LSHS, VEC_LEN, SCALAR_TYPE(0.01f));
         vec0.store(values);
         bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
         //CHECK_CONDITION((inRange && isUnmodified), "LSHS(function - LHS scalar)");
+        // TODO: this test requires separate output data
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1 = DATA_SET::inputs::inputShiftScalarA << vec0;
+        vec1.store(values);
+        bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::LSHS, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        //CHECK_CONDITION((inRange && isUnmodified), "LSHS(operator<< - LHS scalar)");
         // TODO: this test requires separate output data
     }
 }
@@ -6296,6 +6328,17 @@ void genericRSHVTest()
         bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
         CHECK_CONDITION((inRange && isUnmodified), "RSHV(function)");
     }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        UINT_VEC_TYPE vec1(DATA_SET::inputs::inputShiftA);
+        VEC_TYPE vec2 = vec0 >> vec1;
+        vec2.store(values);
+        bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::RSHV, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "RSHV(operator>>)");
+    }
 }
     
 template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
@@ -6350,7 +6393,17 @@ void genericRSHSTest()
         bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
         CHECK_CONDITION((inRange && isUnmodified), "RSHS(function - RHS scalar)");
     }
-    {/*
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1 = vec0 >> DATA_SET::inputs::inputShiftScalarA;
+        vec1.store(values);
+        bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::RSHS, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "RSHS(operator>> - RHS scalar)");
+    }
+    {
         SCALAR_TYPE values[VEC_LEN];
         VEC_TYPE vec0(DATA_SET::inputs::inputA);
         VEC_TYPE vec1 = UME::SIMD::FUNCTIONS::rsh(DATA_SET::inputs::inputShiftScalarA, vec0);
@@ -6358,7 +6411,18 @@ void genericRSHSTest()
         bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::RSHS, VEC_LEN, SCALAR_TYPE(0.01f));
         vec0.store(values);
         bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
-        CHECK_CONDITION((inRange && isUnmodified), "RSHS(function - LHS scalar)");*/
+        // CHECK_CONDITION((inRange && isUnmodified), "RSHS(function - LHS scalar)");
+        // TODO: this test requires separate output data
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(DATA_SET::inputs::inputA);
+        VEC_TYPE vec1 = DATA_SET::inputs::inputShiftScalarA >> vec0;
+        vec1.store(values);
+        bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::RSHS, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        // CHECK_CONDITION((inRange && isUnmodified), "RSHS(function - LHS scalar)");
         // TODO: this test requires separate output data
     }
 }
