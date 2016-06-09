@@ -2448,6 +2448,90 @@ namespace SCALAR_EMULATION
         return a;
     }
 
+    // BANDNOTV
+    template<typename VEC_TYPE>
+    UME_FORCE_INLINE VEC_TYPE binaryAndNot(VEC_TYPE const & a, VEC_TYPE const & b) {
+        UME_EMULATION_WARNING();
+        VEC_TYPE retval;
+        for (uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+            retval.insert(i, ((~a[i]) & b[i]));
+        }
+        return retval;
+    }
+
+    // MBANDNOTV
+    template<typename VEC_TYPE, typename MASK_TYPE>
+    UME_FORCE_INLINE VEC_TYPE binaryAndNot(MASK_TYPE const & mask, VEC_TYPE const & a, VEC_TYPE const & b) {
+        UME_EMULATION_WARNING();
+        VEC_TYPE retval = a;
+        for (uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+            if(mask[i] == true) retval.insert(i, ((~a[i]) & b[i]));
+        }
+        return retval;
+    }
+
+    // BANDNOTS
+    template<typename VEC_TYPE, typename SCALAR_TYPE>
+    UME_FORCE_INLINE VEC_TYPE binaryAndNot(VEC_TYPE const & a, SCALAR_TYPE b) {
+        UME_EMULATION_WARNING();
+        VEC_TYPE retval;
+        for (uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+            retval.insert(i, ((~a[i]) & b));
+        }
+        return retval;
+    }
+
+    // MBANDNOTS
+    template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
+    UME_FORCE_INLINE VEC_TYPE binaryAndNot(MASK_TYPE const & mask, VEC_TYPE const & a, SCALAR_TYPE b) {
+        UME_EMULATION_WARNING();
+        VEC_TYPE retval = a;
+        for (uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+            if (mask[i] == true) retval.insert(i, ((~a[i]) & b));
+        }
+        return retval;
+    }
+
+    // BANDNOTVA
+    template<typename VEC_TYPE>
+    UME_FORCE_INLINE VEC_TYPE & binaryAndNotAssign(VEC_TYPE & a, VEC_TYPE const & b) {
+        UME_EMULATION_WARNING();
+        for (uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+            a.insert(i, ((~a[i]) & b[i]));
+        }
+        return a;
+    }
+
+    // MBANDNOTVA
+    template<typename VEC_TYPE, typename MASK_TYPE>
+    UME_FORCE_INLINE VEC_TYPE & binaryAndNotAssign(MASK_TYPE const & mask, VEC_TYPE & a, VEC_TYPE const & b) {
+        UME_EMULATION_WARNING();
+        for (uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+            if (mask[i] == true) a.insert(i, ((~a[i]) & b[i]));
+        }
+        return a;
+    }
+
+    // BANDNOTSA
+    template<typename VEC_TYPE, typename SCALAR_TYPE>
+    UME_FORCE_INLINE VEC_TYPE & binaryAndNotAssign(VEC_TYPE & a, SCALAR_TYPE b) {
+        UME_EMULATION_WARNING();
+        for (uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+            a.insert(i, ((~a[i]) & b));
+        }
+        return a;
+    }
+
+    // MBANDNOTSA
+    template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
+    UME_FORCE_INLINE VEC_TYPE & binaryAndNotAssign(MASK_TYPE const & mask, VEC_TYPE & a, SCALAR_TYPE b) {
+        UME_EMULATION_WARNING();
+        for (uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+            if (mask[i] == true) a.insert(i, ((~a[i]) & b));
+        }
+        return a;
+    }
+
     // LNOT
     template<typename MASK_TYPE>
     UME_FORCE_INLINE MASK_TYPE logicalNot(MASK_TYPE const & mask) {

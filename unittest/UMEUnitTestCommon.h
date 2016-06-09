@@ -1251,6 +1251,59 @@ void genericLNOTATest()
     }
 }
 
+template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN>
+void genericLANDNOTVTest_random()
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    {
+        bool values[VEC_LEN];
+        bool outputs[VEC_LEN];
+        SCALAR_TYPE inputA[VEC_LEN];
+        SCALAR_TYPE inputB[VEC_LEN];
+
+        for (int i = 0; i < VEC_LEN; i++)
+        {
+            inputA[i] = randomValue<SCALAR_TYPE>(gen);
+            inputB[i] = randomValue<SCALAR_TYPE>(gen);
+            outputs[i] = (!inputA[i]) && inputB[i];
+        }
+        VEC_TYPE t0(inputA);
+        VEC_TYPE t1(inputB);
+        // Return type of LAND should be a mask, regardless of VEC_TYPE.
+        auto t2 = t0.landnot(t1);
+        t2.store(values);
+        CHECK_CONDITION(valuesExact(values, outputs, VEC_LEN), "LANDNOTV gen");
+    }
+}
+
+template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN>
+void genericLANDNOTSTest_random()
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    {
+        bool values[VEC_LEN];
+        bool outputs[VEC_LEN];
+        SCALAR_TYPE inputA[VEC_LEN];
+        SCALAR_TYPE inputB;
+
+        inputB = randomValue<SCALAR_TYPE>(gen);
+        for (int i = 0; i < VEC_LEN; i++)
+        {
+            inputA[i] = randomValue<SCALAR_TYPE>(gen);
+            outputs[i] = (!inputA[i]) && inputB;
+        }
+        VEC_TYPE t0(inputA);
+        // Return type of LAND should be a mask, regardless of VEC_TYPE.
+        auto t2 = t0.landnot(inputB);
+        t2.store(values);
+        CHECK_CONDITION(valuesExact(values, outputs, VEC_LEN), "LANDNOTS gen");
+    }
+}
+
 template<typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericHLANDTest()
 {
@@ -5091,6 +5144,397 @@ void genericMBNOTATest()
     CHECK_CONDITION(inRange, "MBNOTA");
 }
 
+
+template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN>
+void genericBANDNOTVTest_random()
+{
+    {
+
+        std::random_device rd;
+        std::mt19937 gen(rd());
+
+        SCALAR_TYPE inputA[VEC_LEN];
+        SCALAR_TYPE inputB[VEC_LEN];
+        SCALAR_TYPE output[VEC_LEN];
+        SCALAR_TYPE values[VEC_LEN];
+
+        for (int i = 0; i < VEC_LEN; i++) {
+            inputA[i] = randomValue<SCALAR_TYPE>(gen);
+            inputB[i] = randomValue<SCALAR_TYPE>(gen);
+            output[i] = (~inputA[i]) & inputB[i];
+        }
+
+        VEC_TYPE vec0(inputA);
+        VEC_TYPE vec1(inputB);
+        VEC_TYPE vec2 = vec0.bandnot(vec1);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "BANDNOTV");
+    }
+    {
+
+        std::random_device rd;
+        std::mt19937 gen(rd());
+
+        SCALAR_TYPE inputA[VEC_LEN];
+        SCALAR_TYPE inputB[VEC_LEN];
+        SCALAR_TYPE output[VEC_LEN];
+        SCALAR_TYPE values[VEC_LEN];
+
+        for (int i = 0; i < VEC_LEN; i++) {
+            inputA[i] = randomValue<SCALAR_TYPE>(gen);
+            inputB[i] = randomValue<SCALAR_TYPE>(gen);
+            output[i] = (~inputA[i]) & inputB[i];
+        }
+
+        VEC_TYPE vec0(inputA);
+        VEC_TYPE vec1(inputB);
+        VEC_TYPE vec2 = UME::SIMD::FUNCTIONS::bandnot(vec0, vec1);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "BANDNOTV (function)");
+    }
+}
+
+template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN>
+void genericMBANDNOTVTest_random()
+{
+    {
+        std::random_device rd;
+        std::mt19937 gen(rd());
+
+        SCALAR_TYPE inputA[VEC_LEN];
+        SCALAR_TYPE inputB[VEC_LEN];
+        SCALAR_TYPE output[VEC_LEN];
+        SCALAR_TYPE values[VEC_LEN];
+        bool inputMask[VEC_LEN];
+
+        for (int i = 0; i < VEC_LEN; i++) {
+            inputA[i] = randomValue<SCALAR_TYPE>(gen);
+            inputB[i] = randomValue<SCALAR_TYPE>(gen);
+            inputMask[i] = randomValue<bool>(gen);
+            output[i] = inputMask[i] ? ((~inputA[i]) & inputB[i]) : inputA[i];
+        }
+
+        VEC_TYPE vec0(inputA);
+        VEC_TYPE vec1(inputB);
+        MASK_TYPE mask(inputMask);
+        VEC_TYPE vec2 = vec0.bandnot(mask, vec1);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MBANDNOTV");
+    }
+    {
+        std::random_device rd;
+        std::mt19937 gen(rd());
+
+        SCALAR_TYPE inputA[VEC_LEN];
+        SCALAR_TYPE inputB[VEC_LEN];
+        SCALAR_TYPE output[VEC_LEN];
+        SCALAR_TYPE values[VEC_LEN];
+        bool inputMask[VEC_LEN];
+
+        for (int i = 0; i < VEC_LEN; i++) {
+            inputA[i] = randomValue<SCALAR_TYPE>(gen);
+            inputB[i] = randomValue<SCALAR_TYPE>(gen);
+            inputMask[i] = randomValue<bool>(gen);
+            output[i] = inputMask[i] ? ((~inputA[i]) & inputB[i]) : inputA[i];
+        }
+
+        VEC_TYPE vec0(inputA);
+        VEC_TYPE vec1(inputB);
+        MASK_TYPE mask(inputMask);
+        VEC_TYPE vec2 = UME::SIMD::FUNCTIONS::bandnot(mask, vec0, vec1);
+        vec2.store(values);
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MBANDNOTV (function)");
+    }
+}
+
+template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN>
+void genericBANDNOTSTest_random()
+{
+    {
+
+        std::random_device rd;
+        std::mt19937 gen(rd());
+
+        SCALAR_TYPE inputA[VEC_LEN];
+        SCALAR_TYPE inputB;
+        SCALAR_TYPE output[VEC_LEN];
+        SCALAR_TYPE values[VEC_LEN];
+
+        inputB = randomValue<SCALAR_TYPE>(gen);
+        for (int i = 0; i < VEC_LEN; i++) {
+            inputA[i] = randomValue<SCALAR_TYPE>(gen);
+            output[i] = (~inputA[i]) & inputB;
+        }
+
+        VEC_TYPE vec0(inputA);
+        VEC_TYPE vec1 = vec0.bandnot(inputB);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "BANDNOTS");
+    }
+    {
+
+        std::random_device rd;
+        std::mt19937 gen(rd());
+
+        SCALAR_TYPE inputA[VEC_LEN];
+        SCALAR_TYPE inputB;
+        SCALAR_TYPE output[VEC_LEN];
+        SCALAR_TYPE values[VEC_LEN];
+
+        inputB = randomValue<SCALAR_TYPE>(gen);
+        for (int i = 0; i < VEC_LEN; i++) {
+            inputA[i] = randomValue<SCALAR_TYPE>(gen);
+            output[i] = (~inputA[i]) & inputB;
+        }
+
+        VEC_TYPE vec0(inputA);
+        VEC_TYPE vec1 = UME::SIMD::FUNCTIONS::bandnot(vec0, inputB);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "BANDNOTS (function - rhs scalar)");
+    }
+    {
+
+        std::random_device rd;
+        std::mt19937 gen(rd());
+
+        SCALAR_TYPE inputA;
+        SCALAR_TYPE inputB[VEC_LEN];
+        SCALAR_TYPE output[VEC_LEN];
+        SCALAR_TYPE values[VEC_LEN];
+
+        inputA = randomValue<SCALAR_TYPE>(gen);
+        for (int i = 0; i < VEC_LEN; i++) {
+            inputB[i] = randomValue<SCALAR_TYPE>(gen);
+            output[i] = (~inputA) & inputB[i];
+        }
+
+        VEC_TYPE vec0(inputB);
+        VEC_TYPE vec1 = UME::SIMD::FUNCTIONS::bandnot(inputA, vec0);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, inputB, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "BANDNOTS (function lhs scalar)");
+    }
+}
+
+template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN>
+void genericMBANDNOTSTest_random()
+{
+    {
+        std::random_device rd;
+        std::mt19937 gen(rd());
+
+        SCALAR_TYPE inputA[VEC_LEN];
+        SCALAR_TYPE inputB;
+        SCALAR_TYPE output[VEC_LEN];
+        SCALAR_TYPE values[VEC_LEN];
+        bool inputMask[VEC_LEN];
+
+        inputB = randomValue<SCALAR_TYPE>(gen);
+        for (int i = 0; i < VEC_LEN; i++) {
+            inputA[i] = randomValue<SCALAR_TYPE>(gen);
+            inputMask[i] = randomValue<bool>(gen);
+            output[i] = inputMask[i] ? ((~inputA[i]) & inputB) : inputA[i];
+        }
+
+        VEC_TYPE vec0(inputA);
+        MASK_TYPE mask(inputMask);
+        VEC_TYPE vec1 = vec0.bandnot(mask, inputB);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MBANDNOTS");
+    }
+    {
+
+        std::random_device rd;
+        std::mt19937 gen(rd());
+
+        SCALAR_TYPE inputA[VEC_LEN];
+        SCALAR_TYPE inputB;
+        SCALAR_TYPE output[VEC_LEN];
+        SCALAR_TYPE values[VEC_LEN];
+        bool inputMask[VEC_LEN];
+
+        inputB = randomValue<SCALAR_TYPE>(gen);
+        for (int i = 0; i < VEC_LEN; i++) {
+            inputA[i] = randomValue<SCALAR_TYPE>(gen);
+            inputMask[i] = randomValue<bool>(gen);
+            output[i] = inputMask[i] ? ((~inputA[i]) & inputB) : inputA[i];
+        }
+
+        VEC_TYPE vec0(inputA);
+        MASK_TYPE mask(inputMask);
+        VEC_TYPE vec1 = UME::SIMD::FUNCTIONS::bandnot(mask, vec0, inputB);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MBANDNOTS (function - rhs scalar)");
+    }
+    {
+
+        std::random_device rd;
+        std::mt19937 gen(rd());
+
+        SCALAR_TYPE inputA;
+        SCALAR_TYPE inputB[VEC_LEN];
+        SCALAR_TYPE output[VEC_LEN];
+        SCALAR_TYPE values[VEC_LEN];
+        bool inputMask[VEC_LEN];
+
+        inputA = randomValue<SCALAR_TYPE>(gen);
+        for (int i = 0; i < VEC_LEN; i++) {
+            inputB[i] = randomValue<SCALAR_TYPE>(gen);
+            inputMask[i] = randomValue<bool>(gen);
+            output[i] = inputMask[i] ? ((~inputA) & inputB[i]) : inputA;
+        }
+
+        VEC_TYPE vec0(inputB);
+        MASK_TYPE mask(inputMask);
+        VEC_TYPE vec1 = UME::SIMD::FUNCTIONS::bandnot(mask, inputA, vec0);
+        vec1.store(values);
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
+        vec0.store(values);
+        bool isUnmodified = valuesInRange(values, inputB, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MBANDNOTS (function - lhs scalar)");
+    }
+}
+
+template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN>
+void genericBANDNOTVATest_random()
+{
+    {
+
+        std::random_device rd;
+        std::mt19937 gen(rd());
+
+        SCALAR_TYPE inputA[VEC_LEN];
+        SCALAR_TYPE inputB[VEC_LEN];
+        SCALAR_TYPE output[VEC_LEN];
+        SCALAR_TYPE values[VEC_LEN];
+
+        for (int i = 0; i < VEC_LEN; i++) {
+            inputA[i] = randomValue<SCALAR_TYPE>(gen);
+            inputB[i] = randomValue<SCALAR_TYPE>(gen);
+            output[i] = (~inputA[i]) & inputB[i];
+        }
+
+        VEC_TYPE vec0(inputA);
+        VEC_TYPE vec1(inputB);
+        vec0.bandnota(vec1);
+        vec0.store(values);
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "BANDNOTVA");
+    }
+}
+
+template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN>
+void genericMBANDNOTVATest_random()
+{
+    {
+        std::random_device rd;
+        std::mt19937 gen(rd());
+
+        SCALAR_TYPE inputA[VEC_LEN];
+        SCALAR_TYPE inputB[VEC_LEN];
+        SCALAR_TYPE output[VEC_LEN];
+        SCALAR_TYPE values[VEC_LEN];
+        bool inputMask[VEC_LEN];
+
+        for (int i = 0; i < VEC_LEN; i++) {
+            inputA[i] = randomValue<SCALAR_TYPE>(gen);
+            inputB[i] = randomValue<SCALAR_TYPE>(gen);
+            inputMask[i] = randomValue<bool>(gen);
+            output[i] = inputMask[i] ? ((~inputA[i]) & inputB[i]) : inputA[i];
+        }
+
+        VEC_TYPE vec0(inputA);
+        VEC_TYPE vec1(inputB);
+        MASK_TYPE mask(inputMask);
+        vec0.bandnota(mask, vec1);
+        vec0.store(values);
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "MBANDNOTVA");
+    }
+}
+
+template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN>
+void genericBANDNOTSATest_random()
+{
+    {
+
+        std::random_device rd;
+        std::mt19937 gen(rd());
+
+        SCALAR_TYPE inputA[VEC_LEN];
+        SCALAR_TYPE inputB;
+        SCALAR_TYPE output[VEC_LEN];
+        SCALAR_TYPE values[VEC_LEN];
+
+        inputB = randomValue<SCALAR_TYPE>(gen);
+        for (int i = 0; i < VEC_LEN; i++) {
+            inputA[i] = randomValue<SCALAR_TYPE>(gen);
+            output[i] = (~inputA[i]) & inputB;
+        }
+
+        VEC_TYPE vec0(inputA);
+        vec0.bandnota(inputB);
+        vec0.store(values);
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "BANDNOTSA");
+    }
+}
+
+template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN>
+void genericMBANDNOTSATest_random()
+{
+    {
+        std::random_device rd;
+        std::mt19937 gen(rd());
+
+        SCALAR_TYPE inputA[VEC_LEN];
+        SCALAR_TYPE inputB;
+        SCALAR_TYPE output[VEC_LEN];
+        SCALAR_TYPE values[VEC_LEN];
+        bool inputMask[VEC_LEN];
+
+        inputB = randomValue<SCALAR_TYPE>(gen);
+        for (int i = 0; i < VEC_LEN; i++) {
+            inputA[i] = randomValue<SCALAR_TYPE>(gen);
+            inputMask[i] = randomValue<bool>(gen);
+            output[i] = inputMask[i] ? ((~inputA[i]) & inputB) : inputA[i];
+        }
+
+        VEC_TYPE vec0(inputA);
+        MASK_TYPE mask(inputMask);
+        vec0.bandnota(mask, inputB);
+        vec0.store(values);
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange , "MBANDNOTSA");
+    }
+}
+
 // This test needs to be wrapped around in a class since it is not possible to provide
 // partial specialization for non-member function template. Such specialization is necessary
 // for covering SIMD1
@@ -8826,6 +9270,15 @@ void genericIntegerInterfaceTest()
     genericBNOTATest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
     genericMBNOTATest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
 
+    genericBANDNOTVTest_random<VEC_TYPE, SCALAR_TYPE, VEC_LEN>();
+    genericMBANDNOTVTest_random<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN>();
+    genericBANDNOTSTest_random<VEC_TYPE, SCALAR_TYPE, VEC_LEN>();
+    genericMBANDNOTSTest_random<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN>();
+    genericBANDNOTVATest_random<VEC_TYPE, SCALAR_TYPE, VEC_LEN>();
+    genericMBANDNOTVATest_random<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN>();
+    genericBANDNOTSATest_random<VEC_TYPE, SCALAR_TYPE, VEC_LEN>();
+    genericMBANDNOTSATest_random<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN>();
+
     genericHBANDTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
     genericMHBANDTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
     genericHBANDSTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
@@ -8981,6 +9434,8 @@ void genericMaskTest() {
     genericLXORSATest<MASK_TYPE, VEC_LEN, DATA_SET>();
     genericLNOTTest<MASK_TYPE, VEC_LEN, DATA_SET> ();
     genericLNOTATest<MASK_TYPE, VEC_LEN, DATA_SET> ();
+    genericLANDNOTVTest_random<MASK_TYPE, bool, VEC_LEN>();
+    genericLANDNOTSTest_random<MASK_TYPE, bool, VEC_LEN>();
     genericHLANDTest<MASK_TYPE, VEC_LEN, DATA_SET> ();
     genericHLORTest<MASK_TYPE, VEC_LEN, DATA_SET> ();
     genericHLXORTest<MASK_TYPE, VEC_LEN, DATA_SET> ();

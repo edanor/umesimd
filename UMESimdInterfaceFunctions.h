@@ -447,6 +447,25 @@ namespace FUNCTIONS
     template<typename VEC_T>
     inline VEC_T bnot(typename UME::SIMD::SIMDTraits<VEC_T>::MASK_T const & mask, VEC_T const & src1) { return src1.bnot(mask); }
 
+    // BANDNOTV
+    template<typename VEC_T>
+    inline VEC_T bandnot(VEC_T const & src1, VEC_T const & src2) { return src1.bandnot(src2); }
+    // BANDNOTS, rhs scalar
+    template<typename VEC_T>
+    inline VEC_T bandnot(VEC_T const & src1, typename UME::SIMD::SIMDTraits<VEC_T>::SCALAR_T src2) { return src1.bandnot(src2); }
+    // BANDNOTS, lhs scalar
+    template<typename VEC_T>
+    inline VEC_T bandnot(typename UME::SIMD::SIMDTraits<VEC_T>::SCALAR_T src1, VEC_T const & src2) { return VEC_T(~src1).band(src2); }
+    // MANDNOTV
+    template<typename VEC_T>
+    inline VEC_T bandnot(typename UME::SIMD::SIMDTraits<VEC_T>::MASK_T const & mask, VEC_T const & src1, VEC_T const & src2) { return src1.bandnot(mask, src2); }
+    // MANDNOTS, rhs scalar
+    template<typename VEC_T>
+    inline VEC_T bandnot(typename UME::SIMD::SIMDTraits<VEC_T>::MASK_T const & mask, VEC_T const & src1, typename UME::SIMD::SIMDTraits<VEC_T>::SCALAR_T src2) { return src1.bandnot(mask, src2); };
+    // MANDNOTS, lhs scalar
+    template<typename VEC_T>
+    inline VEC_T bandnot(typename UME::SIMD::SIMDTraits<VEC_T>::MASK_T const & mask, typename UME::SIMD::SIMDTraits<VEC_T>::SCALAR_T src1, VEC_T const & src2) { return (VEC_T(src1).bnot(mask)).band(mask, src2); };
+
     // HBAND
     template<typename VEC_T>
     inline typename UME::SIMD::SIMDTraits<VEC_T>::SCALAR_T hband(VEC_T const & src1) { return src1.hband(); }

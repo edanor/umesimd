@@ -416,6 +416,16 @@ namespace SIMD
             return SCALAR_EMULATION::logicalNotAssign<DERIVED_MASK_TYPE>(static_cast<DERIVED_MASK_TYPE &>(*this));
         }
 
+        // LANDNOTV
+        UME_FORCE_INLINE DERIVED_MASK_TYPE landnot(DERIVED_MASK_TYPE const & b) const {
+            return SCALAR_EMULATION::binaryAndNot<DERIVED_MASK_TYPE>(static_cast<DERIVED_MASK_TYPE const &>(*this), b);
+        }
+
+        // LANDNOTS
+        UME_FORCE_INLINE DERIVED_MASK_TYPE landnot(bool b) const {
+            return SCALAR_EMULATION::binaryAndNot<DERIVED_MASK_TYPE>(static_cast<DERIVED_MASK_TYPE const &>(*this), b);
+        }
+
         // CMPEQV
         UME_FORCE_INLINE DERIVED_MASK_TYPE cmpeq(DERIVED_MASK_TYPE const & b) const {
             return SCALAR_EMULATION::isEqual<DERIVED_MASK_TYPE, DERIVED_MASK_TYPE>(static_cast<DERIVED_MASK_TYPE const &>(*this), b);
@@ -1938,6 +1948,39 @@ namespace SIMD
         // BNOTA
         UME_FORCE_INLINE DERIVED_VEC_TYPE & bnota () {
             return SCALAR_EMULATION::binaryNotAssign<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this));
+        }
+
+        // BANDNOTV
+        UME_FORCE_INLINE DERIVED_VEC_TYPE bandnot(DERIVED_VEC_TYPE const & b) const {
+            return SCALAR_EMULATION::binaryAndNot<DERIVED_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this), b);
+        }
+        // MBANDNOTV
+        UME_FORCE_INLINE DERIVED_VEC_TYPE bandnot(MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) const {
+            return SCALAR_EMULATION::binaryAndNot<DERIVED_VEC_TYPE>(mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
+        }
+        // BANDNOTS
+        UME_FORCE_INLINE DERIVED_VEC_TYPE bandnot(SCALAR_TYPE b) const {
+            return SCALAR_EMULATION::binaryAndNot<DERIVED_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this), b);
+        }
+        // MBANDNOTS
+        UME_FORCE_INLINE DERIVED_VEC_TYPE bandnot(MASK_TYPE const & mask, SCALAR_TYPE b) const {
+            return SCALAR_EMULATION::binaryAndNot<DERIVED_VEC_TYPE>(mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
+        }
+        // BANDNOTVA
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & bandnota(DERIVED_VEC_TYPE const & b) {
+            return SCALAR_EMULATION::binaryAndNotAssign<DERIVED_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE &>(*this), b);
+        }
+        // MBANDNOTVA
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & bandnota(MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) {
+            return SCALAR_EMULATION::binaryAndNotAssign<DERIVED_VEC_TYPE>(mask, static_cast<DERIVED_VEC_TYPE &>(*this), b);
+        }
+        // BANDNOTSA
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & bandnota(SCALAR_TYPE b) {
+            return SCALAR_EMULATION::binaryAndNotAssign<DERIVED_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE &>(*this), b);
+        }
+        // MBANDNOTSA
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & bandnota(MASK_TYPE const & mask, SCALAR_TYPE b) {
+            return SCALAR_EMULATION::binaryAndNotAssign<DERIVED_VEC_TYPE>(mask, static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
 
         // MBNOTA
