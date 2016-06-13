@@ -950,13 +950,23 @@ namespace SIMD
         }
 
         // SWIZZLE
-        DERIVED_VEC_TYPE swizzle (SWIZZLE_MASK_TYPE const & sMask) const {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE swizzle (SWIZZLE_MASK_TYPE const & sMask) const {
             return SCALAR_EMULATION::swizzle<DERIVED_VEC_TYPE, SWIZZLE_MASK_TYPE> (sMask, static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // SWIZZLEA
-        DERIVED_VEC_TYPE swizzlea (SWIZZLE_MASK_TYPE const & sMask) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE swizzlea (SWIZZLE_MASK_TYPE const & sMask) {
             return SCALAR_EMULATION::swizzleAssign<DERIVED_VEC_TYPE, SWIZZLE_MASK_TYPE> (sMask, static_cast<DERIVED_VEC_TYPE &>(*this));
+        }
+
+        // SORTA
+        UME_FORCE_INLINE DERIVED_VEC_TYPE sorta() {
+            return SCALAR_EMULATION::sortAscending<DERIVED_VEC_TYPE, SCALAR_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this));
+        }
+
+        // SORTD
+        UME_FORCE_INLINE DERIVED_VEC_TYPE sortd() {
+            return SCALAR_EMULATION::sortDescending<DERIVED_VEC_TYPE, SCALAR_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // ADDV

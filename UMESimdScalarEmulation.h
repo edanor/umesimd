@@ -34,6 +34,9 @@
 #include "UMEInline.h"
 #include "UMEBasicTypes.h"
 
+#include <algorithm>
+#include <array>
+
 namespace UME
 {
 namespace SIMD
@@ -2595,6 +2598,46 @@ namespace SCALAR_EMULATION
             a.insert(i, temp[sMask[i]]);
         }
         return a;
+    }
+
+    // SORTA
+    template<typename VEC_TYPE, typename SCALAR_TYPE>
+    UME_FORCE_INLINE VEC_TYPE sortAscending(VEC_TYPE const & a) {
+        UME_EMULATION_WARNING();
+        const uint32_t VEC_LEN = VEC_TYPE::length();
+        std::array<SCALAR_TYPE, VEC_LEN> temp;
+        VEC_TYPE retval;
+
+        for (uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+            temp[i] = a[i];
+        }
+
+        std::sort(temp.begin(), temp.end());
+        
+        for (uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+            retval.insert(i, temp[i]);
+        }
+        return retval;
+    }
+    
+    // SORTD
+    template<typename VEC_TYPE, typename SCALAR_TYPE>
+    UME_FORCE_INLINE VEC_TYPE sortDescending(VEC_TYPE const & a) {
+        UME_EMULATION_WARNING();
+        const uint32_t VEC_LEN = VEC_TYPE::length();
+        std::array<SCALAR_TYPE, VEC_LEN> temp;
+        VEC_TYPE retval;
+
+        for (uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+            temp[i] = a[i];
+        }
+
+        std::sort(temp.begin(), temp.end());
+
+        for (uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+            retval.insert(i, temp[VEC_LEN - i - 1]);
+        }
+        return retval;
     }
 
     // reduceAdd(VEC) -> scalar

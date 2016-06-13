@@ -5896,7 +5896,98 @@ void genericBLENDSTest_random()
         // assign
         // SWIZZLE  - Swizzle (reorder/permute) vector elements
         // SWIZZLEA - Swizzle (reorder/permute) vector elements and assign
- 
+
+template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN>
+void genericSORTATest_random()
+{
+    {
+        VEC_TYPE t0, t1;
+        SCALAR_TYPE input[VEC_LEN];
+        SCALAR_TYPE values[VEC_LEN];
+        SCALAR_TYPE output[VEC_LEN];
+
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        bool inRange = true;
+
+        // Run the same sorting test many times to avoid future surprises
+        for (int test = 0; test < 100; test++)
+        {
+            for (int i = 0; i < VEC_LEN; i++) {
+                input[i] = randomValue<SCALAR_TYPE>(gen);
+                output[i] = input[i];
+            }
+
+            // sort with bubble sort
+            SCALAR_TYPE temp; //for swapping
+            for (int i = 0; i < VEC_LEN - 1; i++)
+            {
+                for (int j = 0; j < VEC_LEN - 1; j++)
+                {
+                    if (output[j] > output[j + 1])
+                    {
+                        temp = output[j];
+                        output[j] = output[j + 1];
+                        output[j + 1] = temp;
+                    }
+                }
+            }
+
+            t0.load(input);
+            t1 = t0.sorta();
+            t1.store(values);
+
+            inRange &= valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
+        }
+        CHECK_CONDITION(inRange, "SORTA");
+    }
+}
+template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN>
+void genericSORTDTest_random()
+{
+    {
+        VEC_TYPE t0, t1;
+        SCALAR_TYPE input[VEC_LEN];
+        SCALAR_TYPE values[VEC_LEN];
+        SCALAR_TYPE output[VEC_LEN];
+
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        bool inRange = true;
+
+        // Run the same sorting test multiple times to avoid future surprises
+        for (int test = 0; test < 100; test++)
+        {
+            for (int i = 0; i < VEC_LEN; i++) {
+                input[i] = randomValue<SCALAR_TYPE>(gen);
+                output[i] = input[i];
+            }
+
+            // sort with bubble sort
+            SCALAR_TYPE temp; //for swapping
+            for (int i = 0; i < VEC_LEN - 1; i++)
+            {
+                for (int j = 0; j < VEC_LEN - 1; j++)
+                {
+                    if (output[j] < output[j + 1])
+                    {
+                        temp = output[j];
+                        output[j] = output[j + 1];
+                        output[j + 1] = temp;
+                    }
+                }
+            }
+
+            t0.load(input);
+            t1 = t0.sortd();
+            t1.store(values);
+
+            inRange &= valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
+        }
+        CHECK_CONDITION(inRange, "SORTD");
+    }
+}
+
         //(Reduction to scalar operations)
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericHADDTest()
@@ -9082,6 +9173,8 @@ void genericBaseInterfaceTest()
     genericMSTOREATest_random<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN>();
     // SWIZZLE
     // SWIZZLEA
+    genericSORTATest_random<VEC_TYPE, SCALAR_TYPE, VEC_LEN>();
+    genericSORTDTest_random<VEC_TYPE, SCALAR_TYPE, VEC_LEN>();
     genericBLENDVTest_random<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN>();
     genericADDVTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
     genericADDVTest_random<VEC_TYPE, SCALAR_TYPE, VEC_LEN>();
