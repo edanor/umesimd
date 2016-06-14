@@ -98,6 +98,7 @@ int test_UME_SIMD4_8u(bool supressMessages) {
         SIMD4_8u, uint8_t,
         SIMD4_8i, int8_t,
         SIMDMask4,
+        SIMDSwizzle4,
         4,
         DataSet_1_8u>();
 
@@ -135,6 +136,7 @@ int test_UME_SIMD4_8i(bool supressMessages) {
         SIMD4_8i, int8_t,
         SIMD4_8u, uint8_t,
         SIMDMask4,
+        SIMDSwizzle4,
         4,
         DataSet_1_8i>();
 
@@ -160,6 +162,7 @@ int test_UME_SIMD2_16u(bool supressMessages) {
         SIMD2_16u, uint16_t,
         SIMD2_16i, int16_t,
         SIMDMask2,
+        SIMDSwizzle2,
         2,
         DataSet_1_16u>();
 
@@ -211,6 +214,7 @@ int test_UME_SIMD2_16i(bool supressMessages) {
         SIMD2_16i, int16_t,
         SIMD2_16u, uint16_t,
         SIMDMask2,
+        SIMDSwizzle2,
         2,
         DataSet_1_16i>();
 
@@ -242,6 +246,7 @@ int test_UME_SIMD1_32u(bool supressMessages) {
         SIMD1_32i, int32_t,
         SIMD1_32f, float,
         SIMDMask1,
+        SIMDSwizzle1,
         1,
         DataSet_1_32u>();
 
@@ -269,6 +274,7 @@ int test_UME_SIMD1_32i(bool supressMessages) {
         SIMD1_32u, uint32_t,
         SIMD1_32f, float,
         SIMDMask1,
+        SIMDSwizzle1,
         1,
         DataSet_1_32i>();
 
@@ -306,7 +312,8 @@ int test_UME_SIMD1_32f(bool supressMessages) {
         SIMD1_32f, float, 
         SIMD1_32u, uint32_t,
         SIMD1_32i, int32_t,
-        SIMDMask1, 
+        SIMDMask1,
+        SIMDSwizzle1,
         1,
         DataSet_1_32f>();
 

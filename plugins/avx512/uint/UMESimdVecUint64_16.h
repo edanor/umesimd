@@ -68,7 +68,7 @@ namespace SIMD {
             uint64_t,
             16,
             SIMDVecMask<16>,
-            SIMDVecSwizzle<16>> ,
+            SIMDSwizzle<16>> ,
         public SIMDVecPackableInterface<
             SIMDVec_u<uint64_t, 16>,
             SIMDVec_u<uint64_t, 8>>

@@ -44,7 +44,7 @@ namespace SIMD
 
     // forward declarations of simd types classes;
     template<uint32_t VEC_LEN>                             class SIMDVecMask;
-    template<uint32_t SMASK_LEN>                           class SIMDVecSwizzle;
+    template<uint32_t VEC_LEN>                             class SIMDSwizzle;
     template<typename SCALAR_UINT_TYPE, uint32_t VEC_LEN>  class SIMDVec_u;
     template<typename SCALAR_INT_TYPE, uint32_t VEC_LEN>   class SIMDVec_i;
     template<typename SCALAR_FLOAT_TYPE, uint32_t VEC_LEN> class SIMDVec_f;
@@ -115,14 +115,14 @@ namespace UME
     typedef SIMDVecMask<128>    SIMDMask128;
     
     // Swizzle mask types
-    typedef SIMDVecSwizzle<1>   SIMDSwizzle1;
-    typedef SIMDVecSwizzle<2>   SIMDSwizzle2;
-    typedef SIMDVecSwizzle<4>   SIMDSwizzle4;
-    typedef SIMDVecSwizzle<8>   SIMDSwizzle8;
-    typedef SIMDVecSwizzle<16>  SIMDSwizzle16;
-    typedef SIMDVecSwizzle<32>  SIMDSwizzle32;
-    typedef SIMDVecSwizzle<64>  SIMDSwizzle64;
-    typedef SIMDVecSwizzle<128> SIMDSwizzle128;
+    typedef SIMDSwizzle<1>   SIMDSwizzle1;
+    typedef SIMDSwizzle<2>   SIMDSwizzle2;
+    typedef SIMDSwizzle<4>   SIMDSwizzle4;
+    typedef SIMDSwizzle<8>   SIMDSwizzle8;
+    typedef SIMDSwizzle<16>  SIMDSwizzle16;
+    typedef SIMDSwizzle<32>  SIMDSwizzle32;
+    typedef SIMDSwizzle<64>  SIMDSwizzle64;
+    typedef SIMDSwizzle<128> SIMDSwizzle128;
 
     // 8b uint vectors
     typedef SIMDVec_u<uint8_t,  1>   SIMD1_8u;

@@ -123,6 +123,7 @@ int test_UME_SIMD64_8u(bool supressMessages) {
         SIMD64_8u, uint8_t,
         SIMD64_8i, int8_t,
         SIMDMask64,
+        SIMDSwizzle64,
         64,
         DataSet_1_8u>();
 
@@ -148,6 +149,7 @@ int test_UME_SIMD64_8i(bool supressMessages) {
         SIMD64_8i, int8_t,
         SIMD64_8u, uint8_t,
         SIMDMask64,
+        SIMDSwizzle64,
         64,
         DataSet_1_8i>();
 
@@ -173,6 +175,7 @@ int test_UME_SIMD32_16u(bool supressMessages) {
         SIMD32_16u, uint16_t,
         SIMD32_16i, int16_t,
         SIMDMask32,
+        SIMDSwizzle32,
         32,
         DataSet_1_16u>();
 
@@ -192,6 +195,7 @@ int test_UME_SIMD32_16i(bool supressMessages) {
         SIMD32_16i, int16_t,
         SIMD32_16u, uint16_t,
         SIMDMask32,
+        SIMDSwizzle32,
         32,
         DataSet_1_16i>();
 
@@ -220,6 +224,7 @@ int test_UME_SIMD16_32u(bool supressMessages) {
         SIMD16_32i, int32_t,
         SIMD16_32f, float,
         SIMDMask16,
+        SIMDSwizzle16,
         16,
         DataSet_1_32u>();
 
@@ -253,6 +258,7 @@ int test_UME_SIMD16_32i(bool supressMessages) {
         SIMD16_32u, uint32_t,
         SIMD16_32f, float,
         SIMDMask16,
+        SIMDSwizzle16,
         16,
         DataSet_1_32i>();
 
@@ -494,7 +500,8 @@ int test_UME_SIMD16_32f(bool supressMessages)
         SIMD16_32f, float,
         SIMD16_32u, uint32_t,
         SIMD16_32i, int32_t,
-        SIMDMask16, 
+        SIMDMask16,
+        SIMDSwizzle16,
         16,
         DataSet_1_32f>();
 
@@ -521,6 +528,7 @@ int test_UME_SIMD8_64u(bool supressMessages) {
         SIMD8_64i, int64_t,
         SIMD8_64f, double,
         SIMDMask8,
+        SIMDSwizzle8,
         8,
         DataSet_1_64u>();
 
@@ -674,6 +682,7 @@ int test_UME_SIMD8_64i(bool supressMessages) {
         SIMD8_64i, int64_t,
         SIMD8_64u, uint64_t,
         SIMDMask8,
+        SIMDSwizzle8,
         8,
         DataSet_1_64i>();
 
@@ -724,6 +733,7 @@ int test_UME_SIMD8_64f(bool supressMessages) {
         SIMD8_64u, uint64_t,
         SIMD8_64i, int64_t,
         SIMDMask8,
+        SIMDSwizzle8,
         8,
         DataSet_1_64f>();
 

@@ -56,7 +56,7 @@ namespace SIMD {
         typedef int8_t            SCALAR_INT_TYPE;
         typedef NullType<2>       SCALAR_FLOAT_TYPE;
         typedef SIMDVecMask<1>    MASK_TYPE;
-        typedef SIMDVecSwizzle<1> SWIZZLE_MASK_TYPE;
+        typedef SIMDSwizzle<1>    SWIZZLE_MASK_TYPE;
         typedef NullType<3>       SCALAR_UINT_LOWER_PRECISION;
         typedef uint16_t          SCALAR_UINT_HIGHER_PRECISION;
     };
@@ -68,7 +68,7 @@ namespace SIMD {
         typedef int8_t                SCALAR_INT_TYPE;
         typedef NullType<1>           SCALAR_FLOAT_TYPE;
         typedef SIMDVecMask<2>        MASK_TYPE;
-        typedef SIMDVecSwizzle<2>     SWIZZLE_MASK_TYPE;
+        typedef SIMDSwizzle<2>        SWIZZLE_MASK_TYPE;
         typedef NullType<2>           SCALAR_UINT_LOWER_PRECISION;
         typedef uint16_t              SCALAR_UINT_HIGHER_PRECISION;
     };
@@ -79,7 +79,7 @@ namespace SIMD {
         typedef int16_t             SCALAR_INT_TYPE;
         typedef NullType<2>         SCALAR_FLOAT_TYPE;
         typedef SIMDVecMask<1>      MASK_TYPE;
-        typedef SIMDVecSwizzle<1>   SWIZZLE_MASK_TYPE;
+        typedef SIMDSwizzle<1>      SWIZZLE_MASK_TYPE;
         typedef uint8_t             SCALAR_UINT_LOWER_PRECISION;
         typedef uint32_t            SCALAR_UINT_HIGHER_PRECISION;
     };
@@ -91,7 +91,7 @@ namespace SIMD {
         typedef int8_t                SCALAR_INT_TYPE;
         typedef NullType<1>           SCALAR_FLOAT_TYPE;
         typedef SIMDVecMask<4>        MASK_TYPE;
-        typedef SIMDVecSwizzle<4>     SWIZZLE_MASK_TYPE;
+        typedef SIMDSwizzle<4>        SWIZZLE_MASK_TYPE;
         typedef NullType<2>           SCALAR_UINT_LOWER_PRECISION;
         typedef uint16_t              SCALAR_UINT_HIGHER_PRECISION;
     };
@@ -102,7 +102,7 @@ namespace SIMD {
         typedef int16_t                SCALAR_INT_TYPE;
         typedef NullType<1>            SCALAR_FLOAT_TYPE;
         typedef SIMDVecMask<2>         MASK_TYPE;
-        typedef SIMDVecSwizzle<2>      SWIZZLE_MASK_TYPE;
+        typedef SIMDSwizzle<2>         SWIZZLE_MASK_TYPE;
         typedef uint8_t                SCALAR_UINT_LOWER_PRECISION;
         typedef uint32_t               SCALAR_UINT_HIGHER_PRECISION;
     };
@@ -113,7 +113,7 @@ namespace SIMD {
         typedef int32_t             SCALAR_INT_TYPE;
         typedef float               SCALAR_FLOAT_TYPE;
         typedef SIMDVecMask<1>      MASK_TYPE;
-        typedef SIMDVecSwizzle<1>   SWIZZLE_MASK_TYPE;
+        typedef SIMDSwizzle<1>      SWIZZLE_MASK_TYPE;
         typedef uint16_t            SCALAR_UINT_LOWER_PRECISION;
         typedef uint64_t            SCALAR_UINT_HIGHER_PRECISION;
     };
@@ -125,7 +125,7 @@ namespace SIMD {
         typedef int8_t                SCALAR_INT_TYPE;
         typedef NullType<1>           SCALAR_FLOAT_TYPE;
         typedef SIMDVecMask<8>        MASK_TYPE;
-        typedef SIMDVecSwizzle<8>     SWIZZLE_MASK_TYPE;
+        typedef SIMDSwizzle<8>        SWIZZLE_MASK_TYPE;
         typedef NullType<2>           SCALAR_UINT_LOWER_PRECISION;
         typedef uint16_t              SCALAR_UINT_HIGHER_PRECISION;
     };
@@ -136,7 +136,7 @@ namespace SIMD {
         typedef int16_t                SCALAR_INT_TYPE;
         typedef NullType<1>            SCALAR_FLOAT_TYPE;
         typedef SIMDVecMask<4>         MASK_TYPE;
-        typedef SIMDVecSwizzle<4>      SWIZZLE_MASK_TYPE;
+        typedef SIMDSwizzle<4>         SWIZZLE_MASK_TYPE;
         typedef uint8_t                SCALAR_UINT_LOWER_PRECISION;
         typedef uint32_t               SCALAR_UINT_HIGHER_PRECISION;
     };
@@ -147,7 +147,7 @@ namespace SIMD {
         typedef int32_t                SCALAR_INT_TYPE;
         typedef float                  SCALAR_FLOAT_TYPE;
         typedef SIMDVecMask<2>         MASK_TYPE;
-        typedef SIMDVecSwizzle<2>      SWIZZLE_MASK_TYPE;
+        typedef SIMDSwizzle<2>         SWIZZLE_MASK_TYPE;
         typedef uint16_t               SCALAR_UINT_LOWER_PRECISION;
         typedef uint64_t               SCALAR_UINT_HIGHER_PRECISION;
     };
@@ -158,7 +158,7 @@ namespace SIMD {
         typedef int64_t             SCALAR_INT_TYPE;
         typedef double              SCALAR_FLOAT_TYPE;
         typedef SIMDVecMask<1>      MASK_TYPE;
-        typedef SIMDVecSwizzle<1>   SWIZZLE_MASK_TYPE;
+        typedef SIMDSwizzle<1>      SWIZZLE_MASK_TYPE;
         typedef uint32_t            SCALAR_UINT_LOWER_PRECISION;
         typedef NullType<2>         SCALAR_UINT_HIGHER_PRECISION;
     };
@@ -170,7 +170,7 @@ namespace SIMD {
         typedef int8_t                SCALAR_INT_TYPE;
         typedef NullType<1>           SCALAR_FLOAT_TYPE;
         typedef SIMDVecMask<16>       MASK_TYPE;
-        typedef SIMDVecSwizzle<16>    SWIZZLE_MASK_TYPE;
+        typedef SIMDSwizzle<16>       SWIZZLE_MASK_TYPE;
         typedef NullType<2>           SCALAR_UINT_LOWER_PRECISION;
         typedef uint16_t              SCALAR_UINT_HIGHER_PRECISION;
     };
@@ -181,7 +181,7 @@ namespace SIMD {
         typedef int16_t                SCALAR_INT_TYPE;
         typedef NullType<1>            SCALAR_FLOAT_TYPE;
         typedef SIMDVecMask<8>         MASK_TYPE;
-        typedef SIMDVecSwizzle<8>      SWIZZLE_MASK_TYPE;
+        typedef SIMDSwizzle<8>         SWIZZLE_MASK_TYPE;
         typedef uint8_t                SCALAR_UINT_LOWER_PRECISION;
         typedef uint32_t               SCALAR_UINT_HIGHER_PRECISION;
     };
@@ -192,7 +192,7 @@ namespace SIMD {
         typedef int32_t                SCALAR_INT_TYPE;
         typedef float                  SCALAR_FLOAT_TYPE;
         typedef SIMDVecMask<4>         MASK_TYPE;
-        typedef SIMDVecSwizzle<4>      SWIZZLE_MASK_TYPE;
+        typedef SIMDSwizzle<4>         SWIZZLE_MASK_TYPE;
         typedef uint16_t               SCALAR_UINT_LOWER_PRECISION;
         typedef uint64_t               SCALAR_UINT_HIGHER_PRECISION;
     };
@@ -203,7 +203,7 @@ namespace SIMD {
         typedef int64_t                SCALAR_INT_TYPE;
         typedef double                 SCALAR_FLOAT_TYPE;
         typedef SIMDVecMask<2>         MASK_TYPE;
-        typedef SIMDVecSwizzle<2>      SWIZZLE_MASK_TYPE;
+        typedef SIMDSwizzle<2>         SWIZZLE_MASK_TYPE;
         typedef uint32_t               SCALAR_UINT_LOWER_PRECISION;
         typedef NullType<1>            SCALAR_UINT_HIGHER_PRECISION;
     };
@@ -215,7 +215,7 @@ namespace SIMD {
         typedef int8_t                 SCALAR_INT_TYPE;
         typedef NullType<1>            SCALAR_FLOAT_TYPE;
         typedef SIMDVecMask<32>        MASK_TYPE;
-        typedef SIMDVecSwizzle<32>     SWIZZLE_MASK_TYPE;
+        typedef SIMDSwizzle<32>        SWIZZLE_MASK_TYPE;
         typedef NullType<2>            SCALAR_UINT_LOWER_PRECISION;
         typedef uint16_t               SCALAR_UINT_HIGHER_PRECISION;
     };
@@ -226,7 +226,7 @@ namespace SIMD {
         typedef int16_t                SCALAR_INT_TYPE;
         typedef NullType<1>            SCALAR_FLOAT_TYPE;
         typedef SIMDVecMask<16>        MASK_TYPE;
-        typedef SIMDVecSwizzle<16>     SWIZZLE_MASK_TYPE;
+        typedef SIMDSwizzle<16>        SWIZZLE_MASK_TYPE;
         typedef uint8_t                SCALAR_UINT_LOWER_PRECISION;
         typedef uint32_t               SCALAR_UINT_HIGHER_PRECISION;
     };
@@ -237,7 +237,7 @@ namespace SIMD {
         typedef int32_t                SCALAR_INT_TYPE;
         typedef float                  SCALAR_FLOAT_TYPE;
         typedef SIMDVecMask<8>         MASK_TYPE;
-        typedef SIMDVecSwizzle<8>      SWIZZLE_MASK_TYPE;
+        typedef SIMDSwizzle<8>         SWIZZLE_MASK_TYPE;
         typedef uint16_t               SCALAR_UINT_LOWER_PRECISION;
         typedef uint64_t               SCALAR_UINT_HIGHER_PRECISION;
     };
@@ -248,7 +248,7 @@ namespace SIMD {
         typedef int64_t                SCALAR_INT_TYPE;
         typedef double                 SCALAR_FLOAT_TYPE;
         typedef SIMDVecMask<4>         MASK_TYPE;
-        typedef SIMDVecSwizzle<4>      SWIZZLE_MASK_TYPE;
+        typedef SIMDSwizzle<4>         SWIZZLE_MASK_TYPE;
         typedef uint32_t               SCALAR_UINT_LOWER_PRECISION;
         typedef NullType<2>            SCALAR_UINT_HIGHER_PRECISION;
     };
@@ -260,7 +260,7 @@ namespace SIMD {
         typedef int8_t                 SCALAR_INT_TYPE;
         typedef NullType<1>            SCALAR_FLOAT_TYPE;
         typedef SIMDVecMask<64>        MASK_TYPE;
-        typedef SIMDVecSwizzle<64>     SWIZZLE_MASK_TYPE;
+        typedef SIMDSwizzle<64>        SWIZZLE_MASK_TYPE;
         typedef NullType<2>            SCALAR_UINT_LOWER_PRECISION;
         typedef uint16_t               SCALAR_UINT_HIGHER_PRECISION;
     };
@@ -271,7 +271,7 @@ namespace SIMD {
         typedef int16_t                 SCALAR_INT_TYPE;
         typedef NullType<1>             SCALAR_FLOAT_TYPE;
         typedef SIMDVecMask<32>         MASK_TYPE;
-        typedef SIMDVecSwizzle<32>      SWIZZLE_MASK_TYPE;
+        typedef SIMDSwizzle<32>         SWIZZLE_MASK_TYPE;
         typedef uint8_t                 SCALAR_UINT_LOWER_PRECISION;
         typedef uint32_t                SCALAR_UINT_HIGHER_PRECISION;
     };
@@ -282,7 +282,7 @@ namespace SIMD {
         typedef int32_t                SCALAR_INT_TYPE;
         typedef float                  SCALAR_FLOAT_TYPE;
         typedef SIMDVecMask<16>        MASK_TYPE;
-        typedef SIMDVecSwizzle<16>     SWIZZLE_MASK_TYPE;
+        typedef SIMDSwizzle<16>        SWIZZLE_MASK_TYPE;
         typedef uint16_t               SCALAR_UINT_LOWER_PRECISION;
         typedef uint64_t               SCALAR_UINT_HIGHER_PRECISION;
     };
@@ -293,7 +293,7 @@ namespace SIMD {
         typedef int64_t                SCALAR_INT_TYPE;
         typedef double                 SCALAR_FLOAT_TYPE;
         typedef SIMDVecMask<8>         MASK_TYPE;
-        typedef SIMDVecSwizzle<8>      SWIZZLE_MASK_TYPE;
+        typedef SIMDSwizzle<8>         SWIZZLE_MASK_TYPE;
         typedef uint32_t               SCALAR_UINT_LOWER_PRECISION;
         typedef NullType<1>            SCALAR_UINT_HIGHER_PRECISION;
     };
@@ -305,7 +305,7 @@ namespace SIMD {
         typedef int8_t                 SCALAR_INT_TYPE;
         typedef NullType<1>            SCALAR_FLOAT_TYPE;
         typedef SIMDVecMask<128>       MASK_TYPE;
-        typedef SIMDVecSwizzle<128>    SWIZZLE_MASK_TYPE;
+        typedef SIMDSwizzle<128>       SWIZZLE_MASK_TYPE;
         typedef NullType<2>            SCALAR_UINT_LOWER_PRECISION;
         typedef NullType<3>            SCALAR_UINT_HIGHER_PRECISION;
     };
@@ -316,7 +316,7 @@ namespace SIMD {
         typedef int16_t                 SCALAR_INT_TYPE;
         typedef NullType<1>             SCALAR_FLOAT_TYPE;
         typedef SIMDVecMask<64>         MASK_TYPE;
-        typedef SIMDVecSwizzle<64>      SWIZZLE_MASK_TYPE;
+        typedef SIMDSwizzle<64>         SWIZZLE_MASK_TYPE;
         typedef uint8_t                 SCALAR_UINT_LOWER_PRECISION;
         typedef NullType<1>             SCALAR_UINT_HIGHER_PRECISION;
     };
@@ -327,7 +327,7 @@ namespace SIMD {
         typedef int32_t                 SCALAR_INT_TYPE;
         typedef float                   SCALAR_FLOAT_TYPE;
         typedef SIMDVecMask<32>         MASK_TYPE;
-        typedef SIMDVecSwizzle<32>      SWIZZLE_MASK_TYPE;
+        typedef SIMDSwizzle<32>         SWIZZLE_MASK_TYPE;
         typedef uint16_t                SCALAR_UINT_LOWER_PRECISION;
         typedef NullType<1>             SCALAR_UINT_HIGHER_PRECISION;
     };
@@ -338,7 +338,7 @@ namespace SIMD {
         typedef int64_t                SCALAR_INT_TYPE;
         typedef double                 SCALAR_FLOAT_TYPE;
         typedef SIMDVecMask<16>        MASK_TYPE;
-        typedef SIMDVecSwizzle<16>     SWIZZLE_MASK_TYPE;
+        typedef SIMDSwizzle<16>        SWIZZLE_MASK_TYPE;
         typedef uint32_t               SCALAR_UINT_LOWER_PRECISION;
         typedef NullType<1>            SCALAR_UINT_HIGHER_PRECISION;
     };

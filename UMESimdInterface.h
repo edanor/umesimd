@@ -84,7 +84,7 @@ namespace SIMD
     //    };
     //};
     
-    template<class DERIVED_MASK_TYPE, uint32_t SMASK_LEN>
+    template<class DERIVED_SWIZZLE_TYPE, uint32_t SMASK_LEN>
     class SIMDSwizzleMaskBaseInterface
     {
         // Declarations only. These operators should be overriden in derived types.
@@ -101,6 +101,11 @@ namespace SIMD
     public:
         // LENGTH
         constexpr static uint32_t length () { return SMASK_LEN; };
+
+        // LOAD
+        UME_FORCE_INLINE DERIVED_SWIZZLE_TYPE & load(uint32_t const * addr) {
+            return SCALAR_EMULATION::load<DERIVED_SWIZZLE_TYPE, uint32_t>(static_cast<DERIVED_SWIZZLE_TYPE &>(*this), addr);
+        }
 
         // ALIGNMENT
         static int alignment () { return SMASK_LEN*sizeof(uint32_t); };

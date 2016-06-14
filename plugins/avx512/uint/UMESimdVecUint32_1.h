@@ -46,7 +46,7 @@ namespace SIMD {
             uint32_t,                        // SCALAR_UINT_TYPE
             1,
             SIMDVecMask<1>,
-            SIMDVecSwizzle<1>>
+            SIMDSwizzle<1>>
     {
     private:
         // This is the only data member and it is a low level representation of vector register.

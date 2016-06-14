@@ -86,7 +86,7 @@ namespace SIMD {
             8,
             uint64_t,
             SIMDVecMask<8>,
-            SIMDVecSwizzle<8>> ,
+            SIMDSwizzle<8>> ,
         public SIMDVecPackableInterface<
             SIMDVec_i<int64_t, 8>,
             SIMDVec_i<int64_t, 4 >>
@@ -295,17 +295,17 @@ namespace SIMD {
             return SIMDVec_i(t2, t3);
         }
         // ADDS
-        inline SIMDVec_i add(double b) const {
+        inline SIMDVec_i add(int64_t b) const {
             __m256i t0 = SET1_EPI64(b);
             __m256i t1 = _mm256_add_epi64(mVec[0], t0);
             __m256i t2 = _mm256_add_epi64(mVec[1], t0);
             return SIMDVec_i(t1, t2);
         }
-        inline SIMDVec_i operator+ (double b) const {
+        inline SIMDVec_i operator+ (int64_t b) const {
             return add(b);
         }
         // MADDS
-        inline SIMDVec_i add(SIMDVecMask<8> const & mask, double b) const {
+        inline SIMDVec_i add(SIMDVecMask<8> const & mask, int64_t b) const {
             __m256i t0 = SET1_EPI64(b);
             __m256i t1 = _mm256_add_epi64(mVec[0], t0);
             __m256i t2 = _mm256_add_epi64(mVec[1], t0);
@@ -347,17 +347,17 @@ namespace SIMD {
             return SIMDVec_i(t2, t3);
         }
         // SUBS
-        inline SIMDVec_i sub(double b) const {
+        inline SIMDVec_i sub(int64_t b) const {
             __m256i t0 = SET1_EPI64(b);
             __m256i t1 = _mm256_sub_epi64(mVec[0], t0);
             __m256i t2 = _mm256_sub_epi64(mVec[1], t0);
             return SIMDVec_i(t1, t2);
         }
-        inline SIMDVec_i operator- (double b) const {
+        inline SIMDVec_i operator- (int64_t b) const {
             return sub(b);
         }
         // MSUBS
-        inline SIMDVec_i sub(SIMDVecMask<8> const & mask, double b) const {
+        inline SIMDVec_i sub(SIMDVecMask<8> const & mask, int64_t b) const {
             __m256i t0 = SET1_EPI64(b);
             __m256i t1 = _mm256_sub_epi64(mVec[0], t0);
             __m256i t2 = _mm256_sub_epi64(mVec[1], t0);
@@ -383,17 +383,17 @@ namespace SIMD {
             return *this;
         }
         // SUBSA
-        inline SIMDVec_i suba(double b) {
+        inline SIMDVec_i suba(int64_t b) {
             __m256i t0 = SET1_EPI64(b);
             mVec[0] = _mm256_sub_epi64(mVec[0], t0);
             mVec[1] = _mm256_sub_epi64(mVec[1], t0);
             return *this;
         }
-        inline SIMDVec_i operator-= (double b) {
+        inline SIMDVec_i operator-= (int64_t b) {
             return suba(b);
         }
         // MSUBSA
-        inline SIMDVec_i suba(SIMDVecMask<8> const & mask, double b) {
+        inline SIMDVec_i suba(SIMDVecMask<8> const & mask, int64_t b) {
             __m256i t0 = SET1_EPI64(b);
             __m256i t1 = _mm256_sub_epi64(mVec[0], t0);
             __m256i t2 = _mm256_sub_epi64(mVec[1], t0);

@@ -48,7 +48,7 @@ namespace SIMD {
             8,
             uint32_t,
             SIMDVecMask<8>,
-            SIMDVecSwizzle<8 >> ,
+            SIMDSwizzle<8>> ,
         public SIMDVecPackableInterface<
            SIMDVec_i<int32_t, 8>,
            SIMDVec_i<int32_t, 4 >>
@@ -220,14 +220,22 @@ namespace SIMD {
         }
         // BLENDV
         inline SIMDVec_i blend(SIMDVecMask<8> const & mask, SIMDVec_i const & b) const {
+#if defined(__AVX512VL__)
             __m256i t0 = _mm256_mask_mov_epi32(mVec, mask.mMask, b.mVec);
             return SIMDVec_i(t0);
+#else
+            return SIMDVec_i(int32_t(0));
+#endif
         }
         // BLENDS
         inline SIMDVec_i blend(SIMDVecMask<8> const & mask, int32_t b) const {
+#if defined(__AVX512VL__)
             __m256i t0 = _mm256_set1_epi32(b);
             __m256i t1 = _mm256_mask_mov_epi32(mVec, mask.mMask, t0);
             return SIMDVec_i(t1);
+#else
+            return SIMDVec_i(int32_t(0));
+#endif
         }
         // SWIZZLE
         // SWIZZLEA

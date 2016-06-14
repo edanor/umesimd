@@ -67,7 +67,7 @@ namespace SIMD {
             4,
             uint64_t,
             SIMDVecMask<4>, // Using non-standard mask!
-            SIMDVecSwizzle<4>> ,
+            SIMDSwizzle<4>> ,
         public SIMDVecPackableInterface<
             SIMDVec_f<double, 4>,
             SIMDVec_f<double, 2 >>
@@ -329,7 +329,7 @@ namespace SIMD {
             return sub(b);
         }
         // MSUBS
-        inline SIMDVec_f sub(SIMDVecMask<4> const & mask, float b) const {
+        inline SIMDVec_f sub(SIMDVecMask<4> const & mask, double b) const {
             __m256d t0 = _mm256_sub_pd(mVec, _mm256_set1_pd(b));
             __m256d t1 = BLEND(mVec, t0, mask.mMask);
             return SIMDVec_f(t1);

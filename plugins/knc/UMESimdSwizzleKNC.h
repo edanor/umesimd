@@ -40,28 +40,28 @@ namespace SIMD {
     // ********************************************************************************************
     // SWIZZLE MASKS
     // ********************************************************************************************
-    template<uint32_t SMASK_LEN>
-    class SIMDVecSwizzle :
+    template<uint32_t VEC_LEN>
+    class SIMDSwizzle :
         public SIMDSwizzleMaskBaseInterface<
-        SIMDVecSwizzle<SMASK_LEN>,
-        SMASK_LEN>
+        SIMDSwizzle<VEC_LEN>,
+        VEC_LEN>
     {
     private:
-        uint32_t mMaskElements[SMASK_LEN];
+        uint32_t mMaskElements[VEC_LEN];
     public:
-        inline SIMDVecSwizzle() { };
+        inline SIMDSwizzle() { };
 
-        inline explicit SIMDVecSwizzle(uint32_t m0) {
+        inline explicit SIMDSwizzle(uint32_t m0) {
             UME_EMULATION_WARNING();
-            for (int i = 0; i < SMASK_LEN; i++) {
+            for (int i = 0; i < VEC_LEN; i++) {
                 mMaskElements[i] = m0;
             }
         }
 
         // LOAD-CONSTR - Construct by loading from memory
-        inline explicit SIMDVecSwizzle(uint32_t const *p) {
+        inline explicit SIMDSwizzle(uint32_t const *p) {
             UME_EMULATION_WARNING();
-            for (int i = 0; i < SMASK_LEN; i++) {
+            for (int i = 0; i < VEC_LEN; i++) {
                 mMaskElements[i] = p[i];
             }
         }
@@ -83,9 +83,9 @@ namespace SIMD {
             mMaskElements[index] = value;
         }
 
-        inline SIMDVecSwizzle(SIMDVecSwizzle const & mask) {
+        inline SIMDSwizzle(SIMDSwizzle const & mask) {
             UME_EMULATION_WARNING();
-            for (int i = 0; i < SMASK_LEN; i++)
+            for (int i = 0; i < VEC_LEN; i++)
             {
                 mMaskElements[i] = mask.mMaskElements[i];
             }

@@ -70,7 +70,7 @@ namespace SIMD {
             uint64_t,
             4,
             SIMDVecMask<4>,
-            SIMDVecSwizzle<4>> ,
+            SIMDSwizzle<4>> ,
         public SIMDVecPackableInterface<
             SIMDVec_u<uint64_t, 4>,
             SIMDVec_u<uint64_t, 2>>

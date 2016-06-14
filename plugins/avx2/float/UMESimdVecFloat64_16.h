@@ -83,17 +83,17 @@ namespace SIMD {
     template<>
     class SIMDVec_f<double, 16> :
         public SIMDVecFloatInterface<
-        SIMDVec_f<double, 16>,
-        SIMDVec_u<uint64_t, 16>,
-        SIMDVec_i<int64_t, 16>,
-        double,
-        16,
-        uint64_t,
-        SIMDVecMask<16>, // Using non-standard mask!
-        SIMDVecSwizzle<16 >> ,
+            SIMDVec_f<double, 16>,
+            SIMDVec_u<uint64_t, 16>,
+            SIMDVec_i<int64_t, 16>,
+            double,
+            16,
+            uint64_t,
+            SIMDVecMask<16>, // Using non-standard mask!
+            SIMDSwizzle<16>> ,
         public SIMDVecPackableInterface<
-        SIMDVec_f<double, 16>,
-        SIMDVec_f<double, 8 >>
+            SIMDVec_f<double, 16>,
+            SIMDVec_f<double, 8 >>
     {
         friend class SIMDVec_u<uint64_t, 16>;
         friend class SIMDVec_i<int64_t, 16>;

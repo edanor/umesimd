@@ -49,7 +49,7 @@ namespace SIMD {
             16,
             uint32_t,
             SIMDVecMask<16>,
-            SIMDVecSwizzle<16>> ,
+            SIMDSwizzle<16>> ,
         public SIMDVecPackableInterface<
             SIMDVec_f<float, 16>,
             SIMDVec_f<float, 8>>
@@ -207,7 +207,7 @@ namespace SIMD {
             }
             else {
                 alignas(64) float raw[8];
-                _mm512_mask_store_ps(p, mask.mMask, mVec);
+                //_mm512_mask_store_ps(p, mask.mMask, mVec);
             }
             return p;
         }

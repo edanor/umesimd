@@ -49,7 +49,7 @@ namespace SIMD {
             1,
             uint64_t,
             SIMDVecMask<1>,
-            SIMDVecSwizzle<1 >>
+            SIMDSwizzle<1>>
     {
     private:
         double mVec;

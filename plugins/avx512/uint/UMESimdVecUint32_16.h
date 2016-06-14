@@ -46,7 +46,7 @@ namespace SIMD {
             uint32_t,
             16,
             SIMDVecMask<16>,
-            SIMDVecSwizzle<16>> ,
+            SIMDSwizzle<16>> ,
         public SIMDVecPackableInterface<
             SIMDVec_u<uint32_t, 16>,
             SIMDVec_u<uint32_t, 8>>
@@ -1219,8 +1219,12 @@ namespace SIMD {
 
         // PACK
         inline SIMDVec_u & pack(SIMDVec_u<uint32_t, 8> const & a, SIMDVec_u<uint32_t, 8> const & b) {
+#if defined(__AVX512DQ__)
             mVec = _mm512_inserti32x8(mVec, a.mVec, 0);
             mVec = _mm512_inserti32x8(mVec, b.mVec, 1);
+#else
+
+#endif
             return *this;
         }
         // PACKLO

@@ -46,7 +46,7 @@ namespace SIMD {
             uint64_t,                        // SCALAR_UINT_TYPE
             1,
             SIMDVecMask<1>,
-            SIMDVecSwizzle<1>>
+            SIMDSwizzle<1>>
     {
     private:
         // This is the only data member and it is a low level representation of vector register.
@@ -58,8 +58,8 @@ namespace SIMD {
         friend class SIMDVec_u<uint64_t, 2>;
 
     public:
-        constexpr static uint64_t length() { return 1; }
-        constexpr static uint64_t alignment() { return 8; }
+        constexpr static uint32_t length() { return 1; }
+        constexpr static uint32_t alignment() { return 8; }
 
         // ZERO-CONSTR
         inline SIMDVec_u() {}

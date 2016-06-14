@@ -51,7 +51,7 @@ namespace SIMD {
             4,
             uint32_t,
             SIMDVecMask<4>,
-            SIMDVecSwizzle<4>> ,
+            SIMDSwizzle<4>> ,
         public SIMDVecPackableInterface<
             SIMDVec_f<float, 4>,
             SIMDVec_f<float, 2 >>
@@ -1014,14 +1014,22 @@ namespace SIMD {
 
         // BLENDV
         inline SIMDVec_f blend(SIMDVecMask<4> const & mask, SIMDVec_f const & b) const {
+#if defined(__AVX512VL__)
             __m128 t0 = _mm_mask_mov_ps(mVec, mask.mMask, b.mVec);
             return SIMDVec_f(t0);
+#else
+            return SIMDVec_f(0.0f);
+#endif
         }
         // BLENDS
         inline SIMDVec_f blend(SIMDVecMask<4> const & mask, float b) const {
+#if defined(__AVX512VL__)
             __m128 t0 = _mm_set1_ps(b);
             __m128 t1 = _mm_mask_mov_ps(mVec, mask.mMask, t0);
             return SIMDVec_f(t1);
+#else
+            return SIMDVec_f(0.0f);
+#endif
         }
         // SWIZZLE
         // SWIZZLEA
@@ -1826,14 +1834,22 @@ namespace SIMD {
         }
         // PACKLO
         inline SIMDVec_f & packlo(SIMDVec_f<float, 2> const & a) {
+#if defined(__AVX512VL__)
             alignas(16) float raw[4] = { a.mVec[0], a.mVec[1], 0.0f, 0.0f };
             mVec = _mm_mask_load_ps(mVec, 0x3, raw);
+#else
+
+#endif
             return *this;
         }
         // PACKHI
         inline SIMDVec_f & packhi(SIMDVec_f<float, 2> const & b) {
+#if defined(__AVX512VL__)
             alignas(16) float raw[4] = { 0.0f, 0.0f, b.mVec[0], b.mVec[1] };
             mVec = _mm_mask_load_ps(mVec, 0xC, raw);
+#else
+
+#endif
             return *this;
         }
         // UNPACK
@@ -1848,13 +1864,21 @@ namespace SIMD {
         // UNPACKLO
         inline SIMDVec_f<float, 2> unpacklo() const {
             alignas(16) float raw[4];
+#if defined(__AVX512VL__)
             _mm_mask_store_ps(raw, 0x3, mVec);
+#else
+
+#endif
             return SIMDVec_f<float, 2>(raw[0], raw[1]);
         }
         // UNPACKHI
         inline SIMDVec_f<float, 2> unpackhi() const {
             alignas(16) float raw[4];
+#if defined(__AVX512VL__)
             _mm_mask_store_ps(raw, 0xC, mVec);
+#else
+
+#endif
             return SIMDVec_f<float, 2>(raw[2], raw[3]);
         }
 

@@ -48,15 +48,15 @@ namespace SIMD {
             1,
             uint64_t,
             SIMDVecMask<1>,
-            SIMDVecSwizzle<1>>
+            SIMDSwizzle<1>>
     {
     private:
         // This is the only data member and it is a low level representation of vector register.
         int64_t mVec;
 
     public:
-        constexpr static uint64_t length() { return 1; }
-        constexpr static uint64_t alignment() { return 8; }
+        constexpr static uint32_t length() { return 1; }
+        constexpr static uint32_t alignment() { return 8; }
 
         // ZERO-CONSTR
         inline SIMDVec_i() : mVec() {};

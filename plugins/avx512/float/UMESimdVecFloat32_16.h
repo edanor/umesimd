@@ -51,7 +51,7 @@ namespace SIMD {
             16,
             uint32_t,
             SIMDVecMask<16>,
-            SIMDVecSwizzle<16>> ,
+            SIMDSwizzle<16>> ,
         public SIMDVecPackableInterface<
             SIMDVec_f<float, 16>,
             SIMDVec_f<float, 8>>
@@ -1219,34 +1219,58 @@ namespace SIMD {
         // MCTAN
         // PACK
         inline SIMDVec_f & pack(SIMDVec_f<float, 8> const & a, SIMDVec_f<float, 8> const & b) {
+#if defined(__AVX512VL__)
             mVec = _mm512_insertf32x8(mVec, a.mVec, 0);
             mVec = _mm512_insertf32x8(mVec, b.mVec, 1);
+#else
+
+#endif
             return *this;
         }
         // PACKLO
         inline SIMDVec_f & packlo(SIMDVec_f<float, 8> const & a) {
+#if defined(__AVX512VL__)
             mVec = _mm512_insertf32x8(mVec, a.mVec, 0);
+#else
+
+#endif
             return *this;
         }
         // PACKHI
         inline SIMDVec_f & packhi(SIMDVec_f<float, 8> const & b) {
+#if defined(__AVX512VL__)
             mVec = _mm512_insertf32x8(mVec, b.mVec, 1);
+#else
+
+#endif
             return *this;
         }
         // UNPACK
         inline void unpack(SIMDVec_f<float, 8> & a, SIMDVec_f<float, 8> & b) const {
+#if defined(__AVX512DQ__)
             a.mVec = _mm512_extractf32x8_ps(mVec, 0);
             b.mVec = _mm512_extractf32x8_ps(mVec, 1);
+#else
+
+#endif
         }
         // UNPACKLO
         inline SIMDVec_f<float, 8> unpacklo() const {
+#if defined(__AVX512DQ__)
             __m256 t0 = _mm512_extractf32x8_ps(mVec, 0);
             return SIMDVec_f<float, 8>(t0);
+#else
+            return SIMDVec_f<float, 8>(0.0f);
+#endif
         }
         // UNPACKHI
         inline SIMDVec_f<float, 8> unpackhi() const {
+#if defined(__AVX512DQ__)
             __m256 t0 = _mm512_extractf32x8_ps(mVec, 1);
             return SIMDVec_f<float, 8>(t0);
+#else
+            return SIMDVec_f<float, 8>(0.0f);
+#endif
         }
 
         // PROMOTE

@@ -86,7 +86,7 @@ namespace SIMD {
             16,
             uint64_t,
             SIMDVecMask<16>,
-            SIMDVecSwizzle<16>> ,
+            SIMDSwizzle<16>> ,
         public SIMDVecPackableInterface<
             SIMDVec_i<int64_t, 16>,
             SIMDVec_i<int64_t, 8>>
@@ -266,10 +266,10 @@ namespace SIMD {
         }
         // MSTORE
         inline int64_t * store(SIMDVecMask<16> const & mask, int64_t * p) const {
-            __m256i t0 = _mm256_load_si256((__m256i*)p);
-            __m256i t1 = _mm256_load_si256((__m256i*)(p + 4));
-            __m256i t2 = _mm256_load_si256((__m256i*)(p + 8));
-            __m256i t3 = _mm256_load_si256((__m256i*)(p + 12));
+            __m256i t0 = _mm256_loadu_si256((__m256i*)p);
+            __m256i t1 = _mm256_loadu_si256((__m256i*)(p + 4));
+            __m256i t2 = _mm256_loadu_si256((__m256i*)(p + 8));
+            __m256i t3 = _mm256_loadu_si256((__m256i*)(p + 12));
             __m256i t4 = BLEND_LO(t0, mVec[0], mask.mMask[0]);
             __m256i t5 = BLEND_HI(t1, mVec[1], mask.mMask[0]);
             __m256i t6 = BLEND_LO(t2, mVec[2], mask.mMask[1]);

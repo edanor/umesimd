@@ -417,7 +417,7 @@ namespace SIMD {
     }
 
     inline SIMDVec_f<float, 2>::operator SIMDVec_u<uint32_t, 2>() const {
-        return SIMDVec_u<uint32_t, 2>(float(mVec[0]), float(mVec[1]));
+        return SIMDVec_u<uint32_t, 2>(uint32_t(mVec[0]), uint32_t(mVec[1]));
     }
 
     inline SIMDVec_f<float, 4>::operator SIMDVec_u<uint32_t, 4>() const {
@@ -465,7 +465,7 @@ namespace SIMD {
     }
 
     inline SIMDVec_f<float, 2>::operator SIMDVec_i<int32_t, 2>() const {
-        return SIMDVec_i<int32_t, 2>(float(mVec[0]), float(mVec[1]));
+        return SIMDVec_i<int32_t, 2>(int32_t(mVec[0]), int32_t(mVec[1]));
     }
 
     inline SIMDVec_f<float, 4>::operator SIMDVec_i<int32_t, 4>() const {

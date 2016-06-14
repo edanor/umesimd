@@ -36,61 +36,14 @@
 #include "../UMESimdPluginScalarEmulation.h"
 #include <immintrin.h>
 
-namespace UME {
-namespace SIMD {
 
-    template<uint32_t SMASK_LEN>
-    class SIMDVecSwizzle :
-        public SIMDSwizzleMaskBaseInterface<
-        SIMDVecSwizzle<SMASK_LEN>,
-        SMASK_LEN>
-    {
-    private:
-        uint32_t mMaskElements[SMASK_LEN];
-    public:
-        inline SIMDVecSwizzle() { };
+// ********************************************************************************************
+// MASK VECTOR TEMPLATE
+// ********************************************************************************************
+#include "swizzle/UMESimdSwizzlePrototype.h"
 
-        inline explicit SIMDVecSwizzle(uint32_t m0) {
-            UME_EMULATION_WARNING();
-            for (unsigned int i = 0; i < SMASK_LEN; i++) {
-                mMaskElements[i] = m0;
-            }
-        }
-
-        inline explicit SIMDVecSwizzle(uint32_t *m) {
-            UME_EMULATION_WARNING();
-            for (unsigned int i = 0; i < SMASK_LEN; i++) {
-                mMaskElements[i] = m[i];
-            }
-        }
-
-        inline uint32_t extract(uint32_t index) const {
-            UME_EMULATION_WARNING();
-            return mMaskElements[index];
-        }
-
-        // A non-modifying element-wise access operator
-        inline uint32_t operator[] (uint32_t index) const {
-            UME_EMULATION_WARNING();
-            return mMaskElements[index];
-        }
-
-        // Element-wise modification operator
-        inline void insert(uint32_t index, uint32_t x) {
-            UME_EMULATION_WARNING();
-            mMaskElements[index] = x;
-        }
-
-        SIMDVecSwizzle(SIMDVecSwizzle const & mask) {
-            UME_EMULATION_WARNING();
-            for (unsigned int i = 0; i < SMASK_LEN; i++)
-            {
-                mMaskElements[i] = mask.mMaskElements[i];
-            }
-        }
-    };
-
-}
-}
+// ********************************************************************************************
+// MASK VECTOR SPECIALIZATIONS
+// ********************************************************************************************
 
 #endif

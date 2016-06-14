@@ -49,7 +49,7 @@ namespace SIMD {
             32,
             uint32_t,
             SIMDVecMask<32>,
-            SIMDVecSwizzle<32>> ,
+            SIMDSwizzle<32>> ,
         public SIMDVecPackableInterface<
             SIMDVec_f<float, 32>,
             SIMDVec_f<float, 16>>
@@ -176,16 +176,21 @@ namespace SIMD {
             }
             return *this;
         }
-        // MLOAD   - Masked load from memory (either aligned or unaligned) to
-        //           vector
-        // LOADA   - Load from aligned memory to vector
+        // MLOAD
+        inline SIMDVec_f & load(SIMDVecMask<32> const & mask, float const * p) {
+            return *this;
+        }
+        // LOADA
         inline SIMDVec_f & loada(float const * p) {
             mVecLo = _mm512_load_ps(p);
             mVecHi = _mm512_load_ps(p + 16);
             return *this;
         }
-        // MLOADA  - Masked load from aligned memory to vector
-        // STORE   - Store vector content into memory (either aligned or unaligned)
+        // MLOADA
+        inline SIMDVec_f & loada(SIMDVecMask<32> const & mask, float const * p) {
+            return *this;
+        }
+        // STORE
         inline float * store(float * p) const {
             if ((uint64_t(p) % 64) == 0) {
                 _mm512_store_ps(p, mVecLo);
@@ -199,15 +204,20 @@ namespace SIMD {
                 return p;
             }
         }
-        // MSTORE  - Masked store vector content into memory (either aligned or
-        //           unaligned)
-        // STOREA  - Store vector content into aligned memory
+        // MSTORE
+        inline float * store(SIMDVecMask<32> const & mask, float * p) const {
+            return p;
+        }
+        // STOREA
         inline float* storea(float* p) const {
             _mm512_store_ps(p, mVecLo);
             _mm512_store_ps(p + 16, mVecHi);
             return p;
         }
-        // MSTOREA - Masked store vector content into aligned memory
+        // MSTOREA
+        inline float* storea(SIMDVecMask<32> const & mask, float* p) const {
+            return p;
+        }
 
         //(Addition operations)
         // ADDV     - Add with vector 

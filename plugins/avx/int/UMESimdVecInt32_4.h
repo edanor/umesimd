@@ -48,7 +48,7 @@ namespace SIMD {
             4,
             uint32_t,
             SIMDVecMask<4>,
-            SIMDVecSwizzle<4 >> ,
+            SIMDSwizzle<4 >> ,
         public SIMDVecPackableInterface<
             SIMDVec_i<int32_t, 4>,
             SIMDVec_i<int32_t, 2 >>
@@ -181,7 +181,7 @@ namespace SIMD {
         }
         // MSTORE
         inline int32_t * store(SIMDVecMask<4> const & mask, int32_t * p) const {
-            __m128i t0 = _mm_load_si128((__m128i*)p);
+            __m128i t0 = _mm_loadu_si128((__m128i*)p);
             __m128i t1 = _mm_blendv_epi8(t0, mVec, mask.mMask);
             _mm_storeu_si128((__m128i*) p, t1);
             return p;
@@ -211,6 +211,21 @@ namespace SIMD {
             return SIMDVec_i(t1);
         }
         // SWIZZLE
+        inline SIMDVec_i swizzle(SIMDSwizzle<4> const & smask) const {
+            __m128i t0 = _mm_shuffle_epi32(mVec, 0xB1); // permute BADC
+            __m128i t1 = _mm_min_epi32(mVec, t0);
+            __m128i t2 = _mm_max_epi32(mVec, t0);
+            __m128i t3 = _mm_castps_si128(_mm_blend_ps(_mm_castsi128_ps(t1), _mm_castsi128_ps(t2), 0x06));
+            __m128i t4 = _mm_shuffle_epi32(t3, 0x4E);   // permute CDAB
+            __m128i t5 = _mm_min_epi32(t3, t4);
+            __m128i t6 = _mm_max_epi32(t3, t4);
+            __m128i t7 = _mm_castps_si128(_mm_blend_ps(_mm_castsi128_ps(t5), _mm_castsi128_ps(t6), 0x0C));
+            __m128i t8 = _mm_shuffle_epi32(t7, 0xB1); // permute BADC
+            __m128i t9 = _mm_min_epi32(t7, t8);
+            __m128i t10 = _mm_max_epi32(t7, t8);
+            __m128i t11 = _mm_castps_si128(_mm_blend_ps(_mm_castsi128_ps(t9), _mm_castsi128_ps(t10), 0x0A));
+            return SIMDVec_i(t11);
+        }
         // SWIZZLEA
 
         // SORTA

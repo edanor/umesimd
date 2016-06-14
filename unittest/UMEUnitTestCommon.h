@@ -70,6 +70,25 @@ char *g_test_header_ptr = NULL;
         if(g_supressMessages == false) std::cout << "OK   " << g_test_header_ptr << " Id: " << g_testMaxId << " - " << (msg) << std::endl;  \
     }
 
+void check_condition(bool cond, std::string msg) {
+    g_totalTests++;
+    g_testMaxId++;
+    if (!(cond)) {
+        if (g_supressMessages == false) {
+            std::cout << "FAIL " << g_test_header_ptr << " Id: " << g_testMaxId << " - " << (msg.c_str()) << std::endl;
+        }
+        g_totalFailed++;
+        g_failCount++;
+        g_allSuccess = false;
+    }
+    else
+    {
+        if (g_supressMessages == false) {
+            std::cout << "OK   " << g_test_header_ptr << " Id: " << g_testMaxId << " - " << (msg.c_str()) << std::endl;
+        }
+    }
+}
+
 #define PRINT_MESSAGE(msg) if(g_supressMessages == false) std::cout << g_test_header_ptr <<  msg << std::endl;
 
 // This PI value is used over all unit tests. Defining it here makes it is 
@@ -5893,8 +5912,42 @@ void genericBLENDSTest_random()
         CHECK_CONDITION((inRange & isUnmodified), "BLENDS gen");
     }
 }
-        // assign
-        // SWIZZLE  - Swizzle (reorder/permute) vector elements
+// SWIZZLE  - Swizzle (reorder/permute) vector elements
+template<typename VEC_TYPE, typename SCALAR_TYPE, typename SWIZZLE_TYPE, int VEC_LEN>
+void genericSWIZZLETest_random()
+{
+    {
+        VEC_TYPE t0, t1;
+        SWIZZLE_TYPE t2;
+        SCALAR_TYPE input[VEC_LEN];
+        uint32_t indexes[VEC_LEN];
+        SCALAR_TYPE values[VEC_LEN];
+        SCALAR_TYPE output[VEC_LEN];
+
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        bool inRange = true;
+
+        for (int i = 0; i < VEC_LEN; i++) {
+            input[i] = randomValue<SCALAR_TYPE>(gen);
+            indexes[i] = randomValue<uint32_t>(gen) % VEC_LEN;
+        }
+
+        for (int i = 0; i < VEC_LEN; i++)
+        {
+            output[i] = input[indexes[i]];
+        }
+
+        t0.load(input);
+        t2.load(indexes);
+        t1 = t0.swizzle(t2);
+        t1.store(values);
+
+        inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
+        //CHECK_CONDITION(inRange, "SWIZZLE");
+        check_condition(inRange, std::string("SWIZZLE"));
+    }
+}
         // SWIZZLEA - Swizzle (reorder/permute) vector elements and assign
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN>
@@ -9153,7 +9206,7 @@ void genericDEGRADETest()
     CHECK_CONDITION(inRange, "DEGRADE");
 }
 
-template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
+template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, typename SWIZZLE_TYPE, int VEC_LEN, typename DATA_SET>
 void genericBaseInterfaceTest()
 {   
     genericINSERTTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
@@ -9172,6 +9225,7 @@ void genericBaseInterfaceTest()
     genericMLOADATest_random<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN>();
     genericMSTOREATest_random<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN>();
     // SWIZZLE
+    genericSWIZZLETest_random<VEC_TYPE, SCALAR_TYPE, SWIZZLE_TYPE, VEC_LEN>();
     // SWIZZLEA
     genericSORTATest_random<VEC_TYPE, SCALAR_TYPE, VEC_LEN>();
     genericSORTDTest_random<VEC_TYPE, SCALAR_TYPE, VEC_LEN>();
@@ -9542,10 +9596,11 @@ template<
         typename FLOAT_VEC_TYPE,
         typename FLOAT_SCALAR_TYPE,
         typename MASK_TYPE,
+        typename SWIZZLE_TYPE,
         int VEC_LEN,
         typename DATA_SET>
 void genericUintTest() {
-    genericBaseInterfaceTest<UINT_VEC_TYPE, UINT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET> ();
+    genericBaseInterfaceTest<UINT_VEC_TYPE, UINT_SCALAR_TYPE, MASK_TYPE, SWIZZLE_TYPE, VEC_LEN, DATA_SET> ();
     genericIntegerInterfaceTest<UINT_VEC_TYPE, UINT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET> ();
     genericGatherScatterInterfaceTest<UINT_VEC_TYPE, UINT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET> ();
     genericShiftRotateInterfaceTest<UINT_VEC_TYPE, UINT_VEC_TYPE, UINT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
@@ -9561,10 +9616,11 @@ template<
     typename INT_VEC_TYPE,
     typename INT_SCALAR_TYPE,
     typename MASK_TYPE,
+    typename SWIZZLE_TYPE,
     int VEC_LEN,
     typename DATA_SET>
     void genericUintTest() {
-    genericBaseInterfaceTest<UINT_VEC_TYPE, UINT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericBaseInterfaceTest<UINT_VEC_TYPE, UINT_SCALAR_TYPE, MASK_TYPE, SWIZZLE_TYPE, VEC_LEN, DATA_SET>();
     genericIntegerInterfaceTest<UINT_VEC_TYPE, UINT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
     genericGatherScatterInterfaceTest<UINT_VEC_TYPE, UINT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
     genericShiftRotateInterfaceTest<UINT_VEC_TYPE, UINT_VEC_TYPE, UINT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
@@ -9580,10 +9636,11 @@ template<
         typename FLOAT_VEC_TYPE,
         typename FLOAT_SCALAR_TYPE,
         typename MASK_TYPE,
+        typename SWIZZLE_TYPE,
         int VEC_LEN,
         typename DATA_SET>
 void genericIntTest() {
-    genericBaseInterfaceTest<INT_VEC_TYPE, INT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET> ();
+    genericBaseInterfaceTest<INT_VEC_TYPE, INT_SCALAR_TYPE, MASK_TYPE, SWIZZLE_TYPE, VEC_LEN, DATA_SET> ();
     genericIntegerInterfaceTest<INT_VEC_TYPE, INT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET> ();
     genericGatherScatterInterfaceTest<INT_VEC_TYPE, INT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET> ();
     genericShiftRotateInterfaceTest<INT_VEC_TYPE, UINT_VEC_TYPE, INT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
@@ -9598,10 +9655,11 @@ template<
     typename UINT_VEC_TYPE,
     typename UINT_SCALAR_TYPE,
     typename MASK_TYPE,
+    typename SWIZZLE_TYPE,
     int VEC_LEN,
     typename DATA_SET>
 void genericIntTest() {
-    genericBaseInterfaceTest<INT_VEC_TYPE, INT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericBaseInterfaceTest<INT_VEC_TYPE, INT_SCALAR_TYPE, MASK_TYPE, SWIZZLE_TYPE, VEC_LEN, DATA_SET>();
     genericIntegerInterfaceTest<INT_VEC_TYPE, INT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
     genericGatherScatterInterfaceTest<INT_VEC_TYPE, INT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
     genericShiftRotateInterfaceTest<INT_VEC_TYPE, UINT_VEC_TYPE, INT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
@@ -9617,10 +9675,11 @@ template<
         typename INT_VEC_TYPE,
         typename INT_SCALAR_TYPE,
         typename MASK_TYPE,
+        typename SWIZZLE_TYPE,
         int VEC_LEN,
         typename DATA_SET>
 void genericFloatTest() {
-    genericBaseInterfaceTest<FLOAT_VEC_TYPE, FLOAT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET> ();
+    genericBaseInterfaceTest<FLOAT_VEC_TYPE, FLOAT_SCALAR_TYPE, MASK_TYPE, SWIZZLE_TYPE, VEC_LEN, DATA_SET> ();
     genericGatherScatterInterfaceTest<FLOAT_VEC_TYPE, FLOAT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET> ();
     genericSignInterfaceTest<FLOAT_VEC_TYPE, FLOAT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
     genericFloatInterfaceTest<FLOAT_VEC_TYPE, FLOAT_SCALAR_TYPE, INT_VEC_TYPE, INT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();

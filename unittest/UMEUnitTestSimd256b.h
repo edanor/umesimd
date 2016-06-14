@@ -123,6 +123,7 @@ int test_UME_SIMD32_8u(bool supressMessages)
         SIMD32_8u, uint8_t,
         SIMD32_8i, int8_t,
         SIMDMask32,
+        SIMDSwizzle32,
         32,
         DataSet_1_8u>();
 
@@ -149,6 +150,7 @@ int test_UME_SIMD32_8i(bool supressMessages)
         SIMD32_8i, int8_t,
         SIMD32_8u, uint8_t,
         SIMDMask32,
+        SIMDSwizzle32,
         32,
         DataSet_1_8i>();
 
@@ -175,6 +177,7 @@ int test_UME_SIMD16_16u(bool supressMessages)
         SIMD16_16u, uint16_t,
         SIMD16_16i, int16_t,
         SIMDMask16,
+        SIMDSwizzle16,
         16,
         DataSet_1_16u>();
 
@@ -241,6 +244,7 @@ int test_UME_SIMD16_16i(bool supressMessages)
         SIMD16_16i, int16_t,
         SIMD16_16u, uint16_t,
         SIMDMask16,
+        SIMDSwizzle16,
         16,
         DataSet_1_16i>();
 
@@ -269,6 +273,7 @@ int test_UME_SIMD8_32u(bool supressMessages)
         SIMD8_32i, int32_t,
         SIMD8_32f, float,
         SIMDMask8,
+        SIMDSwizzle8,
         8,
         DataSet_1_32u>();
 
@@ -456,6 +461,7 @@ int test_UME_SIMD8_32i(bool supressMessages) {
         SIMD8_32u, uint32_t,
         SIMD8_32f, float,
         SIMDMask8,
+        SIMDSwizzle8,
         8,
         DataSet_1_32i>();
 
@@ -552,6 +558,7 @@ int test_UME_SIMD8_32f(bool supressMessages)
         SIMD8_32u, uint32_t,
         SIMD8_32i, int32_t,
         SIMDMask8,
+        SIMDSwizzle8,
         8,
         DataSet_1_32f>();
 
@@ -732,6 +739,7 @@ int test_UME_SIMD4_64u(bool supressMessages)
         SIMD4_64i, int64_t,
         SIMD4_64f, double,
         SIMDMask4,
+        SIMDSwizzle4,
         4,
         DataSet_1_64u>();
 
@@ -758,6 +766,7 @@ int test_UME_SIMD4_64i(bool supressMessages)
         SIMD4_64i, int64_t,
         SIMD4_64u, uint64_t,
         SIMDMask4,
+        SIMDSwizzle4,
         4,
         DataSet_1_64i>();
 
@@ -794,6 +803,7 @@ int test_UME_SIMD4_64f(bool supressMessages)
         SIMD4_64u, uint64_t,
         SIMD4_64i, int64_t,
         SIMDMask4,
+        SIMDSwizzle4,
         4,
         DataSet_1_64f>();
 
