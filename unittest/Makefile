@@ -142,4 +142,4 @@ UMEUnitTestSimd1024b.o: UMEUnitTestSimd1024b.cpp
 	$(CXX) $(CXXFLAGS) -c UMEUnitTestSimd1024b.cpp
 
 clean:
-	rm *.o 
+	rm -f *.o 
