@@ -85,6 +85,10 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
+      <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MinimalRebuild>false</MinimalRebuild>
+      <EnableParallelCodeGeneration>true</EnableParallelCodeGeneration>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -120,10 +124,19 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\UMESIMDUnitTest.cpp" />
+    <ClCompile Include="..\UMEUnitTestCommon.cpp" />
     <ClCompile Include="..\UMEUnitTestDataSets16.cpp" />
     <ClCompile Include="..\UMEUnitTestDataSets32.cpp" />
     <ClCompile Include="..\UMEUnitTestDataSets64.cpp" />
     <ClCompile Include="..\UMEUnitTestDataSets8.cpp" />
+    <ClCompile Include="..\UMEUnitTestSimd1024b.cpp" />
+    <ClCompile Include="..\UMEUnitTestSimd128b.cpp" />
+    <ClCompile Include="..\UMEUnitTestSimd16b.cpp" />
+    <ClCompile Include="..\UMEUnitTestSimd256b.cpp" />
+    <ClCompile Include="..\UMEUnitTestSimd32b.cpp" />
+    <ClCompile Include="..\UMEUnitTestSimd512b.cpp" />
+    <ClCompile Include="..\UMEUnitTestSimd64b.cpp" />
+    <ClCompile Include="..\UMEUnitTestSimd8b.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

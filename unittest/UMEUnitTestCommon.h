@@ -40,13 +40,13 @@
 
 #include <random>
 
-int g_totalTests = 0;
-int g_totalFailed = 0;
-int g_testMaxId = 0;
-int g_failCount = 0;
-bool g_allSuccess = true;
-bool g_supressMessages = false;
-char *g_test_header_ptr = NULL;
+extern int g_totalTests;
+extern int g_totalFailed;
+extern int g_testMaxId;
+extern int g_failCount;
+extern bool g_allSuccess;
+extern bool g_supressMessages;
+extern char *g_test_header_ptr;
 
 #define INIT_TEST(test_header_ptr, supressMesages) { \
     g_test_header_ptr = (test_header_ptr); \
@@ -70,24 +70,7 @@ char *g_test_header_ptr = NULL;
         if(g_supressMessages == false) std::cout << "OK   " << g_test_header_ptr << " Id: " << g_testMaxId << " - " << (msg) << std::endl;  \
     }
 
-void check_condition(bool cond, std::string msg) {
-    g_totalTests++;
-    g_testMaxId++;
-    if (!(cond)) {
-        if (g_supressMessages == false) {
-            std::cout << "FAIL " << g_test_header_ptr << " Id: " << g_testMaxId << " - " << (msg.c_str()) << std::endl;
-        }
-        g_totalFailed++;
-        g_failCount++;
-        g_allSuccess = false;
-    }
-    else
-    {
-        if (g_supressMessages == false) {
-            std::cout << "OK   " << g_test_header_ptr << " Id: " << g_testMaxId << " - " << (msg.c_str()) << std::endl;
-        }
-    }
-}
+void check_condition(bool cond, std::string msg);
 
 #define PRINT_MESSAGE(msg) if(g_supressMessages == false) std::cout << g_test_header_ptr <<  msg << std::endl;
 
@@ -99,240 +82,36 @@ void check_condition(bool cond, std::string msg) {
 #define UME_2PI_F (2.0f*UME_PI_F)
 
 
-bool valueInRange(float value, float expectedValue, float errMargin) {
+bool valueInRange(float value, float expectedValue, float errMargin);
+bool valueInRange(double value, double expectedValue, double errMargin);
+bool valueInRange(uint32_t value, uint32_t expectedValue, float errMargin);
+bool valueInRange(int32_t value, int32_t expectedValue, float errMargin);
+bool valueInRange(uint64_t value, uint64_t expectedValue, float errMargin);
+bool valueInRange(int64_t value, int64_t expectedValue, float errMargin);
+bool valueInRange(bool value, bool expectedValue, float errMargin);
 
-    if(expectedValue == 0.0f)
-    {
-        return (errMargin >= value) & ((-errMargin) <= value);
-    }
-    else if(value > 0.0f)
-    {
-        return ((expectedValue)*(1.0f + errMargin) >= value) 
-             & ((expectedValue)*(1.0f - errMargin) <= value);
-    }
-    else
-    {
-        return ((expectedValue)*(1.0f + errMargin) <= value)
-             & ((expectedValue)*(1.0f - errMargin) >= value);
-    }
-}
-
-bool valueInRange(double value, double expectedValue, double errMargin) {
-    if (expectedValue == 0.0)
-    {
-        return (errMargin >= value) & ((-errMargin) <= value);
-    }
-    else if (value > 0.0f)
-    {
-        return ((expectedValue)*(1.0f + errMargin) >= value) 
-             & ((expectedValue)*(1.0f - errMargin) <= value);
-    }
-    else
-    {
-        return ((expectedValue)*(1.0f + errMargin) <= value)
-             & ((expectedValue)*(1.0f - errMargin) >= value);
-    }
-}
-
-bool valueInRange(uint32_t value, uint32_t expectedValue, float errMargin) {
-    return valueInRange((float)value, (float)expectedValue, errMargin);
-}
-
-bool valueInRange(int32_t value, int32_t expectedValue, float errMargin) {
-    return valueInRange((float)value, (float)expectedValue, errMargin);
-}
-
-bool valueInRange(uint64_t value, uint64_t expectedValue, float errMargin) {
-    return valueInRange((float)value, (float)expectedValue, errMargin);
-}
-
-bool valueInRange(int64_t value, int64_t expectedValue, float errMargin) {
-    return valueInRange((float)value, (float)expectedValue, errMargin);
-}
-
-bool valuesExact(uint8_t const *values, uint8_t const *expectedValues, unsigned int count)
-{
-    bool retval = true;
-    for (unsigned int i = 0; i < count; i++) {
-        if (values[i] != expectedValues[i])
-        {
-            retval = false;
-            break;
-        }
-    }
-    return retval;
-}
-
-bool valuesExact(int8_t const *values, int8_t const *expectedValues, unsigned int count)
-{
-    bool retval = true;
-    for (unsigned int i = 0; i < count; i++) {
-        if (values[i] != expectedValues[i])
-        {
-            retval = false;
-            break;
-        }
-    }
-    return retval;
-}
-
-bool valuesExact(uint16_t const *values, uint16_t const *expectedValues, unsigned int count)
-{
-    bool retval = true;
-    for (unsigned int i = 0; i < count; i++) {
-        if (values[i] != expectedValues[i])
-        {
-            retval = false;
-            break;
-        }
-    }
-    return retval;
-}
-
-bool valuesExact(int16_t const *values, int16_t const *expectedValues, unsigned int count)
-{
-    bool retval = true;
-    for (unsigned int i = 0; i < count; i++) {
-        if (values[i] != expectedValues[i])
-        {
-            retval = false;
-            break;
-        }
-    }
-    return retval;
-}
-
-bool valuesExact(int32_t const *values, int32_t const *expectedValues, unsigned int count) 
-{
-    bool retval = true;
-    for(unsigned int i = 0; i < count; i++) {
-        if(values[i] != expectedValues[i])
-        {
-            retval = false;
-            break;
-        }
-    }
-    return retval;
-}
-
-bool valuesExact(uint32_t const *values, uint32_t const *expectedValues, unsigned int count) 
-{
-    bool retval = true;
-    for(unsigned int i = 0; i < count; i++) {
-        if(values[i] != expectedValues[i])
-        {
-            retval = false;
-            break;
-        }
-    }
-    return retval;
-}
-
-bool valuesExact(int64_t const *values, int64_t const *expectedValues, unsigned int count)
-{
-    bool retval = true;
-    for (unsigned int i = 0; i < count; i++) {
-        if (values[i] != expectedValues[i])
-        {
-            retval = false;
-            break;
-        }
-    }
-    return retval;
-}
-
-bool valuesExact(uint64_t const *values, uint64_t const *expectedValues, unsigned int count)
-{
-    bool retval = true;
-    for (unsigned int i = 0; i < count; i++) {
-        if (values[i] != expectedValues[i])
-        {
-            retval = false;
-            break;
-        }
-    }
-    return retval;
-}
-
-bool valuesExact(bool const *values, bool const *expectedValues, unsigned int count)
-{
-    bool retval = true;
-    for(unsigned int i = 0; i < count; i++) {
-        if(values[i] != expectedValues[i])
-        {
-            retval = false;
-            break;
-        }
-    }
-    return retval;
-}
-
-bool valuesInRange(float const *values, float const *expectedValues, unsigned int count, float errMargin)
-{
-    bool retval = true;
-    for(unsigned int i = 0; i < count; i++) {
-        if(!valueInRange(values[i], expectedValues[i], errMargin))
-        {
-            retval = false;
-            break;
-        }
-    }
-    return retval;
-}
-
-bool valuesInRange(double const *values, double const *expectedValues, unsigned int count, double errMargin)
-{
-    bool retval = true;
-    for(unsigned int i = 0; i < count; i++) {
-        if(!valueInRange(values[i], expectedValues[i], errMargin))
-        {
-            retval = false;
-            break;
-        }
-    }
-    return retval;
-}
+bool valuesExact(uint8_t const *values, uint8_t const *expectedValues, unsigned int count);
+bool valuesExact(int8_t const *values, int8_t const *expectedValues, unsigned int count);
+bool valuesExact(uint16_t const *values, uint16_t const *expectedValues, unsigned int count);
+bool valuesExact(int16_t const *values, int16_t const *expectedValues, unsigned int count);
+bool valuesExact(int32_t const *values, int32_t const *expectedValues, unsigned int count);
+bool valuesExact(uint32_t const *values, uint32_t const *expectedValues, unsigned int count);
+bool valuesExact(int64_t const *values, int64_t const *expectedValues, unsigned int count);
+bool valuesExact(uint64_t const *values, uint64_t const *expectedValues, unsigned int count);
+bool valuesExact(bool const *values, bool const *expectedValues, unsigned int count);
+bool valuesInRange(float const *values, float const *expectedValues, unsigned int count, float errMargin);
+bool valuesInRange(double const *values, double const *expectedValues, unsigned int count, double errMargin);
 
 // This is a dirty hack to use the same testing function for both int and float types... 
-bool valuesInRange(uint8_t const *values, uint8_t const *expectedValues, unsigned int count, double errMargin)
-{
-    return valuesExact(values, expectedValues, count);
-}
-
-bool valuesInRange(int8_t const *values, int8_t const *expectedValues, unsigned int count, double errMargin)
-{
-    return valuesExact(values, expectedValues, count);
-}
-
-bool valuesInRange(uint16_t const *values, uint16_t const *expectedValues, unsigned int count, double errMargin)
-{
-    return valuesExact(values, expectedValues, count);
-}
-
-bool valuesInRange(int16_t const *values, int16_t const *expectedValues, unsigned int count, double errMargin)
-{
-    return valuesExact(values, expectedValues, count);
-}
-
-bool valuesInRange(uint32_t const *values, uint32_t const *expectedValues, unsigned int count, double errMargin)
-{
-    return valuesExact(values, expectedValues, count);
-}
-
-bool valuesInRange(uint64_t const *values, uint64_t const *expectedValues, unsigned int count, double errMargin)
-{
-    return valuesExact(values, expectedValues, count);
-}
-
-bool valuesInRange(int32_t const *values, int32_t const *expectedValues, unsigned int count, double errMargin)
-{
-    return valuesExact(values, expectedValues, count);
-}
-
-bool valuesInRange(int64_t const *values, int64_t const *expectedValues, unsigned int count, double errMargin)
-{
-    return valuesExact(values, expectedValues, count);
-}
+bool valuesInRange(uint8_t const *values, uint8_t const *expectedValues, unsigned int count, double errMargin);
+bool valuesInRange(int8_t const *values, int8_t const *expectedValues, unsigned int count, double errMargin);
+bool valuesInRange(uint16_t const *values, uint16_t const *expectedValues, unsigned int count, double errMargin);
+bool valuesInRange(int16_t const *values, int16_t const *expectedValues, unsigned int count, double errMargin);
+bool valuesInRange(uint32_t const *values, uint32_t const *expectedValues, unsigned int count, double errMargin);
+bool valuesInRange(uint64_t const *values, uint64_t const *expectedValues, unsigned int count, double errMargin);
+bool valuesInRange(int32_t const *values, int32_t const *expectedValues, unsigned int count, double errMargin);
+bool valuesInRange(int64_t const *values, int64_t const *expectedValues, unsigned int count, double errMargin);
+bool valuesInRange(bool const *values, bool const *expectedValues, unsigned int count, double errMargin);
 
 // Randomization routines for random-generated tests.
 template<typename SCALAR_TYPE>
@@ -341,39 +120,33 @@ SCALAR_TYPE randomValue(std::mt19937 & generator) {
     return dist(generator);
 }
 
-template<>
-uint8_t randomValue<uint8_t>(std::mt19937 & generator) {
-    std::uniform_int_distribution<uint16_t> dist(0, 255);
-    return uint8_t(dist(generator));
-}
+template<> uint8_t randomValue<uint8_t>(std::mt19937 & generator);
+template<> int8_t randomValue<int8_t>(std::mt19937 & generator);
+template<> float randomValue<float>(std::mt19937 & generator);
+template<> double randomValue<double>(std::mt19937 & generator);
+template<> bool randomValue<bool>(std::mt19937 & generator);
 
-template<>
-int8_t randomValue<int8_t>(std::mt19937 & generator) {
-    int16_t min = int16_t(std::numeric_limits<int8_t>::min());
-    int16_t max = int16_t(std::numeric_limits<int8_t>::max());
+template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN>
+void genericSETCONSTRTest_random()
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
 
-    std::uniform_int_distribution<int16_t> dist(min, max);
-    int16_t t0 = dist(generator);
-    return int8_t(t0);
-}
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        SCALAR_TYPE outputs[VEC_LEN];
+        SCALAR_TYPE inputA;
 
-template<>
-float randomValue<float>(std::mt19937 & generator) {
-    std::uniform_real_distribution<float> dist(std::numeric_limits<float>::min(), std::numeric_limits<float>::max());
-    return dist(generator);
-}
-
-template<>
-double randomValue<double>(std::mt19937 & generator) {
-    std::uniform_real_distribution<double> dist(std::numeric_limits<double>::min(), std::numeric_limits<double>::max());
-    return dist(generator);
-}
-
-template<>
-bool randomValue<bool>(std::mt19937 & generator) {
-    std::uniform_int_distribution<int32_t> dist(std::numeric_limits<int32_t>::min(), std::numeric_limits<int32_t>::max());
-    int32_t t0 = dist(generator);
-    return t0 > 0;
+        inputA = randomValue<SCALAR_TYPE>(gen);
+        for (int i = 0; i < VEC_LEN; i++)
+        {
+            outputs[i] = inputA;
+        }
+        VEC_TYPE t0(inputA);
+        t0.store(values);
+        bool inRange = valuesInRange(values, outputs, VEC_LEN, SCALAR_TYPE(0.01f));
+        check_condition(inRange, "SET-CONSTR gen");
+    }
 }
 
 template<typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
@@ -9209,6 +8982,8 @@ void genericDEGRADETest()
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, typename SWIZZLE_TYPE, int VEC_LEN, typename DATA_SET>
 void genericBaseInterfaceTest()
 {   
+    genericSETCONSTRTest_random<VEC_TYPE, SCALAR_TYPE, VEC_LEN>();
+
     genericINSERTTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
     genericEXTRACTTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
     genericASSIGNVTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
@@ -9565,6 +9340,9 @@ void genericPackableInterfaceTest() {
 
 template<typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMaskTest() {
+
+    genericSETCONSTRTest_random<MASK_TYPE, bool, VEC_LEN>();
+
     genericLANDVTest<MASK_TYPE, VEC_LEN, DATA_SET> ();
     genericLANDVTest_random<MASK_TYPE, bool, VEC_LEN>();
     genericLANDSTest<MASK_TYPE, VEC_LEN, DATA_SET> ();

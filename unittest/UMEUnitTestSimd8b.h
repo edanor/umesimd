@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2015 CERN
+// Copyright (c) 2016 CERN
 //
 // Author: Przemyslaw Karpinski
 //
@@ -38,87 +38,5 @@ int test_UME_SIMD8b(bool supressMessages);
 int test_UME_SIMD1_8(bool supressMessages);
 int test_UME_SIMD1_8u(bool supressMessages);
 int test_UME_SIMD1_8i(bool supressMessages);
-
-using namespace UME::SIMD;
-
-int test_UME_SIMD8b(bool supressMessages) 
-{
-    int simd1_8_res = test_UME_SIMD1_8(supressMessages);
-
-    return simd1_8_res;
-}
-
-int test_UME_SIMD1_8(bool supressMessages) {
-    int fail_u = test_UME_SIMD1_8u(supressMessages);
-    int fail_i = test_UME_SIMD1_8i(supressMessages);
-
-    return fail_u + fail_i;
-}
-
-int test_UME_SIMD1_8u(bool supressMessages) {
-    char header[] = "UME::SIMD::SIMD1_8u test";
-    INIT_TEST(header, supressMessages);
-
-    {
-        SIMD1_8u vec0;
-        CHECK_CONDITION(vec0.length() == 1, "ZERO-CONSTR");
-    }
-
-    genericUintTest<
-        SIMD1_8u, uint8_t,
-        SIMD1_8i, int8_t,
-        SIMDMask1,
-        SIMDSwizzle1,
-        1,
-        DataSet_1_8u>();
-
-    genericPROMOTETest<
-        SIMD1_8u, uint8_t,
-        SIMD1_16u, uint16_t,
-        1,
-        DataSet_1_8u>();
-
-    return g_failCount;
-}
-
-int test_UME_SIMD1_8i(bool supressMessages) {
-    char header[] = "UME::SIMD::SIMD1_8i test";
-    INIT_TEST(header, supressMessages);
-
-    {
-        SIMD1_8i vec0;
-        CHECK_CONDITION(vec0.length() == 1, "ZERO-CONSTR");
-    }
-
-    {
-        SIMD1_8i vec0(5);
-        SIMD1_8i vec1(-126);
-        SIMD1_8i vec2 = vec0.add(vec1);
-        CHECK_CONDITION(vec2[0] == -121, "ADDV");
-    }
-    {
-        SIMD1_8i vec0(5);
-        SIMD1_8i vec1(-126);
-        SIMD1_8i vec2 = vec0 + vec1;
-        CHECK_CONDITION(vec2[0] == -121, "ADDV(operator+)");
-    }
-
-    genericIntTest<
-        SIMD1_8i, int8_t,
-        SIMD1_8u, uint8_t,
-        SIMDMask1,
-        SIMDSwizzle1,
-        1,
-        DataSet_1_8i>();
-
-    genericPROMOTETest<
-        SIMD1_8i,  int8_t,
-        SIMD1_16i, int16_t,
-        1,
-        DataSet_1_8i>();
-
-    return g_failCount;
-}
-
 
 #endif
