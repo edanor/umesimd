@@ -219,7 +219,7 @@ namespace SIMD {
         // MSTOREA
         inline double* storea(SIMDVecMask<16> const & mask, double * p) const {
             _mm512_mask_store_pd(p, mask.mMask & 0xFF, mVec[0]);
-            _mm512_mask_store_pd(p + 8, ((mask.mMask & 0xFF00) >> 8), mVec[0]);
+            _mm512_mask_store_pd(p + 8, ((mask.mMask & 0xFF00) >> 8), mVec[1]);
             return p;
         }
 
@@ -237,6 +237,8 @@ namespace SIMD {
         }
         // SWIZZLE
         // SWIZZLEA
+        // SORTA
+        // SORTD
 
         // ADDV
         inline SIMDVec_f add(SIMDVec_f const & b) const {
@@ -1245,19 +1247,73 @@ namespace SIMD {
             return SIMDVec_f(t6, t13);
         }
         // TRUNC
-#if defined(__AVX512DQ__)
         inline SIMDVec_i<int64_t, 16> trunc() const {
+#if defined(__AVX512DQ__)
             __m512i t0 = _mm512_cvttpd_epi64(mVec[0]);
             __m512i t1 = _mm512_cvttpd_epi64(mVec[1]);
             return SIMDVec_i<int64_t, 16>(t0, t1);
+#else
+            alignas(64) double raw_d[16];
+            alignas(64) int64_t raw_i[16];
+            _mm512_store_pd(raw_d, mVec[0]);
+            _mm512_store_pd(&raw_d[8], mVec[1]);
+            raw_i[0] = (int64_t)raw_d[0];
+            raw_i[1] = (int64_t)raw_d[1];
+            raw_i[2] = (int64_t)raw_d[2];
+            raw_i[3] = (int64_t)raw_d[3];
+            raw_i[4] = (int64_t)raw_d[4];
+            raw_i[5] = (int64_t)raw_d[5];
+            raw_i[6] = (int64_t)raw_d[6];
+            raw_i[7] = (int64_t)raw_d[7];
+
+            raw_i[8] = (int64_t)raw_d[8];
+            raw_i[9] = (int64_t)raw_d[9];
+            raw_i[10] = (int64_t)raw_d[10];
+            raw_i[11] = (int64_t)raw_d[11];
+            raw_i[12] = (int64_t)raw_d[12];
+            raw_i[13] = (int64_t)raw_d[13];
+            raw_i[14] = (int64_t)raw_d[14];
+            raw_i[15] = (int64_t)raw_d[15];
+            __m512i t0 = _mm512_load_epi64(&raw_i[0]);
+            __m512i t1 = _mm512_load_epi64(&raw_i[8]);
+            return SIMDVec_i<int64_t, 16>(t0, t1);
+#endif
         }
         // MTRUNC
         inline SIMDVec_i<int64_t, 16> trunc(SIMDVecMask<16> const & mask) const {
+#if defined(__AVX512DQ__)
             __m512i t0 = _mm512_mask_cvttpd_epi64(_mm512_setzero_si512(), mask.mMask & 0xFF, mVec[0]);
             __m512i t1 = _mm512_mask_cvttpd_epi64(_mm512_setzero_si512(), ((mask.mMask & 0xFF00) >> 8), mVec[1]);
             return SIMDVec_i<int64_t, 16>(t0, t1);
-        }
+#else
+            alignas(64) double raw_d[16];
+            alignas(64) int64_t raw_i[16];
+            __m512d t0 = _mm512_set1_pd(0.0);
+            __m512d t1 = _mm512_mask_mov_pd(t0, (mask.mMask & 0x00FF), mVec[0]);
+            __m512d t2 = _mm512_mask_mov_pd(t0, (mask.mMask & 0xFF00) >> 8, mVec[1]);
+            _mm512_store_pd(&raw_d[0], t1);
+            _mm512_store_pd(&raw_d[8], t2);
+            raw_i[0] = (int64_t)raw_d[0];
+            raw_i[1] = (int64_t)raw_d[1];
+            raw_i[2] = (int64_t)raw_d[2];
+            raw_i[3] = (int64_t)raw_d[3];
+            raw_i[4] = (int64_t)raw_d[4];
+            raw_i[5] = (int64_t)raw_d[5];
+            raw_i[6] = (int64_t)raw_d[6];
+            raw_i[7] = (int64_t)raw_d[7];
+            raw_i[8] = (int64_t)raw_d[8];
+            raw_i[9] = (int64_t)raw_d[9];
+            raw_i[10] = (int64_t)raw_d[10];
+            raw_i[11] = (int64_t)raw_d[11];
+            raw_i[12] = (int64_t)raw_d[12];
+            raw_i[13] = (int64_t)raw_d[13];
+            raw_i[14] = (int64_t)raw_d[14];
+            raw_i[15] = (int64_t)raw_d[15];
+            __m512i t3 = _mm512_load_epi64(&raw_i[0]);
+            __m512i t4 = _mm512_load_epi64(&raw_i[8]);
+            return SIMDVec_i<int64_t, 16>(t3, t4);
 #endif
+        }
         // FLOOR
         // MFLOOR
         // CEIL

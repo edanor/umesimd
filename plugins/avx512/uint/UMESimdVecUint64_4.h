@@ -198,7 +198,7 @@ namespace SIMD {
             __m256i t0 = _mm256_loadu_si256((__m256i*)p);
             __m512i t1 = _mm512_castsi256_si512(mVec);
             __m512i t2 = _mm512_castsi256_si512(t0);
-            __m512i t3 = _mm512_mask_mov_epi32(t1, mask.mMask, t2);
+            __m512i t3 = _mm512_mask_mov_epi64(t1, mask.mMask, t2);
             mVec = _mm512_castsi512_si256(t3);
 #endif
             return *this;
@@ -213,6 +213,11 @@ namespace SIMD {
 #if defined(__AVX512VL__)
             mVec = _mm256_mask_load_epi64(mVec, mask.mMask, p);
 #else
+            __m256i t0 = _mm256_load_si256((__m256i*)p);
+            __m512i t1 = _mm512_castsi256_si512(mVec);
+            __m512i t2 = _mm512_castsi256_si512(t0);
+            __m512i t3 = _mm512_mask_mov_epi64(t1, mask.mMask, t2);
+            mVec = _mm512_castsi512_si256(t3);
 #endif
             return *this;
         }
@@ -224,8 +229,14 @@ namespace SIMD {
         // MSTORE
         inline uint64_t* store(SIMDVecMask<4> const & mask, uint64_t* p) const {
 #if defined(__AVX512VL__)
-            _mm256_mask_storeu_epi32(p, mask.mMask, mVec);
+            _mm256_mask_storeu_epi64(p, mask.mMask, mVec);
 #else
+            __m256i t0 = _mm256_loadu_si256((__m256i*)p);
+            __m512i t1 = _mm512_castsi256_si512(t0);
+            __m512i t2 = _mm512_castsi256_si512(mVec);
+            __m512i t3 = _mm512_mask_mov_epi64(t1, mask.mMask, t2);
+            __m256i t4 = _mm512_castsi512_si256(t3);
+            _mm256_storeu_si256((__m256i*)p, t4);
 #endif
             return p;
         }
@@ -237,8 +248,14 @@ namespace SIMD {
         // MSTOREA
         inline uint64_t* storea(SIMDVecMask<4> const & mask, uint64_t* p) const {
 #if defined(__AVX512VL__)
-            _mm256_mask_store_epi32(p, mask.mMask, mVec);
+            _mm256_mask_store_epi64(p, mask.mMask, mVec);
 #else
+            __m256i t0 = _mm256_load_si256((__m256i*)p);
+            __m512i t1 = _mm512_castsi256_si512(t0);
+            __m512i t2 = _mm512_castsi256_si512(mVec);
+            __m512i t3 = _mm512_mask_mov_epi64(t1, mask.mMask, t2);
+            __m256i t4 = _mm512_castsi512_si256(t3);
+            _mm256_store_si256((__m256i*)p, t4);
 #endif
             return p;
         }
@@ -247,30 +264,33 @@ namespace SIMD {
         inline SIMDVec_u blend(SIMDVecMask<4> const & mask, SIMDVec_u const & b) const {
 #if defined(__AVX512VL__)
             __m256i t0 = _mm256_mask_mov_epi64(mVec, mask.mMask, b.mVec);
-#else
-            __m256i t0 = _mm512_castsi512_si256(
-                            _mm512_mask_mov_epi64(
-                                _mm512_castsi256_si512(mVec),
-                                mask.mMask,
-                                _mm512_castsi256_si512(b.mVec)));
-#endif
             return SIMDVec_u(t0);
+#else
+            __m512i t0 = _mm512_castsi256_si512(mVec);
+            __m512i t1 = _mm512_castsi256_si512(b.mVec);
+            __m512i t2 = _mm512_mask_mov_epi64(t0, mask.mMask, t1);
+            __m256i t3 = _mm512_castsi512_si256(t2);
+            return SIMDVec_u(t3);
+#endif
         }
         // BLENDS
         inline SIMDVec_u blend(SIMDVecMask<4> const & mask, uint64_t b) const {
 #if defined(__AVX512VL__)
             __m256i t0 = _mm256_mask_mov_epi64(mVec, mask.mMask, SET1_EPI64(b));
-#else
-            __m256i t0 = _mm512_castsi512_si256(
-                _mm512_mask_mov_epi64(
-                    _mm512_castsi256_si512(mVec),
-                    mask.mMask,
-                    _mm512_set1_epi64(b)));
-#endif
             return SIMDVec_u(t0);
+#else
+            __m512i t0 = _mm512_castsi256_si512(mVec);
+            __m512i t1 = _mm512_set1_epi64(b);
+            __m512i t2 = _mm512_mask_mov_epi64(t0, mask.mMask, t1);
+            __m256i t3 = _mm512_castsi512_si256(t2);
+            return SIMDVec_u(t3);
+#endif
         }
         // SWIZZLE
         // SWIZZLEA
+
+        // SORTA
+        // SORTD
 
         // ADDV
         inline SIMDVec_u add(SIMDVec_u const & b) const {
@@ -1062,53 +1082,37 @@ namespace SIMD {
         }
 
         // FMULADDV
-        /*inline SIMDVec_u fmuladd(SIMDVec_u const & b, SIMDVec_u const & c) const {
-            uint64_t t0 = mVec[0] * b.mVec[0] + c.mVec[0];
-            uint64_t t1 = mVec[1] * b.mVec[1] + c.mVec[1];
-            return SIMDVec_u(t0, t1);
-        }*/
+        inline SIMDVec_u fmuladd(SIMDVec_u const & b, SIMDVec_u const & c) const {
+            return (mul(b)).add(c);
+        }
         // MFMULADDV
-        /*inline SIMDVec_u fmuladd(SIMDVecMask<4> const & mask, SIMDVec_u const & b, SIMDVec_u const & c) const {
-            uint64_t t0 = mask.mMask[0] ? (mVec[0] * b.mVec[0] + c.mVec[0]) : mVec[0];
-            uint64_t t1 = mask.mMask[1] ? (mVec[1] * b.mVec[1] + c.mVec[1]) : mVec[1];
-            return SIMDVec_u(t0, t1);
-        }*/
+        inline SIMDVec_u fmuladd(SIMDVecMask<4> const & mask, SIMDVec_u const & b, SIMDVec_u const & c) const {
+            return (mul(mask, b)).add(mask, c);
+        }
         // FMULSUBV
-        /*inline SIMDVec_u fmulsub(SIMDVec_u const & b, SIMDVec_u const & c) const {
-            uint64_t t0 = mVec[0] * b.mVec[0] - c.mVec[0];
-            uint64_t t1 = mVec[1] * b.mVec[1] - c.mVec[1];
-            return SIMDVec_u(t0, t1);
-        }*/
+        inline SIMDVec_u fmulsub(SIMDVec_u const & b, SIMDVec_u const & c) const {
+            return (mul(b)).sub(c);
+        }
         // MFMULSUBV
-        /*inline SIMDVec_u fmulsub(SIMDVecMask<4> const & mask, SIMDVec_u const & b, SIMDVec_u const & c) const {
-            uint64_t t0 = mask.mMask[0] ? (mVec[0] * b.mVec[0] - c.mVec[0]) : mVec[0];
-            uint64_t t1 = mask.mMask[1] ? (mVec[1] * b.mVec[1] - c.mVec[1]) : mVec[1];
-            return SIMDVec_u(t0, t1);
-        }*/
+        inline SIMDVec_u fmulsub(SIMDVecMask<4> const & mask, SIMDVec_u const & b, SIMDVec_u const & c) const {
+            return (mul(mask, b)).sub(mask, c);
+        }
         // FADDMULV
-        /*inline SIMDVec_u faddmul(SIMDVec_u const & b, SIMDVec_u const & c) const {
-            uint64_t t0 = (mVec[0] + b.mVec[0]) * c.mVec[0];
-            uint64_t t1 = (mVec[1] + b.mVec[1]) * c.mVec[1];
-            return SIMDVec_u(t0, t1);
-        }*/
+        inline SIMDVec_u faddmul(SIMDVec_u const & b, SIMDVec_u const & c) const {
+            return (add(b)).mul(c);
+        }
         // MFADDMULV
-        /*inline SIMDVec_u faddmul(SIMDVecMask<4> const & mask, SIMDVec_u const & b, SIMDVec_u const & c) const {
-            uint64_t t0 = mask.mMask[0] ? ((mVec[0] + b.mVec[0]) * c.mVec[0]) : mVec[0];
-            uint64_t t1 = mask.mMask[1] ? ((mVec[1] + b.mVec[1]) * c.mVec[1]) : mVec[1];
-            return SIMDVec_u(t0, t1);
-        }*/
+        inline SIMDVec_u faddmul(SIMDVecMask<4> const & mask, SIMDVec_u const & b, SIMDVec_u const & c) const {
+            return (add(mask, b)).mul(mask, c);
+        }
         // FSUBMULV
-        /*inline SIMDVec_u fsubmul(SIMDVec_u const & b, SIMDVec_u const & c) const {
-            uint64_t t0 = (mVec[0] - b.mVec[0]) * c.mVec[0];
-            uint64_t t1 = (mVec[1] - b.mVec[1]) * c.mVec[1];
-            return SIMDVec_u(t0, t1);
-        }*/
+        inline SIMDVec_u fsubmul(SIMDVec_u const & b, SIMDVec_u const & c) const {
+            return (sub(b)).mul(c);
+        }
         // MFSUBMULV
-        /*inline SIMDVec_u fsubmul(SIMDVecMask<4> const & mask, SIMDVec_u const & b, SIMDVec_u const & c) const {
-            uint64_t t0 = mask.mMask[0] ? ((mVec[0] - b.mVec[0]) * c.mVec[0]) : mVec[0];
-            uint64_t t1 = mask.mMask[1] ? ((mVec[1] - b.mVec[1]) * c.mVec[1]) : mVec[1];
-            return SIMDVec_u(t0, t1);
-        }*/
+        inline SIMDVec_u fsubmul(SIMDVecMask<4> const & mask, SIMDVec_u const & b, SIMDVec_u const & c) const {
+            return (sub(mask, b)).mul(mask, c);
+        }
 
         // MAXV
         inline SIMDVec_u max(SIMDVec_u const & b) const {
@@ -1255,59 +1259,103 @@ namespace SIMD {
             return *this;
         }
         // HMAX
-        /*inline uint64_t hmax () const {
-            return mVec[0] > mVec[1] ? mVec[0] : mVec[1];
-        }*/
+        inline uint64_t hmax() const {
+            alignas(32) uint64_t raw[4];
+            _mm256_store_si256((__m256i*)raw, mVec);
+            uint64_t t0 = raw[0] > raw[1] ? raw[0] : raw[1];
+            uint64_t t1 = raw[2] > raw[3] ? raw[2] : raw[3];
+            return t0 > t1 ? t0 : t1;
+        }
         // MHMAX
-        /*inline uint64_t hmax(SIMDVecMask<4> const & mask) const {
-            uint64_t t0 = mask.mMask[0] ? mVec[0] : std::numeric_limits<uint64_t>::min();
-            uint64_t t1 = (mask.mMask[1] && mVec[1] > t0) ? mVec[1] : t0;
-            return t1;
-        }*/
+        inline uint64_t hmax(SIMDVecMask<4> const & mask) const {
+            alignas(32) uint64_t raw[4];
+            _mm256_store_si256((__m256i*)raw, mVec);
+            uint64_t t0 = (mask.mMask & 0x1) ? raw[0] : std::numeric_limits<uint64_t>::min();
+            uint64_t t1 = ((mask.mMask & 0x2) && raw[1] > t0) ? raw[1] : t0;
+            uint64_t t2 = ((mask.mMask & 0x4) && raw[2] > t1) ? raw[2] : t1;
+            uint64_t t3 = ((mask.mMask & 0x8) && raw[3] > t2) ? raw[3] : t2;
+            return t3;
+        }
         // IMAX
-        /*inline uint64_t imax() const {
-            return mVec[0] > mVec[1] ? 0 : 1;
-        }*/
+        inline uint64_t imax() const {
+            alignas(32) uint64_t raw[4];
+            _mm256_store_si256((__m256i*)raw, mVec);
+            uint64_t t0 = raw[0] > raw[1] ? 0 : 1;
+            uint64_t t1 = raw[2] > raw[3] ? 2 : 3;
+            return raw[t0] > raw[t1] ? t0 : t1;
+        }
         // MIMAX
-        /*inline uint64_t imax(SIMDVecMask<4> const & mask) const {
+        inline uint64_t imax(SIMDVecMask<4> const & mask) const {
+            alignas(32) uint64_t raw[4];
+            _mm256_store_si256((__m256i*)raw, mVec);
             uint64_t i0 = 0xFFFFFFFFFFFFFFFF;
             uint64_t t0 = std::numeric_limits<uint64_t>::min();
-            if(mask.mMask[0] == true) {
+            if ((mask.mMask & 0x1) == true) {
                 i0 = 0;
-                t0 = mVec[0];
+                t0 = raw[0];
             }
-            if(mask.mMask[1] == true && mVec[1] > t0) {
+            if ((mask.mMask & 0x2) == true && raw[1] > t0) {
+                i0 = 1;
+                t0 = raw[1];
+            }
+            if ((mask.mMask & 0x4) == true && raw[2] > t0) {
+                i0 = 2;
+                t0 = raw[2];
+            }
+            if ((mask.mMask & 0x8) == true && raw[3] > t0) {
                 i0 = 1;
             }
             return i0;
-        }*/
+        }
         // HMIN
-        /*inline uint64_t hmin() const {
-            return mVec[0] < mVec[1] ? mVec[0] : mVec[1];
-        }*/
+        inline uint64_t hmin() const {
+            alignas(32) uint64_t raw[4];
+            _mm256_store_si256((__m256i*)raw, mVec);
+            uint64_t t0 = raw[0] < raw[1] ? raw[0] : raw[1];
+            uint64_t t1 = raw[2] < raw[3] ? raw[2] : raw[3];
+            return t0 < t1 ? t0 : t1;
+        }
         // MHMIN
-        /*inline uint64_t hmin(SIMDVecMask<4> const & mask) const {
-            uint64_t t0 = mask.mMask[0] ? mVec[0] : std::numeric_limits<uint64_t>::max();
-            uint64_t t1 = (mask.mMask[1] && mVec[1] < t0) ? mVec[1] : t0;
-            return t1;
-        }*/
+        inline uint64_t hmin(SIMDVecMask<4> const & mask) const {
+            alignas(32) uint64_t raw[4];
+            _mm256_store_si256((__m256i*)raw, mVec);
+            uint64_t t0 = (mask.mMask & 0x1) ? raw[0] : std::numeric_limits<uint64_t>::max();
+            uint64_t t1 = ((mask.mMask & 0x2) && raw[1] < t0) ? raw[1] : t0;
+            uint64_t t2 = ((mask.mMask & 0x4) && raw[2] < t1) ? raw[2] : t1;
+            uint64_t t3 = ((mask.mMask & 0x8) && raw[3] < t2) ? raw[3] : t2;
+            return t3;
+        }
         // IMIN
-        /*inline uint64_t imin() const {
-            return mVec[0] < mVec[1] ? 0 : 1;
-        }*/
+        inline uint64_t imin() const {
+            alignas(32) uint64_t raw[4];
+            _mm256_store_si256((__m256i*)raw, mVec);
+            uint64_t t0 = raw[0] < raw[1] ? 0 : 1;
+            uint64_t t1 = raw[2] < raw[3] ? 2 : 3;
+            return raw[t0] < raw[t1] ? t0 : t1;
+        }
         // MIMIN
-        /*inline uint64_t imin(SIMDVecMask<4> const & mask) const {
+        inline uint64_t imin(SIMDVecMask<4> const & mask) const {
+            alignas(32) uint64_t raw[4];
+            _mm256_store_si256((__m256i*)raw, mVec);
             uint64_t i0 = 0xFFFFFFFFFFFFFFFF;
             uint64_t t0 = std::numeric_limits<uint64_t>::max();
-            if(mask.mMask[0] == true) {
+            if ((mask.mMask & 0x1) == true) {
                 i0 = 0;
-                t0 = mVec[0];
+                t0 = raw[0];
             }
-            if(mask.mMask[1] == true && mVec[1] < t0) {
+            if ((mask.mMask & 0x2) == true && raw[1] < t0) {
+                i0 = 1;
+                t0 = raw[1];
+            }
+            if ((mask.mMask & 0x4) == true && raw[2] < t0) {
+                i0 = 2;
+                t0 = raw[2];
+            }
+            if ((mask.mMask & 0x8) == true && raw[3] < t0) {
                 i0 = 1;
             }
             return i0;
-        }*/
+        }
 
         // BANDV
         inline SIMDVec_u band(SIMDVec_u const & b) const {
@@ -1547,65 +1595,101 @@ namespace SIMD {
             return *this;
         }
         // HBAND
-        /*inline uint64_t hband() const {
-            return mVec[0] & mVec[1];
-        }*/
+        inline uint64_t hband() const {
+            alignas(32) uint64_t raw[4];
+            _mm256_store_si256((__m256i*)raw, mVec);
+            return raw[0] & raw[1] & raw[2] & raw[3];
+        }
         // MHBAND
-        /*inline uint64_t hband(SIMDVecMask<4> const & mask) const {
-            uint64_t t0 = mask.mMask[0] ? mVec[0] : 0xFFFFFFFFFFFFFFFF;
-            uint64_t t1 = mask.mMask[1] ? mVec[1] & t0 : t0;
-            return t1;
-        }*/
+        inline uint64_t hband(SIMDVecMask<4> const & mask) const {
+            alignas(32) uint64_t raw[4];
+            _mm256_store_si256((__m256i*)raw, mVec);
+            uint64_t t0 = (mask.mMask & 0x1) ? raw[0] : 0xFFFFFFFFFFFFFFFF;
+            uint64_t t1 = (mask.mMask & 0x2) ? raw[1] & t0 : t0;
+            uint64_t t2 = (mask.mMask & 0x4) ? raw[2] & t1 : t1;
+            uint64_t t3 = (mask.mMask & 0x8) ? raw[3] & t2 : t2;
+            return t3;
+        }
         // HBANDS
-        /*inline uint64_t hband(uint64_t b) const {
-            return mVec[0] & mVec[1] & b;
-        }*/
+        inline uint64_t hband(uint64_t b) const {
+            alignas(32) uint64_t raw[4];
+            _mm256_store_si256((__m256i*)raw, mVec);
+            return raw[0] & raw[1] & raw[2] & raw[3] & b;
+        }
         // MHBANDS
-        /*inline uint64_t hband(SIMDVecMask<4> const & mask, uint64_t b) const {
-            uint64_t t0 = mask.mMask[0] ? mVec[0] & b: b;
-            uint64_t t1 = mask.mMask[1] ? mVec[1] & t0: t0;
-            return t1;
-        }*/
+        inline uint64_t hband(SIMDVecMask<4> const & mask, uint64_t b) const {
+            alignas(32) uint64_t raw[4];
+            _mm256_store_si256((__m256i*)raw, mVec);
+            uint64_t t0 = (mask.mMask & 0x1) ? raw[0] & b : b;
+            uint64_t t1 = (mask.mMask & 0x2) ? raw[1] & t0 : t0;
+            uint64_t t2 = (mask.mMask & 0x4) ? raw[2] & t1 : t1;
+            uint64_t t3 = (mask.mMask & 0x8) ? raw[3] & t2 : t2;
+            return t3;
+        }
         // HBOR
-        /*inline uint64_t hbor() const {
-            return mVec[0] | mVec[1];
-        }*/
+        inline uint64_t hbor() const {
+            alignas(32) uint64_t raw[4];
+            _mm256_store_si256((__m256i*)raw, mVec);
+            return raw[0] | raw[1] | raw[2] | raw[3];
+        }
         // MHBOR
-        /*inline uint64_t hbor(SIMDVecMask<4> const & mask) const {
-            uint64_t t0 = mask.mMask[0] ? mVec[0] : 0;
-            uint64_t t1 = mask.mMask[1] ? mVec[1] | t0 : t0;
-            return t1;
-        }*/
+        inline uint64_t hbor(SIMDVecMask<4> const & mask) const {
+            alignas(32) uint64_t raw[4];
+            _mm256_store_si256((__m256i*)raw, mVec);
+            uint64_t t0 = (mask.mMask & 0x1) ? raw[0] : 0;
+            uint64_t t1 = (mask.mMask & 0x2) ? raw[1] | t0 : t0;
+            uint64_t t2 = (mask.mMask & 0x4) ? raw[2] | t1 : t1;
+            uint64_t t3 = (mask.mMask & 0x8) ? raw[3] | t2 : t2;
+            return t3;
+        }
         // HBORS
-        /*inline uint64_t hbor(uint64_t b) const {
-            return mVec[0] | mVec[1] | b;
-        }*/
+        inline uint64_t hbor(uint64_t b) const {
+            alignas(32) uint64_t raw[4];
+            _mm256_store_si256((__m256i*)raw, mVec);
+            return raw[0] | raw[1] | raw[2] | raw[3] | b;
+        }
         // MHBORS
-        /*inline uint64_t hbor(SIMDVecMask<4> const & mask, uint64_t b) const {
-            uint64_t t0 = mask.mMask[0] ? mVec[0] | b : b;
-            uint64_t t1 = mask.mMask[1] ? mVec[1] | t0 : t0;
-            return t1;
-        }*/
+        inline uint64_t hbor(SIMDVecMask<4> const & mask, uint64_t b) const {
+            alignas(32) uint64_t raw[4];
+            _mm256_store_si256((__m256i*)raw, mVec);
+            uint64_t t0 = (mask.mMask & 0x1) ? raw[0] | b : b;
+            uint64_t t1 = (mask.mMask & 0x2) ? raw[1] | t0 : t0;
+            uint64_t t2 = (mask.mMask & 0x4) ? raw[2] | t1 : t1;
+            uint64_t t3 = (mask.mMask & 0x8) ? raw[3] | t2 : t2;
+            return t3;
+        }
         // HBXOR
-        /*inline uint64_t hbxor() const {
-            return mVec[0] ^ mVec[1];
-        }*/
+        inline uint64_t hbxor() const {
+            alignas(32) uint64_t raw[4];
+            _mm256_store_si256((__m256i*)raw, mVec);
+            return raw[0] ^ raw[1] ^ raw[2] ^ raw[3];
+        }
         // MHBXOR
-        /*inline uint64_t hbxor(SIMDVecMask<4> const & mask) const {
-            uint64_t t0 = mask.mMask[0] ? mVec[0] : 0;
-            uint64_t t1 = mask.mMask[1] ? mVec[1] ^ t0 : t0;
-            return t0;
-        }*/
+        inline uint64_t hbxor(SIMDVecMask<4> const & mask) const {
+            alignas(32) uint64_t raw[4];
+            _mm256_store_si256((__m256i*)raw, mVec);
+            uint64_t t0 = (mask.mMask & 0x1) ? raw[0] : 0;
+            uint64_t t1 = (mask.mMask & 0x2) ? raw[1] ^ t0 : t0;
+            uint64_t t2 = (mask.mMask & 0x4) ? raw[2] ^ t1 : t1;
+            uint64_t t3 = (mask.mMask & 0x8) ? raw[3] ^ t2 : t2;
+            return t3;
+        }
         // HBXORS
-        /*inline uint64_t hbxor(uint64_t b) const {
-            return mVec[0] ^ mVec[1] ^ b;
-        }*/
+        inline uint64_t hbxor(uint64_t b) const {
+            alignas(32) uint64_t raw[4];
+            _mm256_store_si256((__m256i*)raw, mVec);
+            return raw[0] ^ raw[1] ^ raw[2] ^ raw[3] ^ b;
+        }
         // MHBXORS
-        /*inline uint64_t hbxor(SIMDVecMask<4> const & mask, uint64_t b) const {
-            uint64_t t0 = mask.mMask[0] ? mVec[0] ^ b : b;
-            uint64_t t1 = mask.mMask[1] ? mVec[1] ^ t0 : t0;
-            return t1;
-        }*/
+        inline uint64_t hbxor(SIMDVecMask<4> const & mask, uint64_t b) const {
+            alignas(32) uint64_t raw[4];
+            _mm256_store_si256((__m256i*)raw, mVec);
+            uint64_t t0 = (mask.mMask & 0x1) ? raw[0] ^ b : b;
+            uint64_t t1 = (mask.mMask & 0x2) ? raw[1] ^ t0 : t0;
+            uint64_t t2 = (mask.mMask & 0x4) ? raw[2] ^ t1 : t1;
+            uint64_t t3 = (mask.mMask & 0x8) ? raw[3] ^ t2 : t2;
+            return t3;
+        }
 
         // GATHERS
         inline SIMDVec_u & gather(uint64_t * baseAddr, uint64_t* indices) {
@@ -1820,8 +1904,21 @@ namespace SIMD {
         // MRORSA
 
         // PACK
+        SIMDVec_u & pack(SIMDVec_u<uint64_t, 2> const & a, SIMDVec_u<uint64_t, 2> const & b) {
+            mVec = _mm256_insertf128_si256(mVec, a.mVec, 0);
+            mVec = _mm256_insertf128_si256(mVec, b.mVec, 1);
+            return *this;
+        }
         // PACKLO
+        SIMDVec_u & packlo(SIMDVec_u<uint64_t, 2> const & a) {
+            mVec = _mm256_insertf128_si256(mVec, a.mVec, 0);
+            return *this;
+        }
         // PACKHI
+        SIMDVec_u & packhi(SIMDVec_u<uint64_t, 2> const & b) {
+            mVec = _mm256_insertf128_si256(mVec, b.mVec, 1);
+            return *this;
+        }
         // UNPACK
         void unpack(SIMDVec_u<uint64_t, 2> & a, SIMDVec_u<uint64_t, 2> & b) const {
             a.mVec = _mm256_extractf128_si256(mVec, 0);

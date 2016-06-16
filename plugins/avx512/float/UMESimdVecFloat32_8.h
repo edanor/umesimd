@@ -175,6 +175,11 @@ namespace SIMD {
 #if defined(__AVX512VL__)
             mVec = _mm256_mask_loadu_ps(mVec, mask.mMask, p);
 #else
+            __m256 t0 = _mm256_loadu_ps(p);
+            __m512 t1 = _mm512_castps256_ps512(t0);
+            __m512 t2 = _mm512_castps256_ps512(mVec);
+            __m512 t3 = _mm512_mask_mov_ps(t2, mask.mMask, t1);
+            mVec = _mm512_castps512_ps256(t3);
 #endif
             return *this;
         }
@@ -188,6 +193,11 @@ namespace SIMD {
 #if defined(__AVX512VL__)
             mVec = _mm256_mask_loadu_ps(mVec, mask.mMask, p);
 #else
+            __m256 t0 = _mm256_load_ps(p);
+            __m512 t1 = _mm512_castps256_ps512(t0);
+            __m512 t2 = _mm512_castps256_ps512(mVec);
+            __m512 t3 = _mm512_mask_mov_ps(t2, mask.mMask, t1);
+            mVec = _mm512_castps512_ps256(t3);
 #endif
             return *this;
         }
@@ -201,6 +211,12 @@ namespace SIMD {
 #if defined(__AVX512VL__)
             _mm256_mask_storeu_ps(p, mask.mMask, mVec);
 #else
+            __m256 t0 = _mm256_loadu_ps(p);
+            __m512 t1 = _mm512_castps256_ps512(t0);
+            __m512 t2 = _mm512_castps256_ps512(mVec);
+            __m512 t3 = _mm512_mask_mov_ps(t1, mask.mMask, t2);
+            __m256 t4 = _mm512_castps512_ps256(t3);
+            _mm256_storeu_ps(p, t4);
 #endif
             return p;
         }
@@ -214,6 +230,12 @@ namespace SIMD {
 #if defined(__AVX512VL__)
             _mm256_mask_store_ps(p, mask.mMask, mVec);
 #else
+            __m256 t0 = _mm256_load_ps(p);
+            __m512 t1 = _mm512_castps256_ps512(t0);
+            __m512 t2 = _mm512_castps256_ps512(mVec);
+            __m512 t3 = _mm512_mask_mov_ps(t1, mask.mMask, t2);
+            __m256 t4 = _mm512_castps512_ps256(t3);
+            _mm256_store_ps(p, t4);
 #endif
             return p;
         }
@@ -263,6 +285,9 @@ namespace SIMD {
             mVec = _mm256_add_ps(this->mVec, b.mVec);
             return *this;
         }
+        inline SIMDVec_f & operator+= (SIMDVec_f const & b) {
+            return adda(b);
+        }
         // MADDVA
         inline SIMDVec_f & adda(SIMDVecMask<8> const & mask, SIMDVec_f const & b) {
 #if defined(__AVX512VL__)
@@ -279,6 +304,9 @@ namespace SIMD {
         inline SIMDVec_f & adda(float b) {
             mVec = _mm256_add_ps(this->mVec, _mm256_set1_ps(b));
             return *this;
+        }
+        inline SIMDVec_f & operator+= (float b) {
+            return adda(b);
         }
         // MADDSA
         inline SIMDVec_f & adda(SIMDVecMask<8> const & mask, float b) {
@@ -1017,7 +1045,11 @@ namespace SIMD {
             __m256 t0 = _mm256_mask_mov_ps(mVec, mask.mMask, b.mVec);
             return SIMDVec_f(t0);
 #else
-            return SIMDVec_f(0.0f);
+            __m512 t0 = _mm512_castps256_ps512(mVec);
+            __m512 t1 = _mm512_castps256_ps512(b.mVec);
+            __m512 t2 = _mm512_mask_mov_ps(t0, mask.mMask, t1);
+            __m256 t3 = _mm512_castps512_ps256(t2);
+            return SIMDVec_f(t3);
 #endif
         }
         // BLENDS
@@ -1027,11 +1059,18 @@ namespace SIMD {
             __m256 t1 = _mm256_mask_mov_ps(mVec, mask.mMask, t0);
             return SIMDVec_f(t1);
 #else
-            return SIMDVec_f(0.0f);
+            __m512 t0 = _mm512_castps256_ps512(mVec);
+            __m512 t1 = _mm512_set1_ps(b);
+            __m512 t2 = _mm512_mask_mov_ps(t0, mask.mMask, t1);
+            __m256 t3 = _mm512_castps512_ps256(t2);
+            return SIMDVec_f(t3);
 #endif
         }
         // SWIZZLE
         // SWIZZLEA
+        // SORTA
+        // SORTD
+
         // HADD
         inline float hadd() const {
             __m512 t0 = _mm512_castps256_ps512(mVec);
@@ -1813,32 +1852,17 @@ namespace SIMD {
         // MCTAN
         // PACK
         inline SIMDVec_f & pack(SIMDVec_f<float, 4> const & a, SIMDVec_f<float, 4> const & b) {
-            alignas(32) float raw[8];
-            _mm_store_ps(&raw[0], a.mVec);
-            _mm_store_ps(&raw[4], b.mVec);
-            mVec = _mm256_load_ps(raw);
+            mVec = _mm256_set_m128(b.mVec, a.mVec);
             return *this;
         }
         // PACKLO
         inline SIMDVec_f & packlo(SIMDVec_f<float, 4> const & a) {
-#if defined(__AVX512VL__)
-            alignas(32) float raw[8];
-            _mm_store_ps(&raw[0], a.mVec);
-            mVec = _mm256_mask_load_ps(mVec, 0x0F, raw);
-#else
-
-#endif
+            mVec = _mm256_insertf128_ps(mVec, a.mVec, 0);
             return *this;
         }
         // PACKHI
         inline SIMDVec_f & packhi(SIMDVec_f<float, 4> const & b) {
-#if defined(__AVX512VL__)
-            alignas(32) float raw[8];
-            _mm_store_ps(&raw[4], b.mVec);
-            mVec = _mm256_mask_load_ps(mVec, 0xF0, raw);
-#else
-
-#endif
+            mVec = _mm256_insertf128_ps(mVec, b.mVec, 1);
             return *this;
         }
         // UNPACK

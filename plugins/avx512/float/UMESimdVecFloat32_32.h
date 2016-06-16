@@ -201,7 +201,7 @@ namespace SIMD {
             __mmask16 m0 = mask.mMask & 0x0000FFFF;
             __mmask16 m1 = (mask.mMask & 0xFFFF0000) >> 16;
             mVec[0] = _mm512_mask_loadu_ps(mVec[0], m0, p);
-            mVec[1] = _mm512_mask_loadu_ps(mVec[1], m1, p);
+            mVec[1] = _mm512_mask_loadu_ps(mVec[1], m1, p + 16);
             return *this;
         }
         // LOADA

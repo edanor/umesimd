@@ -170,7 +170,11 @@ namespace SIMD {
 #if defined(__AVX512VL__)
             mVec = _mm256_mask_loadu_epi32(mVec, mask.mMask, p);
 #else
-            mVec = _mm256_loadu_si256((__m256i*)p);
+            __m256i t0 = _mm256_loadu_si256((__m256i*)p);
+            __m512i t1 = _mm512_castsi256_si512(mVec);
+            __m512i t2 = _mm512_castsi256_si512(t0);
+            __m512i t3 = _mm512_mask_mov_epi32(t1, (__mmask16) mask.mMask, t2);
+            mVec = _mm512_castsi512_si256(t3);
 #endif
             return *this;
         }
@@ -184,6 +188,11 @@ namespace SIMD {
 #if defined(__AVX512VL__)
             mVec = _mm256_mask_load_epi32(mVec, mask.mMask, p);
 #else
+            __m256i t0 = _mm256_loadu_si256((__m256i*)p);
+            __m512i t1 = _mm512_castsi256_si512(mVec);
+            __m512i t2 = _mm512_castsi256_si512(t0);
+            __m512i t3 = _mm512_mask_mov_epi32(t1, (__mmask16) mask.mMask, t2);
+            mVec = _mm512_castsi512_si256(t3);
 #endif
             return *this;
         }
@@ -201,6 +210,12 @@ namespace SIMD {
 #if defined(__AVX512VL__)
             _mm256_mask_storeu_epi32(p, mask.mMask, mVec);
 #else
+            __m256i t0 = _mm256_loadu_si256((__m256i*)p);
+            __m512i t1 = _mm512_castsi256_si512(t0);
+            __m512i t2 = _mm512_castsi256_si512(mVec);
+            __m512i t3 = _mm512_mask_mov_epi32(t1, mask.mMask, t2);
+            __m256i t4 = _mm512_castsi512_si256(t3);
+            _mm256_storeu_si256((__m256i*)p, t4);
 #endif
             return p;
         }
@@ -214,6 +229,12 @@ namespace SIMD {
 #if defined(__AVX512VL__)
             _mm256_mask_store_epi32(p, mask.mMask, mVec);
 #else
+            __m256i t0 = _mm256_load_si256((__m256i*)p);
+            __m512i t1 = _mm512_castsi256_si512(t0);
+            __m512i t2 = _mm512_castsi256_si512(mVec);
+            __m512i t3 = _mm512_mask_mov_epi32(t1, mask.mMask, t2);
+            __m256i t4 = _mm512_castsi512_si256(t3);
+            _mm256_store_si256((__m256i*)p, t4);
 #endif
             return p;
         }
@@ -223,7 +244,11 @@ namespace SIMD {
             __m256i t0 = _mm256_mask_mov_epi32(mVec, mask.mMask, b.mVec);
             return SIMDVec_u(t0);
 #else
-            return SIMDVec_u(uint32_t(0));
+            __m512i t0 = _mm512_castsi256_si512(mVec);
+            __m512i t1 = _mm512_castsi256_si512(b.mVec);
+            __m512i t2 = _mm512_mask_mov_epi32(t0, mask.mMask, t1);
+            __m256i t3 = _mm512_castsi512_si256(t2);
+            return SIMDVec_u(t3);
 #endif
         }
         // BLENDS
@@ -233,11 +258,17 @@ namespace SIMD {
             __m256i t1 = _mm256_mask_mov_epi32(mVec, mask.mMask, t0);
             return SIMDVec_u(t1);
 #else
-            return SIMDVec_u(uint32_t(0));
+            __m512i t0 = _mm512_castsi256_si512(mVec);
+            __m512i t1 = _mm512_set1_epi32(b);
+            __m512i t2 = _mm512_mask_mov_epi32(t0, mask.mMask, t1);
+            __m256i t3 = _mm512_castsi512_si256(t2);
+            return SIMDVec_u(t3);
 #endif
         }
         // SWIZZLE
         // SWIZZLEA
+        // SORTA
+        // SORTD
 
         // ADDV
         inline SIMDVec_u add(SIMDVec_u const & b) const {
@@ -666,13 +697,11 @@ namespace SIMD {
             return *this;
         }
         // DIVV
-
         inline SIMDVec_u operator/ (SIMDVec_u const & b) const {
             return div(b);
         }
         // MDIVV
         // DIVS
-
         inline SIMDVec_u operator/ (uint32_t b) const {
             return div(b);
         }
@@ -738,6 +767,9 @@ namespace SIMD {
 #endif
             return SIMDVecMask<8>(m0);
         }
+        inline SIMDVecMask<8> operator!= (SIMDVec_u const & b) const {
+            return cmpne(b);
+        }
         // CMPNES
         inline SIMDVecMask<8> cmpne(uint32_t b) const {
 #if defined(__AVX512VL__)
@@ -750,6 +782,9 @@ namespace SIMD {
             __mmask8 m0 = m1 & 0x00FF;
 #endif
             return SIMDVecMask<8>(m0);
+        }
+        inline SIMDVecMask<8> operator!= (uint32_t b) const {
+            return cmpne(b);
         }
         // CMPGTV
         inline SIMDVecMask<8> cmpgt(SIMDVec_u const & b) const {
@@ -1946,58 +1981,34 @@ namespace SIMD {
 
         // PACK
         inline SIMDVec_u & pack(SIMDVec_u<uint32_t, 4> const & a, SIMDVec_u<uint32_t, 4> const & b) {
-#if defined(__AVX512VL__)
-            mVec = _mm256_inserti32x4(mVec, a.mVec, 0);
-            mVec = _mm256_inserti32x4(mVec, b.mVec, 1);
-#else
-
-#endif
+            mVec = _mm256_inserti128_si256(mVec, a.mVec, 0);
+            mVec = _mm256_inserti128_si256(mVec, b.mVec, 1);
             return *this;
         }
         // PACKLO
         inline SIMDVec_u & packlo(SIMDVec_u<uint32_t, 4> const & a) {
-#if defined(__AVX512VL__)
-            mVec = _mm256_inserti32x4(mVec, a.mVec, 0);
-#else
-
-#endif
+            mVec = _mm256_inserti128_si256(mVec, a.mVec, 0);
             return *this;
         }
         // PACKHI
         inline SIMDVec_u & packhi(SIMDVec_u<uint32_t, 4> const & b) {
-#if defined(__AVX512VL__)
-            mVec = _mm256_inserti32x4(mVec, b.mVec, 1);
-#else
-
-#endif
+            mVec = _mm256_inserti128_si256(mVec, b.mVec, 1);
             return *this;
         }
         // UNPACK
         inline void unpack(SIMDVec_u<uint32_t, 4> & a, SIMDVec_u<uint32_t, 4> & b) const {
-#if defined(__AVX512VL__)
-            a.mVec = _mm256_extracti32x4_epi32(mVec, 0);
-            b.mVec = _mm256_extracti32x4_epi32(mVec, 1);
-#else
-
-#endif
+            a.mVec = _mm256_extracti128_si256(mVec, 0);
+            b.mVec = _mm256_extracti128_si256(mVec, 1);
         }
         // UNPACKLO
         inline SIMDVec_u<uint32_t, 4> unpacklo() const {
-#if defined(__AVX512VL__)
-            __m128i t0 = _mm256_extracti32x4_epi32(mVec, 0);
+            __m128i t0 = _mm256_extracti128_si256(mVec, 0);
             return SIMDVec_u<uint32_t, 4>(t0);
-#else
-            return SIMDVec_u<uint32_t, 4>(uint32_t(0));
-#endif
         }
         // UNPACKHI
         inline SIMDVec_u<uint32_t, 4> unpackhi() const {
-#if defined(__AVX512VL__)
-            __m128i t0 = _mm256_extracti32x4_epi32(mVec, 1);
+            __m128i t0 = _mm256_extracti128_si256(mVec, 1);
             return SIMDVec_u<uint32_t, 4>(t0);
-#else
-            return SIMDVec_u<uint32_t, 4>(uint32_t(0));
-#endif
         }
 
         // PROMOTE

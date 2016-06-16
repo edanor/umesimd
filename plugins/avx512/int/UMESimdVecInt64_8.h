@@ -1029,53 +1029,37 @@ namespace SIMD {
         }
 
         // FMULADDV
-        /*inline SIMDVec_i fmuladd(SIMDVec_i const & b, SIMDVec_i const & c) const {
-            int64_t t0 = mVec[0] * b.mVec[0] + c.mVec[0];
-            int64_t t1 = mVec[1] * b.mVec[1] + c.mVec[1];
-            return SIMDVec_i(t0, t1);
-        }*/
+        inline SIMDVec_i fmuladd(SIMDVec_i const & b, SIMDVec_i const & c) const {
+            return (mul(b)).add(c);
+        }
         // MFMULADDV
-        /*inline SIMDVec_i fmuladd(SIMDVecMask<8> const & mask, SIMDVec_i const & b, SIMDVec_i const & c) const {
-            int64_t t0 = mask.mMask[0] ? (mVec[0] * b.mVec[0] + c.mVec[0]) : mVec[0];
-            int64_t t1 = mask.mMask[1] ? (mVec[1] * b.mVec[1] + c.mVec[1]) : mVec[1];
-            return SIMDVec_i(t0, t1);
-        }*/
+        inline SIMDVec_i fmuladd(SIMDVecMask<8> const & mask, SIMDVec_i const & b, SIMDVec_i const & c) const {
+            return (mul(mask, b)).add(mask, c);
+        }
         // FMULSUBV
-        /*inline SIMDVec_i fmulsub(SIMDVec_i const & b, SIMDVec_i const & c) const {
-            int64_t t0 = mVec[0] * b.mVec[0] - c.mVec[0];
-            int64_t t1 = mVec[1] * b.mVec[1] - c.mVec[1];
-            return SIMDVec_i(t0, t1);
-        }*/
+        inline SIMDVec_i fmulsub(SIMDVec_i const & b, SIMDVec_i const & c) const {
+            return (mul(b)).sub(c);
+        }
         // MFMULSUBV
-        /*inline SIMDVec_i fmulsub(SIMDVecMask<8> const & mask, SIMDVec_i const & b, SIMDVec_i const & c) const {
-            int64_t t0 = mask.mMask[0] ? (mVec[0] * b.mVec[0] - c.mVec[0]) : mVec[0];
-            int64_t t1 = mask.mMask[1] ? (mVec[1] * b.mVec[1] - c.mVec[1]) : mVec[1];
-            return SIMDVec_i(t0, t1);
-        }*/
+        inline SIMDVec_i fmulsub(SIMDVecMask<8> const & mask, SIMDVec_i const & b, SIMDVec_i const & c) const {
+            return (mul(mask, b)).sub(mask, c);
+        }
         // FADDMULV
-        /*inline SIMDVec_i faddmul(SIMDVec_i const & b, SIMDVec_i const & c) const {
-            int64_t t0 = (mVec[0] + b.mVec[0]) * c.mVec[0];
-            int64_t t1 = (mVec[1] + b.mVec[1]) * c.mVec[1];
-            return SIMDVec_i(t0, t1);
-        }*/
+        inline SIMDVec_i faddmul(SIMDVec_i const & b, SIMDVec_i const & c) const {
+            return (add(b)).mul(c);
+        }
         // MFADDMULV
-        /*inline SIMDVec_i faddmul(SIMDVecMask<8> const & mask, SIMDVec_i const & b, SIMDVec_i const & c) const {
-            int64_t t0 = mask.mMask[0] ? ((mVec[0] + b.mVec[0]) * c.mVec[0]) : mVec[0];
-            int64_t t1 = mask.mMask[1] ? ((mVec[1] + b.mVec[1]) * c.mVec[1]) : mVec[1];
-            return SIMDVec_i(t0, t1);
-        }*/
+        inline SIMDVec_i faddmul(SIMDVecMask<8> const & mask, SIMDVec_i const & b, SIMDVec_i const & c) const {
+            return (add(mask, b)).mul(mask, c);
+        }
         // FSUBMULV
-        /*inline SIMDVec_i fsubmul(SIMDVec_i const & b, SIMDVec_i const & c) const {
-            int64_t t0 = (mVec[0] - b.mVec[0]) * c.mVec[0];
-            int64_t t1 = (mVec[1] - b.mVec[1]) * c.mVec[1];
-            return SIMDVec_i(t0, t1);
-        }*/
+        inline SIMDVec_i fsubmul(SIMDVec_i const & b, SIMDVec_i const & c) const {
+            return (sub(b)).mul(c);
+        }
         // MFSUBMULV
-        /*inline SIMDVec_i fsubmul(SIMDVecMask<8> const & mask, SIMDVec_i const & b, SIMDVec_i const & c) const {
-            int64_t t0 = mask.mMask[0] ? ((mVec[0] - b.mVec[0]) * c.mVec[0]) : mVec[0];
-            int64_t t1 = mask.mMask[1] ? ((mVec[1] - b.mVec[1]) * c.mVec[1]) : mVec[1];
-            return SIMDVec_i(t0, t1);
-        }*/
+        inline SIMDVec_i fsubmul(SIMDVecMask<8> const & mask, SIMDVec_i const & b, SIMDVec_i const & c) const {
+            return (sub(mask, b)).mul(mask, c);
+        }
 
         // MAXV
         inline SIMDVec_i max(SIMDVec_i const & b) const {
@@ -1158,15 +1142,17 @@ namespace SIMD {
             return *this;
         }
         // HMAX
-        /*inline int64_t hmax () const {
-            return mVec[0] > mVec[1] ? mVec[0] : mVec[1];
-        }*/
+        inline int64_t hmax() const {
+            int64_t t0 = _mm512_reduce_max_epi64(mVec);
+            return t0;
+        }
         // MHMAX
-        /*inline int64_t hmax(SIMDVecMask<8> const & mask) const {
-            int64_t t0 = mask.mMask[0] ? mVec[0] : std::numeric_limits<int64_t>::min();
-            int64_t t1 = (mask.mMask[1] && mVec[1] > t0) ? mVec[1] : t0;
-            return t1;
-        }*/
+        inline int64_t hmax(SIMDVecMask<8> const & mask) const {
+            __m512i t0 = _mm512_set1_epi64(std::numeric_limits<int64_t>::min());
+            __m512i t1 = _mm512_mask_mov_epi64(t0, mask.mMask, mVec);
+            int64_t t2 = _mm512_reduce_max_epi64(t1);
+            return t2;
+        }
         // IMAX
         /*inline int64_t imax() const {
             return mVec[0] > mVec[1] ? 0 : 1;
@@ -1185,15 +1171,17 @@ namespace SIMD {
             return i0;
         }*/
         // HMIN
-        /*inline int64_t hmin() const {
-            return mVec[0] < mVec[1] ? mVec[0] : mVec[1];
-        }*/
+        inline int64_t hmin() const {
+            int64_t t0 = _mm512_reduce_min_epi64(mVec);
+            return t0;
+        }
         // MHMIN
-        /*inline int64_t hmin(SIMDVecMask<8> const & mask) const {
-            int64_t t0 = mask.mMask[0] ? mVec[0] : std::numeric_limits<int64_t>::max();
-            int64_t t1 = (mask.mMask[1] && mVec[1] < t0) ? mVec[1] : t0;
-            return t1;
-        }*/
+        inline int64_t hmin(SIMDVecMask<8> const & mask) const {
+            __m512i t0 = _mm512_set1_epi64(std::numeric_limits<int64_t>::max());
+            __m512i t1 = _mm512_mask_mov_epi64(t0, mask.mMask, mVec);
+            int64_t t2 = _mm512_reduce_min_epi64(t1);
+            return t2;
+        }
         // IMIN
         /*inline int64_t imin() const {
             return mVec[0] < mVec[1] ? 0 : 1;
@@ -1393,66 +1381,83 @@ namespace SIMD {
             mVec = _mm512_mask_xor_epi64(mVec, mask.mMask, mVec, t0);
             return *this;
         }
-        // HBAND
-        /*inline int64_t hband() const {
-            return mVec[0] & mVec[1];
-        }*/
-        // MHBAND
-        /*inline int64_t hband(SIMDVecMask<8> const & mask) const {
-            int64_t t0 = mask.mMask[0] ? mVec[0] : 0xFFFFFFFFFFFFFFFF;
-            int64_t t1 = mask.mMask[1] ? mVec[1] & t0 : t0;
-            return t1;
-        }*/
-        // HBANDS
-        /*inline int64_t hband(int64_t b) const {
-            return mVec[0] & mVec[1] & b;
-        }*/
-        // MHBANDS
-        /*inline int64_t hband(SIMDVecMask<8> const & mask, int64_t b) const {
-            int64_t t0 = mask.mMask[0] ? mVec[0] & b: b;
-            int64_t t1 = mask.mMask[1] ? mVec[1] & t0: t0;
-            return t1;
-        }*/
-        // HBOR
-        /*inline int64_t hbor() const {
-            return mVec[0] | mVec[1];
-        }*/
-        // MHBOR
-        /*inline int64_t hbor(SIMDVecMask<8> const & mask) const {
-            int64_t t0 = mask.mMask[0] ? mVec[0] : 0;
-            int64_t t1 = mask.mMask[1] ? mVec[1] | t0 : t0;
-            return t1;
-        }*/
-        // HBORS
-        /*inline int64_t hbor(int64_t b) const {
-            return mVec[0] | mVec[1] | b;
-        }*/
-        // MHBORS
-        /*inline int64_t hbor(SIMDVecMask<8> const & mask, int64_t b) const {
-            int64_t t0 = mask.mMask[0] ? mVec[0] | b : b;
-            int64_t t1 = mask.mMask[1] ? mVec[1] | t0 : t0;
-            return t1;
-        }*/
-        // HBXOR
-        /*inline int64_t hbxor() const {
-            return mVec[0] ^ mVec[1];
-        }*/
-        // MHBXOR
-        /*inline int64_t hbxor(SIMDVecMask<8> const & mask) const {
-            int64_t t0 = mask.mMask[0] ? mVec[0] : 0;
-            int64_t t1 = mask.mMask[1] ? mVec[1] ^ t0 : t0;
+
+        //HBAND
+        inline int64_t hband() const {
+            int64_t t0 = _mm512_reduce_and_epi64(mVec);
             return t0;
-        }*/
+        }
+        // MHBAND
+        inline int64_t hband(SIMDVecMask<8> const & mask) const {
+            __m512i t0 = _mm512_set1_epi64(0xFFFFFFFFFFFFFFFF);
+            __m512i t1 = _mm512_mask_mov_epi64(t0, mask.mMask, mVec);
+            int64_t t2 = _mm512_reduce_and_epi64(t1);
+            return t2;
+        }
+        // HBANDS
+        inline int64_t hband(int64_t b) const {
+            int64_t t0 = _mm512_reduce_and_epi64(mVec);
+            return t0 & b;
+        }
+        // MHBANDS
+        inline int64_t hband(SIMDVecMask<8> const & mask, int64_t b) const {
+            __m512i t0 = _mm512_set1_epi64(0xFFFFFFFFFFFFFFFF);
+            __m512i t1 = _mm512_mask_mov_epi64(t0, mask.mMask, mVec);
+            int64_t t2 = _mm512_reduce_and_epi64(t1);
+            return t2 & b;
+        }
+        // HBOR
+        inline int64_t hbor() const {
+            int64_t t0 = _mm512_reduce_or_epi64(mVec);
+            return t0;
+        }
+        // MHBOR
+        inline int64_t hbor(SIMDVecMask<8> const & mask) const {
+            __m512i t0 = _mm512_set1_epi64(0);
+            __m512i t1 = _mm512_mask_mov_epi64(t0, mask.mMask, mVec);
+            int64_t t2 = _mm512_reduce_or_epi64(t1);
+            return t2;
+        }
+        // HBORS
+        inline int64_t hbor(int64_t b) const {
+            int64_t t0 = _mm512_reduce_or_epi64(mVec);
+            return t0 | b;
+        }
+        // MHBORS
+        inline int64_t hbor(SIMDVecMask<8> const & mask, int64_t b) const {
+            __m512i t0 = _mm512_set1_epi64(0);
+            __m512i t1 = _mm512_mask_mov_epi64(t0, mask.mMask, mVec);
+            int64_t t2 = _mm512_reduce_or_epi64(t1);
+            return t2 | b;
+        }
+        // HBXOR
+        inline int64_t hbxor() const {
+            alignas(64) int64_t raw[8];
+            _mm512_store_si512(raw, mVec);
+            return raw[0] ^ raw[1] ^ raw[2] ^ raw[3] ^ raw[4] ^ raw[5] ^ raw[6] ^ raw[7];
+        }
+        // MHBXOR
+        inline int64_t hbxor(SIMDVecMask<8> const & mask) const {
+            alignas(64) int64_t raw[8];
+            __m512i t0 = _mm512_set1_epi64(0);
+            __m512i t1 = _mm512_mask_mov_epi64(t0, mask.mMask, mVec);
+            _mm512_store_si512(raw, t1);
+            return raw[0] ^ raw[1] ^ raw[2] ^ raw[3] ^ raw[4] ^ raw[5] ^ raw[6] ^ raw[7];
+        }
         // HBXORS
-        /*inline int64_t hbxor(int64_t b) const {
-            return mVec[0] ^ mVec[1] ^ b;
-        }*/
+        inline int64_t hbxor(int64_t b) const {
+            alignas(64) int64_t raw[8];
+            _mm512_store_si512(raw, mVec);
+            return raw[0] ^ raw[1] ^ raw[2] ^ raw[3] ^ raw[4] ^ raw[5] ^ raw[6] ^ raw[7] ^ b;
+        }
         // MHBXORS
-        /*inline int64_t hbxor(SIMDVecMask<8> const & mask, int64_t b) const {
-            int64_t t0 = mask.mMask[0] ? mVec[0] ^ b : b;
-            int64_t t1 = mask.mMask[1] ? mVec[1] ^ t0 : t0;
-            return t1;
-        }*/
+        inline int64_t hbxor(SIMDVecMask<8> const & mask, int64_t b) const {
+            alignas(64) int64_t raw[8];
+            __m512i t0 = _mm512_set1_epi64(0);
+            __m512i t1 = _mm512_mask_mov_epi64(t0, mask.mMask, mVec);
+            _mm512_store_si512(raw, t1);
+            return raw[0] ^ raw[1] ^ raw[2] ^ raw[3] ^ raw[4] ^ raw[5] ^ raw[6] ^ raw[7] ^ b;
+        }
 
         // GATHERS
         inline SIMDVec_i & gather(int64_t * baseAddr, int64_t* indices) {

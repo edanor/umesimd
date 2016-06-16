@@ -1054,17 +1054,49 @@ namespace SIMD {
             return SIMDVec_f(t6);
         }
         // TRUNC
-#if defined(__AVX512DQ__)
         inline SIMDVec_i<int64_t, 8> trunc() const {
+#if defined(__AVX512DQ__)
             __m512i t0 = _mm512_cvttpd_epi64(mVec);
             return SIMDVec_i<int64_t, 8>(t0);
+#else
+            alignas(64) double raw_d[8];
+            alignas(64) int64_t raw_i[8];
+            _mm512_store_pd(raw_d, mVec);
+            raw_i[0] = (int64_t)raw_d[0];
+            raw_i[1] = (int64_t)raw_d[1];
+            raw_i[2] = (int64_t)raw_d[2];
+            raw_i[3] = (int64_t)raw_d[3];
+            raw_i[4] = (int64_t)raw_d[4];
+            raw_i[5] = (int64_t)raw_d[5];
+            raw_i[6] = (int64_t)raw_d[6];
+            raw_i[7] = (int64_t)raw_d[7];
+            __m512i t0 = _mm512_load_epi64(raw_i);
+            return SIMDVec_i<int64_t, 8>(t0);
+#endif
         }
         // MTRUNC
         inline SIMDVec_i<int64_t, 8> trunc(SIMDVecMask<8> const & mask) const {
+#if defined(__AVX512DQ__)
             __m512i t0 = _mm512_mask_cvttpd_epi64(_mm512_setzero_si512(), mask.mMask, mVec);
             return SIMDVec_i<int64_t, 8>(t0);
-        }
+#else
+            alignas(64) double raw_d[8];
+            alignas(64) int64_t raw_i[8];
+            __m512d t0 = _mm512_set1_pd(0.0);
+            __m512d t1 = _mm512_mask_mov_pd(t0, mask.mMask, mVec);
+            _mm512_store_pd(raw_d, t1);
+            raw_i[0] = (int64_t)raw_d[0];
+            raw_i[1] = (int64_t)raw_d[1];
+            raw_i[2] = (int64_t)raw_d[2];
+            raw_i[3] = (int64_t)raw_d[3];
+            raw_i[4] = (int64_t)raw_d[4];
+            raw_i[5] = (int64_t)raw_d[5];
+            raw_i[6] = (int64_t)raw_d[6];
+            raw_i[7] = (int64_t)raw_d[7];
+            __m512i t2 = _mm512_load_epi64(raw_i);
+            return SIMDVec_i<int64_t, 8>(t2);
 #endif
+        }
         // FLOOR
         // MFLOOR
         // CEIL
@@ -1086,11 +1118,36 @@ namespace SIMD {
         // MCTAN
 
         // PACK
+        SIMDVec_f & pack(SIMDVec_f<double, 4> const & a, SIMDVec_f<double, 4> const & b) {
+            mVec = _mm512_insertf64x4(mVec, a.mVec, 0);
+            mVec = _mm512_insertf64x4(mVec, b.mVec, 1);
+            return *this;
+        }
         // PACKLO
+        SIMDVec_f & packlo(SIMDVec_f<double, 4> const & a) {
+            mVec = _mm512_insertf64x4(mVec, a.mVec, 0);
+            return *this;
+        }
         // PACKHI
+        SIMDVec_f & packhi(SIMDVec_f<double, 4> const & b) {
+            mVec = _mm512_insertf64x4(mVec, b.mVec, 1);
+            return *this;
+        }
         // UNPACK
+        void unpack(SIMDVec_f<double, 4> & a, SIMDVec_f<double, 4> & b) const {
+            a.mVec = _mm512_extractf64x4_pd(mVec, 0);
+            b.mVec = _mm512_extractf64x4_pd(mVec, 1);
+        }
         // UNPACKLO
+        SIMDVec_f<double, 4> unpacklo() const {
+            __m256d t0 = _mm512_extractf64x4_pd(mVec, 0);
+            return SIMDVec_f<double, 4>(t0);
+        }
         // UNPACKHI
+        SIMDVec_f<double, 4> unpackhi() const {
+            __m256d t0 = _mm512_extractf64x4_pd(mVec, 1);
+            return SIMDVec_f<double, 4>(t0);
+        }
         
         // PROMOTE
         // -    

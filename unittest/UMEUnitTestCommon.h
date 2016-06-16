@@ -9425,6 +9425,7 @@ void genericIntTest() {
     genericSignInterfaceTest<INT_VEC_TYPE, INT_SCALAR_TYPE  , MASK_TYPE, VEC_LEN, DATA_SET>();
     genericITOUTest<INT_VEC_TYPE, UINT_VEC_TYPE, UINT_SCALAR_TYPE, VEC_LEN, DATA_SET>();
     genericITOFTest<INT_VEC_TYPE, FLOAT_VEC_TYPE, FLOAT_SCALAR_TYPE, VEC_LEN, DATA_SET>();
+    genericPackableInterfaceTest<INT_VEC_TYPE, INT_SCALAR_TYPE, VEC_LEN>();
 }
 
 template<
@@ -9443,6 +9444,7 @@ void genericIntTest() {
     genericShiftRotateInterfaceTest<INT_VEC_TYPE, UINT_VEC_TYPE, INT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
     genericSignInterfaceTest<INT_VEC_TYPE, INT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
     genericITOUTest<INT_VEC_TYPE, UINT_VEC_TYPE, UINT_SCALAR_TYPE, VEC_LEN, DATA_SET>();
+    genericPackableInterfaceTest<INT_VEC_TYPE, INT_SCALAR_TYPE, VEC_LEN>();
 }
 
 template<

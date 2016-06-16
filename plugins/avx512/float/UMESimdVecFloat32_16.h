@@ -1223,7 +1223,10 @@ namespace SIMD {
             mVec = _mm512_insertf32x8(mVec, a.mVec, 0);
             mVec = _mm512_insertf32x8(mVec, b.mVec, 1);
 #else
-
+            alignas(64) float raw[16];
+            _mm256_store_ps(&raw[0], a.mVec);
+            _mm256_store_ps(&raw[8], b.mVec);
+            mVec = _mm512_load_ps(&raw[0]);
 #endif
             return *this;
         }
@@ -1232,7 +1235,10 @@ namespace SIMD {
 #if defined(__AVX512VL__)
             mVec = _mm512_insertf32x8(mVec, a.mVec, 0);
 #else
-
+            alignas(64) float raw[16];
+            _mm512_store_ps(&raw[0], mVec);
+            _mm256_store_ps(&raw[0], a.mVec);
+            mVec = _mm512_load_ps(&raw[0]);
 #endif
             return *this;
         }
@@ -1241,7 +1247,10 @@ namespace SIMD {
 #if defined(__AVX512VL__)
             mVec = _mm512_insertf32x8(mVec, b.mVec, 1);
 #else
-
+            alignas(64) float raw[16];
+            _mm512_store_ps(&raw[0], mVec);
+            _mm256_store_ps(&raw[8], b.mVec);
+            mVec = _mm512_load_ps(&raw[0]);
 #endif
             return *this;
         }
@@ -1251,26 +1260,33 @@ namespace SIMD {
             a.mVec = _mm512_extractf32x8_ps(mVec, 0);
             b.mVec = _mm512_extractf32x8_ps(mVec, 1);
 #else
-
+            alignas(64) float raw[16];
+            _mm512_store_ps(raw, mVec);
+            a.mVec = _mm256_load_ps(&raw[0]);
+            b.mVec = _mm256_load_ps(&raw[8]);
 #endif
         }
         // UNPACKLO
         inline SIMDVec_f<float, 8> unpacklo() const {
 #if defined(__AVX512DQ__)
             __m256 t0 = _mm512_extractf32x8_ps(mVec, 0);
-            return SIMDVec_f<float, 8>(t0);
 #else
-            return SIMDVec_f<float, 8>(0.0f);
+            alignas(64) float raw[16];
+            _mm512_store_ps(raw, mVec);
+            __m256 t0 = _mm256_load_ps(raw);
 #endif
+            return SIMDVec_f<float, 8>(t0);
         }
         // UNPACKHI
         inline SIMDVec_f<float, 8> unpackhi() const {
 #if defined(__AVX512DQ__)
             __m256 t0 = _mm512_extractf32x8_ps(mVec, 1);
-            return SIMDVec_f<float, 8>(t0);
 #else
-            return SIMDVec_f<float, 8>(0.0f);
+            alignas(64) float raw[16];
+            _mm512_store_ps(raw, mVec);
+            __m256 t0 = _mm256_load_ps(&raw[8]);
 #endif
+            return SIMDVec_f<float, 8>(t0);
         }
 
         // PROMOTE
