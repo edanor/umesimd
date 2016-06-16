@@ -60,6 +60,10 @@ namespace SIMD {
     public:
         inline SIMDVecMask() {}
 
+        inline SIMDVecMask(SIMDVecMask const & mask) {
+            mMask = mask.mMask;
+        }
+
         // Regardless of the mask representation, the interface should only allow initialization using 
         // standard bool or using equivalent mask
         // SET-CONSTR
@@ -67,7 +71,6 @@ namespace SIMD {
             if (m == true) mMask = 0xFF;
             else mMask = 0x00;
         }
-
         // LOAD-CONSTR
         inline explicit SIMDVecMask(bool const *p) {
             mMask = 0x0;
@@ -97,6 +100,8 @@ namespace SIMD {
             bool t0 = ((mMask & (1 << index)) != 0);
             return t0;
         }
+
+        // A non-modifying element-wise access operator
         inline bool operator[] (uint32_t index) const {
             return extract(index);
         }
@@ -151,9 +156,18 @@ namespace SIMD {
             p[7] = ((mMask & 0x80) != 0);
             return p;
         }
-        // ASSIGN
-        inline SIMDVecMask & operator= (SIMDVecMask const & x) {
-            mMask = x.mMask;
+        // ASSIGNV
+        inline SIMDVecMask & assign(SIMDVecMask const & b) {
+            mMask = b.mMask;
+            return *this;
+        }
+        inline SIMDVecMask & operator= (SIMDVecMask const & b) {
+            mMask = b.mMask;
+            return *this;
+        }
+        // ASSIGNS
+        inline SIMDVecMask & assign(bool b) {
+            mMask = b ? 0xFF : 0;
             return *this;
         }
         // LANDV
@@ -183,7 +197,7 @@ namespace SIMD {
             mMask &= b.mMask;
             return *this;
         }
-        inline SIMDVecMask operator&= (SIMDVecMask const & b) {
+        inline SIMDVecMask & operator&= (SIMDVecMask const & b) {
             return landa(b);
         }
         // LANDSA
@@ -191,7 +205,7 @@ namespace SIMD {
             mMask &= (b ? 0xFF : 0x00);
             return *this;
         }
-        inline SIMDVecMask operator&= (bool b) {
+        inline SIMDVecMask & operator&= (bool b) {
             return landa(b);
         }
         // LORV
@@ -229,7 +243,7 @@ namespace SIMD {
             mMask |= (b ? 0xFF : 0x00);
             return *this;
         }
-        inline SIMDVecMask & operator |= (bool b) {
+        inline SIMDVecMask & operator|= (bool b) {
             return lora(b);
         }
         // LXORV
@@ -253,7 +267,7 @@ namespace SIMD {
             mMask ^= b.mMask;
             return *this;
         }
-        inline SIMDVecMask operator^= (SIMDVecMask const & b) {
+        inline SIMDVecMask & operator^= (SIMDVecMask const & b) {
             return lxora(b);
         }
         // LXORSA
@@ -261,7 +275,7 @@ namespace SIMD {
             mMask ^= (b ? 0xFF : 0x00);
             return *this;
         }
-        inline SIMDVecMask operator^= (bool b) {
+        inline SIMDVecMask & operator^= (bool b) {
             return lxora(b);
         }
         // LNOT
@@ -277,13 +291,55 @@ namespace SIMD {
             mMask = ((~mMask) & 0xFF);
             return *this;
         }
+        // LANDNOTV
+        inline SIMDVecMask landnot(SIMDVecMask const & b) const {
+            __mmask8 t0 = ~mMask & b.mMask;
+            return SIMDVecMask(t0);
+        }
+        // LANDNOTS
+        inline SIMDVecMask landnot(bool b) const {
+            __mmask8 t0 = ~mMask & (b ? 0xFF : 0);
+            return SIMDVecMask(t0);
+        }
+        // CMPEQV
+        inline SIMDVecMask cmpeq(SIMDVecMask const & b) const {
+            __mmask8 t0 = 0xFF & ~(mMask ^ b.mMask);
+            return SIMDVecMask(t0);
+        }
+        inline SIMDVecMask operator== (SIMDVecMask const & b) const {
+            return cmpeq(b);
+        }        
+        // CMPEQS
+        inline SIMDVecMask cmpeq(bool b) const {
+            __mmask8 t0 = 0xFF & ~(mMask ^ (b ? 0xFF : 0));
+            return SIMDVecMask(t0);
+        }
+        inline SIMDVecMask operator== (bool b) const {
+            return cmpeq(b);
+        }
+        // CMPNEV
+        inline SIMDVecMask cmpne(SIMDVecMask const & b) const {
+            __mmask8 t0 = 0xFF & (mMask ^ b.mMask);
+            return SIMDVecMask(t0);
+        }
+        inline SIMDVecMask operator!= (SIMDVecMask const & b) const {
+            return cmpne(b);
+        }
+        // CMPNES
+        inline SIMDVecMask cmpne(bool b) const {
+            __mmask8 t0 = 0xFF & (mMask ^ (b ? 0xFF : 0));
+            return SIMDVecMask(t0);
+        }
+        inline SIMDVecMask operator!= (bool b) const {
+            return cmpne(b);
+        }
         // HLAND
         inline bool hland() const {
-            return ((mMask & 0xF) == 0xF);
+            return ((mMask & 0xFF) == 0xFF);
         }
         // HLOR
         inline bool hlor() const {
-            return ((mMask & 0xF) != 0x0);
+            return ((mMask & 0xFF) != 0x0);
         }
         // HLXOR
         inline bool hlxor() const {
@@ -297,6 +353,14 @@ namespace SIMD {
             bool t7 = ((mMask & 0x80) != 0);
             bool t8 = t0 ^ t1 ^ t2 ^ t3 ^ t4 ^ t5 ^ t6 ^ t7;
             return t8;
+        }
+        // CMPEV
+        inline bool cmpe(SIMDVecMask const & b) const {
+            return mMask == b.mMask;
+        }
+        // CMPES
+        inline bool cmpe(bool b) const {
+            return (mMask & 0xFF) == (b ? 0xFF : 0);
         }
     };
 }
