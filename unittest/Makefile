@@ -6,7 +6,7 @@ CXXFLAGS=-std=c++11
 
 #some predefined rules
 ifeq ($(CXX), gcc)
-	
+	COMPILER_PREFIX=gcc	
 endif
 ifeq ($(CXX), clang++)
 	COMPILER_PREFIX=clang
