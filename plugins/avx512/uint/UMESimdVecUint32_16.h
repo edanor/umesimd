@@ -1219,7 +1219,7 @@ namespace SIMD {
                 indices[8],  indices[9],  indices[10], indices[11],
                 indices[12], indices[13], indices[14], indices[15] };
             __m512i t0 = _mm512_load_si512((__m512i *) rawIndices);
-            _mm512_i32scatter_epi32(baseAddr, t0, mVec, 1);
+            _mm512_i32scatter_epi32(baseAddr, t0, mVec, 4);
             return baseAddr;
         }
         // MSCATTERS
@@ -1230,7 +1230,7 @@ namespace SIMD {
                 indices[8],  indices[9],  indices[10], indices[11],
                 indices[12], indices[13], indices[14], indices[15] };
             __m512i t0 = _mm512_mask_load_epi32(_mm512_set1_epi32(0), mask.mMask, (__m512i *) rawIndices);
-            _mm512_mask_i32scatter_epi32(baseAddr, mask.mMask, t0, mVec, 1);
+            _mm512_mask_i32scatter_epi32(baseAddr, mask.mMask, t0, mVec, 4);
             return baseAddr;
         }
         // SCATTERV

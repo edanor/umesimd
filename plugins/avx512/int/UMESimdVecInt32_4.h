@@ -1705,12 +1705,6 @@ namespace SIMD {
             __m128i t0 = _mm_mask_load_epi32(_mm_set1_epi32(0), mask.mMask, (__m128i *) rawIndices);
             _mm_mask_i32scatter_epi32(baseAddr, mask.mMask, t0, mVec, 4);
 #else
-            __m128i t0 = _mm_load_si128((__m128i *) rawIndices);
-            __m128i m0 = mask8_to_m128i(mask.mMask);
-            __m128i t1 = _mm_blendv_epi8(mVec, t0, m0);
-            __m512i t2 = _mm512_castsi128_si512(t1);
-            __m512i t3 = _mm512_castsi128_si512(mVec);
-            _mm512_mask_i32scatter_epi32(baseAddr, 0xF, t2, t3, 4);
 #endif
             return baseAddr;
         }

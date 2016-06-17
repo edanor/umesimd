@@ -48,7 +48,7 @@ namespace SIMD {
             2,
             uint32_t,
             SIMDVecMask<2>,
-            SIMDSwizzle<2 >> ,
+            SIMDSwizzle<2>> ,
         public SIMDVecPackableInterface<
             SIMDVec_i<int32_t, 2>,
             SIMDVec_i<int32_t, 1 >>
@@ -1496,7 +1496,7 @@ namespace SIMD {
             return *this;
         }
         // MGATHERV
-        inline SIMDVec_i gather(SIMDVecMask<2> const & mask, uint32_t* baseAddr, SIMDVec_u<uint32_t, 2> const & indices) {
+        inline SIMDVec_i gather(SIMDVecMask<2> const & mask, int32_t* baseAddr, SIMDVec_u<uint32_t, 2> const & indices) {
             if (mask.mMask[0] == true) mVec[0] = baseAddr[indices.mVec[0]];
             if (mask.mMask[1] == true) mVec[1] = baseAddr[indices.mVec[1]];
             return *this;
@@ -1696,12 +1696,14 @@ namespace SIMD {
             return *this;
         }
         // PACKLO
-        inline SIMDVec_i packlo(SIMDVec_i<int32_t, 1> const & a) {
-            return SIMDVec_i(a[0], mVec[1]);
+        inline SIMDVec_i & packlo(SIMDVec_i<int32_t, 1> const & a) {
+            mVec[0] = a[0];
+            return *this;
         }
         // PACKHI
         inline SIMDVec_i packhi(SIMDVec_i<int32_t, 1> const & b) {
-            return SIMDVec_i(mVec[0], b[0]);
+            mVec[1] = b[0];
+            return *this;
         }
         // UNPACK
         void unpack(SIMDVec_i<int32_t, 1> & a, SIMDVec_i<int32_t, 1> & b) const {

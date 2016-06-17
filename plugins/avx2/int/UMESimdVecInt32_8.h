@@ -1383,19 +1383,19 @@ namespace SIMD {
             return *this;
         }
         // MGATHERS
-        inline SIMDVec_i & gather(SIMDVecMask<8> const & mask, uint32_t* baseAddr, uint32_t* indices) {
+        inline SIMDVec_i & gather(SIMDVecMask<8> const & mask, int32_t* baseAddr, uint32_t* indices) {
             __m256i t0 = _mm256_load_si256((__m256i*)indices);
             __m256i t1 = _mm256_i32gather_epi32((const int *)baseAddr, t0, 4);
             mVec = _mm256_blendv_epi8(mVec, t1, mask.mMask);
             return *this;
         }
         // GATHERV
-        inline SIMDVec_i & gather(int32_t* baseAddr, SIMDVec_i const & indices) {
+        inline SIMDVec_i & gather(int32_t* baseAddr, SIMDVec_u<uint32_t, 8> const & indices) {
             mVec = _mm256_i32gather_epi32((const int *)baseAddr, indices.mVec, 4);
             return *this;
         }
         // MGATHERV
-        inline SIMDVec_i & gather(SIMDVecMask<8> const & mask, int32_t* baseAddr, SIMDVec_i const & indices) {
+        inline SIMDVec_i & gather(SIMDVecMask<8> const & mask, int32_t* baseAddr, SIMDVec_u<uint32_t, 8> const & indices) {
             __m256i t0 = _mm256_i32gather_epi32((const int *)baseAddr, indices.mVec, 4);
             mVec = _mm256_blendv_epi8(mVec, t0, mask.mMask);
             return *this;
@@ -1417,7 +1417,7 @@ namespace SIMD {
             return baseAddr;
         }
         // SCATTERV
-        inline int32_t* scatter(int32_t* baseAddr, SIMDVec_i const & indices) const {
+        inline int32_t* scatter(int32_t* baseAddr, SIMDVec_u<uint32_t, 8> const & indices) const {
             alignas(32) int32_t raw[8];
             alignas(32) uint32_t rawIndices[8];
             _mm256_store_si256((__m256i*) raw, mVec);
@@ -1426,7 +1426,7 @@ namespace SIMD {
             return baseAddr;
         }
         // MSCATTERV
-        inline int32_t* scatter(SIMDVecMask<8> const & mask, int32_t* baseAddr, SIMDVec_i const & indices) const {
+        inline int32_t* scatter(SIMDVecMask<8> const & mask, int32_t* baseAddr, SIMDVec_u<uint32_t, 8> const & indices) const {
             alignas(32) int32_t raw[8];
             alignas(32) uint32_t rawIndices[8];
             alignas(32) uint32_t rawMask[8];

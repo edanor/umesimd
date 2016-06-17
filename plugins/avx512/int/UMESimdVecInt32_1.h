@@ -1269,7 +1269,7 @@ namespace SIMD {
             return *this;
         }
         // MGATHERS
-        inline SIMDVec_i & gather(SIMDVecMask<1> const & mask, uint32_t* baseAddr, uint32_t* indices) {
+        inline SIMDVec_i & gather(SIMDVecMask<1> const & mask, int32_t* baseAddr, uint32_t* indices) {
             if (mask.mMask == true) mVec = baseAddr[indices[0]];
             return *this;
         }
@@ -1279,7 +1279,7 @@ namespace SIMD {
             return *this;
         }
         // MGATHERV
-        inline SIMDVec_i gather(SIMDVecMask<1> const & mask, uint32_t* baseAddr, SIMDVec_u<uint32_t, 1> const & indices) {
+        inline SIMDVec_i gather(SIMDVecMask<1> const & mask, int32_t* baseAddr, SIMDVec_u<uint32_t, 1> const & indices) {
             if (mask.mMask == true) mVec = baseAddr[indices.mVec];
             return *this;
         }

@@ -2001,7 +2001,7 @@ namespace SIMD {
         }
 
         // GATHERS
-        UME_FORCE_INLINE SIMDVec_i & gather(int64_t * baseAddr, int64_t* indices) {
+        UME_FORCE_INLINE SIMDVec_i & gather(int64_t * baseAddr, uint64_t* indices) {
             __m512i t0 = _mm512_load_si512((__m512i *)indices);
             __m512i t1 = _mm512_load_si512((__m512i *)(indices + 8));
             mVec[0] = _mm512_i64gather_epi64(t0, (__int64 const*)baseAddr, 8);
@@ -2009,7 +2009,7 @@ namespace SIMD {
             return *this;
         }
         // MGATHERS
-        UME_FORCE_INLINE SIMDVec_i & gather(SIMDVecMask<16> const & mask, int64_t* baseAddr, int64_t* indices) {
+        UME_FORCE_INLINE SIMDVec_i & gather(SIMDVecMask<16> const & mask, int64_t* baseAddr, uint64_t* indices) {
             __m512i t0 = _mm512_load_si512((__m512i *)indices);
             __m512i t1 = _mm512_load_si512((__m512i *)(indices + 8));
             __m512i t2 = _mm512_i64gather_epi64(t0, (__int64 const*)baseAddr, 8);
@@ -2019,13 +2019,13 @@ namespace SIMD {
             return *this;
         }
         // GATHERV
-        UME_FORCE_INLINE SIMDVec_i & gather(int64_t * baseAddr, SIMDVec_i const & indices) {
+        UME_FORCE_INLINE SIMDVec_i & gather(int64_t * baseAddr, SIMDVec_u<uint64_t, 16> const & indices) {
             mVec[0] = _mm512_i64gather_epi64(indices.mVec[0], (__int64 const*)baseAddr, 8);
             mVec[1] = _mm512_i64gather_epi64(indices.mVec[1], (__int64 const*)baseAddr, 8);
             return *this;
         }
         // MGATHERV
-        UME_FORCE_INLINE SIMDVec_i & gather(SIMDVecMask<16> const & mask, int64_t* baseAddr, SIMDVec_i const & indices) {
+        UME_FORCE_INLINE SIMDVec_i & gather(SIMDVecMask<16> const & mask, int64_t* baseAddr, SIMDVec_u<uint64_t, 16> const & indices) {
             __m512i t0 = _mm512_i64gather_epi64(indices.mVec[0], (__int64 const*)baseAddr, 8);
             __m512i t1 = _mm512_i64gather_epi64(indices.mVec[1], (__int64 const*)baseAddr, 8);
             mVec[0] = _mm512_mask_mov_epi64(mVec[0], mask.mMask & 0xFF, t0);
@@ -2033,7 +2033,7 @@ namespace SIMD {
             return *this;
         }
         // SCATTERS
-        UME_FORCE_INLINE int64_t* scatter(int64_t* baseAddr, int64_t* indices) const {
+        UME_FORCE_INLINE int64_t* scatter(int64_t* baseAddr, uint64_t* indices) const {
             __m512i t0 = _mm512_load_si512((__m512i *)indices);
             __m512i t1 = _mm512_load_si512((__m512i *)(indices + 8));
             _mm512_i64scatter_epi64(baseAddr, t0, mVec[0], 8);
@@ -2041,7 +2041,7 @@ namespace SIMD {
             return baseAddr;
         }
         // MSCATTERS
-        UME_FORCE_INLINE int64_t* scatter(SIMDVecMask<16> const & mask, int64_t* baseAddr, int64_t* indices) const {
+        UME_FORCE_INLINE int64_t* scatter(SIMDVecMask<16> const & mask, int64_t* baseAddr, uint64_t* indices) const {
             __m512i t0 = _mm512_load_si512((__m512i *)indices);
             __m512i t1 = _mm512_load_si512((__m512i *)(indices + 8));
             _mm512_mask_i64scatter_epi64(baseAddr, mask.mMask & 0xFF, t0, mVec[0], 8);
@@ -2049,13 +2049,13 @@ namespace SIMD {
             return baseAddr;
         }
         // SCATTERV
-        UME_FORCE_INLINE int64_t* scatter(int64_t* baseAddr, SIMDVec_i const & indices) const {
+        UME_FORCE_INLINE int64_t* scatter(int64_t* baseAddr, SIMDVec_u<uint64_t, 16> const & indices) const {
             _mm512_i64scatter_epi64(baseAddr, indices.mVec[0], mVec[0], 8);
             _mm512_i64scatter_epi64(baseAddr, indices.mVec[1], mVec[1], 8);
             return baseAddr;
         }
         // MSCATTERV
-        UME_FORCE_INLINE int64_t* scatter(SIMDVecMask<16> const & mask, int64_t* baseAddr, SIMDVec_i const & indices) const {
+        UME_FORCE_INLINE int64_t* scatter(SIMDVecMask<16> const & mask, int64_t* baseAddr, SIMDVec_u<uint64_t, 16> const & indices) const {
             _mm512_mask_i64scatter_epi64(baseAddr, mask.mMask & 0xFF, indices.mVec[0], mVec[0], 8);
             _mm512_mask_i64scatter_epi64(baseAddr, ((mask.mMask & 0xFF00) >> 8), indices.mVec[1], mVec[1], 8);
             return baseAddr;

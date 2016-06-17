@@ -6098,6 +6098,247 @@ void genericMHBXORSTest()
     }*/
 }
 
+template<typename VEC_TYPE, typename SCALAR_TYPE, typename SCALAR_UINT_TYPE, int VEC_LEN>
+void genericGATHERSTest_random()
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    SCALAR_TYPE inputA[VEC_LEN*100];
+    SCALAR_UINT_TYPE indices[VEC_LEN];
+    SCALAR_TYPE output[VEC_LEN];
+    SCALAR_TYPE values[VEC_LEN];
+
+    for (int i = 0; i < VEC_LEN*100; i++) {
+        inputA[i] = randomValue<SCALAR_TYPE>(gen);
+    }
+    for (int i = 0; i < VEC_LEN;i++) {
+        indices[i] = randomValue<SCALAR_UINT_TYPE>(gen) % (VEC_LEN*100);
+        output[i] = inputA[indices[i]];
+    }
+
+    VEC_TYPE vec0(SCALAR_TYPE(0));
+    vec0.gather(&inputA[0], &indices[0]);
+    vec0.store(values);
+
+    bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
+    CHECK_CONDITION(inRange, "GATHERS");
+}
+
+template<typename VEC_TYPE, typename SCALAR_TYPE, typename SCALAR_UINT_TYPE, typename MASK_TYPE, int VEC_LEN>
+void genericMGATHERSTest_random()
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    SCALAR_TYPE inputA[VEC_LEN * 100];
+    SCALAR_TYPE inputB[VEC_LEN];
+    bool inputMask[VEC_LEN];
+    SCALAR_UINT_TYPE indices[VEC_LEN];
+    SCALAR_TYPE output[VEC_LEN];
+    SCALAR_TYPE values[VEC_LEN];
+
+    for (int i = 0; i < VEC_LEN * 100; i++) {
+        inputA[i] = randomValue<SCALAR_TYPE>(gen);
+    }
+    for (int i = 0; i < VEC_LEN;i++) {
+        inputMask[i] = randomValue<bool>(gen);
+        indices[i] = randomValue<SCALAR_UINT_TYPE>(gen) % (VEC_LEN * 100);
+        inputB[i] = randomValue<SCALAR_TYPE>(gen);
+        output[i] = inputMask[i] ? inputA[indices[i]] : inputB[i];
+    }
+
+    VEC_TYPE vec0(inputB);
+    MASK_TYPE mask(inputMask);
+    vec0.gather(mask, inputA, indices);
+    vec0.store(values);
+
+    bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
+    CHECK_CONDITION(inRange, "MGATHERS");
+}
+
+template<typename VEC_TYPE, typename SCALAR_TYPE, typename UINT_VEC_TYPE, typename SCALAR_UINT_TYPE, int VEC_LEN>
+void genericGATHERVTest_random()
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    SCALAR_TYPE inputA[VEC_LEN * 100];
+    SCALAR_UINT_TYPE indices[VEC_LEN];
+    SCALAR_TYPE output[VEC_LEN];
+    SCALAR_TYPE values[VEC_LEN];
+
+    for (int i = 0; i < VEC_LEN * 100; i++) {
+        inputA[i] = randomValue<SCALAR_TYPE>(gen);
+    }
+    for (int i = 0; i < VEC_LEN;i++) {
+        indices[i] = randomValue<SCALAR_UINT_TYPE>(gen) % (VEC_LEN * 100);
+        output[i] = inputA[indices[i]];
+    }
+
+    VEC_TYPE vec0(SCALAR_TYPE(0));
+    UINT_VEC_TYPE vec1(&indices[0]);
+    vec0.gather(&inputA[0], vec1);
+    vec0.store(values);
+
+    bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
+    CHECK_CONDITION(inRange, "GATHERV");
+}
+// MGATHERV
+
+template<typename VEC_TYPE, typename SCALAR_TYPE, typename UINT_VEC_TYPE, typename SCALAR_UINT_TYPE, typename MASK_TYPE, int VEC_LEN>
+void genericMGATHERVTest_random()
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    SCALAR_TYPE inputA[VEC_LEN * 100];
+    SCALAR_TYPE inputB[VEC_LEN];
+    bool inputMask[VEC_LEN];
+    SCALAR_UINT_TYPE indices[VEC_LEN];
+    SCALAR_TYPE output[VEC_LEN];
+    SCALAR_TYPE values[VEC_LEN];
+
+    for (int i = 0; i < VEC_LEN * 100; i++) {
+        inputA[i] = randomValue<SCALAR_TYPE>(gen);
+    }
+    for (int i = 0; i < VEC_LEN;i++) {
+        inputMask[i] = randomValue<bool>(gen);
+        indices[i] = randomValue<SCALAR_UINT_TYPE>(gen) % (VEC_LEN * 100);
+        inputB[i] = randomValue<SCALAR_UINT_TYPE>(gen);
+        output[i] = inputMask[i] ? inputA[indices[i]] : inputB[i];
+    }
+
+    VEC_TYPE vec0(inputB);
+    UINT_VEC_TYPE vec1(&indices[0]);
+    MASK_TYPE mask(inputMask);
+    vec0.gather(mask, inputA, vec1);
+    vec0.store(values);
+
+    bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
+    CHECK_CONDITION(inRange, "MGATHERV");
+}
+
+template<typename VEC_TYPE, typename SCALAR_TYPE, typename SCALAR_UINT_TYPE, int VEC_LEN>
+void genericSCATTERSTest_random()
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    SCALAR_TYPE inputA[VEC_LEN * 100];
+    SCALAR_TYPE inputB[VEC_LEN];
+    SCALAR_UINT_TYPE indices[VEC_LEN];
+    SCALAR_TYPE output[VEC_LEN * 100];
+
+    for (int i = 0; i < VEC_LEN * 100; i++) {
+        inputA[i] = randomValue<SCALAR_TYPE>(gen);
+        output[i] = inputA[i];
+    }
+    for (int i = 0; i < VEC_LEN;i++) {
+        inputB[i] = randomValue<SCALAR_UINT_TYPE>(gen);
+        indices[i] = randomValue<SCALAR_UINT_TYPE>(gen) % (VEC_LEN * 100);
+        output[indices[i]] = inputB[i];
+    }
+
+    VEC_TYPE vec0(inputB);
+    vec0.scatter(inputA, indices);
+
+    bool inRange = valuesInRange(inputA, output, VEC_LEN*100, SCALAR_TYPE(0.01f));
+    CHECK_CONDITION(inRange, "SCATTERS");
+}
+
+template<typename VEC_TYPE, typename SCALAR_TYPE, typename SCALAR_UINT_TYPE, typename MASK_TYPE, int VEC_LEN>
+void genericMSCATTERSTest_random()
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    SCALAR_TYPE inputA[VEC_LEN * 100];
+    SCALAR_TYPE inputB[VEC_LEN];
+    SCALAR_UINT_TYPE indices[VEC_LEN];
+    SCALAR_TYPE output[VEC_LEN * 100];
+    bool inputMask[VEC_LEN];
+
+    for (int i = 0; i < VEC_LEN * 100; i++) {
+        inputA[i] = randomValue<SCALAR_TYPE>(gen);
+        output[i] = inputA[i];
+    }
+    for (int i = 0; i < VEC_LEN;i++) {
+        inputMask[i] = randomValue<bool>(gen);
+        inputB[i] = randomValue<SCALAR_UINT_TYPE>(gen);
+        indices[i] = randomValue<SCALAR_UINT_TYPE>(gen) % (VEC_LEN * 100);
+        if(inputMask[i] == true) output[indices[i]] = inputB[i];
+    }
+
+    VEC_TYPE vec0(inputB);
+    MASK_TYPE mask(inputMask);
+    vec0.scatter(mask, inputA, indices);
+
+    bool inRange = valuesInRange(inputA, output, VEC_LEN * 100, SCALAR_TYPE(0.01f));
+    CHECK_CONDITION(inRange, "MSCATTERS");
+}
+
+template<typename VEC_TYPE, typename SCALAR_TYPE, typename UINT_VEC_TYPE, typename SCALAR_UINT_TYPE, int VEC_LEN>
+void genericSCATTERVTest_random()
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    SCALAR_TYPE inputA[VEC_LEN * 100];
+    SCALAR_TYPE inputB[VEC_LEN];
+    SCALAR_UINT_TYPE indices[VEC_LEN];
+    SCALAR_TYPE output[VEC_LEN * 100];
+
+    for (int i = 0; i < VEC_LEN * 100; i++) {
+        inputA[i] = randomValue<SCALAR_TYPE>(gen);
+        output[i] = inputA[i];
+    }
+    for (int i = 0; i < VEC_LEN;i++) {
+        inputB[i] = randomValue<SCALAR_UINT_TYPE>(gen);
+        indices[i] = randomValue<SCALAR_UINT_TYPE>(gen) % (VEC_LEN * 100);
+        output[indices[i]] = inputB[i];
+    }
+
+    VEC_TYPE vec0(inputB);
+    UINT_VEC_TYPE vec1(indices);
+    vec0.scatter(inputA, vec1);
+
+    bool inRange = valuesInRange(inputA, output, VEC_LEN * 100, SCALAR_TYPE(0.01f));
+    CHECK_CONDITION(inRange, "SCATTERV");
+}
+
+template<typename VEC_TYPE, typename SCALAR_TYPE, typename UINT_VEC_TYPE, typename SCALAR_UINT_TYPE, typename MASK_TYPE, int VEC_LEN>
+void genericMSCATTERVTest_random()
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    SCALAR_TYPE inputA[VEC_LEN * 100];
+    SCALAR_TYPE inputB[VEC_LEN];
+    SCALAR_UINT_TYPE indices[VEC_LEN];
+    SCALAR_TYPE output[VEC_LEN * 100];
+    bool inputMask[VEC_LEN];
+
+    for (int i = 0; i < VEC_LEN * 100; i++) {
+        inputA[i] = randomValue<SCALAR_TYPE>(gen);
+        output[i] = inputA[i];
+    }
+    for (int i = 0; i < VEC_LEN;i++) {
+        inputMask[i] = randomValue<bool>(gen);
+        inputB[i] = randomValue<SCALAR_UINT_TYPE>(gen);
+        indices[i] = randomValue<SCALAR_UINT_TYPE>(gen) % (VEC_LEN * 100);
+        if(inputMask[i] == true) output[indices[i]] = inputB[i];
+    }
+
+    VEC_TYPE vec0(inputB);
+    UINT_VEC_TYPE vec1(indices);
+    MASK_TYPE mask(inputMask);
+    vec0.scatter(mask, inputA, vec1);
+
+    bool inRange = valuesInRange(inputA, output, VEC_LEN * 100, SCALAR_TYPE(0.01f));
+    CHECK_CONDITION(inRange, "MSCATTERV");
+}
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericFMULADDVTest()
 {
@@ -6693,7 +6934,7 @@ void genericMMINSATest()
     bool inRange = valuesInRange(values, DATA_SET::outputs::MMINS, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MMINSA");
 }
-    
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericHMAXTest()
 {
@@ -6713,8 +6954,180 @@ void genericHMAXTest()
     }
 }
 
-// MHMAX
-    
+template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN>
+void genericHMAXTest_random()
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    {
+        SCALAR_TYPE inputA[VEC_LEN];
+        SCALAR_TYPE maxVal = std::numeric_limits<SCALAR_TYPE>::min();
+        for (int i = 0; i < VEC_LEN; i++) {
+            inputA[i] = randomValue<SCALAR_TYPE>(gen);
+            if (inputA[i] > maxVal) maxVal = inputA[i];
+        }
+
+        VEC_TYPE vec0(inputA);
+        SCALAR_TYPE value = vec0.hmax();
+        bool inRange = valueInRange(value, maxVal, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "HMAX");
+    }
+    {
+        SCALAR_TYPE inputA[VEC_LEN];
+        SCALAR_TYPE maxVal = std::numeric_limits<SCALAR_TYPE>::min();
+        for (int i = 0; i < VEC_LEN; i++) {
+            inputA[i] = randomValue<SCALAR_TYPE>(gen);
+            if (inputA[i] > maxVal) maxVal = inputA[i];
+
+        }
+
+        VEC_TYPE vec0(inputA);
+        SCALAR_TYPE value = UME::SIMD::FUNCTIONS::hmax(vec0);
+        bool inRange = valueInRange(value, maxVal, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "HMAX(function)");
+    }
+}
+
+template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN>
+void genericMHMAXTest_random()
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    {
+        SCALAR_TYPE inputA[VEC_LEN];
+        SCALAR_TYPE maxVal = std::numeric_limits<SCALAR_TYPE>::min();
+        bool inputMask[VEC_LEN];
+
+        for (int i = 0; i < VEC_LEN; i++) {
+            inputMask[i] = randomValue<bool>(gen);
+            inputA[i] = randomValue<SCALAR_TYPE>(gen);
+            if (inputMask[i] && (inputA[i] > maxVal)) maxVal = inputA[i];
+        }
+
+        VEC_TYPE vec0(inputA);
+        MASK_TYPE mask(inputMask);
+        SCALAR_TYPE value = vec0.hmax(mask);
+        bool inRange = valueInRange(value, maxVal, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "MHMAX");
+    }
+    {
+        SCALAR_TYPE inputA[VEC_LEN];
+        SCALAR_TYPE maxVal = std::numeric_limits<SCALAR_TYPE>::min();
+        bool inputMask[VEC_LEN];
+
+        for (int i = 0; i < VEC_LEN; i++) {
+            inputMask[i] = randomValue<bool>(gen);
+            inputA[i] = randomValue<SCALAR_TYPE>(gen);
+            if (inputMask[i] && (inputA[i] > maxVal)) maxVal = inputA[i];
+        }
+
+        VEC_TYPE vec0(inputA);
+        MASK_TYPE mask(inputMask);
+        SCALAR_TYPE value = UME::SIMD::FUNCTIONS::hmax(mask, vec0);
+        bool inRange = valueInRange(value, maxVal, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "MHMAX(function)");
+    }
+}
+
+template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN>
+void genericIMAXTest_random()
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    {
+        SCALAR_TYPE inputA[VEC_LEN];
+        SCALAR_TYPE maxVal = std::numeric_limits<SCALAR_TYPE>::min();
+        uint32_t index;
+
+        for (int i = 0; i < VEC_LEN; i++) {
+            inputA[i] = randomValue<SCALAR_TYPE>(gen);
+            if (inputA[i] > maxVal) {
+                index = i;
+                maxVal = inputA[i];
+            }
+        }
+
+        VEC_TYPE vec0(inputA);
+        uint32_t value = vec0.imax();
+        bool inRange = (value == index);
+        CHECK_CONDITION(inRange, "IMAX");
+    }
+    {
+        SCALAR_TYPE inputA[VEC_LEN];
+        SCALAR_TYPE maxVal = std::numeric_limits<SCALAR_TYPE>::min();
+        uint32_t index;
+        for (int i = 0; i < VEC_LEN; i++) {
+            inputA[i] = randomValue<SCALAR_TYPE>(gen);
+            if (inputA[i] > maxVal) {
+                index = i;
+                maxVal = inputA[i];
+            }
+        }
+
+        VEC_TYPE vec0(inputA);
+        uint32_t value = UME::SIMD::FUNCTIONS::imax(vec0);
+        bool inRange = (value == index);
+        CHECK_CONDITION(inRange, "IMAX(function)");
+    }
+}
+
+template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN>
+void genericMIMAXTest_random()
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    {
+        SCALAR_TYPE inputA[VEC_LEN];
+        bool inputMask[VEC_LEN];
+        SCALAR_TYPE maxVal = std::numeric_limits<SCALAR_TYPE>::min();
+        uint32_t index;
+        bool maskEmpty = true;
+
+        for (int i = 0; i < VEC_LEN; i++) {
+            inputA[i] = randomValue<SCALAR_TYPE>(gen);
+            inputMask[i] = randomValue<bool>(gen);
+            maskEmpty = inputMask[i] ? false : maskEmpty;
+            if (inputMask[i] && (inputA[i] > maxVal)) {
+                index = i;
+                maxVal = inputA[i];
+            }
+        }
+
+        VEC_TYPE vec0(inputA);
+        MASK_TYPE mask(inputMask);
+        uint32_t value = vec0.imax(mask);
+        bool inRange = (value == index) || !(maskEmpty);
+        CHECK_CONDITION(inRange, "MIMAX");
+    }
+    {
+        SCALAR_TYPE inputA[VEC_LEN];
+        bool inputMask[VEC_LEN];
+        SCALAR_TYPE maxVal = std::numeric_limits<SCALAR_TYPE>::min();
+        uint32_t index;
+        bool maskEmpty = true;
+
+        for (int i = 0; i < VEC_LEN; i++) {
+            inputA[i] = randomValue<SCALAR_TYPE>(gen);
+            inputMask[i] = randomValue<bool>(gen);
+            maskEmpty = inputMask[i] ? false : maskEmpty;
+            if (inputA[i] > maxVal) {
+                index = i;
+                maxVal = inputA[i];
+            }
+        }
+
+        VEC_TYPE vec0(inputA);
+        MASK_TYPE mask(inputMask);
+        uint32_t value = UME::SIMD::FUNCTIONS::imax(mask, vec0);
+        bool inRange = (value == index) || !(maskEmpty);
+        CHECK_CONDITION(inRange, "MIMAX(function)");
+    }
+}
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericHMINTest()
 {
@@ -6734,7 +7147,181 @@ void genericHMINTest()
     }
 }
 
-// MHMIN
+template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN>
+void genericHMINTest_random()
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    {
+        SCALAR_TYPE inputA[VEC_LEN];
+        SCALAR_TYPE minVal = std::numeric_limits<SCALAR_TYPE>::max();
+        for (int i = 0; i < VEC_LEN; i++) {
+            inputA[i] = randomValue<SCALAR_TYPE>(gen);
+            if (inputA[i] < minVal) minVal = inputA[i];
+        }
+
+        VEC_TYPE vec0(inputA);
+        SCALAR_TYPE value = vec0.hmin();
+        bool inRange = valueInRange(value, minVal, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "HMIN");
+    }
+    {
+        SCALAR_TYPE inputA[VEC_LEN];
+        SCALAR_TYPE minVal = std::numeric_limits<SCALAR_TYPE>::max();
+        for (int i = 0; i < VEC_LEN; i++) {
+            inputA[i] = randomValue<SCALAR_TYPE>(gen);
+            if (inputA[i] < minVal) minVal = inputA[i];
+
+        }
+
+        VEC_TYPE vec0(inputA);
+        SCALAR_TYPE value = UME::SIMD::FUNCTIONS::hmin(vec0);
+        bool inRange = valueInRange(value, minVal, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "HMIN(function)");
+    }
+}
+
+template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN>
+void genericMHMINTest_random()
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    {
+        SCALAR_TYPE inputA[VEC_LEN];
+        SCALAR_TYPE minVal = std::numeric_limits<SCALAR_TYPE>::max();
+        bool inputMask[VEC_LEN];
+
+        for (int i = 0; i < VEC_LEN; i++) {
+            inputMask[i] = randomValue<bool>(gen);
+            inputA[i] = randomValue<SCALAR_TYPE>(gen);
+            if (inputMask[i] && (inputA[i] < minVal)) minVal = inputA[i];
+        }
+
+        VEC_TYPE vec0(inputA);
+        MASK_TYPE mask(inputMask);
+        SCALAR_TYPE value = vec0.hmin(mask);
+        bool inRange = valueInRange(value, minVal, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "MHMIN");
+    }
+    {
+        SCALAR_TYPE inputA[VEC_LEN];
+        SCALAR_TYPE minVal = std::numeric_limits<SCALAR_TYPE>::max();
+        bool inputMask[VEC_LEN];
+
+        for (int i = 0; i < VEC_LEN; i++) {
+            inputMask[i] = randomValue<bool>(gen);
+            inputA[i] = randomValue<SCALAR_TYPE>(gen);
+            if (inputMask[i] && (inputA[i] < minVal)) minVal = inputA[i];
+        }
+
+        VEC_TYPE vec0(inputA);
+        MASK_TYPE mask(inputMask);
+        SCALAR_TYPE value = UME::SIMD::FUNCTIONS::hmin(mask, vec0);
+        bool inRange = valueInRange(value, minVal, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "MHMIN(function)");
+    }
+}
+
+template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN>
+void genericIMINTest_random()
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    {
+        SCALAR_TYPE inputA[VEC_LEN];
+        SCALAR_TYPE minVal = std::numeric_limits<SCALAR_TYPE>::max();
+        uint32_t index;
+
+        for (int i = 0; i < VEC_LEN; i++) {
+            inputA[i] = randomValue<SCALAR_TYPE>(gen);
+            if (inputA[i] < minVal) {
+                index = i;
+                minVal = inputA[i];
+            }
+        }
+
+        VEC_TYPE vec0(inputA);
+        uint32_t value = vec0.imin();
+        bool inRange = (value == index);
+        CHECK_CONDITION(inRange, "IMIN");
+    }
+    {
+        SCALAR_TYPE inputA[VEC_LEN];
+        SCALAR_TYPE minVal = std::numeric_limits<SCALAR_TYPE>::max();
+        uint32_t index;
+
+        for (int i = 0; i < VEC_LEN; i++) {
+            inputA[i] = randomValue<SCALAR_TYPE>(gen);
+            if (inputA[i] < minVal) {
+                index = i;
+                minVal = inputA[i];
+            }
+        }
+
+        VEC_TYPE vec0(inputA);
+        uint32_t value = UME::SIMD::FUNCTIONS::imin(vec0);
+        bool inRange = (value == index);
+        CHECK_CONDITION(inRange, "IMIN(function)");
+    }
+}
+
+template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN>
+void genericMIMINTest_random()
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    {
+        SCALAR_TYPE inputA[VEC_LEN];
+        bool inputMask[VEC_LEN];
+        SCALAR_TYPE minVal = std::numeric_limits<SCALAR_TYPE>::max();
+        uint32_t index;
+        bool maskEmpty = true; // Ignore result if the masks is all 'false'
+
+        for (int i = 0; i < VEC_LEN; i++) {
+            inputA[i] = randomValue<SCALAR_TYPE>(gen);
+            inputMask[i] = randomValue<bool>(gen);
+            maskEmpty = inputMask[i] ? false : maskEmpty;
+            if (inputMask[i] && (inputA[i] < minVal)) {
+                index = i;
+                minVal = inputA[i];
+            }
+        }
+
+        VEC_TYPE vec0(inputA);
+        MASK_TYPE mask(inputMask);
+        uint32_t value = vec0.imin(mask);
+        bool inRange = (value == index) || (!maskEmpty);
+        CHECK_CONDITION(inRange, "MIMIN");
+    }
+    {
+        SCALAR_TYPE inputA[VEC_LEN];
+        bool inputMask[VEC_LEN];
+        SCALAR_TYPE minVal = std::numeric_limits<SCALAR_TYPE>::max();
+        uint32_t index;
+        bool maskEmpty = true; // Ignore result if the masks is all 'false'
+
+        for (int i = 0; i < VEC_LEN; i++) {
+            inputA[i] = randomValue<SCALAR_TYPE>(gen);
+            inputMask[i] = randomValue<bool>(gen);
+            maskEmpty = inputMask[i] ? true : maskEmpty;
+            if (inputMask[i] && (inputA[i] < minVal)) {
+                index = i;
+                minVal = inputA[i];
+            }
+        }
+
+        VEC_TYPE vec0(inputA);
+        MASK_TYPE mask(inputMask);
+        uint32_t value = UME::SIMD::FUNCTIONS::imin(mask, vec0);
+        bool inRange = (value == index) || (!maskEmpty);
+        CHECK_CONDITION(inRange, "MIMIN(function)");
+    }
+}
+
 template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericLSHVTest() 
 {
@@ -6772,7 +7359,7 @@ void genericLSHVTest()
         CHECK_CONDITION((inRange && isUnmodified), "LSHV (operator<<)");
     }
 }
-    
+
 template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMLSHVTest() 
 {
@@ -9138,13 +9725,15 @@ void genericBaseInterfaceTest()
     genericMINSATest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
     genericMMINSATest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
     genericHMAXTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
-    // MHMAX
-    // IMAX
-    // MIMAX
+    genericHMAXTest_random<VEC_TYPE, SCALAR_TYPE, VEC_LEN>();
+    genericMHMAXTest_random<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN>();
+    genericIMAXTest_random<VEC_TYPE, SCALAR_TYPE, VEC_LEN>();
+    genericMIMAXTest_random<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN>();
     genericHMINTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
-    // MHMIN
-    // IMIN
-    // MIMIN
+    genericHMINTest_random<VEC_TYPE, SCALAR_TYPE, VEC_LEN>();
+    genericMHMINTest_random<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN>();
+    genericIMINTest_random<VEC_TYPE, SCALAR_TYPE, VEC_LEN>();
+    genericMIMINTest_random<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN>();
 
     // POWV
     // MPOWV
@@ -9215,16 +9804,17 @@ void genericIntegerInterfaceTest()
     genericMHBXORSTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
 }
 
-template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
+template<typename VEC_TYPE, typename SCALAR_TYPE, typename UINT_VEC_TYPE, typename SCALAR_UINT_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericGatherScatterInterfaceTest()
 {
-    // GATHER
-    // MGATHER
-    // MGATHERV
-    // SCATTER
-    // MSCATTER
-    // SCATTERV
-    // MSCATTERV
+    genericGATHERSTest_random<VEC_TYPE, SCALAR_TYPE, SCALAR_UINT_TYPE, VEC_LEN>();
+    genericMGATHERSTest_random<VEC_TYPE, SCALAR_TYPE, SCALAR_UINT_TYPE, MASK_TYPE, VEC_LEN>();
+    genericGATHERVTest_random<VEC_TYPE, SCALAR_TYPE, UINT_VEC_TYPE, SCALAR_UINT_TYPE, VEC_LEN>();
+    genericMGATHERVTest_random<VEC_TYPE, SCALAR_TYPE, UINT_VEC_TYPE, SCALAR_UINT_TYPE, MASK_TYPE, VEC_LEN>();
+    genericSCATTERSTest_random<VEC_TYPE, SCALAR_TYPE, SCALAR_UINT_TYPE, VEC_LEN>();
+    genericMSCATTERSTest_random<VEC_TYPE, SCALAR_TYPE, SCALAR_UINT_TYPE, MASK_TYPE, VEC_LEN>();
+    genericSCATTERVTest_random<VEC_TYPE, SCALAR_TYPE, UINT_VEC_TYPE, SCALAR_UINT_TYPE, VEC_LEN>();
+    genericMSCATTERVTest_random<VEC_TYPE, SCALAR_TYPE, UINT_VEC_TYPE, SCALAR_UINT_TYPE, MASK_TYPE, VEC_LEN>();
 }
 
 template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
@@ -9282,9 +9872,7 @@ void genericFloatInterfaceTest()
 {
     genericROUNDTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
     genericMROUNDTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
-    //genericTRUNCTest<VEC_TYPE, SCALAR_TYPE, VEC_INT_TYPE, SCALAR_INT_TYPE, VEC_LEN, DATA_SET>();
     genericTRUNCTest_random<VEC_TYPE, SCALAR_TYPE, VEC_INT_TYPE, SCALAR_INT_TYPE, VEC_LEN>();
-    //genericMTRUNCTest<VEC_TYPE, SCALAR_TYPE, VEC_INT_TYPE, SCALAR_INT_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
     genericMTRUNCTest_random<VEC_TYPE, SCALAR_TYPE, VEC_INT_TYPE, SCALAR_INT_TYPE, MASK_TYPE, VEC_LEN>();
     genericFLOORTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
     genericMFLOORTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
@@ -9314,18 +9902,14 @@ void genericFloatInterfaceTest()
     genericLOG2Test_random<VEC_TYPE, SCALAR_TYPE, VEC_LEN>();
     genericLOG10Test_random<VEC_TYPE, SCALAR_TYPE, VEC_LEN>();
 
-    //genericSINTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
     genericSINTest_random<VEC_TYPE, SCALAR_TYPE, VEC_LEN>();
-    //genericMSINTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
-    //genericCOSTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
+    // MSIN
     genericCOSTest_random<VEC_TYPE, SCALAR_TYPE, VEC_LEN>();
-    //genericMCOSTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
-    //genericTANTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
+    // MCOS
     genericTANTest_random<VEC_TYPE, SCALAR_TYPE, VEC_LEN>();
-    //genericMTANTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
-    //genericCTANTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
+    // MTAN
     genericCTANTest_random<VEC_TYPE, SCALAR_TYPE, VEC_LEN>();
-    //genericMCTANTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    // CTAN
 }
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN>
@@ -9380,7 +9964,7 @@ template<
 void genericUintTest() {
     genericBaseInterfaceTest<UINT_VEC_TYPE, UINT_SCALAR_TYPE, MASK_TYPE, SWIZZLE_TYPE, VEC_LEN, DATA_SET> ();
     genericIntegerInterfaceTest<UINT_VEC_TYPE, UINT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET> ();
-    genericGatherScatterInterfaceTest<UINT_VEC_TYPE, UINT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET> ();
+    genericGatherScatterInterfaceTest<UINT_VEC_TYPE, UINT_SCALAR_TYPE, UINT_VEC_TYPE, UINT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET> ();
     genericShiftRotateInterfaceTest<UINT_VEC_TYPE, UINT_VEC_TYPE, UINT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
     genericUTOITest<UINT_VEC_TYPE, INT_VEC_TYPE, INT_SCALAR_TYPE, VEC_LEN, DATA_SET> ();
     genericUTOFTest<UINT_VEC_TYPE, FLOAT_VEC_TYPE, FLOAT_SCALAR_TYPE, VEC_LEN, DATA_SET> ();
@@ -9400,7 +9984,7 @@ template<
     void genericUintTest() {
     genericBaseInterfaceTest<UINT_VEC_TYPE, UINT_SCALAR_TYPE, MASK_TYPE, SWIZZLE_TYPE, VEC_LEN, DATA_SET>();
     genericIntegerInterfaceTest<UINT_VEC_TYPE, UINT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
-    genericGatherScatterInterfaceTest<UINT_VEC_TYPE, UINT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericGatherScatterInterfaceTest<UINT_VEC_TYPE, UINT_SCALAR_TYPE, UINT_VEC_TYPE, UINT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
     genericShiftRotateInterfaceTest<UINT_VEC_TYPE, UINT_VEC_TYPE, UINT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
     genericUTOITest<UINT_VEC_TYPE, INT_VEC_TYPE, INT_SCALAR_TYPE, VEC_LEN, DATA_SET>();
     genericPackableInterfaceTest<INT_VEC_TYPE, INT_SCALAR_TYPE, VEC_LEN>();
@@ -9420,7 +10004,7 @@ template<
 void genericIntTest() {
     genericBaseInterfaceTest<INT_VEC_TYPE, INT_SCALAR_TYPE, MASK_TYPE, SWIZZLE_TYPE, VEC_LEN, DATA_SET> ();
     genericIntegerInterfaceTest<INT_VEC_TYPE, INT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET> ();
-    genericGatherScatterInterfaceTest<INT_VEC_TYPE, INT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET> ();
+    genericGatherScatterInterfaceTest<INT_VEC_TYPE, INT_SCALAR_TYPE, UINT_VEC_TYPE, UINT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET> ();
     genericShiftRotateInterfaceTest<INT_VEC_TYPE, UINT_VEC_TYPE, INT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
     genericSignInterfaceTest<INT_VEC_TYPE, INT_SCALAR_TYPE  , MASK_TYPE, VEC_LEN, DATA_SET>();
     genericITOUTest<INT_VEC_TYPE, UINT_VEC_TYPE, UINT_SCALAR_TYPE, VEC_LEN, DATA_SET>();
@@ -9440,7 +10024,7 @@ template<
 void genericIntTest() {
     genericBaseInterfaceTest<INT_VEC_TYPE, INT_SCALAR_TYPE, MASK_TYPE, SWIZZLE_TYPE, VEC_LEN, DATA_SET>();
     genericIntegerInterfaceTest<INT_VEC_TYPE, INT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
-    genericGatherScatterInterfaceTest<INT_VEC_TYPE, INT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericGatherScatterInterfaceTest<INT_VEC_TYPE, INT_SCALAR_TYPE, UINT_VEC_TYPE, UINT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
     genericShiftRotateInterfaceTest<INT_VEC_TYPE, UINT_VEC_TYPE, INT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
     genericSignInterfaceTest<INT_VEC_TYPE, INT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
     genericITOUTest<INT_VEC_TYPE, UINT_VEC_TYPE, UINT_SCALAR_TYPE, VEC_LEN, DATA_SET>();
@@ -9460,12 +10044,10 @@ template<
         typename DATA_SET>
 void genericFloatTest() {
     genericBaseInterfaceTest<FLOAT_VEC_TYPE, FLOAT_SCALAR_TYPE, MASK_TYPE, SWIZZLE_TYPE, VEC_LEN, DATA_SET> ();
-    genericGatherScatterInterfaceTest<FLOAT_VEC_TYPE, FLOAT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET> ();
+    genericGatherScatterInterfaceTest<FLOAT_VEC_TYPE, FLOAT_SCALAR_TYPE, UINT_VEC_TYPE, UINT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET> ();
     genericSignInterfaceTest<FLOAT_VEC_TYPE, FLOAT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
     genericFloatInterfaceTest<FLOAT_VEC_TYPE, FLOAT_SCALAR_TYPE, INT_VEC_TYPE, INT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
-    //genericFTOUTest<FLOAT_VEC_TYPE, UINT_VEC_TYPE, UINT_SCALAR_TYPE, VEC_LEN, DATA_SET>();
     genericFTOUTest_random<FLOAT_VEC_TYPE, FLOAT_SCALAR_TYPE, UINT_VEC_TYPE, UINT_SCALAR_TYPE, VEC_LEN>();
-    //genericFTOITest<FLOAT_VEC_TYPE, INT_VEC_TYPE, INT_SCALAR_TYPE, VEC_LEN, DATA_SET>();
     genericFTOITest_random<FLOAT_VEC_TYPE, FLOAT_SCALAR_TYPE, INT_VEC_TYPE, INT_SCALAR_TYPE, VEC_LEN>();
     genericPackableInterfaceTest<FLOAT_VEC_TYPE, FLOAT_SCALAR_TYPE, VEC_LEN>();
 }

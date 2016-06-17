@@ -1052,13 +1052,13 @@ namespace SIMD {
         }
 
         // GATHERS
-        inline SIMDVec_f & gather(float * baseAddr, uint64_t * indices) {
+        inline SIMDVec_f & gather(float * baseAddr, uint32_t * indices) {
             mVec[0] = baseAddr[indices[0]];
             mVec[1] = baseAddr[indices[1]];
             return *this;
         }
         // MGATHERS
-        inline SIMDVec_f & gather(SIMDVecMask<2> const & mask, float * baseAddr, uint64_t * indices) {
+        inline SIMDVec_f & gather(SIMDVecMask<2> const & mask, float * baseAddr, uint32_t * indices) {
             if (mask.mMask[0] == true) mVec[0] = baseAddr[indices[0]];
             if (mask.mMask[1] == true) mVec[1] = baseAddr[indices[1]];
             return *this;
@@ -1076,13 +1076,13 @@ namespace SIMD {
             return *this;
         }
         // SCATTERS
-        inline float * scatter(float * baseAddr, uint64_t * indices) const {
+        inline float * scatter(float * baseAddr, uint32_t * indices) const {
             baseAddr[indices[0]] = mVec[0];
             baseAddr[indices[1]] = mVec[1];
             return baseAddr;
         }
         // MSCATTERS
-        inline float * scatter(SIMDVecMask<2> const & mask, float * baseAddr, uint64_t * indices) const {
+        inline float * scatter(SIMDVecMask<2> const & mask, float * baseAddr, uint32_t * indices) const {
             if (mask.mMask[0] == true) baseAddr[indices[0]] = mVec[0];
             if (mask.mMask[1] == true) baseAddr[indices[1]] = mVec[1];
             return baseAddr;
@@ -1235,12 +1235,14 @@ namespace SIMD {
             return *this;
         }
         // PACKLO
-        inline SIMDVec_f packlo(SIMDVec_f<float, 1> const & a) {
-            return SIMDVec_f(a[0], mVec[1]);
+        inline SIMDVec_f & packlo(SIMDVec_f<float, 1> const & a) {
+            mVec[0] = a[0];
+            return *this;
         }
         // PACKHI
-        inline SIMDVec_f packhi(SIMDVec_f<float, 1> const & b) {
-            return SIMDVec_f(mVec[0], b[0]);
+        inline SIMDVec_f & packhi(SIMDVec_f<float, 1> const & b) {
+            mVec[1] = b[0];
+            return *this;
         }
         // UNPACK
         inline void unpack(SIMDVec_f<float, 1> & a, SIMDVec_f<float, 1> & b) {

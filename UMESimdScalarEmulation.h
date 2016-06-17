@@ -151,8 +151,8 @@ namespace SCALAR_EMULATION
     }
 
     // GATHERS
-    template<typename VEC_TYPE, typename SCALAR_TYPE>
-    UME_FORCE_INLINE VEC_TYPE & gather(VEC_TYPE & dst, SCALAR_TYPE* base, uint32_t* indices) {
+    template<typename VEC_TYPE, typename SCALAR_TYPE, typename SCALAR_UINT_TYPE>
+    UME_FORCE_INLINE VEC_TYPE & gather(VEC_TYPE & dst, SCALAR_TYPE* base, SCALAR_UINT_TYPE* indices) {
         for (uint32_t i = 0; i < VEC_TYPE::length(); i++) {
             dst.insert(i, base[indices[i]]);
         }
@@ -160,8 +160,8 @@ namespace SCALAR_EMULATION
     }
 
     // MGATHERS
-    template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
-    UME_FORCE_INLINE VEC_TYPE & gather(MASK_TYPE const & mask, VEC_TYPE & dst, SCALAR_TYPE* base, uint32_t* indices) {
+    template<typename VEC_TYPE, typename SCALAR_TYPE, typename SCALAR_UINT_TYPE, typename MASK_TYPE>
+    UME_FORCE_INLINE VEC_TYPE & gather(MASK_TYPE const & mask, VEC_TYPE & dst, SCALAR_TYPE* base, SCALAR_UINT_TYPE* indices) {
         for (uint32_t i = 0; i < VEC_TYPE::length(); i++) {
             if (mask[i] == true) dst.insert(i, base[indices[i]]);
         }
@@ -187,8 +187,8 @@ namespace SCALAR_EMULATION
     }
 
     // SCATTERS
-    template<typename VEC_TYPE, typename SCALAR_TYPE>
-    UME_FORCE_INLINE SCALAR_TYPE* scatter(VEC_TYPE const & src, SCALAR_TYPE* base, uint32_t* indices) {
+    template<typename VEC_TYPE, typename SCALAR_TYPE, typename SCALAR_UINT_TYPE>
+    UME_FORCE_INLINE SCALAR_TYPE* scatter(VEC_TYPE const & src, SCALAR_TYPE* base, SCALAR_UINT_TYPE* indices) {
         for (uint32_t i = 0; i < VEC_TYPE::length(); i++) {
             base[indices[i]] = src[i];
         }
@@ -196,8 +196,8 @@ namespace SCALAR_EMULATION
     }
 
     // MSCATTERS
-    template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
-    UME_FORCE_INLINE SCALAR_TYPE* scatter(MASK_TYPE const & mask, VEC_TYPE const & src, SCALAR_TYPE* base, uint32_t* indices) {
+    template<typename VEC_TYPE, typename SCALAR_TYPE, typename SCALAR_UINT_TYPE, typename MASK_TYPE>
+    UME_FORCE_INLINE SCALAR_TYPE* scatter(MASK_TYPE const & mask, VEC_TYPE const & src, SCALAR_TYPE* base, SCALAR_UINT_TYPE* indices) {
         for (uint32_t i = 0; i < VEC_TYPE::length(); i++) {
             if (mask[i] == true) base[indices[i]] = src[i];
         }

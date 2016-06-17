@@ -1464,7 +1464,7 @@ namespace SIMD {
         inline int32_t hbxor(SIMDVecMask<2> const & mask) const {
             int32_t t0 = ((mask.mMask & 0x1) != 0) ? mVec[0] : 0;
             int32_t t1 = ((mask.mMask & 0x2) != 0) ? mVec[1] ^ t0 : t0;
-            return t0;
+            return t1;
         }
         // HBXORS
         inline int32_t hbxor(int32_t b) const {
@@ -1496,7 +1496,7 @@ namespace SIMD {
             return *this;
         }
         // MGATHERV
-        inline SIMDVec_i gather(SIMDVecMask<2> const & mask, uint32_t* baseAddr, SIMDVec_u<uint32_t, 2> const & indices) {
+        inline SIMDVec_i gather(SIMDVecMask<2> const & mask, int32_t* baseAddr, SIMDVec_u<uint32_t, 2> const & indices) {
             if (((mask.mMask & 0x1) != 0)) mVec[0] = baseAddr[indices.mVec[0]];
             if (((mask.mMask & 0x2) != 0)) mVec[1] = baseAddr[indices.mVec[1]];
             return *this;

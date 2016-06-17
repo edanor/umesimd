@@ -1498,7 +1498,7 @@ namespace SIMD {
             alignas(64) int32_t rawIndices[32];
             alignas(64) int32_t rawData[32];
             _mm512_store_si512((__m512i*) rawIndices, indices.mVec[0]);
-            _mm512_store_si512((__m512i*) rawIndices, indices.mVec[1]);
+            _mm512_store_si512((__m512i*) (rawIndices + 16), indices.mVec[1]);
             rawData[0] = baseAddr[rawIndices[0]];
             rawData[1] = baseAddr[rawIndices[1]];
             rawData[2] = baseAddr[rawIndices[2]];
@@ -1542,7 +1542,7 @@ namespace SIMD {
             __mmask16 m0 = mask.mMask & 0x0000FFFF;
             __mmask16 m1 = (mask.mMask & 0xFFFF0000) >> 16;
             _mm512_store_si512((__m512i*) rawIndices, indices.mVec[0]);
-            _mm512_store_si512((__m512i*) rawIndices, indices.mVec[1]);
+            _mm512_store_si512((__m512i*) (rawIndices + 16), indices.mVec[1]);
             rawData[0] = baseAddr[rawIndices[0]];
             rawData[1] = baseAddr[rawIndices[1]];
             rawData[2] = baseAddr[rawIndices[2]];
@@ -1592,8 +1592,8 @@ namespace SIMD {
                 indices[28], indices[29], indices[30], indices[31] };
             __m512i t0 = _mm512_load_si512((__m512i *) rawIndices);
             __m512i t1 = _mm512_load_si512((__m512i *)rawIndices);
-            _mm512_i32scatter_epi32(baseAddr, t0, mVec[0], 1);
-            _mm512_i32scatter_epi32(baseAddr, t1, mVec[1], 1);
+            _mm512_i32scatter_epi32(baseAddr, t0, mVec[0], 4);
+            _mm512_i32scatter_epi32(baseAddr, t1, mVec[1], 4);
             return baseAddr;
         }
         // MSCATTERS
@@ -1611,22 +1611,22 @@ namespace SIMD {
                 indices[28], indices[29], indices[30], indices[31] };
             __m512i t0 = _mm512_mask_load_epi32(_mm512_set1_epi32(0), m0, (__m512i *) rawIndices);
             __m512i t1 = _mm512_mask_load_epi32(_mm512_set1_epi32(0), m1, (__m512i *) (rawIndices + 16));
-            _mm512_mask_i32scatter_epi32(baseAddr, m0, t0, mVec[0], 1);
-            _mm512_mask_i32scatter_epi32(baseAddr, m1, t1, mVec[1], 1);
+            _mm512_mask_i32scatter_epi32(baseAddr, m0, t0, mVec[0], 4);
+            _mm512_mask_i32scatter_epi32(baseAddr, m1, t1, mVec[1], 4);
             return baseAddr;
         }
         // SCATTERV
         inline int32_t* scatter(int32_t* baseAddr, SIMDVec_u<uint32_t, 32> const & indices) {
-            _mm512_i32scatter_epi32(baseAddr, indices.mVec[0], mVec[0], 1);
-            _mm512_i32scatter_epi32(baseAddr + 16, indices.mVec[1], mVec[1], 1);
+            _mm512_i32scatter_epi32(baseAddr, indices.mVec[0], mVec[0], 4);
+            _mm512_i32scatter_epi32(baseAddr + 16, indices.mVec[1], mVec[1], 4);
             return baseAddr;
         }
         // MSCATTERV
         inline int32_t* scatter(SIMDVecMask<32> const & mask, int32_t* baseAddr, SIMDVec_u<uint32_t, 32> const & indices) {
             __mmask16 m0 = mask.mMask & 0x0000FFFF;
             __mmask16 m1 = (mask.mMask & 0xFFFF0000) >> 16;
-            _mm512_mask_i32scatter_epi32(baseAddr,      m0, indices.mVec[0], mVec[0], 1);
-            _mm512_mask_i32scatter_epi32(baseAddr + 16, m1, indices.mVec[1], mVec[1], 1);
+            _mm512_mask_i32scatter_epi32(baseAddr,      m0, indices.mVec[0], mVec[0], 4);
+            _mm512_mask_i32scatter_epi32(baseAddr + 16, m1, indices.mVec[1], mVec[1], 4);
             return baseAddr;
         }
         // LSHV

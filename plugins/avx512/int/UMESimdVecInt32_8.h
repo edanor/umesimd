@@ -1710,7 +1710,7 @@ namespace SIMD {
                 indices[4], indices[5], indices[6], indices[7] };
 #if defined(__AVX512VL__)
             __m256i t0 = _mm256_mask_load_epi32(_mm256_set1_epi32(0), mask.mMask, (__m256i *) rawIndices);
-            _mm256_mask_i32scatter_epi32(baseAddr, mask.mMask, t0, mVec, 1);
+            _mm256_mask_i32scatter_epi32(baseAddr, mask.mMask, t0, mVec, 4);
 #else
             __m256i t0 = _mm256_load_si256((__m256i*) rawIndices);
             __m512i t1 = _mm512_castsi256_si512(t0);
@@ -1733,7 +1733,7 @@ namespace SIMD {
         // MSCATTERV
         inline int32_t* scatter(SIMDVecMask<8> const & mask, int32_t* baseAddr, SIMDVec_i const & indices) {
 #if defined(__AVX512VL__)
-            _mm256_mask_i32scatter_epi32(baseAddr, mask.mMask, indices.mVec, mVec, 1);
+            _mm256_mask_i32scatter_epi32(baseAddr, mask.mMask, indices.mVec, mVec, 4);
 #else
             __m512i t0 = _mm512_castsi256_si512(mVec);
             __m512i t1 = _mm512_castsi256_si512(indices.mVec);
