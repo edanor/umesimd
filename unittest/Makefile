@@ -2,11 +2,11 @@
 # CXX={gcc, icc, clang)
 # ISA={scalar, avx, avx2, core_avx512, mic_avx512, imci}
 # BUILD={debug, release, release_O3}
-CXXFLAGS=-std=c++11 
+CXXFLAGS=-std=c++11 -Wall
 
 #some predefined rules
-ifeq ($(CXX), gcc)
-	COMPILER_PREFIX=gcc	
+ifeq ($(CXX), g++)
+	COMPILER_PREFIX=gcc
 endif
 ifeq ($(CXX), clang++)
 	COMPILER_PREFIX=clang

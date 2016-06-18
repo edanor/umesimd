@@ -1218,12 +1218,14 @@ namespace SIMD {
             return *this;
         }
         // PACKLO
-        inline SIMDVec_f packlo(SIMDVec_f<double, 1> const & a) {
-            return SIMDVec_f(a[0], mVec[1]);
+        inline SIMDVec_f & packlo(SIMDVec_f<double, 1> const & a) {
+            mVec[0] = a[0];
+            return *this;
         }
         // PACKHI
-        inline SIMDVec_f packhi(SIMDVec_f<double, 1> const & b) {
-            return SIMDVec_f(mVec[0], b[0]);
+        inline SIMDVec_f & packhi(SIMDVec_f<double, 1> const & b) {
+            mVec[1] = b[0];
+            return *this;
         }
         // UNPACK
         inline void unpack(SIMDVec_f<double, 1> & a, SIMDVec_f<double, 1> & b) {

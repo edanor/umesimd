@@ -196,8 +196,8 @@ namespace SIMD {
                 alignas(64) float raw[16];
                 _mm512_store_ps(raw, mVec);
                 memcpy(p, raw, 16 * sizeof(float));
-                return p;
             }
+            return p;
         }
         // MSTORE  - Masked store vector content into memory (either aligned or
         //           unaligned)

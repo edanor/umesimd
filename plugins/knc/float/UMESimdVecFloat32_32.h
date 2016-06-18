@@ -201,8 +201,8 @@ namespace SIMD {
                 _mm512_store_ps(raw, mVecLo);
                 _mm512_store_ps(raw + 16, mVecHi);
                 memcpy(p, raw, 32 * sizeof(float));
-                return p;
             }
+            return p;
         }
         // MSTORE
         inline float * store(SIMDVecMask<32> const & mask, float * p) const {

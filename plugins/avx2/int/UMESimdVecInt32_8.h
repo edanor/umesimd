@@ -1378,13 +1378,13 @@ namespace SIMD {
         }
         // GATHERS
         inline SIMDVec_i & gather(int32_t* baseAddr, uint32_t* indices) {
-            __m256i t0 = _mm256_load_si256((__m256i*)indices);
+            __m256i t0 = _mm256_loadu_si256((__m256i*)indices);
             mVec = _mm256_i32gather_epi32((const int *)baseAddr, t0, 4);
             return *this;
         }
         // MGATHERS
         inline SIMDVec_i & gather(SIMDVecMask<8> const & mask, int32_t* baseAddr, uint32_t* indices) {
-            __m256i t0 = _mm256_load_si256((__m256i*)indices);
+            __m256i t0 = _mm256_loadu_si256((__m256i*)indices);
             __m256i t1 = _mm256_i32gather_epi32((const int *)baseAddr, t0, 4);
             mVec = _mm256_blendv_epi8(mVec, t1, mask.mMask);
             return *this;

@@ -3063,11 +3063,19 @@ namespace SIMD {
         }
         // PACKLO
         inline SIMDVec_i packlo(SIMDVec_i<int32_t, 4> const & a) {
-            return SIMDVec_i(a[0], a[1], a[2], a[3], mVec[4], mVec[5], mVec[6], mVec[7]);
+            mVec[0] = a[0];
+            mVec[1] = a[1];
+            mVec[2] = a[2];
+            mVec[3] = a[3];
+            return *this;
         }
         // PACKHI
         inline SIMDVec_i packhi(SIMDVec_i<int32_t, 4> const & b) {
-            return SIMDVec_i(mVec[0], mVec[1], mVec[2], mVec[3], b[0], b[1], b[2], b[3]);
+            mVec[4] = b[0];
+            mVec[5] = b[1];
+            mVec[6] = b[2];
+            mVec[7] = b[3];
+            return *this;
         }
         // UNPACK
         inline void unpack(SIMDVec_i<int32_t, 4> & a, SIMDVec_i<int32_t, 4> & b) const {

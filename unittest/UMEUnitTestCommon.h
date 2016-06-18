@@ -6234,9 +6234,23 @@ void genericSCATTERSTest_random()
         inputA[i] = randomValue<SCALAR_TYPE>(gen);
         output[i] = inputA[i];
     }
+    bool uniqueIndices;
     for (int i = 0; i < VEC_LEN;i++) {
         inputB[i] = randomValue<SCALAR_UINT_TYPE>(gen);
-        indices[i] = randomValue<SCALAR_UINT_TYPE>(gen) % (VEC_LEN * 100);
+        do
+        {
+            // Indices for scatter should be unique. Otherwise test might yield
+            // hazardous results.
+            indices[i] = randomValue<SCALAR_UINT_TYPE>(gen) % (VEC_LEN * 100);
+            uniqueIndices = true;
+            for (int j = 0; j < i; j++) {
+                if (indices[i] == indices[j]) {
+                    uniqueIndices = false;
+                    break;
+                }
+            }
+        } while (!uniqueIndices);
+
         output[indices[i]] = inputB[i];
     }
 
@@ -6263,10 +6277,23 @@ void genericMSCATTERSTest_random()
         inputA[i] = randomValue<SCALAR_TYPE>(gen);
         output[i] = inputA[i];
     }
+    bool uniqueIndices;
     for (int i = 0; i < VEC_LEN;i++) {
         inputMask[i] = randomValue<bool>(gen);
         inputB[i] = randomValue<SCALAR_UINT_TYPE>(gen);
-        indices[i] = randomValue<SCALAR_UINT_TYPE>(gen) % (VEC_LEN * 100);
+        do
+        {
+            // Indices for scatter should be unique. Otherwise test might yield
+            // hazardous results.
+            indices[i] = randomValue<SCALAR_UINT_TYPE>(gen) % (VEC_LEN * 100);
+            uniqueIndices = true;
+            for (int j = 0; j < i; j++) {
+                if (indices[i] == indices[j]) {
+                    uniqueIndices = false;
+                    break;
+                }
+            }
+        } while (!uniqueIndices);
         if(inputMask[i] == true) output[indices[i]] = inputB[i];
     }
 
@@ -6293,9 +6320,22 @@ void genericSCATTERVTest_random()
         inputA[i] = randomValue<SCALAR_TYPE>(gen);
         output[i] = inputA[i];
     }
+    bool uniqueIndices;
     for (int i = 0; i < VEC_LEN;i++) {
         inputB[i] = randomValue<SCALAR_UINT_TYPE>(gen);
-        indices[i] = randomValue<SCALAR_UINT_TYPE>(gen) % (VEC_LEN * 100);
+        do
+        {
+            // Indices for scatter should be unique. Otherwise test might yield
+            // hazardous results.
+            indices[i] = randomValue<SCALAR_UINT_TYPE>(gen) % (VEC_LEN * 100);
+            uniqueIndices = true;
+            for (int j = 0; j < i; j++) {
+                if (indices[i] == indices[j]) {
+                    uniqueIndices = false;
+                    break;
+                }
+            }
+        } while (!uniqueIndices);
         output[indices[i]] = inputB[i];
     }
 
@@ -6323,10 +6363,23 @@ void genericMSCATTERVTest_random()
         inputA[i] = randomValue<SCALAR_TYPE>(gen);
         output[i] = inputA[i];
     }
+    bool uniqueIndices;
     for (int i = 0; i < VEC_LEN;i++) {
         inputMask[i] = randomValue<bool>(gen);
         inputB[i] = randomValue<SCALAR_UINT_TYPE>(gen);
-        indices[i] = randomValue<SCALAR_UINT_TYPE>(gen) % (VEC_LEN * 100);
+        do
+        {
+            // Indices for scatter should be unique. Otherwise test might yield
+            // hazardous results.
+            indices[i] = randomValue<SCALAR_UINT_TYPE>(gen) % (VEC_LEN * 100);
+            uniqueIndices = true;
+            for (int j = 0; j < i; j++) {
+                if (indices[i] == indices[j]) {
+                    uniqueIndices = false;
+                    break;
+                }
+            }
+        } while (!uniqueIndices);
         if(inputMask[i] == true) output[indices[i]] = inputB[i];
     }
 
@@ -7040,7 +7093,7 @@ void genericIMAXTest_random()
     {
         SCALAR_TYPE inputA[VEC_LEN];
         SCALAR_TYPE maxVal = std::numeric_limits<SCALAR_TYPE>::min();
-        uint32_t index;
+        uint32_t index = 0xFFFFFFFF;
 
         for (int i = 0; i < VEC_LEN; i++) {
             inputA[i] = randomValue<SCALAR_TYPE>(gen);
@@ -7058,7 +7111,8 @@ void genericIMAXTest_random()
     {
         SCALAR_TYPE inputA[VEC_LEN];
         SCALAR_TYPE maxVal = std::numeric_limits<SCALAR_TYPE>::min();
-        uint32_t index;
+        uint32_t index = 0xFFFFFFFF;
+
         for (int i = 0; i < VEC_LEN; i++) {
             inputA[i] = randomValue<SCALAR_TYPE>(gen);
             if (inputA[i] > maxVal) {
@@ -7084,7 +7138,7 @@ void genericMIMAXTest_random()
         SCALAR_TYPE inputA[VEC_LEN];
         bool inputMask[VEC_LEN];
         SCALAR_TYPE maxVal = std::numeric_limits<SCALAR_TYPE>::min();
-        uint32_t index;
+        uint32_t index = 0xFFFFFFFF;
         bool maskEmpty = true;
 
         for (int i = 0; i < VEC_LEN; i++) {
@@ -7100,21 +7154,21 @@ void genericMIMAXTest_random()
         VEC_TYPE vec0(inputA);
         MASK_TYPE mask(inputMask);
         uint32_t value = vec0.imax(mask);
-        bool inRange = (value == index) || !(maskEmpty);
+        bool inRange = (value == index) || maskEmpty;
         CHECK_CONDITION(inRange, "MIMAX");
     }
     {
         SCALAR_TYPE inputA[VEC_LEN];
         bool inputMask[VEC_LEN];
         SCALAR_TYPE maxVal = std::numeric_limits<SCALAR_TYPE>::min();
-        uint32_t index;
+        uint32_t index = 0xFFFFFFFF;
         bool maskEmpty = true;
 
         for (int i = 0; i < VEC_LEN; i++) {
             inputA[i] = randomValue<SCALAR_TYPE>(gen);
             inputMask[i] = randomValue<bool>(gen);
             maskEmpty = inputMask[i] ? false : maskEmpty;
-            if (inputA[i] > maxVal) {
+            if (inputMask[i] && (inputA[i] > maxVal)) {
                 index = i;
                 maxVal = inputA[i];
             }
@@ -7123,7 +7177,7 @@ void genericMIMAXTest_random()
         VEC_TYPE vec0(inputA);
         MASK_TYPE mask(inputMask);
         uint32_t value = UME::SIMD::FUNCTIONS::imax(mask, vec0);
-        bool inRange = (value == index) || !(maskEmpty);
+        bool inRange = (value == index) || maskEmpty;
         CHECK_CONDITION(inRange, "MIMAX(function)");
     }
 }
@@ -7233,7 +7287,7 @@ void genericIMINTest_random()
     {
         SCALAR_TYPE inputA[VEC_LEN];
         SCALAR_TYPE minVal = std::numeric_limits<SCALAR_TYPE>::max();
-        uint32_t index;
+        uint32_t index = 0xFFFFFFFF;
 
         for (int i = 0; i < VEC_LEN; i++) {
             inputA[i] = randomValue<SCALAR_TYPE>(gen);
@@ -7251,7 +7305,7 @@ void genericIMINTest_random()
     {
         SCALAR_TYPE inputA[VEC_LEN];
         SCALAR_TYPE minVal = std::numeric_limits<SCALAR_TYPE>::max();
-        uint32_t index;
+        uint32_t index = 0xFFFFFFFF;
 
         for (int i = 0; i < VEC_LEN; i++) {
             inputA[i] = randomValue<SCALAR_TYPE>(gen);
@@ -7294,7 +7348,7 @@ void genericMIMINTest_random()
         VEC_TYPE vec0(inputA);
         MASK_TYPE mask(inputMask);
         uint32_t value = vec0.imin(mask);
-        bool inRange = (value == index) || (!maskEmpty);
+        bool inRange = (value == index) || maskEmpty;
         CHECK_CONDITION(inRange, "MIMIN");
     }
     {
@@ -7307,7 +7361,7 @@ void genericMIMINTest_random()
         for (int i = 0; i < VEC_LEN; i++) {
             inputA[i] = randomValue<SCALAR_TYPE>(gen);
             inputMask[i] = randomValue<bool>(gen);
-            maskEmpty = inputMask[i] ? true : maskEmpty;
+            maskEmpty = inputMask[i] ? false : maskEmpty;
             if (inputMask[i] && (inputA[i] < minVal)) {
                 index = i;
                 minVal = inputA[i];
@@ -7317,7 +7371,7 @@ void genericMIMINTest_random()
         VEC_TYPE vec0(inputA);
         MASK_TYPE mask(inputMask);
         uint32_t value = UME::SIMD::FUNCTIONS::imin(mask, vec0);
-        bool inRange = (value == index) || (!maskEmpty);
+        bool inRange = (value == index) || maskEmpty;
         CHECK_CONDITION(inRange, "MIMIN(function)");
     }
 }

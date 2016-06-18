@@ -1713,12 +1713,16 @@ namespace SIMD {
             return *this;
         }
         // PACKLO
-        inline SIMDVec_f packlo(SIMDVec_f<float, 2> const & a) {
-            return SIMDVec_f(a[0], a[1], mVec[2], mVec[3]);
+        inline SIMDVec_f & packlo(SIMDVec_f<float, 2> const & a) {
+            mVec[0] = a[0];
+            mVec[1] = a[1];
+            return *this;
         }
         // PACKHI
-        inline SIMDVec_f packhi(SIMDVec_f<float, 2> const & b) {
-            return SIMDVec_f(mVec[0], mVec[1], b[0], b[1]);
+        inline SIMDVec_f & packhi(SIMDVec_f<float, 2> const & b) {
+            mVec[2] = b[0];
+            mVec[3] = b[1];
+            return *this;
         }
         // UNPACK
         void unpack(SIMDVec_f<float, 2> & a, SIMDVec_f<float, 2> & b) const {
@@ -1729,11 +1733,11 @@ namespace SIMD {
         }
         // UNPACKLO
         inline SIMDVec_f<float, 2> unpacklo() const {
-            return SIMDVec_f<float, 2>(mVec[0]);
+            return SIMDVec_f<float, 2>(mVec[0], mVec[1]);
         }
         // UNPACKHI
         inline SIMDVec_f<float, 2> unpackhi() const {
-            return SIMDVec_f<float, 2>(mVec[1]);
+            return SIMDVec_f<float, 2>(mVec[2], mVec[3]);
         }
 
         // PROMOTE

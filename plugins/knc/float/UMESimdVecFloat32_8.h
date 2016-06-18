@@ -208,8 +208,8 @@ namespace SIMD {
                     mVec);
 
                 memcpy(p, raw, 8 * sizeof(float));
-                return p;
             }
+            return p;
         }
         // MSTORE  - Masked store vector content into memory (either aligned or
         //           unaligned)

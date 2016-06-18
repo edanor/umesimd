@@ -2893,7 +2893,7 @@ namespace SCALAR_EMULATION
         UME_FORCE_INLINE uint32_t indexMax(VEC_TYPE const & a) {
             uint32_t indexMax = 0;
             SCALAR_TYPE maxVal = a[0];
-            for (uint32_t i = 1; i < VEC_TYPE::length(); i++) {
+            for (uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                 if (a[i] > maxVal) {
                     maxVal = a[i];
                     indexMax = i;
@@ -2941,7 +2941,7 @@ namespace SCALAR_EMULATION
         UME_FORCE_INLINE uint32_t indexMin(VEC_TYPE const & a) {
             uint32_t indexMin = 0;
             SCALAR_TYPE minVal = std::numeric_limits<SCALAR_TYPE>::max();
-            for (uint32_t i = 1; i < VEC_TYPE::length(); i++) {
+            for (uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                 if (a[i] < minVal) {
                     minVal = a[i];
                     indexMin = i;

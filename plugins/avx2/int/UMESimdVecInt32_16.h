@@ -1593,18 +1593,18 @@ namespace SIMD {
         }
         // GATHERS
         inline SIMDVec_i & gather(int32_t* baseAddr, uint32_t* indices) {
-            __m256i t0 = _mm256_load_si256((__m256i*)indices);
+            __m256i t0 = _mm256_loadu_si256((__m256i*)indices);
             mVec[0] = _mm256_i32gather_epi32((const int *)baseAddr, t0, 4);
-            __m256i t1 = _mm256_load_si256((__m256i*)(indices + 8));
+            __m256i t1 = _mm256_loadu_si256((__m256i*)(indices + 8));
             mVec[1] = _mm256_i32gather_epi32((const int *)baseAddr, t1, 4);
             return *this;
         }
         // MGATHERS
         inline SIMDVec_i & gather(SIMDVecMask<16> const & mask, int32_t* baseAddr, uint32_t* indices) {
-            __m256i t0 = _mm256_load_si256((__m256i*)indices);
+            __m256i t0 = _mm256_loadu_si256((__m256i*)indices);
             __m256i t1 = _mm256_i32gather_epi32((const int *)baseAddr, t0, 4);
             mVec[0] = _mm256_blendv_epi8(mVec[0], t1, mask.mMask[0]);
-            __m256i t2 = _mm256_load_si256((__m256i*)(indices + 8));
+            __m256i t2 = _mm256_loadu_si256((__m256i*)(indices + 8));
             __m256i t3 = _mm256_i32gather_epi32((const int *)baseAddr, t2, 4);
             mVec[1] = _mm256_blendv_epi8(mVec[1], t3, mask.mMask[1]);
             return *this;

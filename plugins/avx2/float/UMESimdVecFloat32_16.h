@@ -1348,10 +1348,10 @@ namespace SIMD {
         }
         // MGATHERS
         inline SIMDVec_f & gather(SIMDVecMask<16> const & mask, float* baseAddr, uint32_t* indices) {
-            __m256i t0 = _mm256_load_si256((__m256i*)indices);
+            __m256i t0 = _mm256_loadu_si256((__m256i*)indices);
             __m256 t1 = _mm256_i32gather_ps((const float *)baseAddr, t0, 4);
             mVec[0] = BLEND(mVec[0], t1, mask.mMask[0]);
-            __m256i t2 = _mm256_load_si256((__m256i*)(indices + 8));
+            __m256i t2 = _mm256_loadu_si256((__m256i*)(indices + 8));
             __m256 t3 = _mm256_i32gather_ps((const float *)baseAddr, t2, 4);
             mVec[1] = BLEND(mVec[1], t3, mask.mMask[1]);
             return *this;
@@ -1375,7 +1375,7 @@ namespace SIMD {
             alignas(32) float raw[16];
             _mm256_store_ps(raw, mVec[0]);
             for (int i = 0; i < 8; i++) { baseAddr[indices[i]] = raw[i]; };
-            _mm256_store_ps((raw + 8), mVec[0]);
+            _mm256_store_ps((raw + 8), mVec[1]);
             for (int i = 0; i < 8; i++) { baseAddr[indices[i+8]] = raw[i+8]; };
             return baseAddr;
         }
@@ -1419,7 +1419,7 @@ namespace SIMD {
             _mm256_store_si256((__m256i*) (rawIndices + 8), indices.mVec[1]);
             _mm256_store_si256((__m256i*) (rawMask + 8), mask.mMask[1]);
             for (int i = 0; i < 8; i++) {
-                if (rawMask[i] == SIMDVecMask<16>::TRUE())
+                if (rawMask[i + 8] == SIMDVecMask<16>::TRUE())
                     baseAddr[rawIndices[i+8]] = raw[i+8];
             }
             return baseAddr;

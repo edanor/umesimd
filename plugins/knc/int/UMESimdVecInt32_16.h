@@ -50,7 +50,7 @@ namespace SIMD {
             SIMDVecMask<16>,
             SIMDSwizzle<16>> ,
         public SIMDVecPackableInterface<
-           SIMDVec_i<int32_t, 32>,
+           SIMDVec_i<int32_t, 16>,
            SIMDVec_i<int32_t, 8>>
     {
         friend class SIMDVec_u<uint32_t, 16>;
@@ -181,10 +181,12 @@ namespace SIMD {
         // LOADA
         inline SIMDVec_i & loada(int32_t const * p) {
             mVec = _mm512_load_epi32(p);
+            return *this;
         }
         // MLOADA
         inline SIMDVec_i & loada(SIMDVecMask<16> const & mask, int32_t const *p) {
             mVec = _mm512_mask_load_epi32(mVec, mask.mMask, p);
+            return *this;
         }
         // STORE
         inline int32_t* store(int32_t* p) const {
@@ -195,8 +197,8 @@ namespace SIMD {
                 alignas(64) int32_t raw[16];
                 _mm512_store_epi32(raw, mVec);
                 memcpy(p, raw, 16 * sizeof(int32_t));
-                return p;
             }
+            return p;
         }
         // MSTORE
         inline int32_t* store(SIMDVecMask<16> const & mask, int32_t* p) {
@@ -207,8 +209,8 @@ namespace SIMD {
                 alignas(64) int32_t raw[16];
                 _mm512_store_epi32(raw, mVec);
                 memcpy(p, raw, 16 * sizeof(int32_t));
-                return p;
             }
+            return p;
         }
         // STOREA
         inline int32_t* storea(int32_t* p) {
