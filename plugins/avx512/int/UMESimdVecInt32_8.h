@@ -456,7 +456,7 @@ namespace SIMD {
             mVec = _mm256_sub_epi32(mVec, b.mVec);
             return *this;
         }
-        inline SIMDVec_i operator-= (SIMDVec_i const & b) {
+        inline SIMDVec_i & operator-= (SIMDVec_i const & b) {
             return suba(b);
         }
         // MSUBVA
@@ -476,7 +476,7 @@ namespace SIMD {
             mVec = _mm256_sub_epi32(mVec, _mm256_set1_epi32(b));
             return *this;
         }
-        inline SIMDVec_i operator-= (int32_t b) {
+        inline SIMDVec_i & operator-= (int32_t b) {
             return suba(b);
         }
         // MSUBSA

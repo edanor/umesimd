@@ -707,12 +707,12 @@ namespace SIMD {
         }
         // MDIVS
         // DIVVA
-        inline SIMDVec_u operator/= (SIMDVec_u const & b) {
+        inline SIMDVec_u & operator/= (SIMDVec_u const & b) {
             return diva(b);
         }
         // MDIVVA
         // DIVSA
-        inline SIMDVec_u operator/= (uint32_t b) {
+        inline SIMDVec_u & operator/= (uint32_t b) {
             return diva(b);
         }
         // MDIVSA

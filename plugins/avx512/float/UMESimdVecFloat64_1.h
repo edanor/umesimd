@@ -492,7 +492,7 @@ namespace SIMD {
             mVec /= b.mVec;
             return *this;
         }
-        inline SIMDVec_f operator/= (SIMDVec_f const & b) {
+        inline SIMDVec_f & operator/= (SIMDVec_f const & b) {
             return diva(b);
         }
         // MDIVVA
@@ -505,7 +505,7 @@ namespace SIMD {
             mVec /= b;
             return *this;
         }
-        inline SIMDVec_f operator/= (double b) {
+        inline SIMDVec_f & operator/= (double b) {
             return diva(b);
         }
         // MDIVSA

@@ -364,6 +364,9 @@ namespace SIMD {
             mVec = _mm512_sub_epi32(mVec, t0);
             return *this;
         }
+        inline SIMDVec_i &operator-= (int32_t b) {
+            return suba(b);
+        }
         // MSUBSA
         inline SIMDVec_i & suba(SIMDVecMask<16> const & mask, int32_t b) {
             __m512i t0 = _mm512_set1_epi32(b);

@@ -430,7 +430,7 @@ namespace SIMD {
             mVec[1] = _mm512_sub_epi32(mVec[1], b.mVec[1]);
             return *this;
         }
-        inline SIMDVec_i operator-= (SIMDVec_i const & b) {
+        inline SIMDVec_i & operator-= (SIMDVec_i const & b) {
             return suba(b);
         }
         // MSUBVA
@@ -448,7 +448,7 @@ namespace SIMD {
             mVec[1] = _mm512_sub_epi32(mVec[1], t0);
             return *this;
         }
-        inline SIMDVec_i operator-= (int32_t b) {
+        inline SIMDVec_i & operator-= (int32_t b) {
             return suba(b);
         }
         // MSUBSA
@@ -610,7 +610,7 @@ namespace SIMD {
             mVec[1] = _mm512_mullo_epi32(mVec[1], b.mVec[1]);
             return *this;
         }
-        inline SIMDVec_i operator*= (SIMDVec_i const & b) {
+        inline SIMDVec_i & operator*= (SIMDVec_i const & b) {
             return mula(b);
         }
         // MMULVA
@@ -628,7 +628,7 @@ namespace SIMD {
             mVec[1] = _mm512_mullo_epi32(mVec[1], t0);
             return *this;
         }
-        inline SIMDVec_i operator*= (int32_t b) {
+        inline SIMDVec_i & operator*= (int32_t b) {
             return mula(b);
         }
         // MMULSA

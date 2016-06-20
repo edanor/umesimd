@@ -1260,7 +1260,7 @@ namespace SIMD {
             mVec[7] /= b.mVec[7];
             return *this;
         }
-        inline SIMDVec_u operator/= (SIMDVec_u const & b) {
+        inline SIMDVec_u & operator/= (SIMDVec_u const & b) {
             return diva(b);
         }
         // MDIVVA
@@ -1287,7 +1287,7 @@ namespace SIMD {
             mVec[7] /= b;
             return *this;
         }
-        inline SIMDVec_u operator/= (uint32_t b) {
+        inline SIMDVec_u & operator/= (uint32_t b) {
             return diva(b);
         }
         // MDIVSA
