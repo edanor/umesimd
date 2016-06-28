@@ -28,28 +28,24 @@
 //  7th Framework programme Marie Curie Actions under grant PITN-GA-2012-316596".
 //
 
-#ifndef UME_SIMD_VEC_FLOAT_H_
-#define UME_SIMD_VEC_FLOAT_H_
+#ifndef UME_SIMD_MASK_H_
+#define UME_SIMD_MASK_H_
 
 #include <type_traits>
 #include "../../UMESimdInterface.h"
 #include <immintrin.h>
 
-#include "UMESimdMaskKNC.h"
-#include "UMESimdSwizzleKNC.h"
-#include "UMESimdVecUintKNC.h"
-#include "UMESimdVecFloatKNC.h"
+// ********************************************************************************************
+// MASK VECTOR TEMPLATE
+// ********************************************************************************************
+#include "mask/UMESimdMaskPrototype.h"
 
 // ********************************************************************************************
-// FLOATING POINT VECTOR TEMPLATE
+// MASK VECTOR SPECIALIZATIONS
 // ********************************************************************************************
-#include "float/UMESimdVecFloatPrototype.h"
-
-// ********************************************************************************************
-// FLOATING POINT VECTOR SPECIALIZATIONS
-// ********************************************************************************************
-#include "float/UMESimdVecFloat32_8.h"
-#include "float/UMESimdVecFloat32_16.h"
-#include "float/UMESimdVecFloat32_32.h"
+#include "mask/UMESimdMask1.h"
+#include "mask/UMESimdMask2.h"
+#include "mask/UMESimdMask4.h"
+#include "mask/UMESimdMask8.h"
 
 #endif

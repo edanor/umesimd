@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2015 CERN
+// Copyright (c) 2016 CERN
 //
 // Author: Przemyslaw Karpinski
 //
@@ -35,10 +35,10 @@
 #include "../../UMESimdInterface.h"
 #include <immintrin.h>
 
-#include "UMESimdMaskKNC.h"
-#include "UMESimdSwizzleKNC.h"
-#include "UMESimdVecUintKNC.h"
-#include "UMESimdVecFloatKNC.h"
+#include "UMESimdMaskScalar.h"
+#include "UMESimdSwizzleScalar.h"
+#include "UMESimdVecUintScalar.h"
+#include "UMESimdVecFloatScalar.h"
 
 // ********************************************************************************************
 // FLOATING POINT VECTOR TEMPLATE
@@ -48,8 +48,9 @@
 // ********************************************************************************************
 // FLOATING POINT VECTOR SPECIALIZATIONS
 // ********************************************************************************************
+#include "float/UMESimdVecFloat32_1.h"
+#include "float/UMESimdVecFloat32_2.h"
+#include "float/UMESimdVecFloat32_4.h"
 #include "float/UMESimdVecFloat32_8.h"
-#include "float/UMESimdVecFloat32_16.h"
-#include "float/UMESimdVecFloat32_32.h"
 
 #endif

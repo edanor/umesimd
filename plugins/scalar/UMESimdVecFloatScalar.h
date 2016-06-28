@@ -28,8 +28,8 @@
 //  7th Framework programme Marie Curie Actions under grant PITN-GA-2012-316596".
 //
 
-#ifndef UME_SIMD_VEC_FLOAT_KNC_H_
-#define UME_SIMD_VEC_FLOAT_KNC_H_
+#ifndef UME_SIMD_VEC_FLOAT_H_
+#define UME_SIMD_VEC_FLOAT_H_
 
 #include <type_traits>
 #include "../../UMESimdInterface.h"

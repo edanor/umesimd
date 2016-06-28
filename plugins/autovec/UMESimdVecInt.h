@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2015 CERN
+// Copyright (c) 2016 CERN
 //
 // Author: Przemyslaw Karpinski
 //
@@ -28,28 +28,28 @@
 //  7th Framework programme Marie Curie Actions under grant PITN-GA-2012-316596".
 //
 
-#ifndef UME_SIMD_VEC_FLOAT_H_
-#define UME_SIMD_VEC_FLOAT_H_
+#ifndef UME_SIMD_VEC_INT_H_
+#define UME_SIMD_VEC_INT_H_
 
 #include <type_traits>
 #include "../../UMESimdInterface.h"
 #include <immintrin.h>
 
-#include "UMESimdMaskKNC.h"
-#include "UMESimdSwizzleKNC.h"
-#include "UMESimdVecUintKNC.h"
-#include "UMESimdVecFloatKNC.h"
+#include "UMESimdMask.h"
+#include "UMESimdSwizzle.h"
+#include "UMESimdVecUint.h"
 
 // ********************************************************************************************
-// FLOATING POINT VECTOR TEMPLATE
+// SIGNED INTEGER VECTOR TEMPLATE
 // ********************************************************************************************
-#include "float/UMESimdVecFloatPrototype.h"
+#include "int/UMESimdVecIntPrototype.h"
 
 // ********************************************************************************************
-// FLOATING POINT VECTOR SPECIALIZATIONS
+// SIGNED INTEGER VECTOR SPECIALIZATIONS
 // ********************************************************************************************
-#include "float/UMESimdVecFloat32_8.h"
-#include "float/UMESimdVecFloat32_16.h"
-#include "float/UMESimdVecFloat32_32.h"
+#include "int/UMESimdVecInt32_1.h"
+#include "int/UMESimdVecInt32_2.h"
+#include "int/UMESimdVecInt32_4.h"
+#include "int/UMESimdVecInt32_8.h"
 
 #endif
