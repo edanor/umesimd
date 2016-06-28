@@ -1014,7 +1014,7 @@ namespace SIMD {
         // HADD
         inline double hadd() const {
             __m512d t0 = _mm512_castpd256_pd512(mVec);
-            double retval = _mm512_mask_reduce_add_pd(0x3, t0);
+            double retval = _mm512_mask_reduce_add_pd(0xF, t0);
             return retval;
         }
         // MHADD
@@ -1026,7 +1026,7 @@ namespace SIMD {
         // HADDS
         inline double hadd(double b) const {
             __m512d t0 = _mm512_castpd256_pd512(mVec);
-            double retval = _mm512_mask_reduce_add_pd(0x3, t0);
+            double retval = _mm512_mask_reduce_add_pd(0xF, t0);
             return retval + b;
         }
         // MHADDS
@@ -1038,7 +1038,7 @@ namespace SIMD {
         // HMUL
         inline double hmul() const {
             __m512d t0 = _mm512_castpd256_pd512(mVec);
-            double retval = _mm512_mask_reduce_mul_pd(0x3, t0);
+            double retval = _mm512_mask_reduce_mul_pd(0xF, t0);
             return retval;
         }
         // MHMUL
@@ -1050,7 +1050,7 @@ namespace SIMD {
         // HMULS
         inline double hmul(double b) const {
             __m512d t0 = _mm512_castpd256_pd512(mVec);
-            double retval = _mm512_mask_reduce_mul_pd(0x3, t0);
+            double retval = _mm512_mask_reduce_mul_pd(0xF, t0);
             return b * retval;
         }
         // MHMULS
@@ -1320,7 +1320,7 @@ namespace SIMD {
         // HMAX
         inline double hmax() const {
             __m512d t0 = _mm512_castpd256_pd512(mVec);
-            double retval = _mm512_mask_reduce_max_pd(0x3, t0);
+            double retval = _mm512_mask_reduce_max_pd(0xF, t0);
             return retval;
         }
         // MHMAX
@@ -1334,7 +1334,7 @@ namespace SIMD {
         // HMIN
         inline double hmin() const {
             __m512d t0 = _mm512_castpd256_pd512(mVec);
-            double retval = _mm512_mask_reduce_min_pd(0x3, t0);
+            double retval = _mm512_mask_reduce_min_pd(0xF, t0);
             return retval;
         }
         // MHMIN

@@ -1664,8 +1664,21 @@ namespace SIMD {
         }
 
         // PACK
+        inline SIMDVec_i & pack(SIMDVec_i<int64_t, 4> const & a, SIMDVec_i<int64_t, 4> const & b) {
+            __m512i t0 = _mm512_castsi256_si512(a.mVec);
+            mVec = _mm512_inserti64x4(t0, b.mVec, 1);
+            return *this;
+        }
         // PACKLO
+        inline SIMDVec_i & packlo(SIMDVec_i<int64_t, 4> const & a) {
+            mVec = _mm512_inserti64x4(mVec, a.mVec, 0);
+            return *this;
+        }
         // PACKHI
+        inline SIMDVec_i & packhi(SIMDVec_i<int64_t, 4> const & b) {
+            mVec = _mm512_inserti64x4(mVec, b.mVec, 1);
+            return *this;
+        }
         // UNPACK
         void unpack(SIMDVec_i<int64_t, 4> & a, SIMDVec_i<int64_t, 4> & b) const {
             a.mVec = _mm512_extracti64x4_epi64(mVec, 0);
