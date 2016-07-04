@@ -48,7 +48,7 @@ namespace SIMD {
         friend class SIMDVec_f<float, 8>;
         friend class SIMDVec_f<double, 8>;
     private:
-        bool mMask[8];
+        alignas(32) int32_t mMask[8];
 
     public:
         inline SIMDVecMask() {}

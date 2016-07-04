@@ -470,8 +470,15 @@ namespace SIMD {
     }
 
     inline SIMDVec_f<float, 8>::operator SIMDVec_i<int32_t, 8>() const {
-        return SIMDVec_i<int32_t, 8>(int32_t(mVec[0]), int32_t(mVec[1]), int32_t(mVec[2]), int32_t(mVec[3]),
-                                     int32_t(mVec[4]), int32_t(mVec[5]), int32_t(mVec[6]), int32_t(mVec[7]));
+        SIMDVec_i<int32_t, 8> retval;
+        int32_t * local_retval_ptr = &retval.mVec[0];
+        float const * local_ptr = &mVec[0];
+
+        #pragma omp simd aligned(local_ptr:32, local_retval_ptr:32) simdlen(8) safelen(8)
+        for(int i = 0; i < 8; i++) {
+            local_retval_ptr[i] = int32_t(local_ptr[i]);
+        }
+        return retval;
     }
 
     template<>

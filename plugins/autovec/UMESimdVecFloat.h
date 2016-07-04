@@ -35,10 +35,10 @@
 #include "../../UMESimdInterface.h"
 #include <immintrin.h>
 
-#include "UMESimdMaskScalar.h"
-#include "UMESimdSwizzleScalar.h"
-#include "UMESimdVecUintScalar.h"
-#include "UMESimdVecFloatScalar.h"
+#include "UMESimdMask.h"
+#include "UMESimdSwizzle.h"
+#include "UMESimdVecUint.h"
+#include "UMESimdVecFloat.h"
 
 // ********************************************************************************************
 // FLOATING POINT VECTOR TEMPLATE

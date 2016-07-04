@@ -35,8 +35,8 @@
 #include "../../UMESimdInterface.h"
 #include <immintrin.h>
 
-#include "UMESimdMaskAutovec.h"
-#include "UMESimdSwizzleAutovec.h"
+#include "UMESimdMask.h"
+#include "UMESimdSwizzle.h"
 
 // ********************************************************************************************
 // UNSIGNED INTEGER VECTOR TEMPLATE

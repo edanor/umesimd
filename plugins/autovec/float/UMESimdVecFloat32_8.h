@@ -70,16 +70,18 @@ namespace SIMD {
         UME_FORCE_INLINE SIMDVec_f() {}
         // SET-CONSTR
         UME_FORCE_INLINE explicit SIMDVec_f(float f) {
-            #pragma omp simd
+            float *local_ptr = &mVec[0];
+            #pragma omp simd aligned(local_ptr:32) simdlen(8) safelen(8)
             for (int i = 0; i < 8; i++) {
-                mVec[i] = f;
+                local_ptr[i] = f;
             }
         }
         // LOAD-CONSTR
         UME_FORCE_INLINE explicit SIMDVec_f(float const *p) {
-            #pragma omp simd
+            float *local_ptr = &mVec[0];
+            #pragma omp simd aligned(local_ptr:32) simdlen(8) safelen(8)
             for (int i = 0; i < 8; i++) {
-                mVec[i] = p[i];
+                local_ptr[i] = p[i];
             }
         }
         // FULL-CONSTR
@@ -125,14 +127,12 @@ namespace SIMD {
 
         // ASSIGNV
         UME_FORCE_INLINE SIMDVec_f & assign(SIMDVec_f const & src) {
-            mVec[0] = src.mVec[0];
-            mVec[1] = src.mVec[1];
-            mVec[2] = src.mVec[2];
-            mVec[3] = src.mVec[3];
-            mVec[4] = src.mVec[4];
-            mVec[5] = src.mVec[5];
-            mVec[6] = src.mVec[6];
-            mVec[7] = src.mVec[7];
+            float * local_ptr = &mVec[0];
+            float const * local_src_ptr = &src.mVec[0];
+            #pragma omp simd aligned(local_ptr:32, local_src_ptr:32) simdlen(8) safelen(8)
+            for(int i = 0; i < 8; i++) {
+                local_ptr[i] = local_src_ptr[i];
+            }
             return *this;
         }
         UME_FORCE_INLINE SIMDVec_f & operator= (SIMDVec_f const & b) {
@@ -184,33 +184,37 @@ namespace SIMD {
 
         // LOAD
         UME_FORCE_INLINE SIMDVec_f & load(float const *p) {
-            //#pragma omp simd
+            float *local_ptr = &mVec[0];
+            #pragma omp simd aligned(local_ptr:32) simdlen(8) safelen(8)
             for (int i = 0; i < 8; i++) {
-                mVec[i] = p[i];
+                local_ptr[i] = p[i];
             }
             return *this;
         }
         // MLOAD
         UME_FORCE_INLINE SIMDVec_f & load(SIMDVecMask<8> const & mask, float const *p) {
-            #pragma omp simd
+            float *local_ptr = &mVec[0];
+            #pragma omp simd aligned(local_ptr:32) simdlen(8) safelen(8)
             for (int i = 0; i < 8; i++) {
-                if (mask.mMask[i] == true) mVec[i] = p[i];
+                if (mask.mMask[i] == true) local_ptr[i] = p[i];
             }
             return *this;
         }
         // LOADA
         UME_FORCE_INLINE SIMDVec_f & loada(float const *p) {
-            #pragma omp simd
+            float *local_ptr = &mVec[0];
+            #pragma omp simd aligned(local_ptr:32) simdlen(8) safelen(8)
             for (int i = 0; i < 8; i++) {
-                mVec[i] = p[i];
+                local_ptr[i] = p[i];
             }
             return *this;
         }
         // MLOADA
         UME_FORCE_INLINE SIMDVec_f & loada(SIMDVecMask<8> const & mask, float const *p) {
-            #pragma omp simd
+            float *local_ptr = &mVec[0];
+            #pragma omp simd aligned(local_ptr:32) simdlen(8) safelen(8)
             for (int i = 0; i < 8; i++) {
-                if (mask.mMask[i] == true) mVec[i] = p[i];
+                if (mask.mMask[i] == true) local_ptr[i] = p[i];
             }
             return *this;
         }
@@ -245,11 +249,14 @@ namespace SIMD {
 
         // BLENDV
         UME_FORCE_INLINE SIMDVec_f blend(SIMDVecMask<8> const & mask, SIMDVec_f const & b) const {
-
             SIMDVec_f retval;
-            #pragma omp simd
+            int32_t const *local_mask_ptr = &mask.mMask[0];
+            float const *local_ptr = &mVec[0];
+            float const *local_b_ptr = &b.mVec[0];
+            float *local_retval_ptr = &retval.mVec[0];
+            #pragma omp simd aligned(local_retval_ptr:32, local_mask_ptr:32, local_ptr:32) simdlen(8) safelen(8)
             for (int i = 0; i < 8; i++) {
-                retval.mVec[i] = mask.mMask[i] ? b.mVec[i] : mVec[i];
+                local_retval_ptr[i] = mask.mMask[i] ? local_b_ptr[i] : local_ptr[i];
             }
             return retval;
         }
@@ -320,10 +327,12 @@ namespace SIMD {
         }
         // ADDVA
         UME_FORCE_INLINE SIMDVec_f & adda(SIMDVec_f const & b) {
-            #pragma omp simd
+            float *local_ptr = &mVec[0];
+            float const *local_b_ptr = &b.mVec[0];
+            #pragma omp simd aligned(local_ptr:32, local_b_ptr:32) simdlen(8) safelen(8)
             for (int i = 0; i < 8; i++)
             {
-                mVec[i] += b.mVec[i];
+                local_ptr[i] += local_b_ptr[i];
             }
             return *this;
         }
@@ -1048,9 +1057,12 @@ namespace SIMD {
         // MULV
         UME_FORCE_INLINE SIMDVec_f mul(SIMDVec_f const & b) const {
             SIMDVec_f retval;
-            #pragma omp simd
+            float const *local_ptr = &mVec[0];
+            float const *local_b_ptr = &b.mVec[0];
+            float *local_retval_ptr = &retval.mVec[0];
+            #pragma omp simd aligned(local_ptr:32, local_b_ptr:32, local_retval_ptr:32) simdlen(8) safelen(8)
             for (int i = 0; i < 8; i++) {
-                retval.mVec[i] = mVec[i] * b.mVec[i];
+                local_retval_ptr[i] = local_ptr[i] * local_b_ptr[i];
             }
             return retval;
         }
@@ -1072,9 +1084,11 @@ namespace SIMD {
         // MULS
         UME_FORCE_INLINE SIMDVec_f mul(float b) const {
             SIMDVec_f retval;
-            #pragma omp simd
+            float const *local_ptr = &mVec[0];
+            float *local_retval_ptr = &retval.mVec[0];
+            #pragma omp simd aligned(local_ptr:32, local_retval_ptr:32) simdlen(8) safelen(8)
             for (int i = 0; i < 8; i++) {
-                retval.mVec[i] = mVec[i] * b;
+                local_retval_ptr[i] = local_ptr[i] * b;
             }
             return retval;
         }
@@ -1150,9 +1164,12 @@ namespace SIMD {
         // DIVV
         UME_FORCE_INLINE SIMDVec_f div(SIMDVec_f const & b) const {
             SIMDVec_f retval;
-            #pragma omp simd
+            float const *local_ptr = &mVec[0];
+            float const *local_b_ptr = &b.mVec[0];
+            float *local_retval_ptr = &retval.mVec[0];
+            #pragma omp simd aligned(local_ptr:32, local_b_ptr:32, local_retval_ptr:32) simdlen(8) safelen(8)
             for (int i = 0; i < 8; i++) {
-                retval.mVec[i] = mVec[i] / b.mVec[i];
+                local_retval_ptr[i] = local_ptr[i] / local_b_ptr[i];
             }
             return retval;
         }
@@ -1412,9 +1429,12 @@ namespace SIMD {
         // CMPGTV
         UME_FORCE_INLINE SIMDVecMask<8> cmpgt(SIMDVec_f const & b) const {
             SIMDVecMask<8> retval;
-            #pragma omp simd
+            int32_t *local_mask_ptr = &retval.mMask[0];
+            float const *local_ptr = &mVec[0];
+            float const *local_b_ptr = &b.mVec[0];
+            #pragma omp simd aligned(local_mask_ptr:32, local_ptr:32, local_b_ptr:32) simdlen(8) safelen(8)
             for (int i = 0; i < 8; i++) {
-                retval.mVec[i] = mVec[i] > b.mVec[i];
+                local_mask_ptr[i] = local_ptr[i] > local_b_ptr[i];
             }
             return retval;
         }
@@ -1439,9 +1459,12 @@ namespace SIMD {
         // CMPLTV
         UME_FORCE_INLINE SIMDVecMask<8> cmplt(SIMDVec_f const & b) const {
             SIMDVecMask<8> retval;
-            #pragma omp simd
+            int32_t *local_mask_ptr = &retval.mMask[0];
+            float const *local_ptr = &mVec[0];
+            float const *local_b_ptr = &b.mVec[0];
+            #pragma omp simd aligned(local_mask_ptr:32, local_ptr:32, local_b_ptr:32) simdlen(8) safelen(8)
             for (int i = 0; i < 8; i++) {
-                retval.mVec[i] = mVec[i] < b.mVec[i];
+                local_mask_ptr[i] = local_ptr[i] < local_b_ptr[i];
             }
             return retval;
         }
@@ -1465,15 +1488,17 @@ namespace SIMD {
         }
         // CMPGEV
         UME_FORCE_INLINE SIMDVecMask<8> cmpge(SIMDVec_f const & b) const {
-            bool m0 = mVec[0] >= b.mVec[0];
-            bool m1 = mVec[1] >= b.mVec[1];
-            bool m2 = mVec[2] >= b.mVec[2];
-            bool m3 = mVec[3] >= b.mVec[3];
-            bool m4 = mVec[4] >= b.mVec[4];
-            bool m5 = mVec[5] >= b.mVec[5];
-            bool m6 = mVec[6] >= b.mVec[6];
-            bool m7 = mVec[7] >= b.mVec[7];
-            return SIMDVecMask<8>(m0, m1, m2, m3, m4, m5, m6, m7);
+            SIMDVecMask<8> retval;
+            int32_t * local_mask_ptr = &retval.mMask[0];
+            const float * local_ptr = &mVec[0];
+            const float * local_b_ptr = &b.mVec[0];
+            
+            #pragma omp simd aligned(local_mask_ptr:32, local_ptr:32, local_b_ptr:32) simdlen(8) safelen(8)
+            for(int i = 0; i < 8; i++) {
+                local_mask_ptr[i] = local_ptr[i] >= local_b_ptr[i];
+            
+            }
+            return retval;
         }
         UME_FORCE_INLINE SIMDVecMask<8> operator>= (SIMDVec_f const & b) const {
             return cmpge(b);
@@ -1649,9 +1674,13 @@ namespace SIMD {
         // FMULADDV
         UME_FORCE_INLINE SIMDVec_f fmuladd(SIMDVec_f const & b, SIMDVec_f const & c) const {
             SIMDVec_f retval;
-            #pragma omp simd
+            float const *local_ptr = &mVec[0];
+            float const *local_b_ptr = &b.mVec[0];
+            float const *local_c_ptr = &c.mVec[0];
+            float *local_retval_ptr = &retval.mVec[0];
+            #pragma omp simd aligned(local_ptr:32, local_b_ptr:32, local_c_ptr:32, local_retval_ptr:32) simdlen(8) safelen(8)
             for (int i = 0; i < 8; i++) {
-                retval.mVec[i] = mVec[i] * b.mVec[i] + c.mVec[i];
+                local_retval_ptr[i] = local_ptr[i] * local_b_ptr[i] + local_c_ptr[i];
             }
             return retval;
         }
@@ -2406,7 +2435,30 @@ namespace SIMD {
         // SQRA
         // MSQRA
         // SQRT
+        UME_FORCE_INLINE SIMDVec_f sqrt() const {
+            SIMDVec_f retval;
+            float * local_retval_ptr = &retval.mVec[0];
+            float const * local_ptr = &mVec[0];
+            
+            #pragma omp simd aligned(local_retval_ptr:32, local_ptr:32) simdlen(8) safelen(8)
+            for(int i = 0; i < 8; i++) {
+                local_retval_ptr[i] = std::sqrt(local_ptr[i]);
+            }
+            return retval;
+        }
         // MSQRT
+        UME_FORCE_INLINE SIMDVec_f sqrt(SIMDVecMask<8> const & mask) {
+            SIMDVec_f retval;
+            int32_t const * local_mask_ptr = &mask.mMask[0];
+            float * local_retval_ptr = &retval.mVec[0];
+            float const * local_ptr = &mVec[0];
+            
+            #pragma omp simd aligned(local_retval_ptr:32, local_mask_ptr:32, local_ptr:32) simdlen(8) safelen(8)
+            for(int i = 0; i < 8; i++) {
+                local_retval_ptr[i] = local_mask_ptr[i] ? std::sqrt(local_ptr[i]) : local_ptr[i];
+            }
+            return retval;
+        }
         // SQRTA
         // MSQRTA
         // POWV
