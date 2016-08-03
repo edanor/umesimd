@@ -344,6 +344,7 @@ namespace UME {
         {
         public:
             typedef uint32_t     SCALAR_T;
+            typedef float        SCALAR_FLOAT_T;
             typedef uint32_t     SCALAR_UINT_T;
             typedef SIMD1_32u    UINT_VEC_T;
             typedef SIMD1_32i    INT_VEC_T;
@@ -359,6 +360,7 @@ namespace UME {
         {
         public:
             typedef uint32_t     SCALAR_T;
+            typedef float        SCALAR_FLOAT_T;
             typedef uint32_t     SCALAR_UINT_T;
             typedef SIMD2_32u    UINT_VEC_T;
             typedef SIMD2_32i    INT_VEC_T;
@@ -374,6 +376,7 @@ namespace UME {
         {
         public:
             typedef uint32_t     SCALAR_T;
+            typedef float        SCALAR_FLOAT_T;
             typedef uint32_t     SCALAR_UINT_T;
             typedef SIMD4_32u    UINT_VEC_T;
             typedef SIMD4_32i    INT_VEC_T;
@@ -389,6 +392,7 @@ namespace UME {
         {
         public:
             typedef uint32_t     SCALAR_T;
+            typedef float        SCALAR_FLOAT_T;
             typedef uint32_t     SCALAR_UINT_T;
             typedef SIMD8_32u    UINT_VEC_T;
             typedef SIMD8_32i    INT_VEC_T;
@@ -404,6 +408,7 @@ namespace UME {
         {
         public:
             typedef uint32_t      SCALAR_T;
+            typedef float         SCALAR_FLOAT_T;
             typedef uint32_t      SCALAR_UINT_T;
             typedef SIMD16_32u    UINT_VEC_T;
             typedef SIMD16_32i    INT_VEC_T;
@@ -419,6 +424,7 @@ namespace UME {
         {
         public:
             typedef uint32_t      SCALAR_T;
+            typedef float         SCALAR_FLOAT_T;
             typedef uint32_t      SCALAR_UINT_T;
             typedef SIMD32_32u    UINT_VEC_T;
             typedef SIMD32_32i    INT_VEC_T;
@@ -434,6 +440,7 @@ namespace UME {
         {
         public:
             typedef uint64_t     SCALAR_T;
+            typedef double       SCALAR_FLOAT_T;
             typedef uint64_t     SCALAR_UINT_T;
             typedef SIMD1_64u    UINT_VEC_T;
             typedef SIMD1_64i    INT_VEC_T;
@@ -449,6 +456,7 @@ namespace UME {
         {
         public:
             typedef uint64_t     SCALAR_T;
+            typedef double       SCALAR_FLOAT_T;
             typedef uint64_t     SCALAR_UINT_T;
             typedef SIMD2_64u    UINT_VEC_T;
             typedef SIMD2_64i    INT_VEC_T;
@@ -464,6 +472,7 @@ namespace UME {
         {
         public:
             typedef uint64_t     SCALAR_T;
+            typedef double       SCALAR_FLOAT_T;
             typedef uint64_t     SCALAR_UINT_T;
             typedef SIMD4_64u    UINT_VEC_T;
             typedef SIMD4_64i    INT_VEC_T;
@@ -479,6 +488,7 @@ namespace UME {
         {
         public:
             typedef uint64_t     SCALAR_T;
+            typedef double       SCALAR_FLOAT_T;
             typedef uint64_t     SCALAR_UINT_T;
             typedef SIMD8_64u    UINT_VEC_T;
             typedef SIMD8_64i    INT_VEC_T;
@@ -494,6 +504,7 @@ namespace UME {
         {
         public:
             typedef uint64_t      SCALAR_T;
+            typedef double        SCALAR_FLOAT_T;
             typedef uint64_t      SCALAR_UINT_T;
             typedef SIMD16_64u    UINT_VEC_T;
             typedef SIMD16_64i    INT_VEC_T;
@@ -734,6 +745,7 @@ namespace UME {
         {
         public:
             typedef int32_t      SCALAR_T;
+            typedef float        SCALAR_FLOAT_T;
             typedef uint32_t     SCALAR_UINT_T;
             typedef SIMD1_32u    UINT_VEC_T;
             typedef SIMD1_32i    INT_VEC_T;
@@ -749,6 +761,7 @@ namespace UME {
         {
         public:
             typedef int32_t      SCALAR_T;
+            typedef float        SCALAR_FLOAT_T;
             typedef uint32_t     SCALAR_UINT_T;
             typedef SIMD2_32u    UINT_VEC_T;
             typedef SIMD2_32i    INT_VEC_T;
@@ -764,6 +777,7 @@ namespace UME {
         {
         public:
             typedef int32_t      SCALAR_T;
+            typedef float        SCALAR_FLOAT_T;
             typedef uint32_t     SCALAR_UINT_T;
             typedef SIMD4_32u    UINT_VEC_T;
             typedef SIMD4_32i    INT_VEC_T;
@@ -779,6 +793,7 @@ namespace UME {
         {
         public:
             typedef int32_t      SCALAR_T;
+            typedef float        SCALAR_FLOAT_T;
             typedef uint32_t     SCALAR_UINT_T;
             typedef SIMD8_32u    UINT_VEC_T;
             typedef SIMD8_32i    INT_VEC_T;
@@ -794,6 +809,7 @@ namespace UME {
         {
         public:
             typedef int32_t       SCALAR_T;
+            typedef float         SCALAR_FLOAT_T;
             typedef uint32_t      SCALAR_UINT_T;
             typedef SIMD16_32u    UINT_VEC_T;
             typedef SIMD16_32i    INT_VEC_T;
@@ -809,6 +825,7 @@ namespace UME {
         {
         public:
             typedef int32_t       SCALAR_T;
+            typedef float         SCALAR_FLOAT_T;
             typedef uint32_t      SCALAR_UINT_T;
             typedef SIMD32_32u    UINT_VEC_T;
             typedef SIMD32_32i    INT_VEC_T;
@@ -824,6 +841,7 @@ namespace UME {
         {
         public:
             typedef int64_t      SCALAR_T;
+            typedef double       SCALAR_FLOAT_T;
             typedef uint64_t     SCALAR_UINT_T;
             typedef SIMD1_64u    UINT_VEC_T;
             typedef SIMD1_64i    INT_VEC_T;
@@ -839,6 +857,7 @@ namespace UME {
         {
         public:
             typedef int64_t      SCALAR_T;
+            typedef double       SCALAR_FLOAT_T;
             typedef uint64_t     SCALAR_UINT_T;
             typedef SIMD2_64u    UINT_VEC_T;
             typedef SIMD2_64i    INT_VEC_T;
@@ -854,6 +873,7 @@ namespace UME {
         {
         public:
             typedef int64_t      SCALAR_T;
+            typedef double       SCALAR_FLOAT_T;
             typedef uint64_t     SCALAR_UINT_T;
             typedef SIMD4_64u    UINT_VEC_T;
             typedef SIMD4_64i    INT_VEC_T;
@@ -869,6 +889,7 @@ namespace UME {
         {
         public:
             typedef int64_t      SCALAR_T;
+            typedef double       SCALAR_FLOAT_T;
             typedef uint64_t     SCALAR_UINT_T;
             typedef SIMD8_64u    UINT_VEC_T;
             typedef SIMD8_64i    INT_VEC_T;
@@ -884,6 +905,7 @@ namespace UME {
         {
         public:
             typedef int64_t       SCALAR_T;
+            typedef double       SCALAR_FLOAT_T;
             typedef uint64_t      SCALAR_UINT_T;
             typedef SIMD16_64u    UINT_VEC_T;
             typedef SIMD16_64i    INT_VEC_T;
