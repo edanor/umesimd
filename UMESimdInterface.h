@@ -2892,12 +2892,13 @@ namespace SIMD
     // *    point vector types.
     // *
     // ***************************************************************************
-    template<typename DERIVED_VEC_TYPE, typename MASK_TYPE>
+    template<typename DERIVED_VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
     class SIMDVecSignInterface
     {        
         // Other vector types necessary for this class
         typedef SIMDVecSignInterface< 
             DERIVED_VEC_TYPE,
+            SCALAR_TYPE,
             MASK_TYPE> VEC_TYPE;
 
     private:
@@ -2962,6 +2963,18 @@ namespace SIMD
         UME_FORCE_INLINE DERIVED_VEC_TYPE absa (MASK_TYPE const & mask) {
             UME_EMULATION_WARNING();
             return SCALAR_EMULATION::MATH::absAssign<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this));
+        }
+
+        // COPYSIGN
+        UME_FORCE_INLINE DERIVED_VEC_TYPE copysign(DERIVED_VEC_TYPE const & sign) const {
+            UME_EMULATION_WARNING();
+            return SCALAR_EMULATION::MATH::copySign<DERIVED_VEC_TYPE, SCALAR_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this), sign);
+        }
+
+        // MCOPYSIGN
+        UME_FORCE_INLINE DERIVED_VEC_TYPE copysign(MASK_TYPE const & mask, DERIVED_VEC_TYPE const & sign) const {
+            UME_EMULATION_WARNING();
+            return SCALAR_EMULATION::MATH::copySign<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this), sign);
         }
     };
     
@@ -3065,6 +3078,7 @@ namespace SIMD
             MASK_TYPE>,
         public SIMDVecSignInterface<
             DERIVED_VEC_TYPE,
+            SCALAR_TYPE,
             MASK_TYPE>
     {
         // Other vector types necessary for this class
@@ -3143,6 +3157,7 @@ namespace SIMD
             MASK_TYPE>,
         public SIMDVecSignInterface<
             DERIVED_VEC_TYPE,
+            SCALAR_FLOAT_TYPE,
             MASK_TYPE>
     {
         // Other vector types necessary for this class

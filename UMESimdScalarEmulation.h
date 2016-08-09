@@ -3006,6 +3006,32 @@ namespace SCALAR_EMULATION
             return a;
         }
 
+        // COPYSIGN
+        template<typename VEC_TYPE, typename SCALAR_TYPE>
+        UME_FORCE_INLINE VEC_TYPE copySign(VEC_TYPE const & a, VEC_TYPE const & b) {
+            VEC_TYPE retval;
+            for (uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+                // Can't use std::copysign because this has to work also for integers.
+                // typesafe sign: ((x > 0) ? 1 : ((x < 0) ? -1 : 0)))
+                SCALAR_TYPE sign = (b[i] > SCALAR_TYPE(0)) ? SCALAR_TYPE(1) : ((b[i] < SCALAR_TYPE(0)) ? SCALAR_TYPE(-1) : SCALAR_TYPE(0));
+                retval.insert(i, std::abs(a[i]) * sign);
+            }
+            return retval;
+        }
+
+        // MCOPYSIGN
+        template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
+        UME_FORCE_INLINE VEC_TYPE copySign(MASK_TYPE const & mask, VEC_TYPE const & a, VEC_TYPE const & b) {
+            VEC_TYPE retval;
+            for (uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+                // Can't use std::copysign because this has to work also for integers.
+                // typesafe sign: ((x > 0) ? 1 : ((x < 0) ? -1 : 0)))
+                SCALAR_TYPE sign = (b[i] > SCALAR_TYPE(0)) ? SCALAR_TYPE(1) : ((b[i] < SCALAR_TYPE(0)) ? SCALAR_TYPE(-1) : SCALAR_TYPE(0));
+                retval.insert(i, (mask[i] == true ? std::abs[i] * sign : a[i]) );
+            }
+            return retval;
+        }
+
         // SQR
         template<typename VEC_TYPE>
         UME_FORCE_INLINE VEC_TYPE sqr(VEC_TYPE const & a) {

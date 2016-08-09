@@ -689,6 +689,14 @@ namespace FUNCTIONS
     // MABS
     template<typename VEC_T>
     VEC_T abs(typename UME::SIMD::SIMDTraits<VEC_T>::MASK_T const & mask, VEC_T const & src1) { return src1.abs(mask); }
+    // COPYSIGN
+    template<typename VEC_T>
+    VEC_T copysign(VEC_T const & src1, VEC_T const & src2) { return src1.copysign(src2); }
+    // MCOPYSIGN
+    template<typename VEC_T>
+    VEC_T copysign(typename UME::SIMD::SIMDTraits<VEC_T>::MASK_T const & mask, VEC_T const & src1, VEC_T const & src2) {
+        return src1.copysign(mask, src2);
+    }
 
     // SQR
     template<typename VEC_T>

@@ -8459,7 +8459,52 @@ void genericMABSATest()
     bool inRange = valuesInRange(values, DATA_SET::outputs::MABS, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MABSA");
 }
-    
+
+template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN>
+void genericCOPYSIGNTest_random()
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    SCALAR_TYPE inputA[VEC_LEN];
+    SCALAR_TYPE inputB[VEC_LEN];
+    SCALAR_TYPE output[VEC_LEN];
+
+    for (int i = 0; i < VEC_LEN; i++) {
+        inputA[i] = randomValue<SCALAR_TYPE>(gen);
+        inputB[i] = randomValue<SCALAR_TYPE>(gen);
+
+        SCALAR_TYPE absA = inputA[i] > 0 ? inputA[i] : -inputA[i];
+        bool signB = inputB[i] > 0;
+
+        if (signB) {
+            output[i] = absA;
+        }
+        else
+        {
+            output[i] = -absA;
+        }
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(inputA);
+        VEC_TYPE vec1(inputB);
+        VEC_TYPE vec2 = vec0.copysign(vec1);
+        vec2.store(values);
+        bool exact = valuesInRange(values, output, VEC_LEN, 0.01);
+        CHECK_CONDITION(exact, "COPYSIGN gen");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(inputA);
+        VEC_TYPE vec1(inputB);
+        VEC_TYPE vec2 = UME::SIMD::FUNCTIONS::copysign(vec0, vec1);
+        vec2.store(values);
+        bool exact = valuesInRange(values, output, VEC_LEN, 0.01);
+        CHECK_CONDITION(exact, "COPYSIGN(function) gen");
+    }
+}
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericSQRTest()
 {
@@ -10065,6 +10110,7 @@ void genericSignInterfaceTest()
     genericMABSTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
     genericABSATest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
     genericMABSATest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericCOPYSIGNTest_random<VEC_TYPE, SCALAR_TYPE, VEC_LEN>();
 }
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename VEC_INT_TYPE, typename SCALAR_INT_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
