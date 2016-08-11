@@ -2,6 +2,7 @@
 #define TIMING_STATISTICS_H_
 
 #include <list>
+#include <cmath>
 
 class TimingStatistics {
 private:
@@ -63,7 +64,7 @@ public:
 template<typename IN_TYPE>
 class Statistics {
 private:
-    std::list<IN_TYPE> measurements;
+    typename std::list<IN_TYPE> measurements;
     double average, variance;
     int count;
 
@@ -89,7 +90,7 @@ public:
     }
 
     double getAverage() { return average; }
-    double getStdDev() { double std::sqrt(variance) / double(count); }
+    double getStdDev() { std::sqrt(variance) / double(count); }
     double calculateSpeedup(double reference) {
         return reference / average;
     }
@@ -98,7 +99,7 @@ public:
     }
 
     void printList() {
-        std::list<IN_TYPE>::iterator iter;
+        typename std::list<IN_TYPE>::iterator iter;
         for (iter = measurements.begin(); iter != measurements.end(); iter++) {
             std::cout << (*iter) << std::endl;
         }

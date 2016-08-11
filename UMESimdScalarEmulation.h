@@ -3027,7 +3027,7 @@ namespace SCALAR_EMULATION
                 // Can't use std::copysign because this has to work also for integers.
                 // typesafe sign: ((x > 0) ? 1 : ((x < 0) ? -1 : 0)))
                 SCALAR_TYPE sign = (b[i] > SCALAR_TYPE(0)) ? SCALAR_TYPE(1) : ((b[i] < SCALAR_TYPE(0)) ? SCALAR_TYPE(-1) : SCALAR_TYPE(0));
-                retval.insert(i, (mask[i] == true ? std::abs[i] * sign : a[i]) );
+                retval.insert(i, (mask[i] == true ? std::abs(a[i]) * sign : a[i]) );
             }
             return retval;
         }
