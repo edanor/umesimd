@@ -63,7 +63,7 @@ namespace SIMD {
         inline SIMDVec_u() {
         }
 
-        inline explicit SIMDVec_u(uint32_t i) {
+        inline SIMDVec_u(uint32_t i) {
             mVec = _mm512_set1_epi32(i);
         }
 

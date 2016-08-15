@@ -69,7 +69,7 @@ namespace SIMD {
         // ZERO-CONSTR
         UME_FORCE_INLINE SIMDVec_f() {}
         // SET-CONSTR
-        UME_FORCE_INLINE explicit SIMDVec_f(float f) {
+        UME_FORCE_INLINE SIMDVec_f(float f) {
             float *local_ptr = &mVec[0];
             #pragma omp simd aligned(local_ptr:32) simdlen(8) safelen(8)
             for (int i = 0; i < 8; i++) {

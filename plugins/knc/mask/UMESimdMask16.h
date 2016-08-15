@@ -46,7 +46,10 @@ namespace SIMD {
     private:
         __mmask16 mMask;
 
-        inline SIMDVecMask(__mmask16 & m) : mMask(m) {};
+        // Using this internal constructor is not possible because of the ICC implementation.
+        // ICC (and possibly other compilers) implement __mmask16 as 'unsigned short'. For that
+        // reason, SET-CONSTR cannot be used with automatic casting of scalars to 'bool'.
+        //inline SIMDVecMask(__mmask16 & m) : mMask(m) {};
 
         friend class SIMDVec_u<uint8_t, 16>;
         friend class SIMDVec_u<uint16_t, 16>;
@@ -65,7 +68,7 @@ namespace SIMD {
 
         // Regardless of the mask representation, the interface should only allow initialization using 
         // standard bool or using equivalent mask
-        inline explicit SIMDVecMask(bool m) {
+        inline SIMDVecMask(bool m) {
             mMask = __mmask16(-int16_t(m));
         }
 
@@ -109,12 +112,16 @@ namespace SIMD {
         // LANDV
         inline SIMDVecMask land(SIMDVecMask const & maskOp) const {
             __mmask16 m0 = mMask & maskOp.mMask;
-            return SIMDVecMask(m0);
+            SIMDVecMask ret_mask;
+            ret_mask.mMask = m0;
+            return ret_mask;
         }
         // LAMDS
         inline SIMDVecMask land(bool scalarOp) const {
             __mmask16 m0 = mMask & (scalarOp ? 0xFFFF : 0x0000);
-            return SIMDVecMask(m0);
+            SIMDVecMask ret_mask;
+            ret_mask.mMask = m0;
+            return ret_mask;
         }
         // LANDVA
         inline SIMDVecMask & landa(SIMDVecMask const & maskOp) {
@@ -129,12 +136,16 @@ namespace SIMD {
         // LORV
         inline SIMDVecMask lor(SIMDVecMask const & maskOp) const {
             __mmask16 m0 = mMask | maskOp.mMask;
-            return SIMDVecMask(m0);
+            SIMDVecMask ret_mask;
+            ret_mask.mMask = m0;
+            return ret_mask;
         }
         // LORS
         inline SIMDVecMask lor(bool scalarOp) const {
             __mmask16 m0 = mMask | (scalarOp ? 0xFFFF : 0x0000);
-            return SIMDVecMask(m0);
+            SIMDVecMask ret_mask;
+            ret_mask.mMask = m0;
+            return ret_mask;
         }
         // LORVA
         inline SIMDVecMask & lora(SIMDVecMask const & maskOp) {
@@ -149,12 +160,16 @@ namespace SIMD {
         // LXORV
         inline SIMDVecMask lxor(SIMDVecMask const & maskOp) const {
             __mmask16 m0 = mMask ^ maskOp.mMask;
-            return SIMDVecMask(m0);
+            SIMDVecMask ret_mask;
+            ret_mask.mMask = m0;
+            return ret_mask;
         }
         // LXORS
         inline SIMDVecMask lxor(bool scalarOp) const {
             __mmask16 m0 = mMask ^ (scalarOp ? 0xFFFF : 0x0000);
-            return SIMDVecMask(m0);
+            SIMDVecMask ret_mask;
+            ret_mask.mMask = m0;
+            return ret_mask;
         }
         // LXORVA
         inline SIMDVecMask & lxora(SIMDVecMask const & maskOp) {
@@ -169,7 +184,9 @@ namespace SIMD {
         // LNOT
         inline SIMDVecMask lnot() const {
             __mmask16 m0 = ~mMask;
-            return SIMDVecMask(m0);
+            SIMDVecMask ret_mask;
+            ret_mask.mMask = m0;
+            return ret_mask;
         }
         // LNOTA
         inline SIMDVecMask & lnota() {

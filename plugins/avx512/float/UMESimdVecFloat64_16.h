@@ -73,7 +73,7 @@ namespace SIMD {
         // ZERO-CONSTR
         inline SIMDVec_f() {}
         // SET-CONSTR
-        inline explicit SIMDVec_f(double d) {
+        inline SIMDVec_f(double d) {
             mVec[0] = _mm512_set1_pd(d);
             mVec[1] = _mm512_set1_pd(d);
         }
@@ -674,7 +674,9 @@ namespace SIMD {
             __mmask8 m0 = _mm512_cmp_pd_mask(mVec[0], b.mVec[0], 0);
             __mmask8 m1 = _mm512_cmp_pd_mask(mVec[1], b.mVec[1], 0);
             __mmask16 m2 = __mmask16(m0) | (__mmask16(m1) << 8);
-            return SIMDVecMask<16>(m2);
+            SIMDVecMask<16> ret_mask;
+            ret_mask.mMask = m2;
+            return ret_mask;
         }
         inline SIMDVecMask<16> operator== (SIMDVec_f const & b) const {
             return cmpeq(b);
@@ -685,7 +687,9 @@ namespace SIMD {
             __mmask8 m0 = _mm512_cmp_pd_mask(mVec[0], t0, 0);
             __mmask8 m1 = _mm512_cmp_pd_mask(mVec[1], t0, 0);
             __mmask16 m2 = __mmask16(m0) | (__mmask16(m1) << 8);
-            return SIMDVecMask<16>(m2);
+            SIMDVecMask<16> ret_mask;
+            ret_mask.mMask = m2;
+            return ret_mask;
         }
         inline SIMDVecMask<16> operator== (double b) const {
             return cmpeq(b);
@@ -695,7 +699,9 @@ namespace SIMD {
             __mmask8 m0 = _mm512_cmp_pd_mask(mVec[0], b.mVec[0], 12);
             __mmask8 m1 = _mm512_cmp_pd_mask(mVec[1], b.mVec[1], 12);
             __mmask16 m2 = __mmask16(m0) | (__mmask16(m1) << 8);
-            return SIMDVecMask<16>(m2);
+            SIMDVecMask<16> ret_mask;
+            ret_mask.mMask = m2;
+            return ret_mask;
         }
         inline SIMDVecMask<16> operator!= (SIMDVec_f const & b) const {
             return cmpne(b);
@@ -706,7 +712,9 @@ namespace SIMD {
             __mmask8 m0 = _mm512_cmp_pd_mask(mVec[0], t0, 12);
             __mmask8 m1 = _mm512_cmp_pd_mask(mVec[1], t0, 12);
             __mmask16 m2 = __mmask16(m0) | (__mmask16(m1) << 8);
-            return SIMDVecMask<16>(m2);
+            SIMDVecMask<16> ret_mask;
+            ret_mask.mMask = m2;
+            return ret_mask;
         }
         inline SIMDVecMask<16> operator!= (double b) const {
             return cmpne(b);
@@ -716,7 +724,9 @@ namespace SIMD {
             __mmask8 m0 = _mm512_cmp_pd_mask(mVec[0], b.mVec[0], 30);
             __mmask8 m1 = _mm512_cmp_pd_mask(mVec[1], b.mVec[1], 30);
             __mmask16 m2 = __mmask16(m0) | (__mmask16(m1) << 8);
-            return SIMDVecMask<16>(m2);
+            SIMDVecMask<16> ret_mask;
+            ret_mask.mMask = m2;
+            return ret_mask;
         }
         inline SIMDVecMask<16> operator> (SIMDVec_f const & b) const {
             return cmpgt(b);
@@ -727,7 +737,9 @@ namespace SIMD {
             __mmask8 m0 = _mm512_cmp_pd_mask(mVec[0], t0, 30);
             __mmask8 m1 = _mm512_cmp_pd_mask(mVec[1], t0, 30);
             __mmask16 m2 = __mmask16(m0) | (__mmask16(m1) << 8);
-            return SIMDVecMask<16>(m2);
+            SIMDVecMask<16> ret_mask;
+            ret_mask.mMask = m2;
+            return ret_mask;
         }
         inline SIMDVecMask<16> operator> (double b) const {
             return cmpgt(b);
@@ -737,7 +749,9 @@ namespace SIMD {
             __mmask8 m0 = _mm512_cmp_pd_mask(mVec[0], b.mVec[0], 17);
             __mmask8 m1 = _mm512_cmp_pd_mask(mVec[1], b.mVec[1], 17);
             __mmask16 m2 = __mmask16(m0) | (__mmask16(m1) << 8);
-            return SIMDVecMask<16>(m2);
+            SIMDVecMask<16> ret_mask;
+            ret_mask.mMask = m2;
+            return ret_mask;
         }
         inline SIMDVecMask<16> operator< (SIMDVec_f const & b) const {
             return cmplt(b);
@@ -748,7 +762,9 @@ namespace SIMD {
             __mmask8 m0 = _mm512_cmp_pd_mask(mVec[0], t0, 17);
             __mmask8 m1 = _mm512_cmp_pd_mask(mVec[1], t0, 17);
             __mmask16 m2 = __mmask16(m0) | (__mmask16(m1) << 8);
-            return SIMDVecMask<16>(m2);
+            SIMDVecMask<16> ret_mask;
+            ret_mask.mMask = m2;
+            return ret_mask;
         }
         inline SIMDVecMask<16> operator< (double b) const {
             return cmplt(b);
@@ -758,7 +774,9 @@ namespace SIMD {
             __mmask8 m0 = _mm512_cmp_pd_mask(mVec[0], b.mVec[0], 29);
             __mmask8 m1 = _mm512_cmp_pd_mask(mVec[1], b.mVec[1], 29);
             __mmask16 m2 = __mmask16(m0) | (__mmask16(m1) << 8);
-            return SIMDVecMask<16>(m2);
+            SIMDVecMask<16> ret_mask;
+            ret_mask.mMask = m2;
+            return ret_mask;
         }
         inline SIMDVecMask<16> operator>= (SIMDVec_f const & b) const {
             return cmpge(b);
@@ -769,7 +787,9 @@ namespace SIMD {
             __mmask8 m0 = _mm512_cmp_pd_mask(mVec[0], t0, 29);
             __mmask8 m1 = _mm512_cmp_pd_mask(mVec[1], t0, 29);
             __mmask16 m2 = __mmask16(m0) | (__mmask16(m1) << 8);
-            return SIMDVecMask<16>(m2);
+            SIMDVecMask<16> ret_mask;
+            ret_mask.mMask = m2;
+            return ret_mask;
         }
         inline SIMDVecMask<16> operator>= (double b) const {
             return cmpge(b);
@@ -779,7 +799,9 @@ namespace SIMD {
             __mmask8 m0 = _mm512_cmp_pd_mask(mVec[0], b.mVec[0], 18);
             __mmask8 m1 = _mm512_cmp_pd_mask(mVec[1], b.mVec[1], 18);
             __mmask16 m2 = __mmask16(m0) | (__mmask16(m1) << 8);
-            return SIMDVecMask<16>(m2);
+            SIMDVecMask<16> ret_mask;
+            ret_mask.mMask = m2;
+            return ret_mask;
         }
         inline SIMDVecMask<16> operator<= (SIMDVec_f const & b) const {
             return cmple(b);
@@ -790,7 +812,9 @@ namespace SIMD {
             __mmask8 m0 = _mm512_cmp_pd_mask(mVec[0], t0, 18);
             __mmask8 m1 = _mm512_cmp_pd_mask(mVec[1], t0, 18);
             __mmask16 m2 = __mmask16(m0) | (__mmask16(m1) << 8);
-            return SIMDVecMask<16>(m2);
+            SIMDVecMask<16> ret_mask;
+            ret_mask.mMask = m2;
+            return ret_mask;
         }
         inline SIMDVecMask<16> operator<= (double b) const {
             return cmple(b);

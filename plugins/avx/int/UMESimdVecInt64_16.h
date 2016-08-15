@@ -113,7 +113,7 @@ namespace SIMD {
         inline SIMDVec_i() {};
 
         // SET-CONSTR
-        inline explicit SIMDVec_i(int64_t i) {
+        inline SIMDVec_i(int64_t i) {
             mVec[0] = SET1_EPI64(i);
             mVec[1] = SET1_EPI64(i);
             mVec[2] = SET1_EPI64(i);

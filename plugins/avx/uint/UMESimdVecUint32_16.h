@@ -75,7 +75,7 @@ namespace SIMD {
         }
 
         // SET-CONSTR
-        inline explicit SIMDVec_u(uint32_t i) {
+        inline SIMDVec_u(uint32_t i) {
             mVecLo = _mm256_set1_epi32(i);
             mVecHi = mVecLo;
         }

@@ -385,7 +385,7 @@ namespace SIMD {
         inline SIMDVec_u() : mVec() {};
 
         // SET-CONSTR
-        inline explicit SIMDVec_u(SCALAR_UINT_TYPE i) : mVec(i) {};
+        inline SIMDVec_u(SCALAR_UINT_TYPE i) : mVec(i) {};
 
         // LOAD-CONSTR - Construct by loading from memory
         inline explicit SIMDVec_u(SCALAR_UINT_TYPE const * p) { this->load(p); }

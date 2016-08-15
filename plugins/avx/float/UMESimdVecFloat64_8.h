@@ -98,7 +98,7 @@ namespace SIMD {
         inline SIMDVec_f() {}
 
         // SET-CONSTR  - One element constructor
-        inline explicit SIMDVec_f(double d) {
+        inline SIMDVec_f(double d) {
             mVec[0] = _mm256_set1_pd(d);
             mVec[1] = _mm256_set1_pd(d);
         }

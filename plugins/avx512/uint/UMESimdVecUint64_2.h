@@ -94,7 +94,7 @@ namespace SIMD {
         // ZERO-CONSTR
         inline SIMDVec_u() {}
         // SET-CONSTR
-        inline explicit SIMDVec_u(uint64_t i) {
+        inline SIMDVec_u(uint64_t i) {
             mVec = SET1_EPI64(i);
         }
         // LOAD-CONSTR
@@ -815,7 +815,9 @@ namespace SIMD {
                             _mm512_castsi128_si512(mVec),
                             _mm512_castsi128_si512(b.mVec));
 #endif
-            return SIMDVecMask<2>(m0);
+            SIMDVecMask<2> ret_mask;
+            ret_mask.mMask = m0;
+            return ret_mask;
         }
         inline SIMDVecMask<2> operator== (SIMDVec_u const & b) const {
             return cmpeq(b);
@@ -829,7 +831,9 @@ namespace SIMD {
                             _mm512_castsi128_si512(mVec), 
                             _mm512_set1_epi64(b));
 #endif
-            return SIMDVecMask<2>(m0);
+            SIMDVecMask<2> ret_mask;
+            ret_mask.mMask = m0;
+            return ret_mask;
         }
         inline SIMDVecMask<2> operator== (uint64_t b) const {
             return cmpeq(b);
@@ -843,7 +847,9 @@ namespace SIMD {
                             _mm512_castsi128_si512(mVec), 
                             _mm512_castsi128_si512(b.mVec));
 #endif
-            return SIMDVecMask<2>(m0);
+            SIMDVecMask<2> ret_mask;
+            ret_mask.mMask = m0;
+            return ret_mask;
         }
         inline SIMDVecMask<2> operator!= (SIMDVec_u const & b) const {
             return cmpne(b);
@@ -857,7 +863,9 @@ namespace SIMD {
                             _mm512_castsi128_si512(mVec),
                             _mm512_set1_epi64(b));
 #endif
-            return SIMDVecMask<2>(m0);
+            SIMDVecMask<2> ret_mask;
+            ret_mask.mMask = m0;
+            return ret_mask;
         }
         inline SIMDVecMask<2> operator!= (uint64_t b) const {
             return cmpne(b);
@@ -871,7 +879,9 @@ namespace SIMD {
                             _mm512_castsi128_si512(mVec),
                             _mm512_castsi128_si512(b.mVec));
 #endif
-            return SIMDVecMask<2>(m0);
+            SIMDVecMask<2> ret_mask;
+            ret_mask.mMask = m0;
+            return ret_mask;
         }
         inline SIMDVecMask<2> operator> (SIMDVec_u const & b) const {
             return cmpgt(b);
@@ -885,7 +895,9 @@ namespace SIMD {
                             _mm512_castsi128_si512(mVec),
                             _mm512_set1_epi64(b));
 #endif
-            return SIMDVecMask<2>(m0);
+            SIMDVecMask<2> ret_mask;
+            ret_mask.mMask = m0;
+            return ret_mask;
         }
         inline SIMDVecMask<2> operator> (uint64_t b) const {
             return cmpgt(b);
@@ -899,7 +911,9 @@ namespace SIMD {
                             _mm512_castsi128_si512(mVec),
                             _mm512_castsi128_si512(b.mVec));
 #endif
-            return SIMDVecMask<2>(m0);
+            SIMDVecMask<2> ret_mask;
+            ret_mask.mMask = m0;
+            return ret_mask;
         }
         inline SIMDVecMask<2> operator< (SIMDVec_u const & b) const {
             return cmplt(b);
@@ -913,7 +927,9 @@ namespace SIMD {
                             _mm512_castsi128_si512(mVec),
                             _mm512_set1_epi64(b));
 #endif
-            return SIMDVecMask<2>(m0);
+            SIMDVecMask<2> ret_mask;
+            ret_mask.mMask = m0;
+            return ret_mask;
         }
         inline SIMDVecMask<2> operator< (uint64_t b) const {
             return cmplt(b);
@@ -927,7 +943,9 @@ namespace SIMD {
                             _mm512_castsi128_si512(mVec),
                             _mm512_castsi128_si512(b.mVec));
 #endif
-            return SIMDVecMask<2>(m0);
+            SIMDVecMask<2> ret_mask;
+            ret_mask.mMask = m0;
+            return ret_mask;
         }
         inline SIMDVecMask<2> operator>= (SIMDVec_u const & b) const {
             return cmpge(b);
@@ -941,7 +959,9 @@ namespace SIMD {
                             _mm512_castsi128_si512(mVec),
                             _mm512_set1_epi64(b));
 #endif
-            return SIMDVecMask<2>(m0);
+            SIMDVecMask<2> ret_mask;
+            ret_mask.mMask = m0;
+            return ret_mask;
         }
         inline SIMDVecMask<2> operator>= (uint64_t b) const {
             return cmpge(b);
@@ -955,7 +975,9 @@ namespace SIMD {
                             _mm512_castsi128_si512(mVec),
                             _mm512_castsi128_si512(b.mVec));
 #endif
-            return SIMDVecMask<2>(m0);
+            SIMDVecMask<2> ret_mask;
+            ret_mask.mMask = m0;
+            return ret_mask;
         }
         inline SIMDVecMask<2> operator<= (SIMDVec_u const & b) const {
             return cmple(b);
@@ -969,7 +991,9 @@ namespace SIMD {
                             _mm512_castsi128_si512(mVec),
                             _mm512_set1_epi64(b));
 #endif
-            return SIMDVecMask<2>(m0);
+            SIMDVecMask<2> ret_mask;
+            ret_mask.mMask = m0;
+            return ret_mask;
         }
         inline SIMDVecMask<2> operator<= (uint64_t b) const {
             return cmple(b);

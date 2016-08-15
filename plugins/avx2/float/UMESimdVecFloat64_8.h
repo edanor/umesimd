@@ -95,14 +95,14 @@ namespace SIMD {
         // ZERO-CONSTR - Zero element constructor 
         inline SIMDVec_f() {}
 
-        // LOAD-CONSTR - Construct by loading from memory
-        inline explicit SIMDVec_f(const double *p) { this->load(p); }
-
         // SET-CONSTR  - One element constructor
-        inline explicit SIMDVec_f(double d) {
+        inline SIMDVec_f(double d) {
             mVec[0] = _mm256_set1_pd(d);
             mVec[1] = _mm256_set1_pd(d);
         }
+
+        // LOAD-CONSTR - Construct by loading from memory
+        inline explicit SIMDVec_f(const double *p) { this->load(p); }
 
         // FULL-CONSTR - constructor with VEC_LEN scalar element 
         inline SIMDVec_f(double d0, double d1, double d2, double d3,
