@@ -74,6 +74,16 @@ namespace SIMD {
         inline SIMDVec_f(float f) {
             mVec = _mm512_set1_ps(f);
         }
+        // This constructor is used to force types other than SCALAR_TYPES
+        // to be promoted to SCALAR_TYPE instead of SCALAR_TYPE*. This prevents
+        // ambiguity between SET-CONSTR and LOAD-CONSTR.
+        template<typename T>
+        inline SIMDVec_f(
+            T i, 
+            typename std::enable_if< std::is_same<T, int>::value && 
+                                    !std::is_same<T, float>::value,
+                                    void*>::type = nullptr)
+        : SIMDVec_f(static_cast<float>(i)) {}
 
         // UTOF
         inline explicit SIMDVec_f(SIMDVec_u<uint32_t, 8> const & vecUint) {

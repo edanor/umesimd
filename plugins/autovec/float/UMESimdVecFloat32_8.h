@@ -76,6 +76,16 @@ namespace SIMD {
                 local_ptr[i] = f;
             }
         }
+        // This constructor is used to force types other than SCALAR_TYPES
+        // to be promoted to SCALAR_TYPE instead of SCALAR_TYPE*. This prevents
+        // ambiguity between SET-CONSTR and LOAD-CONSTR.
+        template<typename T>
+        inline SIMDVec_f(
+            T i, 
+            typename std::enable_if< std::is_same<T, int>::value && 
+                                    !std::is_same<T, float>::value,
+                                    void*>::type = nullptr)
+        : SIMDVec_f(static_cast<float>(i)) {}
         // LOAD-CONSTR
         UME_FORCE_INLINE explicit SIMDVec_f(float const *p) {
             float *local_ptr = &mVec[0];
