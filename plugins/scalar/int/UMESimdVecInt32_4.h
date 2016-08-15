@@ -68,7 +68,7 @@ namespace SIMD {
         // ZERO-CONSTR
         inline SIMDVec_i() {}
         // SET-CONSTR
-        inline explicit SIMDVec_i(int32_t i) {
+        inline SIMDVec_i(int32_t i) {
             mVec[0] = i;
             mVec[1] = i;
             mVec[2] = i;

@@ -72,7 +72,7 @@ namespace SIMD {
         // ZERO-CONSTR - Zero element constructor 
         inline SIMDVec_f() {}
         // SET-CONSTR
-        inline explicit SIMDVec_f(float f) {
+        inline SIMDVec_f(float f) {
             mVecLo = _mm512_set1_ps(f);
             mVecHi = _mm512_set1_ps(f);
         }

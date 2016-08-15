@@ -47,7 +47,17 @@ namespace SIMD {
     private:
         uint32_t mMaskElements[VEC_LEN];
     public:
+<<<<<<< HEAD:plugins/openmp/swizzle/UMESimdSwizzlePrototype.h
         inline SIMDSwizzle() { };
+=======
+        inline SIMDVecMask() {}
+
+        // Regardless of the mask representation, the interface should only allow initialization using 
+        // standard bool or using equivalent mask
+        inline SIMDVecMask(bool m) {
+            mMask = m;
+        }
+>>>>>>> Allow scalar broadcasts with implicit scalar conversion.:plugins/autovec/mask/UMESimdMask1.h
 
         inline explicit SIMDSwizzle(uint32_t m0) {
             UME_EMULATION_WARNING();

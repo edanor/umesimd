@@ -59,7 +59,7 @@ namespace SIMD {
             mMask = mask.mMask;
         }
         // SET-CONSTR
-        inline explicit SIMDVecMask(bool m) {
+        inline SIMDVecMask(bool m) {
             mMask = m;
         }
         // LOAD-CONSTR

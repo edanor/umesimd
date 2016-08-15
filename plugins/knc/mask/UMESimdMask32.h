@@ -66,7 +66,7 @@ namespace SIMD {
 
         // Regardless of the mask representation, the interface should only allow initialization using 
         // standard bool or using equivalent mask
-        inline explicit SIMDVecMask(bool m) {
+        inline SIMDVecMask(bool m) {
             mMaskLo = __mmask16(-int16_t(m));
             mMaskHi = __mmask16(-int16_t(m));
         }

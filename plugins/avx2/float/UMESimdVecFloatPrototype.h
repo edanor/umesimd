@@ -255,7 +255,7 @@ namespace SIMD {
         inline SIMDVec_f() : mVec() {};
 
         // SET-CONSTR
-        inline explicit SIMDVec_f(SCALAR_FLOAT_TYPE f) : mVec(f) {};
+        inline SIMDVec_f(SCALAR_FLOAT_TYPE f) : mVec(f) {};
 
         // LOAD-CONSTR
         inline explicit SIMDVec_f(SCALAR_FLOAT_TYPE const * p) { this->load(p); }
