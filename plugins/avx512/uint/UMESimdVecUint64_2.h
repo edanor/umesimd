@@ -97,6 +97,16 @@ namespace SIMD {
         inline SIMDVec_u(uint64_t i) {
             mVec = SET1_EPI64(i);
         }
+        // This constructor is used to force types other than SCALAR_TYPES
+        // to be promoted to SCALAR_TYPE instead of SCALAR_TYPE*. This prevents
+        // ambiguity between SET-CONSTR and LOAD-CONSTR.
+        template<typename T>
+        inline SIMDVec_u(
+            T i, 
+            typename std::enable_if< std::is_same<T, int>::value && 
+                                    !std::is_same<T, uint64_t>::value,
+                                    void*>::type = nullptr)
+        : SIMDVec_u(static_cast<uint64_t>(i)) {}
         // LOAD-CONSTR
         inline explicit SIMDVec_u(uint64_t const *p) {
             __m128i t0 = _mm_cvtsi64_si128(p[0]);
