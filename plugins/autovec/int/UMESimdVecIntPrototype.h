@@ -404,27 +404,35 @@ namespace SIMD {
         typedef typename SIMDVec_i_traits<SCALAR_INT_TYPE, VEC_LEN>::SCALAR_INT_LOWER_PRECISION  SCALAR_INT_LOWER_PRECISION;
         typedef typename SIMDVec_i_traits<SCALAR_INT_TYPE, VEC_LEN>::SCALAR_INT_HIGHER_PRECISION SCALAR_INT_HIGHER_PRECISION;
 
+        friend class SIMDVec_u<SCALAR_UINT_TYPE, VEC_LEN>;
+        friend class SIMDVec_f<SCALAR_FLOAT_TYPE, VEC_LEN>;
+        
+    public:
+        constexpr static uint32_t alignment() { return VEC_LEN*sizeof(SCALAR_INT_TYPE); }
+
     private:
-        VEC_EMU_REG mVec;
+        alignas(alignment()) SCALAR_INT_TYPE mVec[VEC_LEN];
 
     public:
         // ZERO-CONSTR
         inline SIMDVec_i() : mVec() {};
 
         // SET-CONSTR
-        inline explicit SIMDVec_i(SCALAR_INT_TYPE i) : mVec(i) {};
+        inline explicit SIMDVec_i(SCALAR_INT_TYPE b) {
+            for(int i = 0; i < VEC_LEN; i++) mVec[i] = b;
+        };
 
         // LOAD-CONSTR
         inline explicit SIMDVec_i(SCALAR_INT_TYPE const * p) { this->load(p); }
 
         inline SIMDVec_i(SCALAR_INT_TYPE i0, SCALAR_INT_TYPE i1) {
-            mVec.insert(0, i0);  mVec.insert(1, i1);
+            mVec[0] = i0;  mVec[1] = i1;
         }
 
         inline SIMDVec_i(SCALAR_INT_TYPE i0, SCALAR_INT_TYPE i1,
             SCALAR_INT_TYPE i2, SCALAR_INT_TYPE i3) {
-            mVec.insert(0, i0);  mVec.insert(1, i1);
-            mVec.insert(2, i2);  mVec.insert(3, i3);
+            insert(0, i0);  insert(1, i1);
+            insert(2, i2);  insert(3, i3);
         }
 
         inline SIMDVec_i(SCALAR_INT_TYPE i0, SCALAR_INT_TYPE i1,
@@ -432,10 +440,10 @@ namespace SIMD {
             SCALAR_INT_TYPE i4, SCALAR_INT_TYPE i5,
             SCALAR_INT_TYPE i6, SCALAR_INT_TYPE i7)
         {
-            mVec.insert(0, i0);  mVec.insert(1, i1);
-            mVec.insert(2, i2);  mVec.insert(3, i3);
-            mVec.insert(4, i4);  mVec.insert(5, i5);
-            mVec.insert(6, i6);  mVec.insert(7, i7);
+            insert(0, i0);  insert(1, i1);
+            insert(2, i2);  insert(3, i3);
+            insert(4, i4);  insert(5, i5);
+            insert(6, i6);  insert(7, i7);
         }
 
         inline SIMDVec_i(SCALAR_INT_TYPE i0, SCALAR_INT_TYPE i1,
@@ -447,14 +455,14 @@ namespace SIMD {
             SCALAR_INT_TYPE i12, SCALAR_INT_TYPE i13,
             SCALAR_INT_TYPE i14, SCALAR_INT_TYPE i15)
         {
-            mVec.insert(0, i0);    mVec.insert(1, i1);
-            mVec.insert(2, i2);    mVec.insert(3, i3);
-            mVec.insert(4, i4);    mVec.insert(5, i5);
-            mVec.insert(6, i6);    mVec.insert(7, i7);
-            mVec.insert(8, i8);    mVec.insert(9, i9);
-            mVec.insert(10, i10);  mVec.insert(11, i11);
-            mVec.insert(12, i12);  mVec.insert(13, i13);
-            mVec.insert(14, i14);  mVec.insert(15, i15);
+            insert(0, i0);    insert(1, i1);
+            insert(2, i2);    insert(3, i3);
+            insert(4, i4);    insert(5, i5);
+            insert(6, i6);    insert(7, i7);
+            insert(8, i8);    insert(9, i9);
+            insert(10, i10);  insert(11, i11);
+            insert(12, i12);  insert(13, i13);
+            insert(14, i14);  insert(15, i15);
         }
 
         inline SIMDVec_i(SCALAR_INT_TYPE i0, SCALAR_INT_TYPE i1,
@@ -474,22 +482,22 @@ namespace SIMD {
             SCALAR_INT_TYPE i28, SCALAR_INT_TYPE i29,
             SCALAR_INT_TYPE i30, SCALAR_INT_TYPE i31)
         {
-            mVec.insert(0, i0);    mVec.insert(1, i1);
-            mVec.insert(2, i2);    mVec.insert(3, i3);
-            mVec.insert(4, i4);    mVec.insert(5, i5);
-            mVec.insert(6, i6);    mVec.insert(7, i7);
-            mVec.insert(8, i8);    mVec.insert(9, i9);
-            mVec.insert(10, i10);  mVec.insert(11, i11);
-            mVec.insert(12, i12);  mVec.insert(13, i13);
-            mVec.insert(14, i14);  mVec.insert(15, i15);
-            mVec.insert(16, i16);  mVec.insert(17, i17);
-            mVec.insert(18, i18);  mVec.insert(19, i19);
-            mVec.insert(20, i20);  mVec.insert(21, i21);
-            mVec.insert(22, i22);  mVec.insert(23, i23);
-            mVec.insert(24, i24);  mVec.insert(25, i25);
-            mVec.insert(26, i26);  mVec.insert(27, i27);
-            mVec.insert(28, i28);  mVec.insert(29, i29);
-            mVec.insert(30, i30);  mVec.insert(31, i31);
+            insert(0, i0);    insert(1, i1);
+            insert(2, i2);    insert(3, i3);
+            insert(4, i4);    insert(5, i5);
+            insert(6, i6);    insert(7, i7);
+            insert(8, i8);    insert(9, i9);
+            insert(10, i10);  insert(11, i11);
+            insert(12, i12);  insert(13, i13);
+            insert(14, i14);  insert(15, i15);
+            insert(16, i16);  insert(17, i17);
+            insert(18, i18);  insert(19, i19);
+            insert(20, i20);  insert(21, i21);
+            insert(22, i22);  insert(23, i23);
+            insert(24, i24);  insert(25, i25);
+            insert(26, i26);  insert(27, i27);
+            insert(28, i28);  insert(29, i29);
+            insert(30, i30);  insert(31, i31);
         }
 
         // EXTRACT
@@ -502,7 +510,7 @@ namespace SIMD {
 
         // INSERT
         inline SIMDVec_i & insert(uint32_t index, SCALAR_INT_TYPE value) {
-            mVec.insert(index, value);
+            mVec[index] = value;
             return *this;
         }
         inline IntermediateIndex<SIMDVec_i, SCALAR_INT_TYPE> operator[] (uint32_t index) {

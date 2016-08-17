@@ -60,6 +60,13 @@ namespace SIMD {
     private:
         bool mMask[VEC_LEN]; // each entry represents single mask element. For real SIMD vectors, mMask will be of mask intrinsic type.
 
+    template<typename T, uint32_t L>
+    friend class SIMDVec_u;
+    template<typename T, uint32_t L>
+    friend class SIMDVec_i;
+    template<typename T, uint32_t L>
+    friend class SIMDVec_f;
+        
     public:
         inline SIMDVecMask() {}
 

@@ -376,6 +376,7 @@ namespace SIMD {
 
         // Conversion operators require access to private members.
         friend class SIMDVec_i<SCALAR_INT_TYPE, VEC_LEN>;
+        friend class SIMDVec_f<SCALAR_FLOAT_TYPE, VEC_LEN>;
     private:
         // This is the only data member and it is a low level representation of vector register.
         VEC_EMU_REG mVec;

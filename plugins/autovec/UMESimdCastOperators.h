@@ -117,21 +117,24 @@ namespace SIMD {
         return SCALAR_EMULATION::xtoy <SIMDVec_i<int16_t, 64>, int16_t, SIMDVec_u<uint16_t, 64>>(*this);
     }
 
+    template<>
     inline SIMDVec_u<uint32_t, 1>::operator SIMDVec_i<int32_t, 1>() const {
-        return SIMDVec_i<int32_t, 1>(int32_t(mVec));
+        return SCALAR_EMULATION::xtoy <SIMDVec_i<int32_t, 1>, int32_t, SIMDVec_u<uint32_t, 1>>(*this);
     }
 
+    template<>
     inline SIMDVec_u<uint32_t, 2>::operator SIMDVec_i<int32_t, 2>() const {
-        return SIMDVec_i<int32_t, 2>(int32_t(mVec[0]), int32_t(mVec[1]));
+        return SCALAR_EMULATION::xtoy <SIMDVec_i<int32_t, 2>, int32_t, SIMDVec_u<uint32_t, 2>>(*this);
     }
 
+    template<>
     inline SIMDVec_u<uint32_t, 4>::operator SIMDVec_i<int32_t, 4>() const {
-        return SIMDVec_i<int32_t, 4>(int32_t(mVec[0]), int32_t(mVec[1]), int32_t(mVec[2]), int32_t(mVec[3]));
+        return SCALAR_EMULATION::xtoy <SIMDVec_i<int32_t, 4>, int32_t, SIMDVec_u<uint32_t, 4>>(*this);
     }
 
+    template<>
     inline SIMDVec_u<uint32_t, 8>::operator SIMDVec_i<int32_t, 8>() const {
-        return SIMDVec_i<int32_t, 8>(int32_t(mVec[0]), int32_t(mVec[1]), int32_t(mVec[2]), int32_t(mVec[3]),
-                                     int32_t(mVec[4]), int32_t(mVec[5]), int32_t(mVec[6]), int32_t(mVec[7]));
+        return SCALAR_EMULATION::xtoy <SIMDVec_i<int32_t, 8>, int32_t, SIMDVec_u<uint32_t, 8>>(*this);
     }
 
     template<>
@@ -170,21 +173,24 @@ namespace SIMD {
     }
 
     // UTOF
+    template<>
     inline SIMDVec_u<uint32_t, 1>::operator SIMDVec_f<float, 1>() const {
-        return SIMDVec_f<float, 1>(float(mVec));
+        return SCALAR_EMULATION::xtoy <SIMDVec_f<float, 1>, float, SIMDVec_u<uint32_t, 1>>(*this);
     }
 
+    template<>
     inline SIMDVec_u<uint32_t, 2>::operator SIMDVec_f<float, 2>() const {
-        return SIMDVec_f<float, 2>(float(mVec[0]), float(mVec[1]));
+        return SCALAR_EMULATION::xtoy <SIMDVec_f<float, 2>, float, SIMDVec_u<uint32_t, 2>>(*this);
     }
 
+    template<>
     inline SIMDVec_u<uint32_t, 4>::operator SIMDVec_f<float, 4>() const {
-        return SIMDVec_f<float, 4>(float(mVec[0]), float(mVec[1]), float(mVec[2]), float(mVec[3]));
+        return SCALAR_EMULATION::xtoy <SIMDVec_f<float, 4>, float, SIMDVec_u<uint32_t, 4>>(*this);
     }
 
+    template<>
     inline SIMDVec_u<uint32_t, 8>::operator SIMDVec_f<float, 8>() const {
-        return SIMDVec_f<float, 8>(float(mVec[0]), float(mVec[1]), float(mVec[2]), float(mVec[3]),
-                                   float(mVec[4]), float(mVec[5]), float(mVec[6]), float(mVec[7]));
+        return SCALAR_EMULATION::xtoy <SIMDVec_f<float, 8>, float, SIMDVec_u<uint32_t, 8>>(*this);
     }
 
     template<>
@@ -298,21 +304,24 @@ namespace SIMD {
         return SCALAR_EMULATION::xtoy <SIMDVec_u<uint16_t, 64>, uint32_t, SIMDVec_i<int16_t, 64>>(*this);
     }
 
+    template<>
     inline SIMDVec_i<int32_t, 1>::operator SIMDVec_u<uint32_t, 1>() const {
-        return SIMDVec_u<uint32_t, 1>(uint32_t(mVec));
+        return SCALAR_EMULATION::xtoy < SIMDVec_u<uint32_t, 1>, uint32_t, SIMDVec_i<int32_t, 1>>(*this);
     }
 
+    template<>
     inline SIMDVec_i<int32_t, 2>::operator SIMDVec_u<uint32_t, 2>() const {
-        return SIMDVec_u<uint32_t, 2>(uint32_t(mVec[0]), uint32_t(mVec[1]));
+        return SCALAR_EMULATION::xtoy < SIMDVec_u<uint32_t, 2>, uint32_t, SIMDVec_i<int32_t, 2>>(*this);
     }
 
+    template<>
     inline SIMDVec_i<int32_t, 4>::operator SIMDVec_u<uint32_t, 4>() const {
-        return SIMDVec_u<uint32_t, 4>(uint32_t(mVec[0]), uint32_t(mVec[1]), uint32_t(mVec[2]), uint32_t(mVec[3]));
+        return SCALAR_EMULATION::xtoy < SIMDVec_u<uint32_t, 4>, uint32_t, SIMDVec_i<int32_t, 4>>(*this);
     }
 
+    template<>
     inline SIMDVec_i<int32_t, 8>::operator SIMDVec_u<uint32_t, 8>() const {
-        return SIMDVec_u<uint32_t, 8>(uint32_t(mVec[0]), uint32_t(mVec[1]), uint32_t(mVec[2]), uint32_t(mVec[3]),
-                                      uint32_t(mVec[4]), uint32_t(mVec[5]), uint32_t(mVec[6]), uint32_t(mVec[7]));
+        return SCALAR_EMULATION::xtoy < SIMDVec_u<uint32_t, 8>, uint32_t, SIMDVec_i<int32_t, 8>>(*this);
     }
 
     template<>
@@ -351,21 +360,24 @@ namespace SIMD {
     }
 
     // ITOF
+    template<>
     inline SIMDVec_i<int32_t, 1>::operator SIMDVec_f<float, 1>() const {
-        return SIMDVec_f<float, 1>(float(mVec));
+        return SCALAR_EMULATION::xtoy < SIMDVec_f<float, 1>, float, SIMDVec_i<int32_t, 1>>(*this);
     }
 
+    template<>
     inline SIMDVec_i<int32_t, 2>::operator SIMDVec_f<float, 2>() const {
-        return SIMDVec_f<float, 2>(float(mVec[0]), float(mVec[1]));
+        return SCALAR_EMULATION::xtoy < SIMDVec_f<float, 2>, float, SIMDVec_i<int32_t, 2>>(*this);
     }
 
+    template<>
     inline SIMDVec_i<int32_t, 4>::operator SIMDVec_f<float, 4>() const {
-        return SIMDVec_f<float, 4>(float(mVec[0]), float(mVec[1]), float(mVec[2]), float(mVec[3]));
+        return SCALAR_EMULATION::xtoy < SIMDVec_f<float, 4>, float, SIMDVec_i<int32_t, 4>>(*this);
     }
 
+    template<>
     inline SIMDVec_i<int32_t, 8>::operator SIMDVec_f<float, 8>() const {
-        return SIMDVec_f<float, 8>(float(mVec[0]), float(mVec[1]), float(mVec[2]), float(mVec[3]),
-                                   float(mVec[4]), float(mVec[5]), float(mVec[6]), float(mVec[7]));
+        return SCALAR_EMULATION::xtoy < SIMDVec_f<float, 8>, float, SIMDVec_i<int32_t, 8>>(*this);
     }
 
     template<>
@@ -404,21 +416,24 @@ namespace SIMD {
     }
 
     // FTOU
+    template<>
     inline SIMDVec_f<float, 1>::operator SIMDVec_u<uint32_t, 1>() const {
         return SCALAR_EMULATION::xtoy < SIMDVec_u<uint32_t, 1>, uint32_t, SIMDVec_f<float, 1>>(*this);
     }
 
+    template<>
     inline SIMDVec_f<float, 2>::operator SIMDVec_u<uint32_t, 2>() const {
         return SCALAR_EMULATION::xtoy < SIMDVec_u<uint32_t, 2>, uint32_t, SIMDVec_f<float, 2>>(*this);
     }
 
+    template<>
     inline SIMDVec_f<float, 4>::operator SIMDVec_u<uint32_t, 4>() const {
-        return SIMDVec_u<uint32_t, 4>(uint32_t(mVec[0]), uint32_t(mVec[1]), uint32_t(mVec[2]), uint32_t(mVec[3]));
+        return SCALAR_EMULATION::xtoy < SIMDVec_u<uint32_t, 4>, uint32_t, SIMDVec_f<float, 4>>(*this);
     }
 
+    template<>
     inline SIMDVec_f<float, 8>::operator SIMDVec_u<uint32_t, 8>() const {
-        return SIMDVec_u<uint32_t, 8>(uint32_t(mVec[0]), uint32_t(mVec[1]), uint32_t(mVec[2]), uint32_t(mVec[3]),
-            uint32_t(mVec[4]), uint32_t(mVec[5]), uint32_t(mVec[6]), uint32_t(mVec[7]));
+        return SCALAR_EMULATION::xtoy < SIMDVec_u<uint32_t, 8>, uint32_t, SIMDVec_f<float, 8>>(*this);
     }
 
     template<>
@@ -457,19 +472,25 @@ namespace SIMD {
     }
 
     // FTOI
+    template<>
     inline SIMDVec_f<float, 1>::operator SIMDVec_i<int32_t, 1>() const {
         return SCALAR_EMULATION::xtoy < SIMDVec_i<int32_t, 1>, int32_t, SIMDVec_f<float, 1>>(*this);
     }
 
+    template<>
     inline SIMDVec_f<float, 2>::operator SIMDVec_i<int32_t, 2>() const {
         return SCALAR_EMULATION::xtoy < SIMDVec_i<int32_t, 2>, int32_t, SIMDVec_f<float, 2>>(*this);
     }
 
+    template<>
     inline SIMDVec_f<float, 4>::operator SIMDVec_i<int32_t, 4>() const {
-        return SIMDVec_i<int32_t, 4>(int32_t(mVec[0]), int32_t(mVec[1]), int32_t(mVec[2]), int32_t(mVec[3]));
+        return SCALAR_EMULATION::xtoy < SIMDVec_i<int32_t, 4>, int32_t, SIMDVec_f<float, 4>>(*this);
     }
 
+    template<>
     inline SIMDVec_f<float, 8>::operator SIMDVec_i<int32_t, 8>() const {
+        return SCALAR_EMULATION::xtoy < SIMDVec_i<int32_t, 8>, int32_t, SIMDVec_f<float, 8>>(*this);
+    /*
         SIMDVec_i<int32_t, 8> retval;
         int32_t * local_retval_ptr = &retval.mVec[0];
         float const * local_ptr = &mVec[0];
@@ -478,7 +499,7 @@ namespace SIMD {
         for(int i = 0; i < 8; i++) {
             local_retval_ptr[i] = int32_t(local_ptr[i]);
         }
-        return retval;
+        return retval;*/
     }
 
     template<>
@@ -582,21 +603,24 @@ namespace SIMD {
         return SCALAR_EMULATION::xtoy <SIMDVec_u<uint32_t, 32>, uint32_t, SIMDVec_u<uint16_t, 32>>(*this);
     }
 
+    template<>
     inline SIMDVec_u<uint32_t, 1>::operator SIMDVec_u<uint64_t, 1>() const {
-        return SIMDVec_u<uint64_t, 1>(uint64_t(mVec));
+        return SCALAR_EMULATION::xtoy <SIMDVec_u<uint64_t, 1>, uint64_t, SIMDVec_u<uint32_t, 1>>(*this);
     }
 
+    template<>
     inline SIMDVec_u<uint32_t, 2>::operator SIMDVec_u<uint64_t, 2>() const {
-        return SIMDVec_u<uint64_t, 2>(uint64_t(mVec[0]), uint64_t(mVec[1]));
+        return SCALAR_EMULATION::xtoy <SIMDVec_u<uint64_t, 2>, uint64_t, SIMDVec_u<uint32_t, 2>>(*this);
     }
 
+    template<>
     inline SIMDVec_u<uint32_t, 4>::operator SIMDVec_u<uint64_t, 4>() const {
-        return SIMDVec_u<uint64_t, 4>(uint64_t(mVec[0]), uint64_t(mVec[1]), uint64_t(mVec[2]), uint64_t(mVec[3]));
+        return SCALAR_EMULATION::xtoy <SIMDVec_u<uint64_t, 4>, uint64_t, SIMDVec_u<uint32_t, 4>>(*this);
     }
 
+    template<>
     inline SIMDVec_u<uint32_t, 8>::operator SIMDVec_u<uint64_t, 8>() const {
-        return SIMDVec_u<uint64_t, 8>(uint64_t(mVec[0]), uint64_t(mVec[1]), uint64_t(mVec[2]), uint64_t(mVec[3]),
-                                      uint64_t(mVec[4]), uint64_t(mVec[5]), uint64_t(mVec[6]), uint64_t(mVec[7]));
+        return SCALAR_EMULATION::xtoy <SIMDVec_u<uint64_t, 8>, uint64_t, SIMDVec_u<uint32_t, 8>>(*this);
     }
 
     template<>
@@ -669,18 +693,22 @@ namespace SIMD {
         return SCALAR_EMULATION::xtoy <SIMDVec_i<int32_t, 32>, int32_t, SIMDVec_i<int16_t, 32>>(*this);
     }
 
+    template<>
     inline SIMDVec_i<int32_t, 1>::operator SIMDVec_i<int64_t, 1>() const {
         return SCALAR_EMULATION::xtoy <SIMDVec_i<int64_t, 1>, int64_t, SIMDVec_i<int32_t, 1>>(*this);
     }
 
+    template<>
     inline SIMDVec_i<int32_t, 2>::operator SIMDVec_i<int64_t, 2>() const {
         return SCALAR_EMULATION::xtoy <SIMDVec_i<int64_t, 2>, int64_t, SIMDVec_i<int32_t, 2>>(*this);
     }
 
+    template<>
     inline SIMDVec_i<int32_t, 4>::operator SIMDVec_i<int64_t, 4>() const {
         return SCALAR_EMULATION::xtoy <SIMDVec_i<int64_t, 4>, int64_t, SIMDVec_i<int32_t, 4>>(*this);
     }
 
+    template<>
     inline SIMDVec_i<int32_t, 8>::operator SIMDVec_i<int64_t, 8>() const {
         return SCALAR_EMULATION::xtoy <SIMDVec_i<int64_t, 8>, int64_t, SIMDVec_i<int32_t, 8>>(*this);
     }
@@ -690,18 +718,22 @@ namespace SIMD {
         return SCALAR_EMULATION::xtoy <SIMDVec_i<int64_t, 16>, int64_t, SIMDVec_i<int32_t, 16>>(*this);
     }
 
+    template<>
     inline SIMDVec_f<float, 1>::operator SIMDVec_f<double, 1>() const {
         return SCALAR_EMULATION::xtoy <SIMDVec_f<double, 1>, double, SIMDVec_f<float, 1>>(*this);
     }
 
+    template<>
     inline SIMDVec_f<float, 2>::operator SIMDVec_f<double, 2>() const {
         return SCALAR_EMULATION::xtoy <SIMDVec_f<double, 2>, double, SIMDVec_f<float, 2>>(*this);
     }
 
+    template<>
     inline SIMDVec_f<float, 4>::operator SIMDVec_f<double, 4>() const {
         return SCALAR_EMULATION::xtoy <SIMDVec_f<double, 4>, double, SIMDVec_f<float, 4>>(*this);
     }
 
+    template<>
     inline SIMDVec_f<float, 8>::operator SIMDVec_f<double, 8>() const {
         return SCALAR_EMULATION::xtoy <SIMDVec_f<double, 8>, double, SIMDVec_f<float, 8>>(*this);
     }
@@ -746,18 +778,22 @@ namespace SIMD {
         return SCALAR_EMULATION::xtoy <SIMDVec_u<uint8_t, 64>, uint8_t, SIMDVec_u<uint16_t, 64>>(*this);
     }
 
+    template<>
     inline SIMDVec_u<uint32_t, 1>::operator SIMDVec_u<uint16_t, 1>() const {
         return SCALAR_EMULATION::xtoy <SIMDVec_u<uint16_t, 1>, uint16_t, SIMDVec_u<uint32_t, 1>>(*this);
     }
 
+    template<>
     inline SIMDVec_u<uint32_t, 2>::operator SIMDVec_u<uint16_t, 2>() const {
         return SCALAR_EMULATION::xtoy <SIMDVec_u<uint16_t, 2>, uint16_t, SIMDVec_u<uint32_t, 2>>(*this);
     }
 
+    template<>
     inline SIMDVec_u<uint32_t, 4>::operator SIMDVec_u<uint16_t, 4>() const {
         return SCALAR_EMULATION::xtoy <SIMDVec_u<uint16_t, 4>, uint16_t, SIMDVec_u<uint32_t, 4>>(*this);
     }
 
+    template<>
     inline SIMDVec_u<uint32_t, 8>::operator SIMDVec_u<uint16_t, 8>() const {
         return SCALAR_EMULATION::xtoy <SIMDVec_u<uint16_t, 8>, uint16_t, SIMDVec_u<uint32_t, 8>>(*this);
     }
@@ -830,18 +866,22 @@ namespace SIMD {
         return SCALAR_EMULATION::xtoy <SIMDVec_i<int8_t, 64>, int8_t, SIMDVec_i<int16_t, 64>>(*this);
     }
 
+    template<>
     inline SIMDVec_i<int32_t, 1>::operator SIMDVec_i<int16_t, 1>() const {
         return SCALAR_EMULATION::xtoy <SIMDVec_i<int16_t, 1>, int16_t, SIMDVec_i<int32_t, 1>>(*this);
     }
 
+    template<>
     inline SIMDVec_i<int32_t, 2>::operator SIMDVec_i<int16_t, 2>() const {
         return SCALAR_EMULATION::xtoy <SIMDVec_i<int16_t, 2>, int16_t, SIMDVec_i<int32_t, 2>>(*this);
     }
 
+    template<>
     inline SIMDVec_i<int32_t, 4>::operator SIMDVec_i<int16_t, 4>() const {
         return SCALAR_EMULATION::xtoy <SIMDVec_i<int16_t, 4>, int16_t, SIMDVec_i<int32_t, 4>>(*this);
     }
 
+    template<>
     inline SIMDVec_i<int32_t, 8>::operator SIMDVec_i<int16_t, 8>() const {
         return SCALAR_EMULATION::xtoy <SIMDVec_i<int16_t, 8>, int16_t, SIMDVec_i<int32_t, 8>>(*this);
     }
