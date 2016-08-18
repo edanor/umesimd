@@ -253,26 +253,26 @@ namespace SIMD {
 
     public:
         // ZERO-CONSTR
-        inline SIMDVec_f() : mVec() {};
+        UME_FORCE_INLINE SIMDVec_f() : mVec() {};
 
         // SET-CONSTR
-        UME_FORCE_INLINE explicit SIMDVec_f(SCALAR_FLOAT_TYPE f) {
+        UME_FORCE_INLINE explicit SIMDVec_f(SCALAR_FLOAT_TYPE x) {
             SCALAR_FLOAT_TYPE *local_ptr = &mVec[0];
             #pragma omp simd simdlen(VEC_LEN) safelen(VEC_LEN)
             for (int i = 0; i < VEC_LEN; i++) {
-                local_ptr[i] = f;
+                local_ptr[i] = x;
             }
         }
 
         // LOAD-CONSTR
-        inline explicit SIMDVec_f(SCALAR_FLOAT_TYPE const * p) { this->load(p); }
+        UME_FORCE_INLINE explicit SIMDVec_f(SCALAR_FLOAT_TYPE const * p) { this->load(p); }
 
-        inline SIMDVec_f(SCALAR_FLOAT_TYPE f0, SCALAR_FLOAT_TYPE f1) {
+        UME_FORCE_INLINE SIMDVec_f(SCALAR_FLOAT_TYPE f0, SCALAR_FLOAT_TYPE f1) {
             mVec[0] = f0; 
             mVec[1] = f1;
         }
 
-        inline SIMDVec_f(
+        UME_FORCE_INLINE SIMDVec_f(
             SCALAR_FLOAT_TYPE f0, SCALAR_FLOAT_TYPE f1,
             SCALAR_FLOAT_TYPE f2, SCALAR_FLOAT_TYPE f3) {
             mVec[0] = f0; 
@@ -281,7 +281,7 @@ namespace SIMD {
             mVec[3] = f3;
         }
 
-        inline SIMDVec_f(
+        UME_FORCE_INLINE SIMDVec_f(
             SCALAR_FLOAT_TYPE f0, SCALAR_FLOAT_TYPE f1,
             SCALAR_FLOAT_TYPE f2, SCALAR_FLOAT_TYPE f3,
             SCALAR_FLOAT_TYPE f4, SCALAR_FLOAT_TYPE f5,
@@ -297,7 +297,7 @@ namespace SIMD {
             mVec[7] = f7;
         }
 
-        inline SIMDVec_f(
+        UME_FORCE_INLINE SIMDVec_f(
             SCALAR_FLOAT_TYPE f0, SCALAR_FLOAT_TYPE f1,
             SCALAR_FLOAT_TYPE f2, SCALAR_FLOAT_TYPE f3,
             SCALAR_FLOAT_TYPE f4, SCALAR_FLOAT_TYPE f5,
@@ -325,7 +325,7 @@ namespace SIMD {
             mVec[15] = f15;
         }
 
-        inline SIMDVec_f(
+        UME_FORCE_INLINE SIMDVec_f(
             SCALAR_FLOAT_TYPE f0, SCALAR_FLOAT_TYPE f1,
             SCALAR_FLOAT_TYPE f2, SCALAR_FLOAT_TYPE f3,
             SCALAR_FLOAT_TYPE f4, SCALAR_FLOAT_TYPE f5,
@@ -378,29 +378,29 @@ namespace SIMD {
         }
 
         // EXTRACT
-        inline SCALAR_FLOAT_TYPE extract(uint32_t index) const {
+        UME_FORCE_INLINE SCALAR_FLOAT_TYPE extract(uint32_t index) const {
             return mVec[index];
         }
-        inline SCALAR_FLOAT_TYPE operator[] (uint32_t index) const {
+        UME_FORCE_INLINE SCALAR_FLOAT_TYPE operator[] (uint32_t index) const {
             return extract(index);
         }
 
         // INSERT
-        inline SIMDVec_f & insert(uint32_t index, SCALAR_FLOAT_TYPE value) {
+        UME_FORCE_INLINE SIMDVec_f & insert(uint32_t index, SCALAR_FLOAT_TYPE value) {
             mVec[index] = value;
             return *this;
         }
-        inline IntermediateIndex<SIMDVec_f, SCALAR_FLOAT_TYPE> operator[] (uint32_t index) {
+        UME_FORCE_INLINE IntermediateIndex<SIMDVec_f, SCALAR_FLOAT_TYPE> operator[] (uint32_t index) {
             return IntermediateIndex<SIMDVec_f, SCALAR_FLOAT_TYPE>(index, static_cast<SIMDVec_f &>(*this));
         }
 
         // Override Mask Access operators
 #if defined(USE_PARENTHESES_IN_MASK_ASSIGNMENT)
-        inline IntermediateMask<SIMDVec_f, SCALAR_FLOAT_TYPE, MASK_TYPE> operator() (MASK_TYPE const & mask) {
+        UME_FORCE_INLINE IntermediateMask<SIMDVec_f, SCALAR_FLOAT_TYPE, MASK_TYPE> operator() (MASK_TYPE const & mask) {
             return IntermediateMask<SIMDVec_f, SCALAR_FLOAT_TYPE, MASK_TYPE>(mask, static_cast<SIMDVec_f &>(*this));
         }
 #else
-        inline IntermediateMask<SIMDVec_f, SCALAR_FLOAT_TYPE, MASK_TYPE> operator[] (MASK_TYPE const & mask) {
+        UME_FORCE_INLINE IntermediateMask<SIMDVec_f, SCALAR_FLOAT_TYPE, MASK_TYPE> operator[] (MASK_TYPE const & mask) {
             return IntermediateMask<SIMDVec_f, SCALAR_FLOAT_TYPE, MASK_TYPE>(mask, static_cast<SIMDVec_f &>(*this));
         }
 #endif
@@ -415,7 +415,7 @@ namespace SIMD {
             }
             return *this;
         }
-        inline SIMDVec_f & operator= (SIMDVec_f const & b) {
+        UME_FORCE_INLINE SIMDVec_f & operator= (SIMDVec_f const & b) {
             return this->assign(b);
         }
         // MASSIGNV
@@ -438,7 +438,7 @@ namespace SIMD {
             }
             return *this;
         }
-        inline SIMDVec_f & operator= (SCALAR_FLOAT_TYPE b) {
+        UME_FORCE_INLINE SIMDVec_f & operator= (SCALAR_FLOAT_TYPE b) {
             return this->assign(b);
         }
         // MASSIGNS
@@ -458,7 +458,7 @@ namespace SIMD {
 
         
         // LOAD
-        inline SIMDVec_f & load(SCALAR_FLOAT_TYPE const *p) {
+        UME_FORCE_INLINE SIMDVec_f & load(SCALAR_FLOAT_TYPE const *p) {
             SCALAR_FLOAT_TYPE *local_ptr = &mVec[0];
             SCALAR_FLOAT_TYPE const *local_p_ptr = &p[0];
             #pragma omp simd simdlen(VEC_LEN) safelen(VEC_LEN)
@@ -468,7 +468,7 @@ namespace SIMD {
             return *this;
         }
         // MLOAD
-        inline SIMDVec_f & load(SIMDVecMask<VEC_LEN> const & mask, SCALAR_FLOAT_TYPE const *p) {
+        UME_FORCE_INLINE SIMDVec_f & load(SIMDVecMask<VEC_LEN> const & mask, SCALAR_FLOAT_TYPE const *p) {
             SCALAR_FLOAT_TYPE *local_ptr = &mVec[0];
             SCALAR_FLOAT_TYPE const *local_p_ptr = &p[0];
             bool const *local_mask_ptr = &mask.mMask[0];
@@ -479,7 +479,7 @@ namespace SIMD {
             return *this;
         }
         // LOADA
-        inline SIMDVec_f & loada(SCALAR_FLOAT_TYPE const *p) {
+        UME_FORCE_INLINE SIMDVec_f & loada(SCALAR_FLOAT_TYPE const *p) {
             SCALAR_FLOAT_TYPE *local_ptr = &mVec[0];
             SCALAR_FLOAT_TYPE const *local_p_ptr = &p[0];
             #pragma omp simd simdlen(VEC_LEN) safelen(VEC_LEN)
@@ -489,7 +489,7 @@ namespace SIMD {
             return *this;
         }
         // MLOADA
-        inline SIMDVec_f & loada(SIMDVecMask<VEC_LEN> const & mask, SCALAR_FLOAT_TYPE const *p) {
+        UME_FORCE_INLINE SIMDVec_f & loada(SIMDVecMask<VEC_LEN> const & mask, SCALAR_FLOAT_TYPE const *p) {
             SCALAR_FLOAT_TYPE *local_ptr = &mVec[0];
             SCALAR_FLOAT_TYPE const *local_p_ptr = &p[0];
             bool const *local_mask_ptr = &mask.mMask[0];
@@ -501,7 +501,7 @@ namespace SIMD {
         }
         
         // STORE
-        inline SCALAR_FLOAT_TYPE* store(SCALAR_FLOAT_TYPE* p) const {
+        UME_FORCE_INLINE SCALAR_FLOAT_TYPE* store(SCALAR_FLOAT_TYPE* p) const {
             SCALAR_FLOAT_TYPE const *local_ptr = &mVec[0];
             SCALAR_FLOAT_TYPE *local_p_ptr = &p[0];
             #pragma omp simd simdlen(VEC_LEN) safelen(VEC_LEN)
@@ -511,7 +511,7 @@ namespace SIMD {
             return p;
         }
         // MSTORE
-        inline SCALAR_FLOAT_TYPE* store(SIMDVecMask<VEC_LEN> const & mask, SCALAR_FLOAT_TYPE* p) const {
+        UME_FORCE_INLINE SCALAR_FLOAT_TYPE* store(SIMDVecMask<VEC_LEN> const & mask, SCALAR_FLOAT_TYPE* p) const {
             SCALAR_FLOAT_TYPE const *local_ptr = &mVec[0];
             SCALAR_FLOAT_TYPE *local_p_ptr = &p[0];
             bool const *local_mask_ptr = &mask.mMask[0];
@@ -522,7 +522,7 @@ namespace SIMD {
             return p;
         }
         // STOREA
-        inline SCALAR_FLOAT_TYPE* storea(SCALAR_FLOAT_TYPE* p) const {
+        UME_FORCE_INLINE SCALAR_FLOAT_TYPE* storea(SCALAR_FLOAT_TYPE* p) const {
             SCALAR_FLOAT_TYPE const *local_ptr = &mVec[0];
             SCALAR_FLOAT_TYPE *local_p_ptr = &p[0];
             #pragma omp simd simdlen(VEC_LEN) safelen(VEC_LEN)
@@ -532,7 +532,7 @@ namespace SIMD {
             return p;
         }
         // MSTOREA
-        inline SCALAR_FLOAT_TYPE* storea(SIMDVecMask<VEC_LEN> const & mask, SCALAR_FLOAT_TYPE* p) const {
+        UME_FORCE_INLINE SCALAR_FLOAT_TYPE* storea(SIMDVecMask<VEC_LEN> const & mask, SCALAR_FLOAT_TYPE* p) const {
             SCALAR_FLOAT_TYPE const *local_ptr = &mVec[0];
             SCALAR_FLOAT_TYPE *local_p_ptr = &p[0];
             bool const *local_mask_ptr = &mask.mMask[0];
@@ -544,7 +544,7 @@ namespace SIMD {
         }
         
         // BLENDV
-        inline SIMDVec_f blend(SIMDVecMask<VEC_LEN> const & mask, SIMDVec_f const & b) const {
+        UME_FORCE_INLINE SIMDVec_f blend(SIMDVecMask<VEC_LEN> const & mask, SIMDVec_f const & b) const {
             SIMDVec_f retval;
             SCALAR_FLOAT_TYPE *retval_ptr = &retval.mVec[0];
             SCALAR_FLOAT_TYPE const *local_ptr = &mVec[0];
@@ -558,7 +558,7 @@ namespace SIMD {
             return retval;
         }
         // BLENDS
-        inline SIMDVec_f blend(SIMDVecMask<VEC_LEN> const & mask, SCALAR_FLOAT_TYPE b) const {
+        UME_FORCE_INLINE SIMDVec_f blend(SIMDVecMask<VEC_LEN> const & mask, SCALAR_FLOAT_TYPE b) const {
             SIMDVec_f retval;
             SCALAR_FLOAT_TYPE const *local_ptr = &mVec[0];
             SCALAR_FLOAT_TYPE *retval_ptr = &retval.mVec[0];
@@ -574,7 +574,7 @@ namespace SIMD {
         // SWIZZLEA
 
         // ADDV
-        inline SIMDVec_f add(SIMDVec_f const & b) const {
+        UME_FORCE_INLINE SIMDVec_f add(SIMDVec_f const & b) const {
             SIMDVec_f retval;
             SCALAR_FLOAT_TYPE * local_retval_ptr = &retval.mVec[0];
             SCALAR_FLOAT_TYPE const * local_ptr = &mVec[0];
@@ -585,11 +585,11 @@ namespace SIMD {
             }
             return retval;
         }
-        inline SIMDVec_f operator+ (SIMDVec_f const & b) const {
+        UME_FORCE_INLINE SIMDVec_f operator+ (SIMDVec_f const & b) const {
             return add(b);
         }
         // MADDV
-        inline SIMDVec_f add(SIMDVecMask<VEC_LEN> const & mask, SIMDVec_f const & b) const {
+        UME_FORCE_INLINE SIMDVec_f add(SIMDVecMask<VEC_LEN> const & mask, SIMDVec_f const & b) const {
             SIMDVec_f retval;
             SCALAR_FLOAT_TYPE * local_retval_ptr = &retval.mVec[0];
             SCALAR_FLOAT_TYPE const * local_ptr = &mVec[0];
@@ -603,7 +603,7 @@ namespace SIMD {
             return retval;
         }
         // ADDS
-        inline SIMDVec_f add(SCALAR_FLOAT_TYPE b) const {
+        UME_FORCE_INLINE SIMDVec_f add(SCALAR_FLOAT_TYPE b) const {
             SIMDVec_f retval;
             SCALAR_FLOAT_TYPE * local_retval_ptr = &retval.mVec[0];
             SCALAR_FLOAT_TYPE const * local_ptr = &mVec[0];
@@ -613,11 +613,11 @@ namespace SIMD {
             }
             return retval;
         }
-        inline SIMDVec_f operator+ (SCALAR_FLOAT_TYPE b) const {
+        UME_FORCE_INLINE SIMDVec_f operator+ (SCALAR_FLOAT_TYPE b) const {
             return add(b);
         }
         // MADDS
-        inline SIMDVec_f add(SIMDVecMask<VEC_LEN> const & mask, SCALAR_FLOAT_TYPE b) const {
+        UME_FORCE_INLINE SIMDVec_f add(SIMDVecMask<VEC_LEN> const & mask, SCALAR_FLOAT_TYPE b) const {
             SIMDVec_f retval;
             SCALAR_FLOAT_TYPE * local_retval_ptr = &retval.mVec[0];
             SCALAR_FLOAT_TYPE const * local_ptr = &mVec[0];
@@ -630,7 +630,7 @@ namespace SIMD {
             return retval;
         }
         // ADDVA
-        inline SIMDVec_f & adda(SIMDVec_f const & b) {
+        UME_FORCE_INLINE SIMDVec_f & adda(SIMDVec_f const & b) {
             SCALAR_FLOAT_TYPE * local_ptr = &mVec[0];
             SCALAR_FLOAT_TYPE const * local_b_ptr = &b.mVec[0];
             #pragma omp simd simdlen(VEC_LEN) safelen(VEC_LEN)
@@ -639,11 +639,11 @@ namespace SIMD {
             }
             return *this;
         }
-        inline SIMDVec_f & operator+= (SIMDVec_f const & b) {
+        UME_FORCE_INLINE SIMDVec_f & operator+= (SIMDVec_f const & b) {
             return adda(b);
         }
         // MADDVA
-        inline SIMDVec_f & adda(SIMDVecMask<VEC_LEN> const & mask, SIMDVec_f const & b) {
+        UME_FORCE_INLINE SIMDVec_f & adda(SIMDVecMask<VEC_LEN> const & mask, SIMDVec_f const & b) {
             SCALAR_FLOAT_TYPE * local_ptr = &mVec[0];
             SCALAR_FLOAT_TYPE const * local_b_ptr = &b.mVec[0];
             bool const * local_mask_ptr = &mask.mMask[0];
@@ -654,7 +654,7 @@ namespace SIMD {
             return *this;
         }
         // ADDSA
-        inline SIMDVec_f & adda(SCALAR_FLOAT_TYPE b) {
+        UME_FORCE_INLINE SIMDVec_f & adda(SCALAR_FLOAT_TYPE b) {
             SCALAR_FLOAT_TYPE * local_ptr = &mVec[0];
             #pragma omp simd simdlen(VEC_LEN) safelen(VEC_LEN)
             for(int i = 0; i < VEC_LEN; i++) {
@@ -662,11 +662,11 @@ namespace SIMD {
             }
             return *this;
         }
-        inline SIMDVec_f & operator+= (SCALAR_FLOAT_TYPE b) {
+        UME_FORCE_INLINE SIMDVec_f & operator+= (SCALAR_FLOAT_TYPE b) {
             return adda(b);
         }
         // MADDSA
-        inline SIMDVec_f & adda(SIMDVecMask<VEC_LEN> const & mask, SCALAR_FLOAT_TYPE b) {
+        UME_FORCE_INLINE SIMDVec_f & adda(SIMDVecMask<VEC_LEN> const & mask, SCALAR_FLOAT_TYPE b) {
             SCALAR_FLOAT_TYPE * local_ptr = &mVec[0];
             bool const * local_mask_ptr = &mask.mMask[0];
             #pragma omp simd simdlen(VEC_LEN) safelen(VEC_LEN)
@@ -684,10 +684,9 @@ namespace SIMD {
         // MSADDVA
         // SADDSA
         // MSADDSA
-        
-        
+
         // POSTINC
-        inline SIMDVec_f postinc() {
+        UME_FORCE_INLINE SIMDVec_f postinc() {
             SIMDVec_f retval;
             SCALAR_FLOAT_TYPE * local_retval_ptr = &retval.mVec[0];
             SCALAR_FLOAT_TYPE * local_ptr = &mVec[0];
@@ -697,11 +696,11 @@ namespace SIMD {
             }
             return retval;
         }
-        inline SIMDVec_f operator++ (int) {
+        UME_FORCE_INLINE SIMDVec_f operator++ (int) {
             return postinc();
         }
         // MPOSTINC
-        inline SIMDVec_f postinc(SIMDVecMask<VEC_LEN> const & mask) {
+        UME_FORCE_INLINE SIMDVec_f postinc(SIMDVecMask<VEC_LEN> const & mask) {
             SIMDVec_f retval;
             SCALAR_FLOAT_TYPE * local_retval_ptr = &retval.mVec[0];
             SCALAR_FLOAT_TYPE * local_ptr = &mVec[0];
@@ -714,7 +713,7 @@ namespace SIMD {
             return retval;
         }
         // PREFINC
-        inline SIMDVec_f & prefinc() {
+        UME_FORCE_INLINE SIMDVec_f & prefinc() {
             SCALAR_FLOAT_TYPE * local_ptr = &mVec[0];
             #pragma omp simd simdlen(VEC_LEN) safelen(VEC_LEN)
             for(int i = 0; i < VEC_LEN; i++) {
@@ -722,11 +721,11 @@ namespace SIMD {
             }
             return *this;
         }
-        inline SIMDVec_f & operator++ () {
+        UME_FORCE_INLINE SIMDVec_f & operator++ () {
             return prefinc();
         }
         // MPREFINC
-        inline SIMDVec_f & prefinc(SIMDVecMask<VEC_LEN> const & mask) {
+        UME_FORCE_INLINE SIMDVec_f & prefinc(SIMDVecMask<VEC_LEN> const & mask) {
             SCALAR_FLOAT_TYPE * local_ptr = &mVec[0];
             bool const * local_mask_ptr = &mask.mMask[0];
             #pragma omp simd simdlen(VEC_LEN) safelen(VEC_LEN)
@@ -736,7 +735,7 @@ namespace SIMD {
             return *this;
         }
         // SUBV
-        inline SIMDVec_f sub(SIMDVec_f const & b) const {
+        UME_FORCE_INLINE SIMDVec_f sub(SIMDVec_f const & b) const {
             SIMDVec_f retval;
             SCALAR_FLOAT_TYPE * local_retval_ptr = &retval.mVec[0];
             SCALAR_FLOAT_TYPE const * local_ptr = &mVec[0];
@@ -747,11 +746,11 @@ namespace SIMD {
             }
             return retval;
         }
-        inline SIMDVec_f operator- (SIMDVec_f const & b) const {
+        UME_FORCE_INLINE SIMDVec_f operator- (SIMDVec_f const & b) const {
             return sub(b);
         }
         // MSUBV
-        inline SIMDVec_f sub(SIMDVecMask<VEC_LEN> const & mask, SIMDVec_f const & b) const {
+        UME_FORCE_INLINE SIMDVec_f sub(SIMDVecMask<VEC_LEN> const & mask, SIMDVec_f const & b) const {
             SIMDVec_f retval;
             SCALAR_FLOAT_TYPE * local_retval_ptr = &retval.mVec[0];
             SCALAR_FLOAT_TYPE const * local_ptr = &mVec[0];
@@ -765,7 +764,7 @@ namespace SIMD {
             return retval;
         }
         // SUBS
-        inline SIMDVec_f sub(SCALAR_FLOAT_TYPE b) const {
+        UME_FORCE_INLINE SIMDVec_f sub(SCALAR_FLOAT_TYPE b) const {
             SIMDVec_f retval;
             SCALAR_FLOAT_TYPE * local_retval_ptr = &retval.mVec[0];
             SCALAR_FLOAT_TYPE const * local_ptr = &mVec[0];
@@ -775,11 +774,11 @@ namespace SIMD {
             }
             return retval;
         }
-        inline SIMDVec_f operator- (SCALAR_FLOAT_TYPE b) const {
+        UME_FORCE_INLINE SIMDVec_f operator- (SCALAR_FLOAT_TYPE b) const {
             return sub(b);
         }
         // MSUBS
-        inline SIMDVec_f sub(SIMDVecMask<VEC_LEN> const & mask, SCALAR_FLOAT_TYPE b) const {
+        UME_FORCE_INLINE SIMDVec_f sub(SIMDVecMask<VEC_LEN> const & mask, SCALAR_FLOAT_TYPE b) const {
             SIMDVec_f retval;
             SCALAR_FLOAT_TYPE * local_retval_ptr = &retval.mVec[0];
             SCALAR_FLOAT_TYPE const * local_ptr = &mVec[0];
@@ -792,7 +791,7 @@ namespace SIMD {
             return retval;
         }
         // SUBVA
-        inline SIMDVec_f & suba(SIMDVec_f const & b) {
+        UME_FORCE_INLINE SIMDVec_f & suba(SIMDVec_f const & b) {
             SCALAR_FLOAT_TYPE * local_ptr = &mVec[0];
             SCALAR_FLOAT_TYPE const * local_b_ptr = &b.mVec[0];
             #pragma omp simd simdlen(VEC_LEN) safelen(VEC_LEN)
@@ -801,11 +800,11 @@ namespace SIMD {
             }
             return *this;
         }
-        inline SIMDVec_f & operator-= (SIMDVec_f const & b) {
+        UME_FORCE_INLINE SIMDVec_f & operator-= (SIMDVec_f const & b) {
             return suba(b);
         }
         // MSUBVA
-        inline SIMDVec_f & suba(SIMDVecMask<VEC_LEN> const & mask, SIMDVec_f const & b) {
+        UME_FORCE_INLINE SIMDVec_f & suba(SIMDVecMask<VEC_LEN> const & mask, SIMDVec_f const & b) {
             SCALAR_FLOAT_TYPE * local_ptr = &mVec[0];
             SCALAR_FLOAT_TYPE const * local_b_ptr = &b.mVec[0];
             bool const * local_mask_ptr = &mask.mMask[0];
@@ -816,7 +815,7 @@ namespace SIMD {
             return *this;
         }
         // SUBSA
-        inline SIMDVec_f & suba(SCALAR_FLOAT_TYPE b) {
+        UME_FORCE_INLINE SIMDVec_f & suba(SCALAR_FLOAT_TYPE b) {
             SCALAR_FLOAT_TYPE * local_ptr = &mVec[0];
             #pragma omp simd simdlen(VEC_LEN) safelen(VEC_LEN)
             for(int i = 0; i < VEC_LEN; i++) {
@@ -824,11 +823,11 @@ namespace SIMD {
             }
             return *this;
         }
-        inline SIMDVec_f & operator-= (SCALAR_FLOAT_TYPE b) {
+        UME_FORCE_INLINE SIMDVec_f & operator-= (SCALAR_FLOAT_TYPE b) {
             return suba(b);
         }
         // MSUBSA
-        inline SIMDVec_f & suba(SIMDVecMask<VEC_LEN> const & mask, SCALAR_FLOAT_TYPE b) {
+        UME_FORCE_INLINE SIMDVec_f & suba(SIMDVecMask<VEC_LEN> const & mask, SCALAR_FLOAT_TYPE b) {
             SCALAR_FLOAT_TYPE * local_ptr = &mVec[0];
             bool const * local_mask_ptr = &mask.mMask[0];
             #pragma omp simd simdlen(VEC_LEN) safelen(VEC_LEN)
@@ -849,7 +848,7 @@ namespace SIMD {
         
 
         // SUBFROMV
-        inline SIMDVec_f subfrom(SIMDVec_f const & b) const {
+        UME_FORCE_INLINE SIMDVec_f subfrom(SIMDVec_f const & b) const {
             SIMDVec_f retval;
             SCALAR_FLOAT_TYPE * local_retval_ptr = &retval.mVec[0];
             SCALAR_FLOAT_TYPE const * local_ptr = &mVec[0];
@@ -861,7 +860,7 @@ namespace SIMD {
             return retval;
         }
         // MSUBFROMV
-        inline SIMDVec_f subfrom(SIMDVecMask<VEC_LEN> const & mask, SIMDVec_f const & b) const {
+        UME_FORCE_INLINE SIMDVec_f subfrom(SIMDVecMask<VEC_LEN> const & mask, SIMDVec_f const & b) const {
             SIMDVec_f retval;
             SCALAR_FLOAT_TYPE * local_retval_ptr = &retval.mVec[0];
             SCALAR_FLOAT_TYPE const * local_ptr = &mVec[0];
@@ -875,7 +874,7 @@ namespace SIMD {
             return retval;
         }
         // SUBFROMS
-        inline SIMDVec_f subfrom(SCALAR_FLOAT_TYPE b) const {
+        UME_FORCE_INLINE SIMDVec_f subfrom(SCALAR_FLOAT_TYPE b) const {
             SIMDVec_f retval;
             SCALAR_FLOAT_TYPE * local_retval_ptr = &retval.mVec[0];
             SCALAR_FLOAT_TYPE const * local_ptr = &mVec[0];
@@ -886,7 +885,7 @@ namespace SIMD {
             return retval;
         }
         // MSUBFROMS
-        inline SIMDVec_f subfrom(SIMDVecMask<VEC_LEN> const & mask, SCALAR_FLOAT_TYPE b) const {
+        UME_FORCE_INLINE SIMDVec_f subfrom(SIMDVecMask<VEC_LEN> const & mask, SCALAR_FLOAT_TYPE b) const {
             SIMDVec_f retval;
             SCALAR_FLOAT_TYPE * local_retval_ptr = &retval.mVec[0];
             SCALAR_FLOAT_TYPE const * local_ptr = &mVec[0];
@@ -899,7 +898,7 @@ namespace SIMD {
             return retval;
         }
         // SUBFROMVA
-        inline SIMDVec_f & subfroma(SIMDVec_f const & b) {
+        UME_FORCE_INLINE SIMDVec_f & subfroma(SIMDVec_f const & b) {
             SCALAR_FLOAT_TYPE * local_ptr = &mVec[0];
             SCALAR_FLOAT_TYPE const * local_b_ptr = &b.mVec[0];
             #pragma omp simd simdlen(VEC_LEN) safelen(VEC_LEN)
@@ -909,7 +908,7 @@ namespace SIMD {
             return *this;
         }
         // MSUBFROMVA
-        inline SIMDVec_f & subfroma(SIMDVecMask<VEC_LEN> const & mask, SIMDVec_f const & b) {
+        UME_FORCE_INLINE SIMDVec_f & subfroma(SIMDVecMask<VEC_LEN> const & mask, SIMDVec_f const & b) {
             SCALAR_FLOAT_TYPE * local_ptr = &mVec[0];
             SCALAR_FLOAT_TYPE const * local_b_ptr = &b.mVec[0];
             bool const * local_mask_ptr = &mask.mMask[0];
@@ -921,7 +920,7 @@ namespace SIMD {
             return *this;
         }
         // SUBFROMSA
-        inline SIMDVec_f & subfroma(SCALAR_FLOAT_TYPE b) {
+        UME_FORCE_INLINE SIMDVec_f & subfroma(SCALAR_FLOAT_TYPE b) {
             SCALAR_FLOAT_TYPE * local_ptr = &mVec[0];
             #pragma omp simd simdlen(VEC_LEN) safelen(VEC_LEN)
             for(int i = 0; i < VEC_LEN; i++) {
@@ -930,7 +929,7 @@ namespace SIMD {
             return *this;
         }
         // MSUBFROMSA
-        inline SIMDVec_f & subfroma(SIMDVecMask<VEC_LEN> const & mask, SCALAR_FLOAT_TYPE b) {
+        UME_FORCE_INLINE SIMDVec_f & subfroma(SIMDVecMask<VEC_LEN> const & mask, SCALAR_FLOAT_TYPE b) {
             SCALAR_FLOAT_TYPE * local_ptr = &mVec[0];
             bool const * local_mask_ptr = &mask.mMask[0];
             #pragma omp simd simdlen(VEC_LEN) safelen(VEC_LEN)
@@ -943,7 +942,7 @@ namespace SIMD {
         
         
         // POSTDEC
-        inline SIMDVec_f postdec() {
+        UME_FORCE_INLINE SIMDVec_f postdec() {
             SIMDVec_f retval;
             SCALAR_FLOAT_TYPE * local_retval_ptr = &retval.mVec[0];
             SCALAR_FLOAT_TYPE * local_ptr = &mVec[0];
@@ -953,11 +952,11 @@ namespace SIMD {
             }
             return retval;
         }
-        inline SIMDVec_f operator-- (int) {
+        UME_FORCE_INLINE SIMDVec_f operator-- (int) {
             return postdec();
         }
         // MPOSTDEC
-        inline SIMDVec_f postdec(SIMDVecMask<VEC_LEN> const & mask) {
+        UME_FORCE_INLINE SIMDVec_f postdec(SIMDVecMask<VEC_LEN> const & mask) {
             SIMDVec_f retval;
             SCALAR_FLOAT_TYPE * local_retval_ptr = &retval.mVec[0];
             SCALAR_FLOAT_TYPE * local_ptr = &mVec[0];
@@ -970,7 +969,7 @@ namespace SIMD {
             return retval;
         }
         // PREFDEC
-        inline SIMDVec_f & prefdec() {
+        UME_FORCE_INLINE SIMDVec_f & prefdec() {
             SCALAR_FLOAT_TYPE * local_ptr = &mVec[0];
             #pragma omp simd simdlen(VEC_LEN) safelen(VEC_LEN)
             for(int i = 0; i < VEC_LEN; i++) {
@@ -978,11 +977,11 @@ namespace SIMD {
             }
             return *this;
         }
-        inline SIMDVec_f & operator-- () {
+        UME_FORCE_INLINE SIMDVec_f & operator-- () {
             return prefdec();
         }
         // MPREFDEC
-        inline SIMDVec_f & prefdec(SIMDVecMask<VEC_LEN> const & mask) {
+        UME_FORCE_INLINE SIMDVec_f & prefdec(SIMDVecMask<VEC_LEN> const & mask) {
             SCALAR_FLOAT_TYPE * local_ptr = &mVec[0];
             bool const * local_mask_ptr = &mask.mMask[0];
             #pragma omp simd simdlen(VEC_LEN) safelen(VEC_LEN)
@@ -992,7 +991,7 @@ namespace SIMD {
             return *this;
         }
         // MULV
-        inline SIMDVec_f mul(SIMDVec_f const & b) const {
+        UME_FORCE_INLINE SIMDVec_f mul(SIMDVec_f const & b) const {
             SIMDVec_f retval;
             SCALAR_FLOAT_TYPE * local_retval_ptr = &retval.mVec[0];
             SCALAR_FLOAT_TYPE const * local_ptr = &mVec[0];
@@ -1003,11 +1002,11 @@ namespace SIMD {
             }
             return retval;
         }
-        inline SIMDVec_f operator* (SIMDVec_f const & b) const {
+        UME_FORCE_INLINE SIMDVec_f operator* (SIMDVec_f const & b) const {
             return mul(b);
         }
         // MMULV
-        inline SIMDVec_f mul(SIMDVecMask<VEC_LEN> const & mask, SIMDVec_f const & b) const {
+        UME_FORCE_INLINE SIMDVec_f mul(SIMDVecMask<VEC_LEN> const & mask, SIMDVec_f const & b) const {
             SIMDVec_f retval;
             SCALAR_FLOAT_TYPE * local_retval_ptr = &retval.mVec[0];
             SCALAR_FLOAT_TYPE const * local_ptr = &mVec[0];
@@ -1021,7 +1020,7 @@ namespace SIMD {
             return retval;
         }
         // MULS
-        inline SIMDVec_f mul(SCALAR_FLOAT_TYPE b) const {
+        UME_FORCE_INLINE SIMDVec_f mul(SCALAR_FLOAT_TYPE b) const {
             SIMDVec_f retval;
             SCALAR_FLOAT_TYPE * local_retval_ptr = &retval.mVec[0];
             SCALAR_FLOAT_TYPE const * local_ptr = &mVec[0];
@@ -1031,11 +1030,11 @@ namespace SIMD {
             }
             return retval;
         }
-        inline SIMDVec_f operator* (SCALAR_FLOAT_TYPE b) const {
+        UME_FORCE_INLINE SIMDVec_f operator* (SCALAR_FLOAT_TYPE b) const {
             return mul(b);
         }
         // MMULS
-        inline SIMDVec_f mul(SIMDVecMask<VEC_LEN> const & mask, SCALAR_FLOAT_TYPE b) const {
+        UME_FORCE_INLINE SIMDVec_f mul(SIMDVecMask<VEC_LEN> const & mask, SCALAR_FLOAT_TYPE b) const {
             SIMDVec_f retval;
             SCALAR_FLOAT_TYPE * local_retval_ptr = &retval.mVec[0];
             SCALAR_FLOAT_TYPE const * local_ptr = &mVec[0];
@@ -1048,7 +1047,7 @@ namespace SIMD {
             return retval;
         }
         // MULVA
-        inline SIMDVec_f & mula(SIMDVec_f const & b) {
+        UME_FORCE_INLINE SIMDVec_f & mula(SIMDVec_f const & b) {
             SCALAR_FLOAT_TYPE * local_ptr = &mVec[0];
             SCALAR_FLOAT_TYPE const * local_b_ptr = &b.mVec[0];
             #pragma omp simd simdlen(VEC_LEN) safelen(VEC_LEN)
@@ -1057,11 +1056,11 @@ namespace SIMD {
             }
             return *this;
         }
-        inline SIMDVec_f & operator*= (SIMDVec_f const & b) {
+        UME_FORCE_INLINE SIMDVec_f & operator*= (SIMDVec_f const & b) {
             return mula(b);
         }
         // MMULVA
-        inline SIMDVec_f & mula(SIMDVecMask<VEC_LEN> const & mask, SIMDVec_f const & b) {
+        UME_FORCE_INLINE SIMDVec_f & mula(SIMDVecMask<VEC_LEN> const & mask, SIMDVec_f const & b) {
             SCALAR_FLOAT_TYPE * local_ptr = &mVec[0];
             SCALAR_FLOAT_TYPE const * local_b_ptr = &b.mVec[0];
             bool const * local_mask_ptr = &mask.mMask[0];
@@ -1072,7 +1071,7 @@ namespace SIMD {
             return *this;
         }
         // MULSA
-        inline SIMDVec_f & mula(SCALAR_FLOAT_TYPE b) {
+        UME_FORCE_INLINE SIMDVec_f & mula(SCALAR_FLOAT_TYPE b) {
             SCALAR_FLOAT_TYPE * local_ptr = &mVec[0];
             #pragma omp simd simdlen(VEC_LEN) safelen(VEC_LEN)
             for(int i = 0; i < VEC_LEN; i++) {
@@ -1080,11 +1079,11 @@ namespace SIMD {
             }
             return *this;
         }
-        inline SIMDVec_f & operator*= (SCALAR_FLOAT_TYPE b) {
+        UME_FORCE_INLINE SIMDVec_f & operator*= (SCALAR_FLOAT_TYPE b) {
             return mula(b);
         }
         // MMULSA
-        inline SIMDVec_f & mula(SIMDVecMask<VEC_LEN> const & mask, SCALAR_FLOAT_TYPE b) {
+        UME_FORCE_INLINE SIMDVec_f & mula(SIMDVecMask<VEC_LEN> const & mask, SCALAR_FLOAT_TYPE b) {
             SCALAR_FLOAT_TYPE * local_ptr = &mVec[0];
             bool const * local_mask_ptr = &mask.mMask[0];
             #pragma omp simd simdlen(VEC_LEN) safelen(VEC_LEN)
@@ -1094,7 +1093,7 @@ namespace SIMD {
             return *this;
         }        
         // DIVV
-        inline SIMDVec_f div(SIMDVec_f const & b) const {
+        UME_FORCE_INLINE SIMDVec_f div(SIMDVec_f const & b) const {
             SIMDVec_f retval;
             SCALAR_FLOAT_TYPE * local_retval_ptr = &retval.mVec[0];
             SCALAR_FLOAT_TYPE const * local_ptr = &mVec[0];
@@ -1105,11 +1104,11 @@ namespace SIMD {
             }
             return retval;
         }
-        inline SIMDVec_f operator/ (SIMDVec_f const & b) const {
+        UME_FORCE_INLINE SIMDVec_f operator/ (SIMDVec_f const & b) const {
             return div(b);
         }
         // MDIVV
-        inline SIMDVec_f div(SIMDVecMask<VEC_LEN> const & mask, SIMDVec_f const & b) const {
+        UME_FORCE_INLINE SIMDVec_f div(SIMDVecMask<VEC_LEN> const & mask, SIMDVec_f const & b) const {
             SIMDVec_f retval;
             SCALAR_FLOAT_TYPE * local_retval_ptr = &retval.mVec[0];
             SCALAR_FLOAT_TYPE const * local_ptr = &mVec[0];
@@ -1123,7 +1122,7 @@ namespace SIMD {
             return retval;
         }
         // DIVS
-        inline SIMDVec_f div(SCALAR_FLOAT_TYPE b) const {
+        UME_FORCE_INLINE SIMDVec_f div(SCALAR_FLOAT_TYPE b) const {
             SIMDVec_f retval;
             SCALAR_FLOAT_TYPE * local_retval_ptr = &retval.mVec[0];
             SCALAR_FLOAT_TYPE const * local_ptr = &mVec[0];
@@ -1133,11 +1132,11 @@ namespace SIMD {
             }
             return retval;
         }
-        inline SIMDVec_f operator/ (SCALAR_FLOAT_TYPE b) const {
+        UME_FORCE_INLINE SIMDVec_f operator/ (SCALAR_FLOAT_TYPE b) const {
             return div(b);
         }
         // MDIVS
-        inline SIMDVec_f div(SIMDVecMask<VEC_LEN> const & mask, SCALAR_FLOAT_TYPE b) const {
+        UME_FORCE_INLINE SIMDVec_f div(SIMDVecMask<VEC_LEN> const & mask, SCALAR_FLOAT_TYPE b) const {
             SIMDVec_f retval;
             SCALAR_FLOAT_TYPE * local_retval_ptr = &retval.mVec[0];
             SCALAR_FLOAT_TYPE const * local_ptr = &mVec[0];
@@ -1150,7 +1149,7 @@ namespace SIMD {
             return retval;
         }
         // DIVVA
-        inline SIMDVec_f & diva(SIMDVec_f const & b) {
+        UME_FORCE_INLINE SIMDVec_f & diva(SIMDVec_f const & b) {
             SCALAR_FLOAT_TYPE * local_ptr = &mVec[0];
             SCALAR_FLOAT_TYPE const * local_b_ptr = &b.mVec[0];
             #pragma omp simd simdlen(VEC_LEN) safelen(VEC_LEN)
@@ -1159,11 +1158,11 @@ namespace SIMD {
             }
             return *this;
         }
-        inline SIMDVec_f & operator/= (SIMDVec_f const & b) {
+        UME_FORCE_INLINE SIMDVec_f & operator/= (SIMDVec_f const & b) {
             return diva(b);
         }
         // MDIVVA
-        inline SIMDVec_f & diva(SIMDVecMask<VEC_LEN> const & mask, SIMDVec_f const & b) {
+        UME_FORCE_INLINE SIMDVec_f & diva(SIMDVecMask<VEC_LEN> const & mask, SIMDVec_f const & b) {
             SCALAR_FLOAT_TYPE * local_ptr = &mVec[0];
             SCALAR_FLOAT_TYPE const * local_b_ptr = &b.mVec[0];
             bool const * local_mask_ptr = &mask.mMask[0];
@@ -1174,7 +1173,7 @@ namespace SIMD {
             return *this;
         }
         // DIVSA
-        inline SIMDVec_f & diva(SCALAR_FLOAT_TYPE b) {
+        UME_FORCE_INLINE SIMDVec_f & diva(SCALAR_FLOAT_TYPE b) {
             SCALAR_FLOAT_TYPE * local_ptr = &mVec[0];
             #pragma omp simd simdlen(VEC_LEN) safelen(VEC_LEN)
             for(int i = 0; i < VEC_LEN; i++) {
@@ -1182,11 +1181,11 @@ namespace SIMD {
             }
             return *this;
         }
-        inline SIMDVec_f & operator/= (SCALAR_FLOAT_TYPE b) {
+        UME_FORCE_INLINE SIMDVec_f & operator/= (SCALAR_FLOAT_TYPE b) {
             return diva(b);
         }
         // MDIVSA
-        inline SIMDVec_f & diva(SIMDVecMask<VEC_LEN> const & mask, SCALAR_FLOAT_TYPE b) {
+        UME_FORCE_INLINE SIMDVec_f & diva(SIMDVecMask<VEC_LEN> const & mask, SCALAR_FLOAT_TYPE b) {
             SCALAR_FLOAT_TYPE * local_ptr = &mVec[0];
             bool const * local_mask_ptr = &mask.mMask[0];
             #pragma omp simd simdlen(VEC_LEN) safelen(VEC_LEN)
@@ -1195,9 +1194,8 @@ namespace SIMD {
             }
             return *this;
         }
-        
         // RCP
-        inline SIMDVec_f rcp() const {
+        UME_FORCE_INLINE SIMDVec_f rcp() const {
             SIMDVec_f retval;
             SCALAR_FLOAT_TYPE * local_retval_ptr = &retval.mVec[0];
             SCALAR_FLOAT_TYPE const * local_ptr = &mVec[0];
@@ -1208,7 +1206,7 @@ namespace SIMD {
             return retval;
         }
         // MRCP
-        inline SIMDVec_f rcp(SIMDVecMask<VEC_LEN> const & mask) const {
+        UME_FORCE_INLINE SIMDVec_f rcp(SIMDVecMask<VEC_LEN> const & mask) const {
             SIMDVec_f retval;
             SCALAR_FLOAT_TYPE * local_retval_ptr = &retval.mVec[0];
             SCALAR_FLOAT_TYPE const * local_ptr = &mVec[0];
@@ -1221,7 +1219,7 @@ namespace SIMD {
             return retval;
         }
         // RCPS
-        inline SIMDVec_f rcp(SCALAR_FLOAT_TYPE b) const {
+        UME_FORCE_INLINE SIMDVec_f rcp(SCALAR_FLOAT_TYPE b) const {
             SIMDVec_f retval;
             SCALAR_FLOAT_TYPE * local_retval_ptr = &retval.mVec[0];
             SCALAR_FLOAT_TYPE const * local_ptr = &mVec[0];
@@ -1232,7 +1230,7 @@ namespace SIMD {
             return retval;
         }
         // MRCPS
-        inline SIMDVec_f rcp(SIMDVecMask<VEC_LEN> const & mask, SCALAR_FLOAT_TYPE b) const {
+        UME_FORCE_INLINE SIMDVec_f rcp(SIMDVecMask<VEC_LEN> const & mask, SCALAR_FLOAT_TYPE b) const {
             SIMDVec_f retval;
             SCALAR_FLOAT_TYPE * local_retval_ptr = &retval.mVec[0];
             SCALAR_FLOAT_TYPE const * local_ptr = &mVec[0];
@@ -1245,7 +1243,7 @@ namespace SIMD {
             return retval;
         }
         // RCPA
-        inline SIMDVec_f & rcpa() {
+        UME_FORCE_INLINE SIMDVec_f & rcpa() {
             SCALAR_FLOAT_TYPE * local_ptr = &mVec[0];
             #pragma omp simd simdlen(VEC_LEN) safelen(VEC_LEN)
             for(int i = 0; i < VEC_LEN; i++) {
@@ -1254,7 +1252,7 @@ namespace SIMD {
             return *this;
         }
         // MRCPA
-        inline SIMDVec_f & rcpa(SIMDVecMask<VEC_LEN> const & mask) {
+        UME_FORCE_INLINE SIMDVec_f & rcpa(SIMDVecMask<VEC_LEN> const & mask) {
             SCALAR_FLOAT_TYPE * local_ptr = &mVec[0];
             bool const * local_mask_ptr = &mask.mMask[0];
             #pragma omp simd simdlen(VEC_LEN) safelen(VEC_LEN)
@@ -1264,7 +1262,7 @@ namespace SIMD {
             return *this;
         }
         // RCPSA
-        inline SIMDVec_f & rcpa(SCALAR_FLOAT_TYPE b) {
+        UME_FORCE_INLINE SIMDVec_f & rcpa(SCALAR_FLOAT_TYPE b) {
             SCALAR_FLOAT_TYPE * local_ptr = &mVec[0];
             #pragma omp simd simdlen(VEC_LEN) safelen(VEC_LEN)
             for(int i = 0; i < VEC_LEN; i++) {
@@ -1273,7 +1271,7 @@ namespace SIMD {
             return *this;
         }
         // MRCPSA
-        inline SIMDVec_f & rcpa(SIMDVecMask<VEC_LEN> const & mask, SCALAR_FLOAT_TYPE b) {
+        UME_FORCE_INLINE SIMDVec_f & rcpa(SIMDVecMask<VEC_LEN> const & mask, SCALAR_FLOAT_TYPE b) {
             SCALAR_FLOAT_TYPE * local_ptr = &mVec[0];
             bool const * local_mask_ptr = &mask.mMask[0];
             #pragma omp simd simdlen(VEC_LEN) safelen(VEC_LEN)
@@ -1282,9 +1280,8 @@ namespace SIMD {
             }
             return *this;
         }
-
         // CMPEQV
-        inline SIMDVecMask<VEC_LEN> cmpeq(SIMDVec_f const & b) const {
+        UME_FORCE_INLINE SIMDVecMask<VEC_LEN> cmpeq(SIMDVec_f const & b) const {
             SIMDVecMask<VEC_LEN> retval;
             SCALAR_FLOAT_TYPE const * local_ptr = &mVec[0];
             SCALAR_FLOAT_TYPE const * local_b_ptr = &b.mVec[0];
@@ -1295,11 +1292,11 @@ namespace SIMD {
             }
             return retval;
         }
-        inline SIMDVecMask<VEC_LEN> operator== (SIMDVec_f const & b) const {
+        UME_FORCE_INLINE SIMDVecMask<VEC_LEN> operator== (SIMDVec_f const & b) const {
             return cmpeq(b);
         }
         // CMPEQS
-        inline SIMDVecMask<VEC_LEN> cmpeq(SCALAR_FLOAT_TYPE b) const {
+        UME_FORCE_INLINE SIMDVecMask<VEC_LEN> cmpeq(SCALAR_FLOAT_TYPE b) const {
             SIMDVecMask<VEC_LEN> retval;
             SCALAR_FLOAT_TYPE const * local_ptr = &mVec[0];
             bool * local_retval_ptr = &retval.mMask[0];
@@ -1309,11 +1306,11 @@ namespace SIMD {
             }
             return retval;
         }
-        inline SIMDVecMask<VEC_LEN> operator== (SCALAR_FLOAT_TYPE b) const {
+        UME_FORCE_INLINE SIMDVecMask<VEC_LEN> operator== (SCALAR_FLOAT_TYPE b) const {
             return cmpeq(b);
         }
         // CMPNEV
-        inline SIMDVecMask<VEC_LEN> cmpne(SIMDVec_f const & b) const {
+        UME_FORCE_INLINE SIMDVecMask<VEC_LEN> cmpne(SIMDVec_f const & b) const {
             SIMDVecMask<VEC_LEN> retval;
             SCALAR_FLOAT_TYPE const * local_ptr = &mVec[0];
             SCALAR_FLOAT_TYPE const * local_b_ptr = &b.mVec[0];
@@ -1324,11 +1321,11 @@ namespace SIMD {
             }
             return retval;
         }
-        inline SIMDVecMask<VEC_LEN> operator!= (SIMDVec_f const & b) const {
+        UME_FORCE_INLINE SIMDVecMask<VEC_LEN> operator!= (SIMDVec_f const & b) const {
             return cmpne(b);
         }
         // CMPNES
-        inline SIMDVecMask<VEC_LEN> cmpne(SCALAR_FLOAT_TYPE b) const {
+        UME_FORCE_INLINE SIMDVecMask<VEC_LEN> cmpne(SCALAR_FLOAT_TYPE b) const {
             SIMDVecMask<VEC_LEN> retval;
             SCALAR_FLOAT_TYPE const * local_ptr = &mVec[0];
             bool * local_retval_ptr = &retval.mMask[0];
@@ -1338,11 +1335,11 @@ namespace SIMD {
             }
             return retval;
         }
-        inline SIMDVecMask<VEC_LEN> operator!= (SCALAR_FLOAT_TYPE b) const {
+        UME_FORCE_INLINE SIMDVecMask<VEC_LEN> operator!= (SCALAR_FLOAT_TYPE b) const {
             return cmpne(b);
         }
         // CMPGTV
-        inline SIMDVecMask<VEC_LEN> cmpgt(SIMDVec_f const & b) const {
+        UME_FORCE_INLINE SIMDVecMask<VEC_LEN> cmpgt(SIMDVec_f const & b) const {
             SIMDVecMask<VEC_LEN> retval;
             SCALAR_FLOAT_TYPE const * local_ptr = &mVec[0];
             SCALAR_FLOAT_TYPE const * local_b_ptr = &b.mVec[0];
@@ -1353,11 +1350,11 @@ namespace SIMD {
             }
             return retval;
         }
-        inline SIMDVecMask<VEC_LEN> operator> (SIMDVec_f const & b) const {
+        UME_FORCE_INLINE SIMDVecMask<VEC_LEN> operator> (SIMDVec_f const & b) const {
             return cmpgt(b);
         }
         // CMPGTS
-        inline SIMDVecMask<VEC_LEN> cmpgt(SCALAR_FLOAT_TYPE b) const {
+        UME_FORCE_INLINE SIMDVecMask<VEC_LEN> cmpgt(SCALAR_FLOAT_TYPE b) const {
             SIMDVecMask<VEC_LEN> retval;
             SCALAR_FLOAT_TYPE const * local_ptr = &mVec[0];
             bool * local_retval_ptr = &retval.mMask[0];
@@ -1367,11 +1364,11 @@ namespace SIMD {
             }
             return retval;
         }
-        inline SIMDVecMask<VEC_LEN> operator> (SCALAR_FLOAT_TYPE b) const {
+        UME_FORCE_INLINE SIMDVecMask<VEC_LEN> operator> (SCALAR_FLOAT_TYPE b) const {
             return cmpgt(b);
         }
         // CMPLTV
-        inline SIMDVecMask<VEC_LEN> cmplt(SIMDVec_f const & b) const {
+        UME_FORCE_INLINE SIMDVecMask<VEC_LEN> cmplt(SIMDVec_f const & b) const {
             SIMDVecMask<VEC_LEN> retval;
             SCALAR_FLOAT_TYPE const * local_ptr = &mVec[0];
             SCALAR_FLOAT_TYPE const * local_b_ptr = &b.mVec[0];
@@ -1382,11 +1379,11 @@ namespace SIMD {
             }
             return retval;
         }
-        inline SIMDVecMask<VEC_LEN> operator< (SIMDVec_f const & b) const {
+        UME_FORCE_INLINE SIMDVecMask<VEC_LEN> operator< (SIMDVec_f const & b) const {
             return cmplt(b);
         }
         // CMPLTS
-        inline SIMDVecMask<VEC_LEN> cmplt(SCALAR_FLOAT_TYPE b) const {
+        UME_FORCE_INLINE SIMDVecMask<VEC_LEN> cmplt(SCALAR_FLOAT_TYPE b) const {
             SIMDVecMask<VEC_LEN> retval;
             SCALAR_FLOAT_TYPE const * local_ptr = &mVec[0];
             bool * local_retval_ptr = &retval.mMask[0];
@@ -1396,11 +1393,11 @@ namespace SIMD {
             }
             return retval;
         }
-        inline SIMDVecMask<VEC_LEN> operator< (SCALAR_FLOAT_TYPE b) const {
+        UME_FORCE_INLINE SIMDVecMask<VEC_LEN> operator< (SCALAR_FLOAT_TYPE b) const {
             return cmplt(b);
         }
         // CMPGEV
-        inline SIMDVecMask<VEC_LEN> cmpge(SIMDVec_f const & b) const {
+        UME_FORCE_INLINE SIMDVecMask<VEC_LEN> cmpge(SIMDVec_f const & b) const {
             SIMDVecMask<VEC_LEN> retval;
             SCALAR_FLOAT_TYPE const * local_ptr = &mVec[0];
             SCALAR_FLOAT_TYPE const * local_b_ptr = &b.mVec[0];
@@ -1411,11 +1408,11 @@ namespace SIMD {
             }
             return retval;
         }
-        inline SIMDVecMask<VEC_LEN> operator>= (SIMDVec_f const & b) const {
+        UME_FORCE_INLINE SIMDVecMask<VEC_LEN> operator>= (SIMDVec_f const & b) const {
             return cmpge(b);
         }
         // CMPGES
-        inline SIMDVecMask<VEC_LEN> cmpge(SCALAR_FLOAT_TYPE b) const {
+        UME_FORCE_INLINE SIMDVecMask<VEC_LEN> cmpge(SCALAR_FLOAT_TYPE b) const {
             SIMDVecMask<VEC_LEN> retval;
             SCALAR_FLOAT_TYPE const * local_ptr = &mVec[0];
             bool * local_retval_ptr = &retval.mMask[0];
@@ -1425,11 +1422,11 @@ namespace SIMD {
             }
             return retval;
         }
-        inline SIMDVecMask<VEC_LEN> operator>= (SCALAR_FLOAT_TYPE b) const {
+        UME_FORCE_INLINE SIMDVecMask<VEC_LEN> operator>= (SCALAR_FLOAT_TYPE b) const {
             return cmpge(b);
         }
         // CMPLEV
-        inline SIMDVecMask<VEC_LEN> cmple(SIMDVec_f const & b) const {
+        UME_FORCE_INLINE SIMDVecMask<VEC_LEN> cmple(SIMDVec_f const & b) const {
             SIMDVecMask<VEC_LEN> retval;
             SCALAR_FLOAT_TYPE const * local_ptr = &mVec[0];
             SCALAR_FLOAT_TYPE const * local_b_ptr = &b.mVec[0];
@@ -1440,11 +1437,11 @@ namespace SIMD {
             }
             return retval;
         }
-        inline SIMDVecMask<VEC_LEN> operator<= (SIMDVec_f const & b) const {
+        UME_FORCE_INLINE SIMDVecMask<VEC_LEN> operator<= (SIMDVec_f const & b) const {
             return cmple(b);
         }
         // CMPLES
-        inline SIMDVecMask<VEC_LEN> cmple(SCALAR_FLOAT_TYPE b) const {
+        UME_FORCE_INLINE SIMDVecMask<VEC_LEN> cmple(SCALAR_FLOAT_TYPE b) const {
             SIMDVecMask<VEC_LEN> retval;
             SCALAR_FLOAT_TYPE const * local_ptr = &mVec[0];
             bool * local_retval_ptr = &retval.mMask[0];
@@ -1454,12 +1451,12 @@ namespace SIMD {
             }
             return retval;
         }
-        inline SIMDVecMask<VEC_LEN> operator<= (SCALAR_FLOAT_TYPE b) const {
+        UME_FORCE_INLINE SIMDVecMask<VEC_LEN> operator<= (SCALAR_FLOAT_TYPE b) const {
             return cmple(b);
         }
         
         // CMPEV
-        inline bool cmpe(SIMDVec_f const & b) const {
+        UME_FORCE_INLINE bool cmpe(SIMDVec_f const & b) const {
             SCALAR_FLOAT_TYPE const * local_ptr = &mVec[0];
             SCALAR_FLOAT_TYPE const * local_b_ptr = &b.mVec[0];
             bool local_mask_ptr[VEC_LEN];
@@ -1475,7 +1472,7 @@ namespace SIMD {
             return retval;
         }
         // CMPES
-        inline bool cmpe(SCALAR_FLOAT_TYPE b) const {
+        UME_FORCE_INLINE bool cmpe(SCALAR_FLOAT_TYPE b) const {
             SCALAR_FLOAT_TYPE const * local_ptr = &mVec[0];
             bool local_mask_ptr[VEC_LEN];
             bool retval = true;
@@ -1492,9 +1489,8 @@ namespace SIMD {
         // UNIQUE
         // TODO
         
-        
         // HADD
-        inline SCALAR_FLOAT_TYPE hadd() const {
+        UME_FORCE_INLINE SCALAR_FLOAT_TYPE hadd() const {
             SCALAR_FLOAT_TYPE const * local_ptr = &mVec[0];
             SCALAR_FLOAT_TYPE retval = SCALAR_FLOAT_TYPE(0.0f);
             #pragma omp simd reduction(+:retval)
@@ -1504,7 +1500,7 @@ namespace SIMD {
             return retval;
         }
         // MHADD
-        inline SCALAR_FLOAT_TYPE hadd(SIMDVecMask<VEC_LEN> const & mask) const {
+        UME_FORCE_INLINE SCALAR_FLOAT_TYPE hadd(SIMDVecMask<VEC_LEN> const & mask) const {
             SCALAR_FLOAT_TYPE const * local_ptr = &mVec[0];
             SCALAR_FLOAT_TYPE masked_copy[VEC_LEN];
             bool const * local_mask_ptr = &mask.mMask[0];
@@ -1521,7 +1517,7 @@ namespace SIMD {
             return retval;
         }
         // HADDS
-        inline SCALAR_FLOAT_TYPE hadd(SCALAR_FLOAT_TYPE b) const {
+        UME_FORCE_INLINE SCALAR_FLOAT_TYPE hadd(SCALAR_FLOAT_TYPE b) const {
             SCALAR_FLOAT_TYPE const * local_ptr = &mVec[0];
             SCALAR_FLOAT_TYPE retval = b;
             #pragma omp simd reduction(+:retval)
@@ -1531,7 +1527,7 @@ namespace SIMD {
             return retval;
         }
         // MHADDS
-        inline SCALAR_FLOAT_TYPE hadd(SIMDVecMask<VEC_LEN> const & mask, SCALAR_FLOAT_TYPE b) const {
+        UME_FORCE_INLINE SCALAR_FLOAT_TYPE hadd(SIMDVecMask<VEC_LEN> const & mask, SCALAR_FLOAT_TYPE b) const {
             SCALAR_FLOAT_TYPE const * local_ptr = &mVec[0];
             SCALAR_FLOAT_TYPE masked_copy[VEC_LEN];
             bool const * local_mask_ptr = &mask.mMask[0];
@@ -1548,7 +1544,7 @@ namespace SIMD {
             return retval;
         }
         // HMUL
-        inline SCALAR_FLOAT_TYPE hmul() const {
+        UME_FORCE_INLINE SCALAR_FLOAT_TYPE hmul() const {
             SCALAR_FLOAT_TYPE const * local_ptr = &mVec[0];
             SCALAR_FLOAT_TYPE retval = SCALAR_FLOAT_TYPE(1.0f);
             #pragma omp simd reduction(*:retval)
@@ -1557,7 +1553,7 @@ namespace SIMD {
             }
             return retval;        }
         // MHMUL
-        inline SCALAR_FLOAT_TYPE hmul(SIMDVecMask<VEC_LEN> const & mask) const {
+        UME_FORCE_INLINE SCALAR_FLOAT_TYPE hmul(SIMDVecMask<VEC_LEN> const & mask) const {
             SCALAR_FLOAT_TYPE const * local_ptr = &mVec[0];
             SCALAR_FLOAT_TYPE masked_copy[VEC_LEN];
             bool const * local_mask_ptr = &mask.mMask[0];
@@ -1574,7 +1570,7 @@ namespace SIMD {
             return retval;
         }
         // HMULS
-        inline SCALAR_FLOAT_TYPE hmul(SCALAR_FLOAT_TYPE b) const {
+        UME_FORCE_INLINE SCALAR_FLOAT_TYPE hmul(SCALAR_FLOAT_TYPE b) const {
             SCALAR_FLOAT_TYPE const * local_ptr = &mVec[0];
             SCALAR_FLOAT_TYPE retval = b;
             #pragma omp simd reduction(*:retval)
@@ -1584,7 +1580,7 @@ namespace SIMD {
             return retval;
         }
         // MHMULS
-        inline SCALAR_FLOAT_TYPE hmul(SIMDVecMask<VEC_LEN> const & mask, SCALAR_FLOAT_TYPE b) const {
+        UME_FORCE_INLINE SCALAR_FLOAT_TYPE hmul(SIMDVecMask<VEC_LEN> const & mask, SCALAR_FLOAT_TYPE b) const {
             SCALAR_FLOAT_TYPE const * local_ptr = &mVec[0];
             SCALAR_FLOAT_TYPE masked_copy[VEC_LEN];
             bool const * local_mask_ptr = &mask.mMask[0];
@@ -1599,10 +1595,9 @@ namespace SIMD {
                 retval = retval * masked_copy[i];
             }
             return retval;
-        }
-        
+        }        
         // FMULADDV
-        inline SIMDVec_f fmuladd(SIMDVec_f const & b, SIMDVec_f const & c) const {
+        UME_FORCE_INLINE SIMDVec_f fmuladd(SIMDVec_f const & b, SIMDVec_f const & c) const {
             SIMDVec_f retval;
             SCALAR_FLOAT_TYPE * local_retval_ptr = &retval.mVec[0];
             SCALAR_FLOAT_TYPE const * local_ptr = &mVec[0];
@@ -1615,7 +1610,7 @@ namespace SIMD {
             return retval;
         }
         // MFMULADDV
-        inline SIMDVec_f fmuladd(SIMDVecMask<VEC_LEN> const & mask, SIMDVec_f const & b, SIMDVec_f const & c) const {
+        UME_FORCE_INLINE SIMDVec_f fmuladd(SIMDVecMask<VEC_LEN> const & mask, SIMDVec_f const & b, SIMDVec_f const & c) const {
             SIMDVec_f retval;
             SCALAR_FLOAT_TYPE * local_retval_ptr = &retval.mVec[0];
             bool const * local_mask_ptr = &mask.mMask[0];
@@ -1630,7 +1625,7 @@ namespace SIMD {
             return retval;
         }
         // FMULSUBV
-        inline SIMDVec_f fmulsub(SIMDVec_f const & b, SIMDVec_f const & c) const {
+        UME_FORCE_INLINE SIMDVec_f fmulsub(SIMDVec_f const & b, SIMDVec_f const & c) const {
             SIMDVec_f retval;
             SCALAR_FLOAT_TYPE * local_retval_ptr = &retval.mVec[0];
             SCALAR_FLOAT_TYPE const * local_ptr = &mVec[0];
@@ -1643,7 +1638,7 @@ namespace SIMD {
             return retval;
         }
         // MFMULSUBV
-        inline SIMDVec_f fmulsub(SIMDVecMask<VEC_LEN> const & mask, SIMDVec_f const & b, SIMDVec_f const & c) const {
+        UME_FORCE_INLINE SIMDVec_f fmulsub(SIMDVecMask<VEC_LEN> const & mask, SIMDVec_f const & b, SIMDVec_f const & c) const {
             SIMDVec_f retval;
             SCALAR_FLOAT_TYPE * local_retval_ptr = &retval.mVec[0];
             bool const * local_mask_ptr = &mask.mMask[0];
@@ -1658,7 +1653,7 @@ namespace SIMD {
             return retval;
         }
         // FADDMULV
-        inline SIMDVec_f faddmul(SIMDVec_f const & b, SIMDVec_f const & c) const {
+        UME_FORCE_INLINE SIMDVec_f faddmul(SIMDVec_f const & b, SIMDVec_f const & c) const {
             SIMDVec_f retval;
             SCALAR_FLOAT_TYPE * local_retval_ptr = &retval.mVec[0];
             SCALAR_FLOAT_TYPE const * local_ptr = &mVec[0];
@@ -1671,7 +1666,7 @@ namespace SIMD {
             return retval;
         }
         // MFADDMULV
-        inline SIMDVec_f faddmul(SIMDVecMask<VEC_LEN> const & mask, SIMDVec_f const & b, SIMDVec_f const & c) const {
+        UME_FORCE_INLINE SIMDVec_f faddmul(SIMDVecMask<VEC_LEN> const & mask, SIMDVec_f const & b, SIMDVec_f const & c) const {
             SIMDVec_f retval;
             SCALAR_FLOAT_TYPE * local_retval_ptr = &retval.mVec[0];
             bool const * local_mask_ptr = &mask.mMask[0];
@@ -1686,7 +1681,7 @@ namespace SIMD {
             return retval;
         }
         // FSUBMULV
-        inline SIMDVec_f fsubmul(SIMDVec_f const & b, SIMDVec_f const & c) const {
+        UME_FORCE_INLINE SIMDVec_f fsubmul(SIMDVec_f const & b, SIMDVec_f const & c) const {
             SIMDVec_f retval;
             SCALAR_FLOAT_TYPE * local_retval_ptr = &retval.mVec[0];
             SCALAR_FLOAT_TYPE const * local_ptr = &mVec[0];
@@ -1699,7 +1694,7 @@ namespace SIMD {
             return retval;
         }
         // MFSUBMULV
-        inline SIMDVec_f fsubmul(SIMDVecMask<VEC_LEN> const & mask, SIMDVec_f const & b, SIMDVec_f const & c) const {
+        UME_FORCE_INLINE SIMDVec_f fsubmul(SIMDVecMask<VEC_LEN> const & mask, SIMDVec_f const & b, SIMDVec_f const & c) const {
             SIMDVec_f retval;
             SCALAR_FLOAT_TYPE * local_retval_ptr = &retval.mVec[0];
             bool const * local_mask_ptr = &mask.mMask[0];
@@ -1713,10 +1708,8 @@ namespace SIMD {
             }
             return retval;
         }
-        
-        
         // MAXV
-        inline SIMDVec_f max(SIMDVec_f const & b) const {
+        UME_FORCE_INLINE SIMDVec_f max(SIMDVec_f const & b) const {
             SIMDVec_f retval;
             SCALAR_FLOAT_TYPE * local_retval_ptr = &retval.mVec[0];
             SCALAR_FLOAT_TYPE const * local_ptr = &mVec[0];
@@ -1729,7 +1722,7 @@ namespace SIMD {
             return retval;
         }
         // MMAXV
-        inline SIMDVec_f max(SIMDVecMask<VEC_LEN> const & mask, SIMDVec_f const & b) const {
+        UME_FORCE_INLINE SIMDVec_f max(SIMDVecMask<VEC_LEN> const & mask, SIMDVec_f const & b) const {
             SIMDVec_f retval;
             SCALAR_FLOAT_TYPE * local_retval_ptr = &retval.mVec[0];
             SCALAR_FLOAT_TYPE const * local_ptr = &mVec[0];
@@ -1745,7 +1738,7 @@ namespace SIMD {
             return retval;
         }
         // MAXS
-        inline SIMDVec_f max(SCALAR_FLOAT_TYPE b) const {
+        UME_FORCE_INLINE SIMDVec_f max(SCALAR_FLOAT_TYPE b) const {
             SIMDVec_f retval;
             SCALAR_FLOAT_TYPE * local_retval_ptr = &retval.mVec[0];
             SCALAR_FLOAT_TYPE const * local_ptr = &mVec[0];
@@ -1757,7 +1750,7 @@ namespace SIMD {
             return retval;
         }
         // MMAXS
-        inline SIMDVec_f max(SIMDVecMask<VEC_LEN> const & mask, SCALAR_FLOAT_TYPE b) const {
+        UME_FORCE_INLINE SIMDVec_f max(SIMDVecMask<VEC_LEN> const & mask, SCALAR_FLOAT_TYPE b) const {
             SIMDVec_f retval;
             SCALAR_FLOAT_TYPE * local_retval_ptr = &retval.mVec[0];
             SCALAR_FLOAT_TYPE const * local_ptr = &mVec[0];
@@ -1772,7 +1765,7 @@ namespace SIMD {
             return retval;
         }
         // MAXVA
-        inline SIMDVec_f & maxa(SIMDVec_f const & b) {
+        UME_FORCE_INLINE SIMDVec_f & maxa(SIMDVec_f const & b) {
             SCALAR_FLOAT_TYPE * local_ptr = &mVec[0];
             SCALAR_FLOAT_TYPE const * local_b_ptr = &b.mVec[0];
             #pragma omp simd simdlen(VEC_LEN) safelen(VEC_LEN)
@@ -1782,7 +1775,7 @@ namespace SIMD {
             return *this;
         }
         // MMAXVA
-        inline SIMDVec_f & maxa(SIMDVecMask<VEC_LEN> const & mask, SIMDVec_f const & b) {
+        UME_FORCE_INLINE SIMDVec_f & maxa(SIMDVecMask<VEC_LEN> const & mask, SIMDVec_f const & b) {
             SCALAR_FLOAT_TYPE * local_ptr = &mVec[0];
             SCALAR_FLOAT_TYPE const * local_b_ptr = &b.mVec[0];
             bool const * local_mask_ptr = &mask.mMask[0];
@@ -1795,7 +1788,7 @@ namespace SIMD {
             return *this;
         }
         // MAXSA
-        inline SIMDVec_f & maxa(SCALAR_FLOAT_TYPE b) {
+        UME_FORCE_INLINE SIMDVec_f & maxa(SCALAR_FLOAT_TYPE b) {
             SCALAR_FLOAT_TYPE * local_ptr = &mVec[0];
             #pragma omp simd simdlen(VEC_LEN) safelen(VEC_LEN)
             for(int i = 0; i < VEC_LEN; i++) {
@@ -1804,7 +1797,7 @@ namespace SIMD {
             return *this;
         }
         // MMAXSA
-        inline SIMDVec_f & maxa(SIMDVecMask<VEC_LEN> const & mask, SCALAR_FLOAT_TYPE b) {
+        UME_FORCE_INLINE SIMDVec_f & maxa(SIMDVecMask<VEC_LEN> const & mask, SCALAR_FLOAT_TYPE b) {
             SCALAR_FLOAT_TYPE * local_ptr = &mVec[0];
             bool const * local_mask_ptr = &mask.mMask[0];
             #pragma omp simd simdlen(VEC_LEN) safelen(VEC_LEN)
@@ -1817,7 +1810,7 @@ namespace SIMD {
         }
         
         // MINV
-        inline SIMDVec_f min(SIMDVec_f const & b) const {
+        UME_FORCE_INLINE SIMDVec_f min(SIMDVec_f const & b) const {
             SIMDVec_f retval;
             SCALAR_FLOAT_TYPE * local_retval_ptr = &retval.mVec[0];
             SCALAR_FLOAT_TYPE const * local_ptr = &mVec[0];
@@ -1830,7 +1823,7 @@ namespace SIMD {
             return retval;
         }
         // MMINV
-        inline SIMDVec_f min(SIMDVecMask<VEC_LEN> const & mask, SIMDVec_f const & b) const {
+        UME_FORCE_INLINE SIMDVec_f min(SIMDVecMask<VEC_LEN> const & mask, SIMDVec_f const & b) const {
             SIMDVec_f retval;
             SCALAR_FLOAT_TYPE * local_retval_ptr = &retval.mVec[0];
             SCALAR_FLOAT_TYPE const * local_ptr = &mVec[0];
@@ -1846,7 +1839,7 @@ namespace SIMD {
             return retval;
         }
         // MINS
-        inline SIMDVec_f min(float b) const {
+        UME_FORCE_INLINE SIMDVec_f min(SCALAR_FLOAT_TYPE b) const {
             SIMDVec_f retval;
             SCALAR_FLOAT_TYPE * local_retval_ptr = &retval.mVec[0];
             SCALAR_FLOAT_TYPE const * local_ptr = &mVec[0];
@@ -1858,7 +1851,7 @@ namespace SIMD {
             return retval;
         }
         // MMINS
-        inline SIMDVec_f min(SIMDVecMask<VEC_LEN> const & mask, SCALAR_FLOAT_TYPE b) const {
+        UME_FORCE_INLINE SIMDVec_f min(SIMDVecMask<VEC_LEN> const & mask, SCALAR_FLOAT_TYPE b) const {
             SIMDVec_f retval;
             SCALAR_FLOAT_TYPE * local_retval_ptr = &retval.mVec[0];
             SCALAR_FLOAT_TYPE const * local_ptr = &mVec[0];
@@ -1873,7 +1866,7 @@ namespace SIMD {
             return retval;
         }
         // MINVA
-        inline SIMDVec_f & mina(SIMDVec_f const & b) {
+        UME_FORCE_INLINE SIMDVec_f & mina(SIMDVec_f const & b) {
             SCALAR_FLOAT_TYPE * local_ptr = &mVec[0];
             SCALAR_FLOAT_TYPE const * local_b_ptr = &b.mVec[0];
             #pragma omp simd simdlen(VEC_LEN) safelen(VEC_LEN)
@@ -1883,7 +1876,7 @@ namespace SIMD {
             return *this;
         }
         // MMINVA
-        inline SIMDVec_f & mina(SIMDVecMask<VEC_LEN> const & mask, SIMDVec_f const & b) {
+        UME_FORCE_INLINE SIMDVec_f & mina(SIMDVecMask<VEC_LEN> const & mask, SIMDVec_f const & b) {
             SCALAR_FLOAT_TYPE * local_ptr = &mVec[0];
             SCALAR_FLOAT_TYPE const * local_b_ptr = &b.mVec[0];
             bool const * local_mask_ptr = &mask.mMask[0];
@@ -1896,7 +1889,7 @@ namespace SIMD {
             return *this;
         }
         // MINSA
-        inline SIMDVec_f & mina(SCALAR_FLOAT_TYPE b) {
+        UME_FORCE_INLINE SIMDVec_f & mina(SCALAR_FLOAT_TYPE b) {
             SCALAR_FLOAT_TYPE * local_ptr = &mVec[0];
             #pragma omp simd simdlen(VEC_LEN) safelen(VEC_LEN)
             for(int i = 0; i < VEC_LEN; i++) {
@@ -1905,7 +1898,7 @@ namespace SIMD {
             return *this;
         }
         // MMINSA
-        inline SIMDVec_f & mina(SIMDVecMask<VEC_LEN> const & mask, SCALAR_FLOAT_TYPE b) {
+        UME_FORCE_INLINE SIMDVec_f & mina(SIMDVecMask<VEC_LEN> const & mask, SCALAR_FLOAT_TYPE b) {
             SCALAR_FLOAT_TYPE * local_ptr = &mVec[0];
             bool const * local_mask_ptr = &mask.mMask[0];
             #pragma omp simd simdlen(VEC_LEN) safelen(VEC_LEN)
@@ -1925,10 +1918,9 @@ namespace SIMD {
         // MHMIN
         // IMIN
         // MIMIN
-        
 
         // GATHERS
-        inline SIMDVec_f & gather(SCALAR_FLOAT_TYPE * baseAddr, SCALAR_UINT_TYPE* indices) {
+        UME_FORCE_INLINE SIMDVec_f & gather(SCALAR_FLOAT_TYPE * baseAddr, SCALAR_UINT_TYPE* indices) {
             for(int i = 0; i < VEC_LEN; i++)
             {
                 mVec[i] = baseAddr[indices[i]];
@@ -1936,7 +1928,7 @@ namespace SIMD {
             return *this;
         }
         // MGATHERS
-        inline SIMDVec_f & gather(SIMDVecMask<VEC_LEN> const & mask, SCALAR_FLOAT_TYPE* baseAddr, SCALAR_UINT_TYPE* indices) {
+        UME_FORCE_INLINE SIMDVec_f & gather(SIMDVecMask<VEC_LEN> const & mask, SCALAR_FLOAT_TYPE* baseAddr, SCALAR_UINT_TYPE* indices) {
             for(int i = 0; i < VEC_LEN; i++)
             {
                 if(mask.mMask[i] == true) mVec[i] = baseAddr[indices[i]];
@@ -1944,7 +1936,7 @@ namespace SIMD {
             return *this;
         }
         // GATHERV
-        inline SIMDVec_f & gather(SCALAR_FLOAT_TYPE * baseAddr, SIMDVec_u<SCALAR_UINT_TYPE, VEC_LEN> const & indices) {
+        UME_FORCE_INLINE SIMDVec_f & gather(SCALAR_FLOAT_TYPE * baseAddr, SIMDVec_u<SCALAR_UINT_TYPE, VEC_LEN> const & indices) {
             for(int i = 0; i < VEC_LEN; i++)
             {
                 mVec[i] = baseAddr[indices.mVec[i]];
@@ -1952,7 +1944,7 @@ namespace SIMD {
             return *this;
         }
         // MGATHERV
-        inline SIMDVec_f & gather(SIMDVecMask<VEC_LEN> const & mask, SCALAR_FLOAT_TYPE* baseAddr, SIMDVec_u<SCALAR_UINT_TYPE, VEC_LEN> const & indices) {
+        UME_FORCE_INLINE SIMDVec_f & gather(SIMDVecMask<VEC_LEN> const & mask, SCALAR_FLOAT_TYPE* baseAddr, SIMDVec_u<SCALAR_UINT_TYPE, VEC_LEN> const & indices) {
             for(int i = 0; i < VEC_LEN; i++)
             {
                 if(mask.mMask[i] == true) mVec[i] = baseAddr[indices.mVec[i]];
@@ -1960,7 +1952,7 @@ namespace SIMD {
             return *this;
         }
         // SCATTERS
-        inline SCALAR_FLOAT_TYPE* scatter(SCALAR_FLOAT_TYPE* baseAddr, SCALAR_UINT_TYPE* indices) const {
+        UME_FORCE_INLINE SCALAR_FLOAT_TYPE* scatter(SCALAR_FLOAT_TYPE* baseAddr, SCALAR_UINT_TYPE* indices) const {
             for(int i = 0; i < VEC_LEN; i++)
             {
                 baseAddr[indices[i]] = mVec[i];
@@ -1968,7 +1960,7 @@ namespace SIMD {
             return baseAddr;
         }
         // MSCATTERS
-        inline SCALAR_FLOAT_TYPE* scatter(SIMDVecMask<VEC_LEN> const & mask, SCALAR_FLOAT_TYPE* baseAddr, SCALAR_UINT_TYPE* indices) const {
+        UME_FORCE_INLINE SCALAR_FLOAT_TYPE* scatter(SIMDVecMask<VEC_LEN> const & mask, SCALAR_FLOAT_TYPE* baseAddr, SCALAR_UINT_TYPE* indices) const {
             for(int i = 0; i < VEC_LEN; i++)
             {
                 if(mask.mMask[i]) baseAddr[indices[i]] = mVec[i];
@@ -1976,7 +1968,7 @@ namespace SIMD {
             return baseAddr;
         }
         // SCATTERV
-        inline SCALAR_FLOAT_TYPE* scatter(SCALAR_FLOAT_TYPE* baseAddr, SIMDVec_u<SCALAR_UINT_TYPE, VEC_LEN> const & indices) const {
+        UME_FORCE_INLINE SCALAR_FLOAT_TYPE* scatter(SCALAR_FLOAT_TYPE* baseAddr, SIMDVec_u<SCALAR_UINT_TYPE, VEC_LEN> const & indices) const {
             for(int i = 0; i < VEC_LEN; i++)
             {
                 baseAddr[indices.mVec[i]] = mVec[i];
@@ -1984,16 +1976,15 @@ namespace SIMD {
             return baseAddr;
         }
         // MSCATTERV
-        inline SCALAR_FLOAT_TYPE* scatter(SIMDVecMask<VEC_LEN> const & mask, SCALAR_FLOAT_TYPE* baseAddr, SIMDVec_u<SCALAR_UINT_TYPE, VEC_LEN> const & indices) const {
+        UME_FORCE_INLINE SCALAR_FLOAT_TYPE* scatter(SIMDVecMask<VEC_LEN> const & mask, SCALAR_FLOAT_TYPE* baseAddr, SIMDVec_u<SCALAR_UINT_TYPE, VEC_LEN> const & indices) const {
             for(int i = 0; i < VEC_LEN; i++)
             {
                 if(mask.mMask[i]) baseAddr[indices.mVec[i]] = mVec[i];
             }
             return baseAddr;
         }
-        
         // NEG
-        inline SIMDVec_f neg() const {
+        UME_FORCE_INLINE SIMDVec_f neg() const {
             SIMDVec_f retval;
             SCALAR_FLOAT_TYPE * local_retval_ptr = &retval.mVec[0];
             SCALAR_FLOAT_TYPE const * local_ptr = &mVec[0];
@@ -2003,11 +1994,11 @@ namespace SIMD {
             }
             return retval;
         }
-        inline SIMDVec_f operator- () const {
+        UME_FORCE_INLINE SIMDVec_f operator- () const {
             return neg();
         }
         // MNEG
-        inline SIMDVec_f neg(SIMDVecMask<VEC_LEN> const & mask) const {
+        UME_FORCE_INLINE SIMDVec_f neg(SIMDVecMask<VEC_LEN> const & mask) const {
             SIMDVec_f retval;
             SCALAR_FLOAT_TYPE * local_retval_ptr = &retval.mVec[0];
             SCALAR_FLOAT_TYPE const * local_ptr = &mVec[0];
@@ -2020,7 +2011,7 @@ namespace SIMD {
             return retval;
         }
         // NEGA
-        inline SIMDVec_f & nega() {
+        UME_FORCE_INLINE SIMDVec_f & nega() {
             SCALAR_FLOAT_TYPE * local_ptr = &mVec[0];
             #pragma omp simd simdlen(VEC_LEN) safelen(VEC_LEN)
             for(int i = 0; i < VEC_LEN; i++) {
@@ -2029,7 +2020,7 @@ namespace SIMD {
             return *this;
         }
         // MNEGA
-        inline SIMDVec_f & nega(SIMDVecMask<VEC_LEN> const & mask) {
+        UME_FORCE_INLINE SIMDVec_f & nega(SIMDVecMask<VEC_LEN> const & mask) {
             SCALAR_FLOAT_TYPE * local_ptr = &mVec[0];
             bool const * local_mask_ptr = &mask.mMask[0];
             #pragma omp simd simdlen(VEC_LEN) safelen(VEC_LEN)
@@ -2038,9 +2029,8 @@ namespace SIMD {
             }
             return *this;
         }
-        
         // ABS
-        inline SIMDVec_f abs() const {
+        UME_FORCE_INLINE SIMDVec_f abs() const {
             SIMDVec_f retval;
             SCALAR_FLOAT_TYPE * local_retval_ptr = &retval.mVec[0];
             SCALAR_FLOAT_TYPE const * local_ptr = &mVec[0];
@@ -2052,7 +2042,7 @@ namespace SIMD {
             return retval;
         }
         // MABS
-        inline SIMDVec_f abs(SIMDVecMask<VEC_LEN> const & mask) const {
+        UME_FORCE_INLINE SIMDVec_f abs(SIMDVecMask<VEC_LEN> const & mask) const {
             SIMDVec_f retval;
             SCALAR_FLOAT_TYPE * local_retval_ptr = &retval.mVec[0];
             SCALAR_FLOAT_TYPE const * local_ptr = &mVec[0];
@@ -2068,7 +2058,7 @@ namespace SIMD {
             return retval;
         }
         // ABSA
-        inline SIMDVec_f & absa() {
+        UME_FORCE_INLINE SIMDVec_f & absa() {
             SCALAR_FLOAT_TYPE * local_ptr = &mVec[0];
             #pragma omp simd simdlen(VEC_LEN) safelen(VEC_LEN)
             for(int i = 0; i < VEC_LEN; i++) {
@@ -2077,7 +2067,7 @@ namespace SIMD {
             return *this;
         }
         // MABSA
-        inline SIMDVec_f & absa(SIMDVecMask<VEC_LEN> const & mask) {
+        UME_FORCE_INLINE SIMDVec_f & absa(SIMDVecMask<VEC_LEN> const & mask) {
             SCALAR_FLOAT_TYPE * local_ptr = &mVec[0];
             bool const * local_mask_ptr = &mask.mMask[0];
             #pragma omp simd simdlen(VEC_LEN) safelen(VEC_LEN)
@@ -2108,7 +2098,7 @@ namespace SIMD {
         // ROUND
         // MROUND
         // TRUNC
-        inline SIMDVec_i<SCALAR_INT_TYPE, VEC_LEN> trunc() const {
+        UME_FORCE_INLINE SIMDVec_i<SCALAR_INT_TYPE, VEC_LEN> trunc() const {
             SIMDVec_i<SCALAR_INT_TYPE, VEC_LEN> retval;
             SCALAR_INT_TYPE * local_retval_ptr = &retval.mVec[0];
             SCALAR_FLOAT_TYPE const * local_ptr = &mVec[0];
@@ -2119,7 +2109,7 @@ namespace SIMD {
             return retval;
         }
         // MTRUNC
-        inline SIMDVec_i<SCALAR_INT_TYPE, VEC_LEN> trunc(SIMDVecMask<VEC_LEN> const & mask) const {
+        UME_FORCE_INLINE SIMDVec_i<SCALAR_INT_TYPE, VEC_LEN> trunc(SIMDVecMask<VEC_LEN> const & mask) const {
             SIMDVec_i<SCALAR_INT_TYPE, VEC_LEN> retval;
             SCALAR_INT_TYPE * local_retval_ptr = &retval.mVec[0];
             SCALAR_FLOAT_TYPE const * local_ptr = &mVec[0];
@@ -2159,14 +2149,14 @@ namespace SIMD {
         // UNPACKHI
         
         // DEGRADE
-        inline operator SIMDVec_f<SCALAR_FLOAT_LOWER_PRECISION, VEC_LEN>() const;
+        UME_FORCE_INLINE operator SIMDVec_f<SCALAR_FLOAT_LOWER_PRECISION, VEC_LEN>() const;
         // PROMOTE
-        inline operator SIMDVec_f<SCALAR_FLOAT_HIGHER_PRECISION, VEC_LEN>() const;
+        UME_FORCE_INLINE operator SIMDVec_f<SCALAR_FLOAT_HIGHER_PRECISION, VEC_LEN>() const;
 
         // FTOU
-        inline operator SIMDVec_u<SCALAR_UINT_TYPE, VEC_LEN>() const;
+        UME_FORCE_INLINE operator SIMDVec_u<SCALAR_UINT_TYPE, VEC_LEN>() const;
         // FTOI
-        inline operator SIMDVec_i<SCALAR_INT_TYPE, VEC_LEN>() const;
+        UME_FORCE_INLINE operator SIMDVec_i<SCALAR_INT_TYPE, VEC_LEN>() const;
     };
 
     // SIMD NullTypes. These are used whenever a terminating

@@ -2,6 +2,8 @@
 # CXX={gcc, icc, clang)
 # ISA={scalar, avx, avx2, core_avx512, mic_avx512, imci}
 # BUILD={debug, release, release_O3}
+# {FORCE_OPENMP_PLUGIN=ON}
+
 CXXFLAGS=-std=c++11 -Wall
 
 #some predefined rules
@@ -38,6 +40,15 @@ endif
 ifeq ($(BUILD), release_o3)
 	CXXFLAGS+=-O3
 	BUILD_PREFIX=_O3
+endif
+
+ifeq ($(FORCE_OPENMP_PLUGIN), ON)
+	ifeq ($(CXX), icc)
+		CXXFLAGS+=-fopenmp
+        else
+		CXXFLAGS+=-openmp
+	endif
+	CXXFLAGS+=-DFORCE_AUTOVEC
 endif
 
 # Select proper instruction set flags
