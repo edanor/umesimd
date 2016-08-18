@@ -28,8 +28,8 @@
 //  7th Framework programme Marie Curie Actions under grant PITN-GA-2012-316596".
 //
 
-#ifndef UME_SIMD_PLUGIN_AUTOVEC_H_
-#define UME_SIMD_PLUGIN_AUTOVEC_H_
+#ifndef UME_SIMD_PLUGIN_OPENMP_H_
+#define UME_SIMD_PLUGIN_OPENMP_H_
 
 #include <type_traits>
 
@@ -50,12 +50,12 @@ namespace SIMD
 }
 }
 
-#include "autovec/UMESimdMask.h"
-#include "autovec/UMESimdSwizzle.h"
-#include "autovec/UMESimdVecUint.h"
-#include "autovec/UMESimdVecInt.h"
-#include "autovec/UMESimdVecFloat.h"
-#include "autovec/UMESimdCastOperators.h"
+#include "openmp/UMESimdMask.h"
+#include "openmp/UMESimdSwizzle.h"
+#include "openmp/UMESimdVecUint.h"
+#include "openmp/UMESimdVecInt.h"
+#include "openmp/UMESimdVecFloat.h"
+#include "openmp/UMESimdCastOperators.h"
 
 namespace UME
 {

@@ -126,8 +126,8 @@ namespace SIMD
 #if defined FORCE_SCALAR
     #define USING_EMULATED_TYPES 1
     #include "plugins/UMESimdPluginScalarEmulation.h"
-#elif defined FORCE_AUTOVEC
-    #include "plugins/UMESimdPluginAutovec.h"
+#elif defined FORCE_OPENMP
+    #include "plugins/UMESimdPluginOpenMP.h"
 #else
     #if defined __AVX512F__
         #include "plugins/UMESimdPluginAVX512.h"
