@@ -48,7 +48,7 @@ ifeq ($(FORCE_OPENMP_PLUGIN), ON)
         else
 		CXXFLAGS+=-openmp
 	endif
-	CXXFLAGS+=-DFORCE_AUTOVEC
+	CXXFLAGS+=-DFORCE_OPENMP
 endif
 
 # Select proper instruction set flags
