@@ -1026,6 +1026,23 @@ namespace SIMD {
         // ISSUB
         // ISZERO
         // ISZEROSUB
+
+        // EXP
+        UME_FORCE_INLINE SIMDVec_f exp() const {
+            float t0 = std::exp(mVec);
+            return SIMDVec_f(t0);
+        }
+        // MEXP
+        UME_FORCE_INLINE SIMDVec_f exp(SIMDVecMask<1> const & mask) const {
+            float t0 = mask.mMask ? std::exp(mVec) : mVec;
+            return SIMDVec_f(t0);
+        }
+        // LOG
+        // MLOG
+        // LOG2
+        // MLOG2
+        // LOG10
+        // MLOG10
         // SIN
         // MSIN
         // COS
