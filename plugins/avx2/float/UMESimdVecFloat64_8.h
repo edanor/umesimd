@@ -921,6 +921,21 @@ namespace SIMD {
         // ISSUB     - Is subnormal
         // ISZERO    - Is zero
         // ISZEROSUB - Is zero or subnormal
+        // EXP
+        UME_FORCE_INLINE SIMDVec_f exp() const {
+            return VECTOR_EMULATION::expd<SIMDVec_f, SIMDVec_u<uint64_t, 8>>(*this);
+        }
+        // MEXP
+        UME_FORCE_INLINE SIMDVec_f exp(SIMDVecMask<8> const & mask) const {
+            return VECTOR_EMULATION::expd<SIMDVec_f, SIMDVec_u<uint64_t, 8>, SIMDVecMask<8>>(mask, *this);
+        }
+        // LOG
+        // MLOG
+        // LOG2
+        // MLOG2
+        // LOG10
+        // MLOG10
+        // SIN
         UME_FORCE_INLINE SIMDVec_f sin() const {
             return VECTOR_EMULATION::sind<SIMDVec_f, SIMDVec_i<int64_t, 8>, SIMDVecMask<8>>(*this);
         }
