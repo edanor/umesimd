@@ -1026,7 +1026,6 @@ namespace SIMD {
         // ISSUB
         // ISZERO
         // ISZEROSUB
-        
         // EXP
         UME_FORCE_INLINE SIMDVec_f exp() const {
             float t0 = std::exp(mVec);

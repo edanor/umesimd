@@ -1842,6 +1842,20 @@ namespace SIMD {
             __mmask8 m3 = m0 | m1 | m2;
             return SIMDVecMask<8>(m3);
         }
+        // EXP
+        UME_FORCE_INLINE SIMDVec_f exp() const {
+            return VECTOR_EMULATION::expf<SIMDVec_f, SIMDVec_u<uint32_t, 8>>(*this);
+        }
+        // MEXP
+        UME_FORCE_INLINE SIMDVec_f exp(SIMDVecMask<8> const & mask) const {
+            return VECTOR_EMULATION::expf<SIMDVec_f, SIMDVec_u<uint32_t, 8>, SIMDVecMask<8>>(mask, *this);
+        }
+        // LOG
+        // MLOG
+        // LOG2
+        // MLOG2
+        // LOG10
+        // MLOG10
         // SIN
         UME_FORCE_INLINE SIMDVec_f sin() const {
             return VECTOR_EMULATION::sinf<SIMDVec_f, SIMDVec_i<int32_t, 8>, SIMDVecMask<8>>(*this);
@@ -1862,7 +1876,6 @@ namespace SIMD {
         UME_FORCE_INLINE void sincos(SIMDVec_f & sinvec, SIMDVec_f & cosvec) const {
             VECTOR_EMULATION::sincosf<SIMDVec_f, SIMDVec_i<int32_t, 8>, SIMDVecMask<8>>(*this, sinvec, cosvec);
         }
-
         // MSINCOS
         UME_FORCE_INLINE void sincos(SIMDVecMask<8> const & mask, SIMDVec_f & sinvec, SIMDVec_f & cosvec) const {
             sinvec = SCALAR_EMULATION::MATH::sin<SIMDVec_f, SIMDVecMask<8>>(mask, *this);

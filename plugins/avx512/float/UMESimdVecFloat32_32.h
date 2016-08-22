@@ -1662,6 +1662,21 @@ namespace SIMD {
             return SIMDVecMask<32>(t8);
 #endif
         }
+        
+        // EXP
+        UME_FORCE_INLINE SIMDVec_f exp() const {
+            return VECTOR_EMULATION::expf<SIMDVec_f, SIMDVec_u<uint32_t, 32>>(*this);
+        }
+        // MEXP
+        UME_FORCE_INLINE SIMDVec_f exp(SIMDVecMask<32> const & mask) const {
+            return VECTOR_EMULATION::expf<SIMDVec_f, SIMDVec_u<uint32_t, 32>, SIMDVecMask<32>>(mask, *this);
+        }
+        // LOG
+        // MLOG
+        // LOG2
+        // MLOG2
+        // LOG10
+        // MLOG10
         // SIN
         UME_FORCE_INLINE SIMDVec_f sin() const {
             return VECTOR_EMULATION::sinf<SIMDVec_f, SIMDVec_i<int32_t, 32>, SIMDVecMask<32>>(*this);

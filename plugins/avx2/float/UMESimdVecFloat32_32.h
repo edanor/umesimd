@@ -998,7 +998,6 @@ namespace SIMD {
         // ISSUB     - Is subnormal
         // ISZERO    - Is zero
         // ISZEROSUB - Is zero or subnormal
-        
         // EXP
         UME_FORCE_INLINE SIMDVec_f exp() const {
             return VECTOR_EMULATION::expf<SIMDVec_f, SIMDVec_u<uint32_t, 32>>(*this);

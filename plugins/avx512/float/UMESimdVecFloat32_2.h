@@ -1217,6 +1217,26 @@ namespace SIMD {
         // ISSUB
         // ISZERO
         // ISZEROSUB
+        
+        // EXP
+        UME_FORCE_INLINE SIMDVec_f exp() const {
+            float t0 = std::exp(mVec[0]);
+            float t1 = std::exp(mVec[1]);
+            return SIMDVec_f(t0, t1);
+        }
+        // MEXP
+        UME_FORCE_INLINE SIMDVec_f exp(SIMDVecMask<2> const & mask) const {
+            float t0 = ((mask.mMask & 0x1) != 0) ? std::exp(mVec[0]) : mVec[0];
+            float t1 = ((mask.mMask & 0x2) != 0) ? std::exp(mVec[1]) : mVec[1];
+            return SIMDVec_f(t0, t1);
+        }
+        // LOG
+        // MLOG
+        // LOG2
+        // MLOG2
+        // LOG10
+        // MLOG10
+        
         // SIN
         UME_FORCE_INLINE SIMDVec_f sin() const {
             float t0 = std::sin(mVec[0]);

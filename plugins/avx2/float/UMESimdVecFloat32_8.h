@@ -1332,7 +1332,6 @@ namespace SIMD {
         // MLOG2
         // LOG10
         // MLOG10
-
         // SIN
         UME_FORCE_INLINE SIMDVec_f sin() const {
             return VECTOR_EMULATION::sinf<SIMDVec_f, SIMDVec_i<int32_t, 8>, SIMDVecMask<8>>(*this);

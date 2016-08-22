@@ -1850,6 +1850,20 @@ namespace SIMD {
             __mmask8 m3 = 0xF & (m0 | m1 | m2);
             return SIMDVecMask<4>(m3);
         }
+        // EXP
+        UME_FORCE_INLINE SIMDVec_f exp() const {
+            return VECTOR_EMULATION::expf<SIMDVec_f, SIMDVec_u<uint32_t, 4>>(*this);
+        }
+        // MEXP
+        UME_FORCE_INLINE SIMDVec_f exp(SIMDVecMask<4> const & mask) const {
+            return VECTOR_EMULATION::expf<SIMDVec_f, SIMDVec_u<uint32_t, 4>, SIMDVecMask<4>>(mask, *this);
+        }
+        // LOG
+        // MLOG
+        // LOG2
+        // MLOG2
+        // LOG10
+        // MLOG10
         // SIN
         UME_FORCE_INLINE SIMDVec_f sin() const {
             return VECTOR_EMULATION::sinf<SIMDVec_f, SIMDVec_i<int32_t, 4>, SIMDVecMask<4>>(*this);

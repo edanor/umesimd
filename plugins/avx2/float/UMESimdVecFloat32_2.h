@@ -1219,7 +1219,6 @@ namespace SIMD {
         // ISSUB
         // ISZERO
         // ISZEROSUB
-        
         // EXP
         UME_FORCE_INLINE SIMDVec_f exp() const {
             float t0 = std::exp(mVec[0]);
@@ -1238,7 +1237,6 @@ namespace SIMD {
         // MLOG2
         // LOG10
         // MLOG10
-        
         // SIN
         // MSIN
         // COS
