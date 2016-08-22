@@ -1231,7 +1231,17 @@ namespace SIMD {
             return SIMDVec_f(t0, t1);
         }
         // LOG
+        UME_FORCE_INLINE SIMDVec_f log() const {
+            float t0 = std::log(mVec[0]);
+            float t1 = std::log(mVec[1]);
+            return SIMDVec_f(t0, t1);
+        }
         // MLOG
+        UME_FORCE_INLINE SIMDVec_f log(SIMDVecMask<2> const & mask) const {
+            float t0 = ((mask.mMask & 0x1) != 0) ? std::log(mVec[0]) : mVec[0];
+            float t1 = ((mask.mMask & 0x2) != 0) ? std::log(mVec[1]) : mVec[1];
+            return SIMDVec_f(t0, t1);
+        }
         // LOG2
         // MLOG2
         // LOG10

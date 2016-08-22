@@ -1045,7 +1045,15 @@ namespace SIMD {
             return SIMDVec_f(t0);
         }
         // LOG
+        UME_FORCE_INLINE SIMDVec_f log() const {
+            double t0 = std::log(mVec);
+            return SIMDVec_f(t0);
+        }
         // MLOG
+        UME_FORCE_INLINE SIMDVec_f log(SIMDVecMask<1> const & mask) const {
+            double t0 = mask.mMask ? std::log(mVec) : mVec;
+            return SIMDVec_f(t0);
+        }
         // LOG2
         // MLOG2
         // LOG10
