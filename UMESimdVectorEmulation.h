@@ -46,6 +46,137 @@ namespace SIMD
     //   performance comparison with pure scalar version, none of these functions should be called directly in the interface.
     namespace VECTOR_EMULATION
     {
+        // EXP - single precision version
+        template<typename FLOAT_VEC_T, typename UINT_VEC_T>
+        UME_FORCE_INLINE FLOAT_VEC_T expf(FLOAT_VEC_T const & initial_x) {
+            const float MAXLOGF = 88.72283905206835f;
+            const float MINLOGF = -88.f;
+
+            const float C1F =   0.693359375f;
+            const float C2F =  -2.12194440e-4f;
+
+            const float PX1expf = 1.9875691500E-4f;
+            const float PX2expf =1.3981999507E-3f;
+            const float PX3expf =8.3334519073E-3f;
+            const float PX4expf =4.1665795894E-2f;
+            const float PX5expf =1.6666665459E-1f;
+            const float PX6expf =5.0000001201E-1f;
+
+            const float LOG2EF = 1.44269504088896341f;
+
+            FLOAT_VEC_T x = initial_x;
+            FLOAT_VEC_T z = (LOG2EF * x +0.5f ).floor(); /* floor() truncates toward -infinity. */
+
+            x -= z * C1F;
+            x -= z * C2F;
+            const UINT_VEC_T n = UINT_VEC_T ( z );
+
+            const FLOAT_VEC_T x2 = x * x;
+
+            z = x*PX1expf;
+            z += PX2expf;
+            z *= x;
+            z += PX3expf;
+            z *= x;
+            z += PX4expf;
+            z *= x;
+            z += PX5expf;
+            z *= x;
+            z += PX6expf;
+            z *= x2;
+            z += x + 1.0f;
+
+            /* multiply by power of 2 */
+            alignas(FLOAT_VEC_T::alignment()) float raw[FLOAT_VEC_T::length()];
+            ((n + 0x7f) << 23).store((uint32_t*)&raw[0]);
+            FLOAT_VEC_T z_0(raw);
+            z *= z_0;
+
+            z[initial_x > MAXLOGF] = std::numeric_limits<float>::infinity();
+            z[initial_x < MINLOGF] = 0.0f;
+
+            return z;
+        }
+        // EXP - double precision version
+
+        template<typename FLOAT_VEC_T, typename UINT_VEC_T>
+        UME_FORCE_INLINE FLOAT_VEC_T expd(FLOAT_VEC_T const & initial_x) {
+            const double EXP_LIMIT = 708;
+
+            const double PX1exp = 1.26177193074810590878E-4;
+            const double PX2exp = 3.02994407707441961300E-2;
+            const double PX3exp = 9.99999999999999999910E-1;
+            const double QX1exp = 3.00198505138664455042E-6;
+            const double QX2exp = 2.52448340349684104192E-3;
+            const double QX3exp = 2.27265548208155028766E-1;
+            const double QX4exp = 2.00000000000000000009E0;
+
+            const double LOG2E = 1.4426950408889634073599; // 1/log(2)
+
+            FLOAT_VEC_T x = initial_x;
+            FLOAT_VEC_T px = ( LOG2E * x +0.5 ).floor();
+
+            x -= px * 6.93145751953125E-1;
+            x -= px * 1.42860682030941723212E-6;
+
+            const UINT_VEC_T n = UINT_VEC_T ( x );
+
+            const FLOAT_VEC_T xx = x * x;
+
+            // px = x * P(x**2).
+            px = PX1exp;
+            px *= xx;
+            px += PX2exp;
+            px *= xx;
+            px += PX3exp;
+            px *= x;
+
+            // Evaluate Q(x**2).
+            FLOAT_VEC_T qx(QX1exp);
+            qx *= xx;
+            qx += QX2exp;
+            qx *= xx;
+            qx += QX3exp;
+            qx *= xx;
+            qx += QX4exp;
+
+            // e**x = 1 + 2x P(x**2)/( Q(x**2) - P(x**2) )
+            x = px / (qx - px);
+            x = 1.0 + 2.0 * x;
+
+            /* multiply by power of 2 */
+            alignas(FLOAT_VEC_T::alignment()) double raw[FLOAT_VEC_T::length()];
+            ((n + 1023) << 52).store((uint64_t*)&raw[0]);
+            UINT_VEC_T x_0((uint64_t*)raw);
+
+            x *= x_0;
+
+            x[initial_x > EXP_LIMIT] = std::numeric_limits<double>::infinity();
+            x[initial_x < -EXP_LIMIT] =0.;
+
+            return x;
+        }
+        // MEXP - single precision version
+        template<typename FLOAT_VEC_T, typename UINT_VEC_T, typename MASK_T>
+        UME_FORCE_INLINE FLOAT_VEC_T expf(MASK_T const & mask, FLOAT_VEC_T const & initial_x) {
+            FLOAT_VEC_T t0 = initial_x;
+            FLOAT_VEC_T t1 = expf<FLOAT_VEC_T, UINT_VEC_T>(initial_x);
+            t0.assign(mask, t1);
+            return t0;
+        }
+        // MEXP - double precision version
+        template<typename FLOAT_VEC_T, typename UINT_VEC_T, typename MASK_T>
+        UME_FORCE_INLINE FLOAT_VEC_T expd(MASK_T const & mask, FLOAT_VEC_T const & initial_x) {
+            FLOAT_VEC_T t0 = initial_x;
+            FLOAT_VEC_T t1 = expd<FLOAT_VEC_T, UINT_VEC_T>(initial_x);
+            t0.assign(mask, t1);
+            return t0;
+        }
+
+        // LOG
+        // LOG2
+        // LOG10
+
         // SIN - single precision version
         template<typename FLOAT_VEC_T, typename INT_VEC_T, typename MASK_T>
         UME_FORCE_INLINE FLOAT_VEC_T sinf(FLOAT_VEC_T const & xx)
@@ -530,6 +661,11 @@ namespace SIMD
             s.assign(mask, masked_s);
             c.assign(mask, masked_c);
         }
+
+        // TAN
+        // MTAN
+        // CTAN
+        // MCTAN
     }
 }
 }
