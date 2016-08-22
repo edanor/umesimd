@@ -1218,9 +1218,43 @@ namespace SIMD {
         // ISZERO
         // ISZEROSUB
         // SIN
+        UME_FORCE_INLINE SIMDVec_f sin() const {
+            float t0 = std::sin(mVec[0]);
+            float t1 = std::sin(mVec[1]);
+            return SIMDVec_f(t0, t1);
+        }
         // MSIN
+        UME_FORCE_INLINE SIMDVec_f sin(SIMDVecMask<2> const & mask) const {
+            float t0 = ((mask.mMask & 0x1) != 0) ? std::sin(mVec[0]) : mVec[0];
+            float t1 = ((mask.mMask & 0x2) != 0) ? std::sin(mVec[1]) : mVec[1];
+            return SIMDVec_f(t0, t1);
+        }
         // COS
+        UME_FORCE_INLINE SIMDVec_f cos() const {
+            float t0 = std::cos(mVec[0]);
+            float t1 = std::cos(mVec[1]);
+            return SIMDVec_f(t0, t1);
+        }
         // MCOS
+        UME_FORCE_INLINE SIMDVec_f cos(SIMDVecMask<2> const & mask) const {
+            float t0 = ((mask.mMask & 0x1) != 0) ? std::cos(mVec[0]) : mVec[0];
+            float t1 = ((mask.mMask & 0x2) != 0) ? std::cos(mVec[1]) : mVec[1];
+            return SIMDVec_f(t0, t1);
+        }
+        // SINCOS
+        UME_FORCE_INLINE void sincos(SIMDVec_f & sinvec, SIMDVec_f & cosvec) const {
+            sinvec.mVec[0] = std::sin(mVec[0]);
+            sinvec.mVec[1] = std::sin(mVec[1]);
+            cosvec.mVec[0] = std::cos(mVec[0]);
+            cosvec.mVec[1] = std::cos(mVec[1]);
+        }
+        // MSINCOS
+        UME_FORCE_INLINE void sincos(SIMDVecMask<2> const & mask, SIMDVec_f & sinvec, SIMDVec_f & cosvec) const {
+            sinvec.mVec[0] = ((mask.mMask & 0x1) != 0) ? std::sin(mVec[0]) : mVec[0];
+            sinvec.mVec[1] = ((mask.mMask & 0x2) != 0) ? std::sin(mVec[1]) : mVec[1];
+            cosvec.mVec[0] = ((mask.mMask & 0x1) != 0) ? std::cos(mVec[0]) : mVec[0];
+            cosvec.mVec[1] = ((mask.mMask & 0x2) != 0) ? std::cos(mVec[1]) : mVec[1];
+        }
         // TAN
         // MTAN
         // CTAN

@@ -1027,9 +1027,35 @@ namespace SIMD {
         // ISZERO
         // ISZEROSUB
         // SIN
+        UME_FORCE_INLINE SIMDVec_f sin() const {
+            float t0 = std::sin(mVec);
+            return SIMDVec_f(t0);
+        }
         // MSIN
+        UME_FORCE_INLINE SIMDVec_f sin(SIMDVecMask<1> const & mask) const {
+            float t0 = mask.mMask ? std::sin(mVec) : mVec;
+            return SIMDVec_f(t0);
+        }
         // COS
+        UME_FORCE_INLINE SIMDVec_f cos() const {
+            float t0 = std::cos(mVec);
+            return SIMDVec_f(t0);
+        }
         // MCOS
+        UME_FORCE_INLINE SIMDVec_f cos(SIMDVecMask<1> const & mask) const {
+            float t0 = mask.mMask ? std::cos(mVec) : mVec;
+            return SIMDVec_f(t0);
+        }
+        // SINCOS
+        UME_FORCE_INLINE void sincos(SIMDVec_f & sinvec, SIMDVec_f & cosvec) const {
+            sinvec.mVec = std::sin(mVec);
+            cosvec.mVec = std::cos(mVec);
+        }
+        // MSINCOS
+        UME_FORCE_INLINE void sincos(SIMDVecMask<1> const & mask, SIMDVec_f & sinvec, SIMDVec_f & cosvec) const {
+            sinvec.mVec = mask.mMask ? std::sin(mVec) : mVec;
+            cosvec.mVec = mask.mMask ? std::cos(mVec) : mVec;
+        }
         // TAN
         // MTAN
         // CTAN

@@ -1621,9 +1621,30 @@ namespace SIMD {
         // ISZERO
         // ISZEROSUB
         // SIN
+        UME_FORCE_INLINE SIMDVec_f sin() const {
+            return VECTOR_EMULATION::sind<SIMDVec_f, SIMDVec_i<int64_t, 2>, SIMDVecMask<2>>(*this);
+        }
         // MSIN
+        UME_FORCE_INLINE SIMDVec_f sin(SIMDVecMask<2> const & mask) const {
+            return VECTOR_EMULATION::sind<SIMDVec_f, SIMDVec_i<int64_t, 2>, SIMDVecMask<2>>(mask, *this);
+        }
         // COS
+        UME_FORCE_INLINE SIMDVec_f cos() const {
+            return VECTOR_EMULATION::cosd<SIMDVec_f, SIMDVec_i<int64_t, 2>, SIMDVecMask<2>>(*this);
+        }
         // MCOS
+        UME_FORCE_INLINE SIMDVec_f cos(SIMDVecMask<2> const & mask) const {
+            return VECTOR_EMULATION::cosd<SIMDVec_f, SIMDVec_i<int64_t, 2>, SIMDVecMask<2>>(mask, *this);
+        }
+        // SINCOS
+        UME_FORCE_INLINE void sincos(SIMDVec_f & sinvec, SIMDVec_f & cosvec) const {
+            VECTOR_EMULATION::sincosd<SIMDVec_f, SIMDVec_i<int64_t, 2>, SIMDVecMask<2>>(*this, sinvec, cosvec);
+        }
+        // MSINCOS
+        UME_FORCE_INLINE void sincos(SIMDVecMask<2> const & mask, SIMDVec_f & sinvec, SIMDVec_f & cosvec) const {
+            sinvec = SCALAR_EMULATION::MATH::sin<SIMDVec_f, SIMDVecMask<2>>(mask, *this);
+            cosvec = SCALAR_EMULATION::MATH::cos<SIMDVec_f, SIMDVecMask<2>>(mask, *this);
+        }
         // TAN
         // MTAN
         // CTAN
