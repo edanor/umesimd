@@ -1622,15 +1622,11 @@ namespace SIMD {
         // ISZEROSUB
         // EXP
         UME_FORCE_INLINE SIMDVec_f exp() const {
-            double t0 = std::exp(mVec[0]);
-            double t1 = std::exp(mVec[1]);
-            return SIMDVec_f(t0, t1);
+            return VECTOR_EMULATION::expd<SIMDVec_f, SIMDVec_u<uint64_t, 2>>(*this);
         }
         // MEXP
         UME_FORCE_INLINE SIMDVec_f exp(SIMDVecMask<2> const & mask) const {
-            double t0 = (mask.mMask & 0x1) ? std::exp(mVec[0]) : mVec[0];
-            double t1 = (mask.mMask & 0x2) ? std::exp(mVec[1]) : mVec[1];
-            return SIMDVec_f(t0, t1);
+            return VECTOR_EMULATION::expd<SIMDVec_f, SIMDVec_u<uint64_t, 2>, SIMDVecMask<2>>(mask, *this);
         }
         // LOG
         // MLOG
