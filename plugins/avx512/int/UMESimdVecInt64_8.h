@@ -107,9 +107,19 @@ namespace SIMD {
         // ZERO-CONSTR
         inline SIMDVec_i() {}
         // SET-CONSTR
-        inline explicit SIMDVec_i(int64_t i) {
+        inline SIMDVec_i(int64_t i) {
             mVec = _mm512_set1_epi64(i);
         }
+        // This constructor is used to force types other than SCALAR_TYPES
+        // to be promoted to SCALAR_TYPE instead of SCALAR_TYPE*. This prevents
+        // ambiguity between SET-CONSTR and LOAD-CONSTR.
+        template<typename T>
+        inline SIMDVec_i(
+            T i, 
+            typename std::enable_if< std::is_same<T, int>::value && 
+                                    !std::is_same<T, int64_t>::value,
+                                    void*>::type = nullptr)
+        : SIMDVec_i(static_cast<int64_t>(i)) {}
         // LOAD-CONSTR
         inline explicit SIMDVec_i(int64_t const *p) {
             mVec = _mm512_loadu_si512(p);
@@ -883,7 +893,9 @@ namespace SIMD {
         // CMPEQV
         inline SIMDVecMask<8> cmpeq (SIMDVec_i const & b) const {
             __mmask8 m0 = _mm512_cmpeq_epi64_mask(mVec, b.mVec);
-            return SIMDVecMask<8>(m0);
+            SIMDVecMask<8> ret_mask;
+            ret_mask.mMask = m0;
+            return ret_mask;
         }
         inline SIMDVecMask<8> operator== (SIMDVec_i const & b) const {
             return cmpeq(b);
@@ -891,7 +903,9 @@ namespace SIMD {
         // CMPEQS
         inline SIMDVecMask<8> cmpeq (int64_t b) const {
             __mmask8 m0 = _mm512_cmpeq_epi64_mask(mVec, _mm512_set1_epi64(b));
-            return SIMDVecMask<8>(m0);
+            SIMDVecMask<8> ret_mask;
+            ret_mask.mMask = m0;
+            return ret_mask;
         }
         inline SIMDVecMask<8> operator== (int64_t b) const {
             return cmpeq(b);
@@ -899,7 +913,9 @@ namespace SIMD {
         // CMPNEV
         inline SIMDVecMask<8> cmpne (SIMDVec_i const & b) const {
             __mmask8 m0 = _mm512_cmpneq_epi64_mask(mVec, b.mVec);
-            return SIMDVecMask<8>(m0);
+            SIMDVecMask<8> ret_mask;
+            ret_mask.mMask = m0;
+            return ret_mask;
         }
         inline SIMDVecMask<8> operator!= (SIMDVec_i const & b) const {
             return cmpne(b);
@@ -907,7 +923,9 @@ namespace SIMD {
         // CMPNES
         inline SIMDVecMask<8> cmpne (int64_t b) const {
             __mmask8 m0 = _mm512_cmpneq_epi64_mask(mVec, _mm512_set1_epi64(b));
-            return SIMDVecMask<8>(m0);
+            SIMDVecMask<8> ret_mask;
+            ret_mask.mMask = m0;
+            return ret_mask;
         }
         inline SIMDVecMask<8> operator!= (int64_t b) const {
             return cmpne(b);
@@ -915,7 +933,9 @@ namespace SIMD {
         // CMPGTV
         inline SIMDVecMask<8> cmpgt (SIMDVec_i const & b) const {
             __mmask8 m0 = _mm512_cmpgt_epi64_mask(mVec, b.mVec);
-            return SIMDVecMask<8>(m0);
+            SIMDVecMask<8> ret_mask;
+            ret_mask.mMask = m0;
+            return ret_mask;
         }
         inline SIMDVecMask<8> operator> (SIMDVec_i const & b) const {
             return cmpgt(b);
@@ -923,7 +943,9 @@ namespace SIMD {
         // CMPGTS
         inline SIMDVecMask<8> cmpgt (int64_t b) const {
             __mmask8 m0 = _mm512_cmpgt_epi64_mask(mVec, _mm512_set1_epi64(b));
-            return SIMDVecMask<8>(m0);
+            SIMDVecMask<8> ret_mask;
+            ret_mask.mMask = m0;
+            return ret_mask;
         }
         inline SIMDVecMask<8> operator> (int64_t b) const {
             return cmpgt(b);
@@ -931,7 +953,9 @@ namespace SIMD {
         // CMPLTV
         inline SIMDVecMask<8> cmplt (SIMDVec_i const & b) const {
             __mmask8 m0 = _mm512_cmplt_epi64_mask(mVec, b.mVec);
-            return SIMDVecMask<8>(m0);
+            SIMDVecMask<8> ret_mask;
+            ret_mask.mMask = m0;
+            return ret_mask;
         }
         inline SIMDVecMask<8> operator< (SIMDVec_i const & b) const {
             return cmplt(b);
@@ -939,7 +963,9 @@ namespace SIMD {
         // CMPLTS
         inline SIMDVecMask<8> cmplt (int64_t b) const {
             __mmask8 m0 = _mm512_cmplt_epi64_mask(mVec, _mm512_set1_epi64(b));
-            return SIMDVecMask<8>(m0);
+            SIMDVecMask<8> ret_mask;
+            ret_mask.mMask = m0;
+            return ret_mask;
         }
         inline SIMDVecMask<8> operator< (int64_t b) const {
             return cmplt(b);
@@ -947,7 +973,9 @@ namespace SIMD {
         // CMPGEV
         inline SIMDVecMask<8> cmpge (SIMDVec_i const & b) const {
             __mmask8 m0 = _mm512_cmpge_epi64_mask(mVec, b.mVec);
-            return SIMDVecMask<8>(m0);
+            SIMDVecMask<8> ret_mask;
+            ret_mask.mMask = m0;
+            return ret_mask;
         }
         inline SIMDVecMask<8> operator>= (SIMDVec_i const & b) const {
             return cmpge(b);
@@ -955,7 +983,9 @@ namespace SIMD {
         // CMPGES
         inline SIMDVecMask<8> cmpge (int64_t b) const {
             __mmask8 m0 = _mm512_cmpge_epi64_mask(mVec, _mm512_set1_epi64(b));
-            return SIMDVecMask<8>(m0);
+            SIMDVecMask<8> ret_mask;
+            ret_mask.mMask = m0;
+            return ret_mask;
         }
         inline SIMDVecMask<8> operator>= (int64_t b) const {
             return cmpge(b);
@@ -963,7 +993,9 @@ namespace SIMD {
         // CMPLEV
         inline SIMDVecMask<8> cmple (SIMDVec_i const & b) const {
             __mmask8 m0 = _mm512_cmple_epi64_mask(mVec, b.mVec);
-            return SIMDVecMask<8>(m0);
+            SIMDVecMask<8> ret_mask;
+            ret_mask.mMask = m0;
+            return ret_mask;
         }
         inline SIMDVecMask<8> operator<= (SIMDVec_i const & b) const {
             return cmple(b);
@@ -971,7 +1003,9 @@ namespace SIMD {
         // CMPLES
         inline SIMDVecMask<8> cmple (int64_t b) const {
             __mmask8 m0 = _mm512_cmple_epi64_mask(mVec, _mm512_set1_epi64(b));
-            return SIMDVecMask<8>(m0);
+            SIMDVecMask<8> ret_mask;
+            ret_mask.mMask = m0;
+            return ret_mask;
         }
         inline SIMDVecMask<8> operator<= (int64_t b) const {
             return cmple(b);

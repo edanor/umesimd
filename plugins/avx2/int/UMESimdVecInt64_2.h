@@ -67,10 +67,20 @@ namespace SIMD {
         // ZERO-CONSTR
         inline SIMDVec_i() {};
         // SET-CONSTR
-        inline explicit SIMDVec_i(int64_t i) {
+        inline SIMDVec_i(int64_t i) {
             mVec[0] = i;
             mVec[1] = i;
         }
+        // This constructor is used to force types other than SCALAR_TYPES
+        // to be promoted to SCALAR_TYPE instead of SCALAR_TYPE*. This prevents
+        // ambiguity between SET-CONSTR and LOAD-CONSTR.
+        template<typename T>
+        inline SIMDVec_i(
+            T i, 
+            typename std::enable_if< std::is_same<T, int>::value && 
+                                    !std::is_same<T, int64_t>::value,
+                                    void*>::type = nullptr)
+        : SIMDVec_i(static_cast<int64_t>(i)) {}
         // LOAD-CONSTR
         inline explicit SIMDVec_i(int64_t const *p) {
             mVec[0] = p[0];

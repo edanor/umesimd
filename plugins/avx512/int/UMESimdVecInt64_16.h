@@ -105,10 +105,20 @@ namespace SIMD {
         // ZERO-CONSTR
         UME_FORCE_INLINE SIMDVec_i() {}
         // SET-CONSTR
-        UME_FORCE_INLINE explicit SIMDVec_i(int64_t i) {
+        UME_FORCE_INLINE SIMDVec_i(int64_t i) {
             mVec[0] = _mm512_set1_epi64(i);
             mVec[1] = _mm512_set1_epi64(i);
         }
+        // This constructor is used to force types other than SCALAR_TYPES
+        // to be promoted to SCALAR_TYPE instead of SCALAR_TYPE*. This prevents
+        // ambiguity between SET-CONSTR and LOAD-CONSTR.
+        template<typename T>
+        inline SIMDVec_i(
+            T i, 
+            typename std::enable_if< std::is_same<T, int>::value && 
+                                    !std::is_same<T, int64_t>::value,
+                                    void*>::type = nullptr)
+        : SIMDVec_i(static_cast<int64_t>(i)) {}
         // LOAD-CONSTR
         UME_FORCE_INLINE explicit SIMDVec_i(int64_t const *p) {
             mVec[0] = _mm512_loadu_si512(p);
@@ -1325,7 +1335,9 @@ namespace SIMD {
             __mmask8 m0 = _mm512_cmpeq_epi64_mask(mVec[0], b.mVec[0]);
             __mmask8 m1 = _mm512_cmpeq_epi64_mask(mVec[1], b.mVec[1]);
             __mmask16 m2 = __mmask16(m0) | (__mmask16(m1) << 8);
-            return SIMDVecMask<16>(m2);
+            SIMDVecMask<16> ret_mask;
+            ret_mask.mMask = m2;
+            return ret_mask;
         }
         UME_FORCE_INLINE SIMDVecMask<16> operator== (SIMDVec_i const & b) const {
             return cmpeq(b);
@@ -1335,7 +1347,9 @@ namespace SIMD {
             __mmask8 m0 = _mm512_cmpeq_epi64_mask(mVec[0], _mm512_set1_epi64(b));
             __mmask8 m1 = _mm512_cmpeq_epi64_mask(mVec[1], _mm512_set1_epi64(b));
             __mmask16 m2 = __mmask16(m0) | (__mmask16(m1) << 8);
-            return SIMDVecMask<16>(m2);
+            SIMDVecMask<16> ret_mask;
+            ret_mask.mMask = m2;
+            return ret_mask;
         }
         UME_FORCE_INLINE SIMDVecMask<16> operator== (int64_t b) const {
             return cmpeq(b);
@@ -1345,7 +1359,9 @@ namespace SIMD {
             __mmask8 m0 = _mm512_cmpneq_epi64_mask(mVec[0], b.mVec[0]);
             __mmask8 m1 = _mm512_cmpneq_epi64_mask(mVec[1], b.mVec[1]);
             __mmask16 m2 = __mmask16(m0) | (__mmask16(m1) << 8);
-            return SIMDVecMask<16>(m2);
+            SIMDVecMask<16> ret_mask;
+            ret_mask.mMask = m2;
+            return ret_mask;
         }
         UME_FORCE_INLINE SIMDVecMask<16> operator!= (SIMDVec_i const & b) const {
             return cmpne(b);
@@ -1355,7 +1371,9 @@ namespace SIMD {
             __mmask8 m0 = _mm512_cmpneq_epi64_mask(mVec[0], _mm512_set1_epi64(b));
             __mmask8 m1 = _mm512_cmpneq_epi64_mask(mVec[1], _mm512_set1_epi64(b));
             __mmask16 m2 = __mmask16(m0) | (__mmask16(m1) << 8);
-            return SIMDVecMask<16>(m2);
+            SIMDVecMask<16> ret_mask;
+            ret_mask.mMask = m2;
+            return ret_mask;
         }
         UME_FORCE_INLINE SIMDVecMask<16> operator!= (int64_t b) const {
             return cmpne(b);
@@ -1365,7 +1383,9 @@ namespace SIMD {
             __mmask8 m0 = _mm512_cmpgt_epi64_mask(mVec[0], b.mVec[0]);
             __mmask8 m1 = _mm512_cmpgt_epi64_mask(mVec[1], b.mVec[1]);
             __mmask16 m2 = __mmask16(m0) | (__mmask16(m1) << 8);
-            return SIMDVecMask<16>(m2);
+            SIMDVecMask<16> ret_mask;
+            ret_mask.mMask = m2;
+            return ret_mask;
         }
         UME_FORCE_INLINE SIMDVecMask<16> operator> (SIMDVec_i const & b) const {
             return cmpgt(b);
@@ -1375,7 +1395,9 @@ namespace SIMD {
             __mmask8 m0 = _mm512_cmpgt_epi64_mask(mVec[0], _mm512_set1_epi64(b));
             __mmask8 m1 = _mm512_cmpgt_epi64_mask(mVec[1], _mm512_set1_epi64(b));
             __mmask16 m2 = __mmask16(m0) | (__mmask16(m1) << 8);
-            return SIMDVecMask<16>(m2);
+            SIMDVecMask<16> ret_mask;
+            ret_mask.mMask = m2;
+            return ret_mask;
         }
         UME_FORCE_INLINE SIMDVecMask<16> operator> (int64_t b) const {
             return cmpgt(b);
@@ -1385,7 +1407,9 @@ namespace SIMD {
             __mmask8 m0 = _mm512_cmplt_epi64_mask(mVec[0], b.mVec[0]);
             __mmask8 m1 = _mm512_cmplt_epi64_mask(mVec[1], b.mVec[1]);
             __mmask16 m2 = __mmask16(m0) | (__mmask16(m1) << 8);
-            return SIMDVecMask<16>(m2);
+            SIMDVecMask<16> ret_mask;
+            ret_mask.mMask = m2;
+            return ret_mask;
         }
         UME_FORCE_INLINE SIMDVecMask<16> operator< (SIMDVec_i const & b) const {
             return cmplt(b);
@@ -1395,7 +1419,9 @@ namespace SIMD {
             __mmask8 m0 = _mm512_cmplt_epi64_mask(mVec[0], _mm512_set1_epi64(b));
             __mmask8 m1 = _mm512_cmplt_epi64_mask(mVec[1], _mm512_set1_epi64(b));
             __mmask16 m2 = __mmask16(m0) | (__mmask16(m1) << 8);
-            return SIMDVecMask<16>(m2);
+            SIMDVecMask<16> ret_mask;
+            ret_mask.mMask = m2;
+            return ret_mask;
         }
         UME_FORCE_INLINE SIMDVecMask<16> operator< (int64_t b) const {
             return cmplt(b);
@@ -1405,7 +1431,9 @@ namespace SIMD {
             __mmask8 m0 = _mm512_cmpge_epi64_mask(mVec[0], b.mVec[0]);
             __mmask8 m1 = _mm512_cmpge_epi64_mask(mVec[1], b.mVec[1]);
             __mmask16 m2 = __mmask16(m0) | (__mmask16(m1) << 8);
-            return SIMDVecMask<16>(m2);
+            SIMDVecMask<16> ret_mask;
+            ret_mask.mMask = m2;
+            return ret_mask;
         }
         UME_FORCE_INLINE SIMDVecMask<16> operator>= (SIMDVec_i const & b) const {
             return cmpge(b);
@@ -1415,7 +1443,9 @@ namespace SIMD {
             __mmask8 m0 = _mm512_cmpge_epi64_mask(mVec[0], _mm512_set1_epi64(b));
             __mmask8 m1 = _mm512_cmpge_epi64_mask(mVec[1], _mm512_set1_epi64(b));
             __mmask16 m2 = __mmask16(m0) | (__mmask16(m1) << 8);
-            return SIMDVecMask<16>(m2);
+            SIMDVecMask<16> ret_mask;
+            ret_mask.mMask = m2;
+            return ret_mask;
         }
         UME_FORCE_INLINE SIMDVecMask<16> operator>= (int64_t b) const {
             return cmpge(b);
@@ -1425,7 +1455,9 @@ namespace SIMD {
             __mmask8 m0 = _mm512_cmple_epi64_mask(mVec[0], b.mVec[0]);
             __mmask8 m1 = _mm512_cmple_epi64_mask(mVec[1], b.mVec[1]);
             __mmask16 m2 = __mmask16(m0) | (__mmask16(m1) << 8);
-            return SIMDVecMask<16>(m2);
+            SIMDVecMask<16> ret_mask;
+            ret_mask.mMask = m2;
+            return ret_mask;
         }
         UME_FORCE_INLINE SIMDVecMask<16> operator<= (SIMDVec_i const & b) const {
             return cmple(b);
@@ -1435,7 +1467,9 @@ namespace SIMD {
             __mmask8 m0 = _mm512_cmple_epi64_mask(mVec[0], _mm512_set1_epi64(b));
             __mmask8 m1 = _mm512_cmple_epi64_mask(mVec[1], _mm512_set1_epi64(b));
             __mmask16 m2 = __mmask16(m0) | (__mmask16(m1) << 8);
-            return SIMDVecMask<16>(m2);
+            SIMDVecMask<16> ret_mask;
+            ret_mask.mMask = m2;
+            return ret_mask;
         }
         UME_FORCE_INLINE SIMDVecMask<16> operator<= (int64_t b) const {
             return cmple(b);

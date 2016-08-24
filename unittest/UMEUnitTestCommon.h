@@ -126,6 +126,48 @@ template<> float randomValue<float>(std::mt19937 & generator);
 template<> double randomValue<double>(std::mt19937 & generator);
 template<> bool randomValue<bool>(std::mt19937 & generator);
 
+template<typename VEC_TYPE, typename SCALAR_TYPE, typename FROM_SCALAR_TYPE, int VEC_LEN>
+void genericSETCONSTRTest_random_helper(std::string const & type_name)
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        SCALAR_TYPE outputs[VEC_LEN];
+        FROM_SCALAR_TYPE inputA;
+
+        inputA = randomValue<SCALAR_TYPE>(gen);
+        for (int i = 0; i < VEC_LEN; i++)
+        {
+            outputs[i] = (SCALAR_TYPE)inputA;
+        }
+        VEC_TYPE t0(inputA);
+        t0.store(values);
+        bool inRange = valuesInRange(values, outputs, VEC_LEN, SCALAR_TYPE(0.01f));
+        std::string msg("SET-CONSTR gen ");
+        msg.append(type_name);
+        check_condition(inRange, msg.c_str());
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        SCALAR_TYPE outputs[VEC_LEN];
+        FROM_SCALAR_TYPE inputA;
+
+        inputA = randomValue<SCALAR_TYPE>(gen);
+        for (int i = 0; i < VEC_LEN; i++)
+        {
+            outputs[i] = (SCALAR_TYPE)inputA;
+        }
+        VEC_TYPE t0 = inputA;
+        t0.store(values);
+        bool inRange = valuesInRange(values, outputs, VEC_LEN, SCALAR_TYPE(0.01f));
+        std::string msg("SET-CONSTR gen initializer");
+        msg.append(type_name);
+        check_condition(inRange, msg.c_str());
+    }
+}
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN>
 void genericSETCONSTRTest_random()
 {
@@ -147,6 +189,31 @@ void genericSETCONSTRTest_random()
         bool inRange = valuesInRange(values, outputs, VEC_LEN, SCALAR_TYPE(0.01f));
         check_condition(inRange, "SET-CONSTR gen");
     }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        SCALAR_TYPE outputs[VEC_LEN];
+
+        for (int i = 0; i < VEC_LEN; i++)
+        {
+            outputs[i] = (SCALAR_TYPE)0;
+        }
+        VEC_TYPE t0 = 0;
+        t0.store(values);
+        bool inRange = valuesInRange(values, outputs, VEC_LEN, SCALAR_TYPE(0.01f));
+        std::string msg("SET-CONSTR gen 0-initializer");
+        check_condition(inRange, msg.c_str());
+    }
+
+    genericSETCONSTRTest_random_helper<VEC_TYPE, SCALAR_TYPE, uint8_t, VEC_LEN>(std::string("uint8_t initializer"));
+    genericSETCONSTRTest_random_helper<VEC_TYPE, SCALAR_TYPE, uint16_t, VEC_LEN>(std::string("uint16_t initializer"));
+    genericSETCONSTRTest_random_helper<VEC_TYPE, SCALAR_TYPE, uint32_t, VEC_LEN>(std::string("uint32_t initializer"));
+    genericSETCONSTRTest_random_helper<VEC_TYPE, SCALAR_TYPE, uint64_t, VEC_LEN>(std::string("uint64_t initializer"));
+    genericSETCONSTRTest_random_helper<VEC_TYPE, SCALAR_TYPE, int8_t, VEC_LEN>(std::string("int8_t initializer"));
+    genericSETCONSTRTest_random_helper<VEC_TYPE, SCALAR_TYPE, int16_t, VEC_LEN>(std::string("int16_t initializer"));
+    genericSETCONSTRTest_random_helper<VEC_TYPE, SCALAR_TYPE, int32_t, VEC_LEN>(std::string("int32_t initializer"));
+    genericSETCONSTRTest_random_helper<VEC_TYPE, SCALAR_TYPE, int64_t, VEC_LEN>(std::string("int64_t initializer"));
+    genericSETCONSTRTest_random_helper<VEC_TYPE, SCALAR_TYPE, float, VEC_LEN>(std::string("float initializer"));
+    genericSETCONSTRTest_random_helper<VEC_TYPE, SCALAR_TYPE, double, VEC_LEN>(std::string("double initializer"));
 }
 
 template<typename MASK_TYPE, int VEC_LEN, typename DATA_SET>

@@ -70,9 +70,19 @@ namespace SIMD {
         // ZERO-CONSTR - Zero element constructor 
         inline SIMDVec_f() {}
         // SET-CONSTR
-        inline explicit SIMDVec_f(float f) {
+        inline SIMDVec_f(float f) {
             mVec = _mm512_set1_ps(f);
         }
+        // This constructor is used to force types other than SCALAR_TYPES
+        // to be promoted to SCALAR_TYPE instead of SCALAR_TYPE*. This prevents
+        // ambiguity between SET-CONSTR and LOAD-CONSTR.
+        template<typename T>
+        inline SIMDVec_f(
+            T i, 
+            typename std::enable_if< std::is_same<T, int>::value && 
+                                    !std::is_same<T, float>::value,
+                                    void*>::type = nullptr)
+        : SIMDVec_f(static_cast<float>(i)) {}
 
         // LOAD-CONSTR - Construct by loading from memory
         inline explicit SIMDVec_f(float const * p) { load(p); }
@@ -605,66 +615,90 @@ namespace SIMD {
         // CMPEQV - Element-wise 'equal' with vector
         inline SIMDVecMask<16> cmpeq(SIMDVec_f const & b) const {
             __mmask16 m0 = _mm512_cmpeq_ps_mask(mVec, b.mVec);
-            return SIMDVecMask<16>(m0);
+            SIMDVecMask<16> ret_mask;
+            ret_mask.mMask = m0;
+            return ret_mask;
         }
         // CMPEQS - Element-wise 'equal' with scalar
         inline SIMDVecMask<16> cmpeq(float b) const {
             __mmask16 m0 = _mm512_cmpeq_ps_mask(mVec, _mm512_set1_ps(b));
-            return SIMDVecMask<16>(m0);
+            SIMDVecMask<16> ret_mask;
+            ret_mask.mMask = m0;
+            return ret_mask;
         }
         // CMPNEV - Element-wise 'not equal' with vector
         inline SIMDVecMask<16> cmpne(SIMDVec_f const & b) const {
             __mmask16 m0 = _mm512_cmpneq_ps_mask(mVec, b.mVec);
-            return SIMDVecMask<16>(m0);
+            SIMDVecMask<16> ret_mask;
+            ret_mask.mMask = m0;
+            return ret_mask;
         }
         // CMPNES - Element-wise 'not equal' with scalar
         inline SIMDVecMask<16> cmpne(float b) const {
             __mmask16 m0 = _mm512_cmpneq_ps_mask(mVec, _mm512_set1_ps(b));
-            return SIMDVecMask<16>(m0);
+            SIMDVecMask<16> ret_mask;
+            ret_mask.mMask = m0;
+            return ret_mask;
         }
         // CMPGTV - Element-wise 'greater than' with vector
         inline SIMDVecMask<16> cmpgt(SIMDVec_f const & b) const {
             //__mmask16 m0 = _mm512_cmpgt_ps_mask(mVec, b.mVec);
             __mmask16 m0 = _mm512_cmp_ps_mask(mVec, b.mVec, 14);
-            return SIMDVecMask<16>(m0);
+            SIMDVecMask<16> ret_mask;
+            ret_mask.mMask = m0;
+            return ret_mask;
         }
         // CMPGTS - Element-wise 'greater than' with scalar
         inline SIMDVecMask<16> cmpgt(float b) const {
             //__mmask16 m0 = _mm512_cmpgt_ps_mask(mVec, _mm512_set1_ps(b));
             __mmask16 m0 = _mm512_cmp_ps_mask(mVec, _mm512_set1_ps(b), 14);
-            return SIMDVecMask<16>(m0);
+            SIMDVecMask<16> ret_mask;
+            ret_mask.mMask = m0;
+            return ret_mask;
         }
         // CMPLTV - Element-wise 'less than' with vector
         inline SIMDVecMask<16> cmplt(SIMDVec_f const & b) const {
             __mmask16 m0 = _mm512_cmplt_ps_mask(mVec, b.mVec);
-            return SIMDVecMask<16>(m0);
+            SIMDVecMask<16> ret_mask;
+            ret_mask.mMask = m0;
+            return ret_mask;
         }
         // CMPLTS - Element-wise 'less than' with scalar
         inline SIMDVecMask<16> cmplt(float b) const {
             __mmask16 m0 = _mm512_cmplt_ps_mask(mVec, _mm512_set1_ps(b));
-            return SIMDVecMask<16>(m0);
+            SIMDVecMask<16> ret_mask;
+            ret_mask.mMask = m0;
+            return ret_mask;
         }
         // CMPGEV - Element-wise 'greater than or equal' with vector
         inline SIMDVecMask<16> cmpge(SIMDVec_f const & b) const {
             //__mmask16 m0 = _mm512_cmpge_ps_mask(mVec, b.mVec);
             __mmask16 m0 = _mm512_cmp_ps_mask(mVec, b.mVec, 13);
-            return SIMDVecMask<16>(m0);
+            SIMDVecMask<16> ret_mask;
+            ret_mask.mMask = m0;
+            return ret_mask;
         }
         // CMPGES - Element-wise 'greater than or equal' with scalar
         inline SIMDVecMask<16> cmpge(float b) const {
             //__mmask16 m0 = _mm512_cmpge_ps_mask(mVec, _mm512_set1_ps(b));
             __mmask16 m0 = _mm512_cmp_ps_mask(mVec, _mm512_set1_ps(b), 13);
-            return SIMDVecMask<16>(m0);
+            SIMDVecMask<16> ret_mask;
+            ret_mask.mMask = m0;
+            return ret_mask;
         }
         // CMPLEV - Element-wise 'less than or equal' with vector
         inline SIMDVecMask<16> cmple(SIMDVec_f const & b) const {
             __mmask16 m0 = _mm512_cmple_ps_mask(mVec, b.mVec);
-            return SIMDVecMask<16>(m0);
+            SIMDVecMask<16> ret_mask;
+            ret_mask.mMask = m0;
+            return ret_mask;
         }
         // CMPLES - Element-wise 'less than or equal' with scalar
         inline SIMDVecMask<16> cmple(float b) const {
             __mmask16 m0 = _mm512_cmple_ps_mask(mVec, _mm512_set1_ps(b));
-            return SIMDVecMask<16>(m0);
+            SIMDVecMask<16> ret_mask;
+            ret_mask.mMask = m0;
+            return ret_mask;
         }
         // CMPEV  - Check if vectors are exact (returns scalar 'bool')
         inline bool cmpe(SIMDVec_f const & b) const {
@@ -1047,7 +1081,9 @@ namespace SIMD {
             __m512i t0 = _mm512_castps_si512(mVec);
             __m512i t1 = _mm512_slli_epi32(t0, 1);
             __mmask16 m0 = _mm512_cmpeq_epi32_mask(t1, _mm512_set1_epi32(0xFF000000));
-            return SIMDVecMask<16>(m0);
+            SIMDVecMask<16> ret_mask;
+            ret_mask.mMask = m0;
+            return ret_mask;
         }
         // ISAN      - Is a number
         // ISNAN     - Is 'Not a Number (NaN)'
@@ -1059,7 +1095,9 @@ namespace SIMD {
             __m512i t4 = _mm512_andnot_epi32(t1, t2);
             __mmask16 m0 = _mm512_cmpeq_epi32_mask(t3, t2);
             __mmask16 m1 = _mm512_cmpneq_epi32_mask(t4, _mm512_set1_epi32(0));
-            return SIMDVecMask<16>(m0 && m1);
+            SIMDVecMask<16> ret_mask;
+            ret_mask.mMask = m0 && m1;
+            return ret_mask;
         }
         // ISSUB     - Is subnormal
         // ISZERO    - Is zero
