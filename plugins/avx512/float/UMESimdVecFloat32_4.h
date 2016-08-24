@@ -1920,6 +1920,7 @@ namespace SIMD {
             ret_mask.mMask = m3;
             return ret_mask;
         }
+
         // EXP
         UME_FORCE_INLINE SIMDVec_f exp() const {
             return VECTOR_EMULATION::expf<SIMDVec_f, SIMDVec_u<uint32_t, 4>>(*this);
@@ -1940,6 +1941,7 @@ namespace SIMD {
         // MLOG2
         // LOG10
         // MLOG10
+
         // SIN
         UME_FORCE_INLINE SIMDVec_f sin() const {
             return VECTOR_EMULATION::sinf<SIMDVec_f, SIMDVec_i<int32_t, 4>, SIMDVecMask<4>>(*this);
