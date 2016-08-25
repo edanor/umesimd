@@ -104,7 +104,7 @@ namespace SIMD {
         // to be promoted to SCALAR_TYPE instead of SCALAR_TYPE*. This prevents
         // ambiguity between SET-CONSTR and LOAD-CONSTR.
         template<typename T>
-        inline SIMDVec_u(
+        UME_FORCE_INLINE SIMDVec_u(
             T i, 
             typename std::enable_if< std::is_same<T, int>::value && 
                                     !std::is_same<T, uint64_t>::value,
@@ -1098,35 +1098,35 @@ namespace SIMD {
         }
 
         // FMULADDV
-        inline SIMDVec_u fmuladd(SIMDVec_u const & b, SIMDVec_u const & c) const {
+        UME_FORCE_INLINE SIMDVec_u fmuladd(SIMDVec_u const & b, SIMDVec_u const & c) const {
             return (mul(b)).add(c);
         }
         // MFMULADDV
-        inline SIMDVec_u fmuladd(SIMDVecMask<16> const & mask, SIMDVec_u const & b, SIMDVec_u const & c) const {
+        UME_FORCE_INLINE SIMDVec_u fmuladd(SIMDVecMask<16> const & mask, SIMDVec_u const & b, SIMDVec_u const & c) const {
             return (mul(mask, b)).add(mask, c);
         }
         // FMULSUBV
-        inline SIMDVec_u fmulsub(SIMDVec_u const & b, SIMDVec_u const & c) const {
+        UME_FORCE_INLINE SIMDVec_u fmulsub(SIMDVec_u const & b, SIMDVec_u const & c) const {
             return (mul(b)).sub(c);
         }
         // MFMULSUBV
-        inline SIMDVec_u fmulsub(SIMDVecMask<16> const & mask, SIMDVec_u const & b, SIMDVec_u const & c) const {
+        UME_FORCE_INLINE SIMDVec_u fmulsub(SIMDVecMask<16> const & mask, SIMDVec_u const & b, SIMDVec_u const & c) const {
             return (mul(mask, b)).sub(mask, c);
         }
         // FADDMULV
-        inline SIMDVec_u faddmul(SIMDVec_u const & b, SIMDVec_u const & c) const {
+        UME_FORCE_INLINE SIMDVec_u faddmul(SIMDVec_u const & b, SIMDVec_u const & c) const {
             return (add(b)).mul(c);
         }
         // MFADDMULV
-        inline SIMDVec_u faddmul(SIMDVecMask<16> const & mask, SIMDVec_u const & b, SIMDVec_u const & c) const {
+        UME_FORCE_INLINE SIMDVec_u faddmul(SIMDVecMask<16> const & mask, SIMDVec_u const & b, SIMDVec_u const & c) const {
             return (add(mask, b)).mul(mask, c);
         }
         // FSUBMULV
-        inline SIMDVec_u fsubmul(SIMDVec_u const & b, SIMDVec_u const & c) const {
+        UME_FORCE_INLINE SIMDVec_u fsubmul(SIMDVec_u const & b, SIMDVec_u const & c) const {
             return (sub(b)).mul(c);
         }
         // MFSUBMULV
-        inline SIMDVec_u fsubmul(SIMDVecMask<16> const & mask, SIMDVec_u const & b, SIMDVec_u const & c) const {
+        UME_FORCE_INLINE SIMDVec_u fsubmul(SIMDVecMask<16> const & mask, SIMDVec_u const & b, SIMDVec_u const & c) const {
             return (sub(mask, b)).mul(mask, c);
         }
 
@@ -1709,16 +1709,16 @@ namespace SIMD {
         }
 
         // LSHV
-        inline SIMDVec_u lsh(SIMDVec_u const & b) const {
+        UME_FORCE_INLINE SIMDVec_u lsh(SIMDVec_u const & b) const {
             __m512i t0 = _mm512_sllv_epi64(mVec[0], b.mVec[0]);
             __m512i t1 = _mm512_sllv_epi64(mVec[1], b.mVec[1]);
             return SIMDVec_u(t0, t1);
         }
-        inline SIMDVec_u operator<< (SIMDVec_u const & b) const {
+        UME_FORCE_INLINE SIMDVec_u operator<< (SIMDVec_u const & b) const {
             return lsh(b);
         }
         // MLSHV
-        inline SIMDVec_u lsh(SIMDVecMask<16> const & mask, SIMDVec_u const & b) const {
+        UME_FORCE_INLINE SIMDVec_u lsh(SIMDVecMask<16> const & mask, SIMDVec_u const & b) const {
             __mmask16 m0 = mask.mMask & 0x00FF;
             __mmask16 m1 = (mask.mMask & 0xFF00) >> 8;
             __m512i t0 = _mm512_mask_sllv_epi64(mVec[0], m0, mVec[0], b.mVec[0]);
@@ -1726,17 +1726,17 @@ namespace SIMD {
             return SIMDVec_u(t0, t1);
         }
         // LSHS
-        inline SIMDVec_u lsh(uint64_t b) const {
+        UME_FORCE_INLINE SIMDVec_u lsh(uint64_t b) const {
             __m512i t0 = _mm512_set1_epi64(b);
             __m512i t1 = _mm512_sllv_epi64(mVec[0], t0);
             __m512i t2 = _mm512_sllv_epi64(mVec[1], t0);
             return SIMDVec_u(t1, t2);
         }
-        inline SIMDVec_u operator<< (uint64_t b) const {
+        UME_FORCE_INLINE SIMDVec_u operator<< (uint64_t b) const {
             return lsh(b);
         }
         // MLSHS
-        inline SIMDVec_u lsh(SIMDVecMask<16> const & mask, uint64_t b) const {
+        UME_FORCE_INLINE SIMDVec_u lsh(SIMDVecMask<16> const & mask, uint64_t b) const {
             __mmask16 m0 = mask.mMask & 0x00FF;
             __mmask16 m1 = (mask.mMask & 0xFF00) >> 8;
             __m512i t0 = _mm512_set1_epi64(b);
@@ -1768,16 +1768,16 @@ namespace SIMD {
         //    if(mask.mMask[1]) mVec[1] = mVec[1] << b;
         //    return *this;
         //}
-        inline SIMDVec_u rsh(SIMDVec_u const & b) const {
+        UME_FORCE_INLINE SIMDVec_u rsh(SIMDVec_u const & b) const {
             __m512i t0 = _mm512_srlv_epi64(mVec[0], b.mVec[0]);
             __m512i t1 = _mm512_srlv_epi64(mVec[1], b.mVec[1]);
             return SIMDVec_u(t0, t1);
         }
-        inline SIMDVec_u operator>> (SIMDVec_u const & b) const {
+        UME_FORCE_INLINE SIMDVec_u operator>> (SIMDVec_u const & b) const {
             return rsh(b);
         }
         // MRSHV
-        inline SIMDVec_u rsh(SIMDVecMask<16> const & mask, SIMDVec_u const & b) const {
+        UME_FORCE_INLINE SIMDVec_u rsh(SIMDVecMask<16> const & mask, SIMDVec_u const & b) const {
             __mmask16 m0 = mask.mMask & 0x00FF;
             __mmask16 m1 = (mask.mMask & 0xFF00) >> 8;
             __m512i t0 = _mm512_mask_srlv_epi64(mVec[0], m0, mVec[0], b.mVec[0]);
@@ -1785,17 +1785,17 @@ namespace SIMD {
             return SIMDVec_u(t0, t1);
         }
         // RSHS
-        inline SIMDVec_u rsh(uint64_t b) const {
+        UME_FORCE_INLINE SIMDVec_u rsh(uint64_t b) const {
             __m512i t0 = _mm512_set1_epi64(b);
             __m512i t1 = _mm512_srlv_epi64(mVec[0], t0);
             __m512i t2 = _mm512_srlv_epi64(mVec[1], t0);
             return SIMDVec_u(t1, t2);
         }
-        inline SIMDVec_u operator>> (uint64_t b) const {
+        UME_FORCE_INLINE SIMDVec_u operator>> (uint64_t b) const {
             return rsh(b);
         }
         // MRSHS
-        inline SIMDVec_u rsh(SIMDVecMask<16> const & mask, uint64_t b) const {
+        UME_FORCE_INLINE SIMDVec_u rsh(SIMDVecMask<16> const & mask, uint64_t b) const {
             __mmask16 m0 = mask.mMask & 0x00FF;
             __mmask16 m1 = (mask.mMask & 0xFF00) >> 8;
             __m512i t0 = _mm512_set1_epi64(b);

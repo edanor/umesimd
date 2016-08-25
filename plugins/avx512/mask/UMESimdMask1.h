@@ -53,247 +53,247 @@ namespace SIMD {
         bool mMask;
 
     public:
-        inline SIMDVecMask() {}
+        UME_FORCE_INLINE SIMDVecMask() {}
 
-        inline SIMDVecMask(SIMDVecMask const & mask) {
+        UME_FORCE_INLINE SIMDVecMask(SIMDVecMask const & mask) {
             mMask = mask.mMask;
         }
         // SET-CONSTR
-        inline SIMDVecMask(bool m) {
+        UME_FORCE_INLINE SIMDVecMask(bool m) {
             mMask = m;
         }
         // LOAD-CONSTR
-        inline explicit SIMDVecMask(bool const * p) {
+        UME_FORCE_INLINE explicit SIMDVecMask(bool const * p) {
             mMask = p[0];
         }
         // EXTRACT
-        inline bool extract(uint32_t index) const {
+        UME_FORCE_INLINE bool extract(uint32_t index) const {
             return mMask;
         }
 
         // A non-modifying element-wise access operator
-        inline bool operator[] (uint32_t index) const {
+        UME_FORCE_INLINE bool operator[] (uint32_t index) const {
             return mMask;
         }
         // INSERT
-        inline void insert(uint32_t index, bool x) {
+        UME_FORCE_INLINE void insert(uint32_t index, bool x) {
             mMask = x;
         }
         // LOAD
-        inline SIMDVecMask & load(bool * p) {
+        UME_FORCE_INLINE SIMDVecMask & load(bool * p) {
             mMask = p[0];
             return *this;
         }
         // LOADA
-        inline SIMDVecMask & loada(bool * p) {
+        UME_FORCE_INLINE SIMDVecMask & loada(bool * p) {
             mMask = p[0];
             return *this;
         }
         // STORE
-        inline bool* store(bool * p) const {
+        UME_FORCE_INLINE bool* store(bool * p) const {
             p[0] = mMask;
             return p;
         }
         // STOREA
-        inline bool* storea(bool * p) const {
+        UME_FORCE_INLINE bool* storea(bool * p) const {
             p[0] = mMask;
             return p;
         }
         // ASSIGNV
-        inline SIMDVecMask & assign(SIMDVecMask const & b) {
+        UME_FORCE_INLINE SIMDVecMask & assign(SIMDVecMask const & b) {
             mMask = b.mMask;
             return *this;
         }
-        inline SIMDVecMask & operator= (SIMDVecMask const & b) {
+        UME_FORCE_INLINE SIMDVecMask & operator= (SIMDVecMask const & b) {
             mMask = b.mMask;
             return *this;
         }
         // ASSIGNS
-        inline SIMDVecMask & assign(bool b) {
+        UME_FORCE_INLINE SIMDVecMask & assign(bool b) {
             mMask = b;
             return *this;
         }
         // LANDV
-        inline SIMDVecMask land(SIMDVecMask const & b) const {
+        UME_FORCE_INLINE SIMDVecMask land(SIMDVecMask const & b) const {
             bool t0 = mMask && b.mMask;
             return SIMDVecMask(t0);
         }
-        inline SIMDVecMask operator& (SIMDVecMask const & b) const {
+        UME_FORCE_INLINE SIMDVecMask operator& (SIMDVecMask const & b) const {
             return land(b);
         }
-        inline SIMDVecMask operator&& (SIMDVecMask const & b) const {
+        UME_FORCE_INLINE SIMDVecMask operator&& (SIMDVecMask const & b) const {
             return land(b);
         }
         // LANDS
-        inline SIMDVecMask land(bool b) const {
+        UME_FORCE_INLINE SIMDVecMask land(bool b) const {
             bool t0 = mMask && b;
             return SIMDVecMask(t0);
         }
-        inline SIMDVecMask operator& (bool b) const {
+        UME_FORCE_INLINE SIMDVecMask operator& (bool b) const {
             return land(b);
         }
-        inline SIMDVecMask operator&& (bool b) const {
+        UME_FORCE_INLINE SIMDVecMask operator&& (bool b) const {
             return land(b);
         }
         // LANDVA
-        inline SIMDVecMask & landa(SIMDVecMask const & b) {
+        UME_FORCE_INLINE SIMDVecMask & landa(SIMDVecMask const & b) {
             mMask = mMask && b.mMask;
             return *this;
         }
-        inline SIMDVecMask & operator&= (SIMDVecMask const & b) {
+        UME_FORCE_INLINE SIMDVecMask & operator&= (SIMDVecMask const & b) {
             return landa(b);
         }
         // LANDSA
-        inline SIMDVecMask & landa(bool b) {
+        UME_FORCE_INLINE SIMDVecMask & landa(bool b) {
             mMask = mMask && b;
             return *this;
         }
-        inline SIMDVecMask & operator&= (bool b) {
+        UME_FORCE_INLINE SIMDVecMask & operator&= (bool b) {
             return landa(b);
         }
         // LORV
-        inline SIMDVecMask lor(SIMDVecMask const & b) const {
+        UME_FORCE_INLINE SIMDVecMask lor(SIMDVecMask const & b) const {
             bool t0 = mMask || b.mMask;
             return SIMDVecMask(t0);
         }
-        inline SIMDVecMask operator| (SIMDVecMask const & b) const {
+        UME_FORCE_INLINE SIMDVecMask operator| (SIMDVecMask const & b) const {
             return lor(b);
         }
-        inline SIMDVecMask operator|| (SIMDVecMask const & b) const {
+        UME_FORCE_INLINE SIMDVecMask operator|| (SIMDVecMask const & b) const {
             return lor(b);
         }
         // LORS
-        inline SIMDVecMask lor(bool b) const {
+        UME_FORCE_INLINE SIMDVecMask lor(bool b) const {
             bool t0 = mMask || b;
             return SIMDVecMask(t0);
         }
-        inline SIMDVecMask operator| (bool b) const {
+        UME_FORCE_INLINE SIMDVecMask operator| (bool b) const {
             return lor(b);
         }
-        inline SIMDVecMask operator|| (bool b) const {
+        UME_FORCE_INLINE SIMDVecMask operator|| (bool b) const {
             return lor(b);
         }
         // LORVA
-        inline SIMDVecMask & lora(SIMDVecMask const & b) {
+        UME_FORCE_INLINE SIMDVecMask & lora(SIMDVecMask const & b) {
             mMask = mMask || b.mMask;
             return *this;
         }
-        inline SIMDVecMask & operator|= (SIMDVecMask const & b) {
+        UME_FORCE_INLINE SIMDVecMask & operator|= (SIMDVecMask const & b) {
             return lora(b);
         }
         // LORSA
-        inline SIMDVecMask & lora(bool b) {
+        UME_FORCE_INLINE SIMDVecMask & lora(bool b) {
             mMask = mMask || b;
             return *this;
         }
-        inline SIMDVecMask & operator|= (bool b) {
+        UME_FORCE_INLINE SIMDVecMask & operator|= (bool b) {
             return lora(b);
         }
         // LXORV
-        inline SIMDVecMask lxor(SIMDVecMask const & b) const {
+        UME_FORCE_INLINE SIMDVecMask lxor(SIMDVecMask const & b) const {
             bool t0 = mMask ^ b.mMask;
             return SIMDVecMask(t0);
         }
-        inline SIMDVecMask operator^ (SIMDVecMask const & b) const {
+        UME_FORCE_INLINE SIMDVecMask operator^ (SIMDVecMask const & b) const {
             return lxor(b);
         }
         // LXORS
-        inline SIMDVecMask lxor(bool b) const {
+        UME_FORCE_INLINE SIMDVecMask lxor(bool b) const {
             bool t0 = mMask ^ b;
             return SIMDVecMask(t0);
         }
-        inline SIMDVecMask operator^ (bool b) const {
+        UME_FORCE_INLINE SIMDVecMask operator^ (bool b) const {
             return lxor(b);
         }
         // LXORVA
-        inline SIMDVecMask & lxora(SIMDVecMask const & b) {
+        UME_FORCE_INLINE SIMDVecMask & lxora(SIMDVecMask const & b) {
             mMask = mMask ^ b.mMask;
             return *this;
         }
-        inline SIMDVecMask & operator^= (SIMDVecMask const & b) {
+        UME_FORCE_INLINE SIMDVecMask & operator^= (SIMDVecMask const & b) {
             return lxora(b);
         }
         // LXORSA
-        inline SIMDVecMask & lxora(bool b) {
+        UME_FORCE_INLINE SIMDVecMask & lxora(bool b) {
             mMask = mMask ^ b;
             return *this;
         }
-        inline SIMDVecMask & operator^= (bool b) {
+        UME_FORCE_INLINE SIMDVecMask & operator^= (bool b) {
             return lxora(b);
         }
         // LNOT
-        inline SIMDVecMask lnot() const {
+        UME_FORCE_INLINE SIMDVecMask lnot() const {
             bool t0 = !mMask;
             return SIMDVecMask(t0);
         }
-        inline SIMDVecMask operator! () const {
+        UME_FORCE_INLINE SIMDVecMask operator! () const {
             return lnot();
         }
         // LNOTA
-        inline SIMDVecMask & lnota() {
+        UME_FORCE_INLINE SIMDVecMask & lnota() {
             mMask = !mMask;
             return *this;
         }
         // LANDNOTV
-        inline SIMDVecMask landnot(SIMDVecMask const & b) const {
+        UME_FORCE_INLINE SIMDVecMask landnot(SIMDVecMask const & b) const {
             bool t0 = !mMask && b.mMask;
             return SIMDVecMask(t0);
         }
         // LANDNOTS
-        inline SIMDVecMask landnot(bool b) const {
+        UME_FORCE_INLINE SIMDVecMask landnot(bool b) const {
             bool t0 = !mMask && b;
             return SIMDVecMask(t0);
         }
         // CMPEQV
-        inline SIMDVecMask cmpeq(SIMDVecMask const & b) const {
+        UME_FORCE_INLINE SIMDVecMask cmpeq(SIMDVecMask const & b) const {
             bool t0 = mMask == b.mMask;
             return SIMDVecMask(t0);
         }
-        inline SIMDVecMask operator== (SIMDVecMask const & b) const {
+        UME_FORCE_INLINE SIMDVecMask operator== (SIMDVecMask const & b) const {
             return cmpeq(b);
         }        
         // CMPEQS
-        inline SIMDVecMask cmpeq(bool b) const {
+        UME_FORCE_INLINE SIMDVecMask cmpeq(bool b) const {
             bool t0 = mMask == b;
             return SIMDVecMask(t0);
         }
-        inline SIMDVecMask operator== (bool b) const {
+        UME_FORCE_INLINE SIMDVecMask operator== (bool b) const {
             return cmpeq(b);
         }
         // CMPNEV
-        inline SIMDVecMask cmpne(SIMDVecMask const & b) const {
+        UME_FORCE_INLINE SIMDVecMask cmpne(SIMDVecMask const & b) const {
             bool t0 = mMask != b.mMask;
             return SIMDVecMask(t0);
         }
-        inline SIMDVecMask operator!= (SIMDVecMask const & b) const {
+        UME_FORCE_INLINE SIMDVecMask operator!= (SIMDVecMask const & b) const {
             return cmpne(b);
         }
         // CMPNES
-        inline SIMDVecMask cmpne(bool b) const {
+        UME_FORCE_INLINE SIMDVecMask cmpne(bool b) const {
             bool t0 = mMask != b;
             return SIMDVecMask(t0);
         }
-        inline SIMDVecMask operator!= (bool b) const {
+        UME_FORCE_INLINE SIMDVecMask operator!= (bool b) const {
             return cmpne(b);
         }
         // HLAND
-        inline bool hland() const {
+        UME_FORCE_INLINE bool hland() const {
             return mMask;
         }
         // HLOR
-        inline bool hlor() const {
+        UME_FORCE_INLINE bool hlor() const {
             return mMask;
         }
         // HLXOR
-        inline bool hlxor() const {
+        UME_FORCE_INLINE bool hlxor() const {
             return mMask;
         }
         // CMPEV
-        inline bool cmpe(SIMDVecMask const & b) const {
+        UME_FORCE_INLINE bool cmpe(SIMDVecMask const & b) const {
             return mMask == b.mMask;
         }
         // CMPES
-        inline bool cmpe(bool b) const {
+        UME_FORCE_INLINE bool cmpe(bool b) const {
             return mMask == b;
         }
     };

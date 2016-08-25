@@ -113,7 +113,7 @@ namespace SIMD {
         // to be promoted to SCALAR_TYPE instead of SCALAR_TYPE*. This prevents
         // ambiguity between SET-CONSTR and LOAD-CONSTR.
         template<typename T>
-        inline SIMDVec_i(
+        UME_FORCE_INLINE SIMDVec_i(
             T i, 
             typename std::enable_if< std::is_same<T, int>::value && 
                                     !std::is_same<T, int64_t>::value,
@@ -1537,35 +1537,35 @@ namespace SIMD {
         }
 
         // FMULADDV
-        inline SIMDVec_i fmuladd(SIMDVec_i const & b, SIMDVec_i const & c) const {
+        UME_FORCE_INLINE SIMDVec_i fmuladd(SIMDVec_i const & b, SIMDVec_i const & c) const {
             return (mul(b)).add(c);
         }
         // MFMULADDV
-        inline SIMDVec_i fmuladd(SIMDVecMask<16> const & mask, SIMDVec_i const & b, SIMDVec_i const & c) const {
+        UME_FORCE_INLINE SIMDVec_i fmuladd(SIMDVecMask<16> const & mask, SIMDVec_i const & b, SIMDVec_i const & c) const {
             return (mul(mask, b)).add(mask, c);
         }
         // FMULSUBV
-        inline SIMDVec_i fmulsub(SIMDVec_i const & b, SIMDVec_i const & c) const {
+        UME_FORCE_INLINE SIMDVec_i fmulsub(SIMDVec_i const & b, SIMDVec_i const & c) const {
             return (mul(b)).sub(c);
         }
         // MFMULSUBV
-        inline SIMDVec_i fmulsub(SIMDVecMask<16> const & mask, SIMDVec_i const & b, SIMDVec_i const & c) const {
+        UME_FORCE_INLINE SIMDVec_i fmulsub(SIMDVecMask<16> const & mask, SIMDVec_i const & b, SIMDVec_i const & c) const {
             return (mul(mask, b)).sub(mask, c);
         }
         // FADDMULV
-        inline SIMDVec_i faddmul(SIMDVec_i const & b, SIMDVec_i const & c) const {
+        UME_FORCE_INLINE SIMDVec_i faddmul(SIMDVec_i const & b, SIMDVec_i const & c) const {
             return (add(b)).mul(c);
         }
         // MFADDMULV
-        inline SIMDVec_i faddmul(SIMDVecMask<16> const & mask, SIMDVec_i const & b, SIMDVec_i const & c) const {
+        UME_FORCE_INLINE SIMDVec_i faddmul(SIMDVecMask<16> const & mask, SIMDVec_i const & b, SIMDVec_i const & c) const {
             return (add(mask, b)).mul(mask, c);
         }
         // FSUBMULV
-        inline SIMDVec_i fsubmul(SIMDVec_i const & b, SIMDVec_i const & c) const {
+        UME_FORCE_INLINE SIMDVec_i fsubmul(SIMDVec_i const & b, SIMDVec_i const & c) const {
             return (sub(b)).mul(c);
         }
         // MFSUBMULV
-        inline SIMDVec_i fsubmul(SIMDVecMask<16> const & mask, SIMDVec_i const & b, SIMDVec_i const & c) const {
+        UME_FORCE_INLINE SIMDVec_i fsubmul(SIMDVecMask<16> const & mask, SIMDVec_i const & b, SIMDVec_i const & c) const {
             return (sub(mask, b)).mul(mask, c);
         }
 
