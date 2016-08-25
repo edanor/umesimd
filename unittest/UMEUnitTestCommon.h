@@ -6314,10 +6314,10 @@ void genericGATHERSTest_random()
     std::random_device rd;
     std::mt19937 gen(rd());
 
-    SCALAR_TYPE inputA[VEC_LEN*100];
-    SCALAR_UINT_TYPE indices[VEC_LEN];
-    SCALAR_TYPE output[VEC_LEN];
-    SCALAR_TYPE values[VEC_LEN];
+    alignas(VEC_TYPE::alignment()) SCALAR_TYPE inputA[VEC_LEN*100];
+    alignas(VEC_TYPE::alignment()) SCALAR_UINT_TYPE indices[VEC_LEN];
+    alignas(VEC_TYPE::alignment()) SCALAR_TYPE output[VEC_LEN];
+    alignas(VEC_TYPE::alignment()) SCALAR_TYPE values[VEC_LEN];
 
     for (int i = 0; i < VEC_LEN*100; i++) {
         inputA[i] = randomValue<SCALAR_TYPE>(gen);
@@ -6341,12 +6341,12 @@ void genericMGATHERSTest_random()
     std::random_device rd;
     std::mt19937 gen(rd());
 
-    SCALAR_TYPE inputA[VEC_LEN * 100];
-    SCALAR_TYPE inputB[VEC_LEN];
+    alignas(VEC_TYPE::alignment()) SCALAR_TYPE inputA[VEC_LEN * 100];
+    alignas(VEC_TYPE::alignment()) SCALAR_TYPE inputB[VEC_LEN];
     bool inputMask[VEC_LEN];
-    SCALAR_UINT_TYPE indices[VEC_LEN];
-    SCALAR_TYPE output[VEC_LEN];
-    SCALAR_TYPE values[VEC_LEN];
+    alignas(VEC_TYPE::alignment()) SCALAR_UINT_TYPE indices[VEC_LEN];
+    alignas(VEC_TYPE::alignment()) SCALAR_TYPE output[VEC_LEN];
+    alignas(VEC_TYPE::alignment()) SCALAR_TYPE values[VEC_LEN];
 
     for (int i = 0; i < VEC_LEN * 100; i++) {
         inputA[i] = randomValue<SCALAR_TYPE>(gen);
@@ -6373,10 +6373,10 @@ void genericGATHERVTest_random()
     std::random_device rd;
     std::mt19937 gen(rd());
 
-    SCALAR_TYPE inputA[VEC_LEN * 100];
-    SCALAR_UINT_TYPE indices[VEC_LEN];
-    SCALAR_TYPE output[VEC_LEN];
-    SCALAR_TYPE values[VEC_LEN];
+    alignas(VEC_TYPE::alignment()) SCALAR_TYPE inputA[VEC_LEN * 100];
+    alignas(VEC_TYPE::alignment()) SCALAR_UINT_TYPE indices[VEC_LEN];
+    alignas(VEC_TYPE::alignment()) SCALAR_TYPE output[VEC_LEN];
+    alignas(VEC_TYPE::alignment()) SCALAR_TYPE values[VEC_LEN];
 
     for (int i = 0; i < VEC_LEN * 100; i++) {
         inputA[i] = randomValue<SCALAR_TYPE>(gen);
@@ -6402,12 +6402,12 @@ void genericMGATHERVTest_random()
     std::random_device rd;
     std::mt19937 gen(rd());
 
-    SCALAR_TYPE inputA[VEC_LEN * 100];
-    SCALAR_TYPE inputB[VEC_LEN];
+    alignas(VEC_TYPE::alignment()) SCALAR_TYPE inputA[VEC_LEN * 100];
+    alignas(VEC_TYPE::alignment()) SCALAR_TYPE inputB[VEC_LEN];
     bool inputMask[VEC_LEN];
-    SCALAR_UINT_TYPE indices[VEC_LEN];
-    SCALAR_TYPE output[VEC_LEN];
-    SCALAR_TYPE values[VEC_LEN];
+    alignas(VEC_TYPE::alignment()) SCALAR_UINT_TYPE indices[VEC_LEN];
+    alignas(VEC_TYPE::alignment()) SCALAR_TYPE output[VEC_LEN];
+    alignas(VEC_TYPE::alignment()) SCALAR_TYPE values[VEC_LEN];
 
     for (int i = 0; i < VEC_LEN * 100; i++) {
         inputA[i] = randomValue<SCALAR_TYPE>(gen);
@@ -6435,10 +6435,10 @@ void genericSCATTERSTest_random()
     std::random_device rd;
     std::mt19937 gen(rd());
 
-    SCALAR_TYPE inputA[VEC_LEN * 100];
-    SCALAR_TYPE inputB[VEC_LEN];
-    SCALAR_UINT_TYPE indices[VEC_LEN];
-    SCALAR_TYPE output[VEC_LEN * 100];
+    alignas(VEC_TYPE::alignment()) SCALAR_TYPE inputA[VEC_LEN * 100];
+    alignas(VEC_TYPE::alignment()) SCALAR_TYPE inputB[VEC_LEN];
+    alignas(VEC_TYPE::alignment()) SCALAR_UINT_TYPE indices[VEC_LEN];
+    alignas(VEC_TYPE::alignment()) SCALAR_TYPE output[VEC_LEN * 100];
 
     for (int i = 0; i < VEC_LEN * 100; i++) {
         inputA[i] = randomValue<SCALAR_TYPE>(gen);
@@ -6477,10 +6477,10 @@ void genericMSCATTERSTest_random()
     std::random_device rd;
     std::mt19937 gen(rd());
 
-    SCALAR_TYPE inputA[VEC_LEN * 100];
-    SCALAR_TYPE inputB[VEC_LEN];
-    SCALAR_UINT_TYPE indices[VEC_LEN];
-    SCALAR_TYPE output[VEC_LEN * 100];
+    alignas(VEC_TYPE::alignment()) SCALAR_TYPE inputA[VEC_LEN * 100];
+    alignas(VEC_TYPE::alignment()) SCALAR_TYPE inputB[VEC_LEN];
+    alignas(VEC_TYPE::alignment()) SCALAR_UINT_TYPE indices[VEC_LEN];
+    alignas(VEC_TYPE::alignment()) SCALAR_TYPE output[VEC_LEN * 100];
     bool inputMask[VEC_LEN];
 
     for (int i = 0; i < VEC_LEN * 100; i++) {
@@ -6521,10 +6521,10 @@ void genericSCATTERVTest_random()
     std::random_device rd;
     std::mt19937 gen(rd());
 
-    SCALAR_TYPE inputA[VEC_LEN * 100];
-    SCALAR_TYPE inputB[VEC_LEN];
-    SCALAR_UINT_TYPE indices[VEC_LEN];
-    SCALAR_TYPE output[VEC_LEN * 100];
+    alignas(VEC_TYPE::alignment()) SCALAR_TYPE inputA[VEC_LEN * 100];
+    alignas(VEC_TYPE::alignment()) SCALAR_TYPE inputB[VEC_LEN];
+    alignas(VEC_TYPE::alignment()) SCALAR_UINT_TYPE indices[VEC_LEN];
+    alignas(VEC_TYPE::alignment()) SCALAR_TYPE output[VEC_LEN * 100];
 
     for (int i = 0; i < VEC_LEN * 100; i++) {
         inputA[i] = randomValue<SCALAR_TYPE>(gen);
@@ -6563,10 +6563,10 @@ void genericMSCATTERVTest_random()
     std::random_device rd;
     std::mt19937 gen(rd());
 
-    SCALAR_TYPE inputA[VEC_LEN * 100];
-    SCALAR_TYPE inputB[VEC_LEN];
-    SCALAR_UINT_TYPE indices[VEC_LEN];
-    SCALAR_TYPE output[VEC_LEN * 100];
+    alignas(VEC_TYPE::alignment()) SCALAR_TYPE inputA[VEC_LEN * 100];
+    alignas(VEC_TYPE::alignment()) SCALAR_TYPE inputB[VEC_LEN];
+    alignas(VEC_TYPE::alignment()) SCALAR_UINT_TYPE indices[VEC_LEN];
+    alignas(VEC_TYPE::alignment()) SCALAR_TYPE output[VEC_LEN * 100];
     bool inputMask[VEC_LEN];
 
     for (int i = 0; i < VEC_LEN * 100; i++) {
