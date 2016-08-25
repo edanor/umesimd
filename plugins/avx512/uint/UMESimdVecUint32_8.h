@@ -1800,17 +1800,95 @@ namespace SIMD {
             return baseAddr;
         }
         // LSHV
+        inline SIMDVec_u lsh(SIMDVec_u const & b) const {
+            __m256i t0 = _mm256_sllv_epi32(mVec, b.mVec);
+            return SIMDVec_u(t0);
+        }
+        inline SIMDVec_u operator<< (SIMDVec_u const & b) const {
+            return lsh(b);
+        }
         // MLSHV
+        inline SIMDVec_u lsh(SIMDVecMask<8> const & mask, SIMDVec_u const & b) const {
+#if defined(__AVX512VL__)
+            __m256i t0 = _mm256_mask_sllv_epi32(mVec, mask.mMask, mVec, b.mVec);
+            return SIMDVec_u(t0);
+#else
+            __m512i t0 = _mm512_castsi256_si512(mVec);
+            __m512i t1 = _mm512_castsi256_si512(b.mVec);
+            __m512i t2 = _mm512_mask_sllv_epi32(t0, mask.mMask, t0, t1);
+            __m256i t3 = _mm512_castsi512_si256(t2);
+            return SIMDVec_u(t3);
+#endif
+        }
         // LSHS
+        inline SIMDVec_u lsh(uint32_t b) const {
+            __m256i t0 = _mm256_set1_epi32(b);
+            __m256i t1 = _mm256_sllv_epi32(mVec, t0);
+            return SIMDVec_u(t1);
+        }
+        inline SIMDVec_u operator<< (uint32_t b) const {
+            return lsh(b);
+        }
         // MLSHS
+        inline SIMDVec_u lsh(SIMDVecMask<8> const & mask, uint32_t b) const {
+#if defined(__AVX512VL__)
+            __m256i t0 = _mm256_mask_sllv_epi32(mVec, mask.mMask, mVec, b.mVec);
+            return SIMDVec_u(t0);
+#else
+            __m512i t0 = _mm512_castsi256_si512(mVec);
+            __m512i t1 = _mm512_set1_epi32(b);
+            __m512i t2 = _mm512_mask_sllv_epi32(t0, mask.mMask, t0, t1);
+            __m256i t3 = _mm512_castsi512_si256(t2);
+            return SIMDVec_u(t3);
+#endif
+        }
         // LSHVA
         // MLSHVA
         // LSHSA
         // MLSHSA
         // RSHV
+        inline SIMDVec_u rsh(SIMDVec_u const & b) const {
+            __m256i t0 = _mm256_srlv_epi32(mVec, b.mVec);
+            return SIMDVec_u(t0);
+        }
+        inline SIMDVec_u operator>> (SIMDVec_u const & b) const {
+            return rsh(b);
+        }
         // MRSHV
+        inline SIMDVec_u rsh(SIMDVecMask<8> const & mask, SIMDVec_u const & b) const {
+#if defined(__AVX512VL__)
+            __m256i t0 = _mm256_mask_srlv_epi32(mVec, mask.mMask, mVec, b.mVec);
+            return SIMDVec_u(t0);
+#else
+            __m512i t0 = _mm512_castsi256_si512(mVec);
+            __m512i t1 = _mm512_castsi256_si512(b.mVec);
+            __m512i t2 = _mm512_mask_srlv_epi32(t0, mask.mMask, t0, t1);
+            __m256i t3 = _mm512_castsi512_si256(t2);
+            return SIMDVec_u(t3);
+#endif
+        }
         // RSHS
+        inline SIMDVec_u rsh(uint32_t b) const {
+            __m256i t0 = _mm256_set1_epi32(b);
+            __m256i t1 = _mm256_srlv_epi32(mVec, t0);
+            return SIMDVec_u(t1);
+        }
+        inline SIMDVec_u operator>> (uint32_t b) const {
+            return rsh(b);
+        }
         // MRSHS
+        inline SIMDVec_u rsh(SIMDVecMask<8> const & mask, uint32_t b) const {
+#if defined(__AVX512VL__)
+            __m256i t0 = _mm256_mask_srlv_epi32(mVec, mask.mMask, mVec, b.mVec);
+            return SIMDVec_u(t0);
+#else
+            __m512i t0 = _mm512_castsi256_si512(mVec);
+            __m512i t1 = _mm512_set1_epi32(b);
+            __m512i t2 = _mm512_mask_srlv_epi32(t0, mask.mMask, t0, t1);
+            __m256i t3 = _mm512_castsi512_si256(t2);
+            return SIMDVec_u(t3);
+#endif
+        }
         // RSHVA
         // MRSHVA
         // RSHSA

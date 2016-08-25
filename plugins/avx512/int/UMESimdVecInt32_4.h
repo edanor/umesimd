@@ -1771,35 +1771,97 @@ namespace SIMD {
         }
 
         // LSHV
-        /*inline SIMDVec_i lsh(SIMDVec_i const & b) const {
+        inline SIMDVec_i lsh(SIMDVec_i const & b) const {
             __m128i t0 = _mm_sll_epi32(mVec, b.mVec);
             return SIMDVec_i(t0);
-        }*/
+        }
+        inline SIMDVec_i operator<< (SIMDVec_i const & b) const {
+            return lsh(b);
+        }
         // MLSHV
-        /*inline SIMDVec_i lsh(SIMDVecMask<4> const & mask, SIMDVec_i const & b) const {
+        inline SIMDVec_i lsh(SIMDVecMask<4> const & mask, SIMDVec_i const & b) const {
+#if defined(__AVX512VL__)
             __m128i t0 = _mm_mask_sll_epi32(mVec, mask.mMask, mVec, b.mVec);
             return SIMDVec_i(t0);
-        }*/
+#else
+            __m512i t0 = _mm512_castsi128_si512(mVec);
+            __m512i t1 = _mm512_castsi128_si512(b.mVec);
+            __m512i t2 = _mm512_mask_sllv_epi32(t0, mask.mMask & 0xF, t0, t1);
+            __m128i t3 = _mm512_castsi512_si128(t2);
+            return SIMDVec_i(t3);
+#endif
+        }
         // LSHS
-        /*inline SIMDVec_i lsh(uint32_t b) const {
+        inline SIMDVec_i lsh(uint32_t b) const {
             __m128i t0 = _mm_cvtsi32_si128(b);
-            __m128i t1 = _mm_sll_epi32(mVec, t0);
+            __m128i t1 = _mm_sllv_epi32(mVec, t0);
             return SIMDVec_i(t1);
-        }*/
+        }
+        inline SIMDVec_i operator<< (uint32_t b) const {
+            return lsh(b);
+        }
         // MLSHS
-        /*inline SIMDVec_i lsh(SIMDVecMask<4> const & mask, uint32_t b) const {
+        inline SIMDVec_i lsh(SIMDVecMask<4> const & mask, uint32_t b) const {
+#if defined(__AVX512VL__)
             __m128i t0 = _mm_cvtsi32_si128(b);
-            __m128i t1 = _mm_mask_sll_epi32(mVec, mask.mMask, mVec, t0);
+            __m128i t1 = _mm_mask_sllv_epi32(mVec, mask.mMask, mVec, t0);
             return SIMDVec_i(t1);
-        }*/
+#else
+            __m512i t0 = _mm512_castsi128_si512(mVec);
+            __m512i t1 = _mm512_set1_epi32(b);
+            __m512i t2 = _mm512_mask_sllv_epi32(t0, mask.mMask & 0xF, t0, t1);
+            __m128i t3 = _mm512_castsi512_si128(t2);
+            return SIMDVec_i(t3);
+#endif
+        }
         // LSHVA
         // MLSHVA
         // LSHSA
         // MLSHSA
         // RSHV
+        inline SIMDVec_i rsh(SIMDVec_i const & b) const {
+            __m128i t0 = _mm_srlv_epi32(mVec, b.mVec);
+            return SIMDVec_i(t0);
+        }
+        inline SIMDVec_i operator>> (SIMDVec_i const & b) const {
+            return rsh(b);
+        }
         // MRSHV
+        inline SIMDVec_i rsh(SIMDVecMask<4> const & mask, SIMDVec_i const & b) const {
+#if defined(__AVX512VL__)
+            __m128i t0 = _mm_mask_srlv_epi32(mVec, mask.mMask, mVec, b.mVec);
+            return SIMDVec_i(t0);
+#else
+            __m512i t0 = _mm512_castsi128_si512(mVec);
+            __m512i t1 = _mm512_castsi128_si512(b.mVec);
+            __m512i t2 = _mm512_mask_srlv_epi32(t0, mask.mMask & 0xF, t0, t1);
+            __m128i t3 = _mm512_castsi512_si128(t2);
+            return SIMDVec_i(t3);
+#endif
+        }
         // RSHS
+        inline SIMDVec_i rsh(uint32_t b) const {
+            __m128i t0 = _mm_cvtsi32_si128(b);
+            __m128i t1 = _mm_srlv_epi32(mVec, t0);
+            return SIMDVec_i(t1);
+        }
+        inline SIMDVec_i operator>> (uint32_t b) const {
+            return rsh(b);
+        }
         // MRSHS
+        inline SIMDVec_i rsh(SIMDVecMask<4> const & mask, uint32_t b) const {
+#if defined(__AVX512VL__)
+            __m128i t0 = _mm_cvtsi32_si128(b);
+            __m128i t1 = _mm_mask_srlv_epi32(mVec, mask.mMask, mVec, t0);
+            return SIMDVec_i(t1);
+#else
+            __m512i t0 = _mm512_castsi128_si512(mVec);
+            __m512i t1 = _mm512_set1_epi32(b);
+            __m512i t2 = _mm512_mask_srlv_epi32(t0, mask.mMask & 0xF, t0, t1);
+            __m128i t3 = _mm512_castsi512_si128(t2);
+            return SIMDVec_i(t3);
+#endif
+        }
         // RSHVA
         // MRSHVA
         // RSHSA

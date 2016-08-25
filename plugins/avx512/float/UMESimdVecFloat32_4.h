@@ -1923,19 +1923,43 @@ namespace SIMD {
 
         // EXP
         UME_FORCE_INLINE SIMDVec_f exp() const {
+        #if defined(UME_USE_SVML)
+            __m128 t0 = _mm_exp_ps(mVec);
+            return SIMDVec_f(t0);
+        #else
             return VECTOR_EMULATION::expf<SIMDVec_f, SIMDVec_u<uint32_t, 4>>(*this);
+        #endif
         }
         // MEXP
         UME_FORCE_INLINE SIMDVec_f exp(SIMDVecMask<4> const & mask) const {
+        #if defined(UME_USE_SVML)
+            __m512 t0 = _mm512_castps128_ps512(mVec);
+            __m512 t1 = _mm512_mask_exp_ps(t0, mask.mMask, t0);
+            __m128 t2 = _mm512_castps512_ps128(t1);
+            return SIMDVec_f(t2);
+        #else
             return VECTOR_EMULATION::expf<SIMDVec_f, SIMDVec_u<uint32_t, 4>, SIMDVecMask<4>>(mask, *this);
+        #endif
         }
         // LOG
         UME_FORCE_INLINE SIMDVec_f log() const {
+        #if defined(UME_USE_SVML)
+            __m128 t0 = _mm_log_ps(mVec);
+            return SIMDVec_f(t0);
+        #else
             return VECTOR_EMULATION::logf<SIMDVec_f, SIMDVec_u<uint32_t, 4>>(*this);
+        #endif
         }
         // MLOG
         UME_FORCE_INLINE SIMDVec_f log(SIMDVecMask<4> const & mask) const {
+        #if defined(UME_USE_SVML)
+            __m512 t0 = _mm512_castps128_ps512(mVec);
+            __m512 t1 = _mm512_mask_log_ps(t0, mask.mMask, t0);
+            __m128 t2 = _mm512_castps512_ps128(t1);
+            return SIMDVec_f(t2);
+        #else
             return VECTOR_EMULATION::logf<SIMDVec_f, SIMDVec_u<uint32_t, 4>, SIMDVecMask<4>>(mask, *this);
+        #endif
         }
         // LOG2
         // MLOG2
@@ -1944,29 +1968,67 @@ namespace SIMD {
 
         // SIN
         UME_FORCE_INLINE SIMDVec_f sin() const {
+        #if defined(UME_USE_SVML)
+            __m128 t0 = _mm_sin_ps(mVec);
+            return SIMDVec_f(t0);
+        #else
             return VECTOR_EMULATION::sinf<SIMDVec_f, SIMDVec_i<int32_t, 4>, SIMDVecMask<4>>(*this);
+        #endif
         }
         // MSIN
         UME_FORCE_INLINE SIMDVec_f sin(SIMDVecMask<4> const & mask) const {
+        #if defined(UME_USE_SVML)
+            __m512 t0 = _mm512_castps128_ps512(mVec);
+            __m512 t1 = _mm512_mask_sin_ps(t0, mask.mMask, t0);
+            __m128 t2 = _mm512_castps512_ps128(t1);
+            return SIMDVec_f(t2);
+        #else
             return VECTOR_EMULATION::sinf<SIMDVec_f, SIMDVec_i<int32_t, 4>, SIMDVecMask<4>>(mask, *this);
+        #endif
         }
         // COS
         UME_FORCE_INLINE SIMDVec_f cos() const {
+        #if defined(UME_USE_SVML)
+            __m128 t0 = _mm_cos_ps(mVec);
+            return SIMDVec_f(t0);
+        #else
             return VECTOR_EMULATION::cosf<SIMDVec_f, SIMDVec_i<int32_t, 4>, SIMDVecMask<4>>(*this);
+        #endif
         }
         // MCOS
         UME_FORCE_INLINE SIMDVec_f cos(SIMDVecMask<4> const & mask) const {
+        #if defined(UME_USE_SVML)
+            __m512 t0 = _mm512_castps128_ps512(mVec);
+            __m512 t1 = _mm512_mask_cos_ps(t0, mask.mMask, t0);
+            __m128 t2 = _mm512_castps512_ps128(t1);
+            return SIMDVec_f(t2);
+        #else
             return VECTOR_EMULATION::cosf<SIMDVec_f, SIMDVec_i<int32_t, 4>, SIMDVecMask<4>>(mask, *this);
+        #endif
         }
         // SINCOS
         UME_FORCE_INLINE void sincos(SIMDVec_f & sinvec, SIMDVec_f & cosvec) const {
+        #if defined(UME_USE_SVML)
+            alignas(16) float raw_cos[4];
+            sinvec.mVec = _mm_sincos_ps((__m128*)raw_cos, mVec);
+            cosvec.mVec = _mm_load_ps(raw_cos);
+        #else
             VECTOR_EMULATION::sincosf<SIMDVec_f, SIMDVec_i<int32_t, 4>, SIMDVecMask<4>>(*this, sinvec, cosvec);
+        #endif
         }
 
         // MSINCOS
         UME_FORCE_INLINE void sincos(SIMDVecMask<4> const & mask, SIMDVec_f & sinvec, SIMDVec_f & cosvec) const {
+        #if defined(UME_USE_SVML)
+            alignas(64) float raw_cos[16]; // 64B aligned data for 512b vector operation is needed.
+            __m512 t0 = _mm512_castps128_ps512(mVec);
+            __m512 t1 = _mm512_mask_sincos_ps((__m512*)raw_cos, t0, t0, mask.mMask, t0);
+            sinvec.mVec = _mm512_castps512_ps128(t1);
+            cosvec.mVec = _mm_load_ps(raw_cos);
+        #else
             sinvec = SCALAR_EMULATION::MATH::sin<SIMDVec_f, SIMDVecMask<4>>(mask, *this);
             cosvec = SCALAR_EMULATION::MATH::cos<SIMDVec_f, SIMDVecMask<4>>(mask, *this);
+        #endif
         }
         // TAN
         // MTAN
