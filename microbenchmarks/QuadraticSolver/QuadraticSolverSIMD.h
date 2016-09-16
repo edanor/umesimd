@@ -91,7 +91,6 @@ UME_NEVER_INLINE TIMING_RES run_SIMD()
 {
     typedef typename UME::SIMD::SIMDVec<FLOAT_T, LENGTH>                FLOAT_VEC_T;
     typedef typename UME::SIMD::SIMDTraits<FLOAT_VEC_T>::INT_VEC_T      INT_VEC_T;
-    typedef typename UME::SIMD::SIMDTraits<FLOAT_VEC_T>::SCALAR_INT_T   INT_T;
 
     unsigned long long start, end; // Time measurements
 
@@ -123,8 +122,6 @@ UME_NEVER_INLINE TIMING_RES run_SIMD()
 
     volatile FLOAT_T x1_dump = FLOAT_T(0), x2_dump = FLOAT_T(0);
     volatile int root_dump = 0;
-
-    int prefetch_offset = 64 / sizeof(FLOAT_T);
 
     start = __rdtsc();
     for (int i = 0; i < ARRAY_SIZE; i += LENGTH) {

@@ -44,25 +44,6 @@
 // Introducing inline assembly forces compiler to generate
 #define BREAK_COMPILER_OPTIMIZATION() __asm__ ("NOP");
 
-// define RDTSC getter function
-#if defined(__i386__)
-static __inline__ unsigned long long __rdtsc(void)
-{
-    unsigned long long int x;
-    __asm__ volatile (".byte 0x0f, 0x31" : "=A" (x));
-    return x;
-}
-#elif defined(__x86_64__)
-static __inline__ unsigned long long __rdtsc(void)
-{
-    unsigned hi, lo;
-    __asm__ __volatile__ ("rdtsc" : "=a"(lo), "=d"(hi));
-    return ( (unsigned long long)lo)|( ((unsigned long long)hi)<<32 );
-}
-#endif
-
-typedef unsigned long long TIMING_RES;
-
 const int ARRAY_SIZE = 600000+7; // Array size increased to show the peeling effect.
 //alignas(32) float x[ARRAY_SIZE];
 
@@ -425,7 +406,7 @@ TIMING_RES test_UME_SIMD()
 }
 
 template<typename VEC_T>
-void benchmarkUMESIMD( char * resultPrefix, int iterations, TimingStatistics & reference)
+void benchmarkUMESIMD( std::string const & resultPrefix, int iterations, TimingStatistics & reference)
 {
     TimingStatistics stats;
 

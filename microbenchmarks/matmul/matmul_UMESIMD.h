@@ -152,7 +152,7 @@ RESULTS<typename UME::SIMD::SIMDTraits<FLOAT_VEC_TYPE>::SCALAR_T> test_SIMD()
 }
 
 template<typename FLOAT_VEC_T, int MAT_RANK>
-void benchmarkSIMD(char * resultPrefix,
+void benchmarkSIMD(std::string const & resultPrefix,
     int iterations,
     TimingStatistics & reference)
 {

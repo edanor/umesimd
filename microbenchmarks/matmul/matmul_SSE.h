@@ -269,7 +269,7 @@ RESULTS<double> test_sse_64f()
 
 
 template<int MAT_RANK>
-void benchmark_sse_32f(char * resultPrefix,
+void benchmark_sse_32f(std::string const & resultPrefix,
     int iterations,
     TimingStatistics & reference)
 {
@@ -290,7 +290,7 @@ void benchmark_sse_32f(char * resultPrefix,
 }
 
 template<int MAT_RANK>
-void benchmark_sse_64f(char * resultPrefix,
+void benchmark_sse_64f(std::string const & resultPrefix,
     int iterations,
     TimingStatistics & reference)
 {

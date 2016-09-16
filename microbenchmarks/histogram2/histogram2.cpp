@@ -40,28 +40,6 @@
 #include "../../UMESimd.h"
 #include "../utilities/TimingStatistics.h"
 
-// Introducing inline assembly forces compiler to generate
-#define BREAK_COMPILER_OPTIMIZATION() __asm__ ("NOP");
-
-// define RDTSC getter function
-#if defined(__i386__)
-static __inline__ unsigned long long __rdtsc(void)
-{
-    unsigned long long int x;
-    __asm__ volatile (".byte 0x0f, 0x31" : "=A" (x));
-    return x;
-}
-#elif defined(__x86_64__)
-static __inline__ unsigned long long __rdtsc(void)
-{
-    unsigned hi, lo;
-    __asm__ __volatile__ ("rdtsc" : "=a"(lo), "=d"(hi));
-    return ( (unsigned long long)lo)|( ((unsigned long long)hi)<<32 );
-}
-#endif
-
-typedef unsigned long long TIMING_RES;
-
 const int INPUT_SIZE = 1000000; // Number of data samples
 const int HIST_SIZE = 100;     // Number of histogram bins
 //alignas(32) float x[ARRAY_SIZE];
@@ -112,7 +90,6 @@ template<typename FLOAT_VEC_T, typename UINT_VEC_T>
 inline void test_UME_SIMD_float_recursive_helper(UINT_VEC_T const & index_vec, unsigned int * hist)
 {
     typedef typename UME::SIMD::SIMDTraits<FLOAT_VEC_T>::HALF_LEN_VEC_T HALF_LEN_VEC_T;
-    typedef typename UME::SIMD::SIMDTraits<FLOAT_VEC_T>::INT_VEC_T      INT_VEC_T;
 
     typedef typename UME::SIMD::SIMDTraits<HALF_LEN_VEC_T>::UINT_VEC_T HALF_LEN_UINT_VEC_T;
 
@@ -208,7 +185,7 @@ TIMING_RES test_UME_SIMD()
             }
             else {
                 index_vec.storea(indices);
-                for (int i = 0; i < VEC_LEN; i++) {
+                for (unsigned int i = 0; i < VEC_LEN; i++) {
                     hist[indices[i]]++;
                 }
             }
@@ -243,7 +220,7 @@ TIMING_RES test_UME_SIMD()
 }
 
 template<typename VEC_T>
-void benchmarkUMESIMD(char * resultPrefix, int iterations, TimingStatistics & reference)
+void benchmarkUMESIMD(std::string const & resultPrefix, int iterations, TimingStatistics & reference)
 {
     TimingStatistics stats;
 

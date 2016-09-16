@@ -33,25 +33,6 @@
 #include "../../UMESimd.h"
 #include "../utilities/TimingStatistics.h"
 
-// define RDTSC getter function
-#if defined(__i386__)
-static __inline__ unsigned long long __rdtsc(void)
-{
-    unsigned long long int x;
-    __asm__ volatile (".byte 0x0f, 0x31" : "=A" (x));
-    return x;
-}
-#elif defined(__x86_64__)
-static __inline__ unsigned long long __rdtsc(void)
-{
-    unsigned hi, lo;
-    __asm__ __volatile__("rdtsc\n" : "=a"(lo), "=d"(hi));
-    return ((unsigned long long)lo) | (((unsigned long long)hi) << 32);
-}
-#endif
-
-typedef unsigned long long TIMING_RES;
-
 // This size effectively gives 200 MB of allocation for single precision, and 400 MB for double precision
 // on x86 compatible machine. This means that data will travel between main memory and cache on most of
 // existing machines.
@@ -114,7 +95,7 @@ void benchmarkScalarOptimized(
 
 
 template<typename FLOAT_T, uint32_t LENGTH>
-void benchmarkSIMD(char * resultPrefix,
+void benchmarkSIMD(std::string const & resultPrefix,
     int iterations,
     TimingStatistics & reference)
 {
@@ -131,7 +112,7 @@ void benchmarkSIMD(char * resultPrefix,
 }
 
 #ifdef __AVX2__
-void benchmarkAVX2(char * resultPrefix,
+void benchmarkAVX2(std::string const & resultPrefix,
     int iterations,
     TimingStatistics & reference)
 {

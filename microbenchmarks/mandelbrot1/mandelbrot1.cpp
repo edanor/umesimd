@@ -38,28 +38,6 @@
 #include "../utilities/UMEBitmap.h"
 #include "../utilities/TimingStatistics.h"
 
-// Introducing inline assembly forces compiler to generate
-#define BREAK_COMPILER_OPTIMIZATION() __asm__ ("NOP");
-
-// define RDTSC getter function
-#if defined(__i386__)
-static __inline__ unsigned long long __rdtsc(void)
-{
-    unsigned long long int x;
-    __asm__ volatile (".byte 0x0f, 0x31" : "=A" (x));
-    return x;
-}
-#elif defined(__x86_64__)
-static __inline__ unsigned long long __rdtsc(void)
-{
-    unsigned hi, lo;
-    __asm__ __volatile__("rdtsc" : "=a"(lo), "=d"(hi));
-    return ((unsigned long long)lo) | (((unsigned long long)hi) << 32);
-}
-#endif
-
-typedef unsigned long long TIMING_RES;
-
 void mandel_basic_32f(unsigned char *image, const struct spec *s);
 void mandel_basic_64f(unsigned char *image, const struct spec *s);
 void mandel_avx(unsigned char *image, const struct spec *s);
@@ -79,8 +57,8 @@ is_avx_supported(void)
 
 template<typename SIMD_T>
 void benchmarkUMESIMD(struct spec & spec,
-                      char * filename, 
-                      char * resultPrefix, 
+                      std::string const & filename, 
+                      std::string const & resultPrefix, 
                       int iterations,
                       TimingStatistics & reference)
 {
