@@ -2,7 +2,7 @@
 # CXX={gcc, icc, clang)
 # ISA={scalar, avx, avx2, core_avx512, mic_avx512, imci}
 # BUILD={debug, release, release_O3}
-# {FORCE_OPENMP_PLUGIN=ON}
+# {FORCE_OPENMP_PLUGIN=ON | FORCE_SCALAR_PLUGIN=ON}
 
 CXXFLAGS=-std=c++11 -Wall
 
@@ -51,6 +51,12 @@ ifeq ($(FORCE_OPENMP_PLUGIN), ON)
 		CXXFLAGS+=-openmp
 	endif
 	CXXFLAGS+=-DFORCE_OPENMP
+	FORCE_PREFIX=_openmp_plugin
+endif
+
+ifeq ($(FORCE_SCALAR_PLUGIN), ON)
+	CXXFLAGS+=-DFORCE_SCALAR
+	FORCE_PREFIX=_scalar_plugin
 endif
 
 # Select proper instruction set flags
@@ -90,7 +96,7 @@ ifeq ($(ISA), imci)
 	ISA_PREFIX+=_imci
 endif
 
-OUT_NAME=$(join $(join $(join $(COMPILER_PREFIX), $(ISA_PREFIX)), $(BUILD_PREFIX)), .out)
+OUT_NAME=$(join $(join $(join $(join $(COMPILER_PREFIX), $(ISA_PREFIX)), $(BUILD_PREFIX)), $(FORCE_PREFIX)), .out)
 
 #all: executable
 
@@ -108,7 +114,7 @@ ifndef ISA
 	$(error ISA is not set)
 endif
 
-executable: 
+executable:
 	$(CXX) $(CXXFLAGS) *.cpp ../utilities/UMEBitmap.cpp -o $(OUT_NAME)
 
 clean:
