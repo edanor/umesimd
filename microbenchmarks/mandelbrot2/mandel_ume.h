@@ -131,8 +131,8 @@ template<typename SIMD_T>
 void benchmarkUMESIMD(int width,
                       int height,
                       int depth,
-                      char * filename, 
-                      char * resultPrefix, 
+                      std::string const & filename, 
+                      std::string const & resultPrefix, 
                       int iterations,
                       TimingStatistics & reference)
 {

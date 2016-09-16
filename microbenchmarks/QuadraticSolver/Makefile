@@ -112,4 +112,5 @@ executable:
 	$(CXX) $(CXXFLAGS) *.cpp -o $(OUT_NAME)
 
 clean:
-	rm -f *.o 
+	rm -f *.out
+ 

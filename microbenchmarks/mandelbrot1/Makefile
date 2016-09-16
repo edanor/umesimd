@@ -112,4 +112,4 @@ executable:
 	$(CXX) $(CXXFLAGS) *.cpp ../utilities/UMEBitmap.cpp -o $(OUT_NAME)
 
 clean:
-	rm -f *.o 
+	rm -f *.out *.bmp
