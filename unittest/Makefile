@@ -4,7 +4,7 @@
 # BUILD={debug, release, release_O3}
 # {FORCE_OPENMP_PLUGIN=ON}
 
-CXXFLAGS=-std=c++11 -Wall
+CXXFLAGS=-std=c++11 -w
 
 #some predefined rules
 ifeq ($(CXX), g++)
@@ -43,11 +43,7 @@ ifeq ($(BUILD), release_o3)
 endif
 
 ifeq ($(FORCE_OPENMP_PLUGIN), ON)
-	ifeq ($(CXX), icc)
-		CXXFLAGS+=-fopenmp
-        else
-		CXXFLAGS+=-openmp
-	endif
+	CXXFLAGS+=-fopenmp
 	CXXFLAGS+=-DFORCE_OPENMP
 endif
 
