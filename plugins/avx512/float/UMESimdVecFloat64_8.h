@@ -269,14 +269,38 @@ namespace SIMD {
             mVec = _mm512_mask_add_pd(mVec, mask.mMask, mVec, _mm512_set1_pd(b));
             return *this;
         }
-        // SADDV
-        // MSADDV
-        // SADDS
-        // MSADDS
-        // SADDVA
-        // MSADDVA
-        // SADDSA
-        // MSADDSA
+        // SADDV
+        UME_FORCE_INLINE SIMDVec_f sadd(SIMDVec_f const & b) const {
+            return add(b);
+        }
+        // MSADDV
+        UME_FORCE_INLINE SIMDVec_f sadd(SIMDVecMask<8> const & mask, SIMDVec_f const & b) const {
+            return add(mask, b);
+        }
+        // SADDS
+        UME_FORCE_INLINE SIMDVec_f sadd(double b) const {
+            return add(b);
+        }
+        // MSADDS
+        UME_FORCE_INLINE SIMDVec_f sadd(SIMDVecMask<8> const & mask, double b) const {
+            return add(mask, b);
+        }
+        // SADDVA
+        UME_FORCE_INLINE SIMDVec_f & sadda(SIMDVec_f const & b) {
+            return adda(b);
+        }
+        // MSADDVA
+        UME_FORCE_INLINE SIMDVec_f & sadda(SIMDVecMask<8> const & mask, SIMDVec_f const & b) {
+            return adda(mask, b);
+        }
+        // SADDSA
+        UME_FORCE_INLINE SIMDVec_f & sadda(double b) {
+            return adda(b);
+        }
+        // MSADDSA
+        UME_FORCE_INLINE SIMDVec_f & sadda(SIMDVecMask<8> const & mask, double b) {
+            return adda(mask, b);
+        }
         // POSTINC
         UME_FORCE_INLINE SIMDVec_f postinc() {
             __m512d t0 = mVec;
@@ -357,14 +381,38 @@ namespace SIMD {
             mVec = _mm512_mask_sub_pd(mVec, mask.mMask, mVec, _mm512_set1_pd(b));
             return *this;
         }
-        // SSUBV
-        // MSSUBV
-        // SSUBS
-        // MSSUBS
-        // SSUBVA
-        // MSSUBVA
-        // SSUBSA
-        // MSSUBSA
+        // SSUBV
+        UME_FORCE_INLINE SIMDVec_f ssub(SIMDVec_f const & b) const {
+            return sub(b);
+        }
+        // MSSUBV
+        UME_FORCE_INLINE SIMDVec_f ssub(SIMDVecMask<8> const & mask, SIMDVec_f const & b) const {
+            return sub(mask, b);
+        }
+        // SSUBS
+        UME_FORCE_INLINE SIMDVec_f ssub(double b) const {
+            return sub(b);
+        }
+        // MSSUBS
+        UME_FORCE_INLINE SIMDVec_f ssub(SIMDVecMask<8> const & mask, double b) const {
+            return sub(mask, b);
+        }
+        // SSUBVA
+        UME_FORCE_INLINE SIMDVec_f & ssuba(SIMDVec_f const & b) {
+            return suba(b);
+        }
+        // MSSUBVA
+        UME_FORCE_INLINE SIMDVec_f & ssuba(SIMDVecMask<8> const & mask, SIMDVec_f const & b) {
+            return suba(mask, b);
+        }
+        // SSUBSA
+        UME_FORCE_INLINE SIMDVec_f & ssuba(double b) {
+            return suba(b);
+        }
+        // MSSUBSA
+        UME_FORCE_INLINE SIMDVec_f & ssuba(SIMDVecMask<8> const & mask, double b) {
+            return suba(mask, b);
+        }
         // SUBFROMV
         UME_FORCE_INLINE SIMDVec_f subfrom(SIMDVec_f const & a) const {
             __m512d t0 = _mm512_sub_pd(a.mVec, mVec);

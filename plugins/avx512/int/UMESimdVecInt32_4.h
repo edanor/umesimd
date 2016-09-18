@@ -1735,10 +1735,13 @@ namespace SIMD {
         // MSCATTERS
         UME_FORCE_INLINE int32_t* scatter(SIMDVecMask<4> const & mask, int32_t* baseAddr, uint32_t* indices) {
             alignas(16) int32_t rawIndices[4] = { indices[0], indices[1], indices[2], indices[3] };
+            __m128i t0 = _mm_load_si128((__m128i *)rawIndices);
 #if defined(__AVX512VL__)
-            __m128i t0 = _mm_mask_load_epi32(_mm_set1_epi32(0), mask.mMask, (__m128i *) rawIndices);
             _mm_mask_i32scatter_epi32(baseAddr, mask.mMask, t0, mVec, 4);
 #else
+            __m512i t1 = _mm512_castsi128_si512(t0);
+            __m512i t2 = _mm512_castsi128_si512(mVec);
+            _mm512_mask_i32scatter_epi32(baseAddr, mask.mMask, t1, t2, 4);
 #endif
             return baseAddr;
         }
