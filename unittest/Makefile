@@ -4,7 +4,7 @@
 # BUILD={debug, release, release_O3}
 # {FORCE_OPENMP_PLUGIN=ON}
 
-CXXFLAGS=-std=c++11 -w
+CXXFLAGS=-std=c++11
 
 #some predefined rules
 ifeq ($(CXX), g++)
@@ -25,7 +25,7 @@ ifeq ($(BUILD), debug)
 		CXXFLAGS+=-fp-model=precise
 	endif
   
-	CXXFLAGS+=-O0 -fno-inline
+	CXXFLAGS+=-O0 -fno-inline -g
 	BUILD_PREFIX=_O0
 endif
 ifeq ($(BUILD), release)

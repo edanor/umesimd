@@ -2492,6 +2492,18 @@ namespace SIMD
         UME_FORCE_INLINE VEC_TYPE & operator= (const double & x) { }
  
     public:
+        // GATHERU
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & gatheru (SCALAR_TYPE * baseAddr, uint32_t stride) {
+            UME_EMULATION_WARNING();
+            return SCALAR_EMULATION::gatheru<DERIVED_VEC_TYPE, SCALAR_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this), baseAddr, stride);
+        }
+
+        // MGATHERU
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & gatheru (MASK_TYPE const & mask, SCALAR_TYPE * baseAddr, uint32_t stride) {
+            UME_EMULATION_WARNING();
+            return SCALAR_EMULATION::gatheru<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this), baseAddr, stride);
+        }
+
         // GATHERS
         UME_FORCE_INLINE DERIVED_VEC_TYPE & gather (SCALAR_TYPE * baseAddr, SCALAR_UINT_TYPE* indices) {
             UME_EMULATION_WARNING();

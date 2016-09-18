@@ -149,7 +149,25 @@ namespace SCALAR_EMULATION
         UME_ALIGNMENT_CHECK(p, VEC_TYPE::alignment());
         return store<MASK_TYPE, VEC_TYPE, SCALAR_TYPE>(mask, src, p);
     }
+    
+    // GATHER
+    template<typename VEC_TYPE, typename SCALAR_TYPE>
+    UME_FORCE_INLINE VEC_TYPE & gatheru(VEC_TYPE & dst, SCALAR_TYPE* base, uint32_t stride) {
+        for (uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+            dst.insert(i, base[i*stride]);
+        }
+        return dst;
+    }
 
+    // MGATHER
+    template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
+    UME_FORCE_INLINE VEC_TYPE & gatheru(MASK_TYPE const & mask, VEC_TYPE & dst, SCALAR_TYPE* base, uint32_t stride) {
+        for (uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+            if (mask[i] == true) dst.insert(i, base[i*stride]);
+        }
+        return dst;
+    }
+    
     // GATHERS
     template<typename VEC_TYPE, typename SCALAR_TYPE, typename SCALAR_UINT_TYPE>
     UME_FORCE_INLINE VEC_TYPE & gather(VEC_TYPE & dst, SCALAR_TYPE* base, SCALAR_UINT_TYPE* indices) {
