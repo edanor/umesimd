@@ -1674,53 +1674,37 @@ namespace SIMD {
 
         // GATHERS
         UME_FORCE_INLINE SIMDVec_u & gather(uint32_t* baseAddr, uint32_t* indices) {
-            alignas(16) uint32_t raw[4] = { 
-                baseAddr[indices[0]], baseAddr[indices[1]], 
-                baseAddr[indices[2]], baseAddr[indices[3]] };
-            mVec = _mm_load_si128((__m128i*)raw);
+            __m128i t0 = _mm_load_si128((__m128i*)indices);
+            mVec = _mm_i32gather_epi32((const int *)baseAddr, t0, 4);
             return *this;
         }
         // MGATHERS
         UME_FORCE_INLINE SIMDVec_u & gather(SIMDVecMask<4> const & mask, uint32_t* baseAddr, uint32_t* indices) {
-            alignas(16) uint32_t raw[4] = { 
-                baseAddr[indices[0]], baseAddr[indices[1]], 
-                baseAddr[indices[2]], baseAddr[indices[3]] };
+            __m128i t0 = _mm_load_si128((__m128i*)indices);
 #if defined(__AVX512VL__)
-            mVec = _mm_mask_load_epi32(mVec, mask.mMask, raw);
+            mVec = _mm_mmask_i32gather_epi32(mVec, mask.mMask, t0, baseAddr, 4);
 #else
-            __m128i t0 = _mm_load_si128((__m128i*)raw);
-            __m128i m0 = mask8_to_m128i(mask.mMask);
-            mVec = _mm_blendv_epi8(mVec, t0, m0);
+            __m512i t1 = _mm512_castsi128_si512(t0);
+            __m512i t2 = _mm512_castsi128_si512(mVec);
+            __m512i t3 = _mm512_mask_i32gather_epi32(t2, mask.mMask, t1, baseAddr, 4);
+            mVec = _mm512_castsi512_si128(t3);
 #endif
             return *this;
         }
         // GATHERV
         UME_FORCE_INLINE SIMDVec_u & gather(uint32_t* baseAddr, SIMDVec_u const & indices) {
-            alignas(16) uint32_t rawIndices[4];
-            alignas(16) uint32_t rawData[4];
-            _mm_store_si128((__m128i*) rawIndices, indices.mVec);
-            rawData[0] = baseAddr[rawIndices[0]];
-            rawData[1] = baseAddr[rawIndices[1]];
-            rawData[2] = baseAddr[rawIndices[2]];
-            rawData[3] = baseAddr[rawIndices[3]];
-            mVec = _mm_load_si128((__m128i*)rawData);
+            mVec = _mm_i32gather_epi32((const int *)baseAddr, indices.mVec, 4);
             return *this;
         }
         // MGATHERV
         UME_FORCE_INLINE SIMDVec_u & gather(SIMDVecMask<4> const & mask, uint32_t* baseAddr, SIMDVec_u const & indices) {
-            alignas(16) uint32_t rawIndices[4];
-            alignas(16) uint32_t rawData[4];
-            _mm_store_si128((__m128i*) rawIndices, indices.mVec);
-            rawData[0] = baseAddr[rawIndices[0]];
-            rawData[1] = baseAddr[rawIndices[1]];
-            rawData[2] = baseAddr[rawIndices[2]];
-            rawData[3] = baseAddr[rawIndices[3]];
 #if defined(__AVX512VL__)
-            mVec = _mm_mask_load_epi32(mVec, mask.mMask, rawData);
+            mVec = _mm_mmask_i32gather_epi32(mVec, mask.mMask, indices.mVec, baseAddr, 4);
 #else
-            __m128i t0 = _mm_loadu_si128((__m128i*)rawData);
-            __m128i m0 = mask8_to_m128i(mask.mMask);
-            mVec = _mm_blendv_epi8(mVec, t0, m0);
+            __m512i t0 = _mm512_castsi128_si512(indices.mVec);
+            __m512i t1 = _mm512_castsi128_si512(mVec);
+            __m512i t2 = _mm512_mask_i32gather_epi32(t1, mask.mMask, t0, baseAddr, 4);
+            mVec = _mm512_castsi512_si128(t2);
 #endif
             return *this;
         }

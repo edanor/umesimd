@@ -1832,8 +1832,9 @@ namespace SIMD {
         // MLSHS
         UME_FORCE_INLINE SIMDVec_u lsh(SIMDVecMask<8> const & mask, uint32_t b) const {
 #if defined(__AVX512VL__)
-            __m256i t0 = _mm256_mask_sllv_epi32(mVec, mask.mMask, mVec, b.mVec);
-            return SIMDVec_u(t0);
+            __m256i t0 = _mm256_set1_epi32(b);
+            __m256i t1 = _mm256_mask_sllv_epi32(mVec, mask.mMask, mVec, t0);
+            return SIMDVec_u(t1);
 #else
             __m512i t0 = _mm512_castsi256_si512(mVec);
             __m512i t1 = _mm512_set1_epi32(b);
@@ -1879,8 +1880,9 @@ namespace SIMD {
         // MRSHS
         UME_FORCE_INLINE SIMDVec_u rsh(SIMDVecMask<8> const & mask, uint32_t b) const {
 #if defined(__AVX512VL__)
-            __m256i t0 = _mm256_mask_srlv_epi32(mVec, mask.mMask, mVec, b.mVec);
-            return SIMDVec_u(t0);
+            __m256i t0 = _mm256_set1_epi32(b);
+            __m256i t1 = _mm256_mask_srlv_epi32(mVec, mask.mMask, mVec, t0);
+            return SIMDVec_u(t1);
 #else
             __m512i t0 = _mm512_castsi256_si512(mVec);
             __m512i t1 = _mm512_set1_epi32(b);
