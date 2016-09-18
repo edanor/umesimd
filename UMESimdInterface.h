@@ -2528,6 +2528,18 @@ namespace SIMD
             return SCALAR_EMULATION::gather<DERIVED_VEC_TYPE, SCALAR_TYPE, DERIVED_UINT_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this), baseAddr, indices);
         }
 
+        // SCATTERU
+        UME_FORCE_INLINE SCALAR_TYPE* scatteru (SCALAR_TYPE * baseAddr, uint32_t stride) {
+            UME_EMULATION_WARNING();
+            return SCALAR_EMULATION::scatteru<DERIVED_VEC_TYPE, SCALAR_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this), baseAddr, stride);
+        }
+
+        // MSCATTERU
+        UME_FORCE_INLINE SCALAR_TYPE* scatteru (MASK_TYPE const & mask, SCALAR_TYPE * baseAddr, uint32_t stride) {
+            UME_EMULATION_WARNING();
+            return SCALAR_EMULATION::scatteru<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this), baseAddr, stride);
+        }
+
         // SCATTERS
         UME_FORCE_INLINE SCALAR_TYPE* scatter (SCALAR_TYPE* baseAddr, SCALAR_UINT_TYPE* indices) {
             UME_EMULATION_WARNING();

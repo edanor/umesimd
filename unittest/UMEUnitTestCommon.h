@@ -6309,7 +6309,7 @@ void genericMHBXORSTest()
 }
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN>
-void genericGATHERTest_random()
+void genericGATHERUTest_random()
 {
     std::random_device rd;
     std::mt19937 gen(rd());
@@ -6323,9 +6323,7 @@ void genericGATHERTest_random()
         inputA[i] = randomValue<SCALAR_TYPE>(gen);
     }
 
-    do {
-     stride = randomValue<uint32_t>(gen) % 100;
-    } while(stride == 0);
+    stride = randomValue<uint32_t>(gen) % 99 + 1;
 
     for (int i = 0; i < VEC_LEN;i++) {
         output[i] = inputA[i*stride];
@@ -6337,6 +6335,40 @@ void genericGATHERTest_random()
 
     bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "GATHERU");
+}
+
+template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN>
+void genericMGATHERUTest_random()
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    alignas(VEC_TYPE::alignment()) SCALAR_TYPE inputA[VEC_LEN*100];
+    alignas(VEC_TYPE::alignment()) SCALAR_TYPE inputB[VEC_LEN];
+    uint32_t stride;
+    alignas(VEC_TYPE::alignment()) SCALAR_TYPE output[VEC_LEN];
+    alignas(VEC_TYPE::alignment()) SCALAR_TYPE values[VEC_LEN];
+    bool inputMask[VEC_LEN];
+
+    for (int i = 0; i < VEC_LEN*100; i++) {
+        inputA[i] = randomValue<SCALAR_TYPE>(gen);
+    }
+
+    stride = randomValue<uint32_t>(gen) % 99 + 1;
+
+    for (int i = 0; i < VEC_LEN;i++) {
+        inputMask[i] = randomValue<bool>(gen);
+        inputB[i] = randomValue<SCALAR_TYPE>(gen);
+        output[i] = inputMask[i] ? inputA[i*stride] : inputB[i];
+    }
+
+    VEC_TYPE vec0(inputB);
+    MASK_TYPE mask(inputMask);
+    vec0.gatheru(mask, &inputA[0], stride);
+    vec0.store(values);
+
+    bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
+    CHECK_CONDITION(inRange, "MGATHERU");
 }
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename SCALAR_UINT_TYPE, int VEC_LEN>
@@ -6458,6 +6490,69 @@ void genericMGATHERVTest_random()
 
     bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MGATHERV");
+}
+
+template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN>
+void genericSCATTERUTest_random()
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    uint32_t stride;
+    alignas(VEC_TYPE::alignment()) SCALAR_TYPE inputA[VEC_LEN * 100];
+    alignas(VEC_TYPE::alignment()) SCALAR_TYPE inputB[VEC_LEN];
+    alignas(VEC_TYPE::alignment()) SCALAR_TYPE output[VEC_LEN * 100];
+
+    for (int i = 0; i < VEC_LEN * 100; i++) {
+        inputA[i] = randomValue<SCALAR_TYPE>(gen);
+        output[i] = inputA[i];
+    }
+
+    stride = randomValue<uint32_t>(gen) % 99 + 1;
+
+    for (int i = 0; i < VEC_LEN;i++) {
+        inputB[i] = randomValue<SCALAR_TYPE>(gen);
+        output[i*stride] = inputB[i];
+    }
+
+    VEC_TYPE vec0(inputB);
+    vec0.scatteru(inputA, stride);
+
+    bool inRange = valuesInRange(inputA, output, VEC_LEN*100, SCALAR_TYPE(0.01f));
+    CHECK_CONDITION(inRange, "SCATTERU");
+}
+
+template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN>
+void genericMSCATTERUTest_random()
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    uint32_t stride;
+    alignas(VEC_TYPE::alignment()) SCALAR_TYPE inputA[VEC_LEN * 100];
+    alignas(VEC_TYPE::alignment()) SCALAR_TYPE inputB[VEC_LEN];
+    alignas(VEC_TYPE::alignment()) SCALAR_TYPE output[VEC_LEN * 100];
+    bool inputMask[VEC_LEN];
+
+    for (int i = 0; i < VEC_LEN * 100; i++) {
+        inputA[i] = randomValue<SCALAR_TYPE>(gen);
+        output[i] = inputA[i];
+    }
+
+    stride = randomValue<uint32_t>(gen) % 99 + 1;
+
+    for (int i = 0; i < VEC_LEN;i++) {
+        inputMask[i] = randomValue<bool>(gen);
+        inputB[i] = randomValue<SCALAR_TYPE>(gen);
+        if(inputMask[i] == true) output[i*stride] = inputB[i];
+    }
+
+    VEC_TYPE vec0(inputB);
+    MASK_TYPE mask(inputMask);
+    vec0.scatteru(mask, inputA, stride);
+
+    bool inRange = valuesInRange(inputA, output, VEC_LEN*100, SCALAR_TYPE(0.01f));
+    CHECK_CONDITION(inRange, "MSCATTERU");
 }
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename SCALAR_UINT_TYPE, int VEC_LEN>
@@ -10150,11 +10245,14 @@ void genericIntegerInterfaceTest()
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename UINT_VEC_TYPE, typename SCALAR_UINT_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericGatherScatterInterfaceTest()
 {
-    genericGATHERTest_random<VEC_TYPE, SCALAR_TYPE, VEC_LEN>();
+    genericGATHERUTest_random<VEC_TYPE, SCALAR_TYPE, VEC_LEN>();
+    genericMGATHERUTest_random<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN>();
     genericGATHERSTest_random<VEC_TYPE, SCALAR_TYPE, SCALAR_UINT_TYPE, VEC_LEN>();
     genericMGATHERSTest_random<VEC_TYPE, SCALAR_TYPE, SCALAR_UINT_TYPE, MASK_TYPE, VEC_LEN>();
     genericGATHERVTest_random<VEC_TYPE, SCALAR_TYPE, UINT_VEC_TYPE, SCALAR_UINT_TYPE, VEC_LEN>();
     genericMGATHERVTest_random<VEC_TYPE, SCALAR_TYPE, UINT_VEC_TYPE, SCALAR_UINT_TYPE, MASK_TYPE, VEC_LEN>();
+    genericSCATTERUTest_random<VEC_TYPE, SCALAR_TYPE, VEC_LEN>();
+    genericMSCATTERUTest_random<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN>();
     genericSCATTERSTest_random<VEC_TYPE, SCALAR_TYPE, SCALAR_UINT_TYPE, VEC_LEN>();
     genericMSCATTERSTest_random<VEC_TYPE, SCALAR_TYPE, SCALAR_UINT_TYPE, MASK_TYPE, VEC_LEN>();
     genericSCATTERVTest_random<VEC_TYPE, SCALAR_TYPE, UINT_VEC_TYPE, SCALAR_UINT_TYPE, VEC_LEN>();

@@ -150,7 +150,7 @@ namespace SCALAR_EMULATION
         return store<MASK_TYPE, VEC_TYPE, SCALAR_TYPE>(mask, src, p);
     }
     
-    // GATHER
+    // GATHERU
     template<typename VEC_TYPE, typename SCALAR_TYPE>
     UME_FORCE_INLINE VEC_TYPE & gatheru(VEC_TYPE & dst, SCALAR_TYPE* base, uint32_t stride) {
         for (uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -159,7 +159,7 @@ namespace SCALAR_EMULATION
         return dst;
     }
 
-    // MGATHER
+    // MGATHERU
     template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
     UME_FORCE_INLINE VEC_TYPE & gatheru(MASK_TYPE const & mask, VEC_TYPE & dst, SCALAR_TYPE* base, uint32_t stride) {
         for (uint32_t i = 0; i < VEC_TYPE::length(); i++) {
@@ -202,6 +202,24 @@ namespace SCALAR_EMULATION
             if (mask[i] == true) dst.insert(i, base[indices[i]]);
         }
         return dst;
+    }
+
+    // SCATTERU
+    template<typename VEC_TYPE, typename SCALAR_TYPE>
+    UME_FORCE_INLINE SCALAR_TYPE* scatteru(VEC_TYPE const & src, SCALAR_TYPE* base, uint32_t stride) {
+        for (uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+            base[i*stride] = src[i];
+        }
+        return base;
+    }
+
+    // MSCATTERS
+    template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
+    UME_FORCE_INLINE SCALAR_TYPE* scatteru(MASK_TYPE const & mask, VEC_TYPE const & src, SCALAR_TYPE* base, uint32_t stride) {
+        for (uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+            if (mask[i] == true) base[i*stride] = src[i];
+        }
+        return base;
     }
 
     // SCATTERS
