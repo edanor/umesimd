@@ -3049,8 +3049,11 @@ namespace SCALAR_EMULATION
             for (uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                 // Can't use std::copysign because this has to work also for integers.
                 // typesafe sign: ((x > 0) ? 1 : ((x < 0) ? -1 : 0)))
-                SCALAR_TYPE sign = (b[i] > SCALAR_TYPE(0)) ? SCALAR_TYPE(1) : ((b[i] < SCALAR_TYPE(0)) ? SCALAR_TYPE(-1) : SCALAR_TYPE(0));
-                retval.insert(i, std::abs(a[i]) * sign);
+                bool sign = (b[i] >= SCALAR_TYPE(0));
+                SCALAR_TYPE new_val;
+                if(sign == true) new_val = std::abs(a[i]);
+                else new_val = -std::abs(a[i]);
+                retval.insert(i, new_val);
             }
             return retval;
         }
@@ -3062,8 +3065,13 @@ namespace SCALAR_EMULATION
             for (uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                 // Can't use std::copysign because this has to work also for integers.
                 // typesafe sign: ((x > 0) ? 1 : ((x < 0) ? -1 : 0)))
-                SCALAR_TYPE sign = (b[i] > SCALAR_TYPE(0)) ? SCALAR_TYPE(1) : ((b[i] < SCALAR_TYPE(0)) ? SCALAR_TYPE(-1) : SCALAR_TYPE(0));
-                retval.insert(i, (mask[i] == true ? std::abs(a[i]) * sign : a[i]) );
+                bool sign = (b[i] >= SCALAR_TYPE(0));
+                SCALAR_TYPE new_val;
+                if(sign == true) new_val = std::abs(a[i]);
+                else new_val = -std::abs(a[i]);
+
+                if(mask[i] == true) retval.insert(i, new_val);
+                else ratval.insert(i, a[i]);
             }
             return retval;
         }

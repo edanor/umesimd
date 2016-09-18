@@ -8667,8 +8667,8 @@ void genericCOPYSIGNTest_random()
         inputA[i] = randomValue<SCALAR_TYPE>(gen);
         inputB[i] = randomValue<SCALAR_TYPE>(gen);
 
-        SCALAR_TYPE absA = inputA[i] > 0 ? inputA[i] : -inputA[i];
-        bool signB = inputB[i] > 0;
+        SCALAR_TYPE absA = std::abs(inputA[i]);
+        bool signB = inputB[i] >= SCALAR_TYPE(0);
 
         if (signB) {
             output[i] = absA;
