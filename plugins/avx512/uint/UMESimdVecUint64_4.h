@@ -1727,13 +1727,13 @@ namespace SIMD {
 
         // GATHERS
         UME_FORCE_INLINE SIMDVec_u & gather(uint64_t * baseAddr, uint64_t* indices) {
-            __m256i t0 =_mm256_load_si256((__m256i *)indices);
+            __m256i t0 =_mm256_loadu_si256((__m256i *)indices);
             mVec = _mm256_i64gather_epi64((__int64 const*)baseAddr, t0, 8);
             return *this;
         }
         // MGATHERS
         UME_FORCE_INLINE SIMDVec_u & gather(SIMDVecMask<4> const & mask, uint64_t* baseAddr, uint64_t* indices) {
-            __m256i t0 = _mm256_load_si256((__m256i *)indices);
+            __m256i t0 = _mm256_loadu_si256((__m256i *)indices);
             __m256i t1 = _mm256_i64gather_epi64((__int64 const*)baseAddr, t0, 8);
 #if defined(__AVX512VL__)
             mVec = _mm256_mask_mov_epi64(mVec, mask.mMask, t1);
@@ -1767,7 +1767,7 @@ namespace SIMD {
         }
         // SCATTERS
         UME_FORCE_INLINE uint64_t* scatter(uint64_t* baseAddr, uint64_t* indices) const {
-            __m256i t0 = _mm256_load_si256((__m256i *)indices);
+            __m256i t0 = _mm256_loadu_si256((__m256i *)indices);
 #if defined(__AVX512VL__)
             _mm256_i64scatter_epi64(baseAddr, t0, mVec, 8);
 #else
@@ -1782,7 +1782,7 @@ namespace SIMD {
         }
         // MSCATTERS
         UME_FORCE_INLINE uint64_t* scatter(SIMDVecMask<4> const & mask, uint64_t* baseAddr, uint64_t* indices) const {
-            __m256i t0 = _mm256_load_si256((__m256i *)indices);
+            __m256i t0 = _mm256_loadu_si256((__m256i *)indices);
 #if defined(__AVX512VL__)
             _mm256_mask_i64scatter_epi64(baseAddr, mask.mMask, t0, mVec, 8);
 #else

@@ -1674,13 +1674,13 @@ namespace SIMD {
 
         // GATHERS
         UME_FORCE_INLINE SIMDVec_u & gather(uint32_t* baseAddr, uint32_t* indices) {
-            __m128i t0 = _mm_load_si128((__m128i*)indices);
+            __m128i t0 = _mm_loadu_si128((__m128i*)indices);
             mVec = _mm_i32gather_epi32((const int *)baseAddr, t0, 4);
             return *this;
         }
         // MGATHERS
         UME_FORCE_INLINE SIMDVec_u & gather(SIMDVecMask<4> const & mask, uint32_t* baseAddr, uint32_t* indices) {
-            __m128i t0 = _mm_load_si128((__m128i*)indices);
+            __m128i t0 = _mm_loadu_si128((__m128i*)indices);
 #if defined(__AVX512VL__)
             mVec = _mm_mmask_i32gather_epi32(mVec, mask.mMask, t0, baseAddr, 4);
 #else
@@ -1710,8 +1710,7 @@ namespace SIMD {
         }
         // SCATTERS
         UME_FORCE_INLINE uint32_t* scatter(uint32_t* baseAddr, uint32_t* indices) {
-            alignas(16) uint32_t rawIndices[4] = { indices[0], indices[1], indices[2], indices[3] };
-            __m128i t0 = _mm_load_si128((__m128i *) rawIndices);
+            __m128i t0 = _mm_loadu_si128((__m128i *) indices);
 #if defined(__AVX512VL__)
             _mm_i32scatter_epi32(baseAddr, t0, mVec, 4);
 #else
@@ -1723,8 +1722,7 @@ namespace SIMD {
         }
         // MSCATTERS
         UME_FORCE_INLINE uint32_t* scatter(SIMDVecMask<4> const & mask, uint32_t* baseAddr, uint32_t* indices) {
-            alignas(16) uint32_t rawIndices[4] = { indices[0], indices[1], indices[2], indices[3] };
-            __m128i t0 = _mm_load_si128((__m128i *) rawIndices);
+            __m128i t0 = _mm_loadu_si128((__m128i *) indices);
 #if defined(__AVX512VL__)
             _mm_mask_i32scatter_epi32(baseAddr, mask.mMask, t0, mVec, 4);
 #else
@@ -1739,14 +1737,9 @@ namespace SIMD {
 #if defined(__AVX512VL__)
             _mm_i32scatter_epi32(baseAddr, indices.mVec, mVec, 4);
 #else
-            alignas(16) uint32_t rawIndices[4];
-            alignas(16) uint32_t rawValues[4];
-            _mm_store_si128((__m128i*) rawIndices, indices.mVec);
-            _mm_store_si128((__m128i*) rawValues, mVec);
-            baseAddr[rawIndices[0]] = rawValues[0];
-            baseAddr[rawIndices[1]] = rawValues[1];
-            baseAddr[rawIndices[2]] = rawValues[2];
-            baseAddr[rawIndices[3]] = rawValues[3];
+            __m512i t0 = _mm512_castsi128_si512(mVec);
+            __m512i t1 = _mm512_castsi128_si512(indices.mVec);
+            _mm512_mask_i32scatter_epi32(baseAddr, 0xF, t1, t0, 4);
 #endif
             return baseAddr;
         }

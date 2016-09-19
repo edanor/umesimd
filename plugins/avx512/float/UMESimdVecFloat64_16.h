@@ -1131,53 +1131,69 @@ namespace SIMD {
         // MIMIN
 
         // GATHERS
-/*        UME_FORCE_INLINE SIMDVec_f & gather(double * baseAddr, uint64_t * indices) {
-            mVec[0][0] = baseAddr[indices[0]];
-            mVec[0][1] = baseAddr[indices[1]];
+        UME_FORCE_INLINE SIMDVec_f & gather(double* baseAddr, uint64_t* indices) {
+            __m512i t0 = _mm512_loadu_si512(indices);
+            __m512i t1 = _mm512_loadu_si512(indices + 8);
+            mVec[0] = _mm512_i64gather_pd(t0, baseAddr, 8);
+            mVec[1] = _mm512_i64gather_pd(t1, baseAddr, 8);
             return *this;
         }
         // MGATHERS
-        UME_FORCE_INLINE SIMDVec_f & gather(SIMDVecMask<16> const & mask, double * baseAddr, uint64_t * indices) {
-            if (mask.mMask[0] == true) mVec[0][0] = baseAddr[indices[0]];
-            if (mask.mMask[1] == true) mVec[0][1] = baseAddr[indices[1]];
+        UME_FORCE_INLINE SIMDVec_f & gather(SIMDVecMask<16> const & mask, double* baseAddr, uint64_t* indices) {
+            __mmask8 m0 = mask.mMask & 0x00FF;
+            __mmask8 m1 = (mask.mMask & 0xFF00) >> 8;
+            __m512i t0 = _mm512_loadu_si512(indices);
+            __m512i t1 = _mm512_loadu_si512(indices + 8);
+            mVec[0] = _mm512_mask_i64gather_pd(mVec[0], m0, t0, baseAddr, 8);
+            mVec[1] = _mm512_mask_i64gather_pd(mVec[1], m1, t1, baseAddr, 8);
             return *this;
         }
         // GATHERV
-        UME_FORCE_INLINE SIMDVec_f & gather(double * baseAddr, VEC_UINT_TYPE const & indices) {
-            mVec[0][0] = baseAddr[indices.mVec[0][0]];
-            mVec[0][1] = baseAddr[indices.mVec[0][1]];
+        UME_FORCE_INLINE SIMDVec_f & gather(double* baseAddr, SIMDVec_u<uint64_t, 16> const & indices) {
+            mVec[0] = _mm512_i64gather_pd(indices.mVec[0], baseAddr, 8);
+            mVec[1] = _mm512_i64gather_pd(indices.mVec[1], baseAddr, 8);
             return *this;
         }
         // MGATHERV
-        UME_FORCE_INLINE SIMDVec_f & gather(SIMDVecMask<16> const & mask, double * baseAddr, VEC_UINT_TYPE const & indices) {
-            if (mask.mMask[0] == true) mVec[0][0] = baseAddr[indices.mVec[0][0]];
-            if (mask.mMask[1] == true) mVec[0][1] = baseAddr[indices.mVec[0][1]];
+        UME_FORCE_INLINE SIMDVec_f & gather(SIMDVecMask<16> const & mask, double* baseAddr, SIMDVec_u<uint64_t, 16> const & indices) {
+            __mmask8 m0 = mask.mMask & 0x00FF;
+            __mmask8 m1 = (mask.mMask & 0xFF00) >> 8;
+            mVec[0] = _mm512_mask_i64gather_pd(mVec[0], m0, indices.mVec[0], baseAddr, 8);
+            mVec[1] = _mm512_mask_i64gather_pd(mVec[1], m1, indices.mVec[1], baseAddr, 8);
             return *this;
         }
         // SCATTERS
-        UME_FORCE_INLINE double * scatter(double * baseAddr, uint64_t * indices) const {
-            baseAddr[indices[0]] = mVec[0][0];
-            baseAddr[indices[1]] = mVec[0][1];
+        UME_FORCE_INLINE double* scatter(double* baseAddr, uint64_t* indices) {
+            __m512i t0 = _mm512_loadu_si512(indices);
+            __m512i t1 = _mm512_loadu_si512(indices + 8);
+            _mm512_i64scatter_pd(baseAddr, t0, mVec[0], 8);
+            _mm512_i64scatter_pd(baseAddr, t1, mVec[1], 8);
             return baseAddr;
         }
         // MSCATTERS
-        UME_FORCE_INLINE double * scatter(SIMDVecMask<16> const & mask, double * baseAddr, uint64_t * indices) const {
-            if (mask.mMask[0] == true) baseAddr[indices[0]] = mVec[0][0];
-            if (mask.mMask[1] == true) baseAddr[indices[1]] = mVec[0][1];
+        UME_FORCE_INLINE double* scatter(SIMDVecMask<16> const & mask, double* baseAddr, uint64_t* indices) {
+            __mmask8 m0 = mask.mMask & 0x00FF;
+            __mmask8 m1 = (mask.mMask & 0xFF00) >> 8;
+            __m512i t0 = _mm512_loadu_si512(indices);
+            __m512i t1 = _mm512_loadu_si512(indices + 8);
+            _mm512_mask_i64scatter_pd(baseAddr, m0, t0, mVec[0], 8);
+            _mm512_mask_i64scatter_pd(baseAddr, m1, t1, mVec[1], 8);
             return baseAddr;
         }
         // SCATTERV
-        UME_FORCE_INLINE double * scatter(double * baseAddr, VEC_UINT_TYPE const & indices) const {
-            baseAddr[indices.mVec[0][0]] = mVec[0][0];
-            baseAddr[indices.mVec[0][1]] = mVec[0][1];
+        UME_FORCE_INLINE double* scatter(double* baseAddr, SIMDVec_u<uint64_t, 16> const & indices) {
+            _mm512_i64scatter_pd(baseAddr, indices.mVec[0], mVec[0], 8);
+            _mm512_i64scatter_pd(baseAddr, indices.mVec[1], mVec[1], 8);
             return baseAddr;
         }
         // MSCATTERV
-        UME_FORCE_INLINE double * scatter(SIMDVecMask<16> const & mask, double * baseAddr, VEC_UINT_TYPE const & indices) const {
-            if (mask.mMask[0] == true) baseAddr[indices.mVec[0][0]] = mVec[0][0];
-            if (mask.mMask[1] == true) baseAddr[indices.mVec[0][1]] = mVec[0][1];
+        UME_FORCE_INLINE double* scatter(SIMDVecMask<16> const & mask, double* baseAddr, SIMDVec_u<uint64_t, 16> const & indices) {
+            __mmask8 m0 = mask.mMask & 0x00FF;
+            __mmask8 m1 = (mask.mMask & 0xFF00) >> 8;
+            _mm512_mask_i64scatter_pd(baseAddr, m0, indices.mVec[0], mVec[0], 8);
+            _mm512_mask_i64scatter_pd(baseAddr, m1, indices.mVec[1], mVec[1], 8);
             return baseAddr;
-        }*/
+        }
 
         // NEG
         UME_FORCE_INLINE SIMDVec_f neg() const {

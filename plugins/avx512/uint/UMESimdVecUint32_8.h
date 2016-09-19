@@ -1691,24 +1691,17 @@ namespace SIMD {
         }
         // GATHERS
         UME_FORCE_INLINE SIMDVec_u & gather(uint32_t* baseAddr, uint32_t* indices) {
-            alignas(32) uint32_t raw[8] = { 
-                baseAddr[indices[0]], baseAddr[indices[1]], 
-                baseAddr[indices[2]], baseAddr[indices[3]],
-                baseAddr[indices[4]], baseAddr[indices[5]],
-                baseAddr[indices[6]], baseAddr[indices[7]], };
-            mVec = _mm256_load_si256((__m256i*)raw);
+            __m256i t0 = _mm256_loadu_si256((__m256i*)indices);
+            mVec = _mm256_i32gather_epi32((const int *)baseAddr, t0, 4);
             return *this;
         }
         // MGATHERS
         UME_FORCE_INLINE SIMDVec_u & gather(SIMDVecMask<8> const & mask, uint32_t* baseAddr, uint32_t* indices) {
-            alignas(32) uint32_t rawIndices[8] = { 
-                indices[0], indices[1], indices[2], indices[3],
-                indices[4], indices[5], indices[6], indices[7] };
 #if defined(__AVX512VL__)
-            __m256i t0 = _mm256_load_si256((__m256i*)rawIndices);
+            __m256i t0 = _mm256_loadu_si256((__m256i*)indices);
             mVec = _mm256_mmask_i32gather_epi32(mVec, mask.mMask, t0, baseAddr, 4);
 #else
-            __m256i t0 = _mm256_load_si256((__m256i*)rawIndices);
+            __m256i t0 = _mm256_loadu_si256((__m256i*)indices);
             __m256i t1 = _mm256_i32gather_epi32((const int *)baseAddr, t0, 4);
             __m512i t2 = _mm512_castsi256_si512(t1);
             __m512i t3 = _mm512_castsi256_si512(mVec);
@@ -1719,18 +1712,7 @@ namespace SIMD {
         }
         // GATHERV
         UME_FORCE_INLINE SIMDVec_u & gather(uint32_t* baseAddr, SIMDVec_u const & indices) {
-            alignas(32) uint32_t rawIndices[8];
-            alignas(32) uint32_t rawData[8];
-            _mm256_store_si256((__m256i*) rawIndices, indices.mVec);
-            rawData[0] = baseAddr[rawIndices[0]];
-            rawData[1] = baseAddr[rawIndices[1]];
-            rawData[2] = baseAddr[rawIndices[2]];
-            rawData[3] = baseAddr[rawIndices[3]];
-            rawData[4] = baseAddr[rawIndices[4]];
-            rawData[5] = baseAddr[rawIndices[5]];
-            rawData[6] = baseAddr[rawIndices[6]];
-            rawData[7] = baseAddr[rawIndices[7]];
-            mVec = _mm256_load_si256((__m256i*)rawData);
+            mVec = _mm256_i32gather_epi32((const int *)baseAddr, indices.mVec, 4);
             return *this;
         }
         // MGATHERV
@@ -1748,10 +1730,7 @@ namespace SIMD {
         }
         // SCATTERS
         UME_FORCE_INLINE uint32_t* scatter(uint32_t* baseAddr, uint32_t* indices) const {
-            alignas(32) uint32_t rawIndices[8] = { 
-                indices[0], indices[1], indices[2], indices[3],
-                indices[4], indices[5], indices[6], indices[7] };
-            __m256i t0 = _mm256_load_si256((__m256i *) rawIndices);
+            __m256i t0 = _mm256_loadu_si256((__m256i *) indices);
 #if defined(__AVX512VL__)
             _mm256_i32scatter_epi32(baseAddr, t0, mVec, 4);
 #else
@@ -1763,14 +1742,11 @@ namespace SIMD {
         }
         // MSCATTERS
         UME_FORCE_INLINE uint32_t* scatter(SIMDVecMask<8> const & mask, uint32_t* baseAddr, uint32_t* indices) const {
-            alignas(32) uint32_t rawIndices[8] = { 
-                indices[0], indices[1], indices[2], indices[3],
-                indices[4], indices[5], indices[6], indices[7] };
 #if defined(__AVX512VL__)
-            __m256i t0 = _mm256_mask_load_epi32(_mm256_set1_epi32(0), mask.mMask, (__m256i *) rawIndices);
+            __m256i t0 = _mm256_mask_loadu_epi32(_mm256_set1_epi32(0), mask.mMask, (__m256i *) indices);
             _mm256_mask_i32scatter_epi32(baseAddr, mask.mMask, t0, mVec, 4);
 #else
-            __m256i t0 = _mm256_load_si256((__m256i*) rawIndices);
+            __m256i t0 = _mm256_loadu_si256((__m256i*) indices);
             __m512i t1 = _mm512_castsi256_si512(t0);
             __m512i t2 = _mm512_castsi256_si512(mVec);
             _mm512_mask_i32scatter_epi32(baseAddr, mask.mMask, t1, t2, 4);
