@@ -1725,6 +1725,39 @@ namespace SIMD {
             return t3;
         }
 
+        // GATHERU
+        UME_FORCE_INLINE SIMDVec_u & gatheru(uint64_t * baseAddr, uint64_t stride) {
+#if defined (__AVX512DQ__)
+            __m256i t0 = SET1_EPI64(stride);
+            __m256i t1 = _mm256_setr_epi64x(0, 1, 2, 3);
+            __m256i t2 = _mm256_mullo_epi64(t0, t1);
+#else
+            __m256i t2 = _mm256_setr_epi64x(0, stride, 2*stride, 3*stride);
+#endif
+            mVec = _mm256_i64gather_epi64((__int64 const*)baseAddr, t2, 8);
+            return *this;
+        }
+        // MGATHERU
+        UME_FORCE_INLINE SIMDVec_u & gatheru(SIMDVecMask<4> const & mask, uint64_t * baseAddr, uint64_t stride) {
+#if defined(__AVX512DQ__)
+            __m256i t0 = SET1_EPI64(stride);
+            __m256i t1 = _mm256_setr_epi64x(0, 1, 2, 3);
+            __m256i t2 = _mm256_mullo_epi64(t0, t1);
+#else
+            __m256i t2 = _mm256_setr_epi64x(0, stride, 2*stride, 3*stride);
+#endif
+            __m256i t3 = _mm256_i64gather_epi64((__int64 const*)baseAddr, t2, 8);
+#if defined(__AVX512VL__)
+            mVec = _mm256_mask_mov_epi64(mVec, mask.mMask, t3);
+#else
+            mVec = _mm512_castsi512_si256(
+                    _mm512_mask_mov_epi64(
+                        _mm512_castsi256_si512(mVec),
+                        mask.mMask,
+                        _mm512_castsi256_si512(t3)));
+#endif
+            return *this;
+        }
         // GATHERS
         UME_FORCE_INLINE SIMDVec_u & gather(uint64_t * baseAddr, uint64_t* indices) {
             __m256i t0 =_mm256_loadu_si256((__m256i *)indices);
@@ -1764,6 +1797,42 @@ namespace SIMD {
                     _mm512_castsi256_si512(t0)));
 #endif
             return *this;
+        }
+        // SCATTERU
+        UME_FORCE_INLINE uint64_t* scatteru(uint64_t* baseAddr, uint64_t stride) const {
+#if defined(__AVX512DQ__)
+            __m256i t0 = SET1_EPI64(stride);
+            __m256i t1 = _mm256_setr_epi64x(0, 1, 2, 3);
+            __m256i t2 = _mm256_mullo_epi64(t0, t1);
+#else
+            __m256i t2 = _mm256_setr_epi64x(0, stride, 2*stride, 3*stride);
+#endif
+#if defined(__AVX512VL__)
+            _mm256_i64scatter_epi64(baseAddr, t2, mVec, 8);
+#else
+            __m512i t3 = _mm512_castsi256_si512(t2);
+            __m512i t4 = _mm512_castsi256_si512(mVec);
+            _mm512_mask_i64scatter_epi64(baseAddr, 0xF, t3, t4, 8);
+#endif
+            return baseAddr;
+        }
+        // MSCATTERU
+        UME_FORCE_INLINE uint64_t*  scatteru(SIMDVecMask<4> const & mask, uint64_t* baseAddr, uint64_t stride) const {
+#if defined(__AVX512DQ__)
+            __m256i t0 = SET1_EPI64(stride);
+            __m256i t1 = _mm256_setr_epi64x(0, 1, 2, 3);
+            __m256i t2 = _mm256_mullo_epi64(t0, t1);
+#else
+            __m256i t2 = _mm256_setr_epi64x(0, stride, 2*stride, 3*stride);
+#endif
+#if defined(__AVX512VL__)
+            _mm256_mask_i64scatter_epi64(baseAddr, mask.mMask, t2, mVec, 8);
+#else
+            __m512i t3 = _mm512_castsi256_si512(t2);
+            __m512i t4 = _mm512_castsi256_si512(mVec);
+            _mm512_mask_i64scatter_epi64(baseAddr, mask.mMask, t3, t4, 8);
+#endif
+            return baseAddr;
         }
         // SCATTERS
         UME_FORCE_INLINE uint64_t* scatter(uint64_t* baseAddr, uint64_t* indices) const {

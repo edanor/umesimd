@@ -1158,6 +1158,22 @@ namespace SIMD {
             if (mask.mMask & 0x8000) t0 ^= raw[15];
             return t0;
         }
+        // GATHERU
+        UME_FORCE_INLINE SIMDVec_i & gatheru(int32_t * baseAddr, uint32_t stride) {
+            __m512i t0 = _mm512_set1_epi32(stride);
+            __m512i t1 = _mm512_setr_epi32(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
+            __m512i t2 = _mm512_mullo_epi32(t0, t1);
+            mVec = _mm512_i32gather_epi32(t2, baseAddr, 4);
+            return *this;
+        }
+        // MGATHERU
+        UME_FORCE_INLINE SIMDVec_i & gatheru(SIMDVecMask<16> const & mask, int32_t * baseAddr, uint32_t stride) {
+            __m512i t0 = _mm512_set1_epi32(stride);
+            __m512i t1 = _mm512_setr_epi32(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
+            __m512i t2 = _mm512_mullo_epi32(t0, t1);
+            mVec = _mm512_mask_i32gather_epi32(mVec, mask.mMask, t2, baseAddr, 4);
+            return *this;
+        }
         // GATHERS
         UME_FORCE_INLINE SIMDVec_i & gather(int32_t* baseAddr, uint32_t* indices) {
             __m512i t0 = _mm512_loadu_si512(indices);
@@ -1179,6 +1195,22 @@ namespace SIMD {
         UME_FORCE_INLINE SIMDVec_i & gather(SIMDVecMask<16> const & mask, int32_t* baseAddr, SIMDVec_i const & indices) {
             mVec = _mm512_mask_i32gather_epi32(mVec, mask.mMask, indices.mVec, baseAddr, 4);
             return *this;
+        }
+        // SCATTERU
+        UME_FORCE_INLINE int32_t* scatteru(int32_t* baseAddr, uint32_t stride) const {
+            __m512i t0 = _mm512_set1_epi32(stride);
+            __m512i t1 = _mm512_setr_epi32(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
+            __m512i t2 = _mm512_mullo_epi32(t0, t1);
+            _mm512_i32scatter_epi32(baseAddr, t2, mVec, 4);
+            return baseAddr;
+        }
+        // MSCATTERU
+        UME_FORCE_INLINE int32_t*  scatteru(SIMDVecMask<16> const & mask, int32_t* baseAddr, uint32_t stride) const {
+            __m512i t0 = _mm512_set1_epi32(stride);
+            __m512i t1 = _mm512_setr_epi32(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
+            __m512i t2 = _mm512_mullo_epi32(t0, t1);
+            _mm512_mask_i32scatter_epi32(baseAddr, mask.mMask, t2, mVec, 4);
+            return baseAddr;
         }
         // SCATTERS
         UME_FORCE_INLINE int32_t* scatter(int32_t* baseAddr, uint32_t* indices) {

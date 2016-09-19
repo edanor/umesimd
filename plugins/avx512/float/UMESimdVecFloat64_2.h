@@ -1430,6 +1430,25 @@ namespace SIMD {
         // IMIN
         // MIMIN
 
+        // GATHERU
+        UME_FORCE_INLINE SIMDVec_f & gatheru(double * baseAddr, uint64_t stride) {
+            __m128i t0 = _mm_set_epi64x(stride, 0);
+            mVec = _mm_i64gather_pd(baseAddr, t0, 8);
+            return *this;
+        }
+        // MGATHERU
+        UME_FORCE_INLINE SIMDVec_f & gatheru(SIMDVecMask<2> const & mask, double * baseAddr, uint64_t stride) {
+            __m128i t0 = _mm_set_epi64x(stride, 0);
+#if defined(__AVX512VL__)
+            mVec = _mm_mmask_i64gather_pd(mVec, mask.mMask, t0, baseAddr, 8);
+#else
+            __m512i t1 = _mm512_castsi128_si512(t0);
+            __m512d t2 = _mm512_castpd128_pd512(mVec);
+            __m512d t3 = _mm512_mask_i64gather_pd(t2, mask.mMask & 0x3, t1, baseAddr, 8);
+            mVec = _mm512_castpd512_pd128(t3);
+#endif
+            return *this;
+        }
         // GATHERS
         UME_FORCE_INLINE SIMDVec_f & gather(double* baseAddr, uint64_t* indices) {
             __m128i t0 = _mm_loadu_si128((__m128i*)indices);
@@ -1465,6 +1484,30 @@ namespace SIMD {
             mVec = _mm512_castpd512_pd128(t2);
 #endif
             return *this;
+        }
+        // SCATTERU
+        UME_FORCE_INLINE double* scatteru(double* baseAddr, uint64_t stride) const {
+            __m128i t0 = _mm_set_epi64x(stride, 0);
+#if defined(__AVX512VL__)
+            _mm_i64scatter_pd(baseAddr, t0, mVec, 8);
+#else
+            __m512i t1 = _mm512_castsi128_si512(t0);
+            __m512d t2 = _mm512_castpd128_pd512(mVec);
+            _mm512_mask_i64scatter_pd(baseAddr, 0x3, t1, t2, 8);
+#endif
+            return baseAddr;
+        }
+        // MSCATTERU
+        UME_FORCE_INLINE double*  scatteru(SIMDVecMask<2> const & mask, double* baseAddr, uint64_t stride) const {
+            __m128i t0 = _mm_set_epi64x(stride, 0);
+#if defined(__AVX512VL__)
+            _mm_mask_i64scatter_pd(baseAddr, mask.mMask, t0, mVec, 8);
+#else
+            __m512i t1 = _mm512_castsi128_si512(t0);
+            __m512d t2 = _mm512_castpd128_pd512(mVec);
+            _mm512_mask_i64scatter_pd(baseAddr, mask.mMask & 0x3, t1, t2, 8);
+#endif
+            return baseAddr;
         }
         // SCATTERS
         UME_FORCE_INLINE double* scatter(double* baseAddr, uint64_t* indices) {
