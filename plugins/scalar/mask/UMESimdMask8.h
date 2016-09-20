@@ -51,11 +51,11 @@ namespace SIMD {
         bool mMask[8];
 
     public:
-        inline SIMDVecMask() {}
+        UME_FORCE_INLINE SIMDVecMask() {}
 
         // Regardless of the mask representation, the interface should only allow initialization using 
         // standard bool or using equivalent mask
-        inline SIMDVecMask(bool m) {
+        UME_FORCE_INLINE SIMDVecMask(bool m) {
             mMask[0] = m;
             mMask[1] = m;
             mMask[2] = m;
@@ -67,7 +67,7 @@ namespace SIMD {
         }
 
         // LOAD-CONSTR - Construct by loading from memory
-        inline explicit SIMDVecMask(bool const * p) {
+        UME_FORCE_INLINE explicit SIMDVecMask(bool const * p) {
             mMask[0] = p[0];
             mMask[1] = p[1];
             mMask[2] = p[2];
@@ -78,7 +78,7 @@ namespace SIMD {
             mMask[7] = p[7];
         }
 
-        inline SIMDVecMask(bool m0, bool m1, bool m2, bool m3,
+        UME_FORCE_INLINE SIMDVecMask(bool m0, bool m1, bool m2, bool m3,
                            bool m4, bool m5, bool m6, bool m7) {
             mMask[0] = m0;
             mMask[1] = m1;
@@ -90,7 +90,7 @@ namespace SIMD {
             mMask[7] = m7;
         }
 
-        inline SIMDVecMask(SIMDVecMask const & mask) {
+        UME_FORCE_INLINE SIMDVecMask(SIMDVecMask const & mask) {
             mMask[0] = mask.mMask[0];
             mMask[1] = mask.mMask[1];
             mMask[2] = mask.mMask[2];
@@ -101,21 +101,21 @@ namespace SIMD {
             mMask[7] = mask.mMask[7];
         }
 
-        inline bool extract(uint32_t index) const {
+        UME_FORCE_INLINE bool extract(uint32_t index) const {
             return mMask[index];
         }
 
         // A non-modifying element-wise access operator
-        inline bool operator[] (uint32_t index) const {
+        UME_FORCE_INLINE bool operator[] (uint32_t index) const {
             return mMask[index];
         }
 
         // Element-wise modification operator
-        inline void insert(uint32_t index, bool x) {
+        UME_FORCE_INLINE void insert(uint32_t index, bool x) {
             mMask[index] = x;
         }
 
-        inline SIMDVecMask & operator= (SIMDVecMask const & mask) {
+        UME_FORCE_INLINE SIMDVecMask & operator= (SIMDVecMask const & mask) {
             mMask[0] = mask.mMask[0];
             mMask[1] = mask.mMask[1];
             mMask[2] = mask.mMask[2];

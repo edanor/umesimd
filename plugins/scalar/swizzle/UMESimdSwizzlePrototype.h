@@ -33,7 +33,6 @@
 
 #include <type_traits>
 #include "../../../UMESimdInterface.h"
-#include <immintrin.h>
 
 namespace UME {
 namespace SIMD {
@@ -47,35 +46,35 @@ namespace SIMD {
     private:
         uint32_t mMaskElements[VEC_LEN];
     public:
-        inline SIMDSwizzle() { };
+        UME_FORCE_INLINE SIMDSwizzle() { };
 
-        inline explicit SIMDSwizzle(uint32_t m0) {
+        UME_FORCE_INLINE explicit SIMDSwizzle(uint32_t m0) {
             UME_EMULATION_WARNING();
             for (unsigned int i = 0; i < VEC_LEN; i++) {
                 mMaskElements[i] = m0;
             }
         }
 
-        inline explicit SIMDSwizzle(uint32_t *m) {
+        UME_FORCE_INLINE explicit SIMDSwizzle(uint32_t *m) {
             UME_EMULATION_WARNING();
             for (unsigned int i = 0; i < VEC_LEN; i++) {
                 mMaskElements[i] = m[i];
             }
         }
 
-        inline uint32_t extract(uint32_t index) const {
+        UME_FORCE_INLINE uint32_t extract(uint32_t index) const {
             UME_EMULATION_WARNING();
             return mMaskElements[index];
         }
 
         // A non-modifying element-wise access operator
-        inline uint32_t operator[] (uint32_t index) const {
+        UME_FORCE_INLINE uint32_t operator[] (uint32_t index) const {
             UME_EMULATION_WARNING();
             return mMaskElements[index];
         }
 
         // Element-wise modification operator
-        inline void insert(uint32_t index, uint32_t x) {
+        UME_FORCE_INLINE void insert(uint32_t index, uint32_t x) {
             UME_EMULATION_WARNING();
             mMaskElements[index] = x;
         }

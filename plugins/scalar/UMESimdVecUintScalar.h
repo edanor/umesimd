@@ -33,7 +33,6 @@
 
 #include <type_traits>
 #include "../../UMESimdInterface.h"
-#include <immintrin.h>
 
 #include "UMESimdMaskScalar.h"
 #include "UMESimdSwizzleScalar.h"

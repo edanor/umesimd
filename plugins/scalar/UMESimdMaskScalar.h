@@ -33,7 +33,6 @@
 
 #include <type_traits>
 #include "../../UMESimdInterface.h"
-#include <immintrin.h>
 
 // ********************************************************************************************
 // MASK VECTOR TEMPLATE
