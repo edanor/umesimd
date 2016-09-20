@@ -947,34 +947,84 @@ namespace SIMD {
         // MLOG10
         // SIN
         UME_FORCE_INLINE SIMDVec_f sin() const {
+#if defined(UME_USE_SVML)
+            __m256d t0 = _mm256_sin_pd(mVec[0]);
+            __m256d t1 = _mm256_sin_pd(mVec[1]);
+            return SIMDVec_f(t0, t1);
+#else
             return VECTOR_EMULATION::sind<SIMDVec_f, SIMDVec_i<int64_t, 8>, SIMDVecMask<8>>(*this);
+#endif
         }
         // MSIN
         UME_FORCE_INLINE SIMDVec_f sin(SIMDVecMask<8> const & mask) const {
+#if defined(UME_USE_SVML)
+            __m256d t0 = _mm256_sin_pd(mVec[0]);
+            __m256d t1 = _mm256_sin_pd(mVec[1]);
+            __m256d t2 = BLEND_LO(mVec[0], t0, mask.mMask);
+            __m256d t3 = BLEND_HI(mVec[1], t1, mask.mMask);
+            return SIMDVec_f(t0, t1);
+#else
             return VECTOR_EMULATION::sind<SIMDVec_f, SIMDVec_i<int64_t, 8>, SIMDVecMask<8>>(mask, *this);
+#endif
         }
         // COS
         UME_FORCE_INLINE SIMDVec_f cos() const {
+#if defined(UME_USE_SVML)
+            __m256d t0 = _mm256_cos_pd(mVec[0]);
+            __m256d t1 = _mm256_cos_pd(mVec[1]);
+            return SIMDVec_f(t0, t1);
+#else
             return VECTOR_EMULATION::cosd<SIMDVec_f, SIMDVec_i<int64_t, 8>, SIMDVecMask<8>>(*this);
+#endif
         }
         // MCOS
         UME_FORCE_INLINE SIMDVec_f cos(SIMDVecMask<8> const & mask) const {
+#if defined(UME_USE_SVML)
+            __m256d t0 = _mm256_cos_pd(mVec[0]);
+            __m256d t1 = _mm256_cos_pd(mVec[1]);
+            __m256d t2 = BLEND_LO(mVec[0], t0, mask.mMask);
+            __m256d t3 = BLEND_HI(mVec[1], t1, mask.mMask);
+            return SIMDVec_f(t0, t1);
+#else
             return VECTOR_EMULATION::cosd<SIMDVec_f, SIMDVec_i<int64_t, 8>, SIMDVecMask<8>>(mask, *this);
+#endif
         }
         // SINCOS
         UME_FORCE_INLINE void sincos(SIMDVec_f & sinvec, SIMDVec_f & cosvec) const {
+        #if defined(UME_USE_SVML)
+            alignas(64) double raw_cos[8];
+            sinvec.mVec[0] = _mm256_sincos_pd((__m256d*)&raw_cos[0], mVec[0]);
+            sinvec.mVec[1] = _mm256_sincos_pd((__m256d*)&raw_cos[4], mVec[1]);
+            cosvec.mVec[0] = _mm256_load_pd(&raw_cos[0]);
+            cosvec.mVec[1] = _mm256_load_pd(&raw_cos[4]);
+        #else
             VECTOR_EMULATION::sincosd<SIMDVec_f, SIMDVec_i<int64_t, 8>, SIMDVecMask<8>>(*this, sinvec, cosvec);
+        #endif
         }
 
         // MSINCOS
         UME_FORCE_INLINE void sincos(SIMDVecMask<8> const & mask, SIMDVec_f & sinvec, SIMDVec_f & cosvec) const {
+        #if defined(UME_USE_SVML)
+            alignas(64) double raw_cos[8];
+            __m256d t0 = _mm256_sincos_pd((__m256d*)&raw_cos[0], mVec[0]);
+            __m256d t1 = _mm256_sincos_pd((__m256d*)&raw_cos[4], mVec[1]);
+            sinvec.mVec[0] = BLEND_LO(mVec[0], t0, mask.mMask);
+            sinvec.mVec[1] = BLEND_HI(mVec[1], t1, mask.mMask);
+            
+            __m256d t2 = _mm256_load_pd(&raw_cos[0]);
+            __m256d t3 = _mm256_load_pd(&raw_cos[4]);
+            
+            cosvec.mVec[0] = BLEND_LO(mVec[0], t2, mask.mMask);
+            cosvec.mVec[1] = BLEND_HI(mVec[1], t3, mask.mMask);
+        #else
             sinvec = VECTOR_EMULATION::sind<SIMDVec_f, SIMDVec_i<int64_t, 8>, SIMDVecMask<8>>(mask, *this);
             cosvec = VECTOR_EMULATION::cosd<SIMDVec_f, SIMDVec_i<int64_t, 8>, SIMDVecMask<8>>(mask, *this);
+        #endif
         }
-        // TAN       - Tangent
-        // MTAN      - Masked tangent
-        // CTAN      - Cotangent
-        // MCTAN     - Masked cotangent
+        // TAN
+        // MTAN
+        // CTAN
+        // MCTAN
 
         // PROMOTE
         // -
