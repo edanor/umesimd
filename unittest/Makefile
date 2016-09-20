@@ -15,6 +15,7 @@ ifeq ($(CXX), clang++)
 endif
 ifeq ($(CXX), icc)
 	COMPILER_PREFIX=icc
+	CXXFLAGS+=-DUME_USE_SVML
 endif
 
 
