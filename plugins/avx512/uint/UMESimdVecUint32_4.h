@@ -1829,7 +1829,7 @@ namespace SIMD {
         }
         // LSHS
         UME_FORCE_INLINE SIMDVec_u lsh(uint32_t b) const {
-            __m128i t0 = _mm_cvtsi32_si128(b);
+            __m128i t0 = _mm_set1_epi32(b);
             __m128i t1 = _mm_sllv_epi32(mVec, t0);
             return SIMDVec_u(t1);
         }
@@ -1839,7 +1839,7 @@ namespace SIMD {
         // MLSHS
         UME_FORCE_INLINE SIMDVec_u lsh(SIMDVecMask<4> const & mask, uint32_t b) const {
 #if defined(__AVX512VL__)
-            __m128i t0 = _mm_cvtsi32_si128(b);
+            __m128i t0 = _mm_set1_epi32(b);
             __m128i t1 = _mm_mask_sllv_epi32(mVec, mask.mMask, mVec, t0);
             return SIMDVec_u(t1);
 #else
@@ -1863,13 +1863,13 @@ namespace SIMD {
         }
         // LSHSA
         UME_FORCE_INLINE SIMDVec_u & lsha(uint32_t b) {
-            __m128i t0 = _mm_cvtsi32_si128(b);
+            __m128i t0 = _mm_set1_epi32(b);
             mVec = _mm_sll_epi32(mVec, t0);
             return *this;
         }
         // MLSHSA
         UME_FORCE_INLINE SIMDVec_u & lsha(SIMDVecMask<4> const & mask, uint32_t b) {
-            __m128i t0 = _mm_cvtsi32_si128(b);
+            __m128i t0 = _mm_set1_epi32(b);
             mVec = _mm_mask_sll_epi32(mVec, mask.mMask, mVec, t0);
             return *this;
         }*/
@@ -1879,7 +1879,7 @@ namespace SIMD {
             return SIMDVec_u(t0);
         }
         UME_FORCE_INLINE SIMDVec_u operator>> (SIMDVec_u const & b) const {
-            return lsh(b);
+            return rsh(b);
         }
         // MRSHV
         UME_FORCE_INLINE SIMDVec_u rsh(SIMDVecMask<4> const & mask, SIMDVec_u const & b) const {
@@ -1896,17 +1896,17 @@ namespace SIMD {
         }
         // RSHS
         UME_FORCE_INLINE SIMDVec_u rsh(uint32_t b) const {
-            __m128i t0 = _mm_cvtsi32_si128(b);
+            __m128i t0 = _mm_set1_epi32(b);
             __m128i t1 = _mm_srlv_epi32(mVec, t0);
             return SIMDVec_u(t1);
         }
         UME_FORCE_INLINE SIMDVec_u operator>> (uint32_t b) const {
-            return lsh(b);
+            return rsh(b);
         }
         // MRSHS
         UME_FORCE_INLINE SIMDVec_u rsh(SIMDVecMask<4> const & mask, uint32_t b) const {
 #if defined(__AVX512VL__)
-            __m128i t0 = _mm_cvtsi32_si128(b);
+            __m128i t0 = _mm_set1_epi32(b);
             __m128i t1 = _mm_mask_srlv_epi32(mVec, mask.mMask, mVec, t0);
             return SIMDVec_u(t1);
 #else
@@ -1930,13 +1930,13 @@ namespace SIMD {
         }
         // RSHSA
         UME_FORCE_INLINE SIMDVec_u & rsha(uint32_t b) {
-            __m128i t0 = _mm_cvtsi32_si128(b);
+            __m128i t0 = _mm_set1_epi32(b);
             mVec = _mm_srl_epi32(mVec, t0);
             return *this;
         }
         // MRSHSA
         UME_FORCE_INLINE SIMDVec_u & rsha(SIMDVecMask<4> const & mask, uint32_t b) {
-            __m128i t0 = _mm_cvtsi32_si128(b);
+            __m128i t0 = _mm_set1_epi32(b);
             mVec = _mm_mask_srl_epi32(mVec, mask.mMask, mVec, t0);
             return *this;
         }*/

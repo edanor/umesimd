@@ -7712,429 +7712,1099 @@ void genericMIMINTest_random()
     }
 }
 
-template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
-void genericLSHVTest() 
+template<typename SCALAR_TYPE>
+uint32_t MAX_BIT_COUNT_helper() {
+    return sizeof(SCALAR_TYPE) * 8 - 1;
+}
+
+template<>
+uint32_t MAX_BIT_COUNT_helper<int8_t>();
+template<>
+uint32_t MAX_BIT_COUNT_helper<int16_t>();
+template<>
+uint32_t MAX_BIT_COUNT_helper<int32_t>();
+template<>
+uint32_t MAX_BIT_COUNT_helper<int64_t>();
+
+template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, typename SCALAR_UINT_TYPE, int VEC_LEN>
+void genericLSHVTest_random()
 {
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    // The C++ standard states (5.8.1):
+    // "The behavior is undefined if the right operand is negative, or greater 
+    //  than or equal to the length in bits of the promoted left operand."
+    // Thus we have to choose RHS operand so that it is lower than mentioned length in bits.
+    // We already ensure that RHS operand is non-negative, by using 'unsigned' type.
+
+    const uint32_t MAX_BIT_COUNT = MAX_BIT_COUNT_helper<SCALAR_TYPE>();
+
+    // The C++ standard states (5.8.2):
+    // "Otherwise, if E1 has a signed type and non-negative value, and E1×2^E2 is representable
+    //  in the result type, then that is the resulting value; otherwise, the behavior is undefined."
+    // Two conclusions from that point:
+    //  - E1 has to be non-negative
+    //  - E1x2^E2 has to be well defined.
+
     {
         SCALAR_TYPE values[VEC_LEN];
-        VEC_TYPE vec0(DATA_SET::inputs::inputA);
-        UINT_VEC_TYPE vec1(DATA_SET::inputs::inputShiftA);
+        SCALAR_TYPE output[VEC_LEN];
+        SCALAR_TYPE inputA[VEC_LEN];
+        SCALAR_UINT_TYPE inputB[VEC_LEN];
+
+        for (int i = 0; i < VEC_LEN; i++) {
+            inputB[i] = randomValue<SCALAR_UINT_TYPE>(gen) % MAX_BIT_COUNT;
+            uint32_t inputA_range = 1 << (MAX_BIT_COUNT - inputB[i]);
+            inputA[i] = randomValue<SCALAR_TYPE>(gen) % inputA_range;
+            output[i] = inputA[i] << inputB[i];
+        }
+
+        VEC_TYPE vec0(inputA);
+        UINT_VEC_TYPE vec1(inputB);
         VEC_TYPE vec2 = vec0.lsh(vec1);
         vec2.store(values);
-        bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::LSHV, VEC_LEN, SCALAR_TYPE(0.01f));
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
         vec0.store(values);
-        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
-        CHECK_CONDITION((inRange && isUnmodified), "LSHV");
+        bool isUnmodified = valuesInRange(values, inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "LSHV gen");
     }
     {
         SCALAR_TYPE values[VEC_LEN];
-        VEC_TYPE vec0(DATA_SET::inputs::inputA);
-        UINT_VEC_TYPE vec1(DATA_SET::inputs::inputShiftA);
+        SCALAR_TYPE output[VEC_LEN];
+        SCALAR_TYPE inputA[VEC_LEN];
+        SCALAR_UINT_TYPE inputB[VEC_LEN];
+
+        for (int i = 0; i < VEC_LEN; i++) {
+            inputB[i] = randomValue<SCALAR_UINT_TYPE>(gen) % MAX_BIT_COUNT;
+            uint32_t inputA_range = 1 << (MAX_BIT_COUNT - inputB[i]);
+            inputA[i] = randomValue<SCALAR_TYPE>(gen) % inputA_range;
+            output[i] = inputA[i] << inputB[i];
+        }
+
+        VEC_TYPE vec0(inputA);
+        UINT_VEC_TYPE vec1(inputB);
         VEC_TYPE vec2 = UME::SIMD::FUNCTIONS::lsh(vec0, vec1);
         vec2.store(values);
-        bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::LSHV, VEC_LEN, SCALAR_TYPE(0.01f));
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
         vec0.store(values);
-        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
-        CHECK_CONDITION((inRange && isUnmodified), "LSHV");
+        bool isUnmodified = valuesInRange(values, inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "LSHV (function) gen");
     }
     {
         SCALAR_TYPE values[VEC_LEN];
-        VEC_TYPE vec0(DATA_SET::inputs::inputA);
-        UINT_VEC_TYPE vec1(DATA_SET::inputs::inputShiftA);
+        SCALAR_TYPE output[VEC_LEN];
+        SCALAR_TYPE inputA[VEC_LEN];
+        SCALAR_UINT_TYPE inputB[VEC_LEN];
+
+        for (int i = 0; i < VEC_LEN; i++) {
+            inputB[i] = randomValue<SCALAR_UINT_TYPE>(gen) % MAX_BIT_COUNT;
+            uint32_t inputA_range = 1 << (MAX_BIT_COUNT - inputB[i]);
+            inputA[i] = randomValue<SCALAR_TYPE>(gen) % inputA_range;
+            output[i] = inputA[i] << inputB[i];
+        }
+
+        VEC_TYPE vec0(inputA);
+        UINT_VEC_TYPE vec1(inputB);
         VEC_TYPE vec2 = vec0 << vec1;
         vec2.store(values);
-        bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::LSHV, VEC_LEN, SCALAR_TYPE(0.01f));
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
         vec0.store(values);
-        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
-        CHECK_CONDITION((inRange && isUnmodified), "LSHV (operator<<)");
+        bool isUnmodified = valuesInRange(values, inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "LSHV (operator<<) gen");
     }
 }
 
-template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
-void genericMLSHVTest() 
+template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, typename SCALAR_UINT_TYPE, typename MASK_TYPE, int VEC_LEN>
+void genericMLSHVTest_random()
 {
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    // The C++ standard states (5.8.1):
+    // "The behavior is undefined if the right operand is negative, or greater 
+    //  than or equal to the length in bits of the promoted left operand."
+    // Thus we have to choose RHS operand so that it is lower than mentioned length in bits.
+    // We already ensure that RHS operand is non-negative, by using 'unsigned' type.
+
+    const uint32_t MAX_BIT_COUNT = MAX_BIT_COUNT_helper<SCALAR_TYPE>();
+
+    // The C++ standard states (5.8.2):
+    // "Otherwise, if E1 has a signed type and non-negative value, and E1×2^E2 is representable
+    //  in the result type, then that is the resulting value; otherwise, the behavior is undefined."
+    // Two conclusions from that point:
+    //  - E1 has to be non-negative
+    //  - E1x2^E2 has to be well defined.
+
     {
+        bool inputMask[VEC_LEN];
         SCALAR_TYPE values[VEC_LEN];
-        VEC_TYPE vec0(DATA_SET::inputs::inputA);
-        UINT_VEC_TYPE vec1(DATA_SET::inputs::inputShiftA);
-        MASK_TYPE mask0(DATA_SET::inputs::maskA);
-        VEC_TYPE vec2 = vec0.lsh(mask0, vec1);
+        SCALAR_TYPE output[VEC_LEN];
+        SCALAR_TYPE inputA[VEC_LEN];
+        SCALAR_UINT_TYPE inputB[VEC_LEN];
+
+        for (int i = 0; i < VEC_LEN; i++) {
+            inputMask[i] = randomValue<bool>(gen);
+            inputB[i] = randomValue<SCALAR_UINT_TYPE>(gen) % MAX_BIT_COUNT;
+            uint32_t inputA_range = 1 << (MAX_BIT_COUNT - inputB[i]);
+            inputA[i] = randomValue<SCALAR_TYPE>(gen) % inputA_range;
+            if(inputMask[i] == true) output[i] = inputA[i] << inputB[i];
+            else output[i] = inputA[i];
+        }
+
+        MASK_TYPE mask(inputMask);
+        VEC_TYPE vec0(inputA);
+        UINT_VEC_TYPE vec1(inputB);
+        VEC_TYPE vec2 = vec0.lsh(mask, vec1);
         vec2.store(values);
-        bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MLSHV, VEC_LEN, SCALAR_TYPE(0.01f));
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
         vec0.store(values);
-        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
-        CHECK_CONDITION((inRange && isUnmodified), "MLSHV");
+        bool isUnmodified = valuesInRange(values, inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MLSHV gen");
     }
     {
+        bool inputMask[VEC_LEN];
         SCALAR_TYPE values[VEC_LEN];
-        VEC_TYPE vec0(DATA_SET::inputs::inputA);
-        UINT_VEC_TYPE vec1(DATA_SET::inputs::inputShiftA);
-        MASK_TYPE mask0(DATA_SET::inputs::maskA);
-        VEC_TYPE vec2 = UME::SIMD::FUNCTIONS::lsh(mask0, vec0, vec1);
+        SCALAR_TYPE output[VEC_LEN];
+        SCALAR_TYPE inputA[VEC_LEN];
+        SCALAR_UINT_TYPE inputB[VEC_LEN];
+
+        for (int i = 0; i < VEC_LEN; i++) {
+            inputMask[i] = randomValue<bool>(gen);
+            inputB[i] = randomValue<SCALAR_UINT_TYPE>(gen) % MAX_BIT_COUNT;
+            uint32_t inputA_range = 1 << (MAX_BIT_COUNT - inputB[i]);
+            inputA[i] = randomValue<SCALAR_TYPE>(gen) % inputA_range;
+            if (inputMask[i] == true) output[i] = inputA[i] << inputB[i];
+            else output[i] = inputA[i];
+        }
+
+        MASK_TYPE mask(inputMask);
+        VEC_TYPE vec0(inputA);
+        UINT_VEC_TYPE vec1(inputB);
+        VEC_TYPE vec2 = UME::SIMD::FUNCTIONS::lsh(mask, vec0, vec1);
         vec2.store(values);
-        bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MLSHV, VEC_LEN, SCALAR_TYPE(0.01f));
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
         vec0.store(values);
-        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
-        CHECK_CONDITION((inRange && isUnmodified), "MLSHV");
+        bool isUnmodified = valuesInRange(values, inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MLSHV (function) gen");
     }
 }
 
-template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
-void genericLSHSTest() 
+template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, typename SCALAR_UINT_TYPE, int VEC_LEN>
+void genericLSHSTest_random()
 {
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    // The C++ standard states (5.8.1):
+    // "The behavior is undefined if the right operand is negative, or greater 
+    //  than or equal to the length in bits of the promoted left operand."
+    // Thus we have to choose RHS operand so that it is lower than mentioned length in bits.
+    // We already ensure that RHS operand is non-negative, by using 'unsigned' type.
+
+    const uint32_t MAX_BIT_COUNT = MAX_BIT_COUNT_helper<SCALAR_TYPE>();
+
+    // The C++ standard states (5.8.2):
+    // "Otherwise, if E1 has a signed type and non-negative value, and E1×2^E2 is representable
+    //  in the result type, then that is the resulting value; otherwise, the behavior is undefined."
+    // Two conclusions from that point:
+    //  - E1 has to be non-negative
+    //  - E1x2^E2 has to be well defined.
+
     {
         SCALAR_TYPE values[VEC_LEN];
-        VEC_TYPE vec0(DATA_SET::inputs::inputA);
-        VEC_TYPE vec1 = vec0.lsh(DATA_SET::inputs::inputShiftScalarA);
+        SCALAR_TYPE output[VEC_LEN];
+        SCALAR_TYPE inputA[VEC_LEN];
+        SCALAR_UINT_TYPE inputB;
+
+        inputB = randomValue<SCALAR_UINT_TYPE>(gen) % MAX_BIT_COUNT;
+        for (int i = 0; i < VEC_LEN; i++) {
+            uint32_t inputA_range = 1 << (MAX_BIT_COUNT - inputB);
+            inputA[i] = randomValue<SCALAR_TYPE>(gen) % inputA_range;
+            output[i] = inputA[i] << inputB;
+        }
+
+        VEC_TYPE vec0(inputA);
+        VEC_TYPE vec1 = vec0.lsh(inputB);
         vec1.store(values);
-        bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::LSHS, VEC_LEN, SCALAR_TYPE(0.01f));
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
         vec0.store(values);
-        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
-        CHECK_CONDITION((inRange && isUnmodified), "LSHS");
+        bool isUnmodified = valuesInRange(values, inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "LSHS gen");
     }
     {
         SCALAR_TYPE values[VEC_LEN];
-        VEC_TYPE vec0(DATA_SET::inputs::inputA);
-        VEC_TYPE vec1 = UME::SIMD::FUNCTIONS::lsh(vec0, DATA_SET::inputs::inputShiftScalarA);
+        SCALAR_TYPE output[VEC_LEN];
+        SCALAR_TYPE inputA[VEC_LEN];
+        SCALAR_UINT_TYPE inputB;
+
+        inputB = randomValue<SCALAR_UINT_TYPE>(gen) % MAX_BIT_COUNT;
+        for (int i = 0; i < VEC_LEN; i++) {
+            uint32_t inputA_range = 1 << (MAX_BIT_COUNT - inputB);
+            inputA[i] = randomValue<SCALAR_TYPE>(gen) % inputA_range;
+            output[i] = inputA[i] << inputB;
+        }
+
+        VEC_TYPE vec0(inputA);
+        VEC_TYPE vec1 = UME::SIMD::FUNCTIONS::lsh(vec0, inputB);
         vec1.store(values);
-        bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::LSHS, VEC_LEN, SCALAR_TYPE(0.01f));
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
         vec0.store(values);
-        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
-        CHECK_CONDITION((inRange && isUnmodified), "LSHS(function - RHS scalar)");
+        bool isUnmodified = valuesInRange(values, inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "LSHS (function) gen");
     }
     {
         SCALAR_TYPE values[VEC_LEN];
-        VEC_TYPE vec0(DATA_SET::inputs::inputA);
-        VEC_TYPE vec1 = vec0 << DATA_SET::inputs::inputShiftScalarA;
+        SCALAR_TYPE output[VEC_LEN];
+        SCALAR_TYPE inputA[VEC_LEN];
+        SCALAR_UINT_TYPE inputB;
+
+        inputB = randomValue<SCALAR_UINT_TYPE>(gen) % MAX_BIT_COUNT;
+        for (int i = 0; i < VEC_LEN; i++) {
+            uint32_t inputA_range = 1 << (MAX_BIT_COUNT - inputB);
+            inputA[i] = randomValue<SCALAR_TYPE>(gen) % inputA_range;
+            output[i] = inputA[i] << inputB;
+        }
+
+        VEC_TYPE vec0(inputA);
+        VEC_TYPE vec1 = vec0 << inputB;
         vec1.store(values);
-        bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::LSHS, VEC_LEN, SCALAR_TYPE(0.01f));
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
         vec0.store(values);
-        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
-        CHECK_CONDITION((inRange && isUnmodified), "LSHS(operator<< RHS scalar)");
-    }
-    {
-        SCALAR_TYPE values[VEC_LEN];
-        VEC_TYPE vec0(DATA_SET::inputs::inputA);
-        VEC_TYPE vec1 = UME::SIMD::FUNCTIONS::lsh(DATA_SET::inputs::inputShiftScalarA, vec0);
-        vec1.store(values);
-        bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::LSHS, VEC_LEN, SCALAR_TYPE(0.01f));
-        vec0.store(values);
-        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
-        //CHECK_CONDITION((inRange && isUnmodified), "LSHS(function - LHS scalar)");
-        // TODO: this test requires separate output data
-    }
-    {
-        SCALAR_TYPE values[VEC_LEN];
-        VEC_TYPE vec0(DATA_SET::inputs::inputA);
-        VEC_TYPE vec1 = DATA_SET::inputs::inputShiftScalarA << vec0;
-        vec1.store(values);
-        bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::LSHS, VEC_LEN, SCALAR_TYPE(0.01f));
-        vec0.store(values);
-        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
-        //CHECK_CONDITION((inRange && isUnmodified), "LSHS(operator<< - LHS scalar)");
-        // TODO: this test requires separate output data
+        bool isUnmodified = valuesInRange(values, inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "LSHS (operator<<) gen");
     }
 }
 
-template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
-void genericMLSHSTest() 
+template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, typename SCALAR_UINT_TYPE, typename MASK_TYPE, int VEC_LEN>
+void genericMLSHSTest_random()
 {
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    // The C++ standard states (5.8.1):
+    // "The behavior is undefined if the right operand is negative, or greater 
+    //  than or equal to the length in bits of the promoted left operand."
+    // Thus we have to choose RHS operand so that it is lower than mentioned length in bits.
+    // We already ensure that RHS operand is non-negative, by using 'unsigned' type.
+
+    const uint32_t MAX_BIT_COUNT = MAX_BIT_COUNT_helper<SCALAR_TYPE>();
+
+    // The C++ standard states (5.8.2):
+    // "Otherwise, if E1 has a signed type and non-negative value, and E1×2^E2 is representable
+    //  in the result type, then that is the resulting value; otherwise, the behavior is undefined."
+    // Two conclusions from that point:
+    //  - E1 has to be non-negative
+    //  - E1x2^E2 has to be well defined.
+
     {
+        bool inputMask[VEC_LEN];
         SCALAR_TYPE values[VEC_LEN];
-        VEC_TYPE vec0(DATA_SET::inputs::inputA);
-        MASK_TYPE mask0(DATA_SET::inputs::maskA);
-        VEC_TYPE vec1 = vec0.lsh(mask0, DATA_SET::inputs::inputShiftScalarA);
+        SCALAR_TYPE output[VEC_LEN];
+        SCALAR_TYPE inputA[VEC_LEN];
+        SCALAR_UINT_TYPE inputB;
+
+        inputB = randomValue<SCALAR_UINT_TYPE>(gen) % MAX_BIT_COUNT;
+        for (int i = 0; i < VEC_LEN; i++) {
+            inputMask[i] = randomValue<bool>(gen);
+            uint32_t inputA_range = 1 << (MAX_BIT_COUNT - inputB);
+            inputA[i] = randomValue<SCALAR_TYPE>(gen) % inputA_range;
+            if (inputMask[i] == true) output[i] = inputA[i] << inputB;
+            else output[i] = inputA[i];
+        }
+
+        MASK_TYPE mask(inputMask);
+        VEC_TYPE vec0(inputA);
+        VEC_TYPE vec1 = vec0.lsh(mask, inputB);
         vec1.store(values);
-        bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MLSHS, VEC_LEN, SCALAR_TYPE(0.01f));
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
         vec0.store(values);
-        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
-        CHECK_CONDITION((inRange && isUnmodified), "MLSHS");
+        bool isUnmodified = valuesInRange(values, inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MLSHS gen");
     }
     {
+        bool inputMask[VEC_LEN];
         SCALAR_TYPE values[VEC_LEN];
-        VEC_TYPE vec0(DATA_SET::inputs::inputA);
-        MASK_TYPE mask0(DATA_SET::inputs::maskA);
-        VEC_TYPE vec1 = UME::SIMD::FUNCTIONS::lsh(mask0, vec0, DATA_SET::inputs::inputShiftScalarA);
+        SCALAR_TYPE output[VEC_LEN];
+        SCALAR_TYPE inputA[VEC_LEN];
+        SCALAR_UINT_TYPE inputB;
+
+        inputB = randomValue<SCALAR_UINT_TYPE>(gen) % MAX_BIT_COUNT;
+        for (int i = 0; i < VEC_LEN; i++) {
+            inputMask[i] = randomValue<bool>(gen);
+            uint32_t inputA_range = 1 << (MAX_BIT_COUNT - inputB);
+            inputA[i] = randomValue<SCALAR_TYPE>(gen) % inputA_range;
+            if (inputMask[i] == true) output[i] = inputA[i] << inputB;
+            else output[i] = inputA[i];
+        }
+
+        MASK_TYPE mask(inputMask);
+        VEC_TYPE vec0(inputA);
+        VEC_TYPE vec1 = UME::SIMD::FUNCTIONS::lsh(mask, vec0, inputB);
         vec1.store(values);
-        bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MLSHS, VEC_LEN, SCALAR_TYPE(0.01f));
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
         vec0.store(values);
-        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
-        CHECK_CONDITION((inRange && isUnmodified), "MLSHS(function - RHS scalar)");
-    }
-    {
-        SCALAR_TYPE values[VEC_LEN];
-        VEC_TYPE vec0(DATA_SET::inputs::inputA);
-        MASK_TYPE mask0(DATA_SET::inputs::maskA);
-        VEC_TYPE vec1 = UME::SIMD::FUNCTIONS::lsh(mask0, DATA_SET::inputs::inputShiftScalarA, vec0);
-        vec1.store(values);
-        bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MLSHS, VEC_LEN, SCALAR_TYPE(0.01f));
-        vec0.store(values);
-        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
-        //CHECK_CONDITION((inRange && isUnmodified), "MLSHS(function - LHS scalar)");
-        // TOOO: This test requires separate output data
+        bool isUnmodified = valuesInRange(values, inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MLSHS (function) gen");
     }
 }
 
-template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
-void genericLSHVATest() 
+template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, typename SCALAR_UINT_TYPE, int VEC_LEN>
+void genericLSHVATest_random()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    UINT_VEC_TYPE vec1(DATA_SET::inputs::inputShiftA);
-    vec0.lsha(vec1);
-    vec0.store(values);
-    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::LSHV, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "LSHVA");
-}
-    
-template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
-void genericMLSHVATest() 
-{
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    UINT_VEC_TYPE vec1(DATA_SET::inputs::inputShiftA);
-    MASK_TYPE mask0(DATA_SET::inputs::maskA);
-    vec0.lsha(mask0, vec1);
-    vec0.store(values);
-    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MLSHV, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "MLSHVA");
-}
+    std::random_device rd;
+    std::mt19937 gen(rd());
 
-template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
-void genericLSHSATest() 
-{
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    vec0.lsha(DATA_SET::inputs::inputShiftScalarA);
-    vec0.store(values);
-    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::LSHS, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "LSHSA");
-}
-    
-template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
-void genericMLSHSATest() 
-{
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    MASK_TYPE mask0(DATA_SET::inputs::maskA);
-    vec0.lsha(mask0, DATA_SET::inputs::inputShiftScalarA);
-    vec0.store(values);
-    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MLSHS, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "MLSHSA");
-} 
+    // The C++ standard states (5.8.1):
+    // "The behavior is undefined if the right operand is negative, or greater 
+    //  than or equal to the length in bits of the promoted left operand."
+    // Thus we have to choose RHS operand so that it is lower than mentioned length in bits.
+    // We already ensure that RHS operand is non-negative, by using 'unsigned' type.
 
-template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
-void genericRSHVTest()
-{
+    const uint32_t MAX_BIT_COUNT = MAX_BIT_COUNT_helper<SCALAR_TYPE>();
+
+    // The C++ standard states (5.8.2):
+    // "Otherwise, if E1 has a signed type and non-negative value, and E1×2^E2 is representable
+    //  in the result type, then that is the resulting value; otherwise, the behavior is undefined."
+    // Two conclusions from that point:
+    //  - E1 has to be non-negative
+    //  - E1x2^E2 has to be well defined.
+
     {
         SCALAR_TYPE values[VEC_LEN];
-        VEC_TYPE vec0(DATA_SET::inputs::inputA);
-        UINT_VEC_TYPE vec1(DATA_SET::inputs::inputShiftA);
+        SCALAR_TYPE output[VEC_LEN];
+        SCALAR_TYPE inputA[VEC_LEN];
+        SCALAR_UINT_TYPE inputB[VEC_LEN];
+
+        for (int i = 0; i < VEC_LEN; i++) {
+            inputB[i] = randomValue<SCALAR_UINT_TYPE>(gen) % MAX_BIT_COUNT;
+            uint32_t inputA_range = 1 << (MAX_BIT_COUNT - inputB[i]);
+            inputA[i] = randomValue<SCALAR_TYPE>(gen) % inputA_range;
+            output[i] = inputA[i] << inputB[i];
+        }
+
+        VEC_TYPE vec0(inputA);
+        UINT_VEC_TYPE vec1(inputB);
+        vec0.lsha(vec1);
+        vec0.store(values);
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "LSHVA gen");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        SCALAR_TYPE output[VEC_LEN];
+        SCALAR_TYPE inputA[VEC_LEN];
+        SCALAR_UINT_TYPE inputB[VEC_LEN];
+
+        for (int i = 0; i < VEC_LEN; i++) {
+            inputB[i] = randomValue<SCALAR_UINT_TYPE>(gen) % MAX_BIT_COUNT;
+            uint32_t inputA_range = 1 << (MAX_BIT_COUNT - inputB[i]);
+            inputA[i] = randomValue<SCALAR_TYPE>(gen) % inputA_range;
+            output[i] = inputA[i] << inputB[i];
+        }
+
+        VEC_TYPE vec0(inputA);
+        UINT_VEC_TYPE vec1(inputB);
+        vec0 <<= vec1;
+        vec0.store(values);
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "LSHVA (operator<<=) gen");
+    }
+}
+
+template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, typename SCALAR_UINT_TYPE, typename MASK_TYPE, int VEC_LEN>
+void genericMLSHVATest_random()
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    // The C++ standard states (5.8.1):
+    // "The behavior is undefined if the right operand is negative, or greater 
+    //  than or equal to the length in bits of the promoted left operand."
+    // Thus we have to choose RHS operand so that it is lower than mentioned length in bits.
+    // We already ensure that RHS operand is non-negative, by using 'unsigned' type.
+
+    const uint32_t MAX_BIT_COUNT = MAX_BIT_COUNT_helper<SCALAR_TYPE>();
+
+    // The C++ standard states (5.8.2):
+    // "Otherwise, if E1 has a signed type and non-negative value, and E1×2^E2 is representable
+    //  in the result type, then that is the resulting value; otherwise, the behavior is undefined."
+    // Two conclusions from that point:
+    //  - E1 has to be non-negative
+    //  - E1x2^E2 has to be well defined.
+
+    {
+        bool inputMask[VEC_LEN];
+        SCALAR_TYPE values[VEC_LEN];
+        SCALAR_TYPE output[VEC_LEN];
+        SCALAR_TYPE inputA[VEC_LEN];
+        SCALAR_UINT_TYPE inputB[VEC_LEN];
+
+        for (int i = 0; i < VEC_LEN; i++) {
+            inputMask[i] = randomValue<bool>(gen);
+            inputB[i] = randomValue<SCALAR_UINT_TYPE>(gen) % MAX_BIT_COUNT;
+            uint32_t inputA_range = 1 << (MAX_BIT_COUNT - inputB[i]);
+            inputA[i] = randomValue<SCALAR_TYPE>(gen) % inputA_range;
+            if (inputMask[i] == true) output[i] = inputA[i] << inputB[i];
+            else output[i] = inputA[i];
+        }
+
+        MASK_TYPE mask(inputMask);
+        VEC_TYPE vec0(inputA);
+        UINT_VEC_TYPE vec1(inputB);
+        vec0.lsha(mask, vec1);
+        vec0.store(values);
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "MLSHVA gen");
+    }
+}
+
+template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, typename SCALAR_UINT_TYPE, int VEC_LEN>
+void genericLSHSATest_random()
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    // The C++ standard states (5.8.1):
+    // "The behavior is undefined if the right operand is negative, or greater 
+    //  than or equal to the length in bits of the promoted left operand."
+    // Thus we have to choose RHS operand so that it is lower than mentioned length in bits.
+    // We already ensure that RHS operand is non-negative, by using 'unsigned' type.
+
+    const uint32_t MAX_BIT_COUNT = MAX_BIT_COUNT_helper<SCALAR_TYPE>();
+
+    // The C++ standard states (5.8.2):
+    // "Otherwise, if E1 has a signed type and non-negative value, and E1×2^E2 is representable
+    //  in the result type, then that is the resulting value; otherwise, the behavior is undefined."
+    // Two conclusions from that point:
+    //  - E1 has to be non-negative
+    //  - E1x2^E2 has to be well defined.
+
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        SCALAR_TYPE output[VEC_LEN];
+        SCALAR_TYPE inputA[VEC_LEN];
+        SCALAR_UINT_TYPE inputB;
+
+        inputB = randomValue<SCALAR_UINT_TYPE>(gen) % MAX_BIT_COUNT;
+        for (int i = 0; i < VEC_LEN; i++) {
+            uint32_t inputA_range = 1 << (MAX_BIT_COUNT - inputB);
+            inputA[i] = randomValue<SCALAR_TYPE>(gen) % inputA_range;
+            output[i] = inputA[i] << inputB;
+        }
+
+        VEC_TYPE vec0(inputA);
+        vec0.lsha(inputB);
+        vec0.store(values);
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "LSHSA gen");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        SCALAR_TYPE output[VEC_LEN];
+        SCALAR_TYPE inputA[VEC_LEN];
+        SCALAR_UINT_TYPE inputB;
+
+        inputB = randomValue<SCALAR_UINT_TYPE>(gen) % MAX_BIT_COUNT;
+        for (int i = 0; i < VEC_LEN; i++) {
+            uint32_t inputA_range = 1 << (MAX_BIT_COUNT - inputB);
+            inputA[i] = randomValue<SCALAR_TYPE>(gen) % inputA_range;
+            output[i] = inputA[i] << inputB;
+        }
+
+        VEC_TYPE vec0(inputA);
+        vec0 <<= inputB;
+        vec0.store(values);
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "LSHSA (operator<<=) gen");
+    }
+}
+
+template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, typename SCALAR_UINT_TYPE, typename MASK_TYPE, int VEC_LEN>
+void genericMLSHSATest_random()
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    // The C++ standard states (5.8.1):
+    // "The behavior is undefined if the right operand is negative, or greater 
+    //  than or equal to the length in bits of the promoted left operand."
+    // Thus we have to choose RHS operand so that it is lower than mentioned length in bits.
+    // We already ensure that RHS operand is non-negative, by using 'unsigned' type.
+
+    const uint32_t MAX_BIT_COUNT = MAX_BIT_COUNT_helper<SCALAR_TYPE>();
+
+    // The C++ standard states (5.8.2):
+    // "Otherwise, if E1 has a signed type and non-negative value, and E1×2^E2 is representable
+    //  in the result type, then that is the resulting value; otherwise, the behavior is undefined."
+    // Two conclusions from that point:
+    //  - E1 has to be non-negative
+    //  - E1x2^E2 has to be well defined.
+
+    {
+        bool inputMask[VEC_LEN];
+        SCALAR_TYPE values[VEC_LEN];
+        SCALAR_TYPE output[VEC_LEN];
+        SCALAR_TYPE inputA[VEC_LEN];
+        SCALAR_UINT_TYPE inputB;
+
+        inputB = randomValue<SCALAR_UINT_TYPE>(gen) % MAX_BIT_COUNT;
+        for (int i = 0; i < VEC_LEN; i++) {
+            inputMask[i] = randomValue<bool>(gen);
+            uint32_t inputA_range = 1 << (MAX_BIT_COUNT - inputB);
+            inputA[i] = randomValue<SCALAR_TYPE>(gen) % inputA_range;
+            if (inputMask[i] == true) output[i] = inputA[i] << inputB;
+            else output[i] = inputA[i];
+        }
+
+        MASK_TYPE mask(inputMask);
+        VEC_TYPE vec0(inputA);
+        vec0.lsha(mask, inputB);
+        vec0.store(values);
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "MLSHSA gen");
+    }
+}
+
+template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, typename SCALAR_UINT_TYPE, int VEC_LEN>
+void genericRSHVTest_random()
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    // The C++ standard states (5.8.1):
+    // "The behavior is undefined if the right operand is negative, or greater 
+    //  than or equal to the length in bits of the promoted left operand."
+    // Thus we have to choose RHS operand so that it is lower than mentioned length in bits.
+    // We already ensure that RHS operand is non-negative, by using 'unsigned' type.
+
+    const uint32_t MAX_BIT_COUNT = MAX_BIT_COUNT_helper<SCALAR_TYPE>();
+
+    // The C++ standard states (5.8.2):
+    // "Otherwise, if E1 has a signed type and non-negative value, and E1×2^E2 is representable
+    //  in the result type, then that is the resulting value; otherwise, the behavior is undefined."
+    // Two conclusions from that point:
+    //  - E1 has to be non-negative
+    //  - E1x2^E2 has to be well defined.
+
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        SCALAR_TYPE output[VEC_LEN];
+        SCALAR_TYPE inputA[VEC_LEN];
+        SCALAR_UINT_TYPE inputB[VEC_LEN];
+
+        for (int i = 0; i < VEC_LEN; i++) {
+            inputB[i] = randomValue<SCALAR_UINT_TYPE>(gen) % MAX_BIT_COUNT;
+            uint32_t inputA_range = 1 << MAX_BIT_COUNT;
+            inputA[i] = randomValue<SCALAR_TYPE>(gen) % inputA_range;
+            output[i] = inputA[i] >> inputB[i];
+        }
+
+        VEC_TYPE vec0(inputA);
+        UINT_VEC_TYPE vec1(inputB);
         VEC_TYPE vec2 = vec0.rsh(vec1);
         vec2.store(values);
-        bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::RSHV, VEC_LEN, SCALAR_TYPE(0.01f));
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
         vec0.store(values);
-        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
-        CHECK_CONDITION((inRange && isUnmodified), "RSHV");
+        bool isUnmodified = valuesInRange(values, inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "RSHV gen");
     }
     {
         SCALAR_TYPE values[VEC_LEN];
-        VEC_TYPE vec0(DATA_SET::inputs::inputA);
-        UINT_VEC_TYPE vec1(DATA_SET::inputs::inputShiftA);
+        SCALAR_TYPE output[VEC_LEN];
+        SCALAR_TYPE inputA[VEC_LEN];
+        SCALAR_UINT_TYPE inputB[VEC_LEN];
+
+        for (int i = 0; i < VEC_LEN; i++) {
+            inputB[i] = randomValue<SCALAR_UINT_TYPE>(gen) % MAX_BIT_COUNT;
+            uint32_t inputA_range = 1 << MAX_BIT_COUNT;
+            inputA[i] = randomValue<SCALAR_TYPE>(gen) % inputA_range;
+            output[i] = inputA[i] >> inputB[i];
+        }
+
+        VEC_TYPE vec0(inputA);
+        UINT_VEC_TYPE vec1(inputB);
         VEC_TYPE vec2 = UME::SIMD::FUNCTIONS::rsh(vec0, vec1);
         vec2.store(values);
-        bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::RSHV, VEC_LEN, SCALAR_TYPE(0.01f));
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
         vec0.store(values);
-        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
-        CHECK_CONDITION((inRange && isUnmodified), "RSHV(function)");
+        bool isUnmodified = valuesInRange(values, inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "RSHV (function) gen");
     }
     {
         SCALAR_TYPE values[VEC_LEN];
-        VEC_TYPE vec0(DATA_SET::inputs::inputA);
-        UINT_VEC_TYPE vec1(DATA_SET::inputs::inputShiftA);
+        SCALAR_TYPE output[VEC_LEN];
+        SCALAR_TYPE inputA[VEC_LEN];
+        SCALAR_UINT_TYPE inputB[VEC_LEN];
+
+        for (int i = 0; i < VEC_LEN; i++) {
+            inputB[i] = randomValue<SCALAR_UINT_TYPE>(gen) % MAX_BIT_COUNT;
+            uint32_t inputA_range = 1 << MAX_BIT_COUNT;
+            inputA[i] = randomValue<SCALAR_TYPE>(gen) % inputA_range;
+            output[i] = inputA[i] >> inputB[i];
+        }
+
+        VEC_TYPE vec0(inputA);
+        UINT_VEC_TYPE vec1(inputB);
         VEC_TYPE vec2 = vec0 >> vec1;
         vec2.store(values);
-        bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::RSHV, VEC_LEN, SCALAR_TYPE(0.01f));
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
         vec0.store(values);
-        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
-        CHECK_CONDITION((inRange && isUnmodified), "RSHV(operator>>)");
+        bool isUnmodified = valuesInRange(values, inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "RSHV (operator>>) gen");
     }
 }
-    
-template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
-void genericMRSHVTest() 
+
+template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, typename SCALAR_UINT_TYPE, typename MASK_TYPE, int VEC_LEN>
+void genericMRSHVTest_random()
 {
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    // The C++ standard states (5.8.1):
+    // "The behavior is undefined if the right operand is negative, or greater 
+    //  than or equal to the length in bits of the promoted left operand."
+    // Thus we have to choose RHS operand so that it is lower than mentioned length in bits.
+    // We already ensure that RHS operand is non-negative, by using 'unsigned' type.
+
+    const uint32_t MAX_BIT_COUNT = MAX_BIT_COUNT_helper<SCALAR_TYPE>();
+
+    // The C++ standard states (5.8.2):
+    // "Otherwise, if E1 has a signed type and non-negative value, and E1×2^E2 is representable
+    //  in the result type, then that is the resulting value; otherwise, the behavior is undefined."
+    // Two conclusions from that point:
+    //  - E1 has to be non-negative
+    //  - E1x2^E2 has to be well defined.
+
     {
+        bool inputMask[VEC_LEN];
         SCALAR_TYPE values[VEC_LEN];
-        VEC_TYPE vec0(DATA_SET::inputs::inputA);
-        UINT_VEC_TYPE vec1(DATA_SET::inputs::inputShiftA);
-        MASK_TYPE mask0(DATA_SET::inputs::maskA);
-        VEC_TYPE vec2 = vec0.rsh(mask0, vec1);
+        SCALAR_TYPE output[VEC_LEN];
+        SCALAR_TYPE inputA[VEC_LEN];
+        SCALAR_UINT_TYPE inputB[VEC_LEN];
+
+        for (int i = 0; i < VEC_LEN; i++) {
+            inputMask[i] = randomValue<bool>(gen);
+            inputB[i] = randomValue<SCALAR_UINT_TYPE>(gen) % MAX_BIT_COUNT;
+            uint32_t inputA_range = 1 << MAX_BIT_COUNT;
+            inputA[i] = randomValue<SCALAR_TYPE>(gen) % inputA_range;
+            if (inputMask[i] == true) output[i] = inputA[i] >> inputB[i];
+            else output[i] = inputA[i];
+        }
+
+        MASK_TYPE mask(inputMask);
+        VEC_TYPE vec0(inputA);
+        UINT_VEC_TYPE vec1(inputB);
+        VEC_TYPE vec2 = vec0.rsh(mask, vec1);
         vec2.store(values);
-        bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MRSHV, VEC_LEN, SCALAR_TYPE(0.01f));
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
         vec0.store(values);
-        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
-        CHECK_CONDITION((inRange && isUnmodified), "MRSHV");
+        bool isUnmodified = valuesInRange(values, inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MRSHV gen");
     }
     {
+        bool inputMask[VEC_LEN];
         SCALAR_TYPE values[VEC_LEN];
-        VEC_TYPE vec0(DATA_SET::inputs::inputA);
-        UINT_VEC_TYPE vec1(DATA_SET::inputs::inputShiftA);
-        MASK_TYPE mask0(DATA_SET::inputs::maskA);
-        VEC_TYPE vec2 = UME::SIMD::FUNCTIONS::rsh(mask0, vec0, vec1);
+        SCALAR_TYPE output[VEC_LEN];
+        SCALAR_TYPE inputA[VEC_LEN];
+        SCALAR_UINT_TYPE inputB[VEC_LEN];
+
+        for (int i = 0; i < VEC_LEN; i++) {
+            inputMask[i] = randomValue<bool>(gen);
+            inputB[i] = randomValue<SCALAR_UINT_TYPE>(gen) % MAX_BIT_COUNT;
+            uint32_t inputA_range = 1 << MAX_BIT_COUNT;
+            inputA[i] = randomValue<SCALAR_TYPE>(gen) % inputA_range;
+            if (inputMask[i] == true) output[i] = inputA[i] >> inputB[i];
+            else output[i] = inputA[i];
+        }
+
+        MASK_TYPE mask(inputMask);
+        VEC_TYPE vec0(inputA);
+        UINT_VEC_TYPE vec1(inputB);
+        VEC_TYPE vec2 = UME::SIMD::FUNCTIONS::rsh(mask, vec0, vec1);
         vec2.store(values);
-        bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MRSHV, VEC_LEN, SCALAR_TYPE(0.01f));
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
         vec0.store(values);
-        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
-        CHECK_CONDITION((inRange && isUnmodified), "MRSHV(function)");
+        bool isUnmodified = valuesInRange(values, inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MRSHV (function) gen");
     }
 }
 
-template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
-void genericRSHSTest()
+template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, typename SCALAR_UINT_TYPE, int VEC_LEN>
+void genericRSHSTest_random()
 {
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    // The C++ standard states (5.8.1):
+    // "The behavior is undefined if the right operand is negative, or greater 
+    //  than or equal to the length in bits of the promoted left operand."
+    // Thus we have to choose RHS operand so that it is lower than mentioned length in bits.
+    // We already ensure that RHS operand is non-negative, by using 'unsigned' type.
+
+    const uint32_t MAX_BIT_COUNT = MAX_BIT_COUNT_helper<SCALAR_TYPE>();
+
+    // The C++ standard states (5.8.2):
+    // "Otherwise, if E1 has a signed type and non-negative value, and E1×2^E2 is representable
+    //  in the result type, then that is the resulting value; otherwise, the behavior is undefined."
+    // Two conclusions from that point:
+    //  - E1 has to be non-negative
+    //  - E1x2^E2 has to be well defined.
+
     {
         SCALAR_TYPE values[VEC_LEN];
-        VEC_TYPE vec0(DATA_SET::inputs::inputA);
-        VEC_TYPE vec1 = vec0.rsh(DATA_SET::inputs::inputShiftScalarA);
+        SCALAR_TYPE output[VEC_LEN];
+        SCALAR_TYPE inputA[VEC_LEN];
+        SCALAR_UINT_TYPE inputB;
+
+        inputB = randomValue<SCALAR_UINT_TYPE>(gen) % MAX_BIT_COUNT;
+        for (int i = 0; i < VEC_LEN; i++) {
+            uint32_t inputA_range = 1 << MAX_BIT_COUNT;
+            inputA[i] = randomValue<SCALAR_TYPE>(gen) % inputA_range;
+            output[i] = inputA[i] >> inputB;
+        }
+
+        VEC_TYPE vec0(inputA);
+        VEC_TYPE vec1 = vec0.rsh(inputB);
         vec1.store(values);
-        bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::RSHS, VEC_LEN, SCALAR_TYPE(0.01f));
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
         vec0.store(values);
-        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
-        CHECK_CONDITION(inRange, "RSHS");
+        bool isUnmodified = valuesInRange(values, inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "RSHS gen");
     }
     {
         SCALAR_TYPE values[VEC_LEN];
-        VEC_TYPE vec0(DATA_SET::inputs::inputA);
-        VEC_TYPE vec1 = UME::SIMD::FUNCTIONS::rsh(vec0, DATA_SET::inputs::inputShiftScalarA);
+        SCALAR_TYPE output[VEC_LEN];
+        SCALAR_TYPE inputA[VEC_LEN];
+        SCALAR_UINT_TYPE inputB;
+
+        inputB = randomValue<SCALAR_UINT_TYPE>(gen) % MAX_BIT_COUNT;
+        for (int i = 0; i < VEC_LEN; i++) {
+            uint32_t inputA_range = 1 << MAX_BIT_COUNT;
+            inputA[i] = randomValue<SCALAR_TYPE>(gen) % inputA_range;
+            output[i] = inputA[i] >> inputB;
+        }
+
+        VEC_TYPE vec0(inputA);
+        VEC_TYPE vec1 = UME::SIMD::FUNCTIONS::rsh(vec0, inputB);
         vec1.store(values);
-        bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::RSHS, VEC_LEN, SCALAR_TYPE(0.01f));
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
         vec0.store(values);
-        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
-        CHECK_CONDITION((inRange && isUnmodified), "RSHS(function - RHS scalar)");
+        bool isUnmodified = valuesInRange(values, inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "RSHS (function) gen");
     }
     {
         SCALAR_TYPE values[VEC_LEN];
-        VEC_TYPE vec0(DATA_SET::inputs::inputA);
-        VEC_TYPE vec1 = vec0 >> DATA_SET::inputs::inputShiftScalarA;
+        SCALAR_TYPE output[VEC_LEN];
+        SCALAR_TYPE inputA[VEC_LEN];
+        SCALAR_UINT_TYPE inputB;
+
+        inputB = randomValue<SCALAR_UINT_TYPE>(gen) % MAX_BIT_COUNT;
+        for (int i = 0; i < VEC_LEN; i++) {
+            uint32_t inputA_range = 1 << MAX_BIT_COUNT;
+            inputA[i] = randomValue<SCALAR_TYPE>(gen) % inputA_range;
+            output[i] = inputA[i] >> inputB;
+        }
+
+        VEC_TYPE vec0(inputA);
+        VEC_TYPE vec1 = vec0 >> inputB;
         vec1.store(values);
-        bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::RSHS, VEC_LEN, SCALAR_TYPE(0.01f));
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
         vec0.store(values);
-        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
-        CHECK_CONDITION((inRange && isUnmodified), "RSHS(operator>> - RHS scalar)");
-    }
-    {
-        SCALAR_TYPE values[VEC_LEN];
-        VEC_TYPE vec0(DATA_SET::inputs::inputA);
-        VEC_TYPE vec1 = UME::SIMD::FUNCTIONS::rsh(DATA_SET::inputs::inputShiftScalarA, vec0);
-        vec1.store(values);
-        bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::RSHS, VEC_LEN, SCALAR_TYPE(0.01f));
-        vec0.store(values);
-        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
-        // CHECK_CONDITION((inRange && isUnmodified), "RSHS(function - LHS scalar)");
-        // TODO: this test requires separate output data
-    }
-    {
-        SCALAR_TYPE values[VEC_LEN];
-        VEC_TYPE vec0(DATA_SET::inputs::inputA);
-        VEC_TYPE vec1 = DATA_SET::inputs::inputShiftScalarA >> vec0;
-        vec1.store(values);
-        bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::RSHS, VEC_LEN, SCALAR_TYPE(0.01f));
-        vec0.store(values);
-        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
-        // CHECK_CONDITION((inRange && isUnmodified), "RSHS(function - LHS scalar)");
-        // TODO: this test requires separate output data
+        bool isUnmodified = valuesInRange(values, inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "RSHS (operator>>) gen");
     }
 }
 
-template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
-void genericMRSHSTest() 
+template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, typename SCALAR_UINT_TYPE, typename MASK_TYPE, int VEC_LEN>
+void genericMRSHSTest_random()
 {
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    // The C++ standard states (5.8.1):
+    // "The behavior is undefined if the right operand is negative, or greater 
+    //  than or equal to the length in bits of the promoted left operand."
+    // Thus we have to choose RHS operand so that it is lower than mentioned length in bits.
+    // We already ensure that RHS operand is non-negative, by using 'unsigned' type.
+
+    const uint32_t MAX_BIT_COUNT = MAX_BIT_COUNT_helper<SCALAR_TYPE>();
+
+    // The C++ standard states (5.8.2):
+    // "Otherwise, if E1 has a signed type and non-negative value, and E1×2^E2 is representable
+    //  in the result type, then that is the resulting value; otherwise, the behavior is undefined."
+    // Two conclusions from that point:
+    //  - E1 has to be non-negative
+    //  - E1x2^E2 has to be well defined.
+
     {
+        bool inputMask[VEC_LEN];
         SCALAR_TYPE values[VEC_LEN];
-        VEC_TYPE vec0(DATA_SET::inputs::inputA);
-        MASK_TYPE mask0(DATA_SET::inputs::maskA);
-        VEC_TYPE vec1 = vec0.rsh(mask0, DATA_SET::inputs::inputShiftScalarA);
+        SCALAR_TYPE output[VEC_LEN];
+        SCALAR_TYPE inputA[VEC_LEN];
+        SCALAR_UINT_TYPE inputB;
+
+        inputB = randomValue<SCALAR_UINT_TYPE>(gen) % MAX_BIT_COUNT;
+        for (int i = 0; i < VEC_LEN; i++) {
+            inputMask[i] = randomValue<bool>(gen);
+            uint32_t inputA_range = 1 << MAX_BIT_COUNT;
+            inputA[i] = randomValue<SCALAR_TYPE>(gen) % inputA_range;
+            if (inputMask[i] == true) output[i] = inputA[i] >> inputB;
+            else output[i] = inputA[i];
+        }
+
+        MASK_TYPE mask(inputMask);
+        VEC_TYPE vec0(inputA);
+        VEC_TYPE vec1 = vec0.rsh(mask, inputB);
         vec1.store(values);
-        bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MRSHS, VEC_LEN, SCALAR_TYPE(0.01f));
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
         vec0.store(values);
-        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
-        CHECK_CONDITION((inRange && isUnmodified), "MRSHS");
+        bool isUnmodified = valuesInRange(values, inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MRSHS gen");
     }
     {
+        bool inputMask[VEC_LEN];
         SCALAR_TYPE values[VEC_LEN];
-        VEC_TYPE vec0(DATA_SET::inputs::inputA);
-        MASK_TYPE mask0(DATA_SET::inputs::maskA);
-        VEC_TYPE vec1 = UME::SIMD::FUNCTIONS::rsh(mask0, vec0, DATA_SET::inputs::inputShiftScalarA);
+        SCALAR_TYPE output[VEC_LEN];
+        SCALAR_TYPE inputA[VEC_LEN];
+        SCALAR_UINT_TYPE inputB;
+
+        inputB = randomValue<SCALAR_UINT_TYPE>(gen) % MAX_BIT_COUNT;
+        for (int i = 0; i < VEC_LEN; i++) {
+            inputMask[i] = randomValue<bool>(gen);
+            uint32_t inputA_range = 1 << MAX_BIT_COUNT;
+            inputA[i] = randomValue<SCALAR_TYPE>(gen) % inputA_range;
+            if (inputMask[i] == true) output[i] = inputA[i] >> inputB;
+            else output[i] = inputA[i];
+        }
+
+        MASK_TYPE mask(inputMask);
+        VEC_TYPE vec0(inputA);
+        VEC_TYPE vec1 = UME::SIMD::FUNCTIONS::rsh(mask, vec0, inputB);
         vec1.store(values);
-        bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MRSHS, VEC_LEN, SCALAR_TYPE(0.01f));
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
         vec0.store(values);
-        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
-        CHECK_CONDITION((inRange && isUnmodified), "MRSHS(function - RHS scalar)");
-    }
-    {/*
-        SCALAR_TYPE values[VEC_LEN];
-        VEC_TYPE vec0(DATA_SET::inputs::inputA);
-        MASK_TYPE mask0(DATA_SET::inputs::maskA);
-        VEC_TYPE vec1 = UME::SIMD::FUNCTIONS::rsh(mask0, DATA_SET::inputs::inputShiftScalarA, vec0);
-        vec1.store(values);
-        bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MRSHS, VEC_LEN, SCALAR_TYPE(0.01f));
-        vec0.store(values);
-        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));*/
-        // CHECK_CONDITION((inRange && isUnmodified), "MRSHS(function - LHS scalar)");
-        // TODO: this test requires separate output data
+        bool isUnmodified = valuesInRange(values, inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange && isUnmodified), "MRSHS (function) gen");
     }
 }
 
-template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
-void genericRSHVATest()
+template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, typename SCALAR_UINT_TYPE, int VEC_LEN>
+void genericRSHVATest_random()
 {
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    // The C++ standard states (5.8.1):
+    // "The behavior is undefined if the right operand is negative, or greater 
+    //  than or equal to the length in bits of the promoted left operand."
+    // Thus we have to choose RHS operand so that it is lower than mentioned length in bits.
+    // We already ensure that RHS operand is non-negative, by using 'unsigned' type.
+
+    const uint32_t MAX_BIT_COUNT = MAX_BIT_COUNT_helper<SCALAR_TYPE>();
+
+    // The C++ standard states (5.8.2):
+    // "Otherwise, if E1 has a signed type and non-negative value, and E1×2^E2 is representable
+    //  in the result type, then that is the resulting value; otherwise, the behavior is undefined."
+    // Two conclusions from that point:
+    //  - E1 has to be non-negative
+    //  - E1x2^E2 has to be well defined.
+
     {
         SCALAR_TYPE values[VEC_LEN];
-        VEC_TYPE vec0(DATA_SET::inputs::inputA);
-        UINT_VEC_TYPE vec1(DATA_SET::inputs::inputShiftA);
+        SCALAR_TYPE output[VEC_LEN];
+        SCALAR_TYPE inputA[VEC_LEN];
+        SCALAR_UINT_TYPE inputB[VEC_LEN];
+
+        for (int i = 0; i < VEC_LEN; i++) {
+            inputB[i] = randomValue<SCALAR_UINT_TYPE>(gen) % MAX_BIT_COUNT;
+            uint32_t inputA_range = 1 << MAX_BIT_COUNT;
+            inputA[i] = randomValue<SCALAR_TYPE>(gen) % inputA_range;
+            output[i] = inputA[i] >> inputB[i];
+        }
+
+        VEC_TYPE vec0(inputA);
+        UINT_VEC_TYPE vec1(inputB);
         vec0.rsha(vec1);
         vec0.store(values);
-        bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::RSHV, VEC_LEN, SCALAR_TYPE(0.01f));
-        CHECK_CONDITION(inRange, "RSHVA");
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "RSHVA gen");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        SCALAR_TYPE output[VEC_LEN];
+        SCALAR_TYPE inputA[VEC_LEN];
+        SCALAR_UINT_TYPE inputB[VEC_LEN];
+
+        for (int i = 0; i < VEC_LEN; i++) {
+            inputB[i] = randomValue<SCALAR_UINT_TYPE>(gen) % MAX_BIT_COUNT;
+            uint32_t inputA_range = 1 << MAX_BIT_COUNT;
+            inputA[i] = randomValue<SCALAR_TYPE>(gen) % inputA_range;
+            output[i] = inputA[i] >> inputB[i];
+        }
+
+        VEC_TYPE vec0(inputA);
+        UINT_VEC_TYPE vec1(inputB);
+        vec0 >>= vec1;
+        vec0.store(values);
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "RSHVA (operator>>=) gen");
     }
 }
-    
-template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
-void genericMRSHVATest() 
+
+template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, typename SCALAR_UINT_TYPE, typename MASK_TYPE, int VEC_LEN>
+void genericMRSHVATest_random()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    UINT_VEC_TYPE vec1(DATA_SET::inputs::inputShiftA);
-    MASK_TYPE mask0(DATA_SET::inputs::maskA);
-    vec0.rsha(mask0, vec1);
-    vec0.store(values);
-    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MRSHV, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "MRSHVA");
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    // The C++ standard states (5.8.1):
+    // "The behavior is undefined if the right operand is negative, or greater 
+    //  than or equal to the length in bits of the promoted left operand."
+    // Thus we have to choose RHS operand so that it is lower than mentioned length in bits.
+    // We already ensure that RHS operand is non-negative, by using 'unsigned' type.
+
+    const uint32_t MAX_BIT_COUNT = MAX_BIT_COUNT_helper<SCALAR_TYPE>();
+
+    // The C++ standard states (5.8.2):
+    // "Otherwise, if E1 has a signed type and non-negative value, and E1×2^E2 is representable
+    //  in the result type, then that is the resulting value; otherwise, the behavior is undefined."
+    // Two conclusions from that point:
+    //  - E1 has to be non-negative
+    //  - E1x2^E2 has to be well defined.
+
+    {
+        bool inputMask[VEC_LEN];
+        SCALAR_TYPE values[VEC_LEN];
+        SCALAR_TYPE output[VEC_LEN];
+        SCALAR_TYPE inputA[VEC_LEN];
+        SCALAR_UINT_TYPE inputB[VEC_LEN];
+
+        for (int i = 0; i < VEC_LEN; i++) {
+            inputMask[i] = randomValue<bool>(gen);
+            inputB[i] = randomValue<SCALAR_UINT_TYPE>(gen) % MAX_BIT_COUNT;
+            uint32_t inputA_range = 1 << MAX_BIT_COUNT;
+            inputA[i] = randomValue<SCALAR_TYPE>(gen) % inputA_range;
+            if (inputMask[i] == true) output[i] = inputA[i] >> inputB[i];
+            else output[i] = inputA[i];
+        }
+
+        MASK_TYPE mask(inputMask);
+        VEC_TYPE vec0(inputA);
+        UINT_VEC_TYPE vec1(inputB);
+        vec0.rsha(mask, vec1);
+        vec0.store(values);
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "MRSHVA gen");
+    }
 }
 
-template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
-void genericRSHSATest() 
+template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, typename SCALAR_UINT_TYPE, int VEC_LEN>
+void genericRSHSATest_random()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    vec0.rsha(DATA_SET::inputs::inputShiftScalarA);
-    vec0.store(values);
-    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::RSHS, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "RSHSA");
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    // The C++ standard states (5.8.1):
+    // "The behavior is undefined if the right operand is negative, or greater 
+    //  than or equal to the length in bits of the promoted left operand."
+    // Thus we have to choose RHS operand so that it is lower than mentioned length in bits.
+    // We already ensure that RHS operand is non-negative, by using 'unsigned' type.
+
+    const uint32_t MAX_BIT_COUNT = MAX_BIT_COUNT_helper<SCALAR_TYPE>();
+
+    // The C++ standard states (5.8.2):
+    // "Otherwise, if E1 has a signed type and non-negative value, and E1×2^E2 is representable
+    //  in the result type, then that is the resulting value; otherwise, the behavior is undefined."
+    // Two conclusions from that point:
+    //  - E1 has to be non-negative
+    //  - E1x2^E2 has to be well defined.
+
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        SCALAR_TYPE output[VEC_LEN];
+        SCALAR_TYPE inputA[VEC_LEN];
+        SCALAR_UINT_TYPE inputB;
+
+        inputB = randomValue<SCALAR_UINT_TYPE>(gen) % MAX_BIT_COUNT;
+        for (int i = 0; i < VEC_LEN; i++) {
+            uint32_t inputA_range = 1 << MAX_BIT_COUNT;
+            inputA[i] = randomValue<SCALAR_TYPE>(gen) % inputA_range;
+            output[i] = inputA[i] >> inputB;
+        }
+
+        VEC_TYPE vec0(inputA);
+        vec0.rsha(inputB);
+        vec0.store(values);
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "RSHSA gen");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        SCALAR_TYPE output[VEC_LEN];
+        SCALAR_TYPE inputA[VEC_LEN];
+        SCALAR_UINT_TYPE inputB;
+
+        inputB = randomValue<SCALAR_UINT_TYPE>(gen) % MAX_BIT_COUNT;
+        for (int i = 0; i < VEC_LEN; i++) {
+            uint32_t inputA_range = 1 << MAX_BIT_COUNT;
+            inputA[i] = randomValue<SCALAR_TYPE>(gen) % inputA_range;
+            output[i] = inputA[i] >> inputB;
+        }
+
+        VEC_TYPE vec0(inputA);
+        vec0 >>= inputB;
+        vec0.store(values);
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "RSHSA (operator>>=) gen");
+    }
 }
-    
-template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
-void genericMRSHSATest() 
+
+template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, typename SCALAR_UINT_TYPE, typename MASK_TYPE, int VEC_LEN>
+void genericMRSHSATest_random()
 {
-    SCALAR_TYPE values[VEC_LEN];
-    VEC_TYPE vec0(DATA_SET::inputs::inputA);
-    MASK_TYPE mask0(DATA_SET::inputs::maskA);
-    vec0.rsha(mask0, DATA_SET::inputs::inputShiftScalarA);
-    vec0.store(values);
-    bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MRSHS, VEC_LEN, SCALAR_TYPE(0.01f));
-    CHECK_CONDITION(inRange, "MRSHSA");
-} 
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    // The C++ standard states (5.8.1):
+    // "The behavior is undefined if the right operand is negative, or greater 
+    //  than or equal to the length in bits of the promoted left operand."
+    // Thus we have to choose RHS operand so that it is lower than mentioned length in bits.
+    // We already ensure that RHS operand is non-negative, by using 'unsigned' type.
+
+    const uint32_t MAX_BIT_COUNT = MAX_BIT_COUNT_helper<SCALAR_TYPE>();
+
+    // The C++ standard states (5.8.2):
+    // "Otherwise, if E1 has a signed type and non-negative value, and E1×2^E2 is representable
+    //  in the result type, then that is the resulting value; otherwise, the behavior is undefined."
+    // Two conclusions from that point:
+    //  - E1 has to be non-negative
+    //  - E1x2^E2 has to be well defined.
+
+    {
+        bool inputMask[VEC_LEN];
+        SCALAR_TYPE values[VEC_LEN];
+        SCALAR_TYPE output[VEC_LEN];
+        SCALAR_TYPE inputA[VEC_LEN];
+        SCALAR_UINT_TYPE inputB;
+
+        inputB = randomValue<SCALAR_UINT_TYPE>(gen) % MAX_BIT_COUNT;
+        for (int i = 0; i < VEC_LEN; i++) {
+            inputMask[i] = randomValue<bool>(gen);
+            uint32_t inputA_range = 1 << MAX_BIT_COUNT;
+            inputA[i] = randomValue<SCALAR_TYPE>(gen) % inputA_range;
+            if (inputMask[i] == true) output[i] = inputA[i] >> inputB;
+            else output[i] = inputA[i];
+        }
+
+        MASK_TYPE mask(inputMask);
+        VEC_TYPE vec0(inputA);
+        vec0.rsha(mask, inputB);
+        vec0.store(values);
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION(inRange, "MRSHSA gen");
+    }
+}
 
 template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericROLVTest()
@@ -10259,25 +10929,25 @@ void genericGatherScatterInterfaceTest()
     genericMSCATTERVTest_random<VEC_TYPE, SCALAR_TYPE, UINT_VEC_TYPE, SCALAR_UINT_TYPE, MASK_TYPE, VEC_LEN>();
 }
 
-template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
+template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, typename UINT_SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericShiftRotateInterfaceTest()
 {
-    genericLSHVTest<VEC_TYPE, UINT_VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
-    genericMLSHVTest<VEC_TYPE, UINT_VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
-    genericLSHSTest<VEC_TYPE, UINT_VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
-    genericMLSHSTest<VEC_TYPE, UINT_VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
-    genericLSHVATest<VEC_TYPE, UINT_VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
-    genericMLSHVATest<VEC_TYPE, UINT_VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
-    genericLSHSATest<VEC_TYPE, UINT_VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
-    genericMLSHSATest<VEC_TYPE, UINT_VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
-    genericRSHVTest<VEC_TYPE, UINT_VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
-    genericMRSHVTest<VEC_TYPE, UINT_VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
-    genericRSHSTest<VEC_TYPE, UINT_VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
-    genericMRSHSTest<VEC_TYPE, UINT_VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
-    genericRSHVATest<VEC_TYPE, UINT_VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
-    genericMRSHVATest<VEC_TYPE, UINT_VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
-    genericRSHSATest<VEC_TYPE, UINT_VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
-    genericMRSHSATest<VEC_TYPE, UINT_VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericLSHVTest_random<VEC_TYPE, UINT_VEC_TYPE, SCALAR_TYPE, UINT_SCALAR_TYPE, VEC_LEN>();
+    genericMLSHVTest_random<VEC_TYPE, UINT_VEC_TYPE, SCALAR_TYPE, UINT_SCALAR_TYPE, MASK_TYPE, VEC_LEN>();
+    genericLSHSTest_random<VEC_TYPE, UINT_VEC_TYPE, SCALAR_TYPE, UINT_SCALAR_TYPE, VEC_LEN>();
+    genericMLSHSTest_random<VEC_TYPE, UINT_VEC_TYPE, SCALAR_TYPE, UINT_SCALAR_TYPE, MASK_TYPE, VEC_LEN>();
+    genericLSHVATest_random<VEC_TYPE, UINT_VEC_TYPE, SCALAR_TYPE, UINT_SCALAR_TYPE, VEC_LEN>();
+    genericMLSHVATest_random<VEC_TYPE, UINT_VEC_TYPE, SCALAR_TYPE, UINT_SCALAR_TYPE, MASK_TYPE, VEC_LEN>();
+    genericLSHSATest_random<VEC_TYPE, UINT_VEC_TYPE, SCALAR_TYPE, UINT_SCALAR_TYPE, VEC_LEN>();
+    genericMLSHSATest_random<VEC_TYPE, UINT_VEC_TYPE, SCALAR_TYPE, UINT_SCALAR_TYPE, MASK_TYPE, VEC_LEN>();
+    genericRSHVTest_random<VEC_TYPE, UINT_VEC_TYPE, SCALAR_TYPE, UINT_SCALAR_TYPE, VEC_LEN>();
+    genericMRSHVTest_random<VEC_TYPE, UINT_VEC_TYPE, SCALAR_TYPE, UINT_SCALAR_TYPE, MASK_TYPE, VEC_LEN>();
+    genericRSHSTest_random<VEC_TYPE, UINT_VEC_TYPE, SCALAR_TYPE, UINT_SCALAR_TYPE, VEC_LEN>();
+    genericMRSHSTest_random<VEC_TYPE, UINT_VEC_TYPE, SCALAR_TYPE, UINT_SCALAR_TYPE, MASK_TYPE, VEC_LEN>();
+    genericRSHVATest_random<VEC_TYPE, UINT_VEC_TYPE, SCALAR_TYPE, UINT_SCALAR_TYPE, VEC_LEN>();
+    genericMRSHVATest_random<VEC_TYPE, UINT_VEC_TYPE, SCALAR_TYPE, UINT_SCALAR_TYPE, MASK_TYPE, VEC_LEN>();
+    genericRSHSATest_random<VEC_TYPE, UINT_VEC_TYPE, SCALAR_TYPE, UINT_SCALAR_TYPE, VEC_LEN>();
+    genericMRSHSATest_random<VEC_TYPE, UINT_VEC_TYPE, SCALAR_TYPE, UINT_SCALAR_TYPE, MASK_TYPE, VEC_LEN>();
     genericROLVTest<VEC_TYPE, UINT_VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
     genericMROLVTest<VEC_TYPE, UINT_VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
     genericROLSTest<VEC_TYPE, UINT_VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
@@ -10408,7 +11078,7 @@ void genericUintTest() {
     genericBaseInterfaceTest<UINT_VEC_TYPE, UINT_SCALAR_TYPE, MASK_TYPE, SWIZZLE_TYPE, VEC_LEN, DATA_SET> ();
     genericIntegerInterfaceTest<UINT_VEC_TYPE, UINT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET> ();
     genericGatherScatterInterfaceTest<UINT_VEC_TYPE, UINT_SCALAR_TYPE, UINT_VEC_TYPE, UINT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET> ();
-    genericShiftRotateInterfaceTest<UINT_VEC_TYPE, UINT_VEC_TYPE, UINT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericShiftRotateInterfaceTest<UINT_VEC_TYPE, UINT_VEC_TYPE, UINT_SCALAR_TYPE, UINT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
     genericUTOITest<UINT_VEC_TYPE, INT_VEC_TYPE, INT_SCALAR_TYPE, VEC_LEN, DATA_SET> ();
     genericUTOFTest<UINT_VEC_TYPE, FLOAT_VEC_TYPE, FLOAT_SCALAR_TYPE, VEC_LEN, DATA_SET> ();
     genericPackableInterfaceTest<UINT_VEC_TYPE, UINT_SCALAR_TYPE, VEC_LEN>();
@@ -10428,7 +11098,7 @@ template<
     genericBaseInterfaceTest<UINT_VEC_TYPE, UINT_SCALAR_TYPE, MASK_TYPE, SWIZZLE_TYPE, VEC_LEN, DATA_SET>();
     genericIntegerInterfaceTest<UINT_VEC_TYPE, UINT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
     genericGatherScatterInterfaceTest<UINT_VEC_TYPE, UINT_SCALAR_TYPE, UINT_VEC_TYPE, UINT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
-    genericShiftRotateInterfaceTest<UINT_VEC_TYPE, UINT_VEC_TYPE, UINT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericShiftRotateInterfaceTest<UINT_VEC_TYPE, UINT_VEC_TYPE, UINT_SCALAR_TYPE, UINT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
     genericUTOITest<UINT_VEC_TYPE, INT_VEC_TYPE, INT_SCALAR_TYPE, VEC_LEN, DATA_SET>();
     genericPackableInterfaceTest<INT_VEC_TYPE, INT_SCALAR_TYPE, VEC_LEN>();
 }
@@ -10448,7 +11118,7 @@ void genericIntTest() {
     genericBaseInterfaceTest<INT_VEC_TYPE, INT_SCALAR_TYPE, MASK_TYPE, SWIZZLE_TYPE, VEC_LEN, DATA_SET> ();
     genericIntegerInterfaceTest<INT_VEC_TYPE, INT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET> ();
     genericGatherScatterInterfaceTest<INT_VEC_TYPE, INT_SCALAR_TYPE, UINT_VEC_TYPE, UINT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET> ();
-    genericShiftRotateInterfaceTest<INT_VEC_TYPE, UINT_VEC_TYPE, INT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericShiftRotateInterfaceTest<INT_VEC_TYPE, UINT_VEC_TYPE, INT_SCALAR_TYPE, UINT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
     genericSignInterfaceTest<INT_VEC_TYPE, INT_SCALAR_TYPE  , MASK_TYPE, VEC_LEN, DATA_SET>();
     genericITOUTest<INT_VEC_TYPE, UINT_VEC_TYPE, UINT_SCALAR_TYPE, VEC_LEN, DATA_SET>();
     genericITOFTest<INT_VEC_TYPE, FLOAT_VEC_TYPE, FLOAT_SCALAR_TYPE, VEC_LEN, DATA_SET>();
@@ -10468,7 +11138,7 @@ void genericIntTest() {
     genericBaseInterfaceTest<INT_VEC_TYPE, INT_SCALAR_TYPE, MASK_TYPE, SWIZZLE_TYPE, VEC_LEN, DATA_SET>();
     genericIntegerInterfaceTest<INT_VEC_TYPE, INT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
     genericGatherScatterInterfaceTest<INT_VEC_TYPE, INT_SCALAR_TYPE, UINT_VEC_TYPE, UINT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
-    genericShiftRotateInterfaceTest<INT_VEC_TYPE, UINT_VEC_TYPE, INT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
+    genericShiftRotateInterfaceTest<INT_VEC_TYPE, UINT_VEC_TYPE, INT_SCALAR_TYPE, UINT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
     genericSignInterfaceTest<INT_VEC_TYPE, INT_SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
     genericITOUTest<INT_VEC_TYPE, UINT_VEC_TYPE, UINT_SCALAR_TYPE, VEC_LEN, DATA_SET>();
     genericPackableInterfaceTest<INT_VEC_TYPE, INT_SCALAR_TYPE, VEC_LEN>();

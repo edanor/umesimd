@@ -1807,7 +1807,7 @@ namespace SIMD {
 
         // LSHV
         UME_FORCE_INLINE SIMDVec_i lsh(SIMDVec_i const & b) const {
-            __m128i t0 = _mm_sll_epi32(mVec, b.mVec);
+            __m128i t0 = _mm_sllv_epi32(mVec, b.mVec);
             return SIMDVec_i(t0);
         }
         UME_FORCE_INLINE SIMDVec_i operator<< (SIMDVec_i const & b) const {
@@ -1816,7 +1816,7 @@ namespace SIMD {
         // MLSHV
         UME_FORCE_INLINE SIMDVec_i lsh(SIMDVecMask<4> const & mask, SIMDVec_i const & b) const {
 #if defined(__AVX512VL__)
-            __m128i t0 = _mm_mask_sll_epi32(mVec, mask.mMask, mVec, b.mVec);
+            __m128i t0 = _mm_mask_sllv_epi32(mVec, mask.mMask, mVec, b.mVec);
             return SIMDVec_i(t0);
 #else
             __m512i t0 = _mm512_castsi128_si512(mVec);
@@ -1828,7 +1828,7 @@ namespace SIMD {
         }
         // LSHS
         UME_FORCE_INLINE SIMDVec_i lsh(uint32_t b) const {
-            __m128i t0 = _mm_cvtsi32_si128(b);
+            __m128i t0 = _mm_set1_epi32(b);
             __m128i t1 = _mm_sllv_epi32(mVec, t0);
             return SIMDVec_i(t1);
         }
@@ -1838,7 +1838,7 @@ namespace SIMD {
         // MLSHS
         UME_FORCE_INLINE SIMDVec_i lsh(SIMDVecMask<4> const & mask, uint32_t b) const {
 #if defined(__AVX512VL__)
-            __m128i t0 = _mm_cvtsi32_si128(b);
+            __m128i t0 = _mm_set1_epi32(b);
             __m128i t1 = _mm_mask_sllv_epi32(mVec, mask.mMask, mVec, t0);
             return SIMDVec_i(t1);
 #else
@@ -1876,7 +1876,7 @@ namespace SIMD {
         }
         // RSHS
         UME_FORCE_INLINE SIMDVec_i rsh(uint32_t b) const {
-            __m128i t0 = _mm_cvtsi32_si128(b);
+            __m128i t0 = _mm_set1_epi32(b);
             __m128i t1 = _mm_srlv_epi32(mVec, t0);
             return SIMDVec_i(t1);
         }
@@ -1886,7 +1886,7 @@ namespace SIMD {
         // MRSHS
         UME_FORCE_INLINE SIMDVec_i rsh(SIMDVecMask<4> const & mask, uint32_t b) const {
 #if defined(__AVX512VL__)
-            __m128i t0 = _mm_cvtsi32_si128(b);
+            __m128i t0 = _mm_set1_epi32(b);
             __m128i t1 = _mm_mask_srlv_epi32(mVec, mask.mMask, mVec, t0);
             return SIMDVec_i(t1);
 #else

@@ -89,28 +89,6 @@ int test_UME_SIMD16_8u(bool supressMessages)
         SIMD16_8u vec1;
         //CHECK_CONDITION(true, "ZERO-CONSTR"); 
     }
-    
-    {
-        SIMD16_8u vec0(0, 1, 2, 3,  4, 5, 6, 7,  8, 9, 10, 11,  12, 13, 14 ,255);
-        SIMD16_8u vec1(4);
-        SIMD16_8u vec2;
-        
-        vec2 = vec0.lsh(vec1);
-        CHECK_CONDITION(vec2[0] == 0 && vec2[1] == 16, "LSHV");
-    }
-    {
-        SIMD16_8u vec0(0, 1, 2, 3,  4, 5, 6, 7,  8, 9, 10, 11,  12, 13, 14 ,255);
-        SIMD16_8u vec1;
-        vec1 = vec0.lsh(4);
-        CHECK_CONDITION(vec1[0] == 0 && vec1[1] == 16 && vec1[15] == 240, "LSHS");
-    }
-    {
-        SIMD16_8u vec0(0, 1, 2, 3,  4, 5, 6, 7,  8, 9, 10, 11,  12, 13, 14 ,248);
-        SIMD16_8u vec1;
-
-        vec1 = vec0.lsh(4);
-        CHECK_CONDITION(vec1[0] == 0 && vec1[1] == 16 && vec1[15] == 128, "RSHS");
-    }
 
     genericUintTest<
         SIMD16_8u, uint8_t,
@@ -451,23 +429,6 @@ int test_UME_SIMD8_16i(bool supressMessages)
             }
         }
         CHECK_CONDITION(res, "LOADA");
-    }
-    {
-        SIMD8_16i vec0(1, 2, 3, 4, 5, 6, 7, 8);
-        SIMD8_16i vec1((int16_t)0);
-        int16_t vals[] = { 4, 8, 12, 16, 20, 24, 28, 32 };
-        bool res = true;
-        vec1 = vec0.lsh(2);
-        for(uint32_t i = 0; i < 8; i++)if(vec1[i] != vals[i]){res = false; break;}
-        CHECK_CONDITION(res, "LSHS");
-    }
-    {
-        SIMD8_16i vec0(1, 2, 3, 4, 5, 6, 7, 8);
-        int16_t vals[] = { 4, 8, 12, 16, 20, 24, 28, 32 };
-        bool res = true;
-        vec0.lsha(2);
-        for(uint32_t i = 0; i < 8; i++)if(vec0[i] != vals[i]){res = false; break;}
-        CHECK_CONDITION(res, "LSHSA");
     }
     {
         SIMD8_16i vec0(1, 2, 3, 4, 5, 6, 7, 8);
@@ -1002,88 +963,6 @@ int test_UME_SIMD4_32u(bool supressMessages)
         SIMDMask4 mask(true, false, true, false);
         vec0.scatter(mask, arr, indices);
         CHECK_CONDITION(arr[1] == 9 && arr[3] == 4 && arr[8] == 7 && arr[9] == 10, "MSCATTERV");
-    }
-    {
-        SIMD4_32u vec0(9, 8, 7, 6);
-        SIMD4_32u vec1(1, 0, 3, 4);
-        SIMD4_32u vec2;
-        vec2 = vec0.lsh(vec1);
-        CHECK_CONDITION(vec2[0] == 18 && vec2[1] == 8 && vec2[2] == 56 && vec2[3] == 96, "LSHV");
-    }
-    {
-        SIMD4_32u vec0(9, 8, 7, 6);
-        SIMD4_32u vec1(1, 2, 3, 4);
-        SIMD4_32u vec2;
-        SIMDMask4       mask(true, false, false, true);
-        vec2 = vec0.lsh(mask, vec1);
-        CHECK_CONDITION(vec2[0] == 18 && vec2[1] == 8 && vec2[2] == 7 && vec2[3] == 96, "MLSHV");
-    }
-    {
-        SIMD4_32u vec0(9, 8, 7, 6);
-        uint32_t val1 = 3;
-        SIMD4_32u vec2;
-        vec2 = vec0.lsh(val1);
-        CHECK_CONDITION(vec2[0] == 72 && vec2[1] == 64 && vec2[2] == 56 && vec2[3] == 48, "LSHS");
-    }
-    {
-        SIMD4_32u vec0(9, 8, 7, 6);
-        uint32_t val1 = 3;
-        SIMD4_32u vec2;
-        SIMDMask4       mask(true, false, false, true);
-        vec2 = vec0.lsh(mask, val1);
-        CHECK_CONDITION(vec2[0] == 72 && vec2[1] == 8 && vec2[2] == 7 && vec2[3] == 48, "MLSHS");
-    }
-    {
-        SIMD4_32u vec0(9, 8, 7, 6);
-        SIMD4_32u vec1(1, 2, 3, 4);
-        vec0.lsha(vec1);
-        CHECK_CONDITION(vec0[0] == 18 && vec0[1] == 32 && vec0[2] == 56 && vec0[3] == 96, "LSHVA");
-    }
-    {
-        SIMD4_32u vec0(9, 8, 7, 6);
-        SIMD4_32u vec1(1, 2, 3, 4);
-        SIMDMask4       mask(true, false, true, false);
-        vec0.lsha(mask, vec1);
-        CHECK_CONDITION(vec0[0] == 18 && vec0[1] == 8 && vec0[2] == 56 && vec0[3] == 6, "MLSHVA");
-    }
-    {
-        SIMD4_32u vec0(9, 8, 7, 6);
-        uint32_t val1 = 3;
-        vec0.lsha(val1);
-        CHECK_CONDITION(vec0[0] == 72 && vec0[1] == 64 && vec0[2] == 56 && vec0[3] == 48, "LSHSA");
-    }
-    {
-        SIMD4_32u vec0(9, 8, 7, 6);
-        SIMDMask4       mask(true, false, true, false);
-        uint32_t val1 = 3;
-        vec0.lsha(mask, val1);
-        CHECK_CONDITION(vec0[0] == 72 && vec0[1] == 8 && vec0[2] == 56 && vec0[3] == 6, "MLSHSA");
-    }
-    {
-        SIMD4_32u vec0(9, 8, 7, 6);
-        SIMD4_32u vec1(1, 2, 3, 4);
-        SIMD4_32u vec2;
-        vec2 = vec0.rsh(vec1);
-        CHECK_CONDITION(vec2[0] == 4 && vec2[1] == 2 && vec2[2] == 0 && vec2[3] == 0, "RSHV");
-    }
-    {
-        SIMD4_32u vec0(9, 8, 7, 6);
-        uint32_t val1 = 3;
-        SIMD4_32u vec2;
-        vec2 = vec0.rsh(val1);
-        CHECK_CONDITION(vec2[0] == 1 && vec2[1] == 1 && vec2[2] == 0 && vec2[3] == 0, "RSHS");
-    }
-    {
-        SIMD4_32u vec0(9, 8, 7, 6);
-        SIMD4_32u vec1(1, 2, 3, 4);
-        vec0.rsha(vec1);
-        CHECK_CONDITION(vec0[0] == 4 && vec0[1] == 2 && vec0[2] == 0 && vec0[3] == 0, "RSHVA");
-    }
-    {
-        SIMD4_32u vec0(9, 8, 7, 6);
-        uint32_t val1 = 3;
-        vec0.rsha(val1);
-        CHECK_CONDITION(vec0[0] == 1 && vec0[1] == 1 && vec0[2] == 0 && vec0[3] == 0, "RSHSA");
     }
     {
         SIMD4_32u vec0(0x91111111);
@@ -1995,62 +1874,6 @@ int test_UME_SIMD4_32i(bool supressMessages)
         SIMD4_32i vec2;
         vec2 = vec0.rcp(val1);
         CHECK_CONDITION(vec2[0] == -2 && vec2[1] == -2 && vec2[2] == 2 && vec2[3] == -3, "RCPS");
-    }
-    {
-        SIMD4_32i vec0(9, 8, -7, 6);
-        SIMD4_32u vec1(1, 2, 3, 4);
-        SIMD4_32i vec2;
-        vec2 = vec0.lsh(vec1);
-        CHECK_CONDITION(vec2[0] == 18 && vec2[1] == 32 && vec2[3] == 96, "LSHV"); // value of vec2[2] is implementation defined
-    }
-    {
-        SIMD4_32i vec0(9, 8, -7, 6);
-        SIMD4_32u vec1(1, 2, 3, 4);
-        SIMD4_32i vec2;
-        SIMDMask4       mask(true, false, false, true);
-        vec2 = vec0.lsh(mask, vec1);
-        CHECK_CONDITION(vec2[0] == 18 && vec2[1] == 8 && vec2[3] == 96, "MLSHV"); // value of vec2[2] is implementation defined
-    }
-    {
-        SIMD4_32i vec0(9, 8, -7, 6);
-        uint32_t val1 = 3;
-        SIMD4_32i vec2;
-        vec2 = vec0.lsh(val1);
-        CHECK_CONDITION(vec2[0] == 72 && vec2[1] == 64 && vec2[3] == 48, "LSHS"); // value of vec2[2] is implementation defined
-    }
-    {
-        SIMD4_32i vec0(9, 8, -7, 6);
-        uint32_t val1 = 3;
-        SIMD4_32i vec2;
-        SIMDMask4       mask(true, false, false, true);
-        vec2 = vec0.lsh(mask, val1);
-        CHECK_CONDITION(vec2[0] == 72 && vec2[1] == 8 && vec2[3] == 48, "MLSHS"); // value of vec2[2] is implementation defined
-    }
-    {
-        SIMD4_32i vec0(9, 8, -7, 6);
-        SIMD4_32u vec1(1, 2, 3, 4);
-        vec0.lsha(vec1);
-        CHECK_CONDITION(vec0[0] == 18 && vec0[1] == 32 && vec0[3] == 96, "LSHVA");// value of vec2[2] is implementation defined
-    }
-    {
-        SIMD4_32i vec0(9, 8, -7, 6);
-        SIMD4_32u vec1(1, 2, 3, 4);
-        SIMDMask4       mask(true, false, true, false);
-        vec0.lsha(mask, vec1);
-        CHECK_CONDITION(vec0[0] == 18 && vec0[1] == 8 && vec0[3] == 6, "MLSHVA"); // value of vec2[2] is implementation defined
-    }
-    {
-        SIMD4_32i vec0(9, 8, -7, 6);
-        uint32_t val1 = 3;
-        vec0.lsha(val1);
-        CHECK_CONDITION(vec0[0] == 72 && vec0[1] == 64 && vec0[3] == 48, "LSHSA"); // value of vec2[2] is implementation defined
-    }
-    {
-        SIMD4_32i vec0(9, 8, -7, 6);
-        SIMDMask4       mask(true, false, true, false);
-        uint32_t val1 = 3;
-        vec0.lsha(mask, val1);
-        CHECK_CONDITION(vec0[0] == 72 && vec0[1] == 8 && vec0[3] == 6, "MLSHSA"); // value of vec2[2] is implementation defined
     }
     {
         SIMD4_32i vec0(9, 8, -7, 6);

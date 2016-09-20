@@ -335,3 +335,12 @@ bool randomValue<bool>(std::mt19937 & generator) {
     int32_t t0 = dist(generator);
     return t0 > 0;
 }
+
+template<>
+uint32_t MAX_BIT_COUNT_helper<int8_t>() { return 6; }
+template<>
+uint32_t MAX_BIT_COUNT_helper<int16_t>() { return 14; }
+template<>
+uint32_t MAX_BIT_COUNT_helper<int32_t>() { return 30; }
+template<>
+uint32_t MAX_BIT_COUNT_helper<int64_t>() { return 62; }
