@@ -1272,22 +1272,22 @@ namespace SIMD {
             return t1;
         }
         // IMAX
-        UME_FORCE_INLINE uint64_t imax() const {
+        UME_FORCE_INLINE uint32_t imax() const {
             alignas(16) uint64_t raw[2];
             _mm_store_si128((__m128i*)raw, mVec);
             return raw[0] > raw[1] ? 0 : 1;
         }
         // MIMAX
-        UME_FORCE_INLINE uint64_t imax(SIMDVecMask<2> const & mask) const {
+        UME_FORCE_INLINE uint32_t imax(SIMDVecMask<2> const & mask) const {
             alignas(16) uint64_t raw[2];
             _mm_store_si128((__m128i*)raw, mVec);
-            uint64_t i0 = 0xFFFFFFFFFFFFFFFF;
+            uint32_t i0 = 0xFFFFFFFF;
             uint64_t t0 = std::numeric_limits<uint64_t>::min();
-            if((mask.mMask & 0x1) == true) {
+            if((mask.mMask & 0x1) != 0) {
                 i0 = 0;
                 t0 = raw[0];
             }
-            if((mask.mMask & 0x2) == true && raw[1] > t0) {
+            if(((mask.mMask & 0x2) != 0 ) && raw[1] > t0) {
                 i0 = 1;
             }
             return i0;
@@ -1307,22 +1307,22 @@ namespace SIMD {
             return t1;
         }
         // IMIN
-        UME_FORCE_INLINE uint64_t imin() const {
+        UME_FORCE_INLINE uint32_t imin() const {
             alignas(16) uint64_t raw[2];
             _mm_store_si128((__m128i*)raw, mVec);
             return raw[0] < raw[1] ? 0 : 1;
         }
         // MIMIN
-        UME_FORCE_INLINE uint64_t imin(SIMDVecMask<2> const & mask) const {
+        UME_FORCE_INLINE uint32_t imin(SIMDVecMask<2> const & mask) const {
             alignas(16) uint64_t raw[2];
             _mm_store_si128((__m128i*)raw, mVec);
-            uint64_t i0 = 0xFFFFFFFFFFFFFFFF;
+            uint32_t i0 = 0xFFFFFFFF;
             uint64_t t0 = std::numeric_limits<uint64_t>::max();
-            if ((mask.mMask & 0x1) == true) {
+            if ((mask.mMask & 0x1) != 0) {
                 i0 = 0;
                 t0 = raw[0];
             }
-            if ((mask.mMask & 0x2) == true && raw[1] < t0) {
+            if (((mask.mMask & 0x2) != 0) && raw[1] < t0) {
                 i0 = 1;
             }
             return i0;

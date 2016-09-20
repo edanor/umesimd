@@ -1311,7 +1311,7 @@ namespace SIMD {
             return t3;
         }
         // IMAX
-        UME_FORCE_INLINE uint64_t imax() const {
+        UME_FORCE_INLINE uint32_t imax() const {
             alignas(32) uint64_t raw[4];
             _mm256_store_si256((__m256i*)raw, mVec);
             uint64_t t0 = raw[0] > raw[1] ? 0 : 1;
@@ -1319,25 +1319,25 @@ namespace SIMD {
             return raw[t0] > raw[t1] ? t0 : t1;
         }
         // MIMAX
-        UME_FORCE_INLINE uint64_t imax(SIMDVecMask<4> const & mask) const {
+        UME_FORCE_INLINE uint32_t imax(SIMDVecMask<4> const & mask) const {
             alignas(32) uint64_t raw[4];
             _mm256_store_si256((__m256i*)raw, mVec);
-            uint64_t i0 = 0xFFFFFFFFFFFFFFFF;
+            uint32_t i0 = 0xFFFFFFFF;
             uint64_t t0 = std::numeric_limits<uint64_t>::min();
-            if ((mask.mMask & 0x1) == true) {
+            if ((mask.mMask & 0x1) != 0) {
                 i0 = 0;
                 t0 = raw[0];
             }
-            if ((mask.mMask & 0x2) == true && raw[1] > t0) {
+            if (((mask.mMask & 0x2) != 0) && raw[1] > t0) {
                 i0 = 1;
                 t0 = raw[1];
             }
-            if ((mask.mMask & 0x4) == true && raw[2] > t0) {
+            if (((mask.mMask & 0x4) != 0) && raw[2] > t0) {
                 i0 = 2;
                 t0 = raw[2];
             }
-            if ((mask.mMask & 0x8) == true && raw[3] > t0) {
-                i0 = 1;
+            if (((mask.mMask & 0x8) != 0) && raw[3] > t0) {
+                i0 = 3;
             }
             return i0;
         }
@@ -1360,33 +1360,33 @@ namespace SIMD {
             return t3;
         }
         // IMIN
-        UME_FORCE_INLINE uint64_t imin() const {
+        UME_FORCE_INLINE uint32_t imin() const {
             alignas(32) uint64_t raw[4];
             _mm256_store_si256((__m256i*)raw, mVec);
-            uint64_t t0 = raw[0] < raw[1] ? 0 : 1;
-            uint64_t t1 = raw[2] < raw[3] ? 2 : 3;
+            uint32_t t0 = raw[0] < raw[1] ? 0 : 1;
+            uint32_t t1 = raw[2] < raw[3] ? 2 : 3;
             return raw[t0] < raw[t1] ? t0 : t1;
         }
         // MIMIN
         UME_FORCE_INLINE uint64_t imin(SIMDVecMask<4> const & mask) const {
             alignas(32) uint64_t raw[4];
             _mm256_store_si256((__m256i*)raw, mVec);
-            uint64_t i0 = 0xFFFFFFFFFFFFFFFF;
+            uint32_t i0 = 0xFFFFFFFF;
             uint64_t t0 = std::numeric_limits<uint64_t>::max();
-            if ((mask.mMask & 0x1) == true) {
+            if ((mask.mMask & 0x1) != 0) {
                 i0 = 0;
                 t0 = raw[0];
             }
-            if ((mask.mMask & 0x2) == true && raw[1] < t0) {
+            if (((mask.mMask & 0x2) != 0) && raw[1] < t0) {
                 i0 = 1;
                 t0 = raw[1];
             }
-            if ((mask.mMask & 0x4) == true && raw[2] < t0) {
+            if (((mask.mMask & 0x4) != 0) && raw[2] < t0) {
                 i0 = 2;
                 t0 = raw[2];
             }
-            if ((mask.mMask & 0x8) == true && raw[3] < t0) {
-                i0 = 1;
+            if (((mask.mMask & 0x8) != 0) && raw[3] < t0) {
+                i0 = 3;
             }
             return i0;
         }

@@ -1410,7 +1410,7 @@ namespace SIMD {
         // MHMAX
         UME_FORCE_INLINE double hmax(SIMDVecMask<2> const & mask) const {
             __m512d t0 = _mm512_castpd128_pd512(mVec);
-            double retval = _mm512_mask_reduce_max_pd(mask.mMask, t0);
+            double retval = _mm512_mask_reduce_max_pd(mask.mMask & 0x3, t0);
             return retval;
         }
         // IMAX
@@ -1424,7 +1424,7 @@ namespace SIMD {
         // MHMIN
         UME_FORCE_INLINE double hmin(SIMDVecMask<2> const & mask) const {
             __m512d t0 = _mm512_castpd128_pd512(mVec);
-            double retval = _mm512_mask_reduce_min_pd(mask.mMask, t0);
+            double retval = _mm512_mask_reduce_min_pd(mask.mMask & 0x3, t0);
             return retval;
         }
         // IMIN
