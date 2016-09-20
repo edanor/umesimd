@@ -502,8 +502,8 @@ namespace SIMD {
         }
         // DIVV
         UME_FORCE_INLINE SIMDVec_u div(SIMDVec_u const & b) const {
-#if defined(__ICC__)
-            __mm512i t0 = _mm512_div_epu32(mVec, b.mVeC);
+#if defined(UME_USE_SVML)
+            __m512i t0 = _mm512_div_epu32(mVec, b.mVec);
             return SIMDVec_u(t0);
 #else
             alignas(64) uint32_t raw[16];
@@ -517,7 +517,7 @@ namespace SIMD {
                 raw_res[i] = raw[i] / raw_b[i];
             }
             
-            __m512i t0 = _mm512_load_si512(&raw_res[16]);
+            __m512i t0 = _mm512_load_si512(&raw_res[0]);
             return SIMDVec_u(t0);
 #endif
         }
@@ -526,8 +526,8 @@ namespace SIMD {
         }
         // MDIVV
         UME_FORCE_INLINE SIMDVec_u div(SIMDVecMask<16> const & mask, SIMDVec_u const & b) const {
-#if defined(__ICC__)
-            __mm512i t0 = _mm512_mask_div_epu32(mVec, mask.mMask, mVec, b.mVeC);
+#if defined(UME_USE_SVML)
+            __m512i t0 = _mm512_mask_div_epu32(mVec, mask.mMask, mVec, b.mVec);
             return SIMDVec_u(t0);
 #else
             alignas(64) uint32_t raw[16];
@@ -543,15 +543,16 @@ namespace SIMD {
                 t0 <<= 1;
             }
 
-            __m512i t1 = _mm512_load_si512(&raw_res[16]);
+            __m512i t1 = _mm512_load_si512(&raw_res[0]);
             return SIMDVec_u(t1);
 #endif
         }
         // DIVS
         UME_FORCE_INLINE SIMDVec_u div(uint32_t b) const {
-#if defined(__ICC__)
-            __mm512i t0 = _mm512_div_epu32(mVec, b.mVeC);
-            return SIMDVec_u(t0);
+#if defined(UME_USE_SVML)
+            __m512i t0 = _mm512_set1_epi32(b);
+            __m512i t1 = _mm512_div_epu32(mVec, t0);
+            return SIMDVec_u(t1);
 #else
             alignas(64) uint32_t raw[16];
             alignas(64) uint32_t raw_res[16];
@@ -562,7 +563,7 @@ namespace SIMD {
                 raw_res[i] = raw[i] / b;
             }
 
-            __m512i t0 = _mm512_load_si512(&raw_res[16]);
+            __m512i t0 = _mm512_load_si512(&raw_res[0]);
             return SIMDVec_u(t0);
 #endif
         }
@@ -571,13 +572,11 @@ namespace SIMD {
         }
         // MDIVS
         UME_FORCE_INLINE SIMDVec_u div(SIMDVecMask<16> const & mask, uint32_t b) const {
-#if defined(__ICC__)
-            std::cout << "[SVML]\n";
-            __mm512i t0 = _mm512_set1_epi32(b);
-            __mm512i t1 = _mm512_mask_div_epu32(mVec, mask.mMask, mVec, t0);
+#if defined(UME_USE_SVML)
+            __m512i t0 = _mm512_set1_epi32(b);
+            __m512i t1 = _mm512_mask_div_epu32(mVec, mask.mMask, mVec, t0);
             return SIMDVec_u(t1);
 #else
-            std::cout << "[NO SVML]\n";
             alignas(64) uint32_t raw[16];
             alignas(64) uint32_t raw_res[16];
 
@@ -589,7 +588,7 @@ namespace SIMD {
                 t0 <<= 1;
             }
 
-            __m512i t1 = _mm512_load_si512(&raw_res[16]);
+            __m512i t1 = _mm512_load_si512(&raw_res[0]);
             return SIMDVec_u(t1);
 #endif
         }
