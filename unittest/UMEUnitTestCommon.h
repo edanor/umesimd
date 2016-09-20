@@ -7386,7 +7386,7 @@ void genericMHMAXTest_random()
 
     {
         SCALAR_TYPE inputA[VEC_LEN];
-        SCALAR_TYPE maxVal = std::numeric_limits<SCALAR_TYPE>::min();
+        SCALAR_TYPE maxVal = std::numeric_limits<SCALAR_TYPE>::lowest();
         bool inputMask[VEC_LEN];
 
         for (int i = 0; i < VEC_LEN; i++) {
@@ -7399,11 +7399,12 @@ void genericMHMAXTest_random()
         MASK_TYPE mask(inputMask);
         SCALAR_TYPE value = vec0.hmax(mask);
         bool inRange = valueInRange(value, maxVal, SCALAR_TYPE(0.01f));
+        
         CHECK_CONDITION(inRange, "MHMAX");
     }
     {
         SCALAR_TYPE inputA[VEC_LEN];
-        SCALAR_TYPE maxVal = std::numeric_limits<SCALAR_TYPE>::min();
+        SCALAR_TYPE maxVal = std::numeric_limits<SCALAR_TYPE>::lowest();
         bool inputMask[VEC_LEN];
 
         for (int i = 0; i < VEC_LEN; i++) {
@@ -7473,7 +7474,7 @@ void genericMIMAXTest_random()
     {
         SCALAR_TYPE inputA[VEC_LEN];
         bool inputMask[VEC_LEN];
-        SCALAR_TYPE maxVal = std::numeric_limits<SCALAR_TYPE>::min();
+        SCALAR_TYPE maxVal = std::numeric_limits<SCALAR_TYPE>::lowest();
         uint32_t index = 0xFFFFFFFF;
         bool maskEmpty = true;
 
@@ -7496,7 +7497,7 @@ void genericMIMAXTest_random()
     {
         SCALAR_TYPE inputA[VEC_LEN];
         bool inputMask[VEC_LEN];
-        SCALAR_TYPE maxVal = std::numeric_limits<SCALAR_TYPE>::min();
+        SCALAR_TYPE maxVal = std::numeric_limits<SCALAR_TYPE>::lowest();
         uint32_t index = 0xFFFFFFFF;
         bool maskEmpty = true;
 
