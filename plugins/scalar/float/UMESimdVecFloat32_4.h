@@ -1461,7 +1461,7 @@ namespace SIMD {
         }
         // MHMAX
         UME_FORCE_INLINE float hmax(SIMDVecMask<4> const & mask) const {
-            float t0 = mask.mMask[0] ? mVec[0] : std::numeric_limits<float>::min();
+            float t0 = mask.mMask[0] ? mVec[0] : std::numeric_limits<float>::lowest();
             float t1 = (mask.mMask[1] && mVec[1] > t0) ? mVec[1] : t0;
             float t2 = (mask.mMask[2] && mVec[2] > t1) ? mVec[2] : t1;
             float t3 = (mask.mMask[3] && mVec[3] > t2) ? mVec[3] : t2;
@@ -1476,16 +1476,18 @@ namespace SIMD {
         // MIMAX
         UME_FORCE_INLINE uint32_t imax(SIMDVecMask<4> const & mask) const {
             uint32_t i0 = 0xFFFFFFFF;
-            float t0 = std::numeric_limits<float>::min();
+            float t0 = std::numeric_limits<float>::lowest();
             if(mask.mMask[0] == true) {
                 i0 = 0;
                 t0 = mVec[0];
             }
             if(mask.mMask[1] == true && mVec[1] > t0) {
                 i0 = 1;
+                t0 = mVec[1];
             }
             if (mask.mMask[2] == true && mVec[2] > t0) {
                 i0 = 2;
+                t0 = mVec[2];
             }
             if (mask.mMask[3] == true && mVec[3] > t0) {
                 i0 = 3;
@@ -1522,9 +1524,11 @@ namespace SIMD {
             }
             if (mask.mMask[1] == true && mVec[1] < t0) {
                 i0 = 1;
+                t0 = mVec[1];
             }
             if (mask.mMask[2] == true && mVec[2] < t0) {
                 i0 = 2;
+                t0 = mVec[2];
             }
             if (mask.mMask[3] == true && mVec[3] < t0) {
                 i0 = 3;

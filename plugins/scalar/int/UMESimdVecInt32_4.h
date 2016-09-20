@@ -1468,26 +1468,28 @@ namespace SIMD {
             return t3;
         }
         // IMAX
-        UME_FORCE_INLINE int32_t imax() const {
+        UME_FORCE_INLINE uint32_t imax() const {
             int32_t t0 = mVec[0] > mVec[1] ? 0 : 1;
             int32_t t1 = mVec[2] > mVec[3] ? 2 : 3;
             return mVec[t0] > mVec[t1] ? t0 : t1;
         }
         // MIMAX
-        UME_FORCE_INLINE int32_t imax(SIMDVecMask<4> const & mask) const {
-            int32_t i0 = 0xFFFFFFFF;
+        UME_FORCE_INLINE uint32_t imax(SIMDVecMask<4> const & mask) const {
+            uint32_t i0 = 0xFFFFFFFF;
             int32_t t0 = std::numeric_limits<int32_t>::min();
             if(mask.mMask[0] == true) {
                 i0 = 0;
                 t0 = mVec[0];
             }
-            if(mask.mMask[1] == true && mVec[1] > t0) {
+            if((mask.mMask[1] == true) && (mVec[1] > t0)) {
                 i0 = 1;
+                t0 = mVec[1];
             }
-            if (mask.mMask[2] == true && mVec[2] > t0) {
+            if ((mask.mMask[2] == true) && (mVec[2] > t0)) {
                 i0 = 2;
+                t0 = mVec[2];
             }
-            if (mask.mMask[3] == true && mVec[3] > t0) {
+            if ((mask.mMask[3] == true) && (mVec[3] > t0)) {
                 i0 = 3;
             }
             return i0;
@@ -1507,26 +1509,28 @@ namespace SIMD {
             return t3;
         }
         // IMIN
-        UME_FORCE_INLINE int32_t imin() const {
+        UME_FORCE_INLINE uint32_t imin() const {
             int32_t t0 = mVec[0] < mVec[1] ? 0 : 1;
             int32_t t1 = mVec[2] < mVec[3] ? 2 : 3;
             return mVec[t0] < mVec[t1] ? t0 : t1;
         }
         // MIMIN
-        UME_FORCE_INLINE int32_t imin(SIMDVecMask<4> const & mask) const {
-            int32_t i0 = 0xFFFFFFFF;
+        UME_FORCE_INLINE uint32_t imin(SIMDVecMask<4> const & mask) const {
+            uint32_t i0 = 0xFFFFFFFF;
             int32_t t0 = std::numeric_limits<int32_t>::max();
             if (mask.mMask[0] == true) {
                 i0 = 0;
                 t0 = mVec[0];
             }
-            if (mask.mMask[1] == true && mVec[1] < t0) {
+            if ((mask.mMask[1] == true) && mVec[1] < t0) {
                 i0 = 1;
+                t0 = mVec[1];
             }
-            if (mask.mMask[2] == true && mVec[2] < t0) {
+            if ((mask.mMask[2] == true) && mVec[2] < t0) {
                 i0 = 2;
+                t0 = mVec[2];
             }
-            if (mask.mMask[3] == true && mVec[3] < t0) {
+            if ((mask.mMask[3] == true) && mVec[3] < t0) {
                 i0 = 3;
             }
             return i0;

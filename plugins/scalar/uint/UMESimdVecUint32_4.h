@@ -1414,9 +1414,11 @@ namespace SIMD {
             }
             if(mask.mMask[1] == true && mVec[1] > t0) {
                 i0 = 1;
+                t0 = mVec[1];
             }
             if (mask.mMask[2] == true && mVec[2] > t0) {
                 i0 = 2;
+                t0 = mVec[2];
             }
             if (mask.mMask[3] == true && mVec[3] > t0) {
                 i0 = 3;
@@ -1451,13 +1453,15 @@ namespace SIMD {
                 i0 = 0;
                 t0 = mVec[0];
             }
-            if (mask.mMask[1] == true && mVec[1] < t0) {
+            if ((mask.mMask[1] == true) && mVec[1] < t0) {
                 i0 = 1;
+                t0 = mVec[1];
             }
-            if (mask.mMask[2] == true && mVec[2] < t0) {
+            if ((mask.mMask[2] == true) && mVec[2] < t0) {
                 i0 = 2;
+                t0 = mVec[2];
             }
-            if (mask.mMask[3] == true && mVec[3] < t0) {
+            if ((mask.mMask[3] == true) && mVec[3] < t0) {
                 i0 = 3;
             }
             return i0;

@@ -2897,7 +2897,7 @@ namespace SCALAR_EMULATION
         // MHMAX
         template<typename SCALAR_TYPE, typename VEC_TYPE, typename MASK_TYPE>
         UME_FORCE_INLINE SCALAR_TYPE reduceMax(MASK_TYPE const & mask, VEC_TYPE const & a) {
-            SCALAR_TYPE retval = std::numeric_limits<SCALAR_TYPE>::min();
+            SCALAR_TYPE retval = std::numeric_limits<SCALAR_TYPE>::lowest();
             for (uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                 if ((mask[i] == true) && a[i] > retval) retval = a[i];
             }
@@ -2942,7 +2942,7 @@ namespace SCALAR_EMULATION
         template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
         UME_FORCE_INLINE uint32_t indexMax(MASK_TYPE const & mask, VEC_TYPE const & a) {
             uint32_t indexMax = 0xFFFFFFFF;
-            SCALAR_TYPE maxVal = std::numeric_limits<SCALAR_TYPE>::min();
+            SCALAR_TYPE maxVal = std::numeric_limits<SCALAR_TYPE>::lowest();
             for (uint32_t i = 0; i < VEC_TYPE::length(); i++) {
                 if (mask[i] == true && a[i] > maxVal) {
                     maxVal = a[i];
@@ -3071,7 +3071,7 @@ namespace SCALAR_EMULATION
                 else new_val = -std::abs(a[i]);
 
                 if(mask[i] == true) retval.insert(i, new_val);
-                else ratval.insert(i, a[i]);
+                else retval.insert(i, a[i]);
             }
             return retval;
         }
