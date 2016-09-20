@@ -1076,11 +1076,11 @@ namespace SIMD {
             return t1;
         }
         // IMAX
-        inline uint64_t imax() const {
+        inline uint32_t imax() const {
             return mVec[0] > mVec[1] ? 0 : 1;
         }
         // MIMAX
-        inline uint64_t imax(SIMDVecMask<2> const & mask) const {
+        inline uint32_t imax(SIMDVecMask<2> const & mask) const {
             uint64_t i0 = 0xFFFFFFFFFFFFFFFF;
             uint64_t t0 = std::numeric_limits<uint64_t>::min();
             if(mask.mMask[0] == true) {
@@ -1103,11 +1103,11 @@ namespace SIMD {
             return t1;
         }
         // IMIN
-        inline uint64_t imin() const {
+        inline uint32_t imin() const {
             return mVec[0] < mVec[1] ? 0 : 1;
         }
         // MIMIN
-        inline uint64_t imin(SIMDVecMask<2> const & mask) const {
+        inline uint32_t imin(SIMDVecMask<2> const & mask) const {
             uint64_t i0 = 0xFFFFFFFFFFFFFFFF;
             uint64_t t0 = std::numeric_limits<uint64_t>::max();
             if(mask.mMask[0] == true) {

@@ -855,7 +855,7 @@ namespace SIMD {
         }
         // MHMAX
         inline float hmax(SIMDVecMask<1> const & mask) const {
-            float t0 = std::numeric_limits<float>::min();
+            float t0 = std::numeric_limits<float>::lowest();
             if (mask.mMask == true) t0 = mVec;
             return t0;
         }

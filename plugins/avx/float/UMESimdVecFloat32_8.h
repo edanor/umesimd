@@ -1008,7 +1008,7 @@ namespace SIMD {
         }
         // HMAX
         inline float hmax() const {
-            __m128 t0 = _mm_set1_ps(std::numeric_limits<float>::min());
+            __m128 t0 = _mm_set1_ps(std::numeric_limits<float>::lowest());
             __m128 t1 = _mm256_castps256_ps128(mVec);
             __m128 t2 = _mm256_extractf128_ps(mVec, 1);
             __m128 t3 = _mm_max_ps(t1, t2);
@@ -1021,8 +1021,8 @@ namespace SIMD {
         }
         // MHMAX
         inline float hmax(SIMDVecMask<8> const & mask) const {
-            __m128 t0 = _mm_set1_ps(std::numeric_limits<float>::min());
-            __m256 t1 = _mm256_set1_ps(std::numeric_limits<float>::min());
+            __m128 t0 = _mm_set1_ps(std::numeric_limits<float>::lowest());
+            __m256 t1 = _mm256_set1_ps(std::numeric_limits<float>::lowest());
             __m256 t2 = BLEND(mVec, t1, mask.mMask);
             __m128 t3 = _mm256_castps256_ps128(t2);
             __m128 t4 = _mm256_extractf128_ps(t2, 1);

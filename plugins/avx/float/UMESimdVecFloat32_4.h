@@ -959,7 +959,7 @@ namespace SIMD {
         // MHMAX
         inline float hmax(SIMDVecMask<4> const & mask) const {
             alignas(16) float raw[4];
-            __m128 t0 = _mm_set1_ps(std::numeric_limits<float>::min());
+            __m128 t0 = _mm_set1_ps(std::numeric_limits<float>::lowest());
             __m128 t1 = BLEND(t0, mVec, mask.mMask);
             _mm_store_ps(raw, t1);
             float t2 = (raw[0] > raw[1]) ? raw[0] : raw[1];
