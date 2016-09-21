@@ -1,7 +1,7 @@
-**Current stable release is: v0.5.2-stable**  
+**Current stable release is: v0.6.1-stable**  
 **To checkout stable release use:**  
  > git clone https://edanor@bitbucket.org/edanor/umesimd.git  
- > git checkout tags/v0.5.2-stable
+ > git checkout tags/v0.6.1-stable
 
 
 UME::SIMD is an explicit vectorization library. The library defines homogeneous interface for accessing functionality of SIMD registers of AVX, AVX2, AVX512 and IMCI (KNCNI, k1om) instruction set. 
@@ -31,6 +31,78 @@ Please refer to the wiki for introduction and additional information:
 
    
    
+**RELEASE NOTES for v0.6.1-stable**   
+Interface:   
+- Add GATHERU/SCATTERU (uniform stride gather/scatter   
+- Add operators for LSH/RSH   
+- Add LAND/LOR (logical AND/OR) for integer types   
+- Add REM (division reminder) operation for integer types   
+- Add SORTA/D (sort using Ascending/Descending order)   
+- Add BANDNOT/LANDNOT (Bitwise/Logical AND-NOT)   
+- Add COPYSIGN to interface     
+- Allow SET-CONSTR to use scalar types other than SIMDVec base type   
+- Add SCALAR_FLOAT_T to traits classes   
+   
+Performance tuning:   
+- Add generalized, vectorized EXP   
+- Add generalized, vectorized implementation for LOG/MLOG   
+AVX:   
+- add specializations for EXP & MEXP   
+- SIMD8_32/64f: Use SVML for sin/cos functions   
+AVX2:   
+- Add specializations for EXP & MEXP   
+AVX512:   
+ - 32/64 u/i/f : M/GATHERU, M/SCATTERU   
+ - 32/64 u/i/f : M/GATHERS/V, M/SCATTERS/V   
+ - 32 u: GATHER/SCATTER   
+ - Add specialization for EXP   
+ - Specialized SIN/COS/SINCOS   
+ - force inline on MFI functions.   
+ - Bulk update (SIN/COS/EXP/LOG/LSH/RSH/FLOOR/CEIL)   
+ - Bulk update mask types.   
+ - Bulk performance upgrade.   
+OPENMP:   
+ - Added openmp plugin. The plugin can be forced by -DFORCE_OPENMP compilation flag   
+   
+Benchmarks:   
+ - Increase benchmark automation by adding Makefiles and testing scripts   
+ - Add compilation with forced scalar plugin   
+ - Refactor microbenchmark codes to remove g++/clang++ warnings   
+ - Create separate directories for all benchmarks   
+ - Add matrix multiplication (matmul) benchmark (WIP)   
+ - Add placeholder for openmp based implementation for mandelbrot2   
+ - Add 'explog' microbenchmark to test EXP and LOGx operations   
+   
+Fixes   
+ - AVX: Missing 'const' qualifier in operator-
+ - AVX2: Fixes for failing tests: FTOU, SADD, SUBFROM   
+ - AVX: IMIN/IMAX fix   
+ - Fix MIMAX/MIMIN errors   
+ - AVX512: SIMD16_32u: fixes for DIV
+ - Scalar: force inline on plugin functions   
+ - AVX512: Fixes for failsing MIN/MAX tests   
+ - AVX512: GATHER/SCATTER fails   
+ - COPYSIGN - scalar kernel updated   
+ - Fix some build problems when using OpenMP plugin   
+ - Assignment operators (+=, -=, /=) returning value and not reference   
+ - AVX512: SIMD2_64f incorrect implementation for EXP   
+   
+Tests   
+ - Use SVML when building with ICC   
+ - Use random generated data sets for LSH/RSH   
+ - Fix alignment problem in GATHER/SCATTER tests   
+ - Add tests for IMIN/IMAX   
+ - Replace Cmake build with makefile. Enable parallel compilation   
+ - Add VS2015 solution for unit tests   
+ - Add test for SWIZZLE   
+ - Add tests for PACK, PACKLO, PACKHI, UNPACK, UNPACKLO, UNPACKHI   
+ - Allow building with OpenMP plugins   
+   
+Internal code:   
+- Move emulation warnings from scalar emulation functions to interface methods   
+   
+   
+   
 **RELEASE NOTES for v0.5.1-stable**   
 Interface:  
 - Fix function name for mask interface LOAD.  
@@ -58,7 +130,7 @@ Benchmarks:
 - Update displayed information.  
 - Modifications to prohibit streaming-stores optimization.  
   
-Fixes:  
+Fixes:   
 - KNC: add missing 'const' function qualifiers.  
 - Incorrect mask used for write mask operator.  
 - AVX: Incorrect logic for CMPLT  
