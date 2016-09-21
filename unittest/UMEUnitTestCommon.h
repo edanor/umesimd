@@ -2407,38 +2407,51 @@ void genericMSUBVTest_random()
     }
 }
 
-template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
-void genericSUBSTest()
+template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN>
+void genericSUBSTest_random()
 {
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    SCALAR_TYPE inputA[VEC_LEN];
+    SCALAR_TYPE output[VEC_LEN];
+
+    SCALAR_TYPE inputB = randomValue<SCALAR_TYPE>(gen);
+    for (int i = 0; i < VEC_LEN; i++) {
+        inputA[i] = randomValue<SCALAR_TYPE>(gen);
+        output[i] = inputA[i] - inputB;
+    }
+
     {
         SCALAR_TYPE values[VEC_LEN];
-        VEC_TYPE vec0(DATA_SET::inputs::inputA);
-        VEC_TYPE vec1 = vec0.sub(DATA_SET::inputs::scalarA);
+        VEC_TYPE vec0(inputA);
+        VEC_TYPE vec1 = vec0.sub(inputB);
         vec1.store(values);
-        bool inRange = valuesInRange(values, DATA_SET::outputs::SUBS, VEC_LEN, SCALAR_TYPE(0.01f));
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
         vec0.store(values);
-        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
-        CHECK_CONDITION((inRange && isUnmodified), "SUBS");
+        bool isUnmodified = valuesInRange(values, inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange & isUnmodified), "SUBS gen");
     }
     {
         SCALAR_TYPE values[VEC_LEN];
-        VEC_TYPE vec0(DATA_SET::inputs::inputA);
-        VEC_TYPE vec1 = vec0 - DATA_SET::inputs::scalarA;
+        VEC_TYPE vec0(inputA);
+        VEC_TYPE vec1 = vec0 - inputB;
         vec1.store(values);
-        bool inRange = valuesInRange(values, DATA_SET::outputs::SUBS, VEC_LEN, SCALAR_TYPE(0.01f));
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
         vec0.store(values);
-        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
-        CHECK_CONDITION((inRange && isUnmodified), "SUBS(operator- RHS scalar)");
+        bool isUnmodified = valuesInRange(values, inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange & isUnmodified), "SUBS(operator-) gen");
     }
     {
         SCALAR_TYPE values[VEC_LEN];
-        VEC_TYPE vec0(DATA_SET::inputs::inputA);
-        VEC_TYPE vec1 = UME::SIMD::FUNCTIONS::sub(vec0, DATA_SET::inputs::scalarA);
+        VEC_TYPE vec0(inputA);
+        VEC_TYPE vec1;
+        vec1 = UME::SIMD::FUNCTIONS::sub(vec0, inputB);
         vec1.store(values);
-        bool inRange = valuesInRange(values, DATA_SET::outputs::SUBS, VEC_LEN, SCALAR_TYPE(0.01f));
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
         vec0.store(values);
-        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
-        CHECK_CONDITION((inRange && isUnmodified), "SUBS(function RHS scalar)");
+        bool isUnmodified = valuesInRange(values, inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange & isUnmodified), "SUBS(function) gen");
     }
 }
 
@@ -10727,7 +10740,7 @@ void genericBaseInterfaceTest()
     genericSUBVTest_random<VEC_TYPE, SCALAR_TYPE, VEC_LEN>();
     genericMSUBVTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
     genericMSUBVTest_random<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN>();
-    genericSUBSTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
+    genericSUBSTest_random<VEC_TYPE, SCALAR_TYPE, VEC_LEN>();
     genericMSUBSTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
     genericSUBVATest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
     genericMSUBVATest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();

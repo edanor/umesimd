@@ -341,7 +341,7 @@ namespace SIMD {
             __m256 t1 = _mm256_sub_ps(this->mVec[1], b.mVec[1]);
             return SIMDVec_f(t0, t1);
         }
-        inline SIMDVec_f operator- (SIMDVec_f const & b) {
+        inline SIMDVec_f operator- (SIMDVec_f const & b) const {
             return sub(b);
         }
         // MSUBV
