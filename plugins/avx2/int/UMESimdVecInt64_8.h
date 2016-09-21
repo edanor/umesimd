@@ -430,7 +430,7 @@ namespace SIMD {
             __m256i t0 = _mm256_sub_epi64(b.mVec[0], mVec[0]);
             __m256i t1 = _mm256_sub_epi64(b.mVec[1], mVec[1]);
             __m256i t2 = BLEND_LO(b.mVec[0], t0, mask.mMask);
-            __m256i t3 = BLEND_LO(b.mVec[1], t1, mask.mMask);
+            __m256i t3 = BLEND_HI(b.mVec[1], t1, mask.mMask);
             return SIMDVec_i(t2, t3);
         }
         // SUBFROMS
@@ -446,7 +446,7 @@ namespace SIMD {
             __m256i t1 = _mm256_sub_epi64(t0, mVec[0]);
             __m256i t2 = _mm256_sub_epi64(t0, mVec[1]);
             __m256i t3 = BLEND_LO(t0, t1, mask.mMask);
-            __m256i t4 = BLEND_LO(t0, t2, mask.mMask);
+            __m256i t4 = BLEND_HI(t0, t2, mask.mMask);
             return SIMDVec_i(t3, t4);
         }
         // SUBFROMVA
