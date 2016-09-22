@@ -70,9 +70,9 @@ void benchmarkUMESIMD(struct spec & spec,
     for (int i = 0; i < iterations; i++) {
         TIMING_RES start, end;
 
-        start = __rdtsc();
+        start = get_timestamp();
         mandel_umesimd<SIMD_T>(image, &spec);
-        end = __rdtsc();
+        end = get_timestamp();
 
         stats.update(end - start);
 
@@ -103,9 +103,9 @@ void benchmarkUMESIMD_MFI(struct spec & spec,
     for (int i = 0; i < iterations; i++) {
         TIMING_RES start, end;
 
-        start = __rdtsc();
+        start = get_timestamp();
         mandel_umesimd_MFI<SIMD_T>(image, &spec);
-        end = __rdtsc();
+        end = get_timestamp();
 
         stats.update(end - start);
 
@@ -159,7 +159,7 @@ main(int argc, char *argv[])
     uint8_t* image = bmp.GetRasterData();
 
     std::cout << "The result is amount of time it takes to calculate mandelbrot algorithm.\n"
-        "All timing results in clock cycles. \n"
+        "All timing results in nanoseconds. \n"
         "Speedup calculated with scalar floating point result as reference.\n\n"
         "SIMD version uses following operations: \n"
         "   32f vectors: FULL-CONSTR, LOAD-CONSTR, ADDS (operator+ RHS scalar), \n"
@@ -178,9 +178,9 @@ main(int argc, char *argv[])
     for (int i = 0; i < ITERATIONS; i++) {
         TIMING_RES start, end;
 
-        start = __rdtsc();
+        start = get_timestamp();
         mandel_basic_32f(image, &spec);
-        end = __rdtsc();
+        end = get_timestamp();
 
         stats_scalar_32f.update(end - start);
 
@@ -197,9 +197,9 @@ main(int argc, char *argv[])
     for (int i = 0; i < ITERATIONS; i++) {
         TIMING_RES start, end;
 
-        start = __rdtsc();
+        start = get_timestamp();
         mandel_basic_64f(image, &spec);
-        end = __rdtsc();
+        end = get_timestamp();
 
         stats_scalar_64f.update(end - start);
 
@@ -217,9 +217,9 @@ main(int argc, char *argv[])
     for (int i = 0; i < ITERATIONS; i++) {
         TIMING_RES start, end;
 
-        start = __rdtsc();
+        start = get_timestamp();
         mandel_sse2(image, &spec);
-        end = __rdtsc();
+        end = get_timestamp();
 
         stats_sse2.update(end - start);
 
@@ -238,9 +238,9 @@ main(int argc, char *argv[])
     for (int i = 0; i < ITERATIONS; i++) {
         TIMING_RES start, end;
 
-        start = __rdtsc();
+        start = get_timestamp();
         mandel_avx(image, &spec);
-        end = __rdtsc();
+        end = get_timestamp();
 
         stats_avx.update(end - start);
 

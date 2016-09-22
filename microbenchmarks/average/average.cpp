@@ -31,7 +31,10 @@
 #include <iostream>
 #include <memory>
 
+#if defined(__i386__) || defined(__x86_64__)
 #include <immintrin.h> 
+#endif
+
 #include <cmath>
 #include <time.h>
 #include <stdlib.h>
@@ -68,7 +71,7 @@ TIMING_RES test_scalar()
         FLOAT_T sum = 0.0f;
         volatile FLOAT_T avg = 0.0f;
     
-        start = __rdtsc();
+        start = get_timestamp();
       
         for(int i = 0; i < ARRAY_SIZE; i++)
         {
@@ -77,7 +80,7 @@ TIMING_RES test_scalar()
         
         avg = sum/(FLOAT_T)ARRAY_SIZE;
         
-        end = __rdtsc();
+        end = get_timestamp();
     }
     
     UME::DynamicMemory::AlignedFree(x);
@@ -110,7 +113,7 @@ TIMING_RES test_AVX_f_256()
             
     alignas(32) float temp[8];
   
-    start = __rdtsc();
+    start = get_timestamp();
       
     __m256 x_vec;
     __m256 sum_vec = _mm256_setzero_ps();
@@ -137,7 +140,7 @@ TIMING_RES test_AVX_f_256()
       
     avg = sum/(float)ARRAY_SIZE;
       
-    end = __rdtsc();
+    end = get_timestamp();
       
     // Verify the result is correct
     float test_sum = 0.0f;
@@ -188,7 +191,7 @@ TIMING_RES test_AVX_d_256() {
         x[i] = static_cast <double> (rand()) / static_cast <double> (RAND_MAX/1000);
     }
 
-    start = __rdtsc();
+    start = get_timestamp();
       
     __m256d x_vec;
     __m256d sum_vec = _mm256_setzero_pd();
@@ -215,7 +218,7 @@ TIMING_RES test_AVX_d_256() {
       
     avg = sum/(double)ARRAY_SIZE;
       
-    end = __rdtsc();
+    end = get_timestamp();
       
     // Verify the result is correct
     double test_sum = 0.0f;
@@ -265,7 +268,7 @@ TIMING_RES test_AVX_f_512()
         x[i] = static_cast <float> (rand()) / static_cast <float> (RAND_MAX/1000);
     }
 
-    start = __rdtsc();
+    start = get_timestamp();
       
     __m512 x_vec;
     __m512 sum_vec = _mm512_setzero_ps();
@@ -292,7 +295,7 @@ TIMING_RES test_AVX_f_512()
       
     avg = sum/(float)ARRAY_SIZE;
       
-    end = __rdtsc();
+    end = get_timestamp();
       
     // Verify the result is correct
     float test_sum = 0.0f;
@@ -350,7 +353,7 @@ TIMING_RES test_UME_SIMD()
     
     temp = (FLOAT_T*) UME::DynamicMemory::AlignedMalloc(ARRAY_SIZE*sizeof(FLOAT_T), ALIGNMENT);
 
-    start = __rdtsc();
+    start = get_timestamp();
       
     FLOAT_VEC_TYPE x_vec;
     FLOAT_VEC_TYPE sum_vec(0.0f);
@@ -380,7 +383,7 @@ TIMING_RES test_UME_SIMD()
       
     avg = sum/(FLOAT_T)ARRAY_SIZE;
       
-    end = __rdtsc();
+    end = get_timestamp();
       
     // Verify the result is correct
     FLOAT_T test_sum = 0.0f;
@@ -432,7 +435,7 @@ int main()
     srand ((unsigned int)time(NULL));
 
     std::cout << "The result is amount of time it takes to calculate average of: " << ARRAY_SIZE << " elements.\n"
-        "All timing results in clock cycles. \n"
+        "All timing results in nanoseconds. \n"
         "Speedup calculated with scalar floating point result as reference.\n\n"
         "SIMD version uses following operations: \n"
         " ZERO-CONSTR, SET-CONSTR, LOAD, ADDA, STORE\n";

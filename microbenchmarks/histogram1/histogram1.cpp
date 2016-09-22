@@ -69,7 +69,7 @@ TIMING_RES test_scalar()
     // This is the actual binning code
     {    
         unsigned int bin;
-        start = __rdtsc();
+        start = get_timestamp();
       
         for(int i = 0; i < INPUT_SIZE; i++)
         {
@@ -77,7 +77,7 @@ TIMING_RES test_scalar()
             hist[bin]++;
         }
         
-        end = __rdtsc();
+        end = get_timestamp();
     }
 
     UME::DynamicMemory::AlignedFree(data);
@@ -166,7 +166,7 @@ TIMING_RES test_UME_SIMD()
 
         unsigned int bin;
 
-        start = __rdtsc();
+        start = get_timestamp();
 
         for (uint32_t i = 0; i < PEEL_COUNT; i++) {
             // Calculate indices
@@ -184,7 +184,7 @@ TIMING_RES test_UME_SIMD()
             hist[bin]++;
         }
 
-        end = __rdtsc();
+        end = get_timestamp();
 
         // Verify results
         for (int i = 0; i < INPUT_SIZE; i++)
@@ -235,7 +235,7 @@ int main()
     srand ((unsigned int)time(NULL));
 
     std::cout << "The result is amount of time it takes to calculate histogram of: " << INPUT_SIZE << " elements with " << HIST_SIZE << "-bin histogram.\n"
-        "All timing results in clock cycles. \n"
+        "All timing results in nanoseconds. \n"
         "Speedup calculated with scalar floating point result as reference.\n\n"
         "SIMD versions use following operations: \n"
         "float 32b: LOADA, MULV, TRUNC\n"

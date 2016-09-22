@@ -287,13 +287,13 @@ benchmark_results<SCALAR_FLOAT_T> test_sincos_vdt_scalar(int array_size)
         output_cos[i] = std::cos(inputA[i]);
     }
 
-    start = __rdtsc();
+    start = get_timestamp();
 
     for (int i = 0; i < LEN; i++) {
         call_sincos_vdt<SCALAR_FLOAT_T>(inputA[i], values_sin[i], values_cos[i]);
     }
 
-    end = __rdtsc();
+    end = get_timestamp();
 
     SCALAR_FLOAT_T max_sin_err = 0;
     SCALAR_FLOAT_T max_cos_err = 0;

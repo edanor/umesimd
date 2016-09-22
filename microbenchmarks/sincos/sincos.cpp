@@ -89,7 +89,7 @@ int main()
 
 
     std::cout << "The result is amount of time it takes to calculate sine and cosine of: " << ARRAY_SIZE << " elements.\n"
-        "All timing results in clock cycles. \n"
+        "All timing results in nanoseconds. \n"
         "Speedup calculated with scalar single precision floating point result as reference.\n"
         "VDT version used as a reference for auto-vectorization capabilities.\n"
         "SIMD version uses following operations: \n"

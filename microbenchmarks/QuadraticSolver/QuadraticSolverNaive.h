@@ -68,12 +68,12 @@ UME_NEVER_INLINE TIMING_RES run_scalar_naive()
 
     volatile FLOAT_T root_dump = FLOAT_T(0), x1_dump = FLOAT_T(0), x2_dump = FLOAT_T(0);
 
-    start = __rdtsc();
+    start = get_timestamp();
 
     for (int i = 0; i < ARRAY_SIZE; i++) {
         roots[i] = QuadSolveNaive<FLOAT_T>(a[i], b[i], c[i], x1[i], x2[i]);
     }
-    end = __rdtsc();
+    end = get_timestamp();
 
     for (int i = 0; i < ARRAY_SIZE; i++) {
         root_dump += roots[i];

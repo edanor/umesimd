@@ -88,7 +88,7 @@ RESULTS<typename UME::SIMD::SIMDTraits<FLOAT_VEC_TYPE>::SCALAR_T> test_SIMD()
     }*/
 
 
-    start = __rdtsc();
+    start = get_timestamp();
 
     // Transpose B matrix to a row-major form
     for (int i = 0; i < MAT_RANK; i++) {
@@ -119,7 +119,7 @@ RESULTS<typename UME::SIMD::SIMDTraits<FLOAT_VEC_TYPE>::SCALAR_T> test_SIMD()
         }
     }
 
-    end = __rdtsc();
+    end = get_timestamp();
     /*
     std::cout << "\n\nB': \n";
     for (int i = 0; i < MAT_RANK; i++) {

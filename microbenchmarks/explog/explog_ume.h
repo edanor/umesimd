@@ -49,7 +49,7 @@ benchmark_results<SCALAR_FLOAT_T> test_exp_ume(const int ARRAY_SIZE)
 
     generate_some_exp_values<SCALAR_FLOAT_T>(LEN, input, output);
 
-    start = __rdtsc();
+    start = get_timestamp();
 
     for (int i = 0; i < LEN; i += VEC_LEN) {
         x.load(&input[i]);
@@ -59,7 +59,7 @@ benchmark_results<SCALAR_FLOAT_T> test_exp_ume(const int ARRAY_SIZE)
         y.store(&values[i]);
     }
     
-    end = __rdtsc();
+    end = get_timestamp();
 
     SCALAR_FLOAT_T max_err = 0;
 
@@ -93,7 +93,7 @@ benchmark_results<SCALAR_FLOAT_T> test_log_ume(const int ARRAY_SIZE)
 
     generate_some_log_values<SCALAR_FLOAT_T>(LEN, input, output);
 
-    start = __rdtsc();
+    start = get_timestamp();
 
     for (int i = 0; i < LEN; i += VEC_LEN) {
         x.load(&input[i]);
@@ -103,7 +103,7 @@ benchmark_results<SCALAR_FLOAT_T> test_log_ume(const int ARRAY_SIZE)
         y.store(&values[i]);
     }
     
-    end = __rdtsc();
+    end = get_timestamp();
 
     SCALAR_FLOAT_T max_err = 0;
 
@@ -137,7 +137,7 @@ benchmark_results<SCALAR_FLOAT_T> test_log2_ume(const int ARRAY_SIZE)
 
     generate_some_log2_values<SCALAR_FLOAT_T>(LEN, input, output);
 
-    start = __rdtsc();
+    start = get_timestamp();
 
     for (int i = 0; i < LEN; i += VEC_LEN) {
         x.load(&input[i]);
@@ -147,7 +147,7 @@ benchmark_results<SCALAR_FLOAT_T> test_log2_ume(const int ARRAY_SIZE)
         y.store(&values[i]);
     }
     
-    end = __rdtsc();
+    end = get_timestamp();
 
     SCALAR_FLOAT_T max_err = 0;
 
@@ -181,7 +181,7 @@ benchmark_results<SCALAR_FLOAT_T> test_log10_ume(const int ARRAY_SIZE)
 
     generate_some_log10_values<SCALAR_FLOAT_T>(LEN, input, output);
 
-    start = __rdtsc();
+    start = get_timestamp();
 
     for (int i = 0; i < LEN; i += VEC_LEN) {
         x.load(&input[i]);
@@ -191,7 +191,7 @@ benchmark_results<SCALAR_FLOAT_T> test_log10_ume(const int ARRAY_SIZE)
         y.store(&values[i]);
     }
     
-    end = __rdtsc();
+    end = get_timestamp();
 
     SCALAR_FLOAT_T max_err = 0;
 

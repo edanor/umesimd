@@ -151,7 +151,7 @@ int main()
     int ITERATIONS = 20;
 
     std::cout << "The result is amount of time it takes to calculate solution of: " << ARRAY_SIZE << " quadratic equations.\n"
-        "All timing results in clock cycles. \n"
+        "All timing results in nanoseconds. \n"
         "Speedup calculated with scalar floating point result as reference.\n\n"
         "SIMD version uses following operations: \n"
         "   32/64f vectors: SET-CONSTR, LOAD-CONSTR, DIVV (operator /), MULV (operator*),\n"

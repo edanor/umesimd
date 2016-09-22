@@ -83,7 +83,7 @@ RESULTS<float> test_sse_32f()
     }*/
 
 
-    start = __rdtsc();
+    start = get_timestamp();
 
     // Transpose B matrix to a row-major form
     for (int i = 0; i < MAT_RANK; i++) {
@@ -115,7 +115,7 @@ RESULTS<float> test_sse_32f()
         }
     }
 
-    end = __rdtsc();
+    end = get_timestamp();
 
     /*
     std::cout << "\n\nB': \n";
@@ -201,7 +201,7 @@ RESULTS<double> test_sse_64f()
     }*/
 
 
-    start = __rdtsc();
+    start = get_timestamp();
 
     // Transpose B matrix to a row-major form
     for (int i = 0; i < MAT_RANK; i++) {
@@ -233,7 +233,7 @@ RESULTS<double> test_sse_64f()
         }
     }
 
-    end = __rdtsc();
+    end = get_timestamp();
 
     /*
     std::cout << "\n\nB': \n";

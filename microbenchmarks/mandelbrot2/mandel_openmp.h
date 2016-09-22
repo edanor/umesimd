@@ -66,9 +66,9 @@ void benchmarkOpenMP(int width,
 
         memset(raw_image, 0, width*height *sizeof(uint16_t));
 
-        start = __rdtsc();
+        start = get_timestamp();
         mandel_openmp(0.29768f, 0.48364f, 0.29778f, 0.48354f, width, height, depth, raw_image);
-        end = __rdtsc();
+        end = get_timestamp();
 
         stats.update(end - start);
 
