@@ -137,6 +137,8 @@ namespace SIMD
         #include "plugins/UMESimdPluginAVX2.h"
     #elif defined __AVX__
         #include "plugins/UMESimdPluginAVX.h"
+    #elif defined (__aarch64__) || defined (__arm__)
+        #include "plugins/UMESimdPluginARM.h"
     #else
         // Use scalar emulation if not specializing
         #define USING_EMULATED_TYPES 1
