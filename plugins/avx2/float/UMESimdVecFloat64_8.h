@@ -35,29 +35,20 @@
 #include "../../../UMESimdInterface.h"
 #include <immintrin.h>
 
+
 #define BLEND_LO(a_256d, b_256d, mask_256i) \
     _mm256_blendv_pd( \
-        a_256d, \
-        b_256d, \
-        _mm256_castsi256_pd(_mm256_insertf128_si256( \
-                                _mm256_castsi128_si256(_mm_cvtepi32_epi64(_mm256_extractf128_si256(mask_256i, 0))), \
-                                _mm_cvtepi32_epi64( \
-                                    _mm_castps_si128(_mm_permute_ps( \
-                                                        _mm_castsi128_ps(_mm256_extractf128_si256(mask_256i, 0)), \
-                                                        0x0E))), \
-                                1)));
+    a_256d, \
+    b_256d, \
+    _mm256_castsi256_pd( \
+        _mm256_cvtepi32_epi64(_mm256_extractf128_si256(mask_256i, 0))))
 
 #define BLEND_HI(a_256d, b_256d, mask_256i) \
     _mm256_blendv_pd( \
-        a_256d, \
-        b_256d, \
-        _mm256_castsi256_pd(_mm256_insertf128_si256( \
-                                _mm256_castsi128_si256(_mm_cvtepi32_epi64(_mm256_extractf128_si256(mask_256i, 1))), \
-                                _mm_cvtepi32_epi64( \
-                                    _mm_castps_si128(_mm_permute_ps( \
-                                                        _mm_castsi128_ps(_mm256_extractf128_si256(mask_256i, 1)), \
-                                                        0x0E))), \
-                                1)));
+    a_256d, \
+    b_256d, \
+    _mm256_castsi256_pd( \
+        _mm256_cvtepi32_epi64(_mm256_extractf128_si256(mask_256i, 1))))
 
 namespace UME {
 namespace SIMD {
@@ -284,6 +275,24 @@ namespace SIMD {
 
             return p;
         }
+        
+
+        
+        // BLENDV
+        UME_FORCE_INLINE SIMDVec_f blend(SIMDVecMask<8> const & mask, SIMDVec_f const & b) const {
+            __m256d t0 = BLEND_LO(mVec[0], b.mVec[0], mask.mMask);
+            __m256d t1 = BLEND_HI(mVec[1], b.mVec[1], mask.mMask);
+            return SIMDVec_f(t0, t1);
+        }
+        // BLENDS
+        UME_FORCE_INLINE SIMDVec_f blend(SIMDVecMask<8> const & mask, double b) const {
+            __m256d t0 = _mm256_set1_pd(b);
+            __m256d t1 = BLEND_LO(mVec[0], t0, mask.mMask);
+            __m256d t2 = BLEND_HI(mVec[1], t0, mask.mMask);
+            return SIMDVec_f(t1, t2);
+        }
+        // SWIZZLE
+        // SWIZZLEA
         //(Addition operations)
         // ADDV
         inline SIMDVec_f add(SIMDVec_f const & b) const {
@@ -537,18 +546,72 @@ namespace SIMD {
         }
 
         //(Division operations)
-        // DIVV   - Division with vector
-        // MDIVV  - Masked division with vector
-        // DIVS   - Division with scalar
-        // MDIVS  - Masked division with scalar
+        // DIVV
+        UME_FORCE_INLINE SIMDVec_f div(SIMDVec_f const & b) const {
+            __m256d t0 = _mm256_div_pd(mVec[0], b.mVec[0]);
+            __m256d t1 = _mm256_div_pd(mVec[1], b.mVec[1]);
+            return SIMDVec_f(t0, t1);
+        }
+        UME_FORCE_INLINE SIMDVec_f operator/ (SIMDVec_f const & b) const {
+            return div(b);
+        }
+        // MDIVV
+        UME_FORCE_INLINE SIMDVec_f div(SIMDVecMask<8> const & mask, SIMDVec_f const & b) const {
+            __m256d t0 = _mm256_div_pd(mVec[0], b.mVec[0]);
+            __m256d t1 = _mm256_div_pd(mVec[1], b.mVec[1]);
+            __m256d t2 = BLEND_LO(mVec[0], t0, mask.mMask);
+            __m256d t3 = BLEND_HI(mVec[1], t1, mask.mMask);
+            return SIMDVec_f(t2, t3);
+        }
+        // DIVS
+        UME_FORCE_INLINE SIMDVec_f div(double b) const {
+            __m256d t0 = _mm256_div_pd(mVec[0], _mm256_set1_pd(b));
+            __m256d t1 = _mm256_div_pd(mVec[1], _mm256_set1_pd(b));
+            return SIMDVec_f(t0, t1);
+        }
+        UME_FORCE_INLINE SIMDVec_f operator/ (double b) const {
+            return div(b);
+        }
+        // MDIVS
+        UME_FORCE_INLINE SIMDVec_f div(SIMDVecMask<8> const & mask, double b) const {
+            __m256d t0 = _mm256_div_pd(mVec[0], _mm256_set1_pd(b));
+            __m256d t1 = _mm256_div_pd(mVec[1], _mm256_set1_pd(b));
+            __m256d t2 = BLEND_LO(mVec[0], t0, mask.mMask);
+            __m256d t3 = BLEND_HI(mVec[1], t1, mask.mMask);
+            return SIMDVec_f(t2, t3);
+        }
         // DIVVA  - Division with vector and assign
         // MDIVVA - Masked division with vector and assign
         // DIVSA  - Division with scalar and assign
         // MDIVSA - Masked division with scalar and assign
-        // RCP    - Reciprocal
-        // MRCP   - Masked reciprocal
-        // RCPS   - Reciprocal with scalar numerator
-        // MRCPS  - Masked reciprocal with scalar
+        // RCP
+        UME_FORCE_INLINE SIMDVec_f rcp() const {
+            __m256d t0 = _mm256_div_pd(_mm256_set1_pd(1.0), mVec[0]);
+            __m256d t1 = _mm256_div_pd(_mm256_set1_pd(1.0), mVec[1]);
+            return SIMDVec_f(t0, t1);
+        }
+        // MRCP
+        UME_FORCE_INLINE SIMDVec_f rcp(SIMDVecMask<8> const & mask) const {
+            __m256d t0 = _mm256_div_pd(_mm256_set1_pd(1.0), mVec[0]);
+            __m256d t1 = _mm256_div_pd(_mm256_set1_pd(1.0), mVec[1]);
+            __m256d t2 = BLEND_LO(mVec[0], t0, mask.mMask);
+            __m256d t3 = BLEND_HI(mVec[1], t1, mask.mMask);
+            return SIMDVec_f(t2, t3);
+        }
+        // RCPS
+        UME_FORCE_INLINE SIMDVec_f rcp(double b) const {
+            __m256d t0 = _mm256_div_pd(_mm256_set1_pd(b), mVec[0]);
+            __m256d t1 = _mm256_div_pd(_mm256_set1_pd(b), mVec[1]);
+            return SIMDVec_f(t0, t1);
+        }
+        // MRCPS
+        UME_FORCE_INLINE SIMDVec_f rcp(SIMDVecMask<8> const & mask, double b) const {
+            __m256d t0 = _mm256_div_pd(_mm256_set1_pd(b), mVec[0]);
+            __m256d t1 = _mm256_div_pd(_mm256_set1_pd(b), mVec[1]);
+            __m256d t2 = BLEND_LO(mVec[0], t0, mask.mMask);
+            __m256d t3 = BLEND_HI(mVec[1], t1, mask.mMask);
+            return SIMDVec_f(t2, t3);
+        }
         // RCPA   - Reciprocal and assign
         // MRCPA  - Masked reciprocal and assign
         // RCPSA  - Reciprocal with scalar and assign
@@ -615,8 +678,36 @@ namespace SIMD {
         inline SIMDVecMask<8> operator!= (double b) const {
             return cmpne(b);
         }
-        // CMPGTV - Element-wise 'greater than' with vector
-        // CMPGTS - Element-wise 'greater than' with scalar
+        // CMPGTV
+        UME_FORCE_INLINE SIMDVecMask<8> cmpgt(SIMDVec_f const & b) const {
+            __m256d t0 = _mm256_cmp_pd(mVec[0], b.mVec[0], 14);
+            __m256d t1 = _mm256_cmp_pd(mVec[1], b.mVec[1], 14);
+            __m256i t2 = _mm256_setr_epi32(0, 2, 4, 6, 1, 3, 5, 7);
+            __m256i t3 = _mm256_permutevar8x32_epi32(_mm256_castpd_si256(t0), t2);
+            __m256i t4 = _mm256_permutevar8x32_epi32(_mm256_castpd_si256(t1), t2);
+            __m128i t5 = _mm256_castsi256_si128(t3);
+            __m128i t6 = _mm256_castsi256_si128(t4);
+            __m256i t7 = _mm256_insertf128_si256(_mm256_castsi128_si256(t5), t6, 1);
+            return SIMDVecMask<8>(t7);
+        }
+        UME_FORCE_INLINE SIMDVecMask<8> operator> (SIMDVec_f const & b) const {
+            return cmpgt(b);
+        }
+        // CMPGTS
+        UME_FORCE_INLINE SIMDVecMask<8> cmpgt(double b) const {
+            __m256d t0 = _mm256_cmp_pd(mVec[0], _mm256_set1_pd(b), 14);
+            __m256d t1 = _mm256_cmp_pd(mVec[1], _mm256_set1_pd(b), 14);
+            __m256i t2 = _mm256_setr_epi32(0, 2, 4, 6, 1, 3, 5, 7);
+            __m256i t3 = _mm256_permutevar8x32_epi32(_mm256_castpd_si256(t0), t2);
+            __m256i t4 = _mm256_permutevar8x32_epi32(_mm256_castpd_si256(t1), t2);
+            __m128i t5 = _mm256_castsi256_si128(t3);
+            __m128i t6 = _mm256_castsi256_si128(t4);
+            __m256i t7 = _mm256_insertf128_si256(_mm256_castsi128_si256(t5), t6, 1);
+            return SIMDVecMask<8>(t7);
+        }
+        UME_FORCE_INLINE SIMDVecMask<8> operator> (double b) const {
+            return cmpgt(b);
+        }
         // CMPLTV
         inline SIMDVecMask<8> cmplt(SIMDVec_f const & b) const {
             __m256d t0 = _mm256_cmp_pd(mVec[0], b.mVec[0], 1);
@@ -675,10 +766,122 @@ namespace SIMD {
         inline SIMDVecMask<8> operator< (double b) const {
             return cmplt(b);
         }
-        // CMPGEV - Element-wise 'greater than or equal' with vector
-        // CMPGES - Element-wise 'greater than or equal' with scalar
-        // CMPLEV - Element-wise 'less than or equal' with vector
-        // CMPLES - Element-wise 'less than or equal' with scalar
+        // CMPGEV
+        inline SIMDVecMask<8> cmpge(SIMDVec_f const & b) const {
+            __m256d t0 = _mm256_cmp_pd(mVec[0], b.mVec[0], 13);
+            __m256i t1 = _mm256_castpd_si256(t0);
+            __m128i t2 = _mm256_extractf128_si256(t1, 0x00); // Select first halve
+            __m128i t3 = _mm256_extractf128_si256(t1, 0x01); // Select second halve
+            __m128i t4 = _mm_castps_si128(_mm_permute_ps(_mm_castsi128_ps(t2), 0x08));
+            __m128i t5 = _mm_and_si128(_mm_setr_epi32(0xFFFFFFFF, 0xFFFFFFFF, 0, 0), t4);
+            __m128i t6 = _mm_castps_si128(_mm_permute_ps(_mm_castsi128_ps(t3), 0x80));
+            __m128i t7 = _mm_and_si128(_mm_setr_epi32(0, 0, 0xFFFFFFFF, 0xFFFFFFFF), t6);
+            __m128i t8 = _mm_or_si128(t5, t7); // result low
+
+            __m256d t9 = _mm256_cmp_pd(mVec[1], b.mVec[1], 13);
+            __m256i t10 = _mm256_castpd_si256(t9);
+            __m128i t11 = _mm256_extractf128_si256(t10, 0x00); // Select first halve
+            __m128i t12 = _mm256_extractf128_si256(t10, 0x01); // Select second halve
+            __m128i t13 = _mm_castps_si128(_mm_permute_ps(_mm_castsi128_ps(t11), 0x08));
+            __m128i t14 = _mm_and_si128(_mm_setr_epi32(0xFFFFFFFF, 0xFFFFFFFF, 0, 0), t13);
+            __m128i t15 = _mm_castps_si128(_mm_permute_ps(_mm_castsi128_ps(t12), 0x80));
+            __m128i t16 = _mm_and_si128(_mm_setr_epi32(0, 0, 0xFFFFFFFF, 0xFFFFFFFF), t15);
+            __m128i t17 = _mm_or_si128(t14, t16); // result hi
+
+            __m256i t18 = _mm256_castsi128_si256(t8);
+            __m256i t19 = _mm256_insertf128_si256(t18, t17, 1);
+            return SIMDVecMask<8>(t19);
+        }
+        inline SIMDVecMask<8> operator>= (SIMDVec_f const & b) const {
+            return cmpge(b);
+        }
+        // CMPGES
+        inline SIMDVecMask<8> cmpge(double b) const {
+            __m256d t0 = _mm256_cmp_pd(mVec[0], _mm256_set1_pd(b), 13);
+            __m256i t1 = _mm256_castpd_si256(t0);
+            __m128i t2 = _mm256_extractf128_si256(t1, 0x00); // Select first halve
+            __m128i t3 = _mm256_extractf128_si256(t1, 0x01); // Select second halve
+            __m128i t4 = _mm_castps_si128(_mm_permute_ps(_mm_castsi128_ps(t2), 0x08));
+            __m128i t5 = _mm_and_si128(_mm_setr_epi32(0xFFFFFFFF, 0xFFFFFFFF, 0, 0), t4);
+            __m128i t6 = _mm_castps_si128(_mm_permute_ps(_mm_castsi128_ps(t3), 0x80));
+            __m128i t7 = _mm_and_si128(_mm_setr_epi32(0, 0, 0xFFFFFFFF, 0xFFFFFFFF), t6);
+            __m128i t8 = _mm_or_si128(t5, t7); // result low
+
+            __m256d t9 = _mm256_cmp_pd(mVec[1], _mm256_set1_pd(b), 13);
+            __m256i t10 = _mm256_castpd_si256(t9);
+            __m128i t11 = _mm256_extractf128_si256(t10, 0x00); // Select first halve
+            __m128i t12 = _mm256_extractf128_si256(t10, 0x01); // Select second halve
+            __m128i t13 = _mm_castps_si128(_mm_permute_ps(_mm_castsi128_ps(t11), 0x08));
+            __m128i t14 = _mm_and_si128(_mm_setr_epi32(0xFFFFFFFF, 0xFFFFFFFF, 0, 0), t13);
+            __m128i t15 = _mm_castps_si128(_mm_permute_ps(_mm_castsi128_ps(t12), 0x80));
+            __m128i t16 = _mm_and_si128(_mm_setr_epi32(0, 0, 0xFFFFFFFF, 0xFFFFFFFF), t15);
+            __m128i t17 = _mm_or_si128(t14, t16); // result low
+
+            __m256i t18 = _mm256_castsi128_si256(t8);
+            __m256i t19 = _mm256_insertf128_si256(t18, t17, 1);
+            return SIMDVecMask<8>(t19);
+        }
+        inline SIMDVecMask<8> operator>= (double b) const {
+            return cmpge(b);
+        }
+        // CMPLEV
+        inline SIMDVecMask<8> cmple(SIMDVec_f const & b) const {
+            __m256d t0 = _mm256_cmp_pd(mVec[0], b.mVec[0], 2);
+            __m256i t1 = _mm256_castpd_si256(t0);
+            __m128i t2 = _mm256_extractf128_si256(t1, 0x00); // Select first halve
+            __m128i t3 = _mm256_extractf128_si256(t1, 0x01); // Select second halve
+            __m128i t4 = _mm_castps_si128(_mm_permute_ps(_mm_castsi128_ps(t2), 0x08));
+            __m128i t5 = _mm_and_si128(_mm_setr_epi32(0xFFFFFFFF, 0xFFFFFFFF, 0, 0), t4);
+            __m128i t6 = _mm_castps_si128(_mm_permute_ps(_mm_castsi128_ps(t3), 0x80));
+            __m128i t7 = _mm_and_si128(_mm_setr_epi32(0, 0, 0xFFFFFFFF, 0xFFFFFFFF), t6);
+            __m128i t8 = _mm_or_si128(t5, t7); // result low
+
+            __m256d t9 = _mm256_cmp_pd(mVec[1], b.mVec[1], 2);
+            __m256i t10 = _mm256_castpd_si256(t9);
+            __m128i t11 = _mm256_extractf128_si256(t10, 0x00); // Select first halve
+            __m128i t12 = _mm256_extractf128_si256(t10, 0x01); // Select second halve
+            __m128i t13 = _mm_castps_si128(_mm_permute_ps(_mm_castsi128_ps(t11), 0x08));
+            __m128i t14 = _mm_and_si128(_mm_setr_epi32(0xFFFFFFFF, 0xFFFFFFFF, 0, 0), t13);
+            __m128i t15 = _mm_castps_si128(_mm_permute_ps(_mm_castsi128_ps(t12), 0x80));
+            __m128i t16 = _mm_and_si128(_mm_setr_epi32(0, 0, 0xFFFFFFFF, 0xFFFFFFFF), t15);
+            __m128i t17 = _mm_or_si128(t14, t16); // result hi
+
+            __m256i t18 = _mm256_castsi128_si256(t8);
+            __m256i t19 = _mm256_insertf128_si256(t18, t17, 1);
+            return SIMDVecMask<8>(t19);
+        }
+        inline SIMDVecMask<8> operator<= (SIMDVec_f const & b) const {
+            return cmple(b);
+        }
+        // CMPLES
+        inline SIMDVecMask<8> cmple(double b) const {
+            __m256d t0 = _mm256_cmp_pd(mVec[0], _mm256_set1_pd(b), 2);
+            __m256i t1 = _mm256_castpd_si256(t0);
+            __m128i t2 = _mm256_extractf128_si256(t1, 0x00); // Select first halve
+            __m128i t3 = _mm256_extractf128_si256(t1, 0x01); // Select second halve
+            __m128i t4 = _mm_castps_si128(_mm_permute_ps(_mm_castsi128_ps(t2), 0x08));
+            __m128i t5 = _mm_and_si128(_mm_setr_epi32(0xFFFFFFFF, 0xFFFFFFFF, 0, 0), t4);
+            __m128i t6 = _mm_castps_si128(_mm_permute_ps(_mm_castsi128_ps(t3), 0x80));
+            __m128i t7 = _mm_and_si128(_mm_setr_epi32(0, 0, 0xFFFFFFFF, 0xFFFFFFFF), t6);
+            __m128i t8 = _mm_or_si128(t5, t7); // result low
+
+            __m256d t9 = _mm256_cmp_pd(mVec[1], _mm256_set1_pd(b), 2);
+            __m256i t10 = _mm256_castpd_si256(t9);
+            __m128i t11 = _mm256_extractf128_si256(t10, 0x00); // Select first halve
+            __m128i t12 = _mm256_extractf128_si256(t10, 0x01); // Select second halve
+            __m128i t13 = _mm_castps_si128(_mm_permute_ps(_mm_castsi128_ps(t11), 0x08));
+            __m128i t14 = _mm_and_si128(_mm_setr_epi32(0xFFFFFFFF, 0xFFFFFFFF, 0, 0), t13);
+            __m128i t15 = _mm_castps_si128(_mm_permute_ps(_mm_castsi128_ps(t12), 0x80));
+            __m128i t16 = _mm_and_si128(_mm_setr_epi32(0, 0, 0xFFFFFFFF, 0xFFFFFFFF), t15);
+            __m128i t17 = _mm_or_si128(t14, t16); // result low
+
+            __m256i t18 = _mm256_castsi128_si256(t8);
+            __m256i t19 = _mm256_insertf128_si256(t18, t17, 1);
+            return SIMDVecMask<8>(t19);
+        }
+        inline SIMDVecMask<8> operator<= (double b) const {
+            return cmplt(b);
+        }
         // CMPEX  - Check if vectors are exact (returns scalar 'bool')
 
         //(Bitwise operations)
@@ -873,6 +1076,33 @@ namespace SIMD {
             return *this;
         }
 
+        // COPYSIGN
+        UME_FORCE_INLINE SIMDVec_f copysign(SIMDVec_f const & b) const {
+            __m256d t0 = _mm256_castsi256_pd(_mm256_set1_epi64x(0x7FFFFFFFFFFFFFFF));
+            __m256d t1 = _mm256_castsi256_pd(_mm256_set1_epi64x(0x8000000000000000));
+            __m256d t2 = _mm256_and_pd(mVec[0], t0);
+            __m256d t3 = _mm256_and_pd(mVec[1], t0);
+            __m256d t4 = _mm256_and_pd(b.mVec[0], t1);
+            __m256d t5 = _mm256_and_pd(b.mVec[1], t1);
+            __m256d t6 = _mm256_or_pd(t2, t4);
+            __m256d t7 = _mm256_or_pd(t3, t5);
+            return SIMDVec_f(t6, t7);
+        }
+        // MCOPYSIGN
+        UME_FORCE_INLINE SIMDVec_f copysign(SIMDVecMask<8> const & mask, SIMDVec_f const & b) const {
+            __m256d t0 = _mm256_castsi256_pd(_mm256_set1_epi64x(0x7FFFFFFFFFFFFFFF));
+            __m256d t1 = _mm256_castsi256_pd(_mm256_set1_epi64x(0x8000000000000000));
+            __m256d t2 = _mm256_and_pd(mVec[0], t0);
+            __m256d t3 = _mm256_and_pd(mVec[1], t0);
+            __m256d t4 = _mm256_and_pd(b.mVec[0], t1);
+            __m256d t5 = _mm256_and_pd(b.mVec[1], t1);
+            __m256d t6 = _mm256_or_pd(t2, t4);
+            __m256d t7 = _mm256_or_pd(t3, t5);
+            __m256d t8 = BLEND_LO(mVec[0], t6, mask.mMask);
+            __m256d t9 = BLEND_HI(mVec[1], t7, mask.mMask);
+            return SIMDVec_f(t8, t9);
+        }
+        
         // 5) Operations available for floating point SIMD types:
 
         // (Comparison operations)
