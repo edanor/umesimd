@@ -47,6 +47,9 @@
 // ********************************************************************************************
 // UNSIGNED INTEGER VECTOR SPECIALIZATIONS
 // ********************************************************************************************
+//#include "uint/UMESimdVecUint16_1.h"
+//#include "uint/UMESimdVecUint16_2.h"
+
 #include "uint/UMESimdVecUint32_1.h"
 #include "uint/UMESimdVecUint32_2.h"
 #include "uint/UMESimdVecUint32_4.h"
