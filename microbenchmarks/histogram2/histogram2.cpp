@@ -31,7 +31,10 @@
 #include <iostream>
 #include <memory>
 
+#if defined(__AVX__) || defined(__AVX2__)
 #include <immintrin.h> 
+#endif
+
 #include <cmath>
 #include <time.h>
 #include <stdlib.h>
@@ -87,7 +90,7 @@ TIMING_RES test_scalar()
 }
 
 template<typename FLOAT_VEC_T, typename UINT_VEC_T>
-inline void test_UME_SIMD_float_recursive_helper(UINT_VEC_T const & index_vec, unsigned int * hist)
+UME_FORCE_INLINE void test_UME_SIMD_float_recursive_helper(UINT_VEC_T const & index_vec, unsigned int * hist)
 {
     typedef typename UME::SIMD::SIMDTraits<FLOAT_VEC_T>::HALF_LEN_VEC_T HALF_LEN_VEC_T;
 
@@ -113,7 +116,7 @@ inline void test_UME_SIMD_float_recursive_helper(UINT_VEC_T const & index_vec, u
 
 // Specialization for SIMD1_32f. This covers boundary conditions
 template<>
-inline void test_UME_SIMD_float_recursive_helper<UME::SIMD::SIMD1_32f, UME::SIMD::SIMD1_32u>(UME::SIMD::SIMD1_32u const & index_vec, unsigned int * hist)
+UME_FORCE_INLINE void test_UME_SIMD_float_recursive_helper<UME::SIMD::SIMD1_32f, UME::SIMD::SIMD1_32u>(UME::SIMD::SIMD1_32u const & index_vec, unsigned int * hist)
 {
     unsigned int bin = index_vec[0];
     hist[bin]++;
