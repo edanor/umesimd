@@ -1114,6 +1114,49 @@ namespace SIMD {
             return *this;
         }
 
+        // COPYSIGN
+        UME_FORCE_INLINE SIMDVec_f copysign(SIMDVec_f const & b) const {
+#if defined(__AVX512DQ__)
+            __m512d t0 = _mm512_castsi512_pd(_mm512_set1_epi64(0x7FFFFFFFFFFFFFFF));
+            __m512d t1 = _mm512_castsi512_pd(_mm512_set1_epi64(0x8000000000000000));
+            __m512d t2 = _mm512_and_pd(mVec, t0);
+            __m512d t3 = _mm512_and_pd(b.mVec, t1);
+            __m512d t4 = _mm512_or_pd(t2, t3);
+            return SIMDVec_f(t4);
+#else
+            __m512i t0 = _mm512_set1_epi64(0x7FFFFFFFFFFFFFFF);
+            __m512i t1 = _mm512_set1_epi64(0x8000000000000000);
+            __m512i t2 = _mm512_castpd_si512(mVec);
+            __m512i t3 = _mm512_castpd_si512(b.mVec);
+            __m512i t4 = _mm512_and_epi64(t2, t0);
+            __m512i t5 = _mm512_and_epi64(t3, t1);
+            __m512i t6 = _mm512_or_epi64(t4, t5);
+            __m512d t7 = _mm512_castsi512_pd(t6);
+            return SIMDVec_f(t7);
+#endif
+        }
+        // MCOPYSIGN
+        UME_FORCE_INLINE SIMDVec_f copysign(SIMDVecMask<8> const & mask, SIMDVec_f const & b) const {
+#if defined(__AVX512DQ__)
+            __m512d t0 = _mm512_castsi512_pd(_mm512_set1_epi64(0x7FFFFFFFFFFFFFFF));
+            __m512d t1 = _mm512_castsi512_pd(_mm512_set1_epi64(0x8000000000000000));
+            __m512d t2 = _mm512_and_pd(mVec, t0);
+            __m512d t3 = _mm512_and_pd(b.mVec, t1);
+            __m512d t4 = _mm512_mask_or_pd(mVec, mask.mMask, t2, t3);
+            return SIMDVec_f(t4);
+#else
+            __m512i t0 = _mm512_set1_epi64(0x7FFFFFFFFFFFFFFF);
+            __m512i t1 = _mm512_set1_epi64(0x8000000000000000);
+            __m512i t2 = _mm512_castpd_si512(mVec);
+            __m512i t3 = _mm512_castpd_si512(b.mVec);
+            __m512i t4 = _mm512_and_epi64(t2, t0);
+            __m512i t5 = _mm512_and_epi64(t3, t1);
+            __m512i t6 = _mm512_mask_or_epi64(t2, mask.mMask, t4, t5);
+            __m512d t7 = _mm512_castsi512_pd(t6);
+            return SIMDVec_f(t7);
+#endif
+        }
+        
         // CMPEQRV
         // CMPEQRS
 
