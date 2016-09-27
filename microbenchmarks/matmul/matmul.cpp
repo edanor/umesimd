@@ -61,7 +61,7 @@ int main()
     std::cout << "The result is amount of time it takes to calculate multiplication of two \n"
                  "square matrices (" << MATRIX_RANK << "x" << MATRIX_RANK << ").\n"
                  "All measured algorithms are non-blocking.\n"
-                 "All timing results in clock cycles. \n"
+                 "All timing results in nanoseconds. \n"
                  "RMS error calculated in regard to scalar (naive) version (single or double precision).\n"
                  "Speedup calculated with scalar (naive) floating point result as reference.\n\n"
                  "SIMD version uses following operations: \n"

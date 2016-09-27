@@ -117,7 +117,7 @@ UME_NEVER_INLINE TIMING_RES run_SIMD_nontemplate()
     volatile float x1_dump = float(0), x2_dump = float(0);
     volatile int root_dump = 0;
 
-    start = __rdtsc();
+    start = get_timestamp();
     for (int i = 0; i < ARRAY_SIZE; i += 8) {
         QuadSolveSIMD8_32f(&a[i], &b[i], &c[i], &x1[i], &x2[i], &roots[i]);
 
@@ -131,7 +131,7 @@ UME_NEVER_INLINE TIMING_RES run_SIMD_nontemplate()
         //    }
         //}
     }
-    end = __rdtsc();
+    end = get_timestamp();
 
     for (int i = 0; i < ARRAY_SIZE; i++) {
         // Use all generated results to prevent compiler optimizations

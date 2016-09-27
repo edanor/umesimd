@@ -115,7 +115,7 @@ int main()
     ExplogResults<double> stats_scalar_d, stats_scalar_vdt_d;
 
     std::cout << "The result is amount of time it takes to calculate exp, log_10 (base-10), log_2 (base-2) and log (base-e) of: " << ARRAY_SIZE << " elements.\n"
-        "All timing results in clock cycles. \n"
+        "All timing results in nanoseconds. \n"
         "Speedup calculated with scalar single precision floating point result as reference.\n"
         "VDT version used as a reference for auto-vectorization capabilities.\n"
         "SIMD version uses following operations: \n"

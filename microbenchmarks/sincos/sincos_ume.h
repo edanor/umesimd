@@ -59,7 +59,7 @@ benchmark_results<SCALAR_FLOAT_T> test_sincos_ume(int array_size)
         output_cos[i] = std::cos(inputA[i]);
     }
 
-    start = __rdtsc();
+    start = get_timestamp();
 
     for (int i = 0; i < LEN; i += VEC_LEN) {
         x.load(&inputA[i]);
@@ -72,7 +72,7 @@ benchmark_results<SCALAR_FLOAT_T> test_sincos_ume(int array_size)
         y_cos.store(&values_cos[i]);
     }
 
-    end = __rdtsc();
+    end = get_timestamp();
 
     SCALAR_FLOAT_T max_sin_err = 0;
     SCALAR_FLOAT_T max_cos_err = 0;
@@ -134,7 +134,7 @@ benchmark_results<SCALAR_FLOAT_T> test_sincos_ume_separate(int array_size)
         output_cos[i] = std::cos(inputA[i]);
     }
 
-    start = __rdtsc();
+    start = get_timestamp();
 
     for (int i = 0; i < LEN; i += VEC_LEN) {
         x.load(&inputA[i]);
@@ -146,7 +146,7 @@ benchmark_results<SCALAR_FLOAT_T> test_sincos_ume_separate(int array_size)
         y_cos.store(&values_cos[i]);
     }
 
-    end = __rdtsc();
+    end = get_timestamp();
 
     SCALAR_FLOAT_T max_sin_err = 0;
     SCALAR_FLOAT_T max_cos_err = 0;

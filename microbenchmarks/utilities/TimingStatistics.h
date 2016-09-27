@@ -118,25 +118,14 @@ public:
     }
 };
 
+#include <chrono>
+static __inline__ unsigned long long get_timestamp(void)
+{
+    auto t0 = std::chrono::high_resolution_clock::now().time_since_epoch();
+    auto t1 = std::chrono::duration_cast<std::chrono::nanoseconds>(t0);
+    return t1.count();
+}
 
-// define RDTSC getter function
-#if !defined (__GNUG__)
-#if defined(__i386__)
-static __inline__ unsigned long long __rdtsc(void)
-{
-    unsigned long long int x;
-    __asm__ volatile (".byte 0x0f, 0x31" : "=A" (x));
-    return x;
-}
-#elif defined(__x86_64__)
-static __inline__ unsigned long long __rdtsc(void)
-{
-    unsigned hi, lo;
-    __asm__ __volatile__ ("rdtsc" : "=a"(lo), "=d"(hi));
-    return ( (unsigned long long)lo)|( ((unsigned long long)hi)<<32 );
-}
-#endif
-#endif
 
 typedef unsigned long long TIMING_RES;
 

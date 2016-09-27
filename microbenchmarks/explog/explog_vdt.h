@@ -42,13 +42,13 @@ benchmark_results<SCALAR_FLOAT_T> test_exp_vdt_scalar(int array_size)
 
     generate_some_exp_values<SCALAR_FLOAT_T>(LEN, input, output);
     
-    start = __rdtsc();
+    start = get_timestamp();
     
     for(int i = 0; i < LEN; i++) {
         values[i] = call_exp_vdt<SCALAR_FLOAT_T>(input[i]);
     }
 
-    end = __rdtsc();
+    end = get_timestamp();
 
     SCALAR_FLOAT_T max_err = 0;
 
@@ -116,13 +116,13 @@ benchmark_results<SCALAR_FLOAT_T> test_log_vdt_scalar(int array_size)
 
     generate_some_log_values<SCALAR_FLOAT_T>(LEN, input, output);
     
-    start = __rdtsc();
+    start = get_timestamp();
     
     for(int i = 0; i < LEN; i++) {
         values[i] = call_log_vdt<SCALAR_FLOAT_T>(input[i]);
     }
 
-    end = __rdtsc();
+    end = get_timestamp();
 
     SCALAR_FLOAT_T max_err = 0;
 
@@ -156,13 +156,13 @@ benchmark_results<SCALAR_FLOAT_T> test_log2_vdt_scalar(int array_size)
 
     generate_some_log_values<SCALAR_FLOAT_T>(LEN, input, output);
     
-    start = __rdtsc();
+    start = get_timestamp();
     
     for(int i = 0; i < LEN; i++) {
         values[i] = call_log2_vdt(input[i]);
     }
 
-    end = __rdtsc();
+    end = get_timestamp();
 
     SCALAR_FLOAT_T max_err = 0;
 
@@ -196,13 +196,13 @@ benchmark_results<SCALAR_FLOAT_T> test_log10_vdt_scalar(int array_size)
 
     generate_some_log10_values<SCALAR_FLOAT_T>(LEN, input, output);
     
-    start = __rdtsc();
+    start = get_timestamp();
     
     for(int i = 0; i < LEN; i++) {
         values[i] = call_log10_vdt(input[i]);
     }
 
-    end = __rdtsc();
+    end = get_timestamp();
 
     SCALAR_FLOAT_T max_err = 0;
 

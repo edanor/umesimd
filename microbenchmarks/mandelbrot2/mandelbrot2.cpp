@@ -39,25 +39,6 @@
 // Introducing inline assembly forces compiler to generate
 #define BREAK_COMPILER_OPTIMIZATION() __asm__ ("NOP");
 
-#if !defined(__GNUG__)
-// define RDTSC getter function
-#if defined(__i386__)
-static __inline__ unsigned long long __rdtsc(void)
-{
-    unsigned long long int x;
-    __asm__ volatile (".byte 0x0f, 0x31" : "=A" (x));
-    return x;
-}
-#elif defined(__x86_64__)
-static __inline__ unsigned long long __rdtsc(void)
-{
-    unsigned hi, lo;
-    __asm__ __volatile__("rdtsc" : "=a"(lo), "=d"(hi));
-    return ((unsigned long long)lo) | (((unsigned long long)hi) << 32);
-}
-#endif
-#endif
-
 typedef unsigned long long TIMING_RES;
 
 struct Color{
@@ -149,7 +130,7 @@ main(int argc, char *argv[])
     uint8_t* image = bmp.GetRasterData();
 
     std::cout << "The result is amount of time it takes to calculate mandelbrot algorithm.\n"
-        "All timing results in clock cycles. \n"
+        "All timing results in nanoseconds. \n"
         "Speedup calculated with scalar floating point result as reference.\n\n"
         "SIMD version uses following operations: \n"
         "   32f vectors: SET-CONSTR, LOAD-CONSTR, LOADA, MULV (operator*), ADDV (operator+), \n"
@@ -168,9 +149,9 @@ main(int argc, char *argv[])
 
         memset(raw_image, 0, width*height *sizeof(unsigned short));
 
-        start = __rdtsc();
+        start = get_timestamp();
         MandelbrotCPU2(0.29768f, 0.48364f, 0.29778f, 0.48354f, width, height, depth, raw_image);
-        end = __rdtsc();
+        end = get_timestamp();
 
         stats_scalar_32f.update(end - start);
 
@@ -199,9 +180,9 @@ main(int argc, char *argv[])
 
         memset(raw_image, 0, width*height *sizeof(unsigned short));
 
-        start = __rdtsc();
+        start = get_timestamp();
         MandelbrotCPU2_64f(0.29768, 0.48364, 0.29778, 0.48354, width, height, depth, raw_image);
-        end = __rdtsc();
+        end = get_timestamp();
 
         stats_scalar_64f.update(end - start);
 
@@ -230,9 +211,9 @@ main(int argc, char *argv[])
         TIMING_RES start, end;
 
         memset(raw_image, 0, width*height *sizeof(unsigned short));
-        start = __rdtsc();
+        start = get_timestamp();
         //MandelbrotSSE2(0.29768f, 0.48364f, 0.29778f, 0.48354f, width, height, depth, raw_image);
-        end = __rdtsc();
+        end = get_timestamp();
 
         stats_sse.update(end - start);
         for (int k = 0; k < 640; k++) {
@@ -262,9 +243,9 @@ main(int argc, char *argv[])
         TIMING_RES start, end;
 
         memset(raw_image, 0, width*height *sizeof(unsigned short));
-        start = __rdtsc();
+        start = get_timestamp();
         MandelbrotAVX(0.29768f, 0.48364f, 0.29778f, 0.48354f, width, height, depth, raw_image);
-        end = __rdtsc();
+        end = get_timestamp();
 
         stats_avx2.update(end - start);
         for (int k = 0; k < 640; k++) {

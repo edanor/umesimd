@@ -68,7 +68,7 @@ RESULTS<FLOAT_T> test_scalar_naive()
     std::cout << std::endl;
     }*/
 
-    start = __rdtsc();
+    start = get_timestamp();
     // For each row in C
     for (int i = 0; i < MAT_RANK; i++) {
         // For each element in a row of C
@@ -78,7 +78,7 @@ RESULTS<FLOAT_T> test_scalar_naive()
             }
         }
     }
-    end = __rdtsc();
+    end = get_timestamp();
     /*
     std::cout << "\n\nC: \n";
     for (int i = 0; i < MAT_RANK; i++) {

@@ -31,7 +31,10 @@
 #include <iostream>
 #include <memory>
 
+#if defined(__AVX__) || defined(__AVX2__)
 #include <immintrin.h> 
+#endif
+
 #include <cmath>
 #include <time.h>
 #include <stdlib.h>
@@ -83,7 +86,7 @@ TIMING_RES test_scalar()
     FLOAT_T x2, x4, x8, x16;
     volatile FLOAT_T y;
     
-    start = __rdtsc();
+    start = get_timestamp();
 
     for(int i = 0; i < ARRAY_SIZE; i++) {
         x2  = x[i]*x[i];
@@ -98,7 +101,7 @@ TIMING_RES test_scalar()
             + x16*a[16];
     }
 
-    end = __rdtsc();
+    end = get_timestamp();
 
     UME::DynamicMemory::AlignedFree(x);
 
@@ -167,7 +170,7 @@ TIMING_RES test_avx_32f()
     a15 = _mm256_set1_ps(a[15]);
     a16 = _mm256_set1_ps(a[16]);
 
-    start = __rdtsc();
+    start = get_timestamp();
 
     for (int i = 0; i < ARRAY_SIZE; i += 8) {
         //x_vec.load(&x[i]);
@@ -239,7 +242,7 @@ TIMING_RES test_avx_32f()
         _mm256_store_ps(&y[0], y_vec);
     }
 
-    end = __rdtsc();
+    end = get_timestamp();
 
     UME::DynamicMemory::AlignedFree(y);
     UME::DynamicMemory::AlignedFree(x);
@@ -306,7 +309,7 @@ TIMING_RES test_avx_64f()
     a15 = _mm256_set1_pd(a[15]);
     a16 = _mm256_set1_pd(a[16]);
 
-    start = __rdtsc();
+    start = get_timestamp();
 
     for (int i = 0; i < ARRAY_SIZE; i += 4) {
         //x_vec.load(&x[i]);
@@ -378,7 +381,7 @@ TIMING_RES test_avx_64f()
         _mm256_store_pd(&y[0], y_vec);
     }
 
-    end = __rdtsc();
+    end = get_timestamp();
 
     UME::DynamicMemory::AlignedFree(y);
     UME::DynamicMemory::AlignedFree(x);
@@ -433,7 +436,7 @@ TIMING_RES test_SIMD()
                    a4(a[4]),   a5(a[5]),   a6(a[6]),   a7(a[7]), 
                    a8(a[8]),   a9(a[9]),   a10(a[10]), a11(11),
                    a12(a[12]), a13(a[13]), a14(a[14]), a15(a[15]);
-    start = __rdtsc();
+    start = get_timestamp();
 
     for(int i = 0; i < ARRAY_SIZE; i+= FLOAT_VEC_TYPE::length()) {
         x_vec.load(&x[i]);
@@ -482,7 +485,7 @@ TIMING_RES test_SIMD()
         y_vec.store(&y[0]);
     }
 
-    end = __rdtsc();
+    end = get_timestamp();
 
     UME::DynamicMemory::AlignedFree(y);
     UME::DynamicMemory::AlignedFree(x);
@@ -546,7 +549,7 @@ int main()
 
     std::cout << "The result is amount of time it takes to calculate polynomial of\n" 
                  "order 16 (no zero-coefficients) of: " << ARRAY_SIZE << " elements.\n" 
-                 "All timing results in clock cycles. \n"
+                 "All timing results in nanoseconds. \n"
                  "Speedup calculated with scalar floating point result as reference.\n\n"
                  "SIMD version uses following operations: \n"
                  " ZERO-CONSTR, SET-CONSTR, LOAD, STORE, MULV, FMULADDV, ADDVA\n";

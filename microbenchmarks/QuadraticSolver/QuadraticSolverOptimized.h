@@ -69,12 +69,12 @@ UME_NEVER_INLINE TIMING_RES run_scalar_optimized()
 
     volatile FLOAT_T x1_dump = FLOAT_T(0), x2_dump = FLOAT_T(0);
     volatile int root_dump = 0;
-    start = __rdtsc();
+    start = get_timestamp();
 
     for (int i = 0; i < ARRAY_SIZE; i++) {
         QuadSolveOptimized<FLOAT_T>(a[i], b[i], c[i], x1[i], x2[i], roots[i]);
     }
-    end = __rdtsc();
+    end = get_timestamp();
 
     for (int i = 0; i < ARRAY_SIZE; i++) {
         // Use all generated results to prevent compiler optimizations
