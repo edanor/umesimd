@@ -1654,13 +1654,11 @@ namespace SIMD {
         // MPOWS
         // ROUND
         // MROUND
+        */
         // TRUNC
         UME_FORCE_INLINE SIMDVec_i<int32_t, 4> trunc() const {
-            int32_t t0 = (int32_t)mVec[0];
-            int32_t t1 = (int32_t)mVec[1];
-            int32_t t2 = (int32_t)mVec[2];
-            int32_t t3 = (int32_t)mVec[3];
-            return SIMDVec_i<int32_t, 4>(t0, t1, t2, t3);
+            int32x4_t t0 = vcvtq_s32_f32(mVec);
+            return SIMDVec_i<int32_t, 4>(t0);
         }
         // MTRUNC
         UME_FORCE_INLINE SIMDVec_i<int32_t, 4> trunc(SIMDVecMask<4> const & mask) const {
@@ -1670,6 +1668,7 @@ namespace SIMD {
             int32_t t3 = mask.mMask[3] ? (int32_t)mVec[3] : 0;
             return SIMDVec_i<int32_t, 4>(t0, t1, t2, t3);
         }
+        /*
         // FLOOR
         // MFLOOR
         // CEIL

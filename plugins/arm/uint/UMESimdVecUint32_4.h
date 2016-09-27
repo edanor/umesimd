@@ -432,13 +432,11 @@ namespace SIMD {
             if(mask.mMask[2] == true) mVec[2]++;
             if(mask.mMask[3] == true) mVec[3]++;
             return SIMDVec_u(t0, t1, t2, t3);
-        }
+        }*/
         // PREFINC
         UME_FORCE_INLINE SIMDVec_u & prefinc() {
-            mVec[0]++;
-            mVec[1]++;
-            mVec[2]++;
-            mVec[3]++;
+            uint32x4_t t0 = vdupq_n_u32(1);
+            mVec = vaddq_u32(mVec, t0);
             return *this;
         }
         UME_FORCE_INLINE SIMDVec_u & operator++ () {
@@ -446,13 +444,13 @@ namespace SIMD {
         }
         // MPREFINC
         UME_FORCE_INLINE SIMDVec_u & prefinc(SIMDVecMask<4> const & mask) {
+            UME_EMULATION_WARNING();
             if (mask.mMask[0] == true) mVec[0]++;
             if (mask.mMask[1] == true) mVec[1]++;
             if (mask.mMask[2] == true) mVec[2]++;
             if (mask.mMask[3] == true) mVec[3]++;
             return *this;
         }
-        */
         // SUBV
         UME_FORCE_INLINE SIMDVec_u sub(SIMDVec_u const & b) const {
             uint32x4_t t0 = vsubq_u32(mVec, b.mVec);
@@ -1029,7 +1027,7 @@ namespace SIMD {
             bool m2 = mVec[2] == b;
             bool m3 = mVec[3] == b;
             return m0 && m1 && m2 && m3;
-        }
+        }*/
         // UNIQUE
         UME_FORCE_INLINE bool unique() const {
             bool m0 = mVec[0] != mVec[1];
@@ -1039,7 +1037,7 @@ namespace SIMD {
             bool m4 = mVec[1] != mVec[3];
             bool m5 = mVec[2] != mVec[3];
             return m0 && m1 && m2 && m3 && m4 && m5;
-        }
+        }/*
         // HADD
         UME_FORCE_INLINE uint32_t hadd() const {
             return mVec[0] + mVec[1] + mVec[2] + mVec[3];
@@ -1763,8 +1761,10 @@ namespace SIMD {
             return t3;
         }
 
+        */
         // GATHERS
         UME_FORCE_INLINE SIMDVec_u & gather(uint32_t * baseAddr, uint32_t* indices) {
+            UME_EMULATION_WARNING();
             mVec[0] = baseAddr[indices[0]];
             mVec[1] = baseAddr[indices[1]];
             mVec[2] = baseAddr[indices[2]];
@@ -1773,6 +1773,7 @@ namespace SIMD {
         }
         // MGATHERS
         UME_FORCE_INLINE SIMDVec_u & gather(SIMDVecMask<4> const & mask, uint32_t* baseAddr, uint32_t* indices) {
+            UME_EMULATION_WARNING();
             if (mask.mMask[0] == true) mVec[0] = baseAddr[indices[0]];
             if (mask.mMask[1] == true) mVec[1] = baseAddr[indices[1]];
             if (mask.mMask[2] == true) mVec[2] = baseAddr[indices[2]];
@@ -1781,14 +1782,19 @@ namespace SIMD {
         }
         // GATHERV
         UME_FORCE_INLINE SIMDVec_u & gather(uint32_t * baseAddr, SIMDVec_u const & indices) {
-            mVec[0] = baseAddr[indices.mVec[0]];
-            mVec[1] = baseAddr[indices.mVec[1]];
-            mVec[2] = baseAddr[indices.mVec[2]];
-            mVec[3] = baseAddr[indices.mVec[3]];
+            alignas(32) uint32_t raw_indices[4];
+            alignas(32) uint32_t raw_data[4];
+            vst1q_u32(raw_indices, indices.mVec);
+            raw_data[0] = baseAddr[raw_indices[0]];
+            raw_data[1] = baseAddr[raw_indices[1]];
+            raw_data[2] = baseAddr[raw_indices[2]];
+            raw_data[3] = baseAddr[raw_indices[3]];
+            mVec = vld1q_u32(raw_data);
             return *this;
         }
         // MGATHERV
         UME_FORCE_INLINE SIMDVec_u & gather(SIMDVecMask<4> const & mask, uint32_t* baseAddr, SIMDVec_u const & indices) {
+            UME_EMULATION_WARNING();
             if (mask.mMask[0] == true) mVec[0] = baseAddr[indices.mVec[0]];
             if (mask.mMask[1] == true) mVec[1] = baseAddr[indices.mVec[1]];
             if (mask.mMask[2] == true) mVec[2] = baseAddr[indices.mVec[2]];
@@ -1797,6 +1803,7 @@ namespace SIMD {
         }
         // SCATTERS
         UME_FORCE_INLINE uint32_t* scatter(uint32_t* baseAddr, uint32_t* indices) const {
+            UME_EMULATION_WARNING();
             baseAddr[indices[0]] = mVec[0];
             baseAddr[indices[1]] = mVec[1];
             baseAddr[indices[2]] = mVec[2];
@@ -1805,6 +1812,7 @@ namespace SIMD {
         }
         // MSCATTERS
         UME_FORCE_INLINE uint32_t* scatter(SIMDVecMask<4> const & mask, uint32_t* baseAddr, uint32_t* indices) const {
+            UME_EMULATION_WARNING();
             if (mask.mMask[0] == true) baseAddr[indices[0]] = mVec[0];
             if (mask.mMask[1] == true) baseAddr[indices[1]] = mVec[1];
             if (mask.mMask[2] == true) baseAddr[indices[2]] = mVec[2];
@@ -1813,20 +1821,25 @@ namespace SIMD {
         }
         // SCATTERV
         UME_FORCE_INLINE uint32_t* scatter(uint32_t* baseAddr, SIMDVec_u const & indices) const {
-            baseAddr[indices.mVec[0]] = mVec[0];
-            baseAddr[indices.mVec[1]] = mVec[1];
-            baseAddr[indices.mVec[2]] = mVec[2];
-            baseAddr[indices.mVec[3]] = mVec[3];
+            alignas(32) uint32_t raw_indices[4];
+            alignas(32) uint32_t raw_data[4];
+            vst1q_u32(raw_indices, indices.mVec);
+            vst1q_u32(raw_data, mVec);
+            baseAddr[raw_indices[0]] = raw_data[0];
+            baseAddr[raw_indices[1]] = raw_data[1];
+            baseAddr[raw_indices[2]] = raw_data[2];
+            baseAddr[raw_indices[3]] = raw_data[3];
             return baseAddr;
         }
         // MSCATTERV
         UME_FORCE_INLINE uint32_t* scatter(SIMDVecMask<4> const & mask, uint32_t* baseAddr, SIMDVec_u const & indices) const {
+            UME_EMULATION_WARNING();
             if (mask.mMask[0] == true) baseAddr[indices.mVec[0]] = mVec[0];
             if (mask.mMask[1] == true) baseAddr[indices.mVec[1]] = mVec[1];
             if (mask.mMask[2] == true) baseAddr[indices.mVec[2]] = mVec[2];
             if (mask.mMask[3] == true) baseAddr[indices.mVec[3]] = mVec[3];
             return baseAddr;
-        }
+        }/*
 
         // LSHV
         UME_FORCE_INLINE SIMDVec_u lsh(SIMDVec_u const & b) const {
@@ -1977,12 +1990,17 @@ namespace SIMD {
         // PACKLO
         // PACKHI
         // UNPACK
+        */
         UME_FORCE_INLINE void unpack(SIMDVec_u<uint32_t, 2> & a, SIMDVec_u<uint32_t, 2> & b) const {
-            a.insert(0, mVec[0]);
-            a.insert(1, mVec[1]);
-            b.insert(0, mVec[2]);
-            b.insert(1, mVec[3]);
+            UME_EMULATION_WARNING()
+            alignas(32) uint32_t raw[4];
+            vst1q_u32(raw, mVec);
+            a.mVec[0] = raw[0];
+            a.mVec[1] = raw[1];
+            b.mVec[2] = raw[2];
+            b.mVec[3] = raw[3];
         }
+        /*
         // UNPACKLO
         UME_FORCE_INLINE SIMDVec_u<uint32_t, 2> unpacklo() const {
             return SIMDVec_u<uint32_t, 2> (mVec[0], mVec[1]);

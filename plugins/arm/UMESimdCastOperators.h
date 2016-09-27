@@ -307,7 +307,8 @@ namespace SIMD {
     }
 
     UME_FORCE_INLINE SIMDVec_i<int32_t, 4>::operator SIMDVec_u<uint32_t, 4>() const {
-        return SIMDVec_u<uint32_t, 4>(uint32_t(mVec[0]), uint32_t(mVec[1]), uint32_t(mVec[2]), uint32_t(mVec[3]));
+        uint32x4_t t0 = vreinterpretq_u32_s32(mVec);
+        return SIMDVec_u<uint32_t, 4>(t0);
     }
 
     UME_FORCE_INLINE SIMDVec_i<int32_t, 8>::operator SIMDVec_u<uint32_t, 8>() const {
