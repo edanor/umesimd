@@ -53,9 +53,13 @@ namespace SIMD {
     {
     public:
         // Conversion operators require access to private members.
+        friend class SIMDVec_u<uint16_t, 4>;
+        friend class SIMDVec_u<uint64_t, 4>;
         friend class SIMDVec_i<int32_t, 4>;
         friend class SIMDVec_f<float, 4>;
+        friend class SIMDVec_f<double, 4>;
 
+        friend class SIMDVec_u<uint32_t, 2>;
         friend class SIMDVec_u<uint32_t, 8>;
 
     private:

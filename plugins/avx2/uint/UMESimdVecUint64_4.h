@@ -183,7 +183,13 @@ namespace SIMD {
         // MLOAD
         UME_FORCE_INLINE SIMDVec_u & load(SIMDVecMask<4> const & mask, uint64_t const *p) {
             __m256i t0 = _mm256_cvtepi32_epi64(mask.mMask);
+#if defined __GNUG__
+            // G++ (so far 5.3) does not provide '_mm256_maskload_epi64' intrinsic
+            __m256i t1 = _mm256_loadu_si256((const __m256i *) p);
+            mVec = _mm256_blendv_epi8(mVec, t1, t0);
+#else
             mVec = _mm256_maskload_epi64((__int64 const*)p, t0);
+#endif
             return *this;
         }
         // LOADA
@@ -194,7 +200,13 @@ namespace SIMD {
         // MLOADA
         UME_FORCE_INLINE SIMDVec_u & loada(SIMDVecMask<4> const & mask, uint64_t const *p) {
             __m256i t0 = _mm256_cvtepi32_epi64(mask.mMask);
+#if defined __GNUG__
+            // G++ (so far 5.3) does not provide '_mm256_maskload_epi64' intrinsic
+            __m256i t1 = _mm256_load_si256((const __m256i *) p);
+            mVec = _mm256_blendv_epi8(mVec, t1, t0);
+#else
             mVec = _mm256_maskload_epi64((__int64 const*)p, t0);
+#endif
             return *this;
         }
         // STORE
@@ -205,7 +217,14 @@ namespace SIMD {
         // MSTORE
         UME_FORCE_INLINE uint64_t* store(SIMDVecMask<4> const & mask, uint64_t* p) const {
             __m256i t0 = _mm256_cvtepi32_epi64(mask.mMask);
+#if defined __GNUG__
+            // G++ (so far 5.3) does not provide '_mm256_maskstore_epi64' intrinsic
+            __m256i t1 = _mm256_loadu_si256((const __m256i *) p);
+            __m256i t2 = _mm256_blendv_epi8(t1, mVec, t0);
+            _mm256_storeu_si256((__m256i *)p, t2);
+#else
             _mm256_maskstore_epi64((__int64 *)p, t0, mVec);
+#endif
             return p;
         }
         // STOREA
@@ -216,7 +235,14 @@ namespace SIMD {
         // MSTOREA
         UME_FORCE_INLINE uint64_t* storea(SIMDVecMask<4> const & mask, uint64_t* p) const {
             __m256i t0 = _mm256_cvtepi32_epi64(mask.mMask);
+#if defined __GNUG__
+            // G++ (so far 5.3) does not provide '_mm256_maskstore_epi64' intrinsic
+            __m256i t1 = _mm256_load_si256((const __m256i *) p);
+            __m256i t2 = _mm256_blendv_epi8(t1, mVec, t0);
+            _mm256_store_si256((__m256i *)p, t2);
+#else
             _mm256_maskstore_epi64((__int64 *)p, t0, mVec);
+#endif
             return p;
         }
 
