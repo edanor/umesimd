@@ -449,6 +449,86 @@ namespace SIMD {
             insert(28, i28);  insert(29, i29);  insert(30, i30);  insert(31, i31);
         }
 
+        UME_FORCE_INLINE SIMDVec_u(
+            SCALAR_UINT_TYPE i0,  SCALAR_UINT_TYPE i1,  SCALAR_UINT_TYPE i2,  SCALAR_UINT_TYPE i3,  SCALAR_UINT_TYPE i4,  SCALAR_UINT_TYPE i5,  SCALAR_UINT_TYPE i6,  SCALAR_UINT_TYPE i7,
+            SCALAR_UINT_TYPE i8,  SCALAR_UINT_TYPE i9,  SCALAR_UINT_TYPE i10, SCALAR_UINT_TYPE i11, SCALAR_UINT_TYPE i12, SCALAR_UINT_TYPE i13, SCALAR_UINT_TYPE i14, SCALAR_UINT_TYPE i15,
+            SCALAR_UINT_TYPE i16, SCALAR_UINT_TYPE i17, SCALAR_UINT_TYPE i18, SCALAR_UINT_TYPE i19, SCALAR_UINT_TYPE i20, SCALAR_UINT_TYPE i21, SCALAR_UINT_TYPE i22, SCALAR_UINT_TYPE i23,
+            SCALAR_UINT_TYPE i24, SCALAR_UINT_TYPE i25, SCALAR_UINT_TYPE i26, SCALAR_UINT_TYPE i27, SCALAR_UINT_TYPE i28, SCALAR_UINT_TYPE i29, SCALAR_UINT_TYPE i30, SCALAR_UINT_TYPE i31,
+            SCALAR_UINT_TYPE i32, SCALAR_UINT_TYPE i33, SCALAR_UINT_TYPE i34, SCALAR_UINT_TYPE i35, SCALAR_UINT_TYPE i36, SCALAR_UINT_TYPE i37, SCALAR_UINT_TYPE i38, SCALAR_UINT_TYPE i39,
+            SCALAR_UINT_TYPE i40, SCALAR_UINT_TYPE i41, SCALAR_UINT_TYPE i42, SCALAR_UINT_TYPE i43, SCALAR_UINT_TYPE i44, SCALAR_UINT_TYPE i45, SCALAR_UINT_TYPE i46, SCALAR_UINT_TYPE i47,
+            SCALAR_UINT_TYPE i48, SCALAR_UINT_TYPE i49, SCALAR_UINT_TYPE i50, SCALAR_UINT_TYPE i51, SCALAR_UINT_TYPE i52, SCALAR_UINT_TYPE i53, SCALAR_UINT_TYPE i54, SCALAR_UINT_TYPE i55,
+            SCALAR_UINT_TYPE i56, SCALAR_UINT_TYPE i57, SCALAR_UINT_TYPE i58, SCALAR_UINT_TYPE i59, SCALAR_UINT_TYPE i60, SCALAR_UINT_TYPE i61, SCALAR_UINT_TYPE i62, SCALAR_UINT_TYPE i63)
+        {
+            insert(0, i0);    insert(1, i1);    insert(2, i2);    insert(3, i3);
+            insert(4, i4);    insert(5, i5);    insert(6, i6);    insert(7, i7);
+            insert(8, i8);    insert(9, i9);    insert(10, i10);  insert(11, i11);
+            insert(12, i12);  insert(13, i13);  insert(14, i14);  insert(15, i15);
+            insert(16, i16);  insert(17, i17);  insert(18, i18);  insert(19, i19);
+            insert(20, i20);  insert(21, i21);  insert(22, i22);  insert(23, i23);
+            insert(24, i24);  insert(25, i25);  insert(26, i26);  insert(27, i27);
+            insert(28, i28);  insert(29, i29);  insert(30, i30);  insert(31, i31);
+            insert(32, i32);  insert(33, i33);  insert(34, i34);  insert(35, i35);
+            insert(36, i36);  insert(37, i37);  insert(38, i38);  insert(39, i39);
+            insert(40, i40);  insert(41, i41);  insert(42, i42);  insert(43, i43);
+            insert(44, i44);  insert(45, i45);  insert(46, i46);  insert(47, i47);
+            insert(48, i48);  insert(49, i49);  insert(50, i50);  insert(51, i51);
+            insert(52, i52);  insert(53, i53);  insert(54, i54);  insert(55, i55);
+            insert(56, i56);  insert(57, i57);  insert(58, i58);  insert(59, i59);
+            insert(60, i60);  insert(61, i61);  insert(62, i62);  insert(63, i63);
+        }
+        
+        UME_FORCE_INLINE SIMDVec_u(
+            SCALAR_UINT_TYPE i0,   SCALAR_UINT_TYPE i1,   SCALAR_UINT_TYPE i2,   SCALAR_UINT_TYPE i3,   SCALAR_UINT_TYPE i4,   SCALAR_UINT_TYPE i5,   SCALAR_UINT_TYPE i6,   SCALAR_UINT_TYPE i7,
+            SCALAR_UINT_TYPE i8,   SCALAR_UINT_TYPE i9,   SCALAR_UINT_TYPE i10,  SCALAR_UINT_TYPE i11,  SCALAR_UINT_TYPE i12,  SCALAR_UINT_TYPE i13,  SCALAR_UINT_TYPE i14,  SCALAR_UINT_TYPE i15,
+            SCALAR_UINT_TYPE i16,  SCALAR_UINT_TYPE i17,  SCALAR_UINT_TYPE i18,  SCALAR_UINT_TYPE i19,  SCALAR_UINT_TYPE i20,  SCALAR_UINT_TYPE i21,  SCALAR_UINT_TYPE i22,  SCALAR_UINT_TYPE i23,
+            SCALAR_UINT_TYPE i24,  SCALAR_UINT_TYPE i25,  SCALAR_UINT_TYPE i26,  SCALAR_UINT_TYPE i27,  SCALAR_UINT_TYPE i28,  SCALAR_UINT_TYPE i29,  SCALAR_UINT_TYPE i30,  SCALAR_UINT_TYPE i31,
+            SCALAR_UINT_TYPE i32,  SCALAR_UINT_TYPE i33,  SCALAR_UINT_TYPE i34,  SCALAR_UINT_TYPE i35,  SCALAR_UINT_TYPE i36,  SCALAR_UINT_TYPE i37,  SCALAR_UINT_TYPE i38,  SCALAR_UINT_TYPE i39,
+            SCALAR_UINT_TYPE i40,  SCALAR_UINT_TYPE i41,  SCALAR_UINT_TYPE i42,  SCALAR_UINT_TYPE i43,  SCALAR_UINT_TYPE i44,  SCALAR_UINT_TYPE i45,  SCALAR_UINT_TYPE i46,  SCALAR_UINT_TYPE i47,
+            SCALAR_UINT_TYPE i48,  SCALAR_UINT_TYPE i49,  SCALAR_UINT_TYPE i50,  SCALAR_UINT_TYPE i51,  SCALAR_UINT_TYPE i52,  SCALAR_UINT_TYPE i53,  SCALAR_UINT_TYPE i54,  SCALAR_UINT_TYPE i55,
+            SCALAR_UINT_TYPE i56,  SCALAR_UINT_TYPE i57,  SCALAR_UINT_TYPE i58,  SCALAR_UINT_TYPE i59,  SCALAR_UINT_TYPE i60,  SCALAR_UINT_TYPE i61,  SCALAR_UINT_TYPE i62,  SCALAR_UINT_TYPE i63,
+            SCALAR_UINT_TYPE i64,  SCALAR_UINT_TYPE i65,  SCALAR_UINT_TYPE i66,  SCALAR_UINT_TYPE i67,  SCALAR_UINT_TYPE i68,  SCALAR_UINT_TYPE i69,  SCALAR_UINT_TYPE i70,  SCALAR_UINT_TYPE i71,
+            SCALAR_UINT_TYPE i72,  SCALAR_UINT_TYPE i73,  SCALAR_UINT_TYPE i74,  SCALAR_UINT_TYPE i75,  SCALAR_UINT_TYPE i76,  SCALAR_UINT_TYPE i77,  SCALAR_UINT_TYPE i78,  SCALAR_UINT_TYPE i79,
+            SCALAR_UINT_TYPE i80,  SCALAR_UINT_TYPE i81,  SCALAR_UINT_TYPE i82,  SCALAR_UINT_TYPE i83,  SCALAR_UINT_TYPE i84,  SCALAR_UINT_TYPE i85,  SCALAR_UINT_TYPE i86,  SCALAR_UINT_TYPE i87,
+            SCALAR_UINT_TYPE i88,  SCALAR_UINT_TYPE i89,  SCALAR_UINT_TYPE i90,  SCALAR_UINT_TYPE i91,  SCALAR_UINT_TYPE i92,  SCALAR_UINT_TYPE i93,  SCALAR_UINT_TYPE i94,  SCALAR_UINT_TYPE i95,
+            SCALAR_UINT_TYPE i96,  SCALAR_UINT_TYPE i97,  SCALAR_UINT_TYPE i98,  SCALAR_UINT_TYPE i99,  SCALAR_UINT_TYPE i100, SCALAR_UINT_TYPE i101, SCALAR_UINT_TYPE i102, SCALAR_UINT_TYPE i103,
+            SCALAR_UINT_TYPE i104, SCALAR_UINT_TYPE i105, SCALAR_UINT_TYPE i106, SCALAR_UINT_TYPE i107, SCALAR_UINT_TYPE i108, SCALAR_UINT_TYPE i109, SCALAR_UINT_TYPE i110, SCALAR_UINT_TYPE i111,
+            SCALAR_UINT_TYPE i112, SCALAR_UINT_TYPE i113, SCALAR_UINT_TYPE i114, SCALAR_UINT_TYPE i115, SCALAR_UINT_TYPE i116, SCALAR_UINT_TYPE i117, SCALAR_UINT_TYPE i118, SCALAR_UINT_TYPE i119,
+            SCALAR_UINT_TYPE i120, SCALAR_UINT_TYPE i121, SCALAR_UINT_TYPE i122, SCALAR_UINT_TYPE i123, SCALAR_UINT_TYPE i124, SCALAR_UINT_TYPE i125, SCALAR_UINT_TYPE i126, SCALAR_UINT_TYPE i127)
+        {
+            insert(0, i0);    insert(1, i1);    insert(2, i2);    insert(3, i3);
+            insert(4, i4);    insert(5, i5);    insert(6, i6);    insert(7, i7);
+            insert(8, i8);    insert(9, i9);    insert(10, i10);  insert(11, i11);
+            insert(12, i12);  insert(13, i13);  insert(14, i14);  insert(15, i15);
+            insert(16, i16);  insert(17, i17);  insert(18, i18);  insert(19, i19);
+            insert(20, i20);  insert(21, i21);  insert(22, i22);  insert(23, i23);
+            insert(24, i24);  insert(25, i25);  insert(26, i26);  insert(27, i27);
+            insert(28, i28);  insert(29, i29);  insert(30, i30);  insert(31, i31);
+            insert(32, i32);  insert(33, i33);  insert(34, i34);  insert(35, i35);
+            insert(36, i36);  insert(37, i37);  insert(38, i38);  insert(39, i39);
+            insert(40, i40);  insert(41, i41);  insert(42, i42);  insert(43, i43);
+            insert(44, i44);  insert(45, i45);  insert(46, i46);  insert(47, i47);
+            insert(48, i48);  insert(49, i49);  insert(50, i50);  insert(51, i51);
+            insert(52, i52);  insert(53, i53);  insert(54, i54);  insert(55, i55);
+            insert(56, i56);  insert(57, i57);  insert(58, i58);  insert(59, i59);
+            insert(60, i60);  insert(61, i61);  insert(62, i62);  insert(63, i63);
+            insert(64,  i64);   insert(65, i65);    insert(66, i66);    insert(67, i67);
+            insert(68,  i68);   insert(69, i69);    insert(70, i70);    insert(71, i71);
+            insert(72,  i72);   insert(73, i73);    insert(74, i75);    insert(75, i75);
+            insert(76,  i76);   insert(77, i77);    insert(78, i78);    insert(79, i79);
+            insert(80,  i80);   insert(81, i81);    insert(82, i82);    insert(83, i83);
+            insert(84,  i84);   insert(85, i85);    insert(86, i86);    insert(87, i87);
+            insert(88,  i88);   insert(89, i89);    insert(90, i90);    insert(91, i91);
+            insert(92,  i92);   insert(93, i93);    insert(94, i94);    insert(95, i95);
+            insert(96,  i96);   insert(97, i97);    insert(98, i98);    insert(99, i99);
+            insert(100, i100);  insert(101, i101);  insert(102, i102);  insert(103, i103);
+            insert(104, i104);  insert(105, i105);  insert(106, i106);  insert(107, i107);
+            insert(108, i108);  insert(109, i109);  insert(110, i110);  insert(111, i111);
+            insert(112, i112);  insert(113, i113);  insert(114, i114);  insert(115, i115);
+            insert(116, i116);  insert(117, i117);  insert(118, i118);  insert(119, i119);
+            insert(120, i120);  insert(121, i121);  insert(122, i122);  insert(123, i123);
+            insert(124, i124);  insert(125, i125);  insert(126, i126);  insert(127, i127);
+        }
+        
         // EXTRACT
         UME_FORCE_INLINE SCALAR_UINT_TYPE extract(uint32_t index) const {
             return mVec[index];

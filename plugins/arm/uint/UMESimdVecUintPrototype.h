@@ -438,6 +438,86 @@ namespace SIMD {
             mVec.insert(28, i28);  mVec.insert(29, i29);  mVec.insert(30, i30);  mVec.insert(31, i31);
         }
 
+        UME_FORCE_INLINE SIMDVec_u(
+            SCALAR_UINT_TYPE i0,  SCALAR_UINT_TYPE i1,  SCALAR_UINT_TYPE i2,  SCALAR_UINT_TYPE i3,  SCALAR_UINT_TYPE i4,  SCALAR_UINT_TYPE i5,  SCALAR_UINT_TYPE i6,  SCALAR_UINT_TYPE i7,
+            SCALAR_UINT_TYPE i8,  SCALAR_UINT_TYPE i9,  SCALAR_UINT_TYPE i10, SCALAR_UINT_TYPE i11, SCALAR_UINT_TYPE i12, SCALAR_UINT_TYPE i13, SCALAR_UINT_TYPE i14, SCALAR_UINT_TYPE i15,
+            SCALAR_UINT_TYPE i16, SCALAR_UINT_TYPE i17, SCALAR_UINT_TYPE i18, SCALAR_UINT_TYPE i19, SCALAR_UINT_TYPE i20, SCALAR_UINT_TYPE i21, SCALAR_UINT_TYPE i22, SCALAR_UINT_TYPE i23,
+            SCALAR_UINT_TYPE i24, SCALAR_UINT_TYPE i25, SCALAR_UINT_TYPE i26, SCALAR_UINT_TYPE i27, SCALAR_UINT_TYPE i28, SCALAR_UINT_TYPE i29, SCALAR_UINT_TYPE i30, SCALAR_UINT_TYPE i31,
+            SCALAR_UINT_TYPE i32, SCALAR_UINT_TYPE i33, SCALAR_UINT_TYPE i34, SCALAR_UINT_TYPE i35, SCALAR_UINT_TYPE i36, SCALAR_UINT_TYPE i37, SCALAR_UINT_TYPE i38, SCALAR_UINT_TYPE i39,
+            SCALAR_UINT_TYPE i40, SCALAR_UINT_TYPE i41, SCALAR_UINT_TYPE i42, SCALAR_UINT_TYPE i43, SCALAR_UINT_TYPE i44, SCALAR_UINT_TYPE i45, SCALAR_UINT_TYPE i46, SCALAR_UINT_TYPE i47,
+            SCALAR_UINT_TYPE i48, SCALAR_UINT_TYPE i49, SCALAR_UINT_TYPE i50, SCALAR_UINT_TYPE i51, SCALAR_UINT_TYPE i52, SCALAR_UINT_TYPE i53, SCALAR_UINT_TYPE i54, SCALAR_UINT_TYPE i55,
+            SCALAR_UINT_TYPE i56, SCALAR_UINT_TYPE i57, SCALAR_UINT_TYPE i58, SCALAR_UINT_TYPE i59, SCALAR_UINT_TYPE i60, SCALAR_UINT_TYPE i61, SCALAR_UINT_TYPE i62, SCALAR_UINT_TYPE i63)
+        {
+            mVec.insert(0, i0);    mVec.insert(1, i1);    mVec.insert(2, i2);    mVec.insert(3, i3);
+            mVec.insert(4, i4);    mVec.insert(5, i5);    mVec.insert(6, i6);    mVec.insert(7, i7);
+            mVec.insert(8, i8);    mVec.insert(9, i9);    mVec.insert(10, i10);  mVec.insert(11, i11);
+            mVec.insert(12, i12);  mVec.insert(13, i13);  mVec.insert(14, i14);  mVec.insert(15, i15);
+            mVec.insert(16, i16);  mVec.insert(17, i17);  mVec.insert(18, i18);  mVec.insert(19, i19);
+            mVec.insert(20, i20);  mVec.insert(21, i21);  mVec.insert(22, i22);  mVec.insert(23, i23);
+            mVec.insert(24, i24);  mVec.insert(25, i25);  mVec.insert(26, i26);  mVec.insert(27, i27);
+            mVec.insert(28, i28);  mVec.insert(29, i29);  mVec.insert(30, i30);  mVec.insert(31, i31);
+            mVec.insert(32, i32);  mVec.insert(33, i33);  mVec.insert(34, i34);  mVec.insert(35, i35);
+            mVec.insert(36, i36);  mVec.insert(37, i37);  mVec.insert(38, i38);  mVec.insert(39, i39);
+            mVec.insert(40, i40);  mVec.insert(41, i41);  mVec.insert(42, i42);  mVec.insert(43, i43);
+            mVec.insert(44, i44);  mVec.insert(45, i45);  mVec.insert(46, i46);  mVec.insert(47, i47);
+            mVec.insert(48, i48);  mVec.insert(49, i49);  mVec.insert(50, i50);  mVec.insert(51, i51);
+            mVec.insert(52, i52);  mVec.insert(53, i53);  mVec.insert(54, i54);  mVec.insert(55, i55);
+            mVec.insert(56, i56);  mVec.insert(57, i57);  mVec.insert(58, i58);  mVec.insert(59, i59);
+            mVec.insert(60, i60);  mVec.insert(61, i61);  mVec.insert(62, i62);  mVec.insert(63, i63);
+        }
+        
+        UME_FORCE_INLINE SIMDVec_u(
+            SCALAR_UINT_TYPE i0,   SCALAR_UINT_TYPE i1,   SCALAR_UINT_TYPE i2,   SCALAR_UINT_TYPE i3,   SCALAR_UINT_TYPE i4,   SCALAR_UINT_TYPE i5,   SCALAR_UINT_TYPE i6,   SCALAR_UINT_TYPE i7,
+            SCALAR_UINT_TYPE i8,   SCALAR_UINT_TYPE i9,   SCALAR_UINT_TYPE i10,  SCALAR_UINT_TYPE i11,  SCALAR_UINT_TYPE i12,  SCALAR_UINT_TYPE i13,  SCALAR_UINT_TYPE i14,  SCALAR_UINT_TYPE i15,
+            SCALAR_UINT_TYPE i16,  SCALAR_UINT_TYPE i17,  SCALAR_UINT_TYPE i18,  SCALAR_UINT_TYPE i19,  SCALAR_UINT_TYPE i20,  SCALAR_UINT_TYPE i21,  SCALAR_UINT_TYPE i22,  SCALAR_UINT_TYPE i23,
+            SCALAR_UINT_TYPE i24,  SCALAR_UINT_TYPE i25,  SCALAR_UINT_TYPE i26,  SCALAR_UINT_TYPE i27,  SCALAR_UINT_TYPE i28,  SCALAR_UINT_TYPE i29,  SCALAR_UINT_TYPE i30,  SCALAR_UINT_TYPE i31,
+            SCALAR_UINT_TYPE i32,  SCALAR_UINT_TYPE i33,  SCALAR_UINT_TYPE i34,  SCALAR_UINT_TYPE i35,  SCALAR_UINT_TYPE i36,  SCALAR_UINT_TYPE i37,  SCALAR_UINT_TYPE i38,  SCALAR_UINT_TYPE i39,
+            SCALAR_UINT_TYPE i40,  SCALAR_UINT_TYPE i41,  SCALAR_UINT_TYPE i42,  SCALAR_UINT_TYPE i43,  SCALAR_UINT_TYPE i44,  SCALAR_UINT_TYPE i45,  SCALAR_UINT_TYPE i46,  SCALAR_UINT_TYPE i47,
+            SCALAR_UINT_TYPE i48,  SCALAR_UINT_TYPE i49,  SCALAR_UINT_TYPE i50,  SCALAR_UINT_TYPE i51,  SCALAR_UINT_TYPE i52,  SCALAR_UINT_TYPE i53,  SCALAR_UINT_TYPE i54,  SCALAR_UINT_TYPE i55,
+            SCALAR_UINT_TYPE i56,  SCALAR_UINT_TYPE i57,  SCALAR_UINT_TYPE i58,  SCALAR_UINT_TYPE i59,  SCALAR_UINT_TYPE i60,  SCALAR_UINT_TYPE i61,  SCALAR_UINT_TYPE i62,  SCALAR_UINT_TYPE i63,
+            SCALAR_UINT_TYPE i64,  SCALAR_UINT_TYPE i65,  SCALAR_UINT_TYPE i66,  SCALAR_UINT_TYPE i67,  SCALAR_UINT_TYPE i68,  SCALAR_UINT_TYPE i69,  SCALAR_UINT_TYPE i70,  SCALAR_UINT_TYPE i71,
+            SCALAR_UINT_TYPE i72,  SCALAR_UINT_TYPE i73,  SCALAR_UINT_TYPE i74,  SCALAR_UINT_TYPE i75,  SCALAR_UINT_TYPE i76,  SCALAR_UINT_TYPE i77,  SCALAR_UINT_TYPE i78,  SCALAR_UINT_TYPE i79,
+            SCALAR_UINT_TYPE i80,  SCALAR_UINT_TYPE i81,  SCALAR_UINT_TYPE i82,  SCALAR_UINT_TYPE i83,  SCALAR_UINT_TYPE i84,  SCALAR_UINT_TYPE i85,  SCALAR_UINT_TYPE i86,  SCALAR_UINT_TYPE i87,
+            SCALAR_UINT_TYPE i88,  SCALAR_UINT_TYPE i89,  SCALAR_UINT_TYPE i90,  SCALAR_UINT_TYPE i91,  SCALAR_UINT_TYPE i92,  SCALAR_UINT_TYPE i93,  SCALAR_UINT_TYPE i94,  SCALAR_UINT_TYPE i95,
+            SCALAR_UINT_TYPE i96,  SCALAR_UINT_TYPE i97,  SCALAR_UINT_TYPE i98,  SCALAR_UINT_TYPE i99,  SCALAR_UINT_TYPE i100, SCALAR_UINT_TYPE i101, SCALAR_UINT_TYPE i102, SCALAR_UINT_TYPE i103,
+            SCALAR_UINT_TYPE i104, SCALAR_UINT_TYPE i105, SCALAR_UINT_TYPE i106, SCALAR_UINT_TYPE i107, SCALAR_UINT_TYPE i108, SCALAR_UINT_TYPE i109, SCALAR_UINT_TYPE i110, SCALAR_UINT_TYPE i111,
+            SCALAR_UINT_TYPE i112, SCALAR_UINT_TYPE i113, SCALAR_UINT_TYPE i114, SCALAR_UINT_TYPE i115, SCALAR_UINT_TYPE i116, SCALAR_UINT_TYPE i117, SCALAR_UINT_TYPE i118, SCALAR_UINT_TYPE i119,
+            SCALAR_UINT_TYPE i120, SCALAR_UINT_TYPE i121, SCALAR_UINT_TYPE i122, SCALAR_UINT_TYPE i123, SCALAR_UINT_TYPE i124, SCALAR_UINT_TYPE i125, SCALAR_UINT_TYPE i126, SCALAR_UINT_TYPE i127)
+        {
+            mVec.insert(0, i0);    mVec.insert(1, i1);    mVec.insert(2, i2);    mVec.insert(3, i3);
+            mVec.insert(4, i4);    mVec.insert(5, i5);    mVec.insert(6, i6);    mVec.insert(7, i7);
+            mVec.insert(8, i8);    mVec.insert(9, i9);    mVec.insert(10, i10);  mVec.insert(11, i11);
+            mVec.insert(12, i12);  mVec.insert(13, i13);  mVec.insert(14, i14);  mVec.insert(15, i15);
+            mVec.insert(16, i16);  mVec.insert(17, i17);  mVec.insert(18, i18);  mVec.insert(19, i19);
+            mVec.insert(20, i20);  mVec.insert(21, i21);  mVec.insert(22, i22);  mVec.insert(23, i23);
+            mVec.insert(24, i24);  mVec.insert(25, i25);  mVec.insert(26, i26);  mVec.insert(27, i27);
+            mVec.insert(28, i28);  mVec.insert(29, i29);  mVec.insert(30, i30);  mVec.insert(31, i31);
+            mVec.insert(32, i32);  mVec.insert(33, i33);  mVec.insert(34, i34);  mVec.insert(35, i35);
+            mVec.insert(36, i36);  mVec.insert(37, i37);  mVec.insert(38, i38);  mVec.insert(39, i39);
+            mVec.insert(40, i40);  mVec.insert(41, i41);  mVec.insert(42, i42);  mVec.insert(43, i43);
+            mVec.insert(44, i44);  mVec.insert(45, i45);  mVec.insert(46, i46);  mVec.insert(47, i47);
+            mVec.insert(48, i48);  mVec.insert(49, i49);  mVec.insert(50, i50);  mVec.insert(51, i51);
+            mVec.insert(52, i52);  mVec.insert(53, i53);  mVec.insert(54, i54);  mVec.insert(55, i55);
+            mVec.insert(56, i56);  mVec.insert(57, i57);  mVec.insert(58, i58);  mVec.insert(59, i59);
+            mVec.insert(60, i60);  mVec.insert(61, i61);  mVec.insert(62, i62);  mVec.insert(63, i63);
+            mVec.insert(64,  i64);   mVec.insert(65, i65);    mVec.insert(66, i66);    mVec.insert(67, i67);
+            mVec.insert(68,  i68);   mVec.insert(69, i69);    mVec.insert(70, i70);    mVec.insert(71, i71);
+            mVec.insert(72,  i72);   mVec.insert(73, i73);    mVec.insert(74, i75);    mVec.insert(75, i75);
+            mVec.insert(76,  i76);   mVec.insert(77, i77);    mVec.insert(78, i78);    mVec.insert(79, i79);
+            mVec.insert(80,  i80);   mVec.insert(81, i81);    mVec.insert(82, i82);    mVec.insert(83, i83);
+            mVec.insert(84,  i84);   mVec.insert(85, i85);    mVec.insert(86, i86);    mVec.insert(87, i87);
+            mVec.insert(88,  i88);   mVec.insert(89, i89);    mVec.insert(90, i90);    mVec.insert(91, i91);
+            mVec.insert(92,  i92);   mVec.insert(93, i93);    mVec.insert(94, i94);    mVec.insert(95, i95);
+            mVec.insert(96,  i96);   mVec.insert(97, i97);    mVec.insert(98, i98);    mVec.insert(99, i99);
+            mVec.insert(100, i100);  mVec.insert(101, i101);  mVec.insert(102, i102);  mVec.insert(103, i103);
+            mVec.insert(104, i104);  mVec.insert(105, i105);  mVec.insert(106, i106);  mVec.insert(107, i107);
+            mVec.insert(108, i108);  mVec.insert(109, i109);  mVec.insert(110, i110);  mVec.insert(111, i111);
+            mVec.insert(112, i112);  mVec.insert(113, i113);  mVec.insert(114, i114);  mVec.insert(115, i115);
+            mVec.insert(116, i116);  mVec.insert(117, i117);  mVec.insert(118, i118);  mVec.insert(119, i119);
+            mVec.insert(120, i120);  mVec.insert(121, i121);  mVec.insert(122, i122);  mVec.insert(123, i123);
+            mVec.insert(124, i124);  mVec.insert(125, i125);  mVec.insert(126, i126);  mVec.insert(127, i127);
+        }
+        
         // EXTRACT
         UME_FORCE_INLINE SCALAR_UINT_TYPE extract(uint32_t index) const {
             return mVec[index];
