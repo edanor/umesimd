@@ -887,22 +887,22 @@ namespace SIMD {
         }
 
         // GATHERS
-        inline SIMDVec_f & gather(double * baseAddr, uint64_t * indices) {
+        inline SIMDVec_f & gather(double const * baseAddr, uint64_t * indices) {
             mVec = baseAddr[indices[0]];
             return *this;
         }
         // MGATHERS
-        inline SIMDVec_f & gather(SIMDVecMask<1> const & mask, double * baseAddr, uint64_t * indices) {
+        inline SIMDVec_f & gather(SIMDVecMask<1> const & mask, double const * baseAddr, uint64_t * indices) {
             if (mask.mMask == true) mVec = baseAddr[indices[0]];
             return *this;
         }
         // GATHERV
-        inline SIMDVec_f & gather(double * baseAddr, VEC_UINT_TYPE const & indices) {
+        inline SIMDVec_f & gather(double const * baseAddr, VEC_UINT_TYPE const & indices) {
             mVec = baseAddr[indices[0]];
             return *this;
         }
         // MGATHERV
-        inline SIMDVec_f & gather(SIMDVecMask<1> const & mask, double * baseAddr, VEC_UINT_TYPE const & indices) {
+        inline SIMDVec_f & gather(SIMDVecMask<1> const & mask, double const * baseAddr, VEC_UINT_TYPE const & indices) {
             if (mask.mMask == true) mVec = baseAddr[indices[0]];
             return *this;
         }

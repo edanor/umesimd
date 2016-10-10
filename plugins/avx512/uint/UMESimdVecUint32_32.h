@@ -1498,7 +1498,7 @@ namespace SIMD {
             return t0;
         }
         // GATHERU
-        UME_FORCE_INLINE SIMDVec_u & gatheru(uint32_t * baseAddr, uint32_t stride) {
+        UME_FORCE_INLINE SIMDVec_u & gatheru(uint32_t const * baseAddr, uint32_t stride) {
             __m512i t0 = _mm512_set1_epi32(stride);
             __m512i t1 = _mm512_setr_epi32(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
             __m512i t2 = _mm512_setr_epi32(16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31);
@@ -1509,7 +1509,7 @@ namespace SIMD {
             return *this;
         }
         // MGATHERU
-        UME_FORCE_INLINE SIMDVec_u & gatheru(SIMDVecMask<32> const & mask, uint32_t * baseAddr, uint32_t stride) {
+        UME_FORCE_INLINE SIMDVec_u & gatheru(SIMDVecMask<32> const & mask, uint32_t const * baseAddr, uint32_t stride) {
             __m512i t0 = _mm512_set1_epi32(stride);
             __m512i t1 = _mm512_setr_epi32(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
             __m512i t2 = _mm512_setr_epi32(16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31);
@@ -1520,7 +1520,7 @@ namespace SIMD {
             return *this;
         }
         // GATHERS
-        UME_FORCE_INLINE SIMDVec_u & gather(uint32_t* baseAddr, uint32_t* indices) {
+        UME_FORCE_INLINE SIMDVec_u & gather(uint32_t const * baseAddr, uint32_t* indices) {
             __m512i t0 = _mm512_loadu_si512(indices);
             __m512i t1 = _mm512_loadu_si512(indices+16);
             mVec[0] = _mm512_i32gather_epi32(t0, baseAddr, 4);
@@ -1528,7 +1528,7 @@ namespace SIMD {
             return *this;
         }
         // MGATHERS
-        UME_FORCE_INLINE SIMDVec_u & gather(SIMDVecMask<32> const & mask, uint32_t* baseAddr, uint32_t* indices) {
+        UME_FORCE_INLINE SIMDVec_u & gather(SIMDVecMask<32> const & mask, uint32_t const * baseAddr, uint32_t* indices) {
             __m512i t0 = _mm512_loadu_si512(indices);
             __m512i t1 = _mm512_loadu_si512(indices+16);
             mVec[0] = _mm512_mask_i32gather_epi32(mVec[0], mask.mMask & 0x0000FFFF, t0, baseAddr, 4);
@@ -1536,13 +1536,13 @@ namespace SIMD {
             return *this;
         }
         // GATHERV
-        UME_FORCE_INLINE SIMDVec_u & gather(uint32_t* baseAddr, SIMDVec_u const & indices) {
+        UME_FORCE_INLINE SIMDVec_u & gather(uint32_t const * baseAddr, SIMDVec_u const & indices) {
             mVec[0] = _mm512_i32gather_epi32(indices.mVec[0], baseAddr, 4);
             mVec[1] = _mm512_i32gather_epi32(indices.mVec[1], baseAddr, 4);
             return *this;
         }
         // MGATHERV
-        UME_FORCE_INLINE SIMDVec_u & gather(SIMDVecMask<32> const & mask, uint32_t* baseAddr, SIMDVec_u const & indices) {
+        UME_FORCE_INLINE SIMDVec_u & gather(SIMDVecMask<32> const & mask, uint32_t const * baseAddr, SIMDVec_u const & indices) {
             mVec[0] = _mm512_mask_i32gather_epi32(mVec[0], mask.mMask & 0x0000FFFF, indices.mVec[0], baseAddr, 4);
             mVec[1] = _mm512_mask_i32gather_epi32(mVec[1], (mask.mMask & 0xFFFF0000) >> 16, indices.mVec[1], baseAddr, 4);
             return *this;
