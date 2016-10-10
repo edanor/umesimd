@@ -990,13 +990,13 @@ namespace SIMD {
         // MIMIN
 
         // GATHERS
-        inline SIMDVec_f & gather(float const * baseAddr, uint32_t* indices) {
+        inline SIMDVec_f & gather(float const * baseAddr, uint32_t const * indices) {
             __m128i t0 = _mm_load_si128((__m128i*)indices);
             mVec = _mm_i32gather_ps((const float *)baseAddr, t0, 4);
             return *this;
         }
         // MGATHERS
-        inline SIMDVec_f & gather(SIMDVecMask<4> const & mask, float const * baseAddr, uint32_t* indices) {
+        inline SIMDVec_f & gather(SIMDVecMask<4> const & mask, float const * baseAddr, uint32_t const * indices) {
             __m128i t0 = _mm_load_si128((__m128i*)indices);
             __m128 t1 = _mm_i32gather_ps((const float *)baseAddr, t0, 4);
             mVec = BLEND(mVec, t1, mask.mMask);

@@ -2505,13 +2505,13 @@ namespace SIMD
         }
 
         // GATHERS
-        UME_FORCE_INLINE DERIVED_VEC_TYPE & gather (SCALAR_TYPE const * baseAddr, SCALAR_UINT_TYPE* indices) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & gather (SCALAR_TYPE const * baseAddr, SCALAR_UINT_TYPE const * indices) {
             UME_EMULATION_WARNING();
             return SCALAR_EMULATION::gather<DERIVED_VEC_TYPE, SCALAR_TYPE, SCALAR_UINT_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this), baseAddr, indices);
         }
 
         // MGATHERS
-        UME_FORCE_INLINE DERIVED_VEC_TYPE & gather (MASK_TYPE const & mask, SCALAR_TYPE const * baseAddr, SCALAR_UINT_TYPE* indices) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & gather (MASK_TYPE const & mask, SCALAR_TYPE const * baseAddr, SCALAR_UINT_TYPE const * indices) {
             UME_EMULATION_WARNING();
             return SCALAR_EMULATION::gather<DERIVED_VEC_TYPE, SCALAR_TYPE, SCALAR_UINT_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this), baseAddr, indices);
         }

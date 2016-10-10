@@ -953,12 +953,12 @@ namespace SIMD {
             return *this;
         }
         // GATHERS
-        UME_FORCE_INLINE SIMDVec_f & gather(double const * baseAddr, uint64_t * indices) {
+        UME_FORCE_INLINE SIMDVec_f & gather(double const * baseAddr, uint64_t const * indices) {
             mVec = baseAddr[indices[0]];
             return *this;
         }
         // MGATHERS
-        UME_FORCE_INLINE SIMDVec_f & gather(SIMDVecMask<1> const & mask, double const * baseAddr, uint64_t * indices) {
+        UME_FORCE_INLINE SIMDVec_f & gather(SIMDVecMask<1> const & mask, double const * baseAddr, uint64_t const * indices) {
             if (mask.mMask == true) mVec = baseAddr[indices[0]];
             return *this;
         }

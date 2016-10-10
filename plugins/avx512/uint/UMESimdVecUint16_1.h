@@ -1180,12 +1180,12 @@ namespace SIMD {
             return *this;
         }
         // GATHERS
-        UME_FORCE_INLINE SIMDVec_u & gather(uint16_t const * baseAddr, uint16_t* indices) {
+        UME_FORCE_INLINE SIMDVec_u & gather(uint16_t const * baseAddr, uint16_t const * indices) {
             mVec = baseAddr[indices[0]];
             return *this;
         }
         // MGATHERS
-        UME_FORCE_INLINE SIMDVec_u & gather(SIMDVecMask<1> const & mask, uint16_t const * baseAddr, uint16_t* indices) {
+        UME_FORCE_INLINE SIMDVec_u & gather(SIMDVecMask<1> const & mask, uint16_t const * baseAddr, uint16_t const * indices) {
             if (mask.mMask == true) mVec = baseAddr[indices[0]];
             return *this;
         }

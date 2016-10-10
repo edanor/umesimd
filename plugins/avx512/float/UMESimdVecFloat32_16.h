@@ -998,13 +998,13 @@ namespace SIMD {
             return *this;
         }
         // GATHERS
-        UME_FORCE_INLINE SIMDVec_f & gather(float const * baseAddr, uint32_t* indices) {
+        UME_FORCE_INLINE SIMDVec_f & gather(float const * baseAddr, uint32_t const * indices) {
             __m512i t0 = _mm512_loadu_si512(indices);
             mVec = _mm512_i32gather_ps(t0, baseAddr, 4);
             return *this;
         }
         // MGATHERS
-        UME_FORCE_INLINE SIMDVec_f & gather(SIMDVecMask<16> const & mask, float const * baseAddr, uint32_t* indices) {
+        UME_FORCE_INLINE SIMDVec_f & gather(SIMDVecMask<16> const & mask, float const * baseAddr, uint32_t const * indices) {
             __mmask16 m0 = mask.mMask & 0x0000FFFF;
             __m512i t0 = _mm512_loadu_si512(indices);
             mVec = _mm512_mask_i32gather_ps(mVec, m0, t0, baseAddr, 4);

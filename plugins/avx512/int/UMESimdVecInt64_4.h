@@ -1773,13 +1773,13 @@ namespace SIMD {
             return *this;
         }
         // GATHERS
-        UME_FORCE_INLINE SIMDVec_i & gather(int64_t const * baseAddr, uint64_t* indices) {
+        UME_FORCE_INLINE SIMDVec_i & gather(int64_t const * baseAddr, uint64_t const * indices) {
             __m256i t0 =_mm256_loadu_si256((__m256i *)indices);
             mVec = _mm256_i64gather_epi64((__int64 const*)baseAddr, t0, 8);
             return *this;
         }
         // MGATHERS
-        UME_FORCE_INLINE SIMDVec_i & gather(SIMDVecMask<4> const & mask, int64_t const * baseAddr, uint64_t* indices) {
+        UME_FORCE_INLINE SIMDVec_i & gather(SIMDVecMask<4> const & mask, int64_t const * baseAddr, uint64_t const * indices) {
             __m256i t0 = _mm256_loadu_si256((__m256i *)indices);
             __m256i t1 = _mm256_i64gather_epi64((__int64 const*)baseAddr, t0, 8);
 #if defined(__AVX512VL__)

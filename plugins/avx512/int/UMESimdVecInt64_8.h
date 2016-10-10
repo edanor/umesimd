@@ -1519,13 +1519,13 @@ namespace SIMD {
             return *this;
         }
         // GATHERS
-        UME_FORCE_INLINE SIMDVec_i & gather(int64_t const * baseAddr, uint64_t* indices) {
+        UME_FORCE_INLINE SIMDVec_i & gather(int64_t const * baseAddr, uint64_t const * indices) {
             __m512i t0 =_mm512_loadu_si512((__m512i *)indices);
             mVec = _mm512_i64gather_epi64(t0, (__int64 const*)baseAddr, 8);
             return *this;
         }
         // MGATHERS
-        UME_FORCE_INLINE SIMDVec_i & gather(SIMDVecMask<8> const & mask, int64_t const * baseAddr, uint64_t* indices) {
+        UME_FORCE_INLINE SIMDVec_i & gather(SIMDVecMask<8> const & mask, int64_t const * baseAddr, uint64_t const * indices) {
             __m512i t0 = _mm512_loadu_si512((__m512i *)indices);
             __m512i t1 = _mm512_i64gather_epi64(t0, (__int64 const*)baseAddr, 8);
             mVec = _mm512_mask_mov_epi64(mVec, mask.mMask, t1);

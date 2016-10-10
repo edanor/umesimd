@@ -1450,13 +1450,13 @@ namespace SIMD {
             return *this;
         }
         // GATHERS
-        UME_FORCE_INLINE SIMDVec_f & gather(double const * baseAddr, uint64_t* indices) {
+        UME_FORCE_INLINE SIMDVec_f & gather(double const * baseAddr, uint64_t const * indices) {
             __m128i t0 = _mm_loadu_si128((__m128i*)indices);
             mVec = _mm_i64gather_pd(baseAddr, t0, 8);
             return *this;
         }
         // MGATHERS
-        UME_FORCE_INLINE SIMDVec_f & gather(SIMDVecMask<2> const & mask, double const * baseAddr, uint64_t* indices) {
+        UME_FORCE_INLINE SIMDVec_f & gather(SIMDVecMask<2> const & mask, double const * baseAddr, uint64_t const * indices) {
             __m128i t0 = _mm_loadu_si128((__m128i*)indices);
 #if defined(__AVX512VL__)
             mVec = _mm_mmask_i64gather_pd(mVec, mask.mMask, t0, baseAddr, 8);

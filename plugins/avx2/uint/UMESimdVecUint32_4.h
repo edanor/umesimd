@@ -1178,13 +1178,13 @@ namespace SIMD {
         }
 
         // GATHERS
-        inline SIMDVec_u & gather(uint32_t const * baseAddr, uint32_t* indices) {
+        inline SIMDVec_u & gather(uint32_t const * baseAddr, uint32_t const * indices) {
             alignas(16) uint32_t raw[4] = { baseAddr[indices[0]], baseAddr[indices[1]], baseAddr[indices[2]], baseAddr[indices[3]] };
             mVec = _mm_load_si128((__m128i*)raw);
             return *this;
         }
         // MGATHERS
-        inline SIMDVec_u & gather(SIMDVecMask<4> const & mask, uint32_t const * baseAddr, uint32_t* indices) {
+        inline SIMDVec_u & gather(SIMDVecMask<4> const & mask, uint32_t const * baseAddr, uint32_t const * indices) {
             alignas(16) uint32_t raw[4] = { baseAddr[indices[0]], baseAddr[indices[1]], baseAddr[indices[2]], baseAddr[indices[3]] };
             __m128i t0 = _mm_load_si128((__m128i*)raw);
             mVec = _mm_blendv_epi8(mVec, t0, mask.mMask);

@@ -1387,13 +1387,13 @@ namespace SIMD {
         }
 
         // GATHERS
-        inline SIMDVec_u & gather(uint32_t const * baseAddr, uint32_t* indices) {
+        inline SIMDVec_u & gather(uint32_t const * baseAddr, uint32_t const * indices) {
             mVec[0] = baseAddr[indices[0]];
             mVec[1] = baseAddr[indices[1]];
             return *this;
         }
         // MGATHERS
-        inline SIMDVec_u & gather(SIMDVecMask<2> const & mask, uint32_t const * baseAddr, uint32_t* indices) {
+        inline SIMDVec_u & gather(SIMDVecMask<2> const & mask, uint32_t const * baseAddr, uint32_t const * indices) {
             if (mask.mMask[0] == true) mVec[0] = baseAddr[indices[0]];
             if (mask.mMask[1] == true) mVec[1] = baseAddr[indices[1]];
             return *this;

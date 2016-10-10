@@ -2726,7 +2726,7 @@ namespace SIMD {
             return retval;
         }
         // GATHERS
-        UME_FORCE_INLINE SIMDVec_u & gather(SCALAR_UINT_TYPE const * baseAddr, SCALAR_UINT_TYPE* indices) {
+        UME_FORCE_INLINE SIMDVec_u & gather(SCALAR_UINT_TYPE const * baseAddr, SCALAR_UINT_TYPE const * indices) {
             for(int i = 0; i < VEC_LEN; i++)
             {
                 mVec[i] = baseAddr[indices[i]];
@@ -2734,7 +2734,7 @@ namespace SIMD {
             return *this;
         }
         // MGATHERS
-        UME_FORCE_INLINE SIMDVec_u & gather(SIMDVecMask<VEC_LEN> const & mask, SCALAR_UINT_TYPE const * baseAddr, SCALAR_UINT_TYPE* indices) {
+        UME_FORCE_INLINE SIMDVec_u & gather(SIMDVecMask<VEC_LEN> const & mask, SCALAR_UINT_TYPE const * baseAddr, SCALAR_UINT_TYPE const * indices) {
             for(int i = 0; i < VEC_LEN; i++)
             {
                 if(mask.mMask[i] == true) mVec[i] = baseAddr[indices[i]];
