@@ -129,6 +129,10 @@ namespace SIMD {
         }
 #endif
 
+        // ****************************************************************************************
+        // Overloading Interface functions starts here!
+        // ****************************************************************************************
+
         // ASSIGNV
         inline SIMDVec_u & assign(SIMDVec_u const & b) {
             mVec = b.mVec;
@@ -296,7 +300,6 @@ namespace SIMD {
             __m128i t1 = mVec;
             __m128i t2 = _mm_add_epi32(mVec, t0);
             mVec = _mm_blendv_epi8(mVec, t2, mask.mMask);
-
             return SIMDVec_u(t1);
         }
         // PREFINC
@@ -729,7 +732,7 @@ namespace SIMD {
         // MHMULS
         inline uint32_t hmul(SIMDVecMask<4> const & mask, uint32_t b) const {
             alignas(16) uint32_t raw[4];
-            __m128i t0 = _mm_blendv_epi8(_mm_set1_epi32(0), mVec, mask.mMask);
+            __m128i t0 = _mm_blendv_epi8(_mm_set1_epi32(1), mVec, mask.mMask);
             _mm_store_si128((__m128i*)raw, t0);
             return raw[0] * raw[1] * raw[2] * raw[3] * b;
         }

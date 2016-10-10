@@ -802,7 +802,7 @@ namespace SIMD {
         // MHADD
         inline float hadd(SIMDVecMask<8> const & mask) const {
             __m256 t0 = _mm256_set1_ps(0.0f);
-            __m256 t1 = BLEND(mVec, t0, mask.mMask);
+            __m256 t1 = BLEND(t0, mVec, mask.mMask);
             __m256 t2 = _mm256_hadd_ps(t1, t1);
             __m256 t3 = _mm256_hadd_ps(t2, t2);
             __m128 t4 = _mm256_extractf128_ps(t3, 1);
@@ -824,7 +824,7 @@ namespace SIMD {
         // MHADDS
         inline float hadd(SIMDVecMask<8> const & mask, float b) const {
             __m256 t0 = _mm256_set1_ps(0.0f);
-            __m256 t1 = BLEND(mVec, t0, mask.mMask);
+            __m256 t1 = BLEND(t0, mVec, mask.mMask);
             __m256 t2 = _mm256_hadd_ps(t1, t1);
             __m256 t3 = _mm256_hadd_ps(t2, t2);
             __m128 t4 = _mm256_extractf128_ps(t3, 1);
@@ -850,7 +850,7 @@ namespace SIMD {
         inline float hmul(SIMDVecMask<8> const & mask) const {
             __m128 t0 = _mm_set1_ps(1.0f);
             __m256 t1 = _mm256_set1_ps(1.0f);
-            __m256 t2 = BLEND(mVec, t1, mask.mMask);
+            __m256 t2 = BLEND(t1, mVec, mask.mMask);
             __m128 t3 = _mm256_castps256_ps128(t2);
             __m128 t4 = _mm256_extractf128_ps(t2, 1);
             __m128 t5 = _mm_mul_ps(t3, t4);
@@ -878,7 +878,7 @@ namespace SIMD {
         inline float hmul(SIMDVecMask<8> const & mask, float b) const {
             __m128 t0 = _mm_set1_ps(1.0f);
             __m256 t1 = _mm256_set1_ps(1.0f);
-            __m256 t2 = BLEND(mVec, t1, mask.mMask);
+            __m256 t2 = BLEND(t1, mVec, mask.mMask);
             __m128 t3 = _mm256_castps256_ps128(t2);
             __m128 t4 = _mm256_extractf128_ps(t2, 1);
             __m128 t5 = _mm_mul_ps(t3, t4);

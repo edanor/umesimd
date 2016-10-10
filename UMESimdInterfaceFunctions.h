@@ -267,24 +267,24 @@ namespace FUNCTIONS
 
     // HADDS
     template<typename VEC_T>
-    inline typename UME::SIMD::SIMDTraits<VEC_T>::SCALAR_T hadd(VEC_T const & src1, typename UME::SIMD::SIMDTraits<VEC_T>::SCLAR_T const & src2) { return src1.hadd(src2); }
+    inline typename UME::SIMD::SIMDTraits<VEC_T>::SCALAR_T hadd(VEC_T const & src1, typename UME::SIMD::SIMDTraits<VEC_T>::SCALAR_T const & src2) { return src1.hadd(src2); }
     // MHADDS
     template<typename VEC_T>
-    inline typename UME::SIMD::SIMDTraits<VEC_T>::SCALAR_T hadd(typename UME::SIMD::SIMDTraits<VEC_T>::MASK_T const & mask, VEC_T const & src1, typename UME::SIMD::SIMDTraits<VEC_T>::SCLAR_T const & src2) { return src1.hadd(mask, src2); }
+    inline typename UME::SIMD::SIMDTraits<VEC_T>::SCALAR_T hadd(typename UME::SIMD::SIMDTraits<VEC_T>::MASK_T const & mask, VEC_T const & src1, typename UME::SIMD::SIMDTraits<VEC_T>::SCALAR_T const & src2) { return src1.hadd(mask, src2); }
 
-    // HADD
+    // HMUL
     template<typename VEC_T>
     inline typename UME::SIMD::SIMDTraits<VEC_T>::SCALAR_T hmul(VEC_T const & src1) { return src1.hmul(); }
-    // MHADD
+    // MHMUL
     template<typename VEC_T>
     inline typename UME::SIMD::SIMDTraits<VEC_T>::SCALAR_T hmul(typename UME::SIMD::SIMDTraits<VEC_T>::MASK_T const & mask, VEC_T const & src1) { return src1.hmul(mask); }
 
     // HMULS
     template<typename VEC_T>
-    inline typename UME::SIMD::SIMDTraits<VEC_T>::SCALAR_T hmul(VEC_T const & src1, typename UME::SIMD::SIMDTraits<VEC_T>::SCLAR_T const & src2) { return src1.hmul(src2); }
+    inline typename UME::SIMD::SIMDTraits<VEC_T>::SCALAR_T hmul(VEC_T const & src1, typename UME::SIMD::SIMDTraits<VEC_T>::SCALAR_T const & src2) { return src1.hmul(src2); }
     // MHMULS
     template<typename VEC_T>
-    inline typename UME::SIMD::SIMDTraits<VEC_T>::SCALAR_T hmul(typename UME::SIMD::SIMDTraits<VEC_T>::MASK_T const & mask, VEC_T const & src1, typename UME::SIMD::SIMDTraits<VEC_T>::SCLAR_T const & src2) { return src1.hmul(mask, src2); }
+    inline typename UME::SIMD::SIMDTraits<VEC_T>::SCALAR_T hmul(typename UME::SIMD::SIMDTraits<VEC_T>::MASK_T const & mask, VEC_T const & src1, typename UME::SIMD::SIMDTraits<VEC_T>::SCALAR_T const & src2) { return src1.hmul(mask, src2); }
 
     // FMULADDV
     template<typename VEC_T>

@@ -6055,21 +6055,173 @@ void genericHADDTest()
     }
 }
 
-// MHADD - Masked add elements of a vector (horizontal add)
-template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
-void genericHMULTest()
+template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN>
+void genericHADDTest_random()
 {
+
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
     {
-        VEC_TYPE vec0(DATA_SET::inputs::inputA);
-        SCALAR_TYPE value = vec0.hmul();
-        bool inRange = valueInRange(value, DATA_SET::outputs::HMUL[VEC_LEN - 1], SCALAR_TYPE(0.01f));
-        CHECK_CONDITION(inRange, "HMUL");
+        SCALAR_TYPE inputA[VEC_LEN];
+        SCALAR_TYPE output = SCALAR_TYPE(0);
+
+        for (int i = 0; i < VEC_LEN; i++) {
+            inputA[i] = randomValue<SCALAR_TYPE>(gen);
+            output += inputA[i];
+        }
+        {
+            VEC_TYPE vec0(inputA);
+            SCALAR_TYPE value = vec0.hadd();
+            bool inRange = valueInRange(value, output, SCALAR_TYPE(SCALAR_TYPE(0.01f)));
+            CHECK_CONDITION(inRange, "HADD gen");
+        }
     }
     {
-        VEC_TYPE vec0(DATA_SET::inputs::inputA);
-        SCALAR_TYPE value = UME::SIMD::FUNCTIONS::hmul(vec0);
-        bool inRange = valueInRange(value, DATA_SET::outputs::HMUL[VEC_LEN - 1], SCALAR_TYPE(0.01f));
-        CHECK_CONDITION(inRange, "HMUL(function)");
+        SCALAR_TYPE inputA[VEC_LEN];
+        SCALAR_TYPE output = SCALAR_TYPE(0);
+
+        for (int i = 0; i < VEC_LEN; i++) {
+            inputA[i] = randomValue<SCALAR_TYPE>(gen);
+            output += inputA[i];
+        }
+        {
+            VEC_TYPE vec0(inputA);
+            SCALAR_TYPE value = UME::SIMD::FUNCTIONS::hadd(vec0);
+            bool inRange = valueInRange(value, output, SCALAR_TYPE(SCALAR_TYPE(0.01f)));
+            CHECK_CONDITION(inRange, "HADD(function) gen");
+        }
+    }
+}
+
+template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN>
+void genericMHADDTest_random()
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    {
+        SCALAR_TYPE inputA[VEC_LEN];
+        bool inputMask[VEC_LEN];
+        SCALAR_TYPE output = SCALAR_TYPE(0);
+
+        for (int i = 0; i < VEC_LEN; i++) {
+            inputA[i] = randomValue<SCALAR_TYPE>(gen);
+            inputMask[i] = randomValue<bool>(gen);
+            if(inputMask[i] == true) output += inputA[i];
+        }
+        {
+            VEC_TYPE vec0(inputA);
+            MASK_TYPE mask(inputMask);
+            SCALAR_TYPE value = vec0.hadd(mask);
+            bool inRange = valueInRange(value, output, SCALAR_TYPE(SCALAR_TYPE(0.01f)));
+            CHECK_CONDITION(inRange, "MHADD gen");
+        }
+    }
+    {
+        SCALAR_TYPE inputA[VEC_LEN];
+        bool inputMask[VEC_LEN];
+        SCALAR_TYPE output = SCALAR_TYPE(0);
+
+        for (int i = 0; i < VEC_LEN; i++) {
+            inputA[i] = randomValue<SCALAR_TYPE>(gen);
+            inputMask[i] = randomValue<bool>(gen);
+            if(inputMask[i] == true) output += inputA[i];
+        }
+        {
+            VEC_TYPE vec0(inputA);
+            MASK_TYPE mask(inputMask);
+            SCALAR_TYPE value = UME::SIMD::FUNCTIONS::hadd(mask, vec0);
+            bool inRange = valueInRange(value, output, SCALAR_TYPE(SCALAR_TYPE(0.01f)));
+            CHECK_CONDITION(inRange, "MHADD(function) gen");
+        }
+    }
+}
+
+template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN>
+void genericHADDSTest_random()
+{
+
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    {
+        SCALAR_TYPE inputA[VEC_LEN];
+        SCALAR_TYPE scalarA = randomValue<SCALAR_TYPE>(gen);
+        SCALAR_TYPE output = scalarA;
+
+        for (int i = 0; i < VEC_LEN; i++) {
+            inputA[i] = randomValue<SCALAR_TYPE>(gen);
+            output += inputA[i];
+        }
+        {
+            VEC_TYPE vec0(inputA);
+            SCALAR_TYPE value = vec0.hadd(scalarA);
+            bool inRange = valueInRange(value, output, SCALAR_TYPE(SCALAR_TYPE(0.01f)));
+            CHECK_CONDITION(inRange, "HADDS gen");
+        }
+    }
+    {
+        SCALAR_TYPE inputA[VEC_LEN];
+        SCALAR_TYPE scalarA = randomValue<SCALAR_TYPE>(gen);
+        SCALAR_TYPE output = scalarA;
+
+        for (int i = 0; i < VEC_LEN; i++) {
+            inputA[i] = randomValue<SCALAR_TYPE>(gen);
+            output += inputA[i];
+        }
+        {
+            VEC_TYPE vec0(inputA);
+            SCALAR_TYPE value = UME::SIMD::FUNCTIONS::hadd(vec0, scalarA);
+            bool inRange = valueInRange(value, output, SCALAR_TYPE(SCALAR_TYPE(0.01f)));
+            CHECK_CONDITION(inRange, "HADDS(function) gen");
+        }
+    }
+}
+
+template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN>
+void genericMHADDSTest_random()
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    {
+        SCALAR_TYPE inputA[VEC_LEN];
+        bool inputMask[VEC_LEN];
+        SCALAR_TYPE scalarA = randomValue<SCALAR_TYPE>(gen);
+        SCALAR_TYPE output = scalarA;
+
+        for (int i = 0; i < VEC_LEN; i++) {
+            inputA[i] = randomValue<SCALAR_TYPE>(gen);
+            inputMask[i] = randomValue<bool>(gen);
+            if(inputMask[i] == true) output += inputA[i];
+        }
+        {
+            VEC_TYPE vec0(inputA);
+            MASK_TYPE mask(inputMask);
+            SCALAR_TYPE value = vec0.hadd(mask, scalarA);
+            bool inRange = valueInRange(value, output, SCALAR_TYPE(SCALAR_TYPE(0.01f)));
+            CHECK_CONDITION(inRange, "MHADD gen");
+        }
+    }
+    {
+        SCALAR_TYPE inputA[VEC_LEN];
+        bool inputMask[VEC_LEN];
+        SCALAR_TYPE scalarA = randomValue<SCALAR_TYPE>(gen);
+        SCALAR_TYPE output = scalarA;
+
+        for (int i = 0; i < VEC_LEN; i++) {
+            inputA[i] = randomValue<SCALAR_TYPE>(gen);
+            inputMask[i] = randomValue<bool>(gen);
+            if(inputMask[i] == true) output += inputA[i];
+        }
+        {
+            VEC_TYPE vec0(inputA);
+            MASK_TYPE mask(inputMask);
+            SCALAR_TYPE value = UME::SIMD::FUNCTIONS::hadd(mask, vec0, scalarA);
+            bool inRange = valueInRange(value, output, SCALAR_TYPE(SCALAR_TYPE(0.01f)));
+            CHECK_CONDITION(inRange, "MHADDS(function) gen");
+        }
     }
 }
 
@@ -6105,7 +6257,138 @@ void genericHMULTest_random()
     }
 }
 
-        // MHMUL - Masked multiply elements of a vector (horizontal mul)
+
+template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN>
+void genericMHMULTest_random()
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    {
+        SCALAR_TYPE inputA[VEC_LEN];
+        bool inputMask[VEC_LEN];
+        SCALAR_TYPE output = SCALAR_TYPE(1);
+
+        for (int i = 0; i < VEC_LEN; i++) {
+            inputA[i] = randomValue<SCALAR_TYPE>(gen);
+            inputMask[i] = randomValue<bool>(gen);
+            if(inputMask[i] == true) output *= inputA[i];
+        }
+        {
+            VEC_TYPE vec0(inputA);
+            MASK_TYPE mask(inputMask);
+            SCALAR_TYPE value = vec0.hmul(mask);
+            bool inRange = valueInRange(value, output, SCALAR_TYPE(SCALAR_TYPE(0.01f)));
+            CHECK_CONDITION(inRange, "MHMUL gen");
+        }
+    }
+    {
+        SCALAR_TYPE inputA[VEC_LEN];
+        bool inputMask[VEC_LEN];
+        SCALAR_TYPE output = SCALAR_TYPE(1);
+
+        for (int i = 0; i < VEC_LEN; i++) {
+            inputA[i] = randomValue<SCALAR_TYPE>(gen);
+            inputMask[i] = randomValue<bool>(gen);
+            if(inputMask[i] == true) output *= inputA[i];
+        }
+        {
+            VEC_TYPE vec0(inputA);
+            MASK_TYPE mask(inputMask);
+            SCALAR_TYPE value = UME::SIMD::FUNCTIONS::hmul(mask, vec0);
+            bool inRange = valueInRange(value, output, SCALAR_TYPE(SCALAR_TYPE(0.01f)));
+            CHECK_CONDITION(inRange, "MHMUL(function) gen");
+        }
+    }
+}
+
+template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN>
+void genericHMULSTest_random()
+{
+
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    {
+        SCALAR_TYPE inputA[VEC_LEN];
+        SCALAR_TYPE scalarA = randomValue<SCALAR_TYPE>(gen);
+        SCALAR_TYPE output = scalarA;
+
+        for (int i = 0; i < VEC_LEN; i++) {
+            inputA[i] = randomValue<SCALAR_TYPE>(gen);
+            output *= inputA[i];
+        }
+        {
+            VEC_TYPE vec0(inputA);
+            SCALAR_TYPE value = vec0.hmul(scalarA);
+            bool inRange = valueInRange(value, output, SCALAR_TYPE(SCALAR_TYPE(0.01f)));
+            CHECK_CONDITION(inRange, "HMULS gen");
+        }
+    }
+    {
+        SCALAR_TYPE inputA[VEC_LEN];
+        SCALAR_TYPE scalarA = randomValue<SCALAR_TYPE>(gen);
+        SCALAR_TYPE output = scalarA;
+
+        for (int i = 0; i < VEC_LEN; i++) {
+            inputA[i] = randomValue<SCALAR_TYPE>(gen);
+            output *= inputA[i];
+        }
+        {
+            VEC_TYPE vec0(inputA);
+            SCALAR_TYPE value = UME::SIMD::FUNCTIONS::hmul(vec0, scalarA);
+            bool inRange = valueInRange(value, output, SCALAR_TYPE(SCALAR_TYPE(0.01f)));
+            CHECK_CONDITION(inRange, "HMULS(function) gen");
+        }
+    }
+}
+
+template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN>
+void genericMHMULSTest_random()
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    {
+        SCALAR_TYPE inputA[VEC_LEN];
+        bool inputMask[VEC_LEN];
+        SCALAR_TYPE scalarA = randomValue<SCALAR_TYPE>(gen);
+        SCALAR_TYPE output = scalarA;
+
+        for (int i = 0; i < VEC_LEN; i++) {
+            inputA[i] = randomValue<SCALAR_TYPE>(gen);
+            inputMask[i] = randomValue<bool>(gen);
+            if(inputMask[i] == true) output *= inputA[i];
+        }
+        {
+            VEC_TYPE vec0(inputA);
+            MASK_TYPE mask(inputMask);
+            SCALAR_TYPE value = vec0.hmul(mask, scalarA);
+            bool inRange = valueInRange(value, output, SCALAR_TYPE(SCALAR_TYPE(0.01f)));
+            CHECK_CONDITION(inRange, "MHMUL gen");
+        }
+    }
+    {
+        SCALAR_TYPE inputA[VEC_LEN];
+        bool inputMask[VEC_LEN];
+        SCALAR_TYPE scalarA = randomValue<SCALAR_TYPE>(gen);
+        SCALAR_TYPE output = scalarA;
+
+        for (int i = 0; i < VEC_LEN; i++) {
+            inputA[i] = randomValue<SCALAR_TYPE>(gen);
+            inputMask[i] = randomValue<bool>(gen);
+            if(inputMask[i] == true) output *= inputA[i];
+        }
+        {
+            VEC_TYPE vec0(inputA);
+            MASK_TYPE mask(inputMask);
+            SCALAR_TYPE value = UME::SIMD::FUNCTIONS::hmul(mask, vec0, scalarA);
+            bool inRange = valueInRange(value, output, SCALAR_TYPE(SCALAR_TYPE(0.01f)));
+            CHECK_CONDITION(inRange, "MHMULS(function) gen");
+        }
+    }
+}
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericHBANDTest()
 {
@@ -10812,14 +11095,14 @@ void genericBaseInterfaceTest()
     // BLENDS
 
     genericHADDTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
-    // MHADD
-    // HADDS
-    // MHADDS
-    //genericHMULTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
+    genericHADDTest_random<VEC_TYPE, SCALAR_TYPE, VEC_LEN>();
+    genericMHADDTest_random<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN>();
+    genericHADDSTest_random<VEC_TYPE, SCALAR_TYPE, VEC_LEN>();
+    genericMHADDSTest_random<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN>();
     genericHMULTest_random<VEC_TYPE, SCALAR_TYPE, VEC_LEN>();
-    // MHMUL
-    // HMULS
-    // MHMULS
+    genericMHMULTest_random<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN>();
+    genericHMULSTest_random<VEC_TYPE, SCALAR_TYPE, VEC_LEN>();
+    genericMHMULSTest_random<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN>();
 
     genericFMULADDVTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
     genericMFMULADDVTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();

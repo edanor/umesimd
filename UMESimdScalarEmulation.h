@@ -2481,27 +2481,27 @@ namespace SCALAR_EMULATION
         return retval;
     }
 
-    // reduceAdd(VEC) -> scalar
+    // HADD
     template<typename SCALAR_TYPE, typename VEC_TYPE>
     UME_FORCE_INLINE SCALAR_TYPE reduceAdd(VEC_TYPE const & a) {
-        SCALAR_TYPE retval = a[0];
-        for (uint32_t i = 1; i < VEC_TYPE::length(); i++) {
+        SCALAR_TYPE retval = SCALAR_TYPE(0);
+        for (uint32_t i = 0; i < VEC_TYPE::length(); i++) {
             retval += a[i];
         }
         return retval;
     }
 
-    // reduceAdd(MASK, VEC) -> scalar
+    // MHADD
     template<typename SCALAR_TYPE, typename VEC_TYPE, typename MASK_TYPE>
     UME_FORCE_INLINE SCALAR_TYPE reduceAdd(MASK_TYPE const & mask, VEC_TYPE const & a) {
-        SCALAR_TYPE retval = a[0];
-        for (uint32_t i = 1; i < VEC_TYPE::length(); i++) {
+        SCALAR_TYPE retval = SCALAR_TYPE(0);
+        for (uint32_t i = 0; i < VEC_TYPE::length(); i++) {
             if (mask[i] == true) retval += a[i];
         }
         return retval;
     }
 
-    // reduceAdd (scalar, VEC) -> scalar
+    // HADDS
     template<typename SCALAR_TYPE, typename VEC_TYPE>
     UME_FORCE_INLINE SCALAR_TYPE reduceAdd(SCALAR_TYPE & a, VEC_TYPE const & b) {
         SCALAR_TYPE retval = a;
@@ -2511,7 +2511,7 @@ namespace SCALAR_EMULATION
         return retval;
     }
 
-    // reduceAdd(MASK, scalar, VEC) -> scalar
+    // MHADDS
     template<typename SCALAR_TYPE, typename VEC_TYPE, typename MASK_TYPE>
     UME_FORCE_INLINE SCALAR_TYPE reduceAdd(MASK_TYPE const & mask, SCALAR_TYPE a, VEC_TYPE const & b) {
         SCALAR_TYPE retval = a;
@@ -2521,27 +2521,27 @@ namespace SCALAR_EMULATION
         return retval;
     }
 
-    // reduceMult(VEC) -> scalar
+    // HMUL
     template<typename SCALAR_TYPE, typename VEC_TYPE>
     UME_FORCE_INLINE SCALAR_TYPE reduceMult(VEC_TYPE const & a) {
-        SCALAR_TYPE retval = a[0];
-        for (uint32_t i = 1; i < VEC_TYPE::length(); i++) {
+        SCALAR_TYPE retval = SCALAR_TYPE(1);
+        for (uint32_t i = 0; i < VEC_TYPE::length(); i++) {
             retval *= a[i];
         }
         return retval;
     }
 
-    // reduceMult(MASK, VEC) -> scalar
+    // MHMUL
     template<typename SCALAR_TYPE, typename VEC_TYPE, typename MASK_TYPE>
     UME_FORCE_INLINE SCALAR_TYPE reduceMult(MASK_TYPE const & mask, VEC_TYPE const & a) {
-        SCALAR_TYPE retval = (mask[0] == true) ? a[0] : 0; // TODO: replace 0 with const expr returning zero depending on SCALAR type.
-        for (uint32_t i = 1; i < VEC_TYPE::length(); i++) {
+        SCALAR_TYPE retval = SCALAR_TYPE(1);
+        for (uint32_t i = 0; i < VEC_TYPE::length(); i++) {
             if (mask[i] == true) retval *= a[i];
         }
         return retval;
     }
 
-    // reduceMult(scalar, VEC) -> scalar
+    // HMULS
     template<typename SCALAR_TYPE, typename VEC_TYPE>
     UME_FORCE_INLINE SCALAR_TYPE reduceMultScalar(SCALAR_TYPE a, VEC_TYPE const & b) {
         SCALAR_TYPE retval = a;
@@ -2551,7 +2551,7 @@ namespace SCALAR_EMULATION
         return retval;
     }
 
-    // reduceMult(MASK, scalar, VEC) -> scalar
+    // MHMULS
     template<typename SCALAR_TYPE, typename VEC_TYPE, typename MASK_TYPE>
     UME_FORCE_INLINE SCALAR_TYPE reduceMultScalar(MASK_TYPE const & mask, SCALAR_TYPE a, VEC_TYPE const & b) {
         SCALAR_TYPE retval = a;
@@ -2591,7 +2591,7 @@ namespace SCALAR_EMULATION
         return retval;
     }
 
-    // reduceBinaryAnd (VEC) -> scalar
+    // HBAND
     template<typename SCALAR_TYPE, typename VEC_TYPE>
     UME_FORCE_INLINE SCALAR_TYPE reduceBinaryAnd(VEC_TYPE const & a) {
         SCALAR_TYPE retval = a[0];
@@ -2601,7 +2601,7 @@ namespace SCALAR_EMULATION
         return retval;
     }
 
-    // reduceBinaryAnd (MASK, VEC) -> scalar
+    // MHBAND
     template<typename SCALAR_TYPE, typename VEC_TYPE, typename MASK_TYPE>
     UME_FORCE_INLINE SCALAR_TYPE reduceBinaryAnd(MASK_TYPE const & mask, VEC_TYPE const & a) {
         SCALAR_TYPE retval = (mask[0] == true) ? a[0] : (SCALAR_TYPE)-1;
@@ -2611,7 +2611,7 @@ namespace SCALAR_EMULATION
         return retval;
     }
 
-    // reduceBinaryAnd (scalar, VEC) -> scalar
+    // HBANDS
     template<typename SCALAR_TYPE, typename VEC_TYPE>
     UME_FORCE_INLINE SCALAR_TYPE reduceBinaryAndScalar(SCALAR_TYPE a, VEC_TYPE const & b) {
         SCALAR_TYPE retval = a;
@@ -2621,7 +2621,7 @@ namespace SCALAR_EMULATION
         return retval;
     }
 
-    // reduceBinaryAnd (MASK, scalar, VEC) -> scalar
+    // MHBANDS
     template<typename SCALAR_TYPE, typename VEC_TYPE, typename MASK_TYPE>
     UME_FORCE_INLINE SCALAR_TYPE reduceBinaryAndScalar(MASK_TYPE const & mask, SCALAR_TYPE a, VEC_TYPE const & b) {
         SCALAR_TYPE retval = a;
@@ -2631,7 +2631,7 @@ namespace SCALAR_EMULATION
         return retval;
     }
 
-    // reduceBinaryOr (VEC) -> scalar
+    // HBOR
     template<typename SCALAR_TYPE, typename VEC_TYPE>
     UME_FORCE_INLINE SCALAR_TYPE reduceBinaryOr(VEC_TYPE const & a) {
         SCALAR_TYPE retval = a[0];
@@ -2641,7 +2641,7 @@ namespace SCALAR_EMULATION
         return retval;
     }
 
-    // reduceBinaryOr (MASK, VEC) -> scalar
+    // MHBOR
     template<typename SCALAR_TYPE, typename VEC_TYPE, typename MASK_TYPE>
     UME_FORCE_INLINE SCALAR_TYPE reduceBinaryOr(MASK_TYPE const & mask, VEC_TYPE const & a) {
         SCALAR_TYPE retval = (mask[0] == true) ? a[0] : 0; // TODO: 0-initializer of SCALAR_TYPE
@@ -2651,7 +2651,7 @@ namespace SCALAR_EMULATION
         return retval;
     }
 
-    // reduceBinaryOr (scalar, VEC) -> scalar
+    // HBORS
     template<typename SCALAR_TYPE, typename VEC_TYPE>
     UME_FORCE_INLINE SCALAR_TYPE reduceBinaryOrScalar(SCALAR_TYPE a, VEC_TYPE const & b) {
         SCALAR_TYPE retval = a;
@@ -2661,7 +2661,7 @@ namespace SCALAR_EMULATION
         return retval;
     }
 
-    // reduceBinaryOr (MASK, scalar, VEC) -> scalar
+    // MHBORS
     template<typename SCALAR_TYPE, typename VEC_TYPE, typename MASK_TYPE>
     UME_FORCE_INLINE SCALAR_TYPE reduceBinaryOrScalar(MASK_TYPE const & mask, SCALAR_TYPE a, VEC_TYPE const & b) {
         SCALAR_TYPE retval = a;
@@ -2671,27 +2671,27 @@ namespace SCALAR_EMULATION
         return retval;
     }
 
-    // reduceBinaryXor() -> scalar
+    // HBXOR
     template<typename SCALAR_TYPE, typename VEC_TYPE>
     UME_FORCE_INLINE SCALAR_TYPE reduceBinaryXor(VEC_TYPE const & a) {
-        SCALAR_TYPE retval = 0;
+        SCALAR_TYPE retval = SCALAR_TYPE(0);
         for (uint32_t i = 0; i < VEC_TYPE::length(); i++) {
             retval ^= a[i];
         }
         return retval;
     }
 
-    // reduceBinaryXor(MASK) -> scalar
+    // MHBXOR
     template<typename SCALAR_TYPE, typename VEC_TYPE, typename MASK_TYPE>
     UME_FORCE_INLINE SCALAR_TYPE reduceBinaryXor(MASK_TYPE const & mask, VEC_TYPE const & a) {
-        SCALAR_TYPE retval = 0;
+        SCALAR_TYPE retval = SCALAR_TYPE(0);
         for (uint32_t i = 0; i < VEC_TYPE::length(); i++) {
             if (mask[i] == true) retval ^= a[i];
         }
         return retval;
     }
 
-    // reduceBinaryXor(scalar) -> scalar
+    // HBXORS
     template<typename SCALAR_TYPE, typename VEC_TYPE>
     UME_FORCE_INLINE SCALAR_TYPE reduceBinaryXorScalar(SCALAR_TYPE a, VEC_TYPE const & b) {
         SCALAR_TYPE retval = a;
@@ -2701,7 +2701,7 @@ namespace SCALAR_EMULATION
         return retval;
     }
 
-    // reduceBinaryXor(MASK, scalar) -> scalar
+    // MHBXORS
     template<typename SCALAR_TYPE, typename VEC_TYPE, typename MASK_TYPE>
     UME_FORCE_INLINE SCALAR_TYPE reduceBinaryXorScalar(MASK_TYPE const & mask, SCALAR_TYPE a, VEC_TYPE const & b) {
         SCALAR_TYPE retval = a;
