@@ -1105,25 +1105,25 @@ namespace SIMD {
         // MIMIN
 
         // GATHERS
-        inline SIMDVec_f & gather(float* baseAddr, uint32_t* indices) {
+        inline SIMDVec_f & gather(float const * baseAddr, uint32_t const * indices) {
             __m256i t0 = _mm256_loadu_si256((__m256i*)indices);
             mVec = _mm256_i32gather_ps((const float *)baseAddr, t0, 4);
             return *this;
         }
         // MGATHERS
-        inline SIMDVec_f & gather(SIMDVecMask<8> const & mask, float* baseAddr, uint32_t* indices) {
+        inline SIMDVec_f & gather(SIMDVecMask<8> const & mask, float const * baseAddr, uint32_t const * indices) {
             __m256i t0 = _mm256_loadu_si256((__m256i*)indices);
             __m256 t1 = _mm256_i32gather_ps((const float *)baseAddr, t0, 4);
             mVec = BLEND(mVec, t1, mask.mMask);
             return *this;
         }
         // GATHERV
-        inline SIMDVec_f & gather(float* baseAddr, SIMDVec_u<uint32_t, 8> const & indices) {
+        inline SIMDVec_f & gather(float const * baseAddr, SIMDVec_u<uint32_t, 8> const & indices) {
             mVec = _mm256_i32gather_ps((const float *)baseAddr, indices.mVec, 4);
             return *this;
         }
         // MGATHERV
-        inline SIMDVec_f & gather(SIMDVecMask<8> const & mask, float* baseAddr, SIMDVec_u<uint32_t, 8> const & indices) {
+        inline SIMDVec_f & gather(SIMDVecMask<8> const & mask, float const * baseAddr, SIMDVec_u<uint32_t, 8> const & indices) {
             __m256 t0 = _mm256_i32gather_ps((const float *)baseAddr, indices.mVec, 4);
             mVec = BLEND(mVec, t0, mask.mMask);
             return *this;

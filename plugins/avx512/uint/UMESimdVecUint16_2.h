@@ -1387,37 +1387,37 @@ namespace SIMD {
         }
 
         // GATHERU
-        UME_FORCE_INLINE SIMDVec_u & gatheru(uint16_t * baseAddr, uint16_t stride) {
+        UME_FORCE_INLINE SIMDVec_u & gatheru(uint16_t const * baseAddr, uint16_t stride) {
             mVec[0] = baseAddr[0];
             mVec[1] = baseAddr[stride];
             return *this;
         }
         // MGATHERU
-        UME_FORCE_INLINE SIMDVec_u & gatheru(SIMDVecMask<2> const & mask, uint16_t * baseAddr, uint16_t stride) {
+        UME_FORCE_INLINE SIMDVec_u & gatheru(SIMDVecMask<2> const & mask, uint16_t const * baseAddr, uint16_t stride) {
             if ((mask.mMask & 0x01) != 0) mVec[0] = baseAddr[0];
             if ((mask.mMask & 0x02) != 0) mVec[1] = baseAddr[stride];
             return *this;
         }
         // GATHERS
-        UME_FORCE_INLINE SIMDVec_u & gather(uint16_t * baseAddr, uint16_t* indices) {
+        UME_FORCE_INLINE SIMDVec_u & gather(uint16_t const * baseAddr, uint16_t const * indices) {
             mVec[0] = baseAddr[indices[0]];
             mVec[1] = baseAddr[indices[1]];
             return *this;
         }
         // MGATHERS
-        UME_FORCE_INLINE SIMDVec_u & gather(SIMDVecMask<2> const & mask, uint16_t* baseAddr, uint16_t* indices) {
+        UME_FORCE_INLINE SIMDVec_u & gather(SIMDVecMask<2> const & mask, uint16_t const * baseAddr, uint16_t const * indices) {
             if ((mask.mMask & 0x01) != 0) mVec[0] = baseAddr[indices[0]];
             if ((mask.mMask & 0x02) != 0) mVec[1] = baseAddr[indices[1]];
             return *this;
         }
         // GATHERV
-        UME_FORCE_INLINE SIMDVec_u & gather(uint16_t * baseAddr, SIMDVec_u const & indices) {
+        UME_FORCE_INLINE SIMDVec_u & gather(uint16_t const * baseAddr, SIMDVec_u const & indices) {
             mVec[0] = baseAddr[indices.mVec[0]];
             mVec[1] = baseAddr[indices.mVec[1]];
             return *this;
         }
         // MGATHERV
-        UME_FORCE_INLINE SIMDVec_u & gather(SIMDVecMask<2> const & mask, uint16_t* baseAddr, SIMDVec_u const & indices) {
+        UME_FORCE_INLINE SIMDVec_u & gather(SIMDVecMask<2> const & mask, uint16_t const * baseAddr, SIMDVec_u const & indices) {
             if ((mask.mMask & 0x01) != 0) mVec[0] = baseAddr[indices.mVec[0]];
             if ((mask.mMask & 0x02) != 0) mVec[1] = baseAddr[indices.mVec[1]];
             return *this;
