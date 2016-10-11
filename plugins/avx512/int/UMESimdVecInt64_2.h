@@ -1049,51 +1049,111 @@ namespace SIMD {
         // UNIQUE
         // HADD
         UME_FORCE_INLINE int64_t hadd() const {
+#if defined (__GNUG__)
+            alignas(16) int64_t raw[2];
+            _mm_store_si128((__m128i*)raw, mVec);
+            return raw[0] + raw[1];
+#else
             __m512i t0 = _mm512_castsi128_si512(mVec);
             int64_t retval = _mm512_reduce_add_epi64(t0);
             return retval;
+#endif
         }
         // MHADD
         UME_FORCE_INLINE int64_t hadd(SIMDVecMask<2> const & mask) const {
+#if defined (__GNUG__)
+            alignas(16) int64_t raw[2];
+            int64_t t0 = 0;
+            _mm_store_si128((__m128i*)raw, mVec);
+            if (mask.mMask & 0x01) t0 += raw[0];
+            if (mask.mMask & 0x02) t0 += raw[1];
+            return t0;
+#else
             __m512i t0 = _mm512_castsi128_si512(mVec);
             int64_t retval = _mm512_mask_reduce_add_epi64(mask.mMask, t0);
             return retval;
+#endif
         }
         // HADDS
         UME_FORCE_INLINE int64_t hadd(int64_t b) const {
+#if defined (__GNUG__)
+            alignas(16) int64_t raw[2];
+            _mm_store_si128((__m128i*)raw, mVec);
+            return b + raw[0] + raw[1];
+#else
             __m512i t0 = _mm512_castsi128_si512(mVec);
             int64_t retval = _mm512_reduce_add_epi64(t0);
             return retval + b;
+#endif
         }
         // MHADDS
         UME_FORCE_INLINE int64_t hadd(SIMDVecMask<2> const & mask, int64_t b) const {
+#if defined (__GNUG__)
+            alignas(16) int64_t raw[2];
+            int64_t t0 = b;
+            _mm_store_si128((__m128i*)raw, mVec);
+            if (mask.mMask & 0x01) t0 += raw[0];
+            if (mask.mMask & 0x02) t0 += raw[1];
+            return t0;
+#else
             __m512i t0 = _mm512_castsi128_si512(mVec);
             int64_t retval = _mm512_mask_reduce_add_epi64(mask.mMask, t0);
             return retval + b;
+#endif
         }
         // HMUL
         UME_FORCE_INLINE int64_t hmul() const {
+#if defined (__GNUG__)
+            alignas(16) int64_t raw[2];
+            _mm_store_si128((__m128i*)raw, mVec);
+            return raw[0] * raw[1];
+#else
             __m512i t0 = _mm512_castsi128_si512(mVec);
             int64_t retval = _mm512_mask_reduce_mul_epi64(0x3, t0);
             return retval;
+#endif
         }
         // MHMUL
         UME_FORCE_INLINE int64_t hmul(SIMDVecMask<2> const & mask) const {
+#if defined (__GNUG__)
+            alignas(16) int64_t raw[2];
+            int64_t t0 = 1;
+            _mm_store_si128((__m128i*)raw, mVec);
+            if (mask.mMask & 0x01) t0 *= raw[0];
+            if (mask.mMask & 0x02) t0 *= raw[1];
+            return t0;
+#else
             __m512i t0 = _mm512_castsi128_si512(mVec);
             int64_t retval = _mm512_mask_reduce_mul_epi64(mask.mMask, t0);
             return retval;
+#endif
         }
         // HMULS
         UME_FORCE_INLINE int64_t hmul(int64_t b) const {
+#if defined (__GNUG__)
+            alignas(16) int64_t raw[2];
+            _mm_store_si128((__m128i*)raw, mVec);
+            return b * raw[0] * raw[1];
+#else
             __m512i t0 = _mm512_castsi128_si512(mVec);
             int64_t retval = _mm512_mask_reduce_mul_epi64(0x3, t0);
             return retval * b;
+#endif
         }
         // MHMULS
         UME_FORCE_INLINE int64_t hmul(SIMDVecMask<2> const & mask, int64_t b) const {
+#if defined (__GNUG__)
+            alignas(16) int64_t raw[2];
+            int64_t t0 = b;
+            _mm_store_si128((__m128i*)raw, mVec);
+            if (mask.mMask & 0x01) t0 *= raw[0];
+            if (mask.mMask & 0x02) t0 *= raw[1];
+            return t0;
+#else
             __m512i t0 = _mm512_castsi128_si512(mVec);
             int64_t retval = _mm512_mask_reduce_mul_epi64(mask.mMask, t0);
             return retval * b;
+#endif
         }
 
         // FMULADDV
@@ -1669,13 +1729,13 @@ namespace SIMD {
         // GATHERU
         UME_FORCE_INLINE SIMDVec_i & gatheru(int64_t * baseAddr, uint64_t stride) {
             __m128i t0 = _mm_set_epi64x(stride, 0);
-            mVec = _mm_i64gather_epi64((__int64 const*)baseAddr, t0, 8);
+            mVec = _mm_i64gather_epi64((int64_t const*)baseAddr, t0, 8);
             return *this;
         }
         // MGATHERU
         UME_FORCE_INLINE SIMDVec_i & gatheru(SIMDVecMask<2> const & mask, int64_t * baseAddr, uint64_t stride) {
             __m128i t0 = _mm_set_epi64x(stride, 0);
-            __m128i t1 = _mm_i64gather_epi64((__int64 const*)baseAddr, t0, 8);
+            __m128i t1 = _mm_i64gather_epi64((int64_t const*)baseAddr, t0, 8);
 #if defined(__AVX512VL__)
             mVec = _mm_mask_mov_epi64(mVec, mask.mMask, t1);
 #else
@@ -1690,13 +1750,13 @@ namespace SIMD {
         // GATHERS
         UME_FORCE_INLINE SIMDVec_i & gather(int64_t * baseAddr, uint64_t* indices) {
             __m128i t0 =_mm_loadu_si128((__m128i *)indices);
-            mVec = _mm_i64gather_epi64((__int64 const*)baseAddr, t0, 8);
+            mVec = _mm_i64gather_epi64((int64_t const*)baseAddr, t0, 8);
             return *this;
         }
         // MGATHERS
         UME_FORCE_INLINE SIMDVec_i & gather(SIMDVecMask<2> const & mask, int64_t* baseAddr, uint64_t* indices) {
             __m128i t0 = _mm_loadu_si128((__m128i *)indices);
-            __m128i t1 = _mm_i64gather_epi64((__int64 const*)baseAddr, t0, 8);
+            __m128i t1 = _mm_i64gather_epi64((int64_t const*)baseAddr, t0, 8);
 #if defined(__AVX512VL__)
             mVec = _mm_mask_mov_epi64(mVec, mask.mMask, t1);
 #else
@@ -1710,12 +1770,12 @@ namespace SIMD {
         }
         // GATHERV
         UME_FORCE_INLINE SIMDVec_i & gather(int64_t * baseAddr, SIMDVec_u<uint64_t, 2> const & indices) {
-            mVec = _mm_i64gather_epi64((__int64 const*)baseAddr, indices.mVec, 8);
+            mVec = _mm_i64gather_epi64((int64_t const*)baseAddr, indices.mVec, 8);
             return *this;
         }
         // MGATHERV
         UME_FORCE_INLINE SIMDVec_i & gather(SIMDVecMask<2> const & mask, int64_t* baseAddr, SIMDVec_u<uint64_t, 2> const & indices) {
-            __m128i t0 = _mm_i64gather_epi64((__int64 const*)baseAddr, indices.mVec, 8);
+            __m128i t0 = _mm_i64gather_epi64((int64_t const*)baseAddr, indices.mVec, 8);
 #if defined(__AVX512VL__)
             mVec = _mm_mask_mov_epi64(mVec, mask.mMask, t0);
 #else

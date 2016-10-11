@@ -1155,57 +1155,137 @@ namespace SIMD {
 
         // HADD
         UME_FORCE_INLINE float hadd() const {
+#if defined(__GNUG__)
+            alignas(32) float raw[8];
+            _mm256_store_ps(raw, mVec);
+            return raw[0] + raw[1] + raw[2] + raw[3] + raw[4] + raw[5] + raw[6] + raw[7];
+#else
             __m512 t0 = _mm512_castps256_ps512(mVec);
-            float retval = _mm512_mask_reduce_add_ps(0xFF, t0);
+            float retval = _mm512_reduce_add_ps(t0);
             return retval;
+#endif
         }
         // MHADD
         UME_FORCE_INLINE float hadd(SIMDVecMask<8> const & mask) const {
+#if defined(__GNUG__)
+            alignas(32) float raw[8];
+            _mm256_store_ps(raw, mVec);
+            float t0 = ((mask.mMask & 0x01) != 0) ? raw[0] : 0.0f;
+            float t1 = ((mask.mMask & 0x02) != 0) ? raw[1] : 0.0f;
+            float t2 = ((mask.mMask & 0x04) != 0) ? raw[2] : 0.0f;
+            float t3 = ((mask.mMask & 0x08) != 0) ? raw[3] : 0.0f;
+            float t4 = ((mask.mMask & 0x10) != 0) ? raw[4] : 0.0f;
+            float t5 = ((mask.mMask & 0x20) != 0) ? raw[5] : 0.0f;
+            float t6 = ((mask.mMask & 0x40) != 0) ? raw[6] : 0.0f;
+            float t7 = ((mask.mMask & 0x80) != 0) ? raw[7] : 0.0f;
+            return t0 + t1 + t2 + t3 + t4 + t5 + t6 + t7;
+#else
             __m512 t0 = _mm512_castps256_ps512(mVec);
-            __mmask16 t1 = (__mmask16)mask.mMask;
+            __mmask16 t1 = (__mmask16)mask.mMask & 0xFF;
             float retval = _mm512_mask_reduce_add_ps(t1, t0);
             return retval;
+#endif
         }
         // HADDS
         UME_FORCE_INLINE float hadd(float b) const {
+#if defined(__GNUG__)
+            alignas(32) float raw[8];
+            _mm256_store_ps(raw, mVec);
+            return b + raw[0] + raw[1] + raw[2] + raw[3] + raw[4] + raw[5] + raw[6] + raw[7];
+#else
             __m512 t0 = _mm512_castps256_ps512(mVec);
-            float retval = _mm512_mask_reduce_add_ps(0xFF, t0);
+            float retval = _mm512_reduce_add_ps(t0);
             return retval + b;
+#endif
         }
         // MHADDS
         UME_FORCE_INLINE float hadd(SIMDVecMask<8> const & mask, float b) const {
+#if defined(__GNUG__)
+            alignas(32) float raw[8];
+            _mm256_store_ps(raw, mVec);
+            uint32_t t0 = ((mask.mMask & 0x01) != 0) ? raw[0] : 0.0f;
+            uint32_t t1 = ((mask.mMask & 0x02) != 0) ? raw[1] : 0.0f;
+            uint32_t t2 = ((mask.mMask & 0x04) != 0) ? raw[2] : 0.0f;
+            uint32_t t3 = ((mask.mMask & 0x08) != 0) ? raw[3] : 0.0f;
+            uint32_t t4 = ((mask.mMask & 0x10) != 0) ? raw[4] : 0.0f;
+            uint32_t t5 = ((mask.mMask & 0x20) != 0) ? raw[5] : 0.0f;
+            uint32_t t6 = ((mask.mMask & 0x40) != 0) ? raw[6] : 0.0f;
+            uint32_t t7 = ((mask.mMask & 0x80) != 0) ? raw[7] : 0.0f;
+            return b + t0 + t1 + t2 + t3 + t4 + t5 + t6 + t7;
+#else
             __m512 t0 = _mm512_castps256_ps512(mVec);
-            __mmask16 t1 = (__mmask16)mask.mMask;
+            __mmask16 t1 = (__mmask16)mask.mMask & 0xFF;
             float retval = _mm512_mask_reduce_add_ps(t1, t0);
             return retval + b;
+#endif
         }
         // HMUL
         UME_FORCE_INLINE float hmul() const {
+#if defined(__GNUG__)
+            alignas(32) float raw[8];
+            _mm256_store_ps(raw, mVec);
+            return raw[0] * raw[1] * raw[2] * raw[3] * raw[4] * raw[5] * raw[6] * raw[7];
+#else
             __m512 t0 = _mm512_castps256_ps512(mVec);
             float retval = _mm512_mask_reduce_mul_ps(0xFF, t0);
             return retval;
+#endif
         }
         // MHMUL
         UME_FORCE_INLINE float hmul(SIMDVecMask<8> const & mask) const {
+#if defined(__GNUG__)
+            alignas(32) float raw[8];
+            _mm256_store_ps(raw, mVec);
+            float t0 = ((mask.mMask & 0x01) != 0) ? raw[0] : 1;
+            float t1 = ((mask.mMask & 0x02) != 0) ? raw[1] : 1;
+            float t2 = ((mask.mMask & 0x04) != 0) ? raw[2] : 1;
+            float t3 = ((mask.mMask & 0x08) != 0) ? raw[3] : 1;
+            float t4 = ((mask.mMask & 0x10) != 0) ? raw[4] : 1;
+            float t5 = ((mask.mMask & 0x20) != 0) ? raw[5] : 1;
+            float t6 = ((mask.mMask & 0x40) != 0) ? raw[6] : 1;
+            float t7 = ((mask.mMask & 0x80) != 0) ? raw[7] : 1;
+            return t0 * t1 * t2 * t3 * t4 * t5 * t6 * t7;
+#else
             __m512 t0 = _mm512_castps256_ps512(mVec);
             __mmask16 t1 = (__mmask16)mask.mMask;
             float retval = _mm512_mask_reduce_mul_ps(t1, t0);
             return retval;
+#endif
         }
         // HMULS
         UME_FORCE_INLINE float hmul(float b) const {
+#if defined(__GNUG__)
+            alignas(32) float raw[8];
+            _mm256_store_ps(raw, mVec);
+            return b * raw[0] * raw[1] * raw[2] * raw[3] * raw[4] * raw[5] * raw[6] * raw[7];
+#else
             __m512 t0 = _mm512_castps256_ps512(mVec);
             float retval = b;
             retval *= _mm512_mask_reduce_mul_ps(0xFF, t0);
             return retval;
+#endif
         }
         // MHMULS
         UME_FORCE_INLINE float hmul(SIMDVecMask<8> const & mask, float b) const {
+#if defined(__GNUG__)
+            alignas(32) float raw[8];
+            _mm256_store_ps(raw, mVec);
+            float t0 = ((mask.mMask & 0x01) != 0) ? raw[0] : 1;
+            float t1 = ((mask.mMask & 0x02) != 0) ? raw[1] : 1;
+            float t2 = ((mask.mMask & 0x04) != 0) ? raw[2] : 1;
+            float t3 = ((mask.mMask & 0x08) != 0) ? raw[3] : 1;
+            float t4 = ((mask.mMask & 0x10) != 0) ? raw[4] : 1;
+            float t5 = ((mask.mMask & 0x20) != 0) ? raw[5] : 1;
+            float t6 = ((mask.mMask & 0x40) != 0) ? raw[6] : 1;
+            float t7 = ((mask.mMask & 0x80) != 0) ? raw[7] : 1;
+            return b * t0 * t1 * t2 * t3 * t4 * t5 * t6 * t7;
+#else
             __m512 t0 = _mm512_castps256_ps512(mVec);
             __mmask16 t1 = (__mmask16)mask.mMask;
             float retval = b;
             retval *= _mm512_mask_reduce_mul_ps(t1, t0);
             return retval;
+#endif
         }
         // FMULADDV
         UME_FORCE_INLINE SIMDVec_f fmuladd(SIMDVec_f const & b, SIMDVec_f const & c) const {
@@ -1465,28 +1545,80 @@ namespace SIMD {
         }
         // HMAX
         UME_FORCE_INLINE float hmax() const {
+#if defined(__GNUG__)
+            alignas(32) float raw[8];
+            _mm256_store_ps(raw, mVec);
+            float t0 = raw[0] > raw[1] ? raw[0] : raw[1];
+            float t1 = raw[2] > raw[3] ? raw[2] : raw[3];
+            float t2 = raw[4] > raw[5] ? raw[4] : raw[5];
+            float t3 = raw[6] > raw[7] ? raw[6] : raw[7];
+            float t4 = t0 > t1 ? t0 : t1;
+            float t5 = t2 > t3 ? t2 : t3;
+            return t4 > t5 ? t4 : t5;
+#else
             __m512 t0 = _mm512_castps256_ps512(mVec);
             float retval = _mm512_mask_reduce_max_ps(0xFF, t0);
             return retval;
+#endif
         }
         // MHMAX
         UME_FORCE_INLINE float hmax(SIMDVecMask<8> const & mask) const {
+#if defined (__GNUG__)
+            alignas(32) float raw[8];
+            _mm256_store_ps(raw, mVec);
+            float t0 = ((mask.mMask & 0x01) != 0) ? raw[0] : std::numeric_limits<float>::lowest();
+            float t1 = (((mask.mMask & 0x02) != 0) && raw[1] > t0) ? raw[1] : t0;
+            float t2 = (((mask.mMask & 0x04) != 0) && raw[2] > t1) ? raw[2] : t1;
+            float t3 = (((mask.mMask & 0x08) != 0) && raw[3] > t2) ? raw[3] : t2;
+            float t4 = (((mask.mMask & 0x10) != 0) && raw[4] > t3) ? raw[4] : t3;
+            float t5 = (((mask.mMask & 0x20) != 0) && raw[5] > t4) ? raw[5] : t4;
+            float t6 = (((mask.mMask & 0x40) != 0) && raw[6] > t5) ? raw[6] : t5;
+            float t7 = (((mask.mMask & 0x80) != 0) && raw[7] > t6) ? raw[7] : t6;
+            return t7;
+#else
             __m512 t0 = _mm512_castps256_ps512(mVec);
             float retval = _mm512_mask_reduce_max_ps(mask.mMask, t0);
             return retval;
+#endif
         }
         // IMAX
         // HMIN
         UME_FORCE_INLINE float hmin() const {
+#if defined(__GNUG__)
+            alignas(32) float raw[8];
+            _mm256_store_ps(raw, mVec);
+            float t0 = raw[0] < raw[1] ? raw[0] : raw[1];
+            float t1 = raw[2] < raw[3] ? raw[2] : raw[3];
+            float t2 = raw[4] < raw[5] ? raw[4] : raw[5];
+            float t3 = raw[6] < raw[7] ? raw[6] : raw[7];
+            float t4 = t0 < t1 ? t0 : t1;
+            float t5 = t2 < t3 ? t2 : t3;
+            return t4 < t5 ? t4 : t5;
+#else
             __m512 t0 = _mm512_castps256_ps512(mVec);
             float retval = _mm512_mask_reduce_min_ps(0xFF, t0);
             return retval;
+#endif
         }
         // MHMIN
         UME_FORCE_INLINE float hmin(SIMDVecMask<8> const & mask) const {
+#if defined (__GNUG__)
+            alignas(32) float raw[8];
+            _mm256_store_ps(raw, mVec);
+            float t0 = ((mask.mMask & 0x01) != 0) ? raw[0] : std::numeric_limits<float>::max();
+            float t1 = (((mask.mMask & 0x02) != 0) && raw[1] < t0) ? raw[1] : t0;
+            float t2 = (((mask.mMask & 0x04) != 0) && raw[2] < t1) ? raw[2] : t1;
+            float t3 = (((mask.mMask & 0x08) != 0) && raw[3] < t2) ? raw[3] : t2;
+            float t4 = (((mask.mMask & 0x10) != 0) && raw[4] < t3) ? raw[4] : t3;
+            float t5 = (((mask.mMask & 0x20) != 0) && raw[5] < t4) ? raw[5] : t4;
+            float t6 = (((mask.mMask & 0x40) != 0) && raw[6] < t5) ? raw[6] : t5;
+            float t7 = (((mask.mMask & 0x80) != 0) && raw[7] < t6) ? raw[7] : t6;
+            return t7;
+#else
             __m512 t0 = _mm512_castps256_ps512(mVec);
             float retval = _mm512_mask_reduce_min_ps(mask.mMask, t0);
             return retval;
+#endif
         }
         // IMIN
         // MIMIN
@@ -1664,33 +1796,75 @@ namespace SIMD {
         }
         // ABS
         UME_FORCE_INLINE SIMDVec_f abs() const {
+#if defined (__GNUG__)
+            __m512 t0 = _mm512_castps256_ps512(mVec);
+            __m512i t1 = _mm512_castps_si512(t0);
+            __m512i t2 = _mm512_set1_epi32(0x7FFFFFFF);
+            __m512i t3 = _mm512_and_epi32(t1, t2);
+            __m512 t4 = _mm512_castsi512_ps(t3);
+            __m256 t5 = _mm512_castps512_ps256(t4);
+            return SIMDVec_f(t5);
+#else
             __m512 t0 = _mm512_castps256_ps512(mVec);
             __m512 t1 = _mm512_abs_ps(t0);
             __m256 t2 = _mm512_castps512_ps256(t1);
             return SIMDVec_f(t2);
+#endif
         }
         // MABS
         UME_FORCE_INLINE SIMDVec_f abs(SIMDVecMask<8> const & mask) const {
+#if defined (__GNUG__)
+            __m512 t0 = _mm512_castps256_ps512(mVec);
+            __m512i t1 = _mm512_castps_si512(t0);
+            __m512i t2 = _mm512_set1_epi32(0x7FFFFFFF);
+            __m512i t3 = _mm512_and_epi32(t1, t2);
+            __m512 t4 = _mm512_castsi512_ps(t3);
+            __m512 t5 = _mm512_mask_mov_ps(t0, mask.mMask, t4);
+            __m256 t6 = _mm512_castps512_ps256(t5);
+            return SIMDVec_f(t6);
+#else
             __m512 t0 = _mm512_castps256_ps512(mVec);
             __mmask16 t1 = (__mmask16)mask.mMask;
             __m512 t2 = _mm512_mask_abs_ps(t0, t1, t0);
             __m256 t3 = _mm512_castps512_ps256(t2);
             return SIMDVec_f(t3);
+#endif
         }
         // ABSA
         UME_FORCE_INLINE SIMDVec_f & absa() {
+#if defined (__GNUG__)
+            __m512 t0 = _mm512_castps256_ps512(mVec);
+            __m512i t1 = _mm512_castps_si512(t0);
+            __m512i t2 = _mm512_set1_epi32(0x7FFFFFFF);
+            __m512i t3 = _mm512_and_epi32(t1, t2);
+            __m512 t4 = _mm512_castsi512_ps(t3);
+            mVec = _mm512_castps512_ps256(t4);
+            return *this;
+#else
             __m512 t0 = _mm512_castps256_ps512(mVec);
             __m512 t1 = _mm512_abs_ps(t0);
             mVec = _mm512_castps512_ps256(t1);
             return *this;
+#endif
         }
         // MABSA
         UME_FORCE_INLINE SIMDVec_f & absa(SIMDVecMask<8> const & mask) {
+#if defined (__GNUG__)
+            __m512 t0 = _mm512_castps256_ps512(mVec);
+            __m512i t1 = _mm512_castps_si512(t0);
+            __m512i t2 = _mm512_set1_epi32(0x7FFFFFFF);
+            __m512i t3 = _mm512_and_epi32(t1, t2);
+            __m512 t4 = _mm512_castsi512_ps(t3);
+            __m512 t5 = _mm512_mask_mov_ps(t0, mask.mMask, t4);
+            mVec = _mm512_castps512_ps256(t5);
+            return *this;
+#else
             __m512 t0 = _mm512_castps256_ps512(mVec);
             __mmask16 t1 = (__mmask16)mask.mMask;
             __m512 t2 = _mm512_mask_abs_ps(t0, t1, t0);
             mVec = _mm512_castps512_ps256(t2);
             return *this;
+#endif
         }
         // CMPEQRV
         // CMPEQRS
@@ -2156,8 +2330,16 @@ namespace SIMD {
         // MCTAN
         // PACK
         UME_FORCE_INLINE SIMDVec_f & pack(SIMDVec_f<float, 4> const & a, SIMDVec_f<float, 4> const & b) {
+ #if defined (__GNUG__)
+            alignas(32) float raw[8];
+            _mm_store_ps(raw, a.mVec);
+            _mm_store_ps((raw + 4), b.mVec);
+            mVec = _mm256_load_ps(raw);
+            return *this;
+ #else
             mVec = _mm256_set_m128(b.mVec, a.mVec);
             return *this;
+ #endif
         }
         // PACKLO
         UME_FORCE_INLINE SIMDVec_f & packlo(SIMDVec_f<float, 4> const & a) {

@@ -7647,7 +7647,7 @@ void genericHMAXTest_random()
 
     {
         SCALAR_TYPE inputA[VEC_LEN];
-        SCALAR_TYPE maxVal = std::numeric_limits<SCALAR_TYPE>::min();
+        SCALAR_TYPE maxVal = std::numeric_limits<SCALAR_TYPE>::lowest();
         for (int i = 0; i < VEC_LEN; i++) {
             inputA[i] = randomValue<SCALAR_TYPE>(gen);
             if (inputA[i] > maxVal) maxVal = inputA[i];
@@ -7660,7 +7660,7 @@ void genericHMAXTest_random()
     }
     {
         SCALAR_TYPE inputA[VEC_LEN];
-        SCALAR_TYPE maxVal = std::numeric_limits<SCALAR_TYPE>::min();
+        SCALAR_TYPE maxVal = std::numeric_limits<SCALAR_TYPE>::lowest();
         for (int i = 0; i < VEC_LEN; i++) {
             inputA[i] = randomValue<SCALAR_TYPE>(gen);
             if (inputA[i] > maxVal) maxVal = inputA[i];
@@ -7890,7 +7890,7 @@ void genericMHMINTest_random()
         MASK_TYPE mask(inputMask);
         SCALAR_TYPE value = vec0.hmin(mask);
         bool inRange = valueInRange(value, minVal, SCALAR_TYPE(0.01f));
-        CHECK_CONDITION(inRange, "MHMIN");
+        CHECK_CONDITION(inRange, "MHMIN gen");
     }
     {
         SCALAR_TYPE inputA[VEC_LEN];
@@ -7907,7 +7907,7 @@ void genericMHMINTest_random()
         MASK_TYPE mask(inputMask);
         SCALAR_TYPE value = UME::SIMD::FUNCTIONS::hmin(mask, vec0);
         bool inRange = valueInRange(value, minVal, SCALAR_TYPE(0.01f));
-        CHECK_CONDITION(inRange, "MHMIN(function)");
+        CHECK_CONDITION(inRange, "MHMIN(function) gen");
     }
 }
 

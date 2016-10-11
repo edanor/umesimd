@@ -1023,43 +1023,123 @@ namespace SIMD {
         // UNIQUE
         // HADD
         UME_FORCE_INLINE int64_t hadd() const {
+#if defined(__GNUG__)
+            alignas(64) int64_t raw[8];
+            _mm512_store_si512(raw, mVec);
+            return raw[0] + raw[1] + raw[2] + raw[3] + raw[4] + raw[5] + raw[6] + raw[7];
+#else
             int64_t retval = _mm512_reduce_add_epi64(mVec);
             return retval;
+#endif
         }
         // MHADD
         UME_FORCE_INLINE int64_t hadd(SIMDVecMask<8> const & mask) const {
+#if defined(__GNUG__)
+            alignas(64) int64_t raw[8];
+            _mm512_store_si512(raw, mVec);
+            int64_t t0 = ((mask.mMask & 0x01) != 0) ? raw[0] : 0;
+            int64_t t1 = ((mask.mMask & 0x02) != 0) ? raw[1] : 0;
+            int64_t t2 = ((mask.mMask & 0x04) != 0) ? raw[2] : 0;
+            int64_t t3 = ((mask.mMask & 0x08) != 0) ? raw[3] : 0;
+            int64_t t4 = ((mask.mMask & 0x10) != 0) ? raw[4] : 0;
+            int64_t t5 = ((mask.mMask & 0x20) != 0) ? raw[5] : 0;
+            int64_t t6 = ((mask.mMask & 0x40) != 0) ? raw[6] : 0;
+            int64_t t7 = ((mask.mMask & 0x80) != 0) ? raw[7] : 0;
+            return t0 + t1 + t2 + t3 + t4 + t5 + t6 + t7;
+#else
             int64_t retval = _mm512_mask_reduce_add_epi64(mask.mMask, mVec);
             return retval;
+#endif
         }
         // HADDS
         UME_FORCE_INLINE int64_t hadd(int64_t b) const {
+#if defined(__GNUG__)
+            alignas(64) int64_t raw[8];
+            _mm512_store_si512(raw, mVec);
+            return b + raw[0] + raw[1] + raw[2] + raw[3] + raw[4] + raw[5] + raw[6] + raw[7];
+#else
             int64_t retval = _mm512_reduce_add_epi64(mVec);
             return retval + b;
+#endif
         }
         // MHADDS
         UME_FORCE_INLINE int64_t hadd(SIMDVecMask<8> const & mask, int64_t b) const {
+#if defined(__GNUG__)
+            alignas(64) int64_t raw[8];
+            _mm512_store_si512(raw, mVec);
+            int64_t t0 = ((mask.mMask & 0x01) != 0) ? raw[0] : 0;
+            int64_t t1 = ((mask.mMask & 0x02) != 0) ? raw[1] : 0;
+            int64_t t2 = ((mask.mMask & 0x04) != 0) ? raw[2] : 0;
+            int64_t t3 = ((mask.mMask & 0x08) != 0) ? raw[3] : 0;
+            int64_t t4 = ((mask.mMask & 0x10) != 0) ? raw[4] : 0;
+            int64_t t5 = ((mask.mMask & 0x20) != 0) ? raw[5] : 0;
+            int64_t t6 = ((mask.mMask & 0x40) != 0) ? raw[6] : 0;
+            int64_t t7 = ((mask.mMask & 0x80) != 0) ? raw[7] : 0;
+            return b + t0 + t1 + t2 + t3 + t4 + t5 + t6 + t7;
+#else
             int64_t retval = _mm512_mask_reduce_add_epi64(mask.mMask, mVec);
             return retval + b;
+#endif
         }
         // HMUL
         UME_FORCE_INLINE int64_t hmul() const {
+#if defined(__GNUG__)
+            alignas(64) int64_t raw[8];
+            _mm512_store_si512(raw, mVec);
+            return raw[0] * raw[1] * raw[2] * raw[3] * raw[4] * raw[5] * raw[6] * raw[7];
+#else
             int64_t retval = _mm512_reduce_mul_epi64(mVec);
             return retval;
+#endif
         }
         // MHMUL
         UME_FORCE_INLINE int64_t hmul(SIMDVecMask<8> const & mask) const {
+#if defined(__GNUG__)
+            alignas(64) int64_t raw[8];
+            _mm512_store_si512(raw, mVec);
+            int64_t t0 = ((mask.mMask & 0x01) != 0) ? raw[0] : 1;
+            int64_t t1 = ((mask.mMask & 0x02) != 0) ? raw[1] : 1;
+            int64_t t2 = ((mask.mMask & 0x04) != 0) ? raw[2] : 1;
+            int64_t t3 = ((mask.mMask & 0x08) != 0) ? raw[3] : 1;
+            int64_t t4 = ((mask.mMask & 0x10) != 0) ? raw[4] : 1;
+            int64_t t5 = ((mask.mMask & 0x20) != 0) ? raw[5] : 1;
+            int64_t t6 = ((mask.mMask & 0x40) != 0) ? raw[6] : 1;
+            int64_t t7 = ((mask.mMask & 0x80) != 0) ? raw[7] : 1;
+            return t0 * t1 * t2 * t3 * t4 * t5 * t6 * t7;
+#else
             int64_t retval = _mm512_mask_reduce_mul_epi64(mask.mMask, mVec);
             return retval;
+#endif
         }
         // HMULS
         UME_FORCE_INLINE int64_t hmul(int64_t b) const {
+#if defined(__GNUG__)
+            alignas(64) int64_t raw[8];
+            _mm512_store_si512(raw, mVec);
+            return b * raw[0] * raw[1] * raw[2] * raw[3] * raw[4] * raw[5] * raw[6] * raw[7];
+#else
             int64_t retval = _mm512_reduce_mul_epi64(mVec);
             return retval * b;
+#endif
         }
         // MHMULS
         UME_FORCE_INLINE int64_t hmul(SIMDVecMask<8> const & mask, int64_t b) const {
+#if defined(__GNUG__)
+            alignas(64) int64_t raw[8];
+            _mm512_store_si512(raw, mVec);
+            int64_t t0 = ((mask.mMask & 0x01) != 0) ? raw[0] : 1;
+            int64_t t1 = ((mask.mMask & 0x02) != 0) ? raw[1] : 1;
+            int64_t t2 = ((mask.mMask & 0x04) != 0) ? raw[2] : 1;
+            int64_t t3 = ((mask.mMask & 0x08) != 0) ? raw[3] : 1;
+            int64_t t4 = ((mask.mMask & 0x10) != 0) ? raw[4] : 1;
+            int64_t t5 = ((mask.mMask & 0x20) != 0) ? raw[5] : 1;
+            int64_t t6 = ((mask.mMask & 0x40) != 0) ? raw[6] : 1;
+            int64_t t7 = ((mask.mMask & 0x80) != 0) ? raw[7] : 1;
+            return b * t0 * t1 * t2 * t3 * t4 * t5 * t6 * t7;
+#else
             int64_t retval = _mm512_mask_reduce_mul_epi64(mask.mMask, mVec);
             return retval * b;
+#endif
         }
 
         // FMULADDV
@@ -1177,15 +1257,37 @@ namespace SIMD {
         }
         // HMAX
         UME_FORCE_INLINE int64_t hmax() const {
+#if defined(__GNUG__)
+            int64_t t0 = mVec[0] > mVec[1] ? mVec[0] : mVec[1];
+            int64_t t1 = mVec[2] > mVec[3] ? mVec[2] : mVec[3];
+            int64_t t2 = mVec[4] > mVec[5] ? mVec[4] : mVec[5];
+            int64_t t3 = mVec[6] > mVec[7] ? mVec[6] : mVec[7];
+            int64_t t4 = t0 > t1 ? t0 : t1;
+            int64_t t5 = t2 > t3 ? t2 : t3;
+            return t4 > t5 ? t4 : t5;
+#else
             int64_t t0 = _mm512_reduce_max_epi64(mVec);
             return t0;
+#endif
         }
         // MHMAX
         UME_FORCE_INLINE int64_t hmax(SIMDVecMask<8> const & mask) const {
+#if defined (__GNUG__)
+            int64_t t0 = ((mask.mMask & 0x01) != 0) ? mVec[0] : std::numeric_limits<int64_t>::min();
+            int64_t t1 = (((mask.mMask & 0x02) != 0) && mVec[1] > t0) ? mVec[1] : t0;
+            int64_t t2 = (((mask.mMask & 0x04) != 0) && mVec[2] > t1) ? mVec[2] : t1;
+            int64_t t3 = (((mask.mMask & 0x08) != 0) && mVec[3] > t2) ? mVec[3] : t2;
+            int64_t t4 = (((mask.mMask & 0x10) != 0) && mVec[4] > t3) ? mVec[4] : t3;
+            int64_t t5 = (((mask.mMask & 0x20) != 0) && mVec[5] > t4) ? mVec[5] : t4;
+            int64_t t6 = (((mask.mMask & 0x40) != 0) && mVec[6] > t5) ? mVec[6] : t5;
+            int64_t t7 = (((mask.mMask & 0x80) != 0) && mVec[7] > t6) ? mVec[7] : t6;
+            return t7;
+#else
             __m512i t0 = _mm512_set1_epi64(std::numeric_limits<int64_t>::min());
             __m512i t1 = _mm512_mask_mov_epi64(t0, mask.mMask, mVec);
             int64_t t2 = _mm512_reduce_max_epi64(t1);
             return t2;
+#endif
         }
         // IMAX
         /*UME_FORCE_INLINE int64_t imax() const {
@@ -1206,15 +1308,37 @@ namespace SIMD {
         }*/
         // HMIN
         UME_FORCE_INLINE int64_t hmin() const {
+#if defined(__GNUG__)
+            int64_t t0 = mVec[0] < mVec[1] ? mVec[0] : mVec[1];
+            int64_t t1 = mVec[2] < mVec[3] ? mVec[2] : mVec[3];
+            int64_t t2 = mVec[4] < mVec[5] ? mVec[4] : mVec[5];
+            int64_t t3 = mVec[6] < mVec[7] ? mVec[6] : mVec[7];
+            int64_t t4 = t0 < t1 ? t0 : t1;
+            int64_t t5 = t2 < t3 ? t2 : t3;
+            return t4 < t5 ? t4 : t5;
+#else
             int64_t t0 = _mm512_reduce_min_epi64(mVec);
             return t0;
+#endif
         }
         // MHMIN
         UME_FORCE_INLINE int64_t hmin(SIMDVecMask<8> const & mask) const {
+#if defined (__GNUG__)
+            int64_t t0 = ((mask.mMask & 0x01) != 0) ? mVec[0] : std::numeric_limits<int64_t>::max();
+            int64_t t1 = (((mask.mMask & 0x02) != 0) && mVec[1] < t0) ? mVec[1] : t0;
+            int64_t t2 = (((mask.mMask & 0x04) != 0) && mVec[2] < t1) ? mVec[2] : t1;
+            int64_t t3 = (((mask.mMask & 0x08) != 0) && mVec[3] < t2) ? mVec[3] : t2;
+            int64_t t4 = (((mask.mMask & 0x10) != 0) && mVec[4] < t3) ? mVec[4] : t3;
+            int64_t t5 = (((mask.mMask & 0x20) != 0) && mVec[5] < t4) ? mVec[5] : t4;
+            int64_t t6 = (((mask.mMask & 0x40) != 0) && mVec[6] < t5) ? mVec[6] : t5;
+            int64_t t7 = (((mask.mMask & 0x80) != 0) && mVec[7] < t6) ? mVec[7] : t6;
+            return t7;
+#else
             __m512i t0 = _mm512_set1_epi64(std::numeric_limits<int64_t>::max());
             __m512i t1 = _mm512_mask_mov_epi64(t0, mask.mMask, mVec);
             int64_t t2 = _mm512_reduce_min_epi64(t1);
             return t2;
+#endif
         }
         // IMIN
         /*UME_FORCE_INLINE int64_t imin() const {
@@ -1418,51 +1542,139 @@ namespace SIMD {
 
         //HBAND
         UME_FORCE_INLINE int64_t hband() const {
+#if defined (__GNUG__)
+            alignas(64) int64_t raw[8];
+            _mm512_store_si512(raw, mVec);
+            return raw[0] & raw[1] & raw[2] & raw[3] &
+                   raw[4] & raw[5] & raw[6] & raw[7];
+#else
             int64_t t0 = _mm512_reduce_and_epi64(mVec);
             return t0;
+#endif
         }
         // MHBAND
         UME_FORCE_INLINE int64_t hband(SIMDVecMask<8> const & mask) const {
+#if defined (__GNUG__)
+            alignas(64) int64_t raw[8];
+            _mm512_store_si512(raw, mVec);
+            int64_t t0 = 0xFFFFFFFFFFFFFFFF;
+            if (mask.mMask & 0x01) t0 &= raw[0];
+            if (mask.mMask & 0x02) t0 &= raw[1];
+            if (mask.mMask & 0x04) t0 &= raw[2];
+            if (mask.mMask & 0x08) t0 &= raw[3];
+            if (mask.mMask & 0x10) t0 &= raw[4];
+            if (mask.mMask & 0x20) t0 &= raw[5];
+            if (mask.mMask & 0x40) t0 &= raw[6];
+            if (mask.mMask & 0x80) t0 &= raw[7];
+            return t0;
+#else
             __m512i t0 = _mm512_set1_epi64(0xFFFFFFFFFFFFFFFF);
             __m512i t1 = _mm512_mask_mov_epi64(t0, mask.mMask, mVec);
             int64_t t2 = _mm512_reduce_and_epi64(t1);
             return t2;
+#endif
         }
         // HBANDS
         UME_FORCE_INLINE int64_t hband(int64_t b) const {
+#if defined (__GNUG__)
+            alignas(64) int64_t raw[8];
+            _mm512_store_si512(raw, mVec);
+            return b & raw[0] & raw[1] & raw[2] & raw[3] &
+                       raw[4] & raw[5] & raw[6] & raw[7];
+#else
             int64_t t0 = _mm512_reduce_and_epi64(mVec);
             return t0 & b;
+#endif
         }
         // MHBANDS
         UME_FORCE_INLINE int64_t hband(SIMDVecMask<8> const & mask, int64_t b) const {
+#if defined (__GNUG__)
+            alignas(64) int64_t raw[8];
+            _mm512_store_si512(raw, mVec);
+            int64_t t0 = b;
+            if (mask.mMask & 0x01) t0 &= raw[0];
+            if (mask.mMask & 0x02) t0 &= raw[1];
+            if (mask.mMask & 0x04) t0 &= raw[2];
+            if (mask.mMask & 0x08) t0 &= raw[3];
+            if (mask.mMask & 0x10) t0 &= raw[4];
+            if (mask.mMask & 0x20) t0 &= raw[5];
+            if (mask.mMask & 0x40) t0 &= raw[6];
+            if (mask.mMask & 0x80) t0 &= raw[7];
+            return t0;
+#else
             __m512i t0 = _mm512_set1_epi64(0xFFFFFFFFFFFFFFFF);
             __m512i t1 = _mm512_mask_mov_epi64(t0, mask.mMask, mVec);
             int64_t t2 = _mm512_reduce_and_epi64(t1);
             return t2 & b;
+#endif
         }
         // HBOR
         UME_FORCE_INLINE int64_t hbor() const {
+#if defined (__GNUG__)
+            alignas(64) int64_t raw[8];
+            _mm512_store_si512(raw, mVec);
+            return raw[0] | raw[1] | raw[2] | raw[3] |
+                   raw[4] | raw[5] | raw[6] | raw[7];
+#else
             int64_t t0 = _mm512_reduce_or_epi64(mVec);
             return t0;
+#endif
         }
         // MHBOR
         UME_FORCE_INLINE int64_t hbor(SIMDVecMask<8> const & mask) const {
+#if defined (__GNUG__)
+            alignas(64) int64_t raw[8];
+            _mm512_store_si512(raw, mVec);
+            int64_t t0 = 0;
+            if (mask.mMask & 0x01) t0 |= raw[0];
+            if (mask.mMask & 0x02) t0 |= raw[1];
+            if (mask.mMask & 0x04) t0 |= raw[2];
+            if (mask.mMask & 0x08) t0 |= raw[3];
+            if (mask.mMask & 0x10) t0 |= raw[4];
+            if (mask.mMask & 0x20) t0 |= raw[5];
+            if (mask.mMask & 0x40) t0 |= raw[6];
+            if (mask.mMask & 0x80) t0 |= raw[7];
+            return t0;
+#else
             __m512i t0 = _mm512_set1_epi64(0);
             __m512i t1 = _mm512_mask_mov_epi64(t0, mask.mMask, mVec);
             int64_t t2 = _mm512_reduce_or_epi64(t1);
             return t2;
+#endif
         }
         // HBORS
         UME_FORCE_INLINE int64_t hbor(int64_t b) const {
+#if defined (__GNUG__)
+            alignas(64) int64_t raw[8];
+            _mm512_store_si512(raw, mVec);
+            return b | raw[0] | raw[1] | raw[2] | raw[3] |
+                       raw[4] | raw[5] | raw[6] | raw[7];
+#else
             int64_t t0 = _mm512_reduce_or_epi64(mVec);
             return t0 | b;
+#endif
         }
         // MHBORS
         UME_FORCE_INLINE int64_t hbor(SIMDVecMask<8> const & mask, int64_t b) const {
+#if defined (__GNUG__)
+            alignas(64) int64_t raw[8];
+            _mm512_store_si512(raw, mVec);
+            int64_t t0 = b;
+            if (mask.mMask & 0x01) t0 |= raw[0];
+            if (mask.mMask & 0x02) t0 |= raw[1];
+            if (mask.mMask & 0x04) t0 |= raw[2];
+            if (mask.mMask & 0x08) t0 |= raw[3];
+            if (mask.mMask & 0x10) t0 |= raw[4];
+            if (mask.mMask & 0x20) t0 |= raw[5];
+            if (mask.mMask & 0x40) t0 |= raw[6];
+            if (mask.mMask & 0x80) t0 |= raw[7];
+            return t0;
+#else
             __m512i t0 = _mm512_set1_epi64(0);
             __m512i t1 = _mm512_mask_mov_epi64(t0, mask.mMask, mVec);
             int64_t t2 = _mm512_reduce_or_epi64(t1);
             return t2 | b;
+#endif
         }
         // HBXOR
         UME_FORCE_INLINE int64_t hbxor() const {
@@ -1502,7 +1714,7 @@ namespace SIMD {
 #else
             __m512i t2 = _mm512_setr_epi64(0, stride, 2*stride, 3*stride, 4*stride, 5*stride, 6*stride, 7*stride);
 #endif
-            mVec = _mm512_i64gather_epi64(t2, (__int64 const*)baseAddr, 8);
+            mVec = _mm512_i64gather_epi64(t2, (int64_t const*)baseAddr, 8);
             return *this;
         }
         // MGATHERU
@@ -1514,31 +1726,31 @@ namespace SIMD {
 #else
             __m512i t2 = _mm512_setr_epi64(0, stride, 2*stride, 3*stride, 4*stride, 5*stride, 6*stride, 7*stride);
 #endif
-            __m512i t3 = _mm512_i64gather_epi64(t2, (__int64 const*)baseAddr, 8);
+            __m512i t3 = _mm512_i64gather_epi64(t2, (int64_t const*)baseAddr, 8);
             mVec = _mm512_mask_mov_epi64(mVec, mask.mMask, t3);
             return *this;
         }
         // GATHERS
         UME_FORCE_INLINE SIMDVec_i & gather(int64_t * baseAddr, uint64_t* indices) {
             __m512i t0 =_mm512_loadu_si512((__m512i *)indices);
-            mVec = _mm512_i64gather_epi64(t0, (__int64 const*)baseAddr, 8);
+            mVec = _mm512_i64gather_epi64(t0, (int64_t const*)baseAddr, 8);
             return *this;
         }
         // MGATHERS
         UME_FORCE_INLINE SIMDVec_i & gather(SIMDVecMask<8> const & mask, int64_t* baseAddr, uint64_t* indices) {
             __m512i t0 = _mm512_loadu_si512((__m512i *)indices);
-            __m512i t1 = _mm512_i64gather_epi64(t0, (__int64 const*)baseAddr, 8);
+            __m512i t1 = _mm512_i64gather_epi64(t0, (int64_t const*)baseAddr, 8);
             mVec = _mm512_mask_mov_epi64(mVec, mask.mMask, t1);
             return *this;
         }
         // GATHERV
         UME_FORCE_INLINE SIMDVec_i & gather(int64_t * baseAddr, SIMDVec_u<uint64_t, 8> const & indices) {
-            mVec = _mm512_i64gather_epi64(indices.mVec, (__int64 const*)baseAddr, 8);
+            mVec = _mm512_i64gather_epi64(indices.mVec, (int64_t const*)baseAddr, 8);
             return *this;
         }
         // MGATHERV
         UME_FORCE_INLINE SIMDVec_i & gather(SIMDVecMask<8> const & mask, int64_t* baseAddr, SIMDVec_u<uint64_t, 8> const & indices) {
-            __m512i t0 = _mm512_i64gather_epi64(indices.mVec, (__int64 const*)baseAddr, 8);
+            __m512i t0 = _mm512_i64gather_epi64(indices.mVec, (int64_t const*)baseAddr, 8);
             mVec = _mm512_mask_mov_epi64(mVec, mask.mMask, t0);
             return *this;
         }

@@ -916,7 +916,7 @@ namespace SIMD {
         }
         // MIMAX
         UME_FORCE_INLINE uint32_t imax(SIMDVecMask<1> const & mask) const {
-            return mask.mMask ? 0 : 0xFFFFFFFFFFFFFFFF;
+            return mask.mMask ? 0 : 0xFFFFFFFF;
         }
         // HMIN
         UME_FORCE_INLINE uint64_t hmin() const {
@@ -933,7 +933,7 @@ namespace SIMD {
         }
         // MIMIN
         UME_FORCE_INLINE uint32_t imin(SIMDVecMask<1> const & mask) const {
-            return mask.mMask ? 0 : 0xFFFFFFFFFFFFFFFF;
+            return mask.mMask ? 0 : 0xFFFFFFFF;
         }
 
         // BANDV

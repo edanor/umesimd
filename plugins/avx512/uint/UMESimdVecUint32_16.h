@@ -748,45 +748,165 @@ namespace SIMD {
         }
         // HADD
         UME_FORCE_INLINE uint32_t hadd() const {
+#if defined (__GNUG__)
+            alignas(64) uint32_t raw[16];
+            _mm512_store_si512((__m512i*)raw, mVec);
+            return raw[0] + raw[1] + raw[2]  + raw[3]  + raw[4]  + raw[5]  + raw[6]  + raw[7] +
+                   raw[8] + raw[9] + raw[10] + raw[11] + raw[12] + raw[13] + raw[14] + raw[15];
+#else
             uint32_t retval = _mm512_reduce_add_epi32(mVec);
             return retval;
+#endif
         }
         // MHADD
         UME_FORCE_INLINE uint32_t hadd(SIMDVecMask<16> const & mask) const {
+#if defined (__GNUG__)
+            alignas(64) uint32_t raw[16];
+            _mm512_store_si512((__m512i*)raw, mVec);
+            uint32_t t0 = 0;
+            if (mask.mMask & 0x0001) t0 += raw[0];
+            if (mask.mMask & 0x0002) t0 += raw[1];
+            if (mask.mMask & 0x0004) t0 += raw[2];
+            if (mask.mMask & 0x0008) t0 += raw[3];
+            if (mask.mMask & 0x0010) t0 += raw[4];
+            if (mask.mMask & 0x0020) t0 += raw[5];
+            if (mask.mMask & 0x0040) t0 += raw[6];
+            if (mask.mMask & 0x0080) t0 += raw[7];
+            if (mask.mMask & 0x0100) t0 += raw[8];
+            if (mask.mMask & 0x0200) t0 += raw[9];
+            if (mask.mMask & 0x0400) t0 += raw[10];
+            if (mask.mMask & 0x0800) t0 += raw[11];
+            if (mask.mMask & 0x1000) t0 += raw[12];
+            if (mask.mMask & 0x2000) t0 += raw[13];
+            if (mask.mMask & 0x4000) t0 += raw[14];
+            if (mask.mMask & 0x8000) t0 += raw[15];
+            return t0;
+#else
             uint32_t retval = _mm512_mask_reduce_add_epi32(mask.mMask, mVec);
             return retval;
+#endif
         }
         // HADDS
         UME_FORCE_INLINE uint32_t hadd(uint32_t b) const {
+#if defined (__GNUG__)
+            alignas(64) uint32_t raw[16];
+            _mm512_store_si512((__m512i*)raw, mVec);
+            return b + raw[0] + raw[1] + raw[2]  + raw[3]  + raw[4]  + raw[5]  + raw[6]  + raw[7] +
+                   raw[9] + raw[9] + raw[10] + raw[11] + raw[12] + raw[13] + raw[14] + raw[15];
+#else
             uint32_t retval = _mm512_reduce_add_epi32(mVec);
             return retval + b;
+#endif
         }
         // MHADDS
         UME_FORCE_INLINE uint32_t hadd(SIMDVecMask<16> const & mask, uint32_t b) const {
+#if defined (__GNUG__)
+            alignas(64) uint32_t raw[16];
+            _mm512_store_si512((__m512i*)raw, mVec);
+            uint32_t t0 = b;
+            if (mask.mMask & 0x0001) t0 += raw[0];
+            if (mask.mMask & 0x0002) t0 += raw[1];
+            if (mask.mMask & 0x0004) t0 += raw[2];
+            if (mask.mMask & 0x0008) t0 += raw[3];
+            if (mask.mMask & 0x0010) t0 += raw[4];
+            if (mask.mMask & 0x0020) t0 += raw[5];
+            if (mask.mMask & 0x0040) t0 += raw[6];
+            if (mask.mMask & 0x0080) t0 += raw[7];
+            if (mask.mMask & 0x0100) t0 += raw[8];
+            if (mask.mMask & 0x0200) t0 += raw[9];
+            if (mask.mMask & 0x0400) t0 += raw[10];
+            if (mask.mMask & 0x0800) t0 += raw[11];
+            if (mask.mMask & 0x1000) t0 += raw[12];
+            if (mask.mMask & 0x2000) t0 += raw[13];
+            if (mask.mMask & 0x4000) t0 += raw[14];
+            if (mask.mMask & 0x8000) t0 += raw[15];
+            return t0;
+#else
             uint32_t retval = _mm512_mask_reduce_add_epi32(mask.mMask, mVec);
             return retval + b;
+#endif
         }
         // HMUL
         UME_FORCE_INLINE uint32_t hmul() const {
+#if defined (__GNUG__)
+            alignas(64) uint32_t raw[16];
+            _mm512_store_si512((__m512i*)raw, mVec);
+            return raw[0] * raw[1] * raw[2]  * raw[3]  * raw[4]  * raw[5]  * raw[6]  * raw[7] *
+                   raw[9] * raw[9] * raw[10] * raw[11] * raw[12] * raw[13] * raw[14] * raw[15];
+#else
             uint32_t retval = _mm512_reduce_mul_epi32(mVec);
             return retval;
+#endif
         }
         // MHMUL
         UME_FORCE_INLINE uint32_t hmul(SIMDVecMask<16> const & mask) const {
+#if defined (__GNUG__)
+            alignas(64) uint32_t raw[16];
+            _mm512_store_si512((__m512i*)raw, mVec);
+            uint32_t t0 = 1;
+            if (mask.mMask & 0x0001) t0 *= raw[0];
+            if (mask.mMask & 0x0002) t0 *= raw[1];
+            if (mask.mMask & 0x0004) t0 *= raw[2];
+            if (mask.mMask & 0x0008) t0 *= raw[3];
+            if (mask.mMask & 0x0010) t0 *= raw[4];
+            if (mask.mMask & 0x0020) t0 *= raw[5];
+            if (mask.mMask & 0x0040) t0 *= raw[6];
+            if (mask.mMask & 0x0080) t0 *= raw[7];
+            if (mask.mMask & 0x0100) t0 *= raw[8];
+            if (mask.mMask & 0x0200) t0 *= raw[9];
+            if (mask.mMask & 0x0400) t0 *= raw[10];
+            if (mask.mMask & 0x0800) t0 *= raw[11];
+            if (mask.mMask & 0x1000) t0 *= raw[12];
+            if (mask.mMask & 0x2000) t0 *= raw[13];
+            if (mask.mMask & 0x4000) t0 *= raw[14];
+            if (mask.mMask & 0x8000) t0 *= raw[15];
+            return t0;
+#else
             uint32_t retval = _mm512_mask_reduce_mul_epi32(mask.mMask, mVec);
             return retval;
+#endif
         }
         // HMULS
         UME_FORCE_INLINE uint32_t hmul(uint32_t b) const {
+#if defined (__GNUG__)
+            alignas(64) uint32_t raw[16];
+            _mm512_store_si512((__m512i*)raw, mVec);
+            return b * raw[0] * raw[1] * raw[2]  * raw[3]  * raw[4]  * raw[5]  * raw[6]  * raw[7] *
+                   raw[9] * raw[9] * raw[10] * raw[11] * raw[12] * raw[13] * raw[14] * raw[15];
+#else
             uint32_t retval = b;
             retval *= _mm512_reduce_mul_epi32(mVec);
             return retval;
+#endif
         }
         // MHMULS
         UME_FORCE_INLINE uint32_t hmul(SIMDVecMask<16> const & mask, uint32_t b) const {
+#if defined (__GNUG__)
+            alignas(64) uint32_t raw[16];
+            _mm512_store_si512((__m512i*)raw, mVec);
+            uint32_t t0 = b;
+            if (mask.mMask & 0x0001) t0 *= raw[0];
+            if (mask.mMask & 0x0002) t0 *= raw[1];
+            if (mask.mMask & 0x0004) t0 *= raw[2];
+            if (mask.mMask & 0x0008) t0 *= raw[3];
+            if (mask.mMask & 0x0010) t0 *= raw[4];
+            if (mask.mMask & 0x0020) t0 *= raw[5];
+            if (mask.mMask & 0x0040) t0 *= raw[6];
+            if (mask.mMask & 0x0080) t0 *= raw[7];
+            if (mask.mMask & 0x0100) t0 *= raw[8];
+            if (mask.mMask & 0x0200) t0 *= raw[9];
+            if (mask.mMask & 0x0400) t0 *= raw[10];
+            if (mask.mMask & 0x0800) t0 *= raw[11];
+            if (mask.mMask & 0x1000) t0 *= raw[12];
+            if (mask.mMask & 0x2000) t0 *= raw[13];
+            if (mask.mMask & 0x4000) t0 *= raw[14];
+            if (mask.mMask & 0x8000) t0 *= raw[15];
+            return t0;
+#else
             uint32_t retval = b;
             retval *= _mm512_mask_reduce_mul_epi32(mask.mMask, mVec);
             return retval;
+#endif
         }
         // FMULADDV
         UME_FORCE_INLINE SIMDVec_u fmuladd(SIMDVec_u const & b, SIMDVec_u const & c) const {
@@ -926,25 +1046,109 @@ namespace SIMD {
         }
         // HMAX
         UME_FORCE_INLINE uint32_t hmax() const {
+#if defined (__GNUG__)
+            alignas(64) uint32_t raw[16];
+            _mm512_store_si512((__m512i*)raw, mVec);
+            uint32_t t0 = raw[0] > raw[1] ? raw[0] : raw[1];
+            uint32_t t1 = raw[2] > raw[3] ? raw[2] : raw[3];
+            uint32_t t2 = raw[4] > raw[5] ? raw[4] : raw[5];
+            uint32_t t3 = raw[6] > raw[7] ? raw[6] : raw[7];
+            uint32_t t4 = raw[8] > raw[9] ? raw[8] : raw[9];
+            uint32_t t5 = raw[10] > raw[11] ? raw[10] : raw[11];
+            uint32_t t6 = raw[12] > raw[13] ? raw[12] : raw[13];
+            uint32_t t7 = raw[14] > raw[15] ? raw[14] : raw[15];
+            uint32_t t8 = t0 > t1 ? t0 : t1;
+            uint32_t t9 = t2 > t3 ? t2 : t3;
+            uint32_t t10 = t4 > t5 ? t4 : t5;
+            uint32_t t11 = t6 > t7 ? t6 : t7;
+            uint32_t t12 = t8 > t9 ? t8 : t9;
+            uint32_t t13 = t10 > t11 ? t10 : t11;
+            return t12 > t13 ? t12 : t13;
+#else
             uint32_t retval = _mm512_reduce_max_epu32(mVec);
             return retval;
+#endif
         }       
         // MHMAX
         UME_FORCE_INLINE uint32_t hmax(SIMDVecMask<16> const & mask) const {
+#if defined (__GNUG__)
+            alignas(64) uint32_t raw[16];
+            _mm512_store_si512((__m512i*)raw, mVec);
+            uint32_t t0 =  ((mask.mMask & 0x0001) != 0) ? raw[0] : std::numeric_limits<uint32_t>::min();
+            uint32_t t1 = (((mask.mMask & 0x0002) != 0) && raw[1] > t0) ? raw[1] : t0;
+            uint32_t t2 = (((mask.mMask & 0x0004) != 0) && raw[2] > t1) ? raw[2] : t1;
+            uint32_t t3 = (((mask.mMask & 0x0008) != 0) && raw[3] > t2) ? raw[3] : t2;
+            uint32_t t4 = (((mask.mMask & 0x0010) != 0) && raw[4] > t3) ? raw[4] : t3;
+            uint32_t t5 = (((mask.mMask & 0x0020) != 0) && raw[5] > t4) ? raw[5] : t4;
+            uint32_t t6 = (((mask.mMask & 0x0040) != 0) && raw[6] > t5) ? raw[6] : t5;
+            uint32_t t7 = (((mask.mMask & 0x0080) != 0) && raw[7] > t6) ? raw[7] : t6;
+            uint32_t t8 = (((mask.mMask & 0x0100) != 0) && raw[8] > t7) ? raw[8] : t7;
+            uint32_t t9 = (((mask.mMask & 0x0200) != 0) && raw[9] > t8) ? raw[9] : t8;
+            uint32_t t10 = (((mask.mMask & 0x0400) != 0) && raw[10] > t9) ? raw[10] : t9;
+            uint32_t t11 = (((mask.mMask & 0x0800) != 0) && raw[11] > t10) ? raw[11] : t10;
+            uint32_t t12 = (((mask.mMask & 0x1000) != 0) && raw[12] > t11) ? raw[12] : t11;
+            uint32_t t13 = (((mask.mMask & 0x2000) != 0) && raw[13] > t12) ? raw[13] : t12;
+            uint32_t t14 = (((mask.mMask & 0x4000) != 0) && raw[14] > t13) ? raw[14] : t13;
+            uint32_t t15 = (((mask.mMask & 0x8000) != 0) && raw[15] > t14) ? raw[15] : t14;
+            return t15;
+#else
             uint32_t retval = _mm512_mask_reduce_max_epu32(mask.mMask, mVec);
             return retval;
+#endif
         }       
         // IMAX
         // MIMAX
         // HMIN
         UME_FORCE_INLINE uint32_t hmin() const {
+#if defined (__GNUG__)
+            alignas(64) uint32_t raw[16];
+            _mm512_store_si512((__m512i*)raw, mVec);
+            uint32_t t0 = raw[0] < raw[1] ? raw[0] : raw[1];
+            uint32_t t1 = raw[2] < raw[3] ? raw[2] : raw[3];
+            uint32_t t2 = raw[4] < raw[5] ? raw[4] : raw[5];
+            uint32_t t3 = raw[6] < raw[7] ? raw[6] : raw[7];
+            uint32_t t4 = raw[8] < raw[9] ? raw[8] : raw[9];
+            uint32_t t5 = raw[10] < raw[11] ? raw[10] : raw[11];
+            uint32_t t6 = raw[12] < raw[13] ? raw[12] : raw[13];
+            uint32_t t7 = raw[14] < raw[15] ? raw[14] : raw[15];
+            uint32_t t8 = t0 < t1 ? t0 : t1;
+            uint32_t t9 = t2 < t3 ? t2 : t3;
+            uint32_t t10 = t4 < t5 ? t4 : t5;
+            uint32_t t11 = t6 < t7 ? t6 : t7;
+            uint32_t t12 = t8 < t9 ? t8 : t9;
+            uint32_t t13 = t10 < t11 ? t10 : t11;
+            return t12 < t13 ? t12 : t13;
+#else
             uint32_t retval = _mm512_reduce_min_epu32(mVec);
             return retval;
+#endif
         }       
         // MHMIN
         UME_FORCE_INLINE uint32_t hmin(SIMDVecMask<16> const & mask) const {
+#if defined (__GNUG__)
+            alignas(64) uint32_t raw[16];
+            _mm512_store_si512((__m512i*)raw, mVec);
+            uint32_t t0 =  ((mask.mMask & 0x0001) != 0) ? raw[0] : std::numeric_limits<uint32_t>::max();
+            uint32_t t1 = (((mask.mMask & 0x0002) != 0) && raw[1] < t0) ? raw[1] : t0;
+            uint32_t t2 = (((mask.mMask & 0x0004) != 0) && raw[2] < t1) ? raw[2] : t1;
+            uint32_t t3 = (((mask.mMask & 0x0008) != 0) && raw[3] < t2) ? raw[3] : t2;
+            uint32_t t4 = (((mask.mMask & 0x0010) != 0) && raw[4] < t3) ? raw[4] : t3;
+            uint32_t t5 = (((mask.mMask & 0x0020) != 0) && raw[5] < t4) ? raw[5] : t4;
+            uint32_t t6 = (((mask.mMask & 0x0040) != 0) && raw[6] < t5) ? raw[6] : t5;
+            uint32_t t7 = (((mask.mMask & 0x0080) != 0) && raw[7] < t6) ? raw[7] : t6;
+            uint32_t t8 = (((mask.mMask & 0x0100) != 0) && raw[8] < t7) ? raw[8] : t7;
+            uint32_t t9 = (((mask.mMask & 0x0200) != 0) && raw[9] < t8) ? raw[9] : t8;
+            uint32_t t10 = (((mask.mMask & 0x0400) != 0) && raw[10] < t9) ? raw[10] : t9;
+            uint32_t t11 = (((mask.mMask & 0x0800) != 0) && raw[11] < t10) ? raw[11] : t10;
+            uint32_t t12 = (((mask.mMask & 0x1000) != 0) && raw[12] < t11) ? raw[12] : t11;
+            uint32_t t13 = (((mask.mMask & 0x2000) != 0) && raw[13] < t12) ? raw[13] : t12;
+            uint32_t t14 = (((mask.mMask & 0x4000) != 0) && raw[14] < t13) ? raw[14] : t13;
+            uint32_t t15 = (((mask.mMask & 0x8000) != 0) && raw[15] < t14) ? raw[15] : t14;
+            return t15;
+#else
             uint32_t retval = _mm512_mask_reduce_min_epu32(mask.mMask, mVec);
             return retval;
+#endif
         }       
         // IMIN
         // MIMIN
@@ -1146,47 +1350,175 @@ namespace SIMD {
         }
         // HBAND
         UME_FORCE_INLINE uint32_t hband() const {
+#if defined (__GNUG__)
+            alignas(64) uint32_t raw[16];
+            _mm512_store_si512((__m512i*)raw, mVec);
+            return raw[0] & raw[1] & raw[2] & raw[3] &
+                   raw[4] & raw[5] & raw[6] & raw[7] &
+                   raw[8] & raw[9] & raw[10] & raw[11] &
+                   raw[12] & raw[13] & raw[14] & raw[15];
+#else
             uint32_t retval = _mm512_reduce_and_epi32(mVec);
             return retval;
+#endif
         }
         // MHBAND
         UME_FORCE_INLINE uint32_t hband(SIMDVecMask<16> const & mask) const {
+#if defined (__GNUG__)
+            alignas(64) uint32_t raw[16];
+            _mm512_store_si512((__m512i*)raw, mVec);
+            uint32_t t0 = 0xFFFFFFFF;
+            if (mask.mMask & 0x0001) t0 &= raw[0];
+            if (mask.mMask & 0x0002) t0 &= raw[1];
+            if (mask.mMask & 0x0004) t0 &= raw[2];
+            if (mask.mMask & 0x0008) t0 &= raw[3];
+            if (mask.mMask & 0x0010) t0 &= raw[4];
+            if (mask.mMask & 0x0020) t0 &= raw[5];
+            if (mask.mMask & 0x0040) t0 &= raw[6];
+            if (mask.mMask & 0x0080) t0 &= raw[7];
+            if (mask.mMask & 0x0100) t0 &= raw[8];
+            if (mask.mMask & 0x0200) t0 &= raw[9];
+            if (mask.mMask & 0x0400) t0 &= raw[10];
+            if (mask.mMask & 0x0800) t0 &= raw[11];
+            if (mask.mMask & 0x1000) t0 &= raw[12];
+            if (mask.mMask & 0x2000) t0 &= raw[13];
+            if (mask.mMask & 0x4000) t0 &= raw[14];
+            if (mask.mMask & 0x8000) t0 &= raw[15];
+            return t0;
+#else
             uint32_t retval = _mm512_mask_reduce_and_epi32(mask.mMask, mVec);
             return retval;
+#endif
         }
         // HBANDS
         UME_FORCE_INLINE uint32_t hband(uint32_t b) const {
+#if defined (__GNUG__)
+            alignas(64) uint32_t raw[16];
+            _mm512_store_si512((__m512i*)raw, mVec);
+            return b & raw[0] & raw[1] & raw[2] & raw[3] &
+                   raw[4] & raw[5] & raw[6] & raw[7] &
+                   raw[8] & raw[9] & raw[10] & raw[11] &
+                   raw[12] & raw[13] & raw[14] & raw[15];
+#else
             uint32_t retval = b;
             retval &= _mm512_reduce_and_epi32(mVec);
             return retval;
+#endif
         }
         // MHBANDS
         UME_FORCE_INLINE uint32_t hband(SIMDVecMask<16> const & mask, uint32_t b) const {
+#if defined (__GNUG__)
+            alignas(64) uint32_t raw[16];
+            _mm512_store_si512((__m512i*)raw, mVec);
+            uint32_t t0 = b;
+            if (mask.mMask & 0x0001) t0 &= raw[0];
+            if (mask.mMask & 0x0002) t0 &= raw[1];
+            if (mask.mMask & 0x0004) t0 &= raw[2];
+            if (mask.mMask & 0x0008) t0 &= raw[3];
+            if (mask.mMask & 0x0010) t0 &= raw[4];
+            if (mask.mMask & 0x0020) t0 &= raw[5];
+            if (mask.mMask & 0x0040) t0 &= raw[6];
+            if (mask.mMask & 0x0080) t0 &= raw[7];
+            if (mask.mMask & 0x0100) t0 &= raw[8];
+            if (mask.mMask & 0x0200) t0 &= raw[9];
+            if (mask.mMask & 0x0400) t0 &= raw[10];
+            if (mask.mMask & 0x0800) t0 &= raw[11];
+            if (mask.mMask & 0x1000) t0 &= raw[12];
+            if (mask.mMask & 0x2000) t0 &= raw[13];
+            if (mask.mMask & 0x4000) t0 &= raw[14];
+            if (mask.mMask & 0x8000) t0 &= raw[15];
+            return t0;
+#else
             uint32_t retval = b;
             retval &= _mm512_mask_reduce_and_epi32(mask.mMask, mVec);
             return retval;
+#endif
         }
         // HBOR
         UME_FORCE_INLINE uint32_t hbor() const {
+#if defined (__GNUG__)
+            alignas(64) uint32_t raw[16];
+            _mm512_store_si512((__m512i*)raw, mVec);
+            return raw[0] | raw[1] | raw[2] | raw[3] |
+                   raw[4] | raw[5] | raw[6] | raw[7] |
+                   raw[8] | raw[9] | raw[10] | raw[11] |
+                   raw[12] | raw[13] | raw[14] | raw[15];
+#else
             uint32_t retval = _mm512_reduce_or_epi32(mVec);
             return retval;
+#endif
         }
         // MHBOR
         UME_FORCE_INLINE uint32_t hbor(SIMDVecMask<16> const & mask) const {
+#if defined (__GNUG__)
+            alignas(64) uint32_t raw[16];
+            _mm512_store_si512((__m512i*)raw, mVec);
+            uint32_t t0 = 0;
+            if (mask.mMask & 0x0001) t0 |= raw[0];
+            if (mask.mMask & 0x0002) t0 |= raw[1];
+            if (mask.mMask & 0x0004) t0 |= raw[2];
+            if (mask.mMask & 0x0008) t0 |= raw[3];
+            if (mask.mMask & 0x0010) t0 |= raw[4];
+            if (mask.mMask & 0x0020) t0 |= raw[5];
+            if (mask.mMask & 0x0040) t0 |= raw[6];
+            if (mask.mMask & 0x0080) t0 |= raw[7];
+            if (mask.mMask & 0x0100) t0 |= raw[8];
+            if (mask.mMask & 0x0200) t0 |= raw[9];
+            if (mask.mMask & 0x0400) t0 |= raw[10];
+            if (mask.mMask & 0x0800) t0 |= raw[11];
+            if (mask.mMask & 0x1000) t0 |= raw[12];
+            if (mask.mMask & 0x2000) t0 |= raw[13];
+            if (mask.mMask & 0x4000) t0 |= raw[14];
+            if (mask.mMask & 0x8000) t0 |= raw[15];
+            return t0;
+#else
             uint32_t retval = _mm512_mask_reduce_or_epi32(mask.mMask, mVec);
             return retval;
+#endif
         }
         // HBORS
         UME_FORCE_INLINE uint32_t hbor(uint32_t b) const {
+#if defined (__GNUG__)
+            alignas(64) uint32_t raw[16];
+            _mm512_store_si512((__m512i*)raw, mVec);
+            return b | raw[0] | raw[1] | raw[2] | raw[3] |
+                   raw[4] | raw[5] | raw[6] | raw[7] |
+                   raw[8] | raw[9] | raw[10] | raw[11] |
+                   raw[12] | raw[13] | raw[14] | raw[15];
+#else
             uint32_t retval = b;
             retval |= _mm512_reduce_or_epi32(mVec);
             return retval;
+#endif
         }
         // MHBORS
         UME_FORCE_INLINE uint32_t hbor(SIMDVecMask<16> const & mask, uint32_t b) const {
+#if defined (__GNUG__)
+            alignas(64) uint32_t raw[16];
+            _mm512_store_si512((__m512i*)raw, mVec);
+            uint32_t t0 = b;
+            if (mask.mMask & 0x0001) t0 |= raw[0];
+            if (mask.mMask & 0x0002) t0 |= raw[1];
+            if (mask.mMask & 0x0004) t0 |= raw[2];
+            if (mask.mMask & 0x0008) t0 |= raw[3];
+            if (mask.mMask & 0x0010) t0 |= raw[4];
+            if (mask.mMask & 0x0020) t0 |= raw[5];
+            if (mask.mMask & 0x0040) t0 |= raw[6];
+            if (mask.mMask & 0x0080) t0 |= raw[7];
+            if (mask.mMask & 0x0100) t0 |= raw[8];
+            if (mask.mMask & 0x0200) t0 |= raw[9];
+            if (mask.mMask & 0x0400) t0 |= raw[10];
+            if (mask.mMask & 0x0800) t0 |= raw[11];
+            if (mask.mMask & 0x1000) t0 |= raw[12];
+            if (mask.mMask & 0x2000) t0 |= raw[13];
+            if (mask.mMask & 0x4000) t0 |= raw[14];
+            if (mask.mMask & 0x8000) t0 |= raw[15];
+            return t0;
+#else
             uint32_t retval = b;
             retval |= _mm512_mask_reduce_or_epi32(mask.mMask, mVec);
             return retval;
+#endif
         }
         // HBXOR
         UME_FORCE_INLINE uint32_t hbxor() const {

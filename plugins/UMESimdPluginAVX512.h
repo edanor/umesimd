@@ -36,6 +36,17 @@
 
 #include "../UMESimdInterface.h"
 
+// WA: Clang 3.9 does not provide defines for
+#if defined (__clang__) && (__clang_major__ <= 3) && (__clang_minor__ <= 9)
+#define _MM_CMPINT_EQ 1
+#define _MM_CMPINT_LT 1
+#define _MM_CMPINT_LE 2
+#define _MM_CMPINT_FALSE 3
+#define _MM_CMPINT_NEQ 4
+#define _MM_CMPINT_NLT 5
+#define _MM_CMPINT_NLE 6
+#define _MM_CMPINT_TRUE 7
+#endif
 
 namespace UME
 {
