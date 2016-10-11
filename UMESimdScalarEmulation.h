@@ -152,7 +152,7 @@ namespace SCALAR_EMULATION
     
     // GATHERU
     template<typename VEC_TYPE, typename SCALAR_TYPE>
-    UME_FORCE_INLINE VEC_TYPE & gatheru(VEC_TYPE & dst, SCALAR_TYPE* base, uint32_t stride) {
+    UME_FORCE_INLINE VEC_TYPE & gatheru(VEC_TYPE & dst, SCALAR_TYPE const * base, uint32_t stride) {
         for (uint32_t i = 0; i < VEC_TYPE::length(); i++) {
             dst.insert(i, base[i*stride]);
         }
@@ -161,7 +161,7 @@ namespace SCALAR_EMULATION
 
     // MGATHERU
     template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
-    UME_FORCE_INLINE VEC_TYPE & gatheru(MASK_TYPE const & mask, VEC_TYPE & dst, SCALAR_TYPE* base, uint32_t stride) {
+    UME_FORCE_INLINE VEC_TYPE & gatheru(MASK_TYPE const & mask, VEC_TYPE & dst, SCALAR_TYPE const * base, uint32_t stride) {
         for (uint32_t i = 0; i < VEC_TYPE::length(); i++) {
             if (mask[i] == true) dst.insert(i, base[i*stride]);
         }
@@ -170,7 +170,7 @@ namespace SCALAR_EMULATION
     
     // GATHERS
     template<typename VEC_TYPE, typename SCALAR_TYPE, typename SCALAR_UINT_TYPE>
-    UME_FORCE_INLINE VEC_TYPE & gather(VEC_TYPE & dst, SCALAR_TYPE* base, SCALAR_UINT_TYPE* indices) {
+    UME_FORCE_INLINE VEC_TYPE & gather(VEC_TYPE & dst, SCALAR_TYPE const * base, SCALAR_UINT_TYPE const * indices) {
         for (uint32_t i = 0; i < VEC_TYPE::length(); i++) {
             dst.insert(i, base[indices[i]]);
         }
@@ -179,7 +179,7 @@ namespace SCALAR_EMULATION
 
     // MGATHERS
     template<typename VEC_TYPE, typename SCALAR_TYPE, typename SCALAR_UINT_TYPE, typename MASK_TYPE>
-    UME_FORCE_INLINE VEC_TYPE & gather(MASK_TYPE const & mask, VEC_TYPE & dst, SCALAR_TYPE* base, SCALAR_UINT_TYPE* indices) {
+    UME_FORCE_INLINE VEC_TYPE & gather(MASK_TYPE const & mask, VEC_TYPE & dst, SCALAR_TYPE const * base, SCALAR_UINT_TYPE const * indices) {
         for (uint32_t i = 0; i < VEC_TYPE::length(); i++) {
             if (mask[i] == true) dst.insert(i, base[indices[i]]);
         }
@@ -188,7 +188,7 @@ namespace SCALAR_EMULATION
 
     // GATHERV
     template<typename VEC_TYPE, typename SCALAR_TYPE, typename UINT_VEC_TYPE>
-    UME_FORCE_INLINE VEC_TYPE & gather(VEC_TYPE & dst, SCALAR_TYPE* base, UINT_VEC_TYPE const & indices) {
+    UME_FORCE_INLINE VEC_TYPE & gather(VEC_TYPE & dst, SCALAR_TYPE const * base, UINT_VEC_TYPE const & indices) {
         for (uint32_t i = 0; i < VEC_TYPE::length(); i++) {
             dst.insert(i, base[indices[i]]);
         }
@@ -197,7 +197,7 @@ namespace SCALAR_EMULATION
 
     // MGATHERV
     template<typename VEC_TYPE, typename SCALAR_TYPE, typename UINT_VEC_TYPE, typename MASK_TYPE>
-    UME_FORCE_INLINE VEC_TYPE & gather(MASK_TYPE const & mask, VEC_TYPE & dst, SCALAR_TYPE* base, UINT_VEC_TYPE const & indices) {
+    UME_FORCE_INLINE VEC_TYPE & gather(MASK_TYPE const & mask, VEC_TYPE & dst, SCALAR_TYPE const * base, UINT_VEC_TYPE const & indices) {
         for (uint32_t i = 0; i < VEC_TYPE::length(); i++) {
             if (mask[i] == true) dst.insert(i, base[indices[i]]);
         }

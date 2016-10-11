@@ -2493,37 +2493,37 @@ namespace SIMD
  
     public:
         // GATHERU
-        UME_FORCE_INLINE DERIVED_VEC_TYPE & gatheru (SCALAR_TYPE * baseAddr, uint32_t stride) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & gatheru (SCALAR_TYPE const * baseAddr, uint32_t stride) {
             UME_EMULATION_WARNING();
             return SCALAR_EMULATION::gatheru<DERIVED_VEC_TYPE, SCALAR_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this), baseAddr, stride);
         }
 
         // MGATHERU
-        UME_FORCE_INLINE DERIVED_VEC_TYPE & gatheru (MASK_TYPE const & mask, SCALAR_TYPE * baseAddr, uint32_t stride) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & gatheru (MASK_TYPE const & mask, SCALAR_TYPE const * baseAddr, uint32_t stride) {
             UME_EMULATION_WARNING();
             return SCALAR_EMULATION::gatheru<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this), baseAddr, stride);
         }
 
         // GATHERS
-        UME_FORCE_INLINE DERIVED_VEC_TYPE & gather (SCALAR_TYPE * baseAddr, SCALAR_UINT_TYPE* indices) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & gather (SCALAR_TYPE const * baseAddr, SCALAR_UINT_TYPE const * indices) {
             UME_EMULATION_WARNING();
             return SCALAR_EMULATION::gather<DERIVED_VEC_TYPE, SCALAR_TYPE, SCALAR_UINT_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this), baseAddr, indices);
         }
 
         // MGATHERS
-        UME_FORCE_INLINE DERIVED_VEC_TYPE & gather (MASK_TYPE const & mask, SCALAR_TYPE* baseAddr, SCALAR_UINT_TYPE* indices) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & gather (MASK_TYPE const & mask, SCALAR_TYPE const * baseAddr, SCALAR_UINT_TYPE const * indices) {
             UME_EMULATION_WARNING();
             return SCALAR_EMULATION::gather<DERIVED_VEC_TYPE, SCALAR_TYPE, SCALAR_UINT_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this), baseAddr, indices);
         }
 
         // GATHERV
-        UME_FORCE_INLINE DERIVED_VEC_TYPE & gather (SCALAR_TYPE * baseAddr, DERIVED_UINT_VEC_TYPE const & indices) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & gather (SCALAR_TYPE const * baseAddr, DERIVED_UINT_VEC_TYPE const & indices) {
             UME_EMULATION_WARNING();
             return SCALAR_EMULATION::gather<DERIVED_VEC_TYPE, SCALAR_TYPE, DERIVED_UINT_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this), baseAddr, indices);
         }
 
         // MGATHERV
-        UME_FORCE_INLINE DERIVED_VEC_TYPE & gather (MASK_TYPE const & mask, SCALAR_TYPE* baseAddr, DERIVED_UINT_VEC_TYPE const & indices) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & gather (MASK_TYPE const & mask, SCALAR_TYPE const * baseAddr, DERIVED_UINT_VEC_TYPE const & indices) {
             UME_EMULATION_WARNING();
             return SCALAR_EMULATION::gather<DERIVED_VEC_TYPE, SCALAR_TYPE, DERIVED_UINT_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this), baseAddr, indices);
         }

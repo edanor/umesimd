@@ -1666,14 +1666,14 @@ namespace SIMD {
             return retval ^ b;
         }
         // GATHERS
-        inline SIMDVec_u & gather(uint32_t* baseAddr, uint32_t* indices) {
+        inline SIMDVec_u & gather(uint32_t const * baseAddr, uint32_t const * indices) {
             alignas(32) uint32_t raw[8] = { baseAddr[indices[0]], baseAddr[indices[1]], baseAddr[indices[2]], baseAddr[indices[3]],
                 baseAddr[indices[4]], baseAddr[indices[5]], baseAddr[indices[6]], baseAddr[indices[7]] };
             mVec = _mm256_load_si256((__m256i*)raw);
             return *this;
         }
         // MGATHERS
-        inline SIMDVec_u & gather(SIMDVecMask<8> const & mask, uint32_t* baseAddr, uint32_t* indices) {
+        inline SIMDVec_u & gather(SIMDVecMask<8> const & mask, uint32_t const * baseAddr, uint32_t const * indices) {
             alignas(32) uint32_t raw[8] = { baseAddr[indices[0]], baseAddr[indices[1]], baseAddr[indices[2]], baseAddr[indices[3]],
                 baseAddr[indices[4]], baseAddr[indices[5]], baseAddr[indices[6]], baseAddr[indices[7]] };
             __m128i a_low = _mm256_extractf128_si256(mVec, 0);
@@ -1689,7 +1689,7 @@ namespace SIMD {
             return *this;
         }
         // GATHERV
-        inline SIMDVec_u & gather(uint32_t* baseAddr, SIMDVec_u const & indices) {
+        inline SIMDVec_u & gather(uint32_t const * baseAddr, SIMDVec_u const & indices) {
             alignas(32) uint32_t rawInd[8];
             alignas(32) uint32_t raw[8];
 
@@ -1699,7 +1699,7 @@ namespace SIMD {
             return *this;
         }
         // MGATHERV
-        inline SIMDVec_u & gather(SIMDVecMask<8> const & mask, uint32_t* baseAddr, SIMDVec_u const & indices) {
+        inline SIMDVec_u & gather(SIMDVecMask<8> const & mask, uint32_t const * baseAddr, SIMDVec_u const & indices) {
             alignas(32) uint32_t rawInd[8];
             alignas(32) uint32_t raw[8];
 

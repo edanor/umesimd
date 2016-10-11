@@ -943,32 +943,32 @@ namespace SIMD {
         }
 
         // GATHERU
-        UME_FORCE_INLINE SIMDVec_f & gatheru(double * baseAddr, uint64_t stride) {
+        UME_FORCE_INLINE SIMDVec_f & gatheru(double const * baseAddr, uint64_t stride) {
             mVec = baseAddr[0];
             return *this;
         }
         // MGATHERU
-        UME_FORCE_INLINE SIMDVec_f & gatheru(SIMDVecMask<1> const & mask, double * baseAddr, uint64_t stride) {
+        UME_FORCE_INLINE SIMDVec_f & gatheru(SIMDVecMask<1> const & mask, double const * baseAddr, uint64_t stride) {
             if (mask.mMask == true) mVec = baseAddr[0];
             return *this;
         }
         // GATHERS
-        UME_FORCE_INLINE SIMDVec_f & gather(double * baseAddr, uint64_t * indices) {
+        UME_FORCE_INLINE SIMDVec_f & gather(double const * baseAddr, uint64_t const * indices) {
             mVec = baseAddr[indices[0]];
             return *this;
         }
         // MGATHERS
-        UME_FORCE_INLINE SIMDVec_f & gather(SIMDVecMask<1> const & mask, double * baseAddr, uint64_t * indices) {
+        UME_FORCE_INLINE SIMDVec_f & gather(SIMDVecMask<1> const & mask, double const * baseAddr, uint64_t const * indices) {
             if (mask.mMask == true) mVec = baseAddr[indices[0]];
             return *this;
         }
         // GATHERV
-        UME_FORCE_INLINE SIMDVec_f & gather(double * baseAddr, VEC_UINT_TYPE const & indices) {
+        UME_FORCE_INLINE SIMDVec_f & gather(double const * baseAddr, VEC_UINT_TYPE const & indices) {
             mVec = baseAddr[indices[0]];
             return *this;
         }
         // MGATHERV
-        UME_FORCE_INLINE SIMDVec_f & gather(SIMDVecMask<1> const & mask, double * baseAddr, VEC_UINT_TYPE const & indices) {
+        UME_FORCE_INLINE SIMDVec_f & gather(SIMDVecMask<1> const & mask, double const * baseAddr, VEC_UINT_TYPE const & indices) {
             if (mask.mMask == true) mVec = baseAddr[indices[0]];
             return *this;
         }
