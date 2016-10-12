@@ -96,6 +96,30 @@ int test_UME_SIMD64_8u(bool supressMessages) {
         CHECK_CONDITION(true, "ZERO-CONSTR");
     }
 
+    {
+        SIMD64_8u vec0(
+            63,  62,  61,  60,  59,  58,  57,  56,
+            55,  54,  53,  52,  51,  50,  49,  48,
+            47,  46,  45,  44,  43,  42,  41,  40,
+            39,  38,  37,  36,  35,  34,  33,  32,
+            31,  30,  29,  28,  27,  26,  25,  24,
+            23,  22,  21,  20,  19,  18,  17,  16,
+            15,  14,  13,  12,  11,  10,  9,   8,
+            7,   6,   5,   4,   3,   2,   1,   0);
+
+        uint8_t raw[64];
+        vec0.store(raw);
+        bool cond = true;
+        for(int i = 0; i < 64; i++) {
+            if(raw[i] != (63 - i)) {
+                cond = false;
+                break;
+            }
+        }
+
+        CHECK_CONDITION(cond, "FULL-CONSTR");
+    }
+
     genericUintTest<
         SIMD64_8u, uint8_t,
         SIMD64_8i, int8_t,
@@ -120,6 +144,30 @@ int test_UME_SIMD64_8i(bool supressMessages) {
     {
         SIMD64_8i vec0;
         CHECK_CONDITION(true, "ZERO-CONSTR");
+    }
+
+    {
+        SIMD64_8i vec0(
+            63,  62,  61,  60,  59,  58,  57,  56,
+            55,  54,  53,  52,  51,  50,  49,  48,
+            47,  46,  45,  44,  43,  42,  41,  40,
+            39,  38,  37,  36,  35,  34,  33,  32,
+            31,  30,  29,  28,  27,  26,  25,  24,
+            23,  22,  21,  20,  19,  18,  17,  16,
+            15,  14,  13,  12,  11,  10,  9,   8,
+            7,   6,   5,   4,   3,   2,   1,   0);
+
+        int8_t raw[64];
+        vec0.store(raw);
+        bool cond = true;
+        for(int i = 0; i < 64; i++) {
+            if(raw[i] != (63 - i)) {
+                cond = false;
+                break;
+            }
+        }
+
+        CHECK_CONDITION(cond, "FULL-CONSTR");
     }
 
     genericIntTest<

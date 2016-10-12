@@ -270,6 +270,39 @@ int test_UME_SIMDMask64(bool supressMessages) {
         CHECK_CONDITION(true, "ZERO-CONSTR()");
     }
 
+    {
+        std::random_device rd;
+        std::mt19937 gen(rd());
+
+        bool input[64];
+
+        for(int i = 0; i < 64; i++) {
+            input[i] = randomValue<bool>(gen);
+        }
+
+        SIMDMask64 mask(
+            input[63],  input[62],  input[61],  input[60],  input[59],  input[58],  input[57],  input[56],
+            input[55],  input[54],  input[53],  input[52],  input[51],  input[50],  input[49],  input[48],
+            input[47],  input[46],  input[45],  input[44],  input[43],  input[42],  input[41],  input[40],
+            input[39],  input[38],  input[37],  input[36],  input[35],  input[34],  input[33],  input[32],
+            input[31],  input[30],  input[29],  input[28],  input[27],  input[26],  input[25],  input[24],
+            input[23],  input[22],  input[21],  input[20],  input[19],  input[18],  input[17],  input[16],
+            input[15],  input[14],  input[13],  input[12],  input[11],  input[10],  input[9],   input[8],
+            input[7],   input[6],   input[5],   input[4],   input[3],   input[2],   input[1],   input[0]);
+
+        bool raw[64];
+        mask.store(raw);
+        bool cond = true;
+        for(int i = 0; i < 64; i++) {
+            if(raw[i] != input[63 - i]) {
+                cond = false;
+                break;
+            }
+        }
+
+        CHECK_CONDITION(cond, "FULL-CONSTR");
+    }
+
     genericMaskTest<SIMDMask64, 64, DataSet_1_mask>();
 
     return g_failCount;
@@ -283,7 +316,48 @@ int test_UME_SIMDMask128(bool supressMessages) {
         SIMDMask128 mask;
         CHECK_CONDITION(true, "ZERO-CONSTR()");
     }
-    
+
+    {
+        std::random_device rd;
+        std::mt19937 gen(rd());
+
+        bool input[128];
+
+        for(int i = 0; i < 128; i++) {
+            input[i] = randomValue<bool>(gen);
+        }
+
+        SIMDMask128 mask(
+            input[127], input[126], input[125], input[124], input[123], input[122], input[121], input[120],
+            input[119], input[118], input[117], input[116], input[115], input[114], input[113], input[112],
+            input[111], input[110], input[109], input[108], input[107], input[106], input[105], input[104],
+            input[103], input[102], input[101], input[100], input[99],  input[98],  input[97],  input[96], 
+            input[95],  input[94],  input[93],  input[92],  input[91],  input[90],  input[89],  input[88],
+            input[87],  input[86],  input[85],  input[84],  input[83],  input[82],  input[81],  input[80],
+            input[79],  input[78],  input[77],  input[76],  input[75],  input[74],  input[73],  input[72],
+            input[71],  input[70],  input[69],  input[68],  input[67],  input[66],  input[65],  input[64],
+            input[63],  input[62],  input[61],  input[60],  input[59],  input[58],  input[57],  input[56],
+            input[55],  input[54],  input[53],  input[52],  input[51],  input[50],  input[49],  input[48],
+            input[47],  input[46],  input[45],  input[44],  input[43],  input[42],  input[41],  input[40],
+            input[39],  input[38],  input[37],  input[36],  input[35],  input[34],  input[33],  input[32],
+            input[31],  input[30],  input[29],  input[28],  input[27],  input[26],  input[25],  input[24],
+            input[23],  input[22],  input[21],  input[20],  input[19],  input[18],  input[17],  input[16],
+            input[15],  input[14],  input[13],  input[12],  input[11],  input[10],  input[9],   input[8],
+            input[7],   input[6],   input[5],   input[4],   input[3],   input[2],   input[1],   input[0]);
+
+        bool raw[128];
+        mask.store(raw);
+        bool cond = true;
+        for(int i = 0; i < 128; i++) {
+            if(raw[i] != input[127 - i]) {
+                cond = false;
+                break;
+            }
+        }
+
+        CHECK_CONDITION(cond, "FULL-CONSTR");
+    }
+
     genericMaskTest<SIMDMask128, 128, DataSet_1_mask>();
 
     return g_failCount;

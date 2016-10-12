@@ -502,7 +502,7 @@ namespace SIMD {
             mVec.insert(60, i60);  mVec.insert(61, i61);  mVec.insert(62, i62);  mVec.insert(63, i63);
             mVec.insert(64,  i64);   mVec.insert(65, i65);    mVec.insert(66, i66);    mVec.insert(67, i67);
             mVec.insert(68,  i68);   mVec.insert(69, i69);    mVec.insert(70, i70);    mVec.insert(71, i71);
-            mVec.insert(72,  i72);   mVec.insert(73, i73);    mVec.insert(74, i75);    mVec.insert(75, i75);
+            mVec.insert(72,  i72);   mVec.insert(73, i73);    mVec.insert(74, i74);    mVec.insert(75, i75);
             mVec.insert(76,  i76);   mVec.insert(77, i77);    mVec.insert(78, i78);    mVec.insert(79, i79);
             mVec.insert(80,  i80);   mVec.insert(81, i81);    mVec.insert(82, i82);    mVec.insert(83, i83);
             mVec.insert(84,  i84);   mVec.insert(85, i85);    mVec.insert(86, i86);    mVec.insert(87, i87);

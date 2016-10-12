@@ -513,7 +513,7 @@ namespace SIMD {
             insert(60, i60);  insert(61, i61);  insert(62, i62);  insert(63, i63);
             insert(64,  i64);   insert(65, i65);    insert(66, i66);    insert(67, i67);
             insert(68,  i68);   insert(69, i69);    insert(70, i70);    insert(71, i71);
-            insert(72,  i72);   insert(73, i73);    insert(74, i75);    insert(75, i75);
+            insert(72,  i72);   insert(73, i73);    insert(74, i74);    insert(75, i75);
             insert(76,  i76);   insert(77, i77);    insert(78, i78);    insert(79, i79);
             insert(80,  i80);   insert(81, i81);    insert(82, i82);    insert(83, i83);
             insert(84,  i84);   insert(85, i85);    insert(86, i86);    insert(87, i87);
