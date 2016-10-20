@@ -32,7 +32,6 @@
 #define UME_SIMD_MASK_4_H_
 
 #include "UMESimdMaskPrototype.h"
-#include <altivec.h>
 
 namespace UME {
 namespace SIMD {
@@ -49,9 +48,9 @@ namespace SIMD {
         friend class SIMDVec_f<float, 4>;
         friend class SIMDVec_f<double, 4>;
     private:
-        vector uint32_t mMask;
+        __vector uint32_t mMask;
 
-        inline SIMDVecMask(vector uint32_t const & x) {
+        inline SIMDVecMask(__vector uint32_t const & x) {
             this->mMask = x;
         }
 

@@ -52,4 +52,7 @@
 #include "float/UMESimdVecFloat32_4.h"
 //#include "float/UMESimdVecFloat32_8.h"
 
+#include "float/UMESimdVecFloat64_1.h"
+#include "float/UMESimdVecFloat64_2.h"
+
 #endif

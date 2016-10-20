@@ -35,9 +35,14 @@
 #include "../UMESimdInterface.h"
 
 #include <altivec.h>
-// We need to disable 'bool' macro defined by altivec. See:
+// We need to disable 'bool' & 'vector' macros defined by altivec. See:
 // https://gcc.gnu.org/bugzilla/show_bug.cgi?id=58241
+// and
+// https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=770670
+//
+// The implementation will use then __bool and __vector instead.
 #undef bool
+#undef vector
 
 namespace UME
 {
