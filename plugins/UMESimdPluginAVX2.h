@@ -59,7 +59,7 @@ namespace SIMD
     
     template<> class SIMDVec_u<uint64_t, 1>;
     template<> class SIMDVec_u<uint64_t, 2>;
-    //template<> class SIMDVec_u<uint64_t, 4>;
+    template<> class SIMDVec_u<uint64_t, 4>;
     //template<> class SIMDVec_u<uint64_t, 8>;
     //template<> class SIMDVec_u<uint64_t, 16>;
     
