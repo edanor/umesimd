@@ -1860,11 +1860,11 @@ namespace SIMD {
             __m128i t1 = _mm_setr_epi32(0, 1, 2, 3);
             __m128i t2 = _mm_mullo_epi32(t0, t1);
 #if defined(__AVX512VL__)
-            mVec = _mm_mmask_i32gather_epi32(mVec, mask.mMask, t2, baseAddr, 4);
+            mVec = _mm_mmask_i32gather_epi32(mVec, mask.mMask, t2, (const int *)baseAddr, 4);
 #else
             __m512i t3 = _mm512_castsi128_si512(t2);
             __m512i t4 = _mm512_castsi128_si512(mVec);
-            __m512i t5 = _mm512_mask_i32gather_epi32(t4, mask.mMask, t3, baseAddr, 4);
+            __m512i t5 = _mm512_mask_i32gather_epi32(t4, mask.mMask, t3, (const int *)baseAddr, 4);
             mVec = _mm512_castsi512_si128(t5);
 #endif
             return *this;
@@ -1879,11 +1879,11 @@ namespace SIMD {
         UME_FORCE_INLINE SIMDVec_u & gather(SIMDVecMask<4> const & mask, uint32_t const * baseAddr, uint32_t const * indices) {
             __m128i t0 = _mm_loadu_si128((__m128i*)indices);
 #if defined(__AVX512VL__)
-            mVec = _mm_mmask_i32gather_epi32(mVec, mask.mMask, t0, baseAddr, 4);
+            mVec = _mm_mmask_i32gather_epi32(mVec, mask.mMask, t0, (const int *)baseAddr, 4);
 #else
             __m512i t1 = _mm512_castsi128_si512(t0);
             __m512i t2 = _mm512_castsi128_si512(mVec);
-            __m512i t3 = _mm512_mask_i32gather_epi32(t2, mask.mMask, t1, baseAddr, 4);
+            __m512i t3 = _mm512_mask_i32gather_epi32(t2, mask.mMask, t1, (const int *)baseAddr, 4);
             mVec = _mm512_castsi512_si128(t3);
 #endif
             return *this;
@@ -1896,11 +1896,11 @@ namespace SIMD {
         // MGATHERV
         UME_FORCE_INLINE SIMDVec_u & gather(SIMDVecMask<4> const & mask, uint32_t const * baseAddr, SIMDVec_u const & indices) {
 #if defined(__AVX512VL__)
-            mVec = _mm_mmask_i32gather_epi32(mVec, mask.mMask, indices.mVec, baseAddr, 4);
+            mVec = _mm_mmask_i32gather_epi32(mVec, mask.mMask, indices.mVec, (const int *)baseAddr, 4);
 #else
             __m512i t0 = _mm512_castsi128_si512(indices.mVec);
             __m512i t1 = _mm512_castsi128_si512(mVec);
-            __m512i t2 = _mm512_mask_i32gather_epi32(t1, mask.mMask, t0, baseAddr, 4);
+            __m512i t2 = _mm512_mask_i32gather_epi32(t1, mask.mMask, t0, (const int *)baseAddr, 4);
             mVec = _mm512_castsi512_si128(t2);
 #endif
             return *this;
@@ -1911,11 +1911,11 @@ namespace SIMD {
             __m128i t1 = _mm_setr_epi32(0, 1, 2, 3);
             __m128i t2 = _mm_mullo_epi32(t0, t1);
 #if defined(__AVX512VL__)
-            _mm_i32scatter_epi32(baseAddr, t2, mVec, 4);
+            _mm_i32scatter_epi32((int *)baseAddr, t2, mVec, 4);
 #else
             __m512i t3 = _mm512_castsi128_si512(t2);
             __m512i t4 = _mm512_castsi128_si512(mVec);
-            _mm512_mask_i32scatter_epi32(baseAddr, 0xF, t3, t4, 4);
+            _mm512_mask_i32scatter_epi32((int *)baseAddr, 0xF, t3, t4, 4);
 #endif
             return baseAddr;
         }
@@ -1925,11 +1925,11 @@ namespace SIMD {
             __m128i t1 = _mm_setr_epi32(0, 1, 2, 3);
             __m128i t2 = _mm_mullo_epi32(t0, t1);
 #if defined(__AVX512VL__)
-            _mm_mask_i32scatter_epi32(baseAddr, mask.mMask, t2, mVec, 4);
+            _mm_mask_i32scatter_epi32((int *)baseAddr, mask.mMask, t2, mVec, 4);
 #else
             __m512i t3 = _mm512_castsi128_si512(t2);
             __m512i t4 = _mm512_castsi128_si512(mVec);
-            _mm512_mask_i32scatter_epi32(baseAddr, mask.mMask, t3, t4, 4);
+            _mm512_mask_i32scatter_epi32((int *)baseAddr, mask.mMask, t3, t4, 4);
 #endif
             return baseAddr;
         }
@@ -1937,11 +1937,11 @@ namespace SIMD {
         UME_FORCE_INLINE uint32_t* scatter(uint32_t* baseAddr, uint32_t* indices) {
             __m128i t0 = _mm_loadu_si128((__m128i *) indices);
 #if defined(__AVX512VL__)
-            _mm_i32scatter_epi32(baseAddr, t0, mVec, 4);
+            _mm_i32scatter_epi32((int *)baseAddr, t0, mVec, 4);
 #else
             __m512i t1 = _mm512_castsi128_si512(t0);
             __m512i t2 = _mm512_castsi128_si512(mVec);
-            _mm512_mask_i32scatter_epi32(baseAddr, 0xF, t1, t2, 4);
+            _mm512_mask_i32scatter_epi32((int *)baseAddr, 0xF, t1, t2, 4);
 #endif
             return baseAddr;
         }
@@ -1949,33 +1949,33 @@ namespace SIMD {
         UME_FORCE_INLINE uint32_t* scatter(SIMDVecMask<4> const & mask, uint32_t* baseAddr, uint32_t* indices) {
             __m128i t0 = _mm_loadu_si128((__m128i *) indices);
 #if defined(__AVX512VL__)
-            _mm_mask_i32scatter_epi32(baseAddr, mask.mMask, t0, mVec, 4);
+            _mm_mask_i32scatter_epi32((int *)baseAddr, mask.mMask, t0, mVec, 4);
 #else
             __m512i t1 = _mm512_castsi128_si512(t0);
             __m512i t2 = _mm512_castsi128_si512(mVec);
-            _mm512_mask_i32scatter_epi32(baseAddr, mask.mMask, t1, t2, 4);
+            _mm512_mask_i32scatter_epi32((int *)baseAddr, mask.mMask, t1, t2, 4);
 #endif
             return baseAddr;
         }
         // SCATTERV
         UME_FORCE_INLINE uint32_t* scatter(uint32_t* baseAddr, SIMDVec_u const & indices) {
 #if defined(__AVX512VL__)
-            _mm_i32scatter_epi32(baseAddr, indices.mVec, mVec, 4);
+            _mm_i32scatter_epi32((int *)baseAddr, indices.mVec, mVec, 4);
 #else
             __m512i t0 = _mm512_castsi128_si512(mVec);
             __m512i t1 = _mm512_castsi128_si512(indices.mVec);
-            _mm512_mask_i32scatter_epi32(baseAddr, 0xF, t1, t0, 4);
+            _mm512_mask_i32scatter_epi32((int *)baseAddr, 0xF, t1, t0, 4);
 #endif
             return baseAddr;
         }
         // MSCATTERV
         UME_FORCE_INLINE uint32_t* scatter(SIMDVecMask<4> const & mask, uint32_t* baseAddr, SIMDVec_u const & indices) {
 #if defined(__AVX512VL__)
-            _mm_mask_i32scatter_epi32(baseAddr, mask.mMask, indices.mVec, mVec, 4);
+            _mm_mask_i32scatter_epi32((int *)baseAddr, mask.mMask, indices.mVec, mVec, 4);
 #else
             __m512i t0 = _mm512_castsi128_si512(mVec);
             __m512i t1 = _mm512_castsi128_si512(indices.mVec);
-            _mm512_mask_i32scatter_epi32(baseAddr, mask.mMask & 0xF, t1, t0, 4);
+            _mm512_mask_i32scatter_epi32((int *)baseAddr, mask.mMask & 0xF, t1, t0, 4);
 #endif
             return baseAddr;
         }

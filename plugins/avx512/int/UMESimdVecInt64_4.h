@@ -1816,7 +1816,12 @@ namespace SIMD {
 #else
             __m256i t2 = _mm256_setr_epi64x(0, stride, 2*stride, 3*stride);
 #endif
+#if defined(__GNUG__)
+            // g++ has some interface issues.
+            mVec = _mm256_i64gather_epi64((const long long int*)baseAddr, t2, 8);
+#else
             mVec = _mm256_i64gather_epi64((int64_t const*)baseAddr, t2, 8);
+#endif
             return *this;
         }
         // MGATHERU
@@ -1828,7 +1833,12 @@ namespace SIMD {
 #else
             __m256i t2 = _mm256_setr_epi64x(0, stride, 2*stride, 3*stride);
 #endif
+#if defined(__GNUG__)
+            // g++ has some interface issues.
+            __m256i t3 = _mm256_i64gather_epi64((const long long int*)baseAddr, t2, 8);
+#else
             __m256i t3 = _mm256_i64gather_epi64((int64_t const*)baseAddr, t2, 8);
+#endif
 #if defined(__AVX512VL__)
             mVec = _mm256_mask_mov_epi64(mVec, mask.mMask, t3);
 #else
@@ -1843,13 +1853,23 @@ namespace SIMD {
         // GATHERS
         UME_FORCE_INLINE SIMDVec_i & gather(int64_t const * baseAddr, uint64_t const * indices) {
             __m256i t0 =_mm256_loadu_si256((__m256i *)indices);
+#if defined(__GNUG__)
+            // g++ has some interface issues.
+            mVec = _mm256_i64gather_epi64((const long long int*)baseAddr, t0, 8);
+#else
             mVec = _mm256_i64gather_epi64((int64_t const*)baseAddr, t0, 8);
+#endif
             return *this;
         }
         // MGATHERS
         UME_FORCE_INLINE SIMDVec_i & gather(SIMDVecMask<4> const & mask, int64_t const * baseAddr, uint64_t const * indices) {
             __m256i t0 = _mm256_loadu_si256((__m256i *)indices);
+#if defined(__GNUG__)
+            // g++ has some interface issues.
+            __m256i t1 = _mm256_i64gather_epi64((const long long int*)baseAddr, t0, 8);
+#else
             __m256i t1 = _mm256_i64gather_epi64((int64_t const*)baseAddr, t0, 8);
+#endif
 #if defined(__AVX512VL__)
             mVec = _mm256_mask_mov_epi64(mVec, mask.mMask, t1);
 #else
@@ -1863,12 +1883,22 @@ namespace SIMD {
         }
         // GATHERV
         UME_FORCE_INLINE SIMDVec_i & gather(int64_t const * baseAddr, SIMDVec_u<uint64_t, 4> const & indices) {
+#if defined(__GNUG__)
+            // g++ has some interface issues.
+            mVec = _mm256_i64gather_epi64((const long long int*)baseAddr, indices.mVec, 8);
+#else
             mVec = _mm256_i64gather_epi64((int64_t const*)baseAddr, indices.mVec, 8);
+#endif
             return *this;
         }
         // MGATHERV
         UME_FORCE_INLINE SIMDVec_i & gather(SIMDVecMask<4> const & mask, int64_t const * baseAddr, SIMDVec_u<uint64_t, 4> const & indices) {
+#if defined(__GNUG__)
+            // g++ has some interface issues.
+            __m256i t0 = _mm256_i64gather_epi64((const long long int*)baseAddr, indices.mVec, 8);
+#else
             __m256i t0 = _mm256_i64gather_epi64((int64_t const*)baseAddr, indices.mVec, 8);
+#endif
 #if defined(__AVX512VL__)
             mVec = _mm256_mask_mov_epi64(mVec, mask.mMask, t0);
 #else
@@ -1889,12 +1919,23 @@ namespace SIMD {
 #else
             __m256i t2 = _mm256_setr_epi64x(0, stride, 2*stride, 3*stride);
 #endif
-#if defined(__AVX512VL__)
-            _mm256_i64scatter_epi64(baseAddr, t2, mVec, 8);
+#if defined(__GNUG__)
+            // g++ has some interface issues.
+  #if defined(__AVX512VL__)
+            _mm256_i64scatter_epi64((long long int*)baseAddr, t2, mVec, 8);
+  #else
+            __m512i t3 = _mm512_castsi256_si512(t2);
+            __m512i t4 = _mm512_castsi256_si512(mVec);
+            _mm512_mask_i64scatter_epi64((long long int*)baseAddr, 0xF, t3, t4, 8);
+  #endif
 #else
+  #if defined(__AVX512VL__)
+            _mm256_i64scatter_epi64(baseAddr, t2, mVec, 8);
+  #else
             __m512i t3 = _mm512_castsi256_si512(t2);
             __m512i t4 = _mm512_castsi256_si512(mVec);
             _mm512_mask_i64scatter_epi64(baseAddr, 0xF, t3, t4, 8);
+  #endif
 #endif
             return baseAddr;
         }
@@ -1907,70 +1948,137 @@ namespace SIMD {
 #else
             __m256i t2 = _mm256_setr_epi64x(0, stride, 2*stride, 3*stride);
 #endif
-#if defined(__AVX512VL__)
-            _mm256_mask_i64scatter_epi64(baseAddr, mask.mMask, t2, mVec, 8);
+#if defined(__GNUG__)
+            // g++ has some interface issues.
+  #if defined(__AVX512VL__)
+            _mm256_mask_i64scatter_epi64((long long int*)baseAddr, mask.mMask, t2, mVec, 8);
+  #else
+            __m512i t3 = _mm512_castsi256_si512(t2);
+            __m512i t4 = _mm512_castsi256_si512(mVec);
+            _mm512_mask_i64scatter_epi64((long long int*)baseAddr, mask.mMask, t3, t4, 8);
+  #endif
 #else
+  #if defined(__AVX512VL__)
+            _mm256_mask_i64scatter_epi64(baseAddr, mask.mMask, t2, mVec, 8);
+  #else
             __m512i t3 = _mm512_castsi256_si512(t2);
             __m512i t4 = _mm512_castsi256_si512(mVec);
             _mm512_mask_i64scatter_epi64(baseAddr, mask.mMask, t3, t4, 8);
+  #endif
 #endif
             return baseAddr;
         }
         // SCATTERS
         UME_FORCE_INLINE int64_t* scatter(int64_t* baseAddr, uint64_t* indices) const {
             __m256i t0 = _mm256_loadu_si256((__m256i *)indices);
-#if defined(__AVX512VL__)
-            _mm256_i64scatter_epi64(baseAddr, t0, mVec, 8);
+#if defined(__GNUG__)
+            // g++ has some interface issues.
+  #if defined(__AVX512VL__)
+            _mm256_i64scatter_epi64((long long int*)baseAddr, t0, mVec, 8);
+  #else
+            _mm512_mask_i64scatter_epi64(
+                            (long long int*)baseAddr,
+                            0xF,
+                            _mm512_castsi256_si512(t0),
+                            _mm512_castsi256_si512(mVec),
+                            8);
+  #endif
 #else
+  #if defined(__AVX512VL__)
+            _mm256_i64scatter_epi64(baseAddr, t0, mVec, 8);
+  #else
             _mm512_mask_i64scatter_epi64(
                             baseAddr,
                             0xF,
                             _mm512_castsi256_si512(t0),
                             _mm512_castsi256_si512(mVec),
                             8);
+  #endif
 #endif
             return baseAddr;
         }
         // MSCATTERS
         UME_FORCE_INLINE int64_t* scatter(SIMDVecMask<4> const & mask, int64_t* baseAddr, uint64_t* indices) const {
             __m256i t0 = _mm256_loadu_si256((__m256i *)indices);
-#if defined(__AVX512VL__)
-            _mm256_mask_i64scatter_epi64(baseAddr, mask.mMask, t0, mVec, 8);
+#if defined(__GNUG__)
+            // g++ has some interface issues.
+  #if defined(__AVX512VL__)
+            _mm256_mask_i64scatter_epi64((long long int*)baseAddr, mask.mMask, t0, mVec, 8);
+  #else
+            _mm512_mask_i64scatter_epi64(
+                (long long int*)baseAddr,
+                mask.mMask,
+                _mm512_castsi256_si512(t0),
+                _mm512_castsi256_si512(mVec),
+                8);
+  #endif
 #else
+  #if defined(__AVX512VL__)
+            _mm256_mask_i64scatter_epi64(baseAddr, mask.mMask, t0, mVec, 8);
+  #else
             _mm512_mask_i64scatter_epi64(
                 baseAddr,
                 mask.mMask,
                 _mm512_castsi256_si512(t0),
                 _mm512_castsi256_si512(mVec),
                 8);
+  #endif
 #endif
             return baseAddr;
         }
         // SCATTERV
         UME_FORCE_INLINE int64_t* scatter(int64_t* baseAddr, SIMDVec_u<uint64_t, 4> const & indices) const {
-#if defined(__AVX512VL__)
-            _mm256_i64scatter_epi64(baseAddr, indices.mVec, mVec, 8);
+#if defined(__GNUG__)
+            // g++ has some interface issues.
+  #if defined(__AVX512VL__)
+            _mm256_i64scatter_epi64((long long int*)baseAddr, indices.mVec, mVec, 8);
+  #else
+            _mm512_mask_i64scatter_epi64(
+                (long long int*)baseAddr,
+                0xF,
+                _mm512_castsi256_si512(indices.mVec),
+                _mm512_castsi256_si512(mVec),
+                8);
+  #endif
 #else
+  #if defined(__AVX512VL__)
+            _mm256_i64scatter_epi64(baseAddr, indices.mVec, mVec, 8);
+  #else
             _mm512_mask_i64scatter_epi64(
                 baseAddr,
                 0xF,
                 _mm512_castsi256_si512(indices.mVec),
                 _mm512_castsi256_si512(mVec),
                 8);
+  #endif
 #endif
             return baseAddr;
         }
         // MSCATTERV
         UME_FORCE_INLINE int64_t* scatter(SIMDVecMask<4> const & mask, int64_t* baseAddr, SIMDVec_u<uint64_t, 4> const & indices) const {
-#if defined(__AVX512VL__)
-            _mm256_mask_i64scatter_epi64(baseAddr, mask.mMask, indices.mVec, mVec, 8);
+#if defined(__GNUG__)
+            // g++ has some interface issues.
+  #if defined(__AVX512VL__)
+            _mm256_mask_i64scatter_epi64((long long int*)baseAddr, mask.mMask, indices.mVec, mVec, 8);
+  #else
+            _mm512_mask_i64scatter_epi64(
+                (long long int*)baseAddr,
+                mask.mMask,
+                _mm512_castsi256_si512(indices.mVec),
+                _mm512_castsi256_si512(mVec),
+                8);
+  #endif
 #else
+  #if defined(__AVX512VL__)
+            _mm256_mask_i64scatter_epi64(baseAddr, mask.mMask, indices.mVec, mVec, 8);
+  #else
             _mm512_mask_i64scatter_epi64(
                 baseAddr,
                 mask.mMask,
                 _mm512_castsi256_si512(indices.mVec),
                 _mm512_castsi256_si512(mVec),
                 8);
+  #endif
 #endif
             return baseAddr;
         }

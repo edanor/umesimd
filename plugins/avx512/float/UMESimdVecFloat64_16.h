@@ -1338,8 +1338,8 @@ namespace SIMD {
             __m512i t3 = _mm512_setr_epi64(0, stride, 2*stride, 3*stride, 4*stride, 5*stride, 6*stride, 7*stride);
             __m512i t4 = _mm512_setr_epi64(8*stride, 9*stride, 10*stride, 11*stride, 12*stride, 13*stride, 14*stride, 15*stride);
 #endif
-            mVec[0] = _mm512_i64gather_pd(t3, (int64_t const*)baseAddr, 8);
-            mVec[1] = _mm512_i64gather_pd(t4, (int64_t const*)baseAddr, 8);
+            mVec[0] = _mm512_i64gather_pd(t3, baseAddr, 8);
+            mVec[1] = _mm512_i64gather_pd(t4, baseAddr, 8);
             return *this;
         }
         // MGATHERU
