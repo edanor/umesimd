@@ -269,35 +269,35 @@ namespace SIMD {
             mVec = _mm512_mask_add_pd(mVec, mask.mMask, mVec, _mm512_set1_pd(b));
             return *this;
         }
-        // SADDV
+        // SADDV
         UME_FORCE_INLINE SIMDVec_f sadd(SIMDVec_f const & b) const {
             return add(b);
         }
-        // MSADDV
+        // MSADDV
         UME_FORCE_INLINE SIMDVec_f sadd(SIMDVecMask<8> const & mask, SIMDVec_f const & b) const {
             return add(mask, b);
         }
-        // SADDS
+        // SADDS
         UME_FORCE_INLINE SIMDVec_f sadd(double b) const {
             return add(b);
         }
-        // MSADDS
+        // MSADDS
         UME_FORCE_INLINE SIMDVec_f sadd(SIMDVecMask<8> const & mask, double b) const {
             return add(mask, b);
         }
-        // SADDVA
+        // SADDVA
         UME_FORCE_INLINE SIMDVec_f & sadda(SIMDVec_f const & b) {
             return adda(b);
         }
-        // MSADDVA
+        // MSADDVA
         UME_FORCE_INLINE SIMDVec_f & sadda(SIMDVecMask<8> const & mask, SIMDVec_f const & b) {
             return adda(mask, b);
         }
-        // SADDSA
+        // SADDSA
         UME_FORCE_INLINE SIMDVec_f & sadda(double b) {
             return adda(b);
         }
-        // MSADDSA
+        // MSADDSA
         UME_FORCE_INLINE SIMDVec_f & sadda(SIMDVecMask<8> const & mask, double b) {
             return adda(mask, b);
         }
@@ -381,35 +381,35 @@ namespace SIMD {
             mVec = _mm512_mask_sub_pd(mVec, mask.mMask, mVec, _mm512_set1_pd(b));
             return *this;
         }
-        // SSUBV
+        // SSUBV
         UME_FORCE_INLINE SIMDVec_f ssub(SIMDVec_f const & b) const {
             return sub(b);
         }
-        // MSSUBV
+        // MSSUBV
         UME_FORCE_INLINE SIMDVec_f ssub(SIMDVecMask<8> const & mask, SIMDVec_f const & b) const {
             return sub(mask, b);
         }
-        // SSUBS
+        // SSUBS
         UME_FORCE_INLINE SIMDVec_f ssub(double b) const {
             return sub(b);
         }
-        // MSSUBS
+        // MSSUBS
         UME_FORCE_INLINE SIMDVec_f ssub(SIMDVecMask<8> const & mask, double b) const {
             return sub(mask, b);
         }
-        // SSUBVA
+        // SSUBVA
         UME_FORCE_INLINE SIMDVec_f & ssuba(SIMDVec_f const & b) {
             return suba(b);
         }
-        // MSSUBVA
+        // MSSUBVA
         UME_FORCE_INLINE SIMDVec_f & ssuba(SIMDVecMask<8> const & mask, SIMDVec_f const & b) {
             return suba(mask, b);
         }
-        // SSUBSA
+        // SSUBSA
         UME_FORCE_INLINE SIMDVec_f & ssuba(double b) {
             return suba(b);
         }
-        // MSSUBSA
+        // MSSUBSA
         UME_FORCE_INLINE SIMDVec_f & ssuba(SIMDVecMask<8> const & mask, double b) {
             return suba(mask, b);
         }

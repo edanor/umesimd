@@ -5556,7 +5556,7 @@ void genericMBANDNOTSATest_random()
 template < typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN>
 class genericPACKTest_random {
 public:
-    // (Pack/Unpack operations - not available for SIMD1)
+    // (Pack/Unpack operations - not available for SIMD1)
     static void run()
     {
         std::random_device rd;
@@ -5596,14 +5596,14 @@ public:
     }
 };
 
-        // PACKLO   - assign lower half of a vector with a half-length vector
+        // PACKLO   - assign lower half of a vector with a half-length vector
         // This test needs to be wrapped around in a class since it is not possible to provide
         // partial specialization for non-member function template. Such specialization is necessary
         // for covering SIMD1
 template < typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN>
 class genericPACKLOTest_random {
 public:
-    // (Pack/Unpack operations - not available for SIMD1)
+    // (Pack/Unpack operations - not available for SIMD1)
     static void run()
     {
         std::random_device rd;
@@ -5646,14 +5646,14 @@ public:
 };
 
 
-// PACKLO   - assign lower half of a vector with a half-length vector
+// PACKLO   - assign lower half of a vector with a half-length vector
 // This test needs to be wrapped around in a class since it is not possible to provide
 // partial specialization for non-member function template. Such specialization is necessary
 // for covering SIMD1
 template < typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN>
 class genericPACKHITest_random {
 public:
-    // (Pack/Unpack operations - not available for SIMD1)
+    // (Pack/Unpack operations - not available for SIMD1)
     static void run()
     {
         std::random_device rd;
@@ -5702,7 +5702,7 @@ public:
 template < typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN>
 class genericUNPACKTest_random {
 public:
-    // (Pack/Unpack operations - not available for SIMD1)
+    // (Pack/Unpack operations - not available for SIMD1)
     static void run()
     {
         std::random_device rd;
@@ -5752,7 +5752,7 @@ public:
 template < typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN>
 class genericUNPACKLOTest_random {
 public:
-    // (Pack/Unpack operations - not available for SIMD1)
+    // (Pack/Unpack operations - not available for SIMD1)
     static void run()
     {
         std::random_device rd;
@@ -5797,7 +5797,7 @@ public:
 template < typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN>
 class genericUNPACKHITest_random {
 public:
-    // (Pack/Unpack operations - not available for SIMD1)
+    // (Pack/Unpack operations - not available for SIMD1)
     static void run()
     {
         std::random_device rd;
@@ -5836,12 +5836,12 @@ public:
     }
 };
 
-        // UNPACK   - Unpack lower and upper halfs to half-length vectors.
-        // UNPACKLO - Unpack lower half and return as a half-length vector.
-        // UNPACKHI - Unpack upper half and return as a half-length vector.
+        // UNPACK   - Unpack lower and upper halfs to half-length vectors.
+        // UNPACKLO - Unpack lower half and return as a half-length vector.
+        // UNPACKHI - Unpack upper half and return as a half-length vector.
  
-        //(Blend/Swizzle operations)
-        // BLENDV   - Blend (mix) two vectors
+        //(Blend/Swizzle operations)
+        // BLENDV   - Blend (mix) two vectors
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN>
 void genericBLENDVTest_random()
@@ -5908,7 +5908,7 @@ void genericBLENDSTest_random()
         CHECK_CONDITION((inRange & isUnmodified), "BLENDS gen");
     }
 }
-// SWIZZLE  - Swizzle (reorder/permute) vector elements
+// SWIZZLE  - Swizzle (reorder/permute) vector elements
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename SWIZZLE_TYPE, int VEC_LEN>
 void genericSWIZZLETest_random()
 {
@@ -5944,7 +5944,7 @@ void genericSWIZZLETest_random()
         check_condition(inRange, std::string("SWIZZLE"));
     }
 }
-        // SWIZZLEA - Swizzle (reorder/permute) vector elements and assign
+        // SWIZZLEA - Swizzle (reorder/permute) vector elements and assign
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN>
 void genericSORTATest_random()
@@ -6037,7 +6037,7 @@ void genericSORTDTest_random()
     }
 }
 
-        //(Reduction to scalar operations)
+        //(Reduction to scalar operations)
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericHADDTest()
 {

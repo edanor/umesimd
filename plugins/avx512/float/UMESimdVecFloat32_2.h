@@ -306,35 +306,35 @@ namespace SIMD {
             mVec[1] = ((mask.mMask & 0x2) != 0) ? mVec[1] + b : mVec[1];
             return *this;
         }
-        // SADDV
+        // SADDV
         UME_FORCE_INLINE SIMDVec_f sadd(SIMDVec_f const & b) const {
             return add(b);
         }
-        // MSADDV
+        // MSADDV
         UME_FORCE_INLINE SIMDVec_f sadd(SIMDVecMask<2> const & mask, SIMDVec_f const & b) const {
             return add(mask, b);
         }
-        // SADDS
+        // SADDS
         UME_FORCE_INLINE SIMDVec_f sadd(float b) const {
             return add(b);
         }
-        // MSADDS
+        // MSADDS
         UME_FORCE_INLINE SIMDVec_f sadd(SIMDVecMask<2> const & mask, float b) const {
             return add(mask, b);
         }
-        // SADDVA
+        // SADDVA
         UME_FORCE_INLINE SIMDVec_f & sadda(SIMDVec_f const & b) {
             return adda(b);
         }
-        // MSADDVA
+        // MSADDVA
         UME_FORCE_INLINE SIMDVec_f & sadda(SIMDVecMask<2> const & mask, SIMDVec_f const & b) {
             return adda(mask, b);
         }
-        // SADDSA
+        // SADDSA
         UME_FORCE_INLINE SIMDVec_f & sadda(float b) {
             return adda(b);
         }
-        // MSADDSA
+        // MSADDSA
         UME_FORCE_INLINE SIMDVec_f & sadda(SIMDVecMask<2> const & mask, float b) {
             return adda(mask, b);
         }
@@ -428,35 +428,35 @@ namespace SIMD {
             if ((mask.mMask & 0x2) != 0) mVec[1] = mVec[1] - b;
             return *this;
         }
-        // SSUBV
+        // SSUBV
         UME_FORCE_INLINE SIMDVec_f ssub(SIMDVec_f const & b) const {
             return sub(b);
         }
-        // MSSUBV
+        // MSSUBV
         UME_FORCE_INLINE SIMDVec_f ssub(SIMDVecMask<2> const & mask, SIMDVec_f const & b) const {
             return sub(mask, b);
         }
-        // SSUBS
+        // SSUBS
         UME_FORCE_INLINE SIMDVec_f ssub(float b) const {
             return sub(b);
         }
-        // MSSUBS
+        // MSSUBS
         UME_FORCE_INLINE SIMDVec_f ssub(SIMDVecMask<2> const & mask, float b) const {
             return sub(mask, b);
         }
-        // SSUBVA
+        // SSUBVA
         UME_FORCE_INLINE SIMDVec_f & ssuba(SIMDVec_f const & b) {
             return suba(b);
         }
-        // MSSUBVA
+        // MSSUBVA
         UME_FORCE_INLINE SIMDVec_f & ssuba(SIMDVecMask<2> const & mask, SIMDVec_f const & b) {
             return suba(mask, b);
         }
-        // SSUBSA
+        // SSUBSA
         UME_FORCE_INLINE SIMDVec_f & ssuba(float b) {
             return suba(b);
         }
-        // MSSUBSA
+        // MSSUBSA
         UME_FORCE_INLINE SIMDVec_f & ssuba(SIMDVecMask<2> const & mask, float b) {
             return suba(mask, b);
         }
