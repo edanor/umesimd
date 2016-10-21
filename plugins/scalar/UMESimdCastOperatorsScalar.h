@@ -431,7 +431,6 @@ namespace SIMD {
         return SCALAR_EMULATION::xtoy < SIMDVec_u<uint32_t, 32>, uint32_t, SIMDVec_f<float, 32>>(*this);
     }
 
-    template<>
     UME_FORCE_INLINE SIMDVec_f<double, 1>::operator SIMDVec_u<uint64_t, 1>() const {
         return SCALAR_EMULATION::xtoy < SIMDVec_u<uint64_t, 1>, uint64_t, SIMDVec_f<double, 1>>(*this);
     }
@@ -484,7 +483,6 @@ namespace SIMD {
         return SCALAR_EMULATION::xtoy < SIMDVec_i<int32_t, 32>, int32_t, SIMDVec_f<float, 32>>(*this);
     }
 
-    template<>
     UME_FORCE_INLINE SIMDVec_f<double, 1>::operator SIMDVec_i<int64_t, 1>() const {
         return SCALAR_EMULATION::xtoy < SIMDVec_i<int64_t, 1>, int64_t, SIMDVec_f<double, 1>>(*this);
     }
@@ -873,7 +871,6 @@ namespace SIMD {
         return SCALAR_EMULATION::xtoy <SIMDVec_i<int32_t, 16>, int32_t, SIMDVec_i<int64_t, 16>>(*this);
     }
 
-    template<>
     UME_FORCE_INLINE SIMDVec_f<double, 1>::operator SIMDVec_f<float, 1>() const {
         return SCALAR_EMULATION::xtoy <SIMDVec_f<float, 1>, float, SIMDVec_f<double, 1>>(*this);
     }

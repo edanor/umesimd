@@ -97,7 +97,106 @@ namespace SIMD {
             mMask[1] = mask.mMask[1];
             return *this;
         }
+        
+        // LANDV
+        UME_FORCE_INLINE SIMDVecMask land(SIMDVecMask const & maskOp) const {
+            bool m0 = mMask[0] && maskOp.mMask[0];
+            bool m1 = mMask[1] && maskOp.mMask[1];
+            return SIMDVecMask(m0, m1);
+        }
+        UME_FORCE_INLINE SIMDVecMask operator& (SIMDVecMask const & maskOp) const {
+            return land(maskOp);
+        }
+        UME_FORCE_INLINE SIMDVecMask operator&& (SIMDVecMask const & maskOp) const {
+            return land(maskOp);
+        }
+        // LANDS
+        UME_FORCE_INLINE SIMDVecMask land(bool value) const {
+            bool m0 = mMask[0] && value;
+            bool m1 = mMask[1] && value;
+            return SIMDVecMask(m0, m1);
+        }
+        UME_FORCE_INLINE SIMDVecMask operator& (bool value) const {
+            return land(value);
+        }
+        UME_FORCE_INLINE SIMDVecMask operator&& (bool value) const {
+            return land(value);
+        }
+        // LANDVA
+        UME_FORCE_INLINE SIMDVecMask & landa(SIMDVecMask const & maskOp) {
+            mMask[0] = mMask[0] && maskOp.mMask[0];
+            mMask[1] = mMask[1] && maskOp.mMask[1];
+            return *this;
+        }
+        UME_FORCE_INLINE SIMDVecMask & operator&= (SIMDVecMask const & maskOp) {
+            return landa(maskOp);
+        }
+        // LANDSA
+        UME_FORCE_INLINE SIMDVecMask & landa(bool value) {
+            mMask[0] = mMask[0] && value;
+            mMask[1] = mMask[1] && value;
+            return *this;
+        }
+        UME_FORCE_INLINE SIMDVecMask & operator&= (bool value) {
+            return landa(value);
+        }
+        // LORV
+        UME_FORCE_INLINE SIMDVecMask lor(SIMDVecMask const & maskOp) const {
+            bool m0 = mMask[0] || maskOp.mMask[0];
+            bool m1 = mMask[1] || maskOp.mMask[1];
+            return SIMDVecMask(m0, m1);
+        }
+        UME_FORCE_INLINE SIMDVecMask operator| (SIMDVecMask const & maskOp) const {
+            return lor(maskOp);
+        }
+        UME_FORCE_INLINE SIMDVecMask operator|| (SIMDVecMask const & maskOp) const {
+            return lor(maskOp);
+        }
+        // LORS
+        UME_FORCE_INLINE SIMDVecMask lor(bool value) const {
+            bool m0 = mMask[0] || value;
+            bool m1 = mMask[1] || value;
+            return SIMDVecMask(m0, m1);
+        }
+        UME_FORCE_INLINE SIMDVecMask operator| (bool value) const {
+            return lor(value);
+        }
+        UME_FORCE_INLINE SIMDVecMask operator|| (bool value) const {
+            return lor(value);
+        }
+        // LORVA
+        UME_FORCE_INLINE SIMDVecMask & lora(SIMDVecMask const & maskOp) {
+            mMask[0] = mMask[0] || maskOp.mMask[0];
+            mMask[1] = mMask[1] || maskOp.mMask[1];
+            return *this;
+        }
+        UME_FORCE_INLINE SIMDVecMask & operator|= (SIMDVecMask const & maskOp) {
+            return lora(maskOp);
+        }
+        // LORSA
+        UME_FORCE_INLINE SIMDVecMask & lora(bool value) {
+            mMask[0] = mMask[0] || value;
+            mMask[1] = mMask[1] || value;
+            return *this;
+        }
+        UME_FORCE_INLINE SIMDVecMask & operator|= (bool value) {
+            return lora(value);
+        }
+        // LNOT
+        UME_FORCE_INLINE SIMDVecMask lnot () const {
+            bool m0 = !mMask[0];
+            bool m1 = !mMask[1];
+            return SIMDVecMask(m0, m1);
+        }
+        
+        UME_FORCE_INLINE SIMDVecMask operator!() const {
+            return lnot();
+        }
 
+        // HLAND
+        UME_FORCE_INLINE bool hland() const {
+            return mMask[0] && mMask[1];
+        }
         // HLOR
         UME_FORCE_INLINE bool hlor() const {
             return mMask[0] || mMask[1];

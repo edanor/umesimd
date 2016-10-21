@@ -35,7 +35,7 @@
 
 #include "../../../UMESimdInterface.h"
 
-#define SET_F64(a) (__vector double) {a, a}; 
+#define SET_F64(a) (__vector double) {a, a}
 #define MASK_TO_VEC(mask) ((__vector uint64_t) { (mask.mMask[0] ? 0xFFFFFFFFFFFFFFFF : 0), (mask.mMask[1] ? 0xFFFFFFFFFFFFFFFF : 0)})
 
 namespace UME {
@@ -254,7 +254,15 @@ namespace SIMD {
         }
 
         // BLENDV
+        UME_FORCE_INLINE SIMDVec_f blend(SIMDVecMask<2> const & mask, SIMDVec_f const & b) const {
+            __vector double t0 = vec_sel(mVec, b.mVec, MASK_TO_VEC(mask));
+            return SIMDVec_f(t0);
+        }
         // BLENDS
+        UME_FORCE_INLINE SIMDVec_f blend(SIMDVecMask<2> const & mask, float b) const {
+            __vector double t0 = vec_sel(mVec, SET_F64(b), MASK_TO_VEC(mask));
+            return SIMDVec_f(t0);
+        }
         // SWIZZLE
         // SWIZZLEA
 
@@ -373,9 +381,28 @@ namespace SIMD {
         // SSUBSA
         // MSSUBSA
         // SUBFROMV
+        UME_FORCE_INLINE SIMDVec_f subfrom(SIMDVec_f const & a) const {
+            __vector double t0 = vec_sub(a.mVec, mVec);
+            return SIMDVec_f(t0);
+        }
         // MSUBFROMV
+        UME_FORCE_INLINE SIMDVec_f subfrom(SIMDVecMask<2> const & mask, SIMDVec_f const & a) const {
+            __vector double t0 = vec_sub(a.mVec, mVec);
+            __vector double t1 = vec_sel(a.mVec, t0, MASK_TO_VEC(mask));
+            return SIMDVec_f(t1);
+        }
         // SUBFROMS
+        UME_FORCE_INLINE SIMDVec_f subfrom(float a) const {
+            __vector double t0 = vec_sub(SET_F64(a), mVec);
+            return SIMDVec_f(t0);
+        }
         // MSUBFROMS
+        UME_FORCE_INLINE SIMDVec_f subfrom(SIMDVecMask<2> const & mask, float a) const {
+            __vector double t0 = SET_F64(a);
+            __vector double t1 = vec_sub(t0, mVec);
+            __vector double t2 = vec_sel(t0, t1, MASK_TO_VEC(mask));
+            return SIMDVec_f(t2);
+        }
         // SUBFROMVA
         // MSUBFROMVA
         // SUBFROMSA
@@ -417,17 +444,63 @@ namespace SIMD {
         // MULSA
         // MMULSA
         // DIVV
+        UME_FORCE_INLINE SIMDVec_f div(SIMDVec_f const & b) const {
+            __vector double t0 = vec_div(mVec, b.mVec);
+            return SIMDVec_f(t0);
+        }
+        UME_FORCE_INLINE SIMDVec_f operator/ (SIMDVec_f const & b) const {
+            return div(b);
+        }
         // MDIVV
+        UME_FORCE_INLINE SIMDVec_f div(SIMDVecMask<2> const & mask, SIMDVec_f const & b) const {
+            __vector double t0 = vec_div(mVec, b.mVec);
+            __vector double t1 = vec_sel(mVec, t0, MASK_TO_VEC(mask));
+            return SIMDVec_f(t1);
+        }
         // DIVS
+        UME_FORCE_INLINE SIMDVec_f div(float b) const {
+            __vector double t0 = vec_div(mVec, SET_F64(b));
+            return SIMDVec_f(t0);
+        }
+        UME_FORCE_INLINE SIMDVec_f operator/ (float b) const {
+            return div(b);
+        }
         // MDIVS
+        UME_FORCE_INLINE SIMDVec_f div(SIMDVecMask<2> const & mask, float b) const {
+            __vector double t0 = vec_div(mVec, SET_F64(b));
+            __vector double t1 = vec_sel(mVec, t0, MASK_TO_VEC(mask));
+            return SIMDVec_f(t1);
+        }
         // DIVVA
         // MDIVVA
         // DIVSA
         // MDIVSA
         // RCP
+        UME_FORCE_INLINE SIMDVec_f rcp() const {
+            //__vector double t0 = vec_recip(SET_F64(1.0), mVec);
+            __vector double t0 = vec_div(SET_F64(1.0), mVec);
+            return SIMDVec_f(t0);
+        }
         // MRCP
+        UME_FORCE_INLINE SIMDVec_f rcp(SIMDVecMask<2> const & mask) const {
+            //__vector double t0 = vec_recip(SET_F64(1.0), mVec);
+            __vector double t0 = vec_div(SET_F64(1.0), mVec);
+            __vector double t1 = vec_sel(mVec, t0, MASK_TO_VEC(mask));
+            return SIMDVec_f(t1);
+        }
         // RCPS
+        UME_FORCE_INLINE SIMDVec_f rcp(float b) const {
+            //__vector double t0 = vec_recip(SET_F64(b), mVec);
+            __vector double t0 = vec_div(SET_F64(b), mVec);
+            return SIMDVec_f(t0);
+        }
         // MRCPS
+        UME_FORCE_INLINE SIMDVec_f rcp(SIMDVecMask<2> const & mask, float b) const {
+            //__vector double t0 = vec_recip(SET_F64(b), mVec);
+            __vector double t0 = vec_div(SET_F64(b), mVec);
+            __vector double t1 = vec_sel(mVec, t0, MASK_TO_VEC(mask));
+            return SIMDVec_f(t1);
+        }
         // RCPA
         // MRCPA
         // RCPSA
@@ -438,13 +511,77 @@ namespace SIMD {
         // CMPNEV
         // CMPNES
         // CMPGTV
+        UME_FORCE_INLINE SIMDVecMask<2> cmpgt(SIMDVec_f const & b) const {
+            bool m1 = ((double*)&mVec)[0] > ((double*)&b.mVec)[0];
+            bool m2 = ((double*)&mVec)[1] > ((double*)&b.mVec)[1];
+            return SIMDVecMask<2>(m1, m2);
+        }
+        UME_FORCE_INLINE SIMDVecMask<2> operator> (SIMDVec_f const & b) const {
+            return cmpgt(b);
+        }
         // CMPGTS
+        UME_FORCE_INLINE SIMDVecMask<2> cmpgt(float b) const {
+            bool m0 = ((double*)&mVec)[0] > b;
+            bool m1 = ((double*)&mVec)[1] > b;
+            return SIMDVecMask<2>(m0, m1);
+        }
+        UME_FORCE_INLINE SIMDVecMask<2> operator> (float b) const {
+            return cmpgt(b);
+        }
         // CMPLTV
+        UME_FORCE_INLINE SIMDVecMask<2> cmplt(SIMDVec_f const & b) const {
+            bool m1 = ((double*)&mVec)[0] < ((double*)&b.mVec)[0];
+            bool m2 = ((double*)&mVec)[1] < ((double*)&b.mVec)[1];
+            return SIMDVecMask<2>(m1, m2);
+        }
+        UME_FORCE_INLINE SIMDVecMask<2> operator< (SIMDVec_f const & b) const {
+            return cmplt(b);
+        }
         // CMPLTS
+        UME_FORCE_INLINE SIMDVecMask<2> cmplt(float b) const {
+            bool m0 = ((double*)&mVec)[0] < b;
+            bool m1 = ((double*)&mVec)[1] < b;
+            return SIMDVecMask<2>(m0, m1);
+        }
+        UME_FORCE_INLINE SIMDVecMask<2> operator< (float b) const {
+            return cmplt(b);
+        }
         // CMPGEV
+        UME_FORCE_INLINE SIMDVecMask<2> cmpge(SIMDVec_f const & b) const {
+            bool m1 = ((double*)&mVec)[0] >= ((double*)&b.mVec)[0];
+            bool m2 = ((double*)&mVec)[1] >= ((double*)&b.mVec)[1];
+            return SIMDVecMask<2>(m1, m2);
+        }
+        UME_FORCE_INLINE SIMDVecMask<2> operator>= (SIMDVec_f const & b) const {
+            return cmpge(b);
+        }
         // CMPGES
+        UME_FORCE_INLINE SIMDVecMask<2> cmpge(float b) const {
+            bool m0 = ((double*)&mVec)[0] >= b;
+            bool m1 = ((double*)&mVec)[1] >= b;
+            return SIMDVecMask<2>(m0, m1);
+        }
+        UME_FORCE_INLINE SIMDVecMask<2> operator>= (float b) const {
+            return cmpge(b);
+        }
         // CMPLEV
+        UME_FORCE_INLINE SIMDVecMask<2> cmple(SIMDVec_f const & b) const {
+            bool m1 = ((double*)&mVec)[0] <= ((double*)&b.mVec)[0];
+            bool m2 = ((double*)&mVec)[1] <= ((double*)&b.mVec)[1];
+            return SIMDVecMask<2>(m1, m2);
+        }
+        UME_FORCE_INLINE SIMDVecMask<2> operator<= (SIMDVec_f const & b) const {
+            return cmple(b);
+        }
         // CMPLES
+        UME_FORCE_INLINE SIMDVecMask<2> cmple(float b) const {
+            bool m0 = ((double*)&mVec)[0] <= b;
+            bool m1 = ((double*)&mVec)[1] <= b;
+            return SIMDVecMask<2>(m0, m1);
+        }
+        UME_FORCE_INLINE SIMDVecMask<2> operator<= (float b) const {
+            return cmple(b);
+        }
         // CMPEV
         // CMPES
         // UNIQUE
@@ -515,10 +652,45 @@ namespace SIMD {
         // NEGA
         // MNEGA
         // ABS
+        UME_FORCE_INLINE SIMDVec_f abs() const {
+            __vector double t0 = vec_abs(mVec);
+            return SIMDVec_f(t0);
+        }
         // MABS
+        UME_FORCE_INLINE SIMDVec_f abs(SIMDVecMask<2> const & mask) const {
+            __vector double t0 = vec_abs(mVec);
+            __vector double t1 = vec_sel(mVec, t0, MASK_TO_VEC(mask));
+            return SIMDVec_f(t1);
+        }
         // ABSA
+        UME_FORCE_INLINE SIMDVec_f & absa() {
+            mVec = vec_abs(mVec);
+            return *this;
+        }
         // MABSA
+        UME_FORCE_INLINE SIMDVec_f & absa(SIMDVecMask<2> const & mask) {
+            __vector double t0 = vec_abs(mVec);
+            mVec = vec_sel(mVec, t0, MASK_TO_VEC(mask));
+            return *this;
+        }
 
+        // COPYSIGN
+        UME_FORCE_INLINE SIMDVec_f copysign(SIMDVec_f const & b) const {
+            __vector double t0 = vec_abs(b.mVec);
+            __vector double t1 = vec_xor(b.mVec, t0);
+            __vector double t2 = vec_abs(mVec);
+            __vector double t3 = vec_or(t1, t2);
+            return SIMDVec_f(t3);
+        }
+        // MCOPYSIGN
+        UME_FORCE_INLINE SIMDVec_f copysign(SIMDVecMask<2> const & mask, SIMDVec_f const & b) const {
+            __vector double t0 = vec_abs(b.mVec);
+            __vector double t1 = vec_xor(b.mVec, t0);
+            __vector double t2 = vec_abs(mVec);
+            __vector double t3 = vec_or(t1, t2);
+            __vector double t4 = vec_sel(mVec, t3, MASK_TO_VEC(mask));
+            return SIMDVec_f(t4);
+        }
         // CMPEQRV
         // CMPEQRS
 
