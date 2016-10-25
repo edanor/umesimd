@@ -245,7 +245,7 @@ TIMING_RES test_AVX_d_256() {
 }
 TIMING_RES test_AVX_f_512()
 {
-#if defined(__AVX512__) || defined(__MIC__)
+#if defined(__AVX512F__) || defined(__MIC__)
     unsigned long long start, end;    // Time measurements
     
    

@@ -1,6 +1,6 @@
 # These three variables should be passed by users
 # CXX={gcc, icc, clang)
-# ISA={scalar, avx, avx2, core_avx512, mic_avx512, imci}
+# ISA={scalar, avx, avx2, core_avx512, mic_avx512, imci, arm}
 # BUILD={debug, release, release_O3}
 # {FORCE_OPENMP_PLUGIN=ON | FORCE_SCALAR_PLUGIN=ON}
 
@@ -61,6 +61,9 @@ endif
 
 # Select proper instruction set flags
 ifeq ($(ISA), scalar)
+	ifeq ($(CXX), icc)
+		CXXFLAGS+=-no-vec
+	endif
 	ISA_PREFIX+=_scalar
 endif
 ifeq ($(ISA), avx)
@@ -94,6 +97,9 @@ endif
 ifeq ($(ISA), imci)
 	CXXFLAGS+=-mmic
 	ISA_PREFIX+=_imci
+endif
+ifeq ($(ISA), arm)
+	ISA_PREFIX+=_arm
 endif
 
 OUT_NAME=$(join $(join $(join $(join $(COMPILER_PREFIX), $(ISA_PREFIX)), $(BUILD_PREFIX)), $(FORCE_PREFIX)), .out)

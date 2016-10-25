@@ -61,6 +61,9 @@ endif
 
 # Select proper instruction set flags
 ifeq ($(ISA), scalar)
+	ifeq ($(CXX), icc)
+		CXXFLAGS+=-no-vec
+	endif
 	ISA_PREFIX+=_scalar
 endif
 ifeq ($(ISA), avx)
