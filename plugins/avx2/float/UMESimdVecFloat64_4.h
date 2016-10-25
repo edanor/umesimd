@@ -959,11 +959,22 @@ namespace SIMD {
         // ISZEROSUB - Is zero or subnormal
         // EXP
         UME_FORCE_INLINE SIMDVec_f exp() const {
+        #if defined(UME_USE_SVML)
+            __m256d t0 = _mm256_exp_pd(mVec);
+            return SIMDVec_f(t0);
+        #else
             return VECTOR_EMULATION::expd<SIMDVec_f, SIMDVec_u<uint64_t, 4>>(*this);
+        #endif
         }
         // MEXP
         UME_FORCE_INLINE SIMDVec_f exp(SIMDVecMask<4> const & mask) const {
+        #if defined(UME_USE_SVML)
+            __m256d t0 = _mm256_exp_pd(mVec);
+            __m256d t1 = BLEND(mVec, t0, mask.mMask);
+            return SIMDVec_f(t1);
+        #else
             return VECTOR_EMULATION::expd<SIMDVec_f, SIMDVec_u<uint64_t, 4>, SIMDVecMask<4>> (mask, *this);
+        #endif
         }
         // LOG
         // MLOG
