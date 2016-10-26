@@ -36,12 +36,24 @@
 
 #include "../../../UMESimdInterface.h"
 
-#define BLEND(a_256d, b_256d, mask_128i) \
-    _mm256_blendv_pd( \
-        a_256d, \
-        b_256d, \
-        _mm256_castsi256_pd( \
-            _mm256_cvtepi32_epi64(mask_128i)))
+#if defined UME_USE_MASK_64B
+    #define BLEND(a_256d, b_256d, mask_256i) _mm256_blendv_pd(a_256d, b_256d, _mm256_castsi256_pd(mask_256i))
+    #define MASK_STORE(f64_addr, mask_256i, a_256d) \
+        _mm256_maskstore_pd( \
+            f64_addr, \
+            mask_256i, \
+            a_256d \
+            )
+#else
+    #define BLEND(a_256d, b_256d, mask_128i) \
+        _mm256_blendv_pd( \
+            a_256d, \
+            b_256d, \
+            _mm256_cvtepi32_pd(mask_128i))
+    #define MASK_STORE(f64_addr, mask_128i, a_256d) \
+        _mm256_maskstore_pd( \
+            f64_addr, _mm256_cvtepi32_epi64(mask_128i), a_256d)
+#endif
 
 namespace UME {
 namespace SIMD {
@@ -177,8 +189,7 @@ namespace SIMD {
         // MLOAD
         UME_FORCE_INLINE SIMDVec_f & load(SIMDVecMask<4> const & mask, double const * p) {
             __m256d t0 = _mm256_loadu_pd(p);
-            __m256d mask_pd = _mm256_cvtepi32_pd(mask.mMask);
-            mVec = _mm256_blendv_pd(mVec, t0, mask_pd);
+            mVec = BLEND(mVec, t0, mask.mMask);
             return *this;
         }
         // LOADA
@@ -189,8 +200,7 @@ namespace SIMD {
         // MLOADA
         UME_FORCE_INLINE SIMDVec_f & loada(SIMDVecMask<4> const & mask, double const * p) {
             __m256d t0 = _mm256_load_pd(p);
-            __m256d mask_pd = _mm256_cvtepi32_pd(mask.mMask);
-            mVec = _mm256_blendv_pd(mVec, t0, mask_pd);
+            mVec = BLEND(mVec, t0, mask.mMask);
             return *this;
         }
         // STORE
@@ -201,7 +211,7 @@ namespace SIMD {
         // MSTORE
         UME_FORCE_INLINE double* store(SIMDVecMask<4> const & mask, double* p) const {
             __m256d t0 = _mm256_loadu_pd(p);
-            __m256d t1 = _mm256_blendv_pd(t0, mVec, _mm256_cvtepi32_pd(mask.mMask));
+            __m256d t1 = BLEND(t0, mVec, mask.mMask);
             _mm256_storeu_pd(p, t1);
             return p;
         }
@@ -212,13 +222,7 @@ namespace SIMD {
         }
         // MSTOREA
         UME_FORCE_INLINE double* storea(SIMDVecMask<4> const & mask, double* p) const {
-            union {
-                __m256d pd;
-                __m256i epi64;
-            }x;
-            x.pd = _mm256_cvtepi32_pd(mask.mMask);
-
-            _mm256_maskstore_pd(p, x.epi64, mVec);
+            MASK_STORE(p, mask.mMask, mVec);
             return p;
         }
         
@@ -247,8 +251,7 @@ namespace SIMD {
         // MADDV    - Masked add with vector
         UME_FORCE_INLINE SIMDVec_f add(SIMDVecMask<4> const & mask, SIMDVec_f const & b) const {
             __m256d t0 = _mm256_add_pd(mVec, b.mVec);
-            __m256d m0 = _mm256_cvtepi32_pd(mask.mMask);
-            __m256d t1 = _mm256_blendv_pd(mVec, t0, m0);
+            __m256d t1 = BLEND(mVec, t0, mask.mMask);
             return SIMDVec_f(t1);
         }
         // ADDS
@@ -266,8 +269,7 @@ namespace SIMD {
         UME_FORCE_INLINE SIMDVec_f add(SIMDVecMask<4> const & mask, double b) const {
             __m256d t0 = _mm256_set1_pd(b);
             __m256d t1 = _mm256_add_pd(mVec, t0);
-            __m256d m0 = _mm256_cvtepi32_pd(mask.mMask);
-            __m256d t2 = _mm256_blendv_pd(mVec, t1, m0);
+            __m256d t2 = BLEND(mVec, t1, mask.mMask);
             return SIMDVec_f(t2);
         }
         // ADDVA    - Add with vector and assign
@@ -281,8 +283,7 @@ namespace SIMD {
         // MADDVA   - Masked add with vector and assign
         UME_FORCE_INLINE SIMDVec_f & adda(SIMDVecMask<4> const & mask, SIMDVec_f const & b) {
             __m256d t0 = _mm256_add_pd(mVec, b.mVec);
-            __m256d m0 = _mm256_cvtepi32_pd(mask.mMask);
-            mVec = _mm256_blendv_pd(mVec, t0, m0);
+            mVec = BLEND(mVec, t0, mask.mMask);
             return *this;
         }
         // ADDSA    - Add with scalar and assign
@@ -297,8 +298,7 @@ namespace SIMD {
         UME_FORCE_INLINE SIMDVec_f & adda(SIMDVecMask<4> const & mask, double b) {
             __m256d t0 = _mm256_set1_pd(b);
             __m256d t1 = _mm256_add_pd(mVec, t0);
-            __m256d m0 = _mm256_cvtepi32_pd(mask.mMask);
-            mVec = _mm256_blendv_pd(mVec, t1, m0);
+            mVec = BLEND(mVec, t1, mask.mMask);
             return *this;
         }
         // SADDV    - Saturated add with vector
@@ -423,8 +423,7 @@ namespace SIMD {
         // MMULV
         UME_FORCE_INLINE SIMDVec_f mul(SIMDVecMask<4> const & mask, SIMDVec_f const & b) const {
             __m256d t0 = _mm256_mul_pd(mVec, b.mVec);
-            __m256d m0 = _mm256_cvtepi32_pd(mask.mMask);
-            __m256d t1 = _mm256_blendv_pd(mVec, t0, m0);
+            __m256d t1 = BLEND(mVec, t0, mask.mMask);
             return SIMDVec_f(t1);
         }
         // MULS
@@ -440,8 +439,7 @@ namespace SIMD {
         UME_FORCE_INLINE SIMDVec_f mul(SIMDVecMask<4> const & mask, double b) const {
             __m256d t0 = _mm256_set1_pd(b);
             __m256d t1 = _mm256_mul_pd(mVec, t0);
-            __m256d m0 = _mm256_cvtepi32_pd(mask.mMask);
-            __m256d t2 = _mm256_blendv_pd(mVec, t1, m0);
+            __m256d t2 = BLEND(mVec, t1, mask.mMask);
             return SIMDVec_f(t2);
         }
         // MULVA
@@ -455,8 +453,7 @@ namespace SIMD {
         // MMULVA
         UME_FORCE_INLINE SIMDVec_f & mula(SIMDVecMask<4> const & mask, SIMDVec_f const & b) {
             __m256d t0 = _mm256_mul_pd(mVec, b.mVec);
-            __m256d m0 = _mm256_cvtepi32_pd(mask.mMask);
-            mVec = _mm256_blendv_pd(mVec, t0, m0);
+            mVec = BLEND(mVec, t0, mask.mMask);
             return *this;
         }
         // MULSA
@@ -472,8 +469,7 @@ namespace SIMD {
         UME_FORCE_INLINE SIMDVec_f & mula(SIMDVecMask<4> const & mask, double b) {
             __m256d t0 = _mm256_set1_pd(b);
             __m256d t1 = _mm256_mul_pd(mVec, t0);
-            __m256d m0 = _mm256_cvtepi32_pd(mask.mMask);
-            mVec = _mm256_blendv_pd(mVec, t1, m0);
+            mVec = BLEND(mVec, t1, mask.mMask);
             return *this;
         }
 
@@ -752,7 +748,7 @@ namespace SIMD {
 #else
             __m256d t0 = _mm256_add_pd(_mm256_mul_pd(mVec, b.mVec), c.mVec);
 #endif
-            __m256d t1 = _mm256_blendv_pd(mVec, t0, _mm256_cvtepi32_pd(mask.mMask));
+            __m256d t1 = BLEND(mVec, t0, mask.mMask);
             return SIMDVec_f(t1);
         }
         // FMULSUBV  - Fused multiply and sub (A*B - C) with vectors

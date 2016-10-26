@@ -47,13 +47,16 @@
                       int(x & 0x00000000FFFFFFFF), \
                       int((x & 0xFFFFFFFF00000000) >> 32), \
                       int(x & 0x00000000FFFFFFFF), \
-                      int((x & 0xFFFFFFFF00000000) >> 32));
+                      int((x & 0xFFFFFFFF00000000) >> 32))
 #else
 #define SET1_EPI64(x) _mm256_set1_epi64x(x)
 #endif
 
-
-#define BLEND(a_256i, b_256i, mask_128i) _mm256_blendv_epi8((a_256i), (b_256i), (_mm256_cvtepi32_epi64(mask.mMask)))
+#if defined UME_USE_MASK_64B
+#define BLEND(a_256i, b_256i, mask_256i) _mm256_blendv_epi8((a_256i), (b_256i), mask_256i)
+#else
+#define BLEND(a_256i, b_256i, mask_128i) _mm256_blendv_epi8((a_256i), (b_256i), (_mm256_cvtepi32_epi64(mask_128i)))
+#endif
 
 namespace UME {
 namespace SIMD {
@@ -182,11 +185,10 @@ namespace SIMD {
         }
         // MLOAD
         UME_FORCE_INLINE SIMDVec_u & load(SIMDVecMask<4> const & mask, uint64_t const *p) {
-            __m256i t0 = _mm256_cvtepi32_epi64(mask.mMask);
 #if defined __GNUG__
             // G++ (so far 5.3) does not provide '_mm256_maskload_epi64' intrinsic
-            __m256i t1 = _mm256_loadu_si256((const __m256i *) p);
-            mVec = _mm256_blendv_epi8(mVec, t1, t0);
+            __m256i t0 = _mm256_loadu_si256((const __m256i *) p);
+            mVec = BLEND(mVec, t0, mask.mMask);
 #else
             mVec = _mm256_maskload_epi64((__int64 const*)p, t0);
 #endif
@@ -199,11 +201,10 @@ namespace SIMD {
         }
         // MLOADA
         UME_FORCE_INLINE SIMDVec_u & loada(SIMDVecMask<4> const & mask, uint64_t const *p) {
-            __m256i t0 = _mm256_cvtepi32_epi64(mask.mMask);
 #if defined __GNUG__
             // G++ (so far 5.3) does not provide '_mm256_maskload_epi64' intrinsic
-            __m256i t1 = _mm256_load_si256((const __m256i *) p);
-            mVec = _mm256_blendv_epi8(mVec, t1, t0);
+            __m256i t0 = _mm256_load_si256((const __m256i *) p);
+            mVec = BLEND(mVec, t0, mask.mMask);
 #else
             mVec = _mm256_maskload_epi64((__int64 const*)p, t0);
 #endif
@@ -216,12 +217,11 @@ namespace SIMD {
         }
         // MSTORE
         UME_FORCE_INLINE uint64_t* store(SIMDVecMask<4> const & mask, uint64_t* p) const {
-            __m256i t0 = _mm256_cvtepi32_epi64(mask.mMask);
 #if defined __GNUG__
             // G++ (so far 5.3) does not provide '_mm256_maskstore_epi64' intrinsic
-            __m256i t1 = _mm256_loadu_si256((const __m256i *) p);
-            __m256i t2 = _mm256_blendv_epi8(t1, mVec, t0);
-            _mm256_storeu_si256((__m256i *)p, t2);
+            __m256i t0 = _mm256_loadu_si256((const __m256i *) p);
+            __m256i t1 = BLEND(t0, mVec, mask.mMask);
+            _mm256_storeu_si256((__m256i *)p, t1);
 #else
             _mm256_maskstore_epi64((__int64 *)p, t0, mVec);
 #endif
@@ -234,12 +234,11 @@ namespace SIMD {
         }
         // MSTOREA
         UME_FORCE_INLINE uint64_t* storea(SIMDVecMask<4> const & mask, uint64_t* p) const {
-            __m256i t0 = _mm256_cvtepi32_epi64(mask.mMask);
 #if defined __GNUG__
             // G++ (so far 5.3) does not provide '_mm256_maskstore_epi64' intrinsic
-            __m256i t1 = _mm256_load_si256((const __m256i *) p);
-            __m256i t2 = _mm256_blendv_epi8(t1, mVec, t0);
-            _mm256_store_si256((__m256i *)p, t2);
+            __m256i t0 = _mm256_load_si256((const __m256i *) p);
+            __m256i t1 = BLEND(t0, mVec, mask.mMask);
+            _mm256_store_si256((__m256i *)p, t1);
 #else
             _mm256_maskstore_epi64((__int64 *)p, t0, mVec);
 #endif
@@ -499,10 +498,10 @@ namespace SIMD {
         UME_FORCE_INLINE operator SIMDVec_f<double, 4>() const;
     };
 
+}
+}
+
 #undef SET1_EPI64
 #undef BLEND
-
-}
-}
 
 #endif

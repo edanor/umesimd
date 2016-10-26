@@ -36,6 +36,35 @@
 
 #include "../../../UMESimdInterface.h"
 
+#if defined UME_USE_MASK_64B
+    #define BLEND(a_128i, b_128i, mask_256i) \
+        _mm_blendv_epi8( \
+            a_128i, \
+            b_128i, \
+            _mm256_extractf128_si256( \
+                _mm256_permutevar8x32_epi32( \
+                    mask_256i, \
+                    _mm256_setr_epi32(0, 2, 4, 6, 0, 0, 0, 0)), \
+                0 \
+                ))
+
+    #define MASK_STORE(int32_addr, mask_256i, a_128i) \
+        _mm_maskstore_epi32( \
+            int32_addr, \
+            _mm256_extractf128_si256( \
+                _mm256_permutevar8x32_epi32( \
+                    mask_256i, \
+                    _mm256_setr_epi32(0, 2, 4, 6, 0, 0, 0, 0)), \
+                0), \
+            a_128i \
+            )
+
+#else
+    #define BLEND(a_128i, b_128i, mask_128i) _mm_blendv_epi8(a_128i, b_128i, mask_128i)
+    #define MASK_STORE(int32_addr, mask_128i, a_128i) _mm_maskstore_epi32(int32_addr, mask_128i, a_128i)
+#endif
+
+
 namespace UME {
 namespace SIMD {
 
@@ -143,7 +172,7 @@ namespace SIMD {
         }
         // MASSIGNV
         inline SIMDVec_u & assign(SIMDVecMask<4> const & mask, SIMDVec_u const & b) {
-            mVec = _mm_blendv_epi8(mVec, b.mVec, mask.mMask);
+            mVec = BLEND(mVec, b.mVec, mask.mMask);
             return *this;
         }
         // ASSIGNS
@@ -157,7 +186,7 @@ namespace SIMD {
         // MASSIGNS
         inline SIMDVec_u & assign(SIMDVecMask<4> const & mask, uint32_t b) {
             __m128i t0 = _mm_set1_epi32(b);
-            mVec = _mm_blendv_epi8(mVec, t0, mask.mMask);
+            mVec = BLEND(mVec, t0, mask.mMask);
             return *this;
         }
         // PREFETCH0
@@ -171,7 +200,7 @@ namespace SIMD {
         // MLOAD
         inline SIMDVec_u & load(SIMDVecMask<4> const & mask, uint32_t const * p) {
             __m128i t0 = _mm_loadu_si128((__m128i*)p);
-            mVec = _mm_blendv_epi8(mVec, t0, mask.mMask);
+            mVec = BLEND(mVec, t0, mask.mMask);
             return *this;
         }
         // LOADA
@@ -182,7 +211,7 @@ namespace SIMD {
         // MLOADA
         inline SIMDVec_u & loada(SIMDVecMask<4> const & mask, uint32_t const * p) {
             __m128i t0 = _mm_load_si128((__m128i*)p);
-            mVec = _mm_blendv_epi8(mVec, t0, mask.mMask);
+            mVec = BLEND(mVec, t0, mask.mMask);
             return *this;
         }
         // STORE
@@ -191,8 +220,8 @@ namespace SIMD {
             return p;
         }
         // MSTORE
-        inline uint32_t * store(SIMDVecMask<4> const & mask, uint32_t * p) const {
-            _mm_maskstore_epi32((int32_t*)p, mask.mMask, mVec);
+        inline uint32_t * store(SIMDVecMask<4> const & mask, uint32_t * p) const {        
+            MASK_STORE((int32_t*)p, mask.mMask, mVec);
             return p;
         }
         // STOREA
@@ -202,18 +231,18 @@ namespace SIMD {
         }
         // MSTOREA
         inline uint32_t * storea(SIMDVecMask<4> const & mask, uint32_t * p) const {
-            _mm_maskstore_epi32((int32_t*)p, mask.mMask, mVec);
+            MASK_STORE((int32_t*)p, mask.mMask, mVec);
             return p;
         }
         // BLENDV
         inline SIMDVec_u blend(SIMDVecMask<4> const & mask, SIMDVec_u const & b) const {
-            __m128i t0 = _mm_blendv_epi8(mVec, b.mVec, mask.mMask);
+            __m128i t0 = BLEND(mVec, b.mVec, mask.mMask);
             return SIMDVec_u(t0);
         }
         // BLENDS
         inline SIMDVec_u blend(SIMDVecMask<4> const & mask, uint32_t b) const {
             __m128i t0 = _mm_set1_epi32(b);
-            __m128i t1 = _mm_blendv_epi8(mVec, t0, mask.mMask);
+            __m128i t1 = BLEND(mVec, t0, mask.mMask);
             return SIMDVec_u(t1);
         }
         // SWIZZLE
@@ -229,7 +258,7 @@ namespace SIMD {
         // MADDV
         inline SIMDVec_u add(SIMDVecMask<4> const & mask, SIMDVec_u const & b) const {
             __m128i t0 = _mm_add_epi32(mVec, b.mVec);
-            __m128i t1 = _mm_blendv_epi8(mVec, t0, mask.mMask);
+            __m128i t1 = BLEND(mVec, t0, mask.mMask);
             return SIMDVec_u(t1);
         }
         // ADDS
@@ -244,7 +273,7 @@ namespace SIMD {
         inline SIMDVec_u add(SIMDVecMask<4> const & mask, uint32_t b) const {
             __m128i t0 = _mm_set1_epi32(b);
             __m128i t1 = _mm_add_epi32(mVec, t0);
-            __m128i t2 = _mm_blendv_epi8(mVec, t1, mask.mMask);
+            __m128i t2 = BLEND(mVec, t1, mask.mMask);
             return SIMDVec_u(t2);
         }
         // ADDVA
@@ -258,7 +287,7 @@ namespace SIMD {
         // MADDVA
         inline SIMDVec_u & adda(SIMDVecMask<4> const & mask, SIMDVec_u const & b) {
             __m128i t0 = _mm_add_epi32(mVec, b.mVec);
-            mVec = _mm_blendv_epi8(mVec, t0, mask.mMask);
+            mVec = BLEND(mVec, t0, mask.mMask);
             return *this;
         }
         // ADDSA
@@ -273,7 +302,7 @@ namespace SIMD {
         inline SIMDVec_u & adda(SIMDVecMask<4> const & mask, uint32_t b) {
             __m128i t0 = _mm_set1_epi32(b);
             __m128i t1 = _mm_add_epi32(mVec, t0);
-            mVec = _mm_blendv_epi8(mVec, t1, mask.mMask);
+            mVec = BLEND(mVec, t1, mask.mMask);
             return *this;
         }
         // SADDV
@@ -299,7 +328,7 @@ namespace SIMD {
             __m128i t0 = _mm_set1_epi32(1);
             __m128i t1 = mVec;
             __m128i t2 = _mm_add_epi32(mVec, t0);
-            mVec = _mm_blendv_epi8(mVec, t2, mask.mMask);
+            mVec = BLEND(mVec, t2, mask.mMask);
             return SIMDVec_u(t1);
         }
         // PREFINC
@@ -315,7 +344,7 @@ namespace SIMD {
         inline SIMDVec_u & prefinc(SIMDVecMask<4> const & mask) {
             __m128i t0 = _mm_set1_epi32(1);
             __m128i t1 = _mm_add_epi32(mVec, t0);
-            mVec = _mm_blendv_epi8(mVec, t1, mask.mMask);
+            mVec = BLEND(mVec, t1, mask.mMask);
             return *this;
         }
         // SUBV
@@ -329,7 +358,7 @@ namespace SIMD {
         // MSUBV
         inline SIMDVec_u sub(SIMDVecMask<4> const & mask, SIMDVec_u const & b) const {
             __m128i t0 = _mm_sub_epi32(mVec, b.mVec);
-            __m128i t1 = _mm_blendv_epi8(mVec, t0, mask.mMask);
+            __m128i t1 = BLEND(mVec, t0, mask.mMask);
             return SIMDVec_u(t1);
         }
         // SUBS
@@ -344,7 +373,7 @@ namespace SIMD {
         inline SIMDVec_u sub(SIMDVecMask<4> const & mask, uint32_t b) const {
             __m128i t0 = _mm_set1_epi32(b);
             __m128i t1 = _mm_sub_epi32(mVec, t0);
-            __m128i t2 = _mm_blendv_epi8(mVec, t1, mask.mMask);
+            __m128i t2 = BLEND(mVec, t1, mask.mMask);
             return SIMDVec_u(t2);
         }
         // SUBVA
@@ -358,7 +387,7 @@ namespace SIMD {
         // MSUBVA
         inline SIMDVec_u & suba(SIMDVecMask<4> const & mask, SIMDVec_u const & b) {
             __m128i t0 = _mm_sub_epi32(mVec, b.mVec);
-            mVec = _mm_blendv_epi8(mVec, t0, mask.mMask);
+            mVec = BLEND(mVec, t0, mask.mMask);
             return *this;
         }
         // SUBSA
@@ -373,7 +402,7 @@ namespace SIMD {
         inline SIMDVec_u & suba(SIMDVecMask<4> const & mask, uint32_t b) {
             __m128i t0 = _mm_set1_epi32(b);
             __m128i t1 = _mm_sub_epi32(mVec, t0);
-            mVec = _mm_blendv_epi8(mVec, t1, mask.mMask);
+            mVec = BLEND(mVec, t1, mask.mMask);
             return *this;
         }
         // SSUBV
@@ -392,7 +421,7 @@ namespace SIMD {
         // MSUBFROMV
         inline SIMDVec_u subfrom(SIMDVecMask<4> const & mask, SIMDVec_u const & b) const {
             __m128i t1 = _mm_sub_epi32(b.mVec, mVec);
-            __m128i t0 = _mm_blendv_epi8(b.mVec, t1, mask.mMask);
+            __m128i t0 = BLEND(b.mVec, t1, mask.mMask);
             return SIMDVec_u(t0);
         }
         // SUBFROMS
@@ -404,7 +433,7 @@ namespace SIMD {
         inline SIMDVec_u subfrom(SIMDVecMask<4> const & mask, uint32_t b) const {
             __m128i t0 = _mm_set1_epi32(b);
             __m128i t2 = _mm_sub_epi32(t0, mVec);
-            __m128i t1 = _mm_blendv_epi8(t0, t2, mask.mMask);
+            __m128i t1 = BLEND(t0, t2, mask.mMask);
             return SIMDVec_u(t1);
         }
         // SUBFROMVA
@@ -415,7 +444,7 @@ namespace SIMD {
         // MSUBFROMVA
         inline SIMDVec_u & subfroma(SIMDVecMask<4> const & mask, SIMDVec_u const & b) {
             __m128i t1 = _mm_sub_epi32(b.mVec, mVec);
-            mVec = _mm_blendv_epi8(b.mVec, t1, mask.mMask);
+            mVec = BLEND(b.mVec, t1, mask.mMask);
             return *this;
         }
         // SUBFROMSA
@@ -427,7 +456,7 @@ namespace SIMD {
         inline SIMDVec_u subfroma(SIMDVecMask<4> const & mask, uint32_t b) {
             __m128i t0 = _mm_set1_epi32(b);
             __m128i t2 = _mm_sub_epi32(t0, mVec);
-            mVec = _mm_blendv_epi8(t0, t2, mask.mMask);
+            mVec = BLEND(t0, t2, mask.mMask);
             return *this;
         }
         // POSTDEC
@@ -445,7 +474,7 @@ namespace SIMD {
             __m128i t0 = _mm_set1_epi32(1);
             __m128i t1 = mVec;
             __m128i t2 = _mm_sub_epi32(mVec, t0);
-            mVec = _mm_blendv_epi8(mVec, t2, mask.mMask);
+            mVec = BLEND(mVec, t2, mask.mMask);
             return SIMDVec_u(t1);
         }
         // PREFDEC
@@ -461,7 +490,7 @@ namespace SIMD {
         inline SIMDVec_u & prefdec(SIMDVecMask<4> const & mask) {
             __m128i t0 = _mm_set1_epi32(1);
             __m128i t2 = _mm_sub_epi32(mVec, t0);
-            mVec = _mm_blendv_epi8(mVec, t2, mask.mMask);
+            mVec = BLEND(mVec, t2, mask.mMask);
             return *this;
         }
         // MULV
@@ -475,7 +504,7 @@ namespace SIMD {
         // MMULV
         inline SIMDVec_u mul(SIMDVecMask<4> const & mask, SIMDVec_u const & b) const {
             __m128i t1 = _mm_mullo_epi32(mVec, b.mVec);
-            __m128i t0 = _mm_blendv_epi8(mVec, t1, mask.mMask);
+            __m128i t0 = BLEND(mVec, t1, mask.mMask);
             return SIMDVec_u(t0);
         }
         // MULS
@@ -490,7 +519,7 @@ namespace SIMD {
         inline SIMDVec_u mul(SIMDVecMask<4> const & mask, uint32_t b) const {
             __m128i t0 = _mm_set1_epi32(b);
             __m128i t2 = _mm_mullo_epi32(mVec, t0);
-            __m128i t1 = _mm_blendv_epi8(mVec, t2, mask.mMask);
+            __m128i t1 = BLEND(mVec, t2, mask.mMask);
             return SIMDVec_u(t1);
         }
         // MULVA
@@ -504,7 +533,7 @@ namespace SIMD {
         // MMULVA
         inline SIMDVec_u & mula(SIMDVecMask<4> const & mask, SIMDVec_u const & b) {
             __m128i t0 = _mm_mullo_epi32(mVec, b.mVec);
-            mVec = _mm_blendv_epi8(mVec, t0, mask.mMask);
+            mVec = BLEND(mVec, t0, mask.mMask);
             return *this;
         }
         // MULSA
@@ -519,7 +548,7 @@ namespace SIMD {
         inline SIMDVec_u & mula(SIMDVecMask<4> const & mask, uint32_t b) {
             __m128i t0 = _mm_set1_epi32(b);
             __m128i t1 = _mm_mullo_epi32(mVec, t0);
-            mVec = _mm_blendv_epi8(mVec, t1, mask.mMask);
+            mVec = BLEND(mVec, t1, mask.mMask);
             return *this;
         }
         // DIVV
@@ -693,7 +722,7 @@ namespace SIMD {
         // MHADD
         inline uint32_t hadd(SIMDVecMask<4> const & mask) const {
             alignas(16) uint32_t raw[4];
-            __m128i t0 = _mm_blendv_epi8(_mm_set1_epi32(0), mVec, mask.mMask);
+            __m128i t0 = BLEND(_mm_set1_epi32(0), mVec, mask.mMask);
             _mm_store_si128((__m128i*)raw, t0);
             return raw[0] + raw[1] + raw[2] + raw[3];
         }
@@ -706,7 +735,7 @@ namespace SIMD {
         // MHADDS
         inline uint32_t hadd(SIMDVecMask<4> const & mask, uint32_t b) const {
             alignas(16) uint32_t raw[4];
-            __m128i t0 = _mm_blendv_epi8(_mm_set1_epi32(0), mVec, mask.mMask);
+            __m128i t0 = BLEND(_mm_set1_epi32(0), mVec, mask.mMask);
             _mm_store_si128((__m128i*)raw, t0);
             return raw[0] + raw[1] + raw[2] + raw[3] + b;
         }
@@ -719,7 +748,7 @@ namespace SIMD {
         // MHMUL
         inline uint32_t hmul(SIMDVecMask<4> const & mask) const {
             alignas(16) uint32_t raw[4];
-            __m128i t0 = _mm_blendv_epi8(_mm_set1_epi32(1), mVec, mask.mMask);
+            __m128i t0 = BLEND(_mm_set1_epi32(1), mVec, mask.mMask);
             _mm_store_si128((__m128i*)raw, t0);
             return raw[0] * raw[1] * raw[2] * raw[3];
         }
@@ -732,7 +761,7 @@ namespace SIMD {
         // MHMULS
         inline uint32_t hmul(SIMDVecMask<4> const & mask, uint32_t b) const {
             alignas(16) uint32_t raw[4];
-            __m128i t0 = _mm_blendv_epi8(_mm_set1_epi32(1), mVec, mask.mMask);
+            __m128i t0 = BLEND(_mm_set1_epi32(1), mVec, mask.mMask);
             _mm_store_si128((__m128i*)raw, t0);
             return raw[0] * raw[1] * raw[2] * raw[3] * b;
         }
@@ -746,7 +775,7 @@ namespace SIMD {
         inline SIMDVec_u fmuladd(SIMDVecMask<4> const & mask, SIMDVec_u const & b, SIMDVec_u const & c) const {
             __m128i t0 = _mm_mullo_epi32(mVec, b.mVec);
             __m128i t1 = _mm_add_epi32(t0, c.mVec);
-            t1 = _mm_blendv_epi8(mVec, t1, mask.mMask);
+            t1 = BLEND(mVec, t1, mask.mMask);
             return SIMDVec_u(t1);
         }
         // FMULSUBV
@@ -759,7 +788,7 @@ namespace SIMD {
         inline SIMDVec_u fmulsub(SIMDVecMask<4> const & mask, SIMDVec_u const & b, SIMDVec_u const & c) const {
             __m128i t0 = _mm_mullo_epi32(mVec, b.mVec);
             __m128i t1 = _mm_sub_epi32(t0, c.mVec);
-            t1 = _mm_blendv_epi8(mVec, t1, mask.mMask);
+            t1 = BLEND(mVec, t1, mask.mMask);
             return SIMDVec_u(t1);
         }
         // FADDMULV
@@ -772,7 +801,7 @@ namespace SIMD {
         inline SIMDVec_u faddmul(SIMDVecMask<4> const & mask, SIMDVec_u const & b, SIMDVec_u const & c) const {
             __m128i t0 = _mm_add_epi32(mVec, b.mVec);
             __m128i t1 = _mm_mullo_epi32(t0, c.mVec);
-            t1 = _mm_blendv_epi8(mVec, t1, mask.mMask);
+            t1 = BLEND(mVec, t1, mask.mMask);
             return SIMDVec_u(t1);
         }
         // FSUBMULV
@@ -785,7 +814,7 @@ namespace SIMD {
         inline SIMDVec_u fsubmul(SIMDVecMask<4> const & mask, SIMDVec_u const & b, SIMDVec_u const & c) const {
             __m128i t0 = _mm_sub_epi32(mVec, b.mVec);
             __m128i t1 = _mm_mullo_epi32(t0, c.mVec);
-            t1 = _mm_blendv_epi8(mVec, t1, mask.mMask);
+            t1 = BLEND(mVec, t1, mask.mMask);
             return SIMDVec_u(t1);
         }
         // MAXV
@@ -796,7 +825,7 @@ namespace SIMD {
         // MMAXV
         inline SIMDVec_u max(SIMDVecMask<4> const & mask, SIMDVec_u const & b) const {
             __m128i t1 = _mm_max_epu32(mVec, b.mVec);
-            __m128i t0 = _mm_blendv_epi8(mVec, t1, mask.mMask);
+            __m128i t0 = BLEND(mVec, t1, mask.mMask);
             return SIMDVec_u(t0);
         }
         // MAXS
@@ -809,7 +838,7 @@ namespace SIMD {
         inline SIMDVec_u max(SIMDVecMask<4> const & mask, uint32_t b) const {
             __m128i t0 = _mm_set1_epi32(b);
             __m128i t2 = _mm_max_epu32(mVec, t0);
-            __m128i t1 = _mm_blendv_epi8(mVec, t2, mask.mMask);
+            __m128i t1 = BLEND(mVec, t2, mask.mMask);
             return SIMDVec_u(t1);
         }
         // MAXVA
@@ -820,7 +849,7 @@ namespace SIMD {
         // MMAXVA
         inline SIMDVec_u & maxa(SIMDVecMask<4> const & mask, SIMDVec_u const & b) {
             __m128i t1 = _mm_max_epu32(mVec, b.mVec);
-            mVec = _mm_blendv_epi8(mVec, t1, mask.mMask);
+            mVec = BLEND(mVec, t1, mask.mMask);
             return *this;
         }
         // MAXSA
@@ -833,7 +862,7 @@ namespace SIMD {
         inline SIMDVec_u & maxa(SIMDVecMask<4> const & mask, uint32_t b) {
             __m128i t0 = _mm_set1_epi32(b);
             __m128i t1 = _mm_max_epu32(mVec, t0);
-            mVec = _mm_blendv_epi8(mVec, t1, mask.mMask);
+            mVec = BLEND(mVec, t1, mask.mMask);
             return *this;
         }
         // MINV
@@ -844,7 +873,7 @@ namespace SIMD {
         // MMINV
         inline SIMDVec_u min(SIMDVecMask<4> const & mask, SIMDVec_u const & b) const {
             __m128i t0 = _mm_min_epu32(mVec, b.mVec);
-            __m128i t1 = _mm_blendv_epi8(mVec, t0, mask.mMask);
+            __m128i t1 = BLEND(mVec, t0, mask.mMask);
             return SIMDVec_u(t1);
         }
         // MINS
@@ -857,7 +886,7 @@ namespace SIMD {
         inline SIMDVec_u min(SIMDVecMask<4> const & mask, uint32_t b) const {
             __m128i t0 = _mm_set1_epi32(b);
             __m128i t1 = _mm_min_epu32(mVec, t0);
-            __m128i t2 = _mm_blendv_epi8(mVec, t1, mask.mMask);
+            __m128i t2 = BLEND(mVec, t1, mask.mMask);
             return SIMDVec_u(t2);
         }
         // MINVA
@@ -868,7 +897,7 @@ namespace SIMD {
         // MMINVA
         inline SIMDVec_u & mina(SIMDVecMask<4> const & mask, SIMDVec_u const & b) {
             __m128i t0 = _mm_min_epu32(mVec, b.mVec);
-            mVec = _mm_blendv_epi8(mVec, t0, mask.mMask);
+            mVec = BLEND(mVec, t0, mask.mMask);
             return *this;
         }
         // MINSA
@@ -881,7 +910,7 @@ namespace SIMD {
         inline SIMDVec_u & mina(SIMDVecMask<4> const & mask, uint32_t b) {
             __m128i t0 = _mm_set1_epi32(b);
             __m128i t1 = _mm_min_epu32(mVec, t0);
-            mVec = _mm_blendv_epi8(mVec, t1, mask.mMask);
+            mVec = BLEND(mVec, t1, mask.mMask);
             return *this;
         }
         // HMAX
@@ -896,7 +925,7 @@ namespace SIMD {
         inline uint32_t hmax(SIMDVecMask<4> const & mask) const {
             alignas(16) uint32_t raw[4];
             __m128i t0 = _mm_set1_epi32(0);
-            __m128i t1 = _mm_blendv_epi8(mVec, t0, mask.mMask);
+            __m128i t1 = BLEND(mVec, t0, mask.mMask);
             _mm_store_si128((__m128i*)raw, t1);
             uint32_t t2 = (raw[0] > raw[1]) ? raw[0] : raw[1];
             uint32_t t3 = (raw[2] > raw[3]) ? raw[2] : raw[3];
@@ -916,7 +945,7 @@ namespace SIMD {
         inline uint32_t hmin(SIMDVecMask<4> const & mask) const {
             alignas(16) uint32_t raw[4];
             __m128i t0 = _mm_set1_epi32(0xFFFFFFFF);
-            __m128i t1 = _mm_blendv_epi8(mVec, t0, mask.mMask);
+            __m128i t1 = BLEND(mVec, t0, mask.mMask);
             _mm_store_si128((__m128i*)raw, t1);
             uint32_t t2 = (raw[0] < raw[1]) ? raw[0] : raw[1];
             uint32_t t3 = (raw[2] < raw[3]) ? raw[2] : raw[3];
@@ -933,7 +962,7 @@ namespace SIMD {
         // MBANDV
         inline SIMDVec_u band(SIMDVecMask<4> const & mask, SIMDVec_u const & b) const {
             __m128i t0 = _mm_and_si128(mVec, b.mVec);
-            __m128i t1 = _mm_blendv_epi8(mVec, t0, mask.mMask);
+            __m128i t1 = BLEND(mVec, t0, mask.mMask);
             return SIMDVec_u(t1);
         }
         // BANDS
@@ -946,7 +975,7 @@ namespace SIMD {
         inline SIMDVec_u band(SIMDVecMask<4> const & mask, uint32_t b) const {
             __m128i t0 = _mm_set1_epi32(b);
             __m128i t1 = _mm_and_si128(mVec, t0);
-            __m128i t2 = _mm_blendv_epi8(mVec, t1, mask.mMask);
+            __m128i t2 = BLEND(mVec, t1, mask.mMask);
             return SIMDVec_u(t2);
         }
         // BANDVA
@@ -957,7 +986,7 @@ namespace SIMD {
         // MBANDVA
         inline SIMDVec_u & banda(SIMDVecMask<4> const & mask, SIMDVec_u const & b) {
             __m128i t0 = _mm_and_si128(mVec, b.mVec);
-            mVec = _mm_blendv_epi8(mVec, t0, mask.mMask);
+            mVec = BLEND(mVec, t0, mask.mMask);
             return *this;
         }
         // BANDSA
@@ -970,7 +999,7 @@ namespace SIMD {
         inline SIMDVec_u & banda(SIMDVecMask<4> const & mask, uint32_t b) {
             __m128i t0 = _mm_set1_epi32(b);
             __m128i t1 = _mm_and_si128(mVec, t0);
-            mVec = _mm_blendv_epi8(mVec, t1, mask.mMask);
+            mVec = BLEND(mVec, t1, mask.mMask);
             return *this;
         }
         // BORV
@@ -981,7 +1010,7 @@ namespace SIMD {
         // MBORV
         inline SIMDVec_u bor(SIMDVecMask<4> const & mask, SIMDVec_u const & b) const {
             __m128i t0 = _mm_or_si128(mVec, b.mVec);
-            __m128i t1 = _mm_blendv_epi8(mVec, t0, mask.mMask);
+            __m128i t1 = BLEND(mVec, t0, mask.mMask);
             return SIMDVec_u(t1);
         }
         // BORS
@@ -994,7 +1023,7 @@ namespace SIMD {
         inline SIMDVec_u bor(SIMDVecMask<4> const & mask, uint32_t b) const {
             __m128i t0 = _mm_set1_epi32(b);
             __m128i t1 = _mm_or_si128(mVec, t0);
-            __m128i t2 = _mm_blendv_epi8(mVec, t1, mask.mMask);
+            __m128i t2 = BLEND(mVec, t1, mask.mMask);
             return SIMDVec_u(t2);
         }
         // BORVA
@@ -1005,7 +1034,7 @@ namespace SIMD {
         // MBORVA
         inline SIMDVec_u & bora(SIMDVecMask<4> const & mask, SIMDVec_u const & b) {
             __m128i t0 = _mm_or_si128(mVec, b.mVec);
-            mVec = _mm_blendv_epi8(mVec, t0, mask.mMask);
+            mVec = BLEND(mVec, t0, mask.mMask);
             return *this;
         }
         // BORSA
@@ -1018,7 +1047,7 @@ namespace SIMD {
         inline SIMDVec_u & bora(SIMDVecMask<4> const & mask, uint32_t b) {
             __m128i t0 = _mm_set1_epi32(b);
             __m128i t1 = _mm_or_si128(mVec, t0);
-            mVec = _mm_blendv_epi8(mVec, t1, mask.mMask);
+            mVec = BLEND(mVec, t1, mask.mMask);
             return *this;
         }
         // BXORV
@@ -1029,7 +1058,7 @@ namespace SIMD {
         // MBXORV
         inline SIMDVec_u bxor(SIMDVecMask<4> const & mask, SIMDVec_u const & b) const {
             __m128i t0 = _mm_xor_si128(mVec, b.mVec);
-            __m128i t1 = _mm_blendv_epi8(mVec, t0, mask.mMask);
+            __m128i t1 = BLEND(mVec, t0, mask.mMask);
             return SIMDVec_u(t1);
         }
         // BXORS
@@ -1042,7 +1071,7 @@ namespace SIMD {
         inline SIMDVec_u bxor(SIMDVecMask<4> const & mask, uint32_t b) const {
             __m128i t0 = _mm_set1_epi32(b);
             __m128i t1 = _mm_xor_si128(mVec, t0);
-            __m128i t2 = _mm_blendv_epi8(mVec, t1, mask.mMask);
+            __m128i t2 = BLEND(mVec, t1, mask.mMask);
             return SIMDVec_u(t2);
         }
         // BXORVA
@@ -1053,7 +1082,7 @@ namespace SIMD {
         // MBXORVA
         inline SIMDVec_u & bxora(SIMDVecMask<4> const & mask, SIMDVec_u const & b) {
             __m128i t0 = _mm_xor_si128(mVec, b.mVec);
-            mVec = _mm_blendv_epi8(mVec, t0, mask.mMask);
+            mVec = BLEND(mVec, t0, mask.mMask);
             return *this;
         }
         // BXORSA
@@ -1066,7 +1095,7 @@ namespace SIMD {
         inline SIMDVec_u & bxora(SIMDVecMask<4> const & mask, uint32_t b) {
             __m128i t0 = _mm_set1_epi32(b);
             __m128i t1 = _mm_xor_si128(mVec, t0);
-            mVec = _mm_blendv_epi8(mVec, t1, mask.mMask);
+            mVec = BLEND(mVec, t1, mask.mMask);
             return *this;
         }
         // BNOT
@@ -1079,7 +1108,7 @@ namespace SIMD {
         inline SIMDVec_u bnot(SIMDVecMask<4> const & mask) const {
             __m128i t0 = _mm_set1_epi32(0xFFFFFFFF);
             __m128i t1 = _mm_xor_si128(mVec, t0);
-            __m128i t2 = _mm_blendv_epi8(mVec, t1, mask.mMask);
+            __m128i t2 = BLEND(mVec, t1, mask.mMask);
             return SIMDVec_u(t2);
         }
         // BNOTA
@@ -1092,7 +1121,7 @@ namespace SIMD {
         inline SIMDVec_u bnota(SIMDVecMask<4> const & mask) {
             __m128i t0 = _mm_set1_epi32(0xFFFFFFFF);
             __m128i t1 = _mm_xor_si128(mVec, t0);
-            mVec = _mm_blendv_epi8(mVec, t1, mask.mMask);
+            mVec = BLEND(mVec, t1, mask.mMask);
             return *this;
         }
         // HBAND
@@ -1105,7 +1134,7 @@ namespace SIMD {
         inline uint32_t hband(SIMDVecMask<4> const & mask) const {
             alignas(16) uint32_t raw[4];
             __m128i t0 = _mm_set1_epi32(0xFFFFFFFF);
-            __m128i t1 = _mm_blendv_epi8(t0, mVec, mask.mMask);
+            __m128i t1 = BLEND(t0, mVec, mask.mMask);
             _mm_store_si128((__m128i*)raw, t1);
             return raw[0] & raw[1] & raw[2] & raw[3];
         }
@@ -1119,7 +1148,7 @@ namespace SIMD {
         inline uint32_t hband(SIMDVecMask<4> const & mask, uint32_t b) const {
             alignas(16) uint32_t raw[4];
             __m128i t0 = _mm_set1_epi32(0xFFFFFFFF);
-            __m128i t1 = _mm_blendv_epi8(t0, mVec, mask.mMask);
+            __m128i t1 = BLEND(t0, mVec, mask.mMask);
             _mm_store_si128((__m128i*)raw, t1);
             return raw[0] & raw[1] & raw[2] & raw[3] & b;
         }
@@ -1133,7 +1162,7 @@ namespace SIMD {
         inline uint32_t hbor(SIMDVecMask<4> const & mask) const {
             alignas(16) uint32_t raw[4];
             __m128i t0 = _mm_set1_epi32(0);
-            __m128i t1 = _mm_blendv_epi8(t0, mVec, mask.mMask);
+            __m128i t1 = BLEND(t0, mVec, mask.mMask);
             _mm_store_si128((__m128i*)raw, t1);
             return raw[0] | raw[1] | raw[2] | raw[3];
         }
@@ -1147,7 +1176,7 @@ namespace SIMD {
         inline uint32_t hbor(SIMDVecMask<4> const & mask, uint32_t b) const {
             alignas(16) uint32_t raw[4];
             __m128i t0 = _mm_set1_epi32(0);
-            __m128i t1 = _mm_blendv_epi8(t0, mVec, mask.mMask);
+            __m128i t1 = BLEND(t0, mVec, mask.mMask);
             _mm_store_si128((__m128i*)raw, t1);
             return raw[0] | raw[1] | raw[2] | raw[3] | b;
         }
@@ -1161,7 +1190,7 @@ namespace SIMD {
         inline uint32_t hbxor(SIMDVecMask<4> const & mask) const {
             alignas(16) uint32_t raw[4];
             __m128i t0 = _mm_set1_epi32(0);
-            __m128i t1 = _mm_blendv_epi8(t0, mVec, mask.mMask);
+            __m128i t1 = BLEND(t0, mVec, mask.mMask);
             _mm_store_si128((__m128i*)raw, t1);
             return raw[0] ^ raw[1] ^ raw[2] ^ raw[3];
         }
@@ -1175,7 +1204,7 @@ namespace SIMD {
         inline uint32_t hbxor(SIMDVecMask<4> const & mask, uint32_t b) const {
             alignas(16) uint32_t raw[4];
             __m128i t0 = _mm_set1_epi32(0);
-            __m128i t1 = _mm_blendv_epi8(t0, mVec, mask.mMask);
+            __m128i t1 = BLEND(t0, mVec, mask.mMask);
             _mm_store_si128((__m128i*)raw, t1);
             return raw[0] ^ raw[1] ^ raw[2] ^ raw[3] ^ b;
         }
@@ -1190,7 +1219,7 @@ namespace SIMD {
         inline SIMDVec_u & gather(SIMDVecMask<4> const & mask, uint32_t const * baseAddr, uint32_t const * indices) {
             alignas(16) uint32_t raw[4] = { baseAddr[indices[0]], baseAddr[indices[1]], baseAddr[indices[2]], baseAddr[indices[3]] };
             __m128i t0 = _mm_load_si128((__m128i*)raw);
-            mVec = _mm_blendv_epi8(mVec, t0, mask.mMask);
+            mVec = BLEND(mVec, t0, mask.mMask);
             return *this;
         }
         // GATHERV
@@ -1211,7 +1240,7 @@ namespace SIMD {
             _mm_store_si128((__m128i*) rawInd, indices.mVec);
             for (int i = 0; i < 4; i++) { raw[i] = baseAddr[rawInd[i]]; }
             __m128i t0 = _mm_load_si128((__m128i*)&raw[0]);
-            mVec = _mm_blendv_epi8(mVec, t0, mask.mMask);
+            mVec = BLEND(mVec, t0, mask.mMask);
             return *this;
         }
         // SCATTERS
@@ -1223,10 +1252,15 @@ namespace SIMD {
         }
         // MSCATTERS
         inline uint32_t* scatter(SIMDVecMask<4> const & mask, uint32_t* baseAddr, uint32_t* indices) {
-            alignas(16) uint32_t raw[4];
+#if defined UME_USE_MASK_64B
+            alignas(32) uint64_t rawMask[4];
+            _mm256_store_si256((__m256i*) rawMask, mask.mMask);
+#else
             alignas(16) uint32_t rawMask[4];
-            _mm_store_si128((__m128i*) raw, mVec);
             _mm_store_si128((__m128i*) rawMask, mask.mMask);
+#endif
+            alignas(16) uint32_t raw[4];
+            _mm_store_si128((__m128i*) raw, mVec);
             for (int i = 0; i < 4; i++) { if (rawMask[i] == SIMDVecMask<4>::TRUE()) baseAddr[indices[i]] = raw[i]; };
             return baseAddr;
         }
@@ -1241,12 +1275,17 @@ namespace SIMD {
         }
         // MSCATTERV
         inline uint32_t* scatter(SIMDVecMask<4> const & mask, uint32_t* baseAddr, SIMDVec_u const & indices) {
+#if defined UME_USE_MASK_64B
+            alignas(32) uint64_t rawMask[4];
+            _mm256_store_si256((__m256i*) rawMask, mask.mMask);
+#else
+            alignas(16) uint32_t rawMask[4];
+            _mm_store_si128((__m128i*) rawMask, mask.mMask);
+#endif
             alignas(16) uint32_t raw[4];
             alignas(16) uint32_t rawIndices[4];
-            alignas(16) uint32_t rawMask[4];
             _mm_store_si128((__m128i*) raw, mVec);
             _mm_store_si128((__m128i*) rawIndices, indices.mVec);
-            _mm_store_si128((__m128i*) rawMask, mask.mMask);
             for (int i = 0; i < 4; i++) {
                 if (rawMask[i] == SIMDVecMask<4>::TRUE())
                     baseAddr[rawIndices[i]] = raw[i];
@@ -1294,20 +1333,30 @@ namespace SIMD {
         }
         // PACKLO
         inline SIMDVec_u & packlo(SIMDVec_u<uint32_t, 2> const & a) {
-            alignas(16) uint32_t raw[4] = { a.mVec[0], a.mVec[1], 0, 0};
+#if defined UME_USE_MASK_64B
+            alignas(32) uint64_t mask[4] = { 0xFFFFFFFFFFFFFFFF, 0xFFFFFFFFFFFFFFFF, 0, 0 };
+            __m256i m0 = _mm256_load_si256((__m256i*)mask);
+#else
             alignas(16) uint32_t mask[4] = { 0xFFFFFFFF, 0xFFFFFFFF, 0, 0 };
-            __m128i t0 = _mm_load_si128((__m128i*)raw);
             __m128i m0 = _mm_load_si128((__m128i*)mask);
-            mVec = _mm_blendv_epi8(mVec, t0, m0);
+#endif
+            alignas(16) uint32_t raw[4] = { a.mVec[0], a.mVec[1], 0, 0};
+            __m128i t0 = _mm_load_si128((__m128i*)raw);
+            mVec = BLEND(mVec, t0, m0);
             return *this;
         }
         // PACKHI
         inline SIMDVec_u & packhi(SIMDVec_u<uint32_t, 2> const & b) {
-            alignas(16) uint32_t raw[4] = { 0, 0, b.mVec[0], b.mVec[1] };
+#if defined UME_USE_MASK_64B
+            alignas(32) uint64_t mask[4] = { 0, 0, 0xFFFFFFFFFFFFFFFF, 0xFFFFFFFFFFFFFFFF};
+            __m256i m0 = _mm256_load_si256((__m256i*)mask);
+#else
             alignas(16) uint32_t mask[4] = { 0, 0, 0xFFFFFFFF, 0xFFFFFFFF};
-            __m128i t0 = _mm_load_si128((__m128i*)raw);
             __m128i m0 = _mm_load_si128((__m128i*)mask);
-            mVec = _mm_blendv_epi8(mVec, t0, m0);
+#endif
+            alignas(16) uint32_t raw[4] = { 0, 0, b.mVec[0], b.mVec[1] };
+            __m128i t0 = _mm_load_si128((__m128i*)raw);
+            mVec = BLEND(mVec, t0, m0);
             return *this;
         }
         // UNPACK
@@ -1346,5 +1395,8 @@ namespace SIMD {
 
 }
 }
+
+#undef BLEND
+#undef MASK_STORE
 
 #endif

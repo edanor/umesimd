@@ -43,13 +43,17 @@ namespace SIMD {
             uint32_t,
             4>
     {
-        static uint32_t TRUE() { return 0xFFFFFFFF; };
-        static uint32_t FALSE() { return 0x00000000; };
 
         // This function returns internal representation of boolean value based on bool input
-        static UME_FORCE_INLINE uint32_t toMaskBool(bool m) { if (m == true) return TRUE(); else return FALSE(); }
-        // This function returns a boolean value based on internal representation
-        static UME_FORCE_INLINE bool toBool(uint32_t m) { if ((m & 0x80000000) != 0) return true; else return false; }
+#if defined UME_USE_MASK_64B
+        static uint64_t TRUE() { return 0xFFFFFFFFFFFFFFFF; };
+        static uint64_t FALSE() { return 0x0000000000000000; };
+        static UME_FORCE_INLINE uint64_t toMaskBool(bool m) {if (m == true) return TRUE(); else return FALSE(); }
+#else
+        static uint32_t TRUE() { return 0xFFFFFFFF; };
+        static uint32_t FALSE() { return 0x00000000; };
+        static UME_FORCE_INLINE uint32_t toMaskBool(bool m) {if (m == true) return TRUE(); else return FALSE(); }
+#endif
 
         friend class SIMDVec_u<uint8_t, 4>;
         friend class SIMDVec_u<uint16_t, 4>;
@@ -62,9 +66,22 @@ namespace SIMD {
         friend class SIMDVec_f<float, 4>;
         friend class SIMDVec_f<double, 4>;
     private:
-        __m128i mMask;
 
+#if defined UME_USE_MASK_64B
+        __m256i mMask;
+#else
+        __m128i mMask;
+#endif
+
+#if defined UME_USE_MASK_64B
+        UME_FORCE_INLINE explicit SIMDVecMask(__m256i const & x) { mMask = x; };
+        // This is usefull to have in 64b mode as the comparison operations might return vector of 32b scalars
+        UME_FORCE_INLINE explicit SIMDVecMask(__m128i const & x) {
+            mMask = _mm256_cvtepi32_epi64(x);
+        };
+#else
         UME_FORCE_INLINE explicit SIMDVecMask(__m128i const & x) { mMask = x; };
+#endif
     public:
         constexpr static uint32_t length() { return 4; }
         constexpr static uint32_t alignment() { return 16; }
@@ -74,21 +91,39 @@ namespace SIMD {
         // standard bool or using equivalent mask
         // SET-CONSTR
         UME_FORCE_INLINE SIMDVecMask(bool m) {
+
+#if defined UME_USE_MASK_64B
+            mMask = _mm256_set1_epi64x(toMaskBool(m));
+#else
             mMask = _mm_set1_epi32(toMaskBool(m));
+#endif
         }
 
         // LOAD-CONSTR
         UME_FORCE_INLINE explicit SIMDVecMask(bool const *p) {
+#if defined UME_USE_MASK_64B
+            alignas(32) uint64_t raw[4];
+            for (int i = 0; i < 4; i++) {
+                raw[i] = p[i] ? TRUE() : FALSE();
+            }
+            mMask = _mm256_load_si256((__m256i*)raw);
+#else
             alignas(16) uint32_t raw[4];
             for (int i = 0; i < 4; i++) {
                 raw[i] = p[i] ? TRUE() : FALSE();
             }
             mMask = _mm_load_si128((__m128i*)raw);
+#endif
         }
         // FULL-CONSTR
         UME_FORCE_INLINE explicit SIMDVecMask(bool m0, bool m1, bool m2, bool m3) {
+#if defined UME_USE_MASK_64B
+            mMask = _mm256_setr_epi64x(toMaskBool(m0), toMaskBool(m1),
+                toMaskBool(m2), toMaskBool(m3));
+#else
             mMask = _mm_setr_epi32(toMaskBool(m0), toMaskBool(m1),
                 toMaskBool(m2), toMaskBool(m3));
+#endif
         }
 
         UME_FORCE_INLINE SIMDVecMask(SIMDVecMask const & mask) {
@@ -96,70 +131,125 @@ namespace SIMD {
         }
         // EXTRACT
         UME_FORCE_INLINE bool extract(uint32_t index) const {
-            UME_PERFORMANCE_UNOPTIMAL_WARNING()
-                alignas(16) uint32_t raw[4];
+#if defined UME_USE_MASK_64B
+            alignas(32) uint64_t raw[4];
+            _mm256_store_si256((__m256i*)raw, mMask);
+            return raw[index] == TRUE();
+#else
+            alignas(16) uint32_t raw[4];
             _mm_store_si128((__m128i*)raw, mMask);
             return raw[index] == TRUE();
+#endif
         }
         UME_FORCE_INLINE bool operator[] (uint32_t index) const {
             return extract(index);
         }
         // INSERT
         UME_FORCE_INLINE void insert(uint32_t index, bool x) {
-            UME_PERFORMANCE_UNOPTIMAL_WARNING()
-                alignas(16) static uint32_t raw[4] = { 0, 0, 0, 0 };
+#if defined UME_USE_MASK_64B
+            alignas(32) uint64_t raw[4] = { 0, 0, 0, 0 };
+            _mm256_store_si256((__m256i*)raw, mMask);
+            raw[index] = toMaskBool(x);
+            mMask = _mm256_load_si256((__m256i*)raw);
+#else
+            alignas(16) uint32_t raw[4] = { 0, 0, 0, 0 };
             _mm_store_si128((__m128i*)raw, mMask);
             raw[index] = toMaskBool(x);
             mMask = _mm_load_si128((__m128i*)raw);
+#endif
         }
         // LOAD
         UME_FORCE_INLINE SIMDVecMask & load(bool const * p) {
+#if defined UME_USE_MASK_64B
+            alignas(32) uint64_t raw[4];
+            raw[0] = p[0] ? TRUE() : FALSE();
+            raw[1] = p[1] ? TRUE() : FALSE();
+            raw[2] = p[2] ? TRUE() : FALSE();
+            raw[3] = p[3] ? TRUE() : FALSE();
+            mMask = _mm256_load_si256((__m256i*)raw);
+#else
             alignas(16) uint32_t raw[4];
             raw[0] = p[0] ? TRUE() : FALSE();
             raw[1] = p[1] ? TRUE() : FALSE();
             raw[2] = p[2] ? TRUE() : FALSE();
             raw[3] = p[3] ? TRUE() : FALSE();
             mMask = _mm_load_si128((__m128i*)raw);
+#endif
             return *this;
         }
         // LOADA
         UME_FORCE_INLINE SIMDVecMask & loada(bool const * p) {
+#if defined UME_USE_MASK_64B
+            alignas(32) uint64_t raw[4];
+            raw[0] = p[0] ? TRUE() : FALSE();
+            raw[1] = p[1] ? TRUE() : FALSE();
+            raw[2] = p[2] ? TRUE() : FALSE();
+            raw[3] = p[3] ? TRUE() : FALSE();
+            mMask = _mm256_load_si256((__m256i*)raw);
+#else
             alignas(16) uint32_t raw[4];
             raw[0] = p[0] ? TRUE() : FALSE();
             raw[1] = p[1] ? TRUE() : FALSE();
             raw[2] = p[2] ? TRUE() : FALSE();
             raw[3] = p[3] ? TRUE() : FALSE();
             mMask = _mm_load_si128((__m128i*)raw);
+#endif
             return *this;
         }
         // STORE
         UME_FORCE_INLINE bool* store(bool * p) const {
+#if defined UME_USE_MASK_64B
+            alignas(32) uint64_t raw[4];
+            _mm256_store_si256((__m256i*)raw, mMask);
+            p[0] = raw[0] == TRUE();
+            p[1] = raw[1] == TRUE();
+            p[2] = raw[2] == TRUE();
+            p[3] = raw[3] == TRUE();
+#else
             alignas(16) uint32_t raw[4];
             _mm_store_si128((__m128i*)raw, mMask);
             p[0] = raw[0] == TRUE();
             p[1] = raw[1] == TRUE();
             p[2] = raw[2] == TRUE();
             p[3] = raw[3] == TRUE();
+#endif
             return p;
         }
         // STOREA
         UME_FORCE_INLINE bool* storea(bool * p) const {
+#if defined UME_USE_MASK_64B
+            alignas(32) uint64_t raw[4];
+            _mm256_store_si256((__m256i*)raw, mMask);
+            p[0] = raw[0] == TRUE();
+            p[1] = raw[1] == TRUE();
+            p[2] = raw[2] == TRUE();
+            p[3] = raw[3] == TRUE();
+#else
             alignas(16) uint32_t raw[4];
             _mm_store_si128((__m128i*)raw, mMask);
             p[0] = raw[0] == TRUE();
             p[1] = raw[1] == TRUE();
             p[2] = raw[2] == TRUE();
             p[3] = raw[3] == TRUE();
+#endif
             return p;
         }
         // ASSIGN
         UME_FORCE_INLINE SIMDVecMask & operator= (SIMDVecMask const & x) {
+#if defined UME_USE_MASK_64B
+            mMask = _mm256_load_si256(&x.mMask);
+#else
             mMask = _mm_load_si128(&x.mMask);
+#endif
             return *this;
         }
         // LANDV
         UME_FORCE_INLINE SIMDVecMask land(SIMDVecMask const & b) const {
+#if defined UME_USE_MASK_64B
+            __m256i t0 = _mm256_and_si256(mMask, b.mMask);
+#else
             __m128i t0 = _mm_and_si128(mMask, b.mMask);
+#endif
             return SIMDVecMask(t0);
         }
         UME_FORCE_INLINE SIMDVecMask operator& (SIMDVecMask const & b) const {
@@ -170,8 +260,13 @@ namespace SIMD {
         }
         // LANDS
         UME_FORCE_INLINE SIMDVecMask land(bool b) const {
+#if defined UME_USE_MASK_64B
+            __m256i t0 = _mm256_set1_epi64x(b ? TRUE() : FALSE());
+            __m256i t1 = _mm256_and_si256(mMask, t0);
+#else
             __m128i t0 = _mm_set1_epi32(b ? TRUE() : FALSE());
             __m128i t1 = _mm_and_si128(mMask, t0);
+#endif
             return SIMDVecMask(t1);
         }
         UME_FORCE_INLINE SIMDVecMask operator& (bool b) const {
@@ -182,7 +277,11 @@ namespace SIMD {
         }
         // LANDVA
         UME_FORCE_INLINE SIMDVecMask & landa(SIMDVecMask const & b) {
+#if defined UME_USE_MASK_64B
+            mMask = _mm256_and_si256(mMask, b.mMask);
+#else
             mMask = _mm_and_si128(mMask, b.mMask);
+#endif
             return *this;
         }
         UME_FORCE_INLINE SIMDVecMask operator&= (SIMDVecMask const & b) {
@@ -190,8 +289,13 @@ namespace SIMD {
         }
         // LANDSA
         UME_FORCE_INLINE SIMDVecMask & landa(bool b) {
+#if defined UME_USE_MASK_64B
+            __m256i t0 = _mm256_set1_epi64x(b ? TRUE() : FALSE());
+            mMask = _mm256_and_si256(mMask, t0);
+#else
             __m128i t0 = _mm_set1_epi32(b ? TRUE() : FALSE());
             mMask = _mm_and_si128(mMask, t0);
+#endif
             return *this;
         }
         UME_FORCE_INLINE SIMDVecMask operator&= (bool b) {
@@ -199,7 +303,11 @@ namespace SIMD {
         }
         // LORV
         UME_FORCE_INLINE SIMDVecMask lor(SIMDVecMask const & b) const {
+#if defined UME_USE_MASK_64B
+            __m256i t0 = _mm256_or_si256(mMask, b.mMask);
+#else
             __m128i t0 = _mm_or_si128(mMask, b.mMask);
+#endif
             return SIMDVecMask(t0);
         }
         UME_FORCE_INLINE SIMDVecMask operator| (SIMDVecMask const & b) const {
@@ -210,8 +318,13 @@ namespace SIMD {
         }
         // LORS
         UME_FORCE_INLINE SIMDVecMask lor(bool b) const {
+#if defined UME_USE_MASK_64B
+            __m256i t0 = _mm256_set1_epi64x(b ? TRUE() : FALSE());
+            __m256i t1 = _mm256_or_si256(mMask, t0);
+#else
             __m128i t0 = _mm_set1_epi32(b ? TRUE() : FALSE());
             __m128i t1 = _mm_or_si128(mMask, t0);
+#endif
             return SIMDVecMask(t1);
         }
         UME_FORCE_INLINE SIMDVecMask operator| (bool b) const {
@@ -222,7 +335,11 @@ namespace SIMD {
         }
         // LORVA
         UME_FORCE_INLINE SIMDVecMask & lora(SIMDVecMask const & b) {
+#if defined UME_USE_MASK_64B
+            mMask = _mm256_or_si256(mMask, b.mMask);
+#else
             mMask = _mm_or_si128(mMask, b.mMask);
+#endif
             return *this;
         }
         UME_FORCE_INLINE SIMDVecMask & operator|= (SIMDVecMask const & b) {
@@ -230,8 +347,13 @@ namespace SIMD {
         }
         // LORSA
         UME_FORCE_INLINE SIMDVecMask & lora(bool b) {
+#if defined UME_USE_MASK_64B
+            __m256i t0 = _mm256_set1_epi64x(b ? TRUE() : FALSE());
+            mMask = _mm256_or_si256(mMask, t0);
+#else
             __m128i t0 = _mm_set1_epi32(b ? TRUE() : FALSE());
             mMask = _mm_or_si128(mMask, t0);
+#endif
             return *this;
         }
         UME_FORCE_INLINE SIMDVecMask & operator |= (bool b) {
@@ -239,7 +361,11 @@ namespace SIMD {
         }
         // LXORV
         UME_FORCE_INLINE SIMDVecMask lxor(SIMDVecMask const & b) const {
+#if defined UME_USE_MASK_64B
+            __m256i t0 = _mm256_xor_si256(mMask, b.mMask);
+#else
             __m128i t0 = _mm_xor_si128(mMask, b.mMask);
+#endif
             return SIMDVecMask(t0);
         }
         UME_FORCE_INLINE SIMDVecMask operator^ (SIMDVecMask const & b) const {
@@ -247,8 +373,13 @@ namespace SIMD {
         }
         // LXORS
         UME_FORCE_INLINE SIMDVecMask lxor(bool b) const {
+#if defined UME_USE_MASK_64B
+            __m256i t0 = _mm256_set1_epi64x(b ? TRUE() : FALSE());
+            __m256i t1 = _mm256_xor_si256(mMask, t0);
+#else
             __m128i t0 = _mm_set1_epi32(b ? TRUE() : FALSE());
             __m128i t1 = _mm_xor_si128(mMask, t0);
+#endif
             return SIMDVecMask(t1);
         }
         UME_FORCE_INLINE SIMDVecMask operator^ (bool b) const {
@@ -256,7 +387,11 @@ namespace SIMD {
         }
         // LXORVA
         UME_FORCE_INLINE SIMDVecMask & lxora(SIMDVecMask const & b) {
+#if defined UME_USE_MASK_64B
+            mMask = _mm256_xor_si256(mMask, b.mMask);
+#else
             mMask = _mm_xor_si128(mMask, b.mMask);
+#endif
             return *this;
         }
         UME_FORCE_INLINE SIMDVecMask operator^= (SIMDVecMask const & b) {
@@ -264,8 +399,13 @@ namespace SIMD {
         }
         // LXORSA
         UME_FORCE_INLINE SIMDVecMask & lxora(bool b) {
+#if defined UME_USE_MASK_64B
+            __m256i t0 = _mm256_set1_epi64x(b ? TRUE() : FALSE());
+            mMask = _mm256_xor_si256(mMask, t0);
+#else
             __m128i t0 = _mm_set1_epi32(b ? TRUE() : FALSE());
             mMask = _mm_xor_si128(mMask, t0);
+#endif
             return *this;
         }
         UME_FORCE_INLINE SIMDVecMask operator^= (bool b) {
@@ -273,8 +413,13 @@ namespace SIMD {
         }
         // LNOT
         UME_FORCE_INLINE SIMDVecMask lnot() const {
+#if defined UME_USE_MASK_64B
+            __m256i t0 = _mm256_setzero_si256();
+            __m256i t1 = _mm256_cmpeq_epi64(mMask, t0);
+#else
             __m128i t0 = _mm_setzero_si128();
             __m128i t1 = _mm_cmpeq_epi32(mMask, t0);
+#endif
             return SIMDVecMask(t1);
         }
         UME_FORCE_INLINE SIMDVecMask operator! () const {
@@ -282,27 +427,49 @@ namespace SIMD {
         }
         // LNOTA
         UME_FORCE_INLINE SIMDVecMask lnota() {
+#if defined UME_USE_MASK_64B
+            __m256i t0 = _mm256_setzero_si256();
+            mMask = _mm256_cmpeq_epi64(mMask, t0);
+#else
             __m128i t0 = _mm_setzero_si128();
             mMask = _mm_cmpeq_epi32(mMask, t0);
+#endif
             return *this;
         }
         // HLAND
         UME_FORCE_INLINE bool hland() const {
+#if defined UME_USE_MASK_64B
+            __m256i t0 = _mm256_set1_epi64x(TRUE());
+            int t1 = _mm256_testc_si256(mMask, t0);
+#else
             __m128i t0 = _mm_set1_epi32(TRUE());
             int t1 = _mm_testc_si128(mMask, t0);
+#endif
             return t1 != 0;
         }
         // HLOR
         UME_FORCE_INLINE bool hlor() const {
+#if defined UME_USE_MASK_64B
+            alignas(32) uint64_t raw[4];
+            _mm256_store_si256((__m256i*)raw, mMask);
+            return (raw[0] | raw[1] | raw[2] | raw[3]) != 0;
+#else
             alignas(16) uint32_t raw[4];
             _mm_store_si128((__m128i*)raw, mMask);
             return (raw[0] | raw[1] | raw[2] | raw[3]) != 0;
+#endif
         }
         // HLXOR
         UME_FORCE_INLINE bool hlxor() const {
+#if defined UME_USE_MASK_64B
+            alignas(32) uint64_t raw[4];
+            _mm256_store_si256((__m256i*)raw, mMask);
+            return (raw[0] ^ raw[1] ^ raw[2] ^ raw[3]) != 0;
+#else
             alignas(16) uint32_t raw[4];
             _mm_store_si128((__m128i*)raw, mMask);
             return (raw[0] ^ raw[1] ^ raw[2] ^ raw[3]) != 0;
+#endif
         }
     };
 
