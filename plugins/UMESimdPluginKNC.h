@@ -233,4 +233,6 @@ namespace UME
 } // SIMD
 } // UME
 
+#include "knc/UMESimdTraitsSpecialization.h"
+
 #endif

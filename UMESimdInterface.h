@@ -3533,28 +3533,6 @@ namespace SIMD
 
     };
 
-    // This is just an experimental setup! Providing functions like this to handle interface
-    // is possible although it will be pretty extensive in number of necessary declarations.
-    template<typename VEC_TYPE>
-    UME_FORCE_INLINE VEC_TYPE addv (VEC_TYPE const & src1, VEC_TYPE const & src2) {
-        return src1.add(src2);
-    }
-
-    template<typename VEC_TYPE>
-    UME_FORCE_INLINE VEC_TYPE & addva (VEC_TYPE & src1, VEC_TYPE const & src2) {
-        return src1.addva(src2);
-    }
-
-    // How to restrict template parameter resolution to certain types only?
-    template<typename VEC_TYPE>
-    UME_FORCE_INLINE VEC_TYPE adds (float src1, VEC_TYPE const & src2) {
-        return src2.add(src1);
-    }
-    
-    template<typename VEC_TYPE>
-    UME_FORCE_INLINE VEC_TYPE adds (VEC_TYPE const & src1, float src2) {
-        return src1.add(src2);
-    }
 } // namespace UME::SIMD
 } // namespace UME
 

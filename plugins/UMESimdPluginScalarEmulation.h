@@ -35,12 +35,10 @@
 
 #include "../UMESimdInterface.h"
 
-
 namespace UME
 {
 namespace SIMD
 {
-
     // forward declarations of simd types classes;
     template<uint32_t VEC_LEN>                             class SIMDVecMask;
     template<uint32_t SMASK_LEN>                           class SIMDSwizzle;
@@ -91,6 +89,7 @@ namespace SIMD
 
 }
 }
+
 #include "scalar/UMESimdMaskScalar.h"
 #include "scalar/UMESimdSwizzleScalar.h"
 #include "scalar/UMESimdVecUintScalar.h"
@@ -230,5 +229,7 @@ namespace UME
     typedef SIMDVec_f<double, 16>    SIMD16_64f;
 } // SIMD
 } // UME
+
+#include "scalar/UMESimdTraitsSpecialization.h"
 
 #endif

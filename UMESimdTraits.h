@@ -1093,7 +1093,21 @@ namespace UME {
             typedef NullType<1>   DOUBLE_LEN_VEC_T;
         };
 
-    }
+    // This class provides some default values for different instruction sets
+    class ISATraits {
+    public:
+        // The 'PluginTraits' should be provided by every plugin.
+        // Using this fallbacks allows for more flexible handling of
+        // plugin (or architecture) specific features. It also makes it
+        // more abstract, and keeps the user-interface local in terms of
+        // file hierarchy. It also keeps plugin-specific code outside the interface
+        // files.
+        template<typename SCALAR_TYPE>
+        UME_FORCE_INLINE static constexpr unsigned int NativeLength() {
+            return PluginTraits::NativeLength<SCALAR_TYPE>();
+        }
+    };
+}
 }
 
 #endif

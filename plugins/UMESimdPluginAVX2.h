@@ -101,8 +101,8 @@ namespace SIMD
 
 namespace UME
 {
-    namespace SIMD
-    {
+namespace SIMD
+{
     // Mask types
     typedef SIMDVecMask<1>      SIMDMask1;
     typedef SIMDVecMask<2>      SIMDMask2;
@@ -231,5 +231,7 @@ namespace UME
     typedef SIMDVec_f<double, 16>    SIMD16_64f;
 } // SIMD
 } // UME
+
+#include "avx2/UMESimdTraitsSpecialization.h"
 
 #endif
