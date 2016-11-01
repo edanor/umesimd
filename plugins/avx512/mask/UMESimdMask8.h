@@ -120,6 +120,10 @@ namespace SIMD {
             if (p[1] == true) mMask |= 0x2;
             if (p[2] == true) mMask |= 0x4;
             if (p[3] == true) mMask |= 0x8;
+            if (p[4] == true) mMask |= 0x10;
+            if (p[5] == true) mMask |= 0x20;
+            if (p[6] == true) mMask |= 0x40;
+            if (p[7] == true) mMask |= 0x80;
             return *this;
         }
         // LOADA
