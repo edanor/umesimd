@@ -1330,66 +1330,83 @@ namespace SIMD {
 
         // EXP
         UME_FORCE_INLINE SIMDVec_f exp() const {
-#if defined(UME_USE_SVML)
+        #if defined(UME_USE_SVML)
             __m256 t0 = _mm256_exp_ps(mVec);
             return SIMDVec_f(t0);
-#else
+        #else
             return VECTOR_EMULATION::expf<SIMDVec_f, SIMDVec_u<uint32_t, 8>>(*this);
-#endif
+        #endif
         }
         // MEXP
         UME_FORCE_INLINE SIMDVec_f exp(SIMDVecMask<8> const & mask) const {
-#if defined(UME_USE_SVML)
+        #if defined(UME_USE_SVML)
             __m256 t0 = _mm256_exp_ps(mVec);
             __m256 t1 = BLEND(mVec, t0, mask.mMask);
             return SIMDVec_f(t1);
-#else
+        #else
             return VECTOR_EMULATION::expf<SIMDVec_f, SIMDVec_u<uint32_t, 8>, SIMDVecMask<8>>(mask, *this);
-#endif
+        #endif
         }
         // LOG
+        UME_FORCE_INLINE SIMDVec_f log() const {
+        #if defined(UME_USE_SVML)
+            __m256 t0 = _mm256_log_ps(mVec);
+            return SIMDVec_f(t0);
+        #else
+            return VECTOR_EMULATION::logf<SIMDVec_f, SIMDVec_u<uint32_t, 8>>(*this);
+        #endif
+        }
         // MLOG
+        UME_FORCE_INLINE SIMDVec_f log(SIMDVecMask<8> const & mask) const {
+        #if defined(UME_USE_SVML)
+            __m256 t0 = _mm256_log_ps(mVec);
+            __m256 t1 = BLEND(mVec, t0, mask.mMask);
+            return SIMDVec_f(t1);
+        #else
+            return VECTOR_EMULATION::logf<SIMDVec_f, SIMDVec_u<uint32_t, 8>, SIMDVecMask<8>>(mask, *this);
+        #endif
+        }
         // LOG2
         // MLOG2
         // LOG10
         // MLOG10
         // SIN
         UME_FORCE_INLINE SIMDVec_f sin() const {
-#if defined(UME_USE_SVML)
+        #if defined(UME_USE_SVML)
             __m256 t0 = _mm256_sin_ps(mVec);
             return SIMDVec_f(t0);
-#else
+        #else
             return VECTOR_EMULATION::sinf<SIMDVec_f, SIMDVec_i<int32_t, 8>, SIMDVecMask<8>>(*this);
-#endif
+        #endif
         }
         // MSIN
         UME_FORCE_INLINE SIMDVec_f sin(SIMDVecMask<8> const & mask) const {
-#if defined(UME_USE_SVML)
+        #if defined(UME_USE_SVML)
             __m256 t0 = _mm256_sin_ps(mVec);
             __m256 t1 = BLEND(mVec, t0, mask.mMask);
             return SIMDVec_f(t0);
-#else
+        #else
             return VECTOR_EMULATION::sinf<SIMDVec_f, SIMDVec_i<int32_t, 8>, SIMDVecMask<8>>(mask, *this);
-#endif
+        #endif
         }
         // COS
         UME_FORCE_INLINE SIMDVec_f cos() const {
-#if defined(UME_USE_SVML)
+        #if defined(UME_USE_SVML)
             __m256 t0 = _mm256_cos_ps(mVec);
             return SIMDVec_f(t0);
-#else
+        #else
             return VECTOR_EMULATION::cosf<SIMDVec_f, SIMDVec_i<int32_t, 8>, SIMDVecMask<8>>(*this);
-#endif
+        #endif
         }
         // MCOS
         UME_FORCE_INLINE SIMDVec_f cos(SIMDVecMask<8> const & mask) const {
-#if defined(UME_USE_SVML)
+        #if defined(UME_USE_SVML)
             __m256 t0 = _mm256_cos_ps(mVec);
             __m256 t1 = BLEND(mVec, t0, mask.mMask);
             return SIMDVec_f(t0);
-#else
+        #else
             return VECTOR_EMULATION::cosf<SIMDVec_f, SIMDVec_i<int32_t, 8>, SIMDVecMask<8>>(mask, *this);
-#endif
+        #endif
         }
         // SINCOS
         UME_FORCE_INLINE void sincos(SIMDVec_f & sinvec, SIMDVec_f & cosvec) const {

@@ -1642,7 +1642,13 @@ namespace SIMD {
         // ISZEROSUB
         // EXP
         UME_FORCE_INLINE SIMDVec_f exp() const {
+#if defined(UME_USE_SVML)
+            __m256 t0 = _mm256_exp_ps(mVec[0]);
+            __m256 t1 = _mm256_exp_ps(mVec[1]);
+            return SIMDVec_f(t0, t1);
+#else
             return VECTOR_EMULATION::expf<SIMDVec_f, SIMDVec_u<uint32_t, 16>>(*this);
+#endif
         }
         // MEXP
         UME_FORCE_INLINE SIMDVec_f exp(SIMDVecMask<16> const & mask) const {

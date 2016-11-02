@@ -973,7 +973,24 @@ namespace SIMD {
         #endif
         }
         // LOG
+        UME_FORCE_INLINE SIMDVec_f log() const {
+        #if defined(UME_USE_SVML)
+            __m256d t0 = _mm256_log_pd(mVec);
+            return SIMDVec_f(t0);
+        #else
+            return VECTOR_EMULATION::logd<SIMDVec_f, SIMDVec_u<uint64_t, 4>>(*this);
+        #endif
+        }
         // MLOG
+        UME_FORCE_INLINE SIMDVec_f log(SIMDVecMask<4> const & mask) const {
+        #if defined(UME_USE_SVML)
+            __m256d t0 = _mm256_log_pd(mVec);
+            __m256d t1 = BLEND(mVec, t0, mask.mMask);
+            return SIMDVec_f(t1);
+        #else
+            return VECTOR_EMULATION::logd<SIMDVec_f, SIMDVec_u<uint64_t, 4>, SIMDVecMask<4>> (mask, *this);
+        #endif
+        }
         // LOG2
         // MLOG2
         // LOG10
