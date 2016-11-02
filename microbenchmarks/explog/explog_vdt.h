@@ -31,7 +31,7 @@ inline double call_exp_vdt<double>(double in) {
 }
 
 template<typename SCALAR_FLOAT_T>
-benchmark_results<SCALAR_FLOAT_T> test_exp_vdt_scalar(int array_size)
+UME_NEVER_INLINE benchmark_results<SCALAR_FLOAT_T> test_exp_vdt_scalar(int array_size)
 {
     unsigned long long start, end;    // Time measurements
 
@@ -71,41 +71,41 @@ benchmark_results<SCALAR_FLOAT_T> test_exp_vdt_scalar(int array_size)
 }
 
 template<typename SCALAR_FLOAT_T>
-inline SCALAR_FLOAT_T call_log_vdt(SCALAR_FLOAT_T in) {
+UME_FORCE_INLINE SCALAR_FLOAT_T call_log_vdt(SCALAR_FLOAT_T in) {
 }
 
 template<>
-inline float call_log_vdt<float>(float in) {
+UME_FORCE_INLINE float call_log_vdt<float>(float in) {
     return vdt::fast_logf(in);
 }
 
 template<>
-inline double call_log_vdt<double>(double in) {
+UME_FORCE_INLINE double call_log_vdt<double>(double in) {
     return vdt::fast_log(in);
 }
 
-inline float call_log2_vdt(float in) {
+UME_FORCE_INLINE float call_log2_vdt(float in) {
     float inv_log_of_2 = 1.4426950408889634073599246810019; // 1/log(2)
     return inv_log_of_2 * vdt::fast_logf(in);
 }
 
-inline double call_log2_vdt(double in) {
+UME_FORCE_INLINE double call_log2_vdt(double in) {
     double inv_log_of_2 = 1.4426950408889634073599246810019; // 1/log(2)
     return inv_log_of_2 * vdt::fast_log(in);
 }
 
-inline float call_log10_vdt(float in) {
+UME_FORCE_INLINE float call_log10_vdt(float in) {
     float inv_log_of_10 = 0.4342944819032518276511289189166; // 1/log(10)
     return inv_log_of_10 * vdt::fast_logf(in);
 }
 
-inline double call_log10_vdt(double in) {
+UME_FORCE_INLINE double call_log10_vdt(double in) {
     double inv_log_of_10 = 0.4342944819032518276511289189166f; // 1/log(10)
     return inv_log_of_10 * vdt::fast_log(in);
 }
 
 template<typename SCALAR_FLOAT_T>
-benchmark_results<SCALAR_FLOAT_T> test_log_vdt_scalar(int array_size)
+UME_NEVER_INLINE benchmark_results<SCALAR_FLOAT_T> test_log_vdt_scalar(int array_size)
 {
     unsigned long long start, end;    // Time measurements
 
@@ -145,7 +145,7 @@ benchmark_results<SCALAR_FLOAT_T> test_log_vdt_scalar(int array_size)
 }
 
 template<typename SCALAR_FLOAT_T>
-benchmark_results<SCALAR_FLOAT_T> test_log2_vdt_scalar(int array_size)
+UME_NEVER_INLINE benchmark_results<SCALAR_FLOAT_T> test_log2_vdt_scalar(int array_size)
 {
     unsigned long long start, end;    // Time measurements
 
@@ -185,7 +185,7 @@ benchmark_results<SCALAR_FLOAT_T> test_log2_vdt_scalar(int array_size)
 }
 
 template<typename SCALAR_FLOAT_T>
-benchmark_results<SCALAR_FLOAT_T> test_log10_vdt_scalar(int array_size)
+UME_NEVER_INLINE benchmark_results<SCALAR_FLOAT_T> test_log10_vdt_scalar(int array_size)
 {
     unsigned long long start, end;    // Time measurements
 

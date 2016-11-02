@@ -35,7 +35,7 @@
 
 // Kernel for benchmarking using EXP function.
 template<typename SCALAR_FLOAT_T, int VEC_LEN>
-benchmark_results<SCALAR_FLOAT_T> test_exp_ume(const int ARRAY_SIZE)
+UME_NEVER_INLINE benchmark_results<SCALAR_FLOAT_T> test_exp_ume(const int ARRAY_SIZE)
 {
     SIMDVec<SCALAR_FLOAT_T, VEC_LEN> x;
     SIMDVec<SCALAR_FLOAT_T, VEC_LEN> y;
@@ -79,7 +79,7 @@ benchmark_results<SCALAR_FLOAT_T> test_exp_ume(const int ARRAY_SIZE)
 
 // Kernel for benchmarking using LOG function.
 template<typename SCALAR_FLOAT_T, int VEC_LEN>
-benchmark_results<SCALAR_FLOAT_T> test_log_ume(const int ARRAY_SIZE)
+UME_NEVER_INLINE benchmark_results<SCALAR_FLOAT_T> test_log_ume(const int ARRAY_SIZE)
 {
     SIMDVec<SCALAR_FLOAT_T, VEC_LEN> x;
     SIMDVec<SCALAR_FLOAT_T, VEC_LEN> y;
@@ -123,7 +123,7 @@ benchmark_results<SCALAR_FLOAT_T> test_log_ume(const int ARRAY_SIZE)
 
 // Kernel for benchmarking using LOG2 function.
 template<typename SCALAR_FLOAT_T, int VEC_LEN>
-benchmark_results<SCALAR_FLOAT_T> test_log2_ume(const int ARRAY_SIZE)
+UME_NEVER_INLINE benchmark_results<SCALAR_FLOAT_T> test_log2_ume(const int ARRAY_SIZE)
 {
     SIMDVec<SCALAR_FLOAT_T, VEC_LEN> x;
     SIMDVec<SCALAR_FLOAT_T, VEC_LEN> y;
@@ -167,7 +167,7 @@ benchmark_results<SCALAR_FLOAT_T> test_log2_ume(const int ARRAY_SIZE)
 
 // Kernel for benchmarking using LOG10 function.
 template<typename SCALAR_FLOAT_T, int VEC_LEN>
-benchmark_results<SCALAR_FLOAT_T> test_log10_ume(const int ARRAY_SIZE)
+UME_NEVER_INLINE benchmark_results<SCALAR_FLOAT_T> test_log10_ume(const int ARRAY_SIZE)
 {
     SIMDVec<SCALAR_FLOAT_T, VEC_LEN> x;
     SIMDVec<SCALAR_FLOAT_T, VEC_LEN> y;

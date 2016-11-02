@@ -43,6 +43,36 @@ UME_NEVER_INLINE void generate_some_exp_values(int N, SCALAR_FLOAT_T * in, SCALA
     }
 }
 
+template<>
+UME_NEVER_INLINE void generate_some_exp_values<float> (int N, float * in, float * out) {
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    // For 32b floating point numbers maximum value reachable is 3.4028235E38 from which natural logarithm is ~88.72. Using 
+    // higher values would cause us to hit the infinities and then destroy our benchmarking environment.
+    // Limit the argument to fall between 0 and 88.
+    std::uniform_real_distribution<float> dist(std::numeric_limits<float>::lowest(), 88.0f);
+
+    for (int i = 0; i < N; i++) {
+        in[i] = dist(gen);
+        out[i] = std::exp(in[i]);
+    }
+}
+
+template<>
+UME_NEVER_INLINE void generate_some_exp_values<double> (int N, double * in, double * out) {
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    // For 64b floating point numbers maximum value reachable is 1.79769313486231570814527423732E308 from which natural logarithm is ~709.78. Using 
+    // higher values would cause us to hit the infinities and then destroy our benchmarking environment.
+    // Limit the argument to fall between 0 and 709.
+    std::uniform_real_distribution<double> dist(std::numeric_limits<double>::lowest(), 709.0);
+
+    for (int i = 0; i < N; i++) {
+        in[i] = dist(gen);
+        out[i] = std::exp(in[i]);
+    }
+}
+
 template<typename SCALAR_FLOAT_T>
 UME_NEVER_INLINE void generate_some_log_values(int N, SCALAR_FLOAT_T * in, SCALAR_FLOAT_T * out) {
     std::random_device rd;
@@ -81,7 +111,7 @@ UME_NEVER_INLINE void generate_some_log10_values(int N, SCALAR_FLOAT_T * in, SCA
 
 // Kernel for benchmarking using std::exp function calls.
 template<typename SCALAR_FLOAT_T>
-benchmark_results<SCALAR_FLOAT_T> test_exp_scalar(const int ARRAY_SIZE)
+UME_NEVER_INLINE benchmark_results<SCALAR_FLOAT_T> test_exp_scalar(const int ARRAY_SIZE)
 {
     unsigned long long start, end;    // Time measurements
 
@@ -128,7 +158,7 @@ benchmark_results<SCALAR_FLOAT_T> test_exp_scalar(const int ARRAY_SIZE)
 
 // Kernel for benchmarking using std::exp function calls.
 template<typename SCALAR_FLOAT_T>
-benchmark_results<SCALAR_FLOAT_T> test_log_scalar(int ARRAY_SIZE)
+UME_NEVER_INLINE benchmark_results<SCALAR_FLOAT_T> test_log_scalar(int ARRAY_SIZE)
 {
     unsigned long long start, end;    // Time measurements
 
@@ -175,7 +205,7 @@ benchmark_results<SCALAR_FLOAT_T> test_log_scalar(int ARRAY_SIZE)
 
 // Kernel for benchmarking using std::exp function calls.
 template<typename SCALAR_FLOAT_T>
-benchmark_results<SCALAR_FLOAT_T> test_log2_scalar(int ARRAY_SIZE)
+UME_NEVER_INLINE benchmark_results<SCALAR_FLOAT_T> test_log2_scalar(int ARRAY_SIZE)
 {
     unsigned long long start, end;    // Time measurements
 
@@ -222,7 +252,7 @@ benchmark_results<SCALAR_FLOAT_T> test_log2_scalar(int ARRAY_SIZE)
 
 // Kernel for benchmarking using std::exp function calls.
 template<typename SCALAR_FLOAT_T>
-benchmark_results<SCALAR_FLOAT_T> test_log10_scalar(int ARRAY_SIZE)
+UME_NEVER_INLINE benchmark_results<SCALAR_FLOAT_T> test_log10_scalar(int ARRAY_SIZE)
 {
     unsigned long long start, end;    // Time measurements
 

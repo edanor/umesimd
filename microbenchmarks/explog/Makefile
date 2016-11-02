@@ -21,7 +21,7 @@ endif
 ifeq ($(BUILD), debug)
 	#for intel compiler use precise results generation
 	ifeq ($(CXX), icc)
-		CXXFLAGS+=-fp-model=precise -qopt-streaming-stores=never
+		CXXFLAGS+=-fp-model=precise -qopt-streaming-stores=never -DUME_USE_SVML
 	endif
   
 	CXXFLAGS+=-O0 -fno-inline
@@ -30,7 +30,7 @@ endif
 ifeq ($(BUILD), release)
 	#for intel compiler use precise results generation
 	ifeq ($(CXX), icc)
-		CXXFLAGS+=-fp-model=precise -qopt-streaming-stores=never
+		CXXFLAGS+=-fp-model=precise -qopt-streaming-stores=never -DUME_USE_SVML
 	endif
 
 	CXXFLAGS+=-O2
