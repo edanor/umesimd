@@ -2391,7 +2391,7 @@ int test_UME_SIMD4_32f(bool supressMessages)
         SIMD4_32f vec0(1.0f);
         SIMD4_32f vec1(2.0f);
         SIMD4_32f vec2;
-        vec2 = addv(vec0, vec1);
+        vec2 = FUNCTIONS::add(vec0, vec1);
         CHECK_CONDITION(vec2[0] == 3.0f, "ADDV function");
     }
     {
@@ -2404,7 +2404,7 @@ int test_UME_SIMD4_32f(bool supressMessages)
     {
         SIMD4_32f vec0(1.0f);
         SIMD4_32f vec2;
-        vec2 = adds(vec0, 2.0f);
+        vec2 = FUNCTIONS::add(vec0, 2.0f);
         CHECK_CONDITION(vec2[0] == 3.0f, "ADDS function");
     }
     {
