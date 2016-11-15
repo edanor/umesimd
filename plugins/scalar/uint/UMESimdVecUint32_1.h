@@ -72,7 +72,7 @@ namespace SIMD {
         template<typename T>
         UME_FORCE_INLINE SIMDVec_u(
             T i, 
-            typename std::enable_if< std::is_same<T, int>::value && 
+            typename std::enable_if< std::is_fundamental<T>::value &&
                                     !std::is_same<T, uint32_t>::value,
                                     void*>::type = nullptr)
         : SIMDVec_u(static_cast<uint32_t>(i)) {}
@@ -80,6 +80,10 @@ namespace SIMD {
         UME_FORCE_INLINE explicit SIMDVec_u(uint32_t const *p) {
             mVec = p[0];
         }
+
+
+#include "../../../utilities/ignore_warnings_push.h"
+#include "../../../utilities/ignore_warnings_unused_parameter.h"
 
         // EXTRACT
         UME_FORCE_INLINE uint32_t extract(uint32_t index) const {
@@ -97,6 +101,8 @@ namespace SIMD {
         UME_FORCE_INLINE IntermediateIndex<SIMDVec_u, uint32_t> operator[] (uint32_t index) {
             return IntermediateIndex<SIMDVec_u, uint32_t>(index, static_cast<SIMDVec_u &>(*this));
         }
+
+#include "../../../utilities/ignore_warnings_pop.h"
 
         // Override Mask Access operators
 #if defined(USE_PARENTHESES_IN_MASK_ASSIGNMENT)

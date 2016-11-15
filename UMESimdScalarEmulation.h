@@ -2919,7 +2919,7 @@ namespace SCALAR_EMULATION
         UME_FORCE_INLINE SCALAR_TYPE reduceMax(MASK_TYPE const & mask, SCALAR_TYPE a, VEC_TYPE const & b) {
             SCALAR_TYPE retval = a;
             for (uint32_t i = 0; i < VEC_TYPE::length(); i++) {
-                if ((mask[i] == true) && (a[i] > retval)) retval = a[i];
+                if ((mask[i] == true) && (b[i] > retval)) retval = b[i];
             }
             return retval;
         }

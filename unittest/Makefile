@@ -10,15 +10,16 @@ CXXFLAGS=-std=c++11
 #some predefined rules
 ifeq ($(CXX), g++)
 	COMPILER_PREFIX=gcc
+	CXXFLAGS+=-W -Wall -pedantic -fstrict-aliasing -Wstrict-aliasing
 endif
 ifeq ($(CXX), clang++)
 	COMPILER_PREFIX=clang
+	CXXFLAGS+=-W -Wall -pedantic -fstrict-aliasing -Wstrict-aliasing -Wshorten-64-to-32
 endif
 ifeq ($(CXX), icc)
 	COMPILER_PREFIX=icc
-	CXXFLAGS+=-DUME_USE_SVML
+	CXXFLAGS+=-DUME_USE_SVML -W -Wall -pedantic -fstrict-aliasing -Wstrict-aliasing
 endif
-
 
 #select proper build flags
 ifeq ($(BUILD), debug)

@@ -111,51 +111,6 @@ namespace SIMD
         static int alignment () { return SMASK_LEN*sizeof(uint32_t); };
     };
 
-    // This class is a wrapper of scalar types that forbids implicit type conversions.
-    template<typename SCALAR_TYPE> 
-    class ScalarTypeWrapper
-    {
-    private:
-        SCALAR_TYPE mValue;
-
-    public:
-        ScalarTypeWrapper()
-        {
-            mValue = SCALAR_TYPE(0);
-        }
-
-        // Forbid implicit construction with boolean values
-        explicit ScalarTypeWrapper(bool x) : mValue(x)  {};
-
-        // Forbid implicit construciton with character type values
-        explicit ScalarTypeWrapper(signed char x) : mValue(x) {};
-        explicit ScalarTypeWrapper(unsigned char x) : mValue(x) {};
-        explicit ScalarTypeWrapper(char x) : mValue(x) {};
-        explicit ScalarTypeWrapper(signed short int x) : mValue(x) {};
-        explicit ScalarTypeWrapper(unsigned short int x) : mValue(x) {};
-        explicit ScalarTypeWrapper(signed int x) : mValue(x) {};
-        explicit ScalarTypeWrapper(unsigned int x) : mValue(x) {};
-        explicit ScalarTypeWrapper(signed long int x) : mValue(x) {};
-        explicit ScalarTypeWrapper(unsigned long int x) : mValue(x) {};
-        explicit ScalarTypeWrapper(signed long long int x) : mValue(x) {};
-        explicit ScalarTypeWrapper(unsigned long long int x) : mValue(x) {};
-
-        explicit ScalarTypeWrapper(float x) : mValue(x) {};
-        explicit ScalarTypeWrapper(double x) : mValue(x) {};
-        explicit ScalarTypeWrapper(long double x) : mValue(x) {};
-
-        // define cast operator
-        operator SCALAR_TYPE() const { return mValue; };
-         /*      
-        UME_FORCE_INLINE ScalarTypeWrapper & operator=(ScalarTypeWrapper const & x){
-            mValue = x.mValue;
-            return *this;
-        }*/
-
-        // Also define a non-modifying access operator
-        UME_FORCE_INLINE SCALAR_TYPE operator[] (uint32_t index) const { return mValue; }
-    };
-
     // This class represents a vector of VEC_LEN scalars and is used for emulation.
     template<typename SCALAR_TYPE, uint32_t VEC_LEN> 
     class SIMDVecEmuRegister
@@ -700,9 +655,13 @@ namespace SIMD
 
         // Comparison operators accept any type of scalar to allow mixing 
         // scalar types.
-        template<typename T>
-        UME_FORCE_INLINE bool operator==(T const & rhs) { 
-            return mVecRef_RW.extract(mIndexRef) == rhs;
+        template<
+            typename T,
+            typename = typename std::enable_if<std::is_fundamental<T>::value, void*>::type
+            >
+        UME_FORCE_INLINE bool operator==(
+                T const & rhs) {
+            return mVecRef_RW.extract(mIndexRef) == SCALAR_TYPE(rhs);
         }
         UME_FORCE_INLINE bool operator== (IntermediateIndex const & x) {
             return mVecRef_RW.extract(mIndexRef) ==
@@ -868,6 +827,9 @@ namespace SIMD
         // ONE-VEC
         static DERIVED_VEC_TYPE one() { return DERIVED_VEC_TYPE(SCALAR_TYPE(1)); }
 
+#include "utilities/ignore_warnings_push.h"
+#include "utilities/ignore_warnings_unused_parameter.h"
+
         // PREFETCH0
         static UME_FORCE_INLINE void prefetch0(SCALAR_TYPE const *p) {
             // DO NOTHING!
@@ -882,6 +844,8 @@ namespace SIMD
         static UME_FORCE_INLINE void prefetch2(SCALAR_TYPE const *p) {
             // DO NOTHING!
         }
+
+#include "utilities/ignore_warnings_pop.h"
 
         // ASSIGNV
         UME_FORCE_INLINE DERIVED_VEC_TYPE & assign (DERIVED_VEC_TYPE const & src) {
@@ -1938,20 +1902,6 @@ namespace SIMD
             DERIVED_VEC_TYPE, 
             SCALAR_TYPE,
             MASK_TYPE> VEC_TYPE;
-
-    private:
-        // Forbid assignment-initialization of vector using scalar values
-        // TODO: is this necessary?
-        UME_FORCE_INLINE VEC_TYPE & operator= (const int8_t & x) { }
-        UME_FORCE_INLINE VEC_TYPE & operator= (const int16_t & x) { }
-        UME_FORCE_INLINE VEC_TYPE & operator= (const int32_t & x) { }
-        UME_FORCE_INLINE VEC_TYPE & operator= (const int64_t & x) { }
-        UME_FORCE_INLINE VEC_TYPE & operator= (const uint8_t & x) { }
-        UME_FORCE_INLINE VEC_TYPE & operator= (const uint16_t & x) { }
-        UME_FORCE_INLINE VEC_TYPE & operator= (const uint32_t & x) { }
-        UME_FORCE_INLINE VEC_TYPE & operator= (const uint64_t & x) { }
-        UME_FORCE_INLINE VEC_TYPE & operator= (const float & x) { }
-        UME_FORCE_INLINE VEC_TYPE & operator= (const double & x) { }
  
     public:
         // BANDV
@@ -2318,20 +2268,6 @@ namespace SIMD
             DERIVED_VEC_TYPE, 
             SCALAR_TYPE,
             MASK_TYPE> VEC_TYPE;
-
-    private:
-        // Forbid assignment-initialization of vector using scalar values
-        // TODO: is this necessary?
-        UME_FORCE_INLINE VEC_TYPE & operator= (const int8_t & x) { }
-        UME_FORCE_INLINE VEC_TYPE & operator= (const int16_t & x) { }
-        UME_FORCE_INLINE VEC_TYPE & operator= (const int32_t & x) { }
-        UME_FORCE_INLINE VEC_TYPE & operator= (const int64_t & x) { }
-        UME_FORCE_INLINE VEC_TYPE & operator= (const uint8_t & x) { }
-        UME_FORCE_INLINE VEC_TYPE & operator= (const uint16_t & x) { }
-        UME_FORCE_INLINE VEC_TYPE & operator= (const uint32_t & x) { }
-        UME_FORCE_INLINE VEC_TYPE & operator= (const uint64_t & x) { }
-        UME_FORCE_INLINE VEC_TYPE & operator= (const float & x) { }
-        UME_FORCE_INLINE VEC_TYPE & operator= (const double & x) { }
  
     public:
         // REMV
@@ -2401,8 +2337,8 @@ namespace SIMD
             //    prvalue of type bool.A zero value, null pointer value, or null member pointer value is converted to false;
             //    any other value is converted to true.A prvalue of type std::nullptr_t can be converted to a prvalue of
             //    type bool; the resulting value is false."
-            MASK_TYPE t0 = SCALAR_EMULATION::isNotEqual<MASK_TYPE, DERIVED_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this), 0);
-            MASK_TYPE t1 = SCALAR_EMULATION::isNotEqual<MASK_TYPE, DERIVED_VEC_TYPE>(b, 0);
+            MASK_TYPE t0 = SCALAR_EMULATION::isNotEqual<MASK_TYPE, DERIVED_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this), SCALAR_TYPE(0));
+            MASK_TYPE t1 = SCALAR_EMULATION::isNotEqual<MASK_TYPE, DERIVED_VEC_TYPE>(b, SCALAR_TYPE(0));
             MASK_TYPE t2 = SCALAR_EMULATION::binaryAnd<MASK_TYPE>(t0, t1);
             return t2;
         }
@@ -2415,7 +2351,7 @@ namespace SIMD
             UME_EMULATION_WARNING();
             // LAND with scalar operators can simply use booleans. C++ standard should take
             // care of boolean conversions from any other expressions.
-            MASK_TYPE t0 = SCALAR_EMULATION::isNotEqual<MASK_TYPE, DERIVED_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this), 0);
+            MASK_TYPE t0 = SCALAR_EMULATION::isNotEqual<MASK_TYPE, DERIVED_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this), SCALAR_TYPE(0));
             MASK_TYPE t1 = SCALAR_EMULATION::binaryAnd<MASK_TYPE>(t0, b);
             return t1;
         }
@@ -2431,8 +2367,8 @@ namespace SIMD
             //    prvalue of type bool.A zero value, null pointer value, or null member pointer value is converted to false;
             //    any other value is converted to true.A prvalue of type std::nullptr_t can be converted to a prvalue of
             //    type bool; the resulting value is false."
-            MASK_TYPE t0 = SCALAR_EMULATION::isNotEqual<MASK_TYPE, DERIVED_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this), 0);
-            MASK_TYPE t1 = SCALAR_EMULATION::isNotEqual<MASK_TYPE, DERIVED_VEC_TYPE>(b, 0);
+            MASK_TYPE t0 = SCALAR_EMULATION::isNotEqual<MASK_TYPE, DERIVED_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this), SCALAR_TYPE(0));
+            MASK_TYPE t1 = SCALAR_EMULATION::isNotEqual<MASK_TYPE, DERIVED_VEC_TYPE>(b, SCALAR_TYPE(0));
             MASK_TYPE t2 = SCALAR_EMULATION::binaryOr<MASK_TYPE>(t0, t1);
             return t2;
         }
@@ -2446,7 +2382,7 @@ namespace SIMD
             UME_EMULATION_WARNING();
             // LAND with scalar operators can simply use booleans. C++ standard should take
             // care of boolean conversions from any other expressions.
-            MASK_TYPE t0 = SCALAR_EMULATION::isNotEqual<MASK_TYPE, DERIVED_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this), 0);
+            MASK_TYPE t0 = SCALAR_EMULATION::isNotEqual<MASK_TYPE, DERIVED_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this), SCALAR_TYPE(0));
             MASK_TYPE t1 = SCALAR_EMULATION::binaryOr<MASK_TYPE>(t0, b);
             return t1;
         }
@@ -2476,20 +2412,6 @@ namespace SIMD
             SCALAR_TYPE,
             SCALAR_UINT_TYPE,
             MASK_TYPE> VEC_TYPE;
-
-    private:
-        // Forbid assignment-initialization of vector using scalar values
-        // TODO: is this necessary?
-        UME_FORCE_INLINE VEC_TYPE & operator= (const int8_t & x) { }
-        UME_FORCE_INLINE VEC_TYPE & operator= (const int16_t & x) { }
-        UME_FORCE_INLINE VEC_TYPE & operator= (const int32_t & x) { }
-        UME_FORCE_INLINE VEC_TYPE & operator= (const int64_t & x) { }
-        UME_FORCE_INLINE VEC_TYPE & operator= (const uint8_t & x) { }
-        UME_FORCE_INLINE VEC_TYPE & operator= (const uint16_t & x) { }
-        UME_FORCE_INLINE VEC_TYPE & operator= (const uint32_t & x) { }
-        UME_FORCE_INLINE VEC_TYPE & operator= (const uint64_t & x) { }
-        UME_FORCE_INLINE VEC_TYPE & operator= (const float & x) { }
-        UME_FORCE_INLINE VEC_TYPE & operator= (const double & x) { }
  
     public:
         // GATHERU
@@ -2586,20 +2508,6 @@ namespace SIMD
             SCALAR_TYPE,
             SCALAR_UINT_TYPE,
             MASK_TYPE> VEC_TYPE;
-
-    private:
-        // Forbid assignment-initialization of vector using scalar values
-        // TODO: is this necessary?
-        UME_FORCE_INLINE VEC_TYPE & operator= (const int8_t & x) { }
-        UME_FORCE_INLINE VEC_TYPE & operator= (const int16_t & x) { }
-        UME_FORCE_INLINE VEC_TYPE & operator= (const int32_t & x) { }
-        UME_FORCE_INLINE VEC_TYPE & operator= (const int64_t & x) { }
-        UME_FORCE_INLINE VEC_TYPE & operator= (const uint8_t & x) { }
-        UME_FORCE_INLINE VEC_TYPE & operator= (const uint16_t & x) { }
-        UME_FORCE_INLINE VEC_TYPE & operator= (const uint32_t & x) { }
-        UME_FORCE_INLINE VEC_TYPE & operator= (const uint64_t & x) { }
-        UME_FORCE_INLINE VEC_TYPE & operator= (const float & x) { }
-        UME_FORCE_INLINE VEC_TYPE & operator= (const double & x) { }
  
     public:
         // LSHV
@@ -2837,20 +2745,6 @@ namespace SIMD
             DERIVED_VEC_TYPE,
             DERIVED_HALF_VEC_TYPE> VEC_TYPE;
 
-    private:
-        // Forbid assignment-initialization of vector using scalar values
-        // TODO: is this necessary?
-        UME_FORCE_INLINE VEC_TYPE & operator= (const int8_t & x) { }
-        UME_FORCE_INLINE VEC_TYPE & operator= (const int16_t & x) { }
-        UME_FORCE_INLINE VEC_TYPE & operator= (const int32_t & x) { }
-        UME_FORCE_INLINE VEC_TYPE & operator= (const int64_t & x) { }
-        UME_FORCE_INLINE VEC_TYPE & operator= (const uint8_t & x) { }
-        UME_FORCE_INLINE VEC_TYPE & operator= (const uint16_t & x) { }
-        UME_FORCE_INLINE VEC_TYPE & operator= (const uint32_t & x) { }
-        UME_FORCE_INLINE VEC_TYPE & operator= (const uint64_t & x) { }
-        UME_FORCE_INLINE VEC_TYPE & operator= (const float & x) { }
-        UME_FORCE_INLINE VEC_TYPE & operator= (const double & x) { }
-
     public:
 
         // PACK
@@ -2924,20 +2818,6 @@ namespace SIMD
             DERIVED_VEC_TYPE,
             SCALAR_TYPE,
             MASK_TYPE> VEC_TYPE;
-
-    private:
-        // Forbid assignment-initialization of vector using scalar values
-        // TODO: is this necessary?
-        UME_FORCE_INLINE VEC_TYPE & operator= (const int8_t & x) { }
-        UME_FORCE_INLINE VEC_TYPE & operator= (const int16_t & x) { }
-        UME_FORCE_INLINE VEC_TYPE & operator= (const int32_t & x) { }
-        UME_FORCE_INLINE VEC_TYPE & operator= (const int64_t & x) { }
-        UME_FORCE_INLINE VEC_TYPE & operator= (const uint8_t & x) { }
-        UME_FORCE_INLINE VEC_TYPE & operator= (const uint16_t & x) { }
-        UME_FORCE_INLINE VEC_TYPE & operator= (const uint32_t & x) { }
-        UME_FORCE_INLINE VEC_TYPE & operator= (const uint64_t & x) { }
-        UME_FORCE_INLINE VEC_TYPE & operator= (const float & x) { }
-        UME_FORCE_INLINE VEC_TYPE & operator= (const double & x) { }
  
     public:
 
@@ -3114,20 +2994,6 @@ namespace SIMD
                              MASK_TYPE,
                              SWIZZLE_MASK_TYPE> VEC_TYPE;
 
-    private:
-        // Forbid assignment-initialization of vector using scalar values
-        // TODO: is this necessary?
-        UME_FORCE_INLINE VEC_TYPE & operator= (const int8_t & x) { }
-        UME_FORCE_INLINE VEC_TYPE & operator= (const int16_t & x) { }
-        UME_FORCE_INLINE VEC_TYPE & operator= (const int32_t & x) { }
-        UME_FORCE_INLINE VEC_TYPE & operator= (const int64_t & x) { }
-        UME_FORCE_INLINE VEC_TYPE & operator= (const uint8_t & x) { }
-        UME_FORCE_INLINE VEC_TYPE & operator= (const uint16_t & x) { }
-        UME_FORCE_INLINE VEC_TYPE & operator= (const uint32_t & x) { }
-        UME_FORCE_INLINE VEC_TYPE & operator= (const uint64_t & x) { }
-        UME_FORCE_INLINE VEC_TYPE & operator= (const float & x) { }
-        UME_FORCE_INLINE VEC_TYPE & operator= (const double & x) { }
-        
         SCALAR_TYPE operator[] (SCALAR_UINT_TYPE index) const; // Declaration only! This operator has to be implemented in derived class.
         UME_FORCE_INLINE DERIVED_VEC_TYPE & insert (uint32_t index, SCALAR_TYPE value); // Declaration only! This operator has to be implemented in derived class.
     protected:
@@ -3193,20 +3059,6 @@ namespace SIMD
                     SCALAR_UINT_TYPE,
                     MASK_TYPE,
                     SWIZZLE_MASK_TYPE> VEC_TYPE;
-    private:
-
-        // Forbid assignment-initialization of vector using scalar values
-        // TODO: is this necessary?
-        UME_FORCE_INLINE VEC_TYPE & operator= (const int8_t & x) { }
-        UME_FORCE_INLINE VEC_TYPE & operator= (const int16_t & x) { }
-        UME_FORCE_INLINE VEC_TYPE & operator= (const int32_t & x) { }
-        UME_FORCE_INLINE VEC_TYPE & operator= (const int64_t & x) { }
-        UME_FORCE_INLINE VEC_TYPE & operator= (const uint8_t & x) { }
-        UME_FORCE_INLINE VEC_TYPE & operator= (const uint16_t & x) { }
-        UME_FORCE_INLINE VEC_TYPE & operator= (const uint32_t & x) { }
-        UME_FORCE_INLINE VEC_TYPE & operator= (const uint64_t & x) { }
-        UME_FORCE_INLINE VEC_TYPE & operator= (const float & x) { }
-        UME_FORCE_INLINE VEC_TYPE & operator= (const double & x) { }
  
     protected:
         // Making destructor protected prohibits this class from being instantiated. Effectively this class can only be used as a base class.

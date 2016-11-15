@@ -23,10 +23,10 @@ namespace FUNCTIONS
     inline VEC_T add(typename UME::SIMD::SIMDTraits<VEC_T>::MASK_T const & mask, VEC_T const & src1, VEC_T const & src2) { return src1.add(mask, src2); }
     // MADDS, rhs scalar
     template<typename VEC_T>
-    inline VEC_T add(typename UME::SIMD::SIMDTraits<VEC_T>::MASK_T const & mask, VEC_T const & src1, typename UME::SIMD::SIMDTraits<VEC_T>::SCALAR_T const & src2) { return src1.add(mask, src2); };
+    inline VEC_T add(typename UME::SIMD::SIMDTraits<VEC_T>::MASK_T const & mask, VEC_T const & src1, typename UME::SIMD::SIMDTraits<VEC_T>::SCALAR_T const & src2) { return src1.add(mask, src2); }
     // MADDS, lhs scalar
     template<typename VEC_T>
-    inline VEC_T add(typename UME::SIMD::SIMDTraits<VEC_T>::MASK_T const & mask, typename UME::SIMD::SIMDTraits<VEC_T>::SCALAR_T const & src1, VEC_T const & src2) { return VEC_T(src1).add(mask, src2); };
+    inline VEC_T add(typename UME::SIMD::SIMDTraits<VEC_T>::MASK_T const & mask, typename UME::SIMD::SIMDTraits<VEC_T>::SCALAR_T const & src1, VEC_T const & src2) { return VEC_T(src1).add(mask, src2); }
 
     // SADDV
     template<typename VEC_T>
@@ -42,10 +42,10 @@ namespace FUNCTIONS
     inline VEC_T sadd(typename UME::SIMD::SIMDTraits<VEC_T>::MASK_T const & mask, VEC_T const & src1, VEC_T const & src2) { return src1.sadd(mask, src2); }
     // MSADDS, rhs scalar
     template<typename VEC_T>
-    inline VEC_T sadd(typename UME::SIMD::SIMDTraits<VEC_T>::MASK_T const & mask, VEC_T const & src1, typename UME::SIMD::SIMDTraits<VEC_T>::SCALAR_T const & src2) { return src1.sadd(mask, src2); };
+    inline VEC_T sadd(typename UME::SIMD::SIMDTraits<VEC_T>::MASK_T const & mask, VEC_T const & src1, typename UME::SIMD::SIMDTraits<VEC_T>::SCALAR_T const & src2) { return src1.sadd(mask, src2); }
     // MSADDS, lhs scalar
     template<typename VEC_T>
-    inline VEC_T sadd(typename UME::SIMD::SIMDTraits<VEC_T>::MASK_T const & mask, typename UME::SIMD::SIMDTraits<VEC_T>::SCALAR_T const & src1, VEC_T const & src2) { return VEC_T(src1).sadd(mask, src2); };
+    inline VEC_T sadd(typename UME::SIMD::SIMDTraits<VEC_T>::MASK_T const & mask, typename UME::SIMD::SIMDTraits<VEC_T>::SCALAR_T const & src1, VEC_T const & src2) { return VEC_T(src1).sadd(mask, src2); }
 
     // POSTINC
     template<typename VEC_T>
@@ -127,10 +127,10 @@ namespace FUNCTIONS
     inline VEC_T mul(typename UME::SIMD::SIMDTraits<VEC_T>::MASK_T const & mask, VEC_T const & src1, VEC_T const & src2) { return src1.mul(mask, src2); }
     // MMULS, rhs scalar
     template<typename VEC_T>
-    inline VEC_T mul(typename UME::SIMD::SIMDTraits<VEC_T>::MASK_T const & mask, VEC_T const & src1, typename UME::SIMD::SIMDTraits<VEC_T>::SCALAR_T const & src2) { return src1.mul(mask, src2); };
+    inline VEC_T mul(typename UME::SIMD::SIMDTraits<VEC_T>::MASK_T const & mask, VEC_T const & src1, typename UME::SIMD::SIMDTraits<VEC_T>::SCALAR_T const & src2) { return src1.mul(mask, src2); }
     // MMULS, lhs scalar
     template<typename VEC_T>
-    inline VEC_T mul(typename UME::SIMD::SIMDTraits<VEC_T>::MASK_T const & mask, typename UME::SIMD::SIMDTraits<VEC_T>::SCALAR_T const & src1, VEC_T const & src2) { return VEC_T(src1).mul(mask, src2); };
+    inline VEC_T mul(typename UME::SIMD::SIMDTraits<VEC_T>::MASK_T const & mask, typename UME::SIMD::SIMDTraits<VEC_T>::SCALAR_T const & src1, VEC_T const & src2) { return VEC_T(src1).mul(mask, src2); }
 
     // DIVV
     template<typename VEC_T>
@@ -165,10 +165,10 @@ namespace FUNCTIONS
     inline VEC_T rem(typename UME::SIMD::SIMDTraits<VEC_T>::MASK_T const & mask, VEC_T const & src1, VEC_T const & src2) { return src1.rem(mask, src2); }
     // MREMS, rhs scalar
     template<typename VEC_T>
-    inline VEC_T rem(typename UME::SIMD::SIMDTraits<VEC_T>::MASK_T const & mask, VEC_T const & src1, typename UME::SIMD::SIMDTraits<VEC_T>::SCALAR_T const & src2) { return src1.rem(mask, src2); };
+    inline VEC_T rem(typename UME::SIMD::SIMDTraits<VEC_T>::MASK_T const & mask, VEC_T const & src1, typename UME::SIMD::SIMDTraits<VEC_T>::SCALAR_T const & src2) { return src1.rem(mask, src2); }
     // MREMS, lhs scalar
     template<typename VEC_T>
-    inline VEC_T rem(typename UME::SIMD::SIMDTraits<VEC_T>::MASK_T const & mask, typename UME::SIMD::SIMDTraits<VEC_T>::SCALAR_T const & src1, VEC_T const & src2) { return VEC_T(src1).rem(mask, src2); };
+    inline VEC_T rem(typename UME::SIMD::SIMDTraits<VEC_T>::MASK_T const & mask, typename UME::SIMD::SIMDTraits<VEC_T>::SCALAR_T const & src1, VEC_T const & src2) { return VEC_T(src1).rem(mask, src2); }
 
     // RCP
     template<typename VEC_T>
@@ -397,10 +397,10 @@ namespace FUNCTIONS
     inline VEC_T band(typename UME::SIMD::SIMDTraits<VEC_T>::MASK_T const & mask, VEC_T const & src1, VEC_T const & src2) { return src1.band(mask, src2); }
     // MBANDS, rhs scalar
     template<typename VEC_T>
-    inline VEC_T band(typename UME::SIMD::SIMDTraits<VEC_T>::MASK_T const & mask, VEC_T const & src1, typename UME::SIMD::SIMDTraits<VEC_T>::SCALAR_T const & src2) { return src1.band(mask, src2); };
+    inline VEC_T band(typename UME::SIMD::SIMDTraits<VEC_T>::MASK_T const & mask, VEC_T const & src1, typename UME::SIMD::SIMDTraits<VEC_T>::SCALAR_T const & src2) { return src1.band(mask, src2); }
     // MBANDS, lhs scalar
     template<typename VEC_T>
-    inline VEC_T band(typename UME::SIMD::SIMDTraits<VEC_T>::MASK_T const & mask, typename UME::SIMD::SIMDTraits<VEC_T>::SCALAR_T const & src1, VEC_T const & src2) { return VEC_T(src1).band(mask, src2); };
+    inline VEC_T band(typename UME::SIMD::SIMDTraits<VEC_T>::MASK_T const & mask, typename UME::SIMD::SIMDTraits<VEC_T>::SCALAR_T const & src1, VEC_T const & src2) { return VEC_T(src1).band(mask, src2); }
 
     // BORV
     template<typename VEC_T>
@@ -416,10 +416,10 @@ namespace FUNCTIONS
     inline VEC_T bor(typename UME::SIMD::SIMDTraits<VEC_T>::MASK_T const & mask, VEC_T const & src1, VEC_T const & src2) { return src1.bor(mask, src2); }
     // MBORS, rhs scalar
     template<typename VEC_T>
-    inline VEC_T bor(typename UME::SIMD::SIMDTraits<VEC_T>::MASK_T const & mask, VEC_T const & src1, typename UME::SIMD::SIMDTraits<VEC_T>::SCALAR_T const & src2) { return src1.bor(mask, src2); };
+    inline VEC_T bor(typename UME::SIMD::SIMDTraits<VEC_T>::MASK_T const & mask, VEC_T const & src1, typename UME::SIMD::SIMDTraits<VEC_T>::SCALAR_T const & src2) { return src1.bor(mask, src2); }
     // MBORS, lhs scalar
     template<typename VEC_T>
-    inline VEC_T bor(typename UME::SIMD::SIMDTraits<VEC_T>::MASK_T const & mask, typename UME::SIMD::SIMDTraits<VEC_T>::SCALAR_T const & src1, VEC_T const & src2) { return VEC_T(src1).bor(mask, src2); };
+    inline VEC_T bor(typename UME::SIMD::SIMDTraits<VEC_T>::MASK_T const & mask, typename UME::SIMD::SIMDTraits<VEC_T>::SCALAR_T const & src1, VEC_T const & src2) { return VEC_T(src1).bor(mask, src2); }
 
     // BXORV
     template<typename VEC_T>
@@ -435,10 +435,10 @@ namespace FUNCTIONS
     inline VEC_T bxor(typename UME::SIMD::SIMDTraits<VEC_T>::MASK_T const & mask, VEC_T const & src1, VEC_T const & src2) { return src1.bxor(mask, src2); }
     // MBXORS, rhs scalar
     template<typename VEC_T>
-    inline VEC_T bxor(typename UME::SIMD::SIMDTraits<VEC_T>::MASK_T const & mask, VEC_T const & src1, typename UME::SIMD::SIMDTraits<VEC_T>::SCALAR_T const & src2) { return src1.bxor(mask, src2); };
+    inline VEC_T bxor(typename UME::SIMD::SIMDTraits<VEC_T>::MASK_T const & mask, VEC_T const & src1, typename UME::SIMD::SIMDTraits<VEC_T>::SCALAR_T const & src2) { return src1.bxor(mask, src2); }
     // MBXORS, lhs scalar
     template<typename VEC_T>
-    inline VEC_T bxor(typename UME::SIMD::SIMDTraits<VEC_T>::MASK_T const & mask, typename UME::SIMD::SIMDTraits<VEC_T>::SCALAR_T const & src1, VEC_T const & src2) { return VEC_T(src1).bxor(mask, src2); };
+    inline VEC_T bxor(typename UME::SIMD::SIMDTraits<VEC_T>::MASK_T const & mask, typename UME::SIMD::SIMDTraits<VEC_T>::SCALAR_T const & src1, VEC_T const & src2) { return VEC_T(src1).bxor(mask, src2); }
 
     // BNOT
     template<typename VEC_T>
@@ -461,10 +461,10 @@ namespace FUNCTIONS
     inline VEC_T bandnot(typename UME::SIMD::SIMDTraits<VEC_T>::MASK_T const & mask, VEC_T const & src1, VEC_T const & src2) { return src1.bandnot(mask, src2); }
     // MANDNOTS, rhs scalar
     template<typename VEC_T>
-    inline VEC_T bandnot(typename UME::SIMD::SIMDTraits<VEC_T>::MASK_T const & mask, VEC_T const & src1, typename UME::SIMD::SIMDTraits<VEC_T>::SCALAR_T src2) { return src1.bandnot(mask, src2); };
+    inline VEC_T bandnot(typename UME::SIMD::SIMDTraits<VEC_T>::MASK_T const & mask, VEC_T const & src1, typename UME::SIMD::SIMDTraits<VEC_T>::SCALAR_T src2) { return src1.bandnot(mask, src2); }
     // MANDNOTS, lhs scalar
     template<typename VEC_T>
-    inline VEC_T bandnot(typename UME::SIMD::SIMDTraits<VEC_T>::MASK_T const & mask, typename UME::SIMD::SIMDTraits<VEC_T>::SCALAR_T src1, VEC_T const & src2) { return (VEC_T(src1).bnot(mask)).band(mask, src2); };
+    inline VEC_T bandnot(typename UME::SIMD::SIMDTraits<VEC_T>::MASK_T const & mask, typename UME::SIMD::SIMDTraits<VEC_T>::SCALAR_T src1, VEC_T const & src2) { return (VEC_T(src1).bnot(mask)).band(mask, src2); }
 
     // HBAND
     template<typename VEC_T>
@@ -544,7 +544,7 @@ namespace FUNCTIONS
         typename UME::SIMD::SIMDTraits<VEC_T>::SCALAR_T* baseAddr,
         typename UME::SIMD::SIMDTraits<VEC_T>::SCALAR_UINT_T* indices)
     {
-        return src1.scatter(baseAddr, indices);
+        return src1.scatter(mask, baseAddr, indices);
     }
 
     // SCATTERV
@@ -565,7 +565,7 @@ namespace FUNCTIONS
         typename UME::SIMD::SIMDTraits<VEC_T>::SCALAR_T* baseAddr,
         typename UME::SIMD::SIMDTraits<VEC_T>::UINT_VEC_T* indices)
     {
-        return src1.scatter(baseAddr, indices);
+        return src1.scatter(mask, baseAddr, indices);
     }
 
     // LSHV

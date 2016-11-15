@@ -92,9 +92,14 @@ bool valueInRange(double value, double expectedValue, double errMargin) {
     }
 }
 
+#include "../utilities/ignore_warnings_push.h"
+#include "../utilities/ignore_warnings_unused_parameter.h"
+
 bool valueInRange(bool value, bool expectedValue, float errMargin) {
     return value == expectedValue;
 }
+
+#include "../utilities/ignore_warnings_pop.h"
 
 bool valueInRange(uint32_t value, uint32_t expectedValue, float errMargin) {
     return valueInRange((float)value, (float)expectedValue, errMargin);
@@ -255,6 +260,9 @@ bool valuesInRange(double const *values, double const *expectedValues, unsigned 
     return retval;
 }
 
+#include "../utilities/ignore_warnings_push.h"
+#include "../utilities/ignore_warnings_unused_parameter.h"
+
 // This is a dirty hack to use the same testing function for both int and float types... 
 bool valuesInRange(bool const *values, bool const *expectedValues, unsigned int count, double errMargin)
 {
@@ -300,6 +308,8 @@ bool valuesInRange(int64_t const *values, int64_t const *expectedValues, unsigne
 {
     return valuesExact(values, expectedValues, count);
 }
+
+#include "../utilities/ignore_warnings_pop.h"
 
 template<>
 uint8_t randomValue<uint8_t>(std::mt19937 & generator) {

@@ -70,6 +70,9 @@ namespace SIMD {
             mMask = mask.mMask;
         }
 
+#include "../../../utilities/ignore_warnings_push.h"
+#include "../../../utilities/ignore_warnings_unused_parameter.h"
+
         UME_FORCE_INLINE bool extract(uint32_t index) const {
             return mMask;
         }
@@ -88,7 +91,8 @@ namespace SIMD {
             mMask = mask.mMask;
             return *this;
         }
-        
+#include "../../../utilities/ignore_warnings_pop.h"
+
         // LANDV
         UME_FORCE_INLINE SIMDVecMask land(SIMDVecMask const & maskOp) const {
             bool m0 = mMask && maskOp.mMask;

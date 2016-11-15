@@ -137,7 +137,7 @@ void genericSETCONSTRTest_random_helper(std::string const & type_name)
         SCALAR_TYPE outputs[VEC_LEN];
         FROM_SCALAR_TYPE inputA;
 
-        inputA = randomValue<SCALAR_TYPE>(gen);
+        inputA = randomValue<FROM_SCALAR_TYPE>(gen);
         for (int i = 0; i < VEC_LEN; i++)
         {
             outputs[i] = (SCALAR_TYPE)inputA;
@@ -154,7 +154,7 @@ void genericSETCONSTRTest_random_helper(std::string const & type_name)
         SCALAR_TYPE outputs[VEC_LEN];
         FROM_SCALAR_TYPE inputA;
 
-        inputA = randomValue<SCALAR_TYPE>(gen);
+        inputA = randomValue<FROM_SCALAR_TYPE>(gen);
         for (int i = 0; i < VEC_LEN; i++)
         {
             outputs[i] = (SCALAR_TYPE)inputA;
@@ -1857,10 +1857,10 @@ void genericMADDSTest()
         MASK_TYPE mask(DATA_SET::inputs::maskA);
         VEC_TYPE vec2 = UME::SIMD::FUNCTIONS::add(mask, DATA_SET::inputs::scalarA, vec0);
         vec2.store(values);
-        bool inRange = valuesInRange(values, DATA_SET::outputs::MADDS, VEC_LEN, SCALAR_TYPE(0.01f));
+        // bool inRange = valuesInRange(values, DATA_SET::outputs::MADDS, VEC_LEN, SCALAR_TYPE(0.01f));
         vec0.store(values);
-        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
-        //CHECK_CONDITION((inRange & isUnmodified), "MADDS (function - LHS scalar)");
+        // bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        // CHECK_CONDITION((inRange & isUnmodified), "MADDS (function - LHS scalar)");
         // TODO: MADDS with LHS requires separate test output data.
     }
 }
@@ -4465,9 +4465,9 @@ void genericMBANDSTest()
         MASK_TYPE mask(DATA_SET::inputs::maskA);
         VEC_TYPE vec2 = UME::SIMD::FUNCTIONS::band(mask, DATA_SET::inputs::scalarA, vec0);
         vec2.store(values);
-        bool inRange = valuesInRange(values, DATA_SET::outputs::MBANDS, VEC_LEN, SCALAR_TYPE(0.01f));
+        //bool inRange = valuesInRange(values, DATA_SET::outputs::MBANDS, VEC_LEN, SCALAR_TYPE(0.01f));
         vec0.store(values);
-        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        //bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
         //CHECK_CONDITION((inRange && isUnmodified), "MBANDS(function - LHS scalar)");
         // TODO: this function requires separate output data
     }
@@ -4705,9 +4705,9 @@ void genericMBORSTest()
         MASK_TYPE mask(DATA_SET::inputs::maskA);
         VEC_TYPE vec2 = UME::SIMD::FUNCTIONS::bor(mask, DATA_SET::inputs::scalarA, vec0);
         vec2.store(values);
-        bool inRange = valuesInRange(values, DATA_SET::outputs::MBORS, VEC_LEN, SCALAR_TYPE(0.01f));
+        //bool inRange = valuesInRange(values, DATA_SET::outputs::MBORS, VEC_LEN, SCALAR_TYPE(0.01f));
         vec0.store(values);
-        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        //bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
         //CHECK_CONDITION((inRange && isUnmodified), "MBORS(function - RHS scalar)");
         // TODO: this test requires separate output data
     }
@@ -4966,9 +4966,9 @@ void genericMBXORSTest()
         MASK_TYPE mask(DATA_SET::inputs::maskA);
         VEC_TYPE vec2 = UME::SIMD::FUNCTIONS::bxor(mask, DATA_SET::inputs::scalarA, vec0);
         vec2.store(values);
-        bool inRange = valuesInRange(values, DATA_SET::outputs::MBXORS, VEC_LEN, SCALAR_TYPE(0.01f));
+        //bool inRange = valuesInRange(values, DATA_SET::outputs::MBXORS, VEC_LEN, SCALAR_TYPE(0.01f));
         vec0.store(values);
-        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        //bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
         // CHECK_CONDITION((inRange && isUnmodified), "MBXORS(function - LHS scalar)");
         // TODO: this test requires separate output data
     }
@@ -7386,9 +7386,9 @@ void genericMMAXSTest()
         MASK_TYPE mask(DATA_SET::inputs::maskA);
         VEC_TYPE vec1 = UME::SIMD::FUNCTIONS::max(mask, DATA_SET::inputs::scalarA, vec0);
         vec1.store(values);
-        bool inRange = valuesInRange(values, DATA_SET::outputs::MMAXS, VEC_LEN, SCALAR_TYPE(0.01f));
+        //bool inRange = valuesInRange(values, DATA_SET::outputs::MMAXS, VEC_LEN, SCALAR_TYPE(0.01f));
         vec0.store(values);
-        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        //bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
         //CHECK_CONDITION((inRange && isUnmodified), "MMAXS(function - LHS scalar)");
         // TODO: this test requires separate output data
     }
@@ -7564,9 +7564,9 @@ void genericMMINSTest()
         MASK_TYPE mask(DATA_SET::inputs::maskA);
         VEC_TYPE vec1 = UME::SIMD::FUNCTIONS::min(mask, DATA_SET::inputs::scalarA, vec0);
         vec1.store(values);
-        bool inRange = valuesInRange(values, DATA_SET::outputs::MMINS, VEC_LEN, SCALAR_TYPE(0.01f));
+        //bool inRange = valuesInRange(values, DATA_SET::outputs::MMINS, VEC_LEN, SCALAR_TYPE(0.01f));
         vec0.store(values);
-        bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
+        //bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
         //CHECK_CONDITION((inRange && isUnmodified), "MMINS(function - LHS scalar)");
         // TODO: this test requires separate output data
     }
@@ -9386,7 +9386,7 @@ void genericMRORSTest()
         bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MRORS, VEC_LEN, SCALAR_TYPE(0.01f));
         vec0.store(values);
         bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
-        CHECK_CONDITION(inRange, "MRORS");
+        CHECK_CONDITION(inRange && isUnmodified, "MRORS");
     }
     {
         SCALAR_TYPE values[VEC_LEN];
@@ -9397,7 +9397,7 @@ void genericMRORSTest()
         bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MRORS, VEC_LEN, SCALAR_TYPE(0.01f));
         vec0.store(values);
         bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
-        CHECK_CONDITION(inRange, "MRORS(function - RHS scalar)");
+        CHECK_CONDITION(inRange && isUnmodified, "MRORS(function - RHS scalar)");
     }
     {
         /*SCALAR_TYPE values[VEC_LEN];
@@ -9702,7 +9702,7 @@ void genericMSQRTest()
         bool inRange = valuesInRange(values, DATA_SET::outputs::MSQR, VEC_LEN, SCALAR_TYPE(0.01f));
         vec0.store(values);
         bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
-        CHECK_CONDITION(inRange, "MSQR");
+        CHECK_CONDITION(inRange && isUnmodified, "MSQR");
     }
     {
         SCALAR_TYPE values[VEC_LEN];
@@ -9713,7 +9713,7 @@ void genericMSQRTest()
         bool inRange = valuesInRange(values, DATA_SET::outputs::MSQR, VEC_LEN, SCALAR_TYPE(0.01f));
         vec0.store(values);
         bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
-        CHECK_CONDITION(inRange, "MSQR(function)");
+        CHECK_CONDITION(inRange && isUnmodified, "MSQR(function)");
     }
 }
     
@@ -10635,7 +10635,7 @@ void genericTANTest()
         bool inRange = valuesInRange(values, DATA_SET::outputs::TAN, VEC_LEN, 0.1f);
         vec0.store(values);
         bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
-        CHECK_CONDITION(inRange, "TAN");
+        CHECK_CONDITION(inRange && isUnmodified, "TAN");
     }
     {
         SCALAR_TYPE values[VEC_LEN];
@@ -10645,7 +10645,7 @@ void genericTANTest()
         bool inRange = valuesInRange(values, DATA_SET::outputs::TAN, VEC_LEN, 0.1f);
         vec0.store(values);
         bool isUnmodified = valuesInRange(values, DATA_SET::inputs::inputA, VEC_LEN, SCALAR_TYPE(0.01f));
-        CHECK_CONDITION(inRange, "TAN(function)");
+        CHECK_CONDITION(inRange && isUnmodified, "TAN(function)");
     }
 }
 
