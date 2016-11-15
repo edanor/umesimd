@@ -170,11 +170,11 @@ namespace SIMD {
             return *this;
         }
         // ASSIGNS
-        UME_FORCE_INLINE SIMDVec_u & assign(uint32_t b) {
+        UME_FORCE_INLINE SIMDVec_u & assign(uint16_t b) {
             mVec = _mm_set1_epi32(b);
             return *this;
         }
-        UME_FORCE_INLINE SIMDVec_u & operator= (uint32_t b) {
+        UME_FORCE_INLINE SIMDVec_u & operator= (uint16_t b) {
             return assign(b);
         }
         // MASSIGNS

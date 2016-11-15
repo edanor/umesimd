@@ -1212,16 +1212,14 @@ namespace SIMD {
 
         // FMULADDV
         UME_FORCE_INLINE SIMDVec_f fmuladd(SIMDVec_f const & b, SIMDVec_f const & c) const {
-#if defined(__AVX512VL__)
+#if defined(__FMA__)
             __m256d t0 = _mm256_fmadd_pd(mVec, b.mVec, c.mVec);
-#else
-            __m512d t1 = _mm512_castpd256_pd512(mVec);
-            __m512d t2 = _mm512_castpd256_pd512(b.mVec);
-            __m512d t3 = _mm512_castpd256_pd512(c.mVec);
-            __m512d t4 = _mm512_fmadd_pd(t1, t2, t3);
-            __m256d t0 = _mm512_castpd512_pd256(t4);
-#endif
             return SIMDVec_f(t0);
+#else
+            __m256d t0 = _mm256_mul_pd(mVec, b.mVec);
+            __m256d t1 = _mm256_add_pd(t0, c.mVec);
+            return SIMDVec_f(t1);
+#endif
         }
         // MFMULADDV
         UME_FORCE_INLINE SIMDVec_f fmuladd(SIMDVecMask<4> const & mask, SIMDVec_f const & b, SIMDVec_f const & c) const {
@@ -1238,16 +1236,14 @@ namespace SIMD {
         }
         // FMULSUBV
         UME_FORCE_INLINE SIMDVec_f fmulsub(SIMDVec_f const & b, SIMDVec_f const & c) const {
-#if defined(__AVX512VL__)
+#if defined(__FMA__)
             __m256d t0 = _mm256_fmsub_pd(mVec, b.mVec, c.mVec);
-#else
-            __m512d t1 = _mm512_castpd256_pd512(mVec);
-            __m512d t2 = _mm512_castpd256_pd512(b.mVec);
-            __m512d t3 = _mm512_castpd256_pd512(c.mVec);
-            __m512d t4 = _mm512_fmsub_pd(t1, t2, t3);
-            __m256d t0 = _mm512_castpd512_pd256(t4);
-#endif
             return SIMDVec_f(t0);
+#else
+            __m256d t0 = _mm256_mul_pd(mVec, b.mVec);
+            __m256d t1 = _mm256_sub_pd(t0, c.mVec);
+            return SIMDVec_f(t1);
+#endif
         }
         // MFMULSUBV
         UME_FORCE_INLINE SIMDVec_f fmulsub(SIMDVecMask<4> const & mask, SIMDVec_f const & b, SIMDVec_f const & c) const {
@@ -1264,17 +1260,8 @@ namespace SIMD {
         }
         // FADDMULV
         UME_FORCE_INLINE SIMDVec_f faddmul(SIMDVec_f const & b, SIMDVec_f const & c) const {
-#if defined(__AVX512VL__)
             __m256d t0 = _mm256_add_pd(mVec, b.mVec);
             __m256d t1 = _mm256_mul_pd(t0, c.mVec);
-#else
-            __m512d t0 = _mm512_castpd256_pd512(mVec);
-            __m512d t2 = _mm512_castpd256_pd512(b.mVec);
-            __m512d t3 = _mm512_castpd256_pd512(c.mVec);
-            __m512d t4 = _mm512_add_pd(t0, t2);
-            __m512d t5 = _mm512_mul_pd(t4, t3);
-            __m256d t1 = _mm512_castpd512_pd256(t5);
-#endif
             return SIMDVec_f(t1);
         }
         // MFADDMULV
@@ -1294,17 +1281,8 @@ namespace SIMD {
         }
         // FSUBMULV
         UME_FORCE_INLINE SIMDVec_f fsubmul(SIMDVec_f const & b, SIMDVec_f const & c) const {
-#if defined(__AVX512VL__)
             __m256d t0 = _mm256_sub_pd(mVec, b.mVec);
             __m256d t1 = _mm256_mul_pd(t0, c.mVec);
-#else
-            __m512d t0 = _mm512_castpd256_pd512(mVec);
-            __m512d t2 = _mm512_castpd256_pd512(b.mVec);
-            __m512d t3 = _mm512_castpd256_pd512(c.mVec);
-            __m512d t4 = _mm512_sub_pd(t0, t2);
-            __m512d t5 = _mm512_mul_pd(t4, t3);
-            __m256d t1 = _mm512_castpd512_pd256(t5);
-#endif
             return SIMDVec_f(t1);
         }
         // MFSUBMULV

@@ -48,6 +48,12 @@
 #define _MM_CMPINT_TRUE 7
 #endif
 
+
+// WA: missing intrinsics in GCC
+#if __GNUC__ < 6 || (__GNUC__ == 6 && (__GNUC_MINOR < 2))
+#define WA_GCC_INTR_SUPPORT_6_2
+#endif
+
 namespace UME
 {
 namespace SIMD

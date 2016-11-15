@@ -1289,16 +1289,14 @@ namespace SIMD {
         }
         // FMULADDV
         UME_FORCE_INLINE SIMDVec_f fmuladd(SIMDVec_f const & b, SIMDVec_f const & c) const {
-#if defined(__AVX512VL__)
-            __m256 t0 = _mm256_mask_fmadd_ps(mVec, 0xFF, b.mVec, c.mVec);
-#else
-            __m512 t1 = _mm512_castps256_ps512(mVec);
-            __m512 t2 = _mm512_castps256_ps512(b.mVec);
-            __m512 t3 = _mm512_castps256_ps512(c.mVec);
-            __m512 t4 = _mm512_mask_fmadd_ps(t1, 0xFF, t2, t3);
-            __m256 t0 = _mm512_castps512_ps256(t4);
-#endif
+#if defined(__FMA__)
+            __m256 t0 = _mm256_fmadd_ps(mVec, b.mVec, c.mVec);
             return SIMDVec_f(t0);
+#else
+            __m256 t0 = _mm256_mul_ps(mVec, b.mVec);
+            __m256 t1 = _mm256_add_ps(t0, c.mVec);
+            return SIMDVec_f(t1);
+#endif
         }
         // MFMULADDV
         UME_FORCE_INLINE SIMDVec_f fmuladd(SIMDVecMask<8> const & mask, SIMDVec_f const & b, SIMDVec_f const & c) const {
@@ -1315,16 +1313,14 @@ namespace SIMD {
         }
         // FMULSUBV
         UME_FORCE_INLINE SIMDVec_f fmulsub(SIMDVec_f const & b, SIMDVec_f const & c) const {
-#if defined(__AVX512VL__)
+#if defined(__FMA__)
             __m256 t0 = _mm256_fmsub_ps(mVec, b.mVec, c.mVec);
-#else
-            __m512 t1 = _mm512_castps256_ps512(mVec);
-            __m512 t2 = _mm512_castps256_ps512(b.mVec);
-            __m512 t3 = _mm512_castps256_ps512(c.mVec);
-            __m512 t4 = _mm512_mask_fmsub_ps(t1, 0xFF, t2, t3);
-            __m256 t0 = _mm512_castps512_ps256(t4);
-#endif
             return SIMDVec_f(t0);
+#else
+            __m256 t0 = _mm256_mul_ps(mVec, b.mVec);
+            __m256 t1 = _mm256_sub_ps(t0, c.mVec);
+            return SIMDVec_f(t1);
+#endif
         }
         // MFMULSUBV
         UME_FORCE_INLINE SIMDVec_f fmulsub(SIMDVecMask<8> const & mask, SIMDVec_f const & b, SIMDVec_f const & c) const {
@@ -1341,17 +1337,8 @@ namespace SIMD {
         }
         // FADDMULV
         UME_FORCE_INLINE SIMDVec_f faddmul(SIMDVec_f const & b, SIMDVec_f const & c) const {
-#if defined(__AVX512VL__)
             __m256 t0 = _mm256_add_ps(mVec, b.mVec);
             __m256 t1 = _mm256_mul_ps(t0, c.mVec);
-#else
-            __m512 t0 = _mm512_castps256_ps512(mVec);
-            __m512 t2 = _mm512_castps256_ps512(b.mVec);
-            __m512 t3 = _mm512_castps256_ps512(c.mVec);
-            __m512 t4 = _mm512_add_ps(t0, t2);
-            __m512 t5 = _mm512_mul_ps(t4, t3);
-            __m256 t1 = _mm512_castps512_ps256(t5);
-#endif
             return SIMDVec_f(t1);
         }
         // MFADDMULV
@@ -1371,29 +1358,20 @@ namespace SIMD {
         }
         // FSUBMULV
         UME_FORCE_INLINE SIMDVec_f fsubmul(SIMDVec_f const & b, SIMDVec_f const & c) const {
-#if defined(__AVX512VL__)
             __m256 t0 = _mm256_sub_ps(mVec, b.mVec);
             __m256 t1 = _mm256_mul_ps(t0, c.mVec);
-#else
-            __m512 t0 = _mm512_castps256_ps512(mVec);
-            __m512 t2 = _mm512_castps256_ps512(b.mVec);
-            __m512 t3 = _mm512_castps256_ps512(c.mVec);
-            __m512 t4 = _mm512_sub_ps(t0, t2);
-            __m512 t5 = _mm512_mul_ps(t4, t3);
-            __m256 t1 = _mm512_castps512_ps256(t5);
-#endif
             return SIMDVec_f(t1);
         }
         // MFSUBMULV
         UME_FORCE_INLINE SIMDVec_f fsubmul(SIMDVecMask<8> const & mask, SIMDVec_f const & b, SIMDVec_f const & c) const {
 #if defined(__AVX512VL__)
-            __m256 t0 = _mm256_mask_sub_ps(mVec, mask.mMask, mVec, b.mVec);
+            __m256 t0 = _mm256_sub_ps(mVec, b.mVec);
             __m256 t1 = _mm256_mask_mul_ps(mVec, mask.mMask, t0, c.mVec);
 #else
             __m512 t0 = _mm512_castps256_ps512(mVec);
             __m512 t2 = _mm512_castps256_ps512(b.mVec);
             __m512 t3 = _mm512_castps256_ps512(c.mVec);
-            __m512 t4 = _mm512_mask_sub_ps(t0, mask.mMask, t0, t2);
+            __m512 t4 = _mm512_sub_ps(t0, t2);
             __m512 t5 = _mm512_mask_mul_ps(t4, mask.mMask, t4, t3);
             __m256 t1 = _mm512_castps512_ps256(t5);
 #endif

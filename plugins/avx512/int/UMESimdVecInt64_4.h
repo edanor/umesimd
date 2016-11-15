@@ -899,7 +899,7 @@ namespace SIMD {
         }
         // CMPNEV
         UME_FORCE_INLINE SIMDVecMask<4> cmpne (SIMDVec_i const & b) const {
-#if defined(__AVX512VL__)
+#if defined(__AVX512VL__) && !defined(WA_GCC_INTR_SUPPORT_6_2)
             __mmask8 m0 = _mm256_cmpneq_epu64_mask(mVec, b.mVec);
 #else
             __mmask8 m0 = _mm512_cmpneq_epu64_mask(
@@ -915,7 +915,7 @@ namespace SIMD {
         }
         // CMPNES
         UME_FORCE_INLINE SIMDVecMask<4> cmpne (int64_t b) const {
-#if defined(__AVX512VL__)
+#if defined(__AVX512VL__) && !defined(WA_GCC_INTR_SUPPORT_6_2)
             __mmask8 m0 = _mm256_cmpneq_epu64_mask(mVec, SET1_EPI64(b));
 #else
             __mmask8 m0 = _mm512_cmpneq_epu64_mask(
@@ -963,7 +963,7 @@ namespace SIMD {
         }
         // CMPLTV
         UME_FORCE_INLINE SIMDVecMask<4> cmplt (SIMDVec_i const & b) const {
-#if defined(__AVX512VL__)
+#if defined(__AVX512VL__) && !defined(WA_GCC_INTR_SUPPORT_6_2)
             __mmask8 m0 = _mm256_cmplt_epi64_mask(mVec, b.mVec);
 #else
             __mmask8 m0 = _mm512_cmplt_epi64_mask(
@@ -979,7 +979,7 @@ namespace SIMD {
         }
         // CMPLTS
         UME_FORCE_INLINE SIMDVecMask<4> cmplt (int64_t b) const {
-#if defined(__AVX512VL__)
+#if defined(__AVX512VL__) && !defined(WA_GCC_INTR_SUPPORT_6_2)
             __mmask8 m0 = _mm256_cmplt_epi64_mask(mVec, SET1_EPI64(b));
 #else
             __mmask8 m0 = _mm512_cmplt_epi64_mask(
@@ -995,7 +995,7 @@ namespace SIMD {
         }
         // CMPGEV
         UME_FORCE_INLINE SIMDVecMask<4> cmpge (SIMDVec_i const & b) const {
-#if defined(__AVX512VL__)
+#if defined(__AVX512VL__) && !defined(WA_GCC_INTR_SUPPORT_6_2)
             __mmask8 m0 = _mm256_cmpge_epi64_mask(mVec, b.mVec);
 #else
             __mmask8 m0 = _mm512_cmpge_epi64_mask(
@@ -1011,7 +1011,7 @@ namespace SIMD {
         }
         // CMPGES
         UME_FORCE_INLINE SIMDVecMask<4> cmpge (int64_t b) const {
-#if defined(__AVX512VL__)
+#if defined(__AVX512VL__) && !defined(WA_GCC_INTR_SUPPORT_6_2)
             __mmask8 m0 = _mm256_cmpge_epi64_mask(mVec, SET1_EPI64(b));
 #else
             __mmask8 m0 = _mm512_cmpge_epi64_mask(
@@ -1027,7 +1027,7 @@ namespace SIMD {
         }
         // CMPLEV
         UME_FORCE_INLINE SIMDVecMask<4> cmple (SIMDVec_i const & b) const {
-#if defined(__AVX512VL__)
+#if defined(__AVX512VL__) && !defined(WA_GCC_INTR_SUPPORT_6_2)
             __mmask8 m0 = _mm256_cmple_epi64_mask(mVec, b.mVec);
 #else
             __mmask8 m0 = _mm512_cmple_epi64_mask(
@@ -1043,7 +1043,7 @@ namespace SIMD {
         }
         // CMPLES
         UME_FORCE_INLINE SIMDVecMask<4> cmple (int64_t b) const {
-#if defined(__AVX512VL__)
+#if defined(__AVX512VL__) && !defined(WA_GCC_INTR_SUPPORT_6_2)
             __mmask8 m0 = _mm256_cmple_epi64_mask(mVec, SET1_EPI64(b));
 #else
             __mmask8 m0 = _mm512_cmple_epi64_mask(

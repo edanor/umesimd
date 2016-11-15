@@ -755,7 +755,7 @@ namespace SIMD {
         }
         // CMPNEV
         UME_FORCE_INLINE SIMDVecMask<4> cmpne(SIMDVec_u const & b) const {
-#if defined(__AVX512VL__)
+#if defined(__AVX512VL__) && !defined(WA_GCC_INTR_SUPPORT_6_2)
             __mmask8 m0 = _mm_cmpneq_epu32_mask(mVec, b.mVec);
 #else
             __m512i t0 = _mm512_castsi128_si512(mVec);
@@ -773,7 +773,7 @@ namespace SIMD {
         // CMPNES
         UME_FORCE_INLINE SIMDVecMask<4> cmpne(uint32_t b) const {
             __m128i t0 = _mm_set1_epi32(b);
-#if defined(__AVX512VL__)
+#if defined(__AVX512VL__) && !defined(WA_GCC_INTR_SUPPORT_6_2)
             __mmask8 m0 = _mm_cmpneq_epu32_mask(mVec, t0);
 #else
             __m512i t1 = _mm512_castsi128_si512(mVec);
@@ -825,7 +825,7 @@ namespace SIMD {
         }
         // CMPLTV
         UME_FORCE_INLINE SIMDVecMask<4> cmplt(SIMDVec_u const & b) const {
-#if defined(__AVX512VL__)
+#if defined(__AVX512VL__) && !defined(WA_GCC_INTR_SUPPORT_6_2)
             __mmask8 m0 = _mm_cmplt_epu32_mask(mVec, b.mVec);
 #else
             __m512i t0 = _mm512_castsi128_si512(mVec);
@@ -843,7 +843,7 @@ namespace SIMD {
         // CMPLTS
         UME_FORCE_INLINE SIMDVecMask<4> cmplt(uint32_t b) const {
             __m128i t0 = _mm_set1_epi32(b);
-#if defined(__AVX512VL__)
+#if defined(__AVX512VL__) && !defined(WA_GCC_INTR_SUPPORT_6_2)
             __mmask8 m0 = _mm_cmplt_epu32_mask(mVec, t0);
 #else
             __m512i t1 = _mm512_castsi128_si512(mVec);
@@ -860,7 +860,7 @@ namespace SIMD {
         }
         // CMPGEV
         UME_FORCE_INLINE SIMDVecMask<4> cmpge(SIMDVec_u const & b) const {
-#if defined(__AVX512VL__)
+#if defined(__AVX512VL__) && !defined(WA_GCC_INTR_SUPPORT_6_2)
             __mmask8 m0 = _mm_cmpge_epu32_mask(mVec, b.mVec);
 #else
             __m512i t0 = _mm512_castsi128_si512(mVec);
@@ -878,7 +878,7 @@ namespace SIMD {
         // CMPGES
         UME_FORCE_INLINE SIMDVecMask<4> cmpge(uint32_t b) const {
             __m128i t0 = _mm_set1_epi32(b);
-#if defined(__AVX512VL__)
+#if defined(__AVX512VL__) && !defined(WA_GCC_INTR_SUPPORT_6_2)
             __mmask8 m0 = _mm_cmpge_epu32_mask(mVec, t0);
 #else
             __m512i t1 = _mm512_castsi128_si512(mVec);
@@ -895,7 +895,7 @@ namespace SIMD {
         }
         // CMPLEV
         UME_FORCE_INLINE SIMDVecMask<4> cmple(SIMDVec_u const & b) const {
-#if defined(__AVX512VL__)
+#if defined(__AVX512VL__) && !defined(WA_GCC_INTR_SUPPORT_6_2)
             __mmask8 m0 = _mm_cmple_epu32_mask(mVec, b.mVec);
 #else
             __m512i t0 = _mm512_castsi128_si512(mVec);
@@ -913,7 +913,7 @@ namespace SIMD {
         // CMPLES
         UME_FORCE_INLINE SIMDVecMask<4> cmple(uint32_t b) const {
             __m128i t0 = _mm_set1_epi32(b);
-#if defined(__AVX512VL__)
+#if defined(__AVX512VL__) && !defined(WA_GCC_INTR_SUPPORT_6_2)
             __mmask8 m0 = _mm_cmple_epu32_mask(mVec, t0);
 #else
             __m512i t1 = _mm512_castsi128_si512(mVec);
