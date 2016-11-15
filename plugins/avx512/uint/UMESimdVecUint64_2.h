@@ -190,7 +190,7 @@ namespace SIMD {
 #else
             __m512i t2 = _mm512_castsi128_si512(mVec);
             __m512i t3 = _mm512_castsi128_si512(t1);
-            __m512i t4 = _mm512_mask_mov_epi32(t2, mask.mMask, t3);
+            __m512i t4 = _mm512_mask_mov_epi64(t2, mask.mMask, t3);
             mVec = _mm512_castsi512_si128(t4);
 #endif
             return *this;
