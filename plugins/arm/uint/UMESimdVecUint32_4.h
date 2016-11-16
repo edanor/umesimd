@@ -405,34 +405,27 @@ namespace SIMD {
                 mVec[3] = (mVec[3] > MAX_VAL - b) ? MAX_VAL : mVec[3] + b;
             }
             return *this;
-        }
+        }*/
         // POSTINC
         UME_FORCE_INLINE SIMDVec_u postinc() {
-            uint32_t t0 = mVec[0];
-            uint32_t t1 = mVec[1];
-            uint32_t t2 = mVec[2];
-            uint32_t t3 = mVec[3];
-            mVec[0]++;
-            mVec[1]++;
-            mVec[2]++;
-            mVec[3]++;
-            return SIMDVec_u(t0, t1, t2, t3);
+            uint32x4_t t0 = vdupq_n_u32(1);
+            uint32x4_t t1 = mVec;
+            mVec = vaddq_u32(mVec, t0);
+            return SIMDVec_u(t1);
         }
         UME_FORCE_INLINE SIMDVec_u operator++ (int) {
             return postinc();
         }
         // MPOSTINC
         UME_FORCE_INLINE SIMDVec_u postinc(SIMDVecMask<4> const & mask) {
-            uint32_t t0 = mVec[0];
-            uint32_t t1 = mVec[1];
-            uint32_t t2 = mVec[2];
-            uint32_t t3 = mVec[3];
-            if(mask.mMask[0] == true) mVec[0]++;
-            if(mask.mMask[1] == true) mVec[1]++;
-            if(mask.mMask[2] == true) mVec[2]++;
-            if(mask.mMask[3] == true) mVec[3]++;
-            return SIMDVec_u(t0, t1, t2, t3);
-        }*/
+            UME_EMULATION_WARNING();
+            uint32x4_t t0 = mVec;
+            if (mask.mMask[0] == true) mVec[0]++;
+            if (mask.mMask[1] == true) mVec[1]++;
+            if (mask.mMask[2] == true) mVec[2]++;
+            if (mask.mMask[3] == true) mVec[3]++;
+            return SIMDVec_u(t0);
+        }
         // PREFINC
         UME_FORCE_INLINE SIMDVec_u & prefinc() {
             uint32x4_t t0 = vdupq_n_u32(1);
