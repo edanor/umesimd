@@ -2403,6 +2403,44 @@ namespace SCALAR_EMULATION
         return mask;
     }
 
+    // LANDNOTV
+    template<typename VEC_TYPE>
+    UME_FORCE_INLINE VEC_TYPE logicalAndNot(VEC_TYPE const & a, VEC_TYPE const & b) {
+        VEC_TYPE retval;
+        for (uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+            retval.insert(i, ((!a[i]) && b[i]));
+        }
+        return retval;
+    }
+
+    // LANDNOTS
+    template<typename VEC_TYPE, typename SCALAR_TYPE>
+    UME_FORCE_INLINE VEC_TYPE logicalAndNot(VEC_TYPE const & a, SCALAR_TYPE b) {
+        VEC_TYPE retval;
+        for (uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+            retval.insert(i, ((!a[i]) && b));
+        }
+        return retval;
+    }
+
+    // LANDNOTVA
+    template<typename VEC_TYPE>
+    UME_FORCE_INLINE VEC_TYPE & logicalAndNotAssign(VEC_TYPE & a, VEC_TYPE const & b) {
+        for (uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+            a.insert(i, ((!a[i]) && b[i]));
+        }
+        return a;
+    }
+
+    // LANDNOTSA
+    template<typename VEC_TYPE, typename SCALAR_TYPE>
+    UME_FORCE_INLINE VEC_TYPE & logicalAndNotAssign(VEC_TYPE & a, SCALAR_TYPE b) {
+        for (uint32_t i = 0; i < VEC_TYPE::length(); i++) {
+            a.insert(i, ((!a[i]) && b));
+        }
+        return a;
+    }
+
     // BLENDV
     template<typename VEC_TYPE, typename MASK_TYPE>
     UME_FORCE_INLINE VEC_TYPE blend(MASK_TYPE const & mask, VEC_TYPE const & a, VEC_TYPE const & b) {
@@ -3266,7 +3304,6 @@ namespace SCALAR_EMULATION
             }
             return retval;
         }
-
         // MTRUNC
         template<typename VEC_TYPE, typename SCALAR_TYPE, typename INT_VEC_TYPE, typename MASK_TYPE>
         UME_FORCE_INLINE INT_VEC_TYPE truncToInt(MASK_TYPE const & mask, VEC_TYPE const & a) {

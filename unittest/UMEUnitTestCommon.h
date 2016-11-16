@@ -126,6 +126,9 @@ template<> float randomValue<float>(std::mt19937 & generator);
 template<> double randomValue<double>(std::mt19937 & generator);
 template<> bool randomValue<bool>(std::mt19937 & generator);
 
+#include "../utilities/ignore_warnings_push.h"
+#include "../utilities/ignore_warnings_unused_force_value_to_bool.h"
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename FROM_SCALAR_TYPE, int VEC_LEN>
 void genericSETCONSTRTest_random_helper(std::string const & type_name)
 {
@@ -167,6 +170,8 @@ void genericSETCONSTRTest_random_helper(std::string const & type_name)
         check_condition(inRange, msg.c_str());
     }
 }
+
+#include "../utilities/ignore_warnings_pop.h"
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN>
 void genericSETCONSTRTest_random()
@@ -6774,7 +6779,7 @@ void genericMGATHERVTest_random()
     for (int i = 0; i < VEC_LEN;i++) {
         inputMask[i] = randomValue<bool>(gen);
         indices[i] = randomValue<SCALAR_UINT_TYPE>(gen) % (VEC_LEN * 100);
-        inputB[i] = randomValue<SCALAR_UINT_TYPE>(gen);
+        inputB[i] = randomValue<SCALAR_TYPE>(gen);
         output[i] = inputMask[i] ? inputA[indices[i]] : inputB[i];
     }
 
@@ -6868,7 +6873,7 @@ void genericSCATTERSTest_random()
     }
     bool uniqueIndices;
     for (int i = 0; i < VEC_LEN;i++) {
-        inputB[i] = randomValue<SCALAR_UINT_TYPE>(gen);
+        inputB[i] = randomValue<SCALAR_TYPE>(gen);
         do
         {
             // Indices for scatter should be unique. Otherwise test might yield
@@ -6912,7 +6917,7 @@ void genericMSCATTERSTest_random()
     bool uniqueIndices;
     for (int i = 0; i < VEC_LEN;i++) {
         inputMask[i] = randomValue<bool>(gen);
-        inputB[i] = randomValue<SCALAR_UINT_TYPE>(gen);
+        inputB[i] = randomValue<SCALAR_TYPE>(gen);
         do
         {
             // Indices for scatter should be unique. Otherwise test might yield
@@ -6954,7 +6959,7 @@ void genericSCATTERVTest_random()
     }
     bool uniqueIndices;
     for (int i = 0; i < VEC_LEN;i++) {
-        inputB[i] = randomValue<SCALAR_UINT_TYPE>(gen);
+        inputB[i] = randomValue<SCALAR_TYPE>(gen);
         do
         {
             // Indices for scatter should be unique. Otherwise test might yield
@@ -6998,7 +7003,7 @@ void genericMSCATTERVTest_random()
     bool uniqueIndices;
     for (int i = 0; i < VEC_LEN;i++) {
         inputMask[i] = randomValue<bool>(gen);
-        inputB[i] = randomValue<SCALAR_UINT_TYPE>(gen);
+        inputB[i] = randomValue<SCALAR_TYPE>(gen);
         do
         {
             // Indices for scatter should be unique. Otherwise test might yield
@@ -9620,6 +9625,9 @@ void genericMABSATest()
     CHECK_CONDITION(inRange, "MABSA");
 }
 
+#include "../utilities/ignore_warnings_push.h"
+#include "../utilities/ignore_warnings_truncation_from_double_to_float.h"
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN>
 void genericCOPYSIGNTest_random()
 {
@@ -9664,6 +9672,8 @@ void genericCOPYSIGNTest_random()
         CHECK_CONDITION(exact, "COPYSIGN(function) gen");
     }
 }
+
+#include "../utilities/ignore_warnings_pop.h"
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericSQRTest()

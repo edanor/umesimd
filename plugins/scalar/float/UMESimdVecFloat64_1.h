@@ -72,7 +72,7 @@ namespace SIMD {
         template<typename T>
         UME_FORCE_INLINE SIMDVec_f(
             T i, 
-            typename std::enable_if< std::is_same<T, int>::value && 
+            typename std::enable_if< std::is_fundamental<T>::value &&
                                     !std::is_same<T, double>::value,
                                     void*>::type = nullptr)
         : SIMDVec_f(static_cast<double>(i)) {}
@@ -1023,12 +1023,12 @@ namespace SIMD {
         // MPOWS
         // ROUND
         UME_FORCE_INLINE SIMDVec_f round() const {
-            double t0 = std::roundf(mVec);
+            double t0 = std::round(mVec);
             return SIMDVec_f(t0);
         }
         // MROUND
         UME_FORCE_INLINE SIMDVec_f round(SIMDVecMask<1> const & mask) const {
-            double t0 = mask.mMask ? std::roundf(mVec) : mVec;
+            double t0 = mask.mMask ? std::round(mVec) : mVec;
             return SIMDVec_f(t0);
         }
         // TRUNC

@@ -95,7 +95,7 @@ bool valueInRange(double value, double expectedValue, double errMargin) {
 #include "../utilities/ignore_warnings_push.h"
 #include "../utilities/ignore_warnings_unused_parameter.h"
 
-bool valueInRange(bool value, bool expectedValue, float errMargin) {
+bool valueInRange(bool value, bool expectedValue, double errMargin) {
     return value == expectedValue;
 }
 

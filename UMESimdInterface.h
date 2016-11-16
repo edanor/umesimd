@@ -403,13 +403,13 @@ namespace SIMD
         // LANDNOTV
         UME_FORCE_INLINE DERIVED_MASK_TYPE landnot(DERIVED_MASK_TYPE const & b) const {
             UME_EMULATION_WARNING();
-            return SCALAR_EMULATION::binaryAndNot<DERIVED_MASK_TYPE>(static_cast<DERIVED_MASK_TYPE const &>(*this), b);
+            return SCALAR_EMULATION::logicalAndNot<DERIVED_MASK_TYPE>(static_cast<DERIVED_MASK_TYPE const &>(*this), b);
         }
 
         // LANDNOTS
         UME_FORCE_INLINE DERIVED_MASK_TYPE landnot(bool b) const {
             UME_EMULATION_WARNING();
-            return SCALAR_EMULATION::binaryAndNot<DERIVED_MASK_TYPE>(static_cast<DERIVED_MASK_TYPE const &>(*this), b);
+            return SCALAR_EMULATION::logicalAndNot<DERIVED_MASK_TYPE>(static_cast<DERIVED_MASK_TYPE const &>(*this), b);
         }
 
         // CMPEQV
@@ -3059,7 +3059,7 @@ namespace SIMD
                     SCALAR_UINT_TYPE,
                     MASK_TYPE,
                     SWIZZLE_MASK_TYPE> VEC_TYPE;
- 
+
     protected:
         // Making destructor protected prohibits this class from being instantiated. Effectively this class can only be used as a base class.
         ~SIMDVecFloatInterface() {};
