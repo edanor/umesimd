@@ -70,13 +70,16 @@ namespace SIMD {
         template<typename T>
         UME_FORCE_INLINE SIMDVec_i(
             T i, 
-            typename std::enable_if< std::is_same<T, int>::value && 
+            typename std::enable_if< std::is_fundamental<T>::value && 
                                     !std::is_same<T, int32_t>::value,
                                     void*>::type = nullptr)
         : SIMDVec_i(static_cast<int32_t>(i)) {}
 
         // LOAD-CONSTR - Construct by loading from memory
         UME_FORCE_INLINE explicit SIMDVec_i(int32_t const *p) { this->load(p); };
+
+#include "../../../utilities/ignore_warnings_push.h"
+#include "../../../utilities/ignore_warnings_unused_parameter.h"
 
         // EXTRACT
         UME_FORCE_INLINE int32_t extract(uint32_t index) const {
@@ -94,6 +97,8 @@ namespace SIMD {
         UME_FORCE_INLINE IntermediateIndex<SIMDVec_i, int32_t> operator[] (uint32_t index) {
             return IntermediateIndex<SIMDVec_i, int32_t>(index, static_cast<SIMDVec_i &>(*this));
         }
+
+#include "../../../utilities/ignore_warnings_pop.h"
 
         // Override Mask Access operators
 #if defined(USE_PARENTHESES_IN_MASK_ASSIGNMENT)
@@ -1426,11 +1431,11 @@ namespace SIMD {
         // PACKLO
         // PACKHI
         // UNPACK
-        void unpack(SIMDVec_u<uint32_t, 1> & a, SIMDVec_u<uint32_t, 1> & b) const {
-            a.insert(0, mVec);
-        }
+        // -
         // UNPACKLO
+        // -
         // UNPACKHI
+        // -
 
         // SUBV
         // NEG

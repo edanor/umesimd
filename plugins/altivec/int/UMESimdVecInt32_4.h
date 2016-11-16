@@ -35,7 +35,8 @@
 
 #include "../../../UMESimdInterface.h"
 
-#define SET_I32(a) (__vector signed int) {a, a, a, a};
+#define SET_I32(x, a) alignas(16) int32_t seti32_array[4] = {a, a, a, a}; \
+                      x = vec_ld(0, seti32_array);
 
 namespace UME {
 namespace SIMD {
@@ -74,7 +75,7 @@ namespace SIMD {
         UME_FORCE_INLINE SIMDVec_i() {}
         // SET-CONSTR
         UME_FORCE_INLINE SIMDVec_i(int32_t i) {
-            mVec = SET_I32(i);
+            SET_I32(mVec, i);
         }
         // This constructor is used to force types other than SCALAR_TYPES
         // to be promoted to SCALAR_TYPE instead of SCALAR_TYPE*. This prevents
@@ -146,7 +147,7 @@ namespace SIMD {
         }
         // ASSIGNS
         UME_FORCE_INLINE SIMDVec_i & assign(int32_t b) {
-            mVec = SET_I32(b);
+            SET_I32(mVec, b);
             return *this;
         }
         UME_FORCE_INLINE SIMDVec_i & operator= (int32_t b) {
@@ -154,7 +155,8 @@ namespace SIMD {
         }
         // MASSIGNS
         UME_FORCE_INLINE SIMDVec_i & assign(SIMDVecMask<4> const & mask, int32_t b) {
-            __vector int32_t t0 = SET_I32(b);
+            __vector int32_t t0;
+            SET_I32(t0, b);
             mVec = vec_sel(mVec, t0, mask.mMask);
             return *this;
         }
@@ -281,7 +283,8 @@ namespace SIMD {
         }
         // ADDS
         UME_FORCE_INLINE SIMDVec_i add(int32_t b) const {
-            __vector int32_t t0 = SET_I32(b);
+            __vector int32_t t0;
+            SET_I32(t0, b);
             __vector int32_t t1 = vec_add(mVec, t0);
             return SIMDVec_i(t1);
         }
@@ -290,7 +293,8 @@ namespace SIMD {
         }
         // MADDS
         UME_FORCE_INLINE SIMDVec_i add(SIMDVecMask<4> const & mask, int32_t b) const {
-            __vector int32_t t0 = SET_I32(b);
+            __vector int32_t t0;
+            SET_I32(t0, b);
             __vector int32_t t1 = vec_add(mVec, t0);
             __vector int32_t t2 = vec_sel(mVec, t1, mask.mMask);
             return SIMDVec_i(t2);
@@ -311,7 +315,8 @@ namespace SIMD {
         }
         // ADDSA
         UME_FORCE_INLINE SIMDVec_i & adda(int32_t b) {
-            __vector int32_t t0 = SET_I32(b);
+            __vector int32_t t0;
+            SET_I32(t0, b);
             mVec = vec_add(mVec, t0);
             return *this;
         }
@@ -320,7 +325,8 @@ namespace SIMD {
         }
         // MADDSA
         UME_FORCE_INLINE SIMDVec_i & adda(SIMDVecMask<4> const & mask, int32_t b) {
-            __vector int32_t t0 = SET_I32(b);
+            __vector int32_t t0;
+            SET_I32(t0, b);
             __vector int32_t t1 = vec_add(mVec, t0);
             mVec = vec_sel(mVec, t1, mask.mMask);
             return *this;
@@ -554,7 +560,8 @@ namespace SIMD {
         }
         // SUBS
         UME_FORCE_INLINE SIMDVec_i sub(int32_t b) const {
-            __vector int32_t t0 = SET_I32(b);
+            __vector int32_t t0;
+            SET_I32(t0, b);
             __vector int32_t t1 = vec_sub(mVec, t0);
             return SIMDVec_i(t1);
         }
@@ -563,7 +570,8 @@ namespace SIMD {
         }
         // MSUBS
         UME_FORCE_INLINE SIMDVec_i sub(SIMDVecMask<4> const & mask, int32_t b) const {
-            __vector int32_t t0 = SET_I32(b);
+            __vector int32_t t0;
+            SET_I32(t0, b);
             __vector int32_t t1 = vec_sub(mVec, t0);
             __vector int32_t t2 = vec_sel(mVec, t1, mask.mMask);
             return SIMDVec_i(t2);
@@ -2077,7 +2085,8 @@ namespace SIMD {
 */
         // NEG
         UME_FORCE_INLINE SIMDVec_i neg() const {
-            __vector signed int t0 = SET_I32(0);
+            __vector signed int t0;
+            SET_I32(t0, 0);
             __vector signed int t1 = vec_sub(t0, mVec);
             return SIMDVec_i(t1);
         }
@@ -2086,7 +2095,8 @@ namespace SIMD {
         }
         // MNEG
         UME_FORCE_INLINE SIMDVec_i neg(SIMDVecMask<4> const & mask) const {
-            __vector signed int t0 = SET_I32(0);
+            __vector signed int t0;
+            SET_I32(t0, 0);
             __vector signed int t1 = vec_sub(t0, mVec);
             __vector signed int t2 = vec_sel(mVec, t1, mask.mMask);
             return SIMDVec_i(t2);

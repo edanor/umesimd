@@ -35,7 +35,8 @@
 
 #include "../../../UMESimdInterface.h"
 
-#define SET_U32(a) (__vector unsigned int) {a, a, a, a};
+#define SET_U32(x, a) alignas(16) uint32_t setu32_array[4] = {a, a, a, a}; \
+                      x = vec_ld(0, setu32_array);
 
 namespace UME {
 namespace SIMD {
@@ -71,7 +72,7 @@ namespace SIMD {
         UME_FORCE_INLINE SIMDVec_u() {}
         // SET-CONSTR
         UME_FORCE_INLINE SIMDVec_u(uint32_t i) {
-            mVec = SET_U32(i);
+            SET_U32(mVec, i);
         }
         // This constructor is used to force types other than SCALAR_TYPES
         // to be promoted to SCALAR_TYPE instead of SCALAR_TYPE*. This prevents
@@ -143,7 +144,7 @@ namespace SIMD {
         }
         // ASSIGNS
         UME_FORCE_INLINE SIMDVec_u & assign(uint32_t b) {
-            mVec = SET_U32(b);
+            SET_U32(mVec, b);
             return *this;
         }
         UME_FORCE_INLINE SIMDVec_u & operator= (uint32_t b) {
@@ -151,7 +152,8 @@ namespace SIMD {
         }
         // MASSIGNS
         UME_FORCE_INLINE SIMDVec_u & assign(SIMDVecMask<4> const & mask, uint32_t b) {
-            __vector uint32_t t0 = SET_U32(b);
+            __vector uint32_t t0;
+            SET_U32(t0, b);
             mVec = vec_sel(mVec, t0, mask.mMask);
             return *this;
         }
@@ -278,7 +280,8 @@ namespace SIMD {
         }
         // ADDS
         UME_FORCE_INLINE SIMDVec_u add(uint32_t b) const {
-            __vector uint32_t t0 = SET_U32(b);
+            __vector uint32_t t0;
+            SET_U32(t0, b);
             __vector uint32_t t1 = vec_add(mVec, t0);
             return SIMDVec_u(t1);
         }
@@ -287,7 +290,8 @@ namespace SIMD {
         }
         // MADDS
         UME_FORCE_INLINE SIMDVec_u add(SIMDVecMask<4> const & mask, uint32_t b) const {
-            __vector uint32_t t0 = SET_U32(b);
+            __vector uint32_t t0;
+            SET_U32(t0, b);
             __vector uint32_t t1 = vec_add(mVec, t0);
             __vector uint32_t t2 = vec_sel(mVec, t1, mask.mMask);
             return SIMDVec_u(t2);
@@ -308,7 +312,8 @@ namespace SIMD {
         }
         // ADDSA
         UME_FORCE_INLINE SIMDVec_u & adda(uint32_t b) {
-            __vector uint32_t t0 = SET_U32(b);
+            __vector uint32_t t0;
+            SET_U32(t0, b);
             mVec = vec_add(mVec, t0);
             return *this;
         }
@@ -317,7 +322,8 @@ namespace SIMD {
         }
         // MADDSA
         UME_FORCE_INLINE SIMDVec_u & adda(SIMDVecMask<4> const & mask, uint32_t b) {
-            __vector uint32_t t0 = SET_U32(b);
+            __vector uint32_t t0;
+            SET_U32(t0, b);
             __vector uint32_t t1 = vec_add(mVec, t0);
             mVec = vec_sel(mVec, t1, mask.mMask);
             return *this;
@@ -457,7 +463,8 @@ namespace SIMD {
         // }
         // PREFINC
         UME_FORCE_INLINE SIMDVec_u & prefinc() {
-            __vector uint32_t t0 = SET_U32(1);
+            __vector uint32_t t0;
+            SET_U32(t0, 1);
             mVec = vec_add(mVec, t0);
             return *this;
         }
@@ -467,7 +474,8 @@ namespace SIMD {
         // MPREFINC
         UME_FORCE_INLINE SIMDVec_u & prefinc(SIMDVecMask<4> const & mask) {
             UME_EMULATION_WARNING();
-            __vector uint32_t t0 = SET_U32(1);
+            __vector uint32_t t0;
+            SET_U32(t0, 1);
             __vector uint32_t t1 = vec_add(mVec, t0);
             mVec = vec_sel(mVec, t1, mask.mMask);
             return *this;
@@ -488,7 +496,8 @@ namespace SIMD {
         }
         // SUBS
         UME_FORCE_INLINE SIMDVec_u sub(uint32_t b) const {
-            __vector uint32_t t0 = SET_U32(b);
+            __vector uint32_t t0;
+            SET_U32(t0, b);
             __vector uint32_t t1 = vec_sub(mVec, t0);
             return SIMDVec_u(t1);
         }
@@ -497,7 +506,8 @@ namespace SIMD {
         }
         // MSUBS
         UME_FORCE_INLINE SIMDVec_u sub(SIMDVecMask<4> const & mask, uint32_t b) const {
-            __vector uint32_t t0 = SET_U32(b);
+            __vector uint32_t t0;
+            SET_U32(t0, b);
             __vector uint32_t t1 = vec_sub(mVec, t0);
             __vector uint32_t t2 = vec_sel(mVec, t1, mask.mMask);
             return SIMDVec_u(t2);
