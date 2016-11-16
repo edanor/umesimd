@@ -59,7 +59,7 @@ namespace SIMD {
     private:
         __m256 mVec[2];
 
-        inline SIMDVec_f(__m256 const & xLo, __m256 const & xHi) {
+        UME_FORCE_INLINE SIMDVec_f(__m256 const & xLo, __m256 const & xHi) {
             this->mVec[0] = xLo;
             this->mVec[1] = xHi;
         }
@@ -68,10 +68,10 @@ namespace SIMD {
         typedef SIMDVec_i<int32_t, 16>     VEC_INT_TYPE;
     public:
         // ZERO-CONSTR
-        inline SIMDVec_f() {}
+        UME_FORCE_INLINE SIMDVec_f() {}
 
         // SET-CONSTR
-        inline SIMDVec_f(float f) {
+        UME_FORCE_INLINE SIMDVec_f(float f) {
             mVec[0] = _mm256_set1_ps(f);
             mVec[1] = _mm256_set1_ps(f);
         }
@@ -79,18 +79,18 @@ namespace SIMD {
         // to be promoted to SCALAR_TYPE instead of SCALAR_TYPE*. This prevents
         // ambiguity between SET-CONSTR and LOAD-CONSTR.
         template<typename T>
-        inline SIMDVec_f(
+        UME_FORCE_INLINE SIMDVec_f(
             T i, 
-            typename std::enable_if< std::is_same<T, int>::value && 
+            typename std::enable_if< std::is_fundamental<T>::value && 
                                     !std::is_same<T, float>::value,
                                     void*>::type = nullptr)
         : SIMDVec_f(static_cast<float>(i)) {}
 
         // LOAD-CONSTR
-        inline explicit SIMDVec_f(float const *p) { this->load(p); }
+        UME_FORCE_INLINE explicit SIMDVec_f(float const *p) { this->load(p); }
 
         // FULL-CONSTR
-        inline SIMDVec_f(float f0, float f1, float f2, float f3,
+        UME_FORCE_INLINE SIMDVec_f(float f0, float f1, float f2, float f3,
                          float f4, float f5, float f6, float f7,
                          float f8, float f9, float f10, float f11,
                          float f12, float f13, float f14, float f15) {
@@ -98,7 +98,7 @@ namespace SIMD {
             mVec[1] = _mm256_setr_ps(f8, f9, f10, f11, f12, f13, f14, f15);
         }
         // EXTRACT
-        inline float extract(uint32_t index) const {
+        UME_FORCE_INLINE float extract(uint32_t index) const {
             alignas(32) float raw[8];
             if (index < 8) {
                 _mm256_store_ps(raw, mVec[0]);
@@ -109,12 +109,12 @@ namespace SIMD {
                 return raw[index - 8];
             }
         }
-        inline float operator[] (uint32_t index) const {
+        UME_FORCE_INLINE float operator[] (uint32_t index) const {
             return extract(index);
         }
 
         // INSERT
-        inline SIMDVec_f & insert(uint32_t index, float value) {
+        UME_FORCE_INLINE SIMDVec_f & insert(uint32_t index, float value) {
             alignas(32) float raw[8];
             if (index < 8) {
                 _mm256_store_ps(raw, mVec[0]);
@@ -128,32 +128,32 @@ namespace SIMD {
             }
             return *this;
         }
-        inline IntermediateIndex<SIMDVec_f, float> operator[] (uint32_t index) {
+        UME_FORCE_INLINE IntermediateIndex<SIMDVec_f, float> operator[] (uint32_t index) {
             return IntermediateIndex<SIMDVec_f, float>(index, static_cast<SIMDVec_f &>(*this));
         }
 
         // Override Mask Access operators
 #if defined(USE_PARENTHESES_IN_MASK_ASSIGNMENT)
-        inline IntermediateMask<SIMDVec_f, float, SIMDVecMask<16>> operator() (SIMDVecMask<16> const & mask) {
+        UME_FORCE_INLINE IntermediateMask<SIMDVec_f, float, SIMDVecMask<16>> operator() (SIMDVecMask<16> const & mask) {
             return IntermediateMask<SIMDVec_f, float, SIMDVecMask<16>>(mask, static_cast<SIMDVec_f &>(*this));
         }
 #else
-        inline IntermediateMask<SIMDVec_f, float, SIMDVecMask<16>> operator[] (SIMDVecMask<16> const & mask) {
+        UME_FORCE_INLINE IntermediateMask<SIMDVec_f, float, SIMDVecMask<16>> operator[] (SIMDVecMask<16> const & mask) {
             return IntermediateMask<SIMDVec_f, float, SIMDVecMask<16>>(mask, static_cast<SIMDVec_f &>(*this));
         }
 #endif
 
         // ASSIGNV
-        inline SIMDVec_f & assign(SIMDVec_f const & b) {
+        UME_FORCE_INLINE SIMDVec_f & assign(SIMDVec_f const & b) {
             mVec[0] = b.mVec[0];
             mVec[1] = b.mVec[1];
             return *this;
         }
-        inline SIMDVec_f & operator= (SIMDVec_f const & b) {
+        UME_FORCE_INLINE SIMDVec_f & operator= (SIMDVec_f const & b) {
             return assign(b);
         }
         // MASSIGNV
-        inline SIMDVec_f & assign(SIMDVecMask<16> const & mask, SIMDVec_f const & b) {
+        UME_FORCE_INLINE SIMDVec_f & assign(SIMDVecMask<16> const & mask, SIMDVec_f const & b) {
             __m256 m0 = _mm256_castsi256_ps(mask.mMask[0]);
             __m256 m1 = _mm256_castsi256_ps(mask.mMask[1]);
             mVec[0] = _mm256_blendv_ps(mVec[0], b.mVec[0], m0);
@@ -161,16 +161,16 @@ namespace SIMD {
             return *this;
         }
         // ASSIGNS
-        inline SIMDVec_f & assign(float b) {
+        UME_FORCE_INLINE SIMDVec_f & assign(float b) {
             mVec[0] = _mm256_set1_ps(b);
             mVec[1] = mVec[0];
             return *this;
         }
-        inline SIMDVec_f & operator= (float b) {
+        UME_FORCE_INLINE SIMDVec_f & operator= (float b) {
             return assign(b);
         }
         // MASSIGNS
-        inline SIMDVec_f & assign(SIMDVecMask<16> const & mask, float b) {
+        UME_FORCE_INLINE SIMDVec_f & assign(SIMDVecMask<16> const & mask, float b) {
             __m256 m0 = _mm256_castsi256_ps(mask.mMask[0]);
             __m256 m1 = _mm256_castsi256_ps(mask.mMask[1]);
             __m256 t0 = _mm256_set1_ps(b);
@@ -184,13 +184,13 @@ namespace SIMD {
         // PREFETCH2
 
         // LOAD
-        inline SIMDVec_f & load(float const * p) {
+        UME_FORCE_INLINE SIMDVec_f & load(float const * p) {
             mVec[0] = _mm256_loadu_ps(p);
             mVec[1] = _mm256_loadu_ps(p + 8);
             return *this;
         }
         // MLOAD
-        inline SIMDVec_f & load(SIMDVecMask<16> const & mask, float const * p) {
+        UME_FORCE_INLINE SIMDVec_f & load(SIMDVecMask<16> const & mask, float const * p) {
             __m256 t0 = _mm256_loadu_ps(p);
             __m256 t1 = _mm256_loadu_ps(p + 8);
             mVec[0] = _mm256_blendv_ps(mVec[0], t0, _mm256_castsi256_ps(mask.mMask[0]));
@@ -198,13 +198,13 @@ namespace SIMD {
             return *this;
         }
         // LOADA
-        inline SIMDVec_f & loada(float const * p) {
+        UME_FORCE_INLINE SIMDVec_f & loada(float const * p) {
             mVec[0] = _mm256_load_ps(p);
             mVec[1] = _mm256_load_ps(p + 8);
             return *this;
         }
         // MLOADA
-        inline SIMDVec_f & loada(SIMDVecMask<16> const & mask, float const * p) {
+        UME_FORCE_INLINE SIMDVec_f & loada(SIMDVecMask<16> const & mask, float const * p) {
             __m256 t0 = _mm256_load_ps(p);
             __m256 t1 = _mm256_load_ps(p + 8);
             mVec[0] = BLEND(mVec[0], t0, mask.mMask[0]);
@@ -212,7 +212,7 @@ namespace SIMD {
             return *this;
         }
         // SLOAD
-        inline SIMDVec_f & sload(float const * p) {
+        UME_FORCE_INLINE SIMDVec_f & sload(float const * p) {
             __m256i t0 = _mm256_stream_load_si256((__m256i*)p);
             __m256i t1 = _mm256_stream_load_si256((__m256i*)(p + 8));
             mVec[0] = _mm256_castsi256_ps(t0);
@@ -220,7 +220,7 @@ namespace SIMD {
             return *this;
         }
         // MSLOAD
-        inline SIMDVec_f & sload(SIMDVecMask<16> const & mask, float const * p) {
+        UME_FORCE_INLINE SIMDVec_f & sload(SIMDVecMask<16> const & mask, float const * p) {
             __m256i t0 = _mm256_stream_load_si256((__m256i*)p);
             __m256i t1 = _mm256_stream_load_si256((__m256i*)(p + 8));
             __m256 t2 = _mm256_castsi256_ps(t0);
@@ -231,37 +231,37 @@ namespace SIMD {
         }
 
         // STORE
-        inline float* store(float* p) const {
+        UME_FORCE_INLINE float* store(float* p) const {
             _mm256_storeu_ps(p, mVec[0]);
             _mm256_storeu_ps((p + 8), mVec[1]);
             return p;
         }
         // MSTORE
-        inline float* store(SIMDVecMask<16> const & mask, float * p) const {
+        UME_FORCE_INLINE float* store(SIMDVecMask<16> const & mask, float * p) const {
             _mm256_maskstore_ps(p, mask.mMask[0], mVec[0]);
             _mm256_maskstore_ps((p + 8), mask.mMask[1], mVec[1]);
             return p;
         }
         // STOREA
-        inline float* storea(float* p) const {
+        UME_FORCE_INLINE float* storea(float* p) const {
             _mm256_store_ps(p, mVec[0]);
             _mm256_store_ps(p + 8, mVec[1]);
             return p;
         }
         // MSTOREA
-        inline float* storea(SIMDVecMask<16> const & mask, float* p) const {
+        UME_FORCE_INLINE float* storea(SIMDVecMask<16> const & mask, float* p) const {
             _mm256_maskstore_ps(p, mask.mMask[0], mVec[0]);
             _mm256_maskstore_ps(p + 8, mask.mMask[1], mVec[1]);
             return p;
         }
         // SSTORE
-        inline float* sstore(float* p) const {
+        UME_FORCE_INLINE float* sstore(float* p) const {
             _mm256_stream_ps(p, mVec[0]);
             _mm256_stream_ps(p + 8, mVec[1]);
             return p;
         }
         // MSSTORE
-        inline float* sstore(SIMDVecMask<16> const & mask, float* p) const {
+        UME_FORCE_INLINE float* sstore(SIMDVecMask<16> const & mask, float* p) const {
             __m256i t0 = _mm256_stream_load_si256((__m256i*)p);
             __m256i t1 = _mm256_stream_load_si256((__m256i*)(p + 8));
             __m256 t2 = _mm256_castsi256_ps(t0);
@@ -274,13 +274,13 @@ namespace SIMD {
         }
 
         // BLENDV
-        inline SIMDVec_f blend(SIMDVecMask<16> const & mask, SIMDVec_f const & b) const {
+        UME_FORCE_INLINE SIMDVec_f blend(SIMDVecMask<16> const & mask, SIMDVec_f const & b) const {
             __m256 t0 = BLEND(mVec[0], b.mVec[0], mask.mMask[0]);
             __m256 t1 = BLEND(mVec[1], b.mVec[1], mask.mMask[1]);
             return SIMDVec_f(t0, t1);
         }
         // BLENDS
-        inline SIMDVec_f blend(SIMDVecMask<16> const & mask, float b) const {
+        UME_FORCE_INLINE SIMDVec_f blend(SIMDVecMask<16> const & mask, float b) const {
             __m256 t0 = BLEND(mVec[0], _mm256_set1_ps(b), mask.mMask[0]);
             __m256 t1 = BLEND(mVec[1], _mm256_set1_ps(b), mask.mMask[1]);
             return SIMDVec_f(t0, t1);
@@ -289,16 +289,16 @@ namespace SIMD {
         // SWIZZLEA
 
         // ADDV
-        inline SIMDVec_f add(SIMDVec_f const & b) const {
+        UME_FORCE_INLINE SIMDVec_f add(SIMDVec_f const & b) const {
             __m256 t0 = _mm256_add_ps(mVec[0], b.mVec[0]);
             __m256 t1 = _mm256_add_ps(mVec[1], b.mVec[1]);
             return SIMDVec_f(t0, t1);
         }
-        inline SIMDVec_f operator+ (SIMDVec_f const & b) const {
+        UME_FORCE_INLINE SIMDVec_f operator+ (SIMDVec_f const & b) const {
             return add(b);
         }
         // MADDV
-        inline SIMDVec_f add(SIMDVecMask<16> const & mask, SIMDVec_f const & b) const {
+        UME_FORCE_INLINE SIMDVec_f add(SIMDVecMask<16> const & mask, SIMDVec_f const & b) const {
             __m256 t0 = _mm256_add_ps(mVec[0], b.mVec[0]);
             __m256 t1 = _mm256_add_ps(mVec[1], b.mVec[1]);
             __m256 t2 = BLEND(mVec[0], t0, mask.mMask[0]);
@@ -306,16 +306,16 @@ namespace SIMD {
             return SIMDVec_f(t2, t3);
         }
         // ADDS
-        inline SIMDVec_f add(float b) const {
+        UME_FORCE_INLINE SIMDVec_f add(float b) const {
             __m256 t0 = _mm256_add_ps(mVec[0], _mm256_set1_ps(b));
             __m256 t1 = _mm256_add_ps(mVec[1], _mm256_set1_ps(b));
             return SIMDVec_f(t0, t1);
         }
-        inline SIMDVec_f operator+ (float b) const {
+        UME_FORCE_INLINE SIMDVec_f operator+ (float b) const {
             return add(b);
         }
         // MADDS
-        inline SIMDVec_f add(SIMDVecMask<16> const & mask, float b) const {
+        UME_FORCE_INLINE SIMDVec_f add(SIMDVecMask<16> const & mask, float b) const {
             __m256 t0 = _mm256_add_ps(mVec[0], _mm256_set1_ps(b));
             __m256 t1 = _mm256_add_ps(mVec[1], _mm256_set1_ps(b));
             __m256 t2 = BLEND(mVec[0], t0, mask.mMask[0]);
@@ -323,16 +323,16 @@ namespace SIMD {
             return SIMDVec_f(t2, t3);
         }
         // ADDVA
-        inline SIMDVec_f & adda(SIMDVec_f const & b) {
+        UME_FORCE_INLINE SIMDVec_f & adda(SIMDVec_f const & b) {
             mVec[0] = _mm256_add_ps(mVec[0], b.mVec[0]);
             mVec[1] = _mm256_add_ps(mVec[1], b.mVec[1]);
             return *this;
         }
-        inline SIMDVec_f & operator+= (SIMDVec_f const & b) {
+        UME_FORCE_INLINE SIMDVec_f & operator+= (SIMDVec_f const & b) {
             return adda(b);
         }
         // MADDVA
-        inline SIMDVec_f & adda(SIMDVecMask<16> const & mask, SIMDVec_f const & b) {
+        UME_FORCE_INLINE SIMDVec_f & adda(SIMDVecMask<16> const & mask, SIMDVec_f const & b) {
             __m256 t0 = _mm256_add_ps(mVec[0], b.mVec[0]);
             __m256 t1 = _mm256_add_ps(mVec[1], b.mVec[1]);
             mVec[0] = BLEND(mVec[0], t0, mask.mMask[0]);
@@ -340,16 +340,16 @@ namespace SIMD {
             return *this;
         }
         // ADDSA
-        inline SIMDVec_f & adda(float b) {
+        UME_FORCE_INLINE SIMDVec_f & adda(float b) {
             mVec[0] = _mm256_add_ps(mVec[0], _mm256_set1_ps(b));
             mVec[1] = _mm256_add_ps(mVec[1], _mm256_set1_ps(b));
             return *this;
         }
-        inline SIMDVec_f & operator+= (float b) {
+        UME_FORCE_INLINE SIMDVec_f & operator+= (float b) {
             return adda(b);
         }
         // MADDSA
-        inline SIMDVec_f & adda(SIMDVecMask<16> const & mask, float b) {
+        UME_FORCE_INLINE SIMDVec_f & adda(SIMDVecMask<16> const & mask, float b) {
             __m256 t0 = _mm256_add_ps(mVec[0], _mm256_set1_ps(b));
             __m256 t1 = _mm256_add_ps(mVec[1], _mm256_set1_ps(b));
             mVec[0] = BLEND(mVec[0], t0, mask.mMask[0]);
@@ -365,7 +365,7 @@ namespace SIMD {
         // SADDSA
         // MSADDSA
         // POSTINC
-        inline SIMDVec_f postinc() {
+        UME_FORCE_INLINE SIMDVec_f postinc() {
             __m256 t0 = _mm256_set1_ps(1);
             __m256 t1 = mVec[0];
             mVec[0] = _mm256_add_ps(mVec[0], t0);
@@ -373,11 +373,11 @@ namespace SIMD {
             mVec[1] = _mm256_add_ps(mVec[1], t0);
             return SIMDVec_f(t1, t2);
         }
-        inline SIMDVec_f operator++ (int) {
+        UME_FORCE_INLINE SIMDVec_f operator++ (int) {
             return postinc();
         }
         // MPOSTINC
-        inline SIMDVec_f postinc(SIMDVecMask<16> const & mask) {
+        UME_FORCE_INLINE SIMDVec_f postinc(SIMDVecMask<16> const & mask) {
             __m256 t0 = _mm256_set1_ps(1);
             __m256 t1 = mVec[0];
             __m256 t2 = _mm256_add_ps(mVec[0], t0);
@@ -388,17 +388,17 @@ namespace SIMD {
             return SIMDVec_f(t1, t3);
         }
         // PREFINC
-        inline SIMDVec_f & prefinc() {
+        UME_FORCE_INLINE SIMDVec_f & prefinc() {
             __m256 t0 = _mm256_set1_ps(1);
             mVec[0] = _mm256_add_ps(mVec[0], t0);
             mVec[1] = _mm256_add_ps(mVec[1], t0);
             return *this;
         }
-        inline SIMDVec_f & operator++ () {
+        UME_FORCE_INLINE SIMDVec_f & operator++ () {
             return prefinc();
         }
         // MPREFINC
-        inline SIMDVec_f & prefinc(SIMDVecMask<16> const & mask) {
+        UME_FORCE_INLINE SIMDVec_f & prefinc(SIMDVecMask<16> const & mask) {
             __m256 t0 = _mm256_set1_ps(1);
             __m256 t1 = _mm256_add_ps(mVec[0], t0);
             mVec[0] = BLEND(mVec[0], t1, mask.mMask[0]);
@@ -407,16 +407,16 @@ namespace SIMD {
             return *this;
         }
         // SUBV
-        inline SIMDVec_f sub(SIMDVec_f const & b) const {
+        UME_FORCE_INLINE SIMDVec_f sub(SIMDVec_f const & b) const {
             __m256 t0 = _mm256_sub_ps(mVec[0], b.mVec[0]);
             __m256 t1 = _mm256_sub_ps(mVec[1], b.mVec[1]);
             return SIMDVec_f(t0, t1);
         }
-        inline SIMDVec_f operator- (SIMDVec_f const & b) const {
+        UME_FORCE_INLINE SIMDVec_f operator- (SIMDVec_f const & b) const {
             return sub(b);
         }
         // MSUBV
-        inline SIMDVec_f sub(SIMDVecMask<16> const & mask, SIMDVec_f const & b) const {
+        UME_FORCE_INLINE SIMDVec_f sub(SIMDVecMask<16> const & mask, SIMDVec_f const & b) const {
             __m256 t0 = _mm256_sub_ps(mVec[0], b.mVec[0]);
             __m256 t1 = BLEND(mVec[0], t0, mask.mMask[0]);
             __m256 t2 = _mm256_sub_ps(mVec[1], b.mVec[1]);
@@ -424,16 +424,16 @@ namespace SIMD {
             return SIMDVec_f(t1, t3);
         }
         // SUBS
-        inline SIMDVec_f sub(float b) const {
+        UME_FORCE_INLINE SIMDVec_f sub(float b) const {
             __m256 t0 = _mm256_sub_ps(mVec[0], _mm256_set1_ps(b));
             __m256 t1 = _mm256_sub_ps(mVec[1], _mm256_set1_ps(b));
             return SIMDVec_f(t0, t1);
         }
-        inline SIMDVec_f operator- (float b) const {
+        UME_FORCE_INLINE SIMDVec_f operator- (float b) const {
             return sub(b);
         }
         // MSUBS
-        inline SIMDVec_f sub(SIMDVecMask<16> const & mask, float b) const {
+        UME_FORCE_INLINE SIMDVec_f sub(SIMDVecMask<16> const & mask, float b) const {
             __m256 t0 = _mm256_sub_ps(mVec[0], _mm256_set1_ps(b));
             __m256 t1 = BLEND(mVec[0], t0, mask.mMask[0]);
             __m256 t2 = _mm256_sub_ps(mVec[1], _mm256_set1_ps(b));
@@ -441,16 +441,16 @@ namespace SIMD {
             return SIMDVec_f(t1, t3);
         }
         // SUBVA
-        inline SIMDVec_f & suba(SIMDVec_f const & b) {
+        UME_FORCE_INLINE SIMDVec_f & suba(SIMDVec_f const & b) {
             mVec[0] = _mm256_sub_ps(mVec[0], b.mVec[0]);
             mVec[1] = _mm256_sub_ps(mVec[1], b.mVec[1]);
             return *this;
         }
-        inline SIMDVec_f & operator-= (SIMDVec_f const & b) {
+        UME_FORCE_INLINE SIMDVec_f & operator-= (SIMDVec_f const & b) {
             return suba(b);
         }
         // MSUBVA
-        inline SIMDVec_f & suba(SIMDVecMask<16> const & mask, SIMDVec_f const & b) {
+        UME_FORCE_INLINE SIMDVec_f & suba(SIMDVecMask<16> const & mask, SIMDVec_f const & b) {
             __m256 t0 = _mm256_sub_ps(mVec[0], b.mVec[0]);
             mVec[0] = BLEND(mVec[0], t0, mask.mMask[0]);
             __m256 t1 = _mm256_sub_ps(mVec[1], b.mVec[1]);
@@ -458,16 +458,16 @@ namespace SIMD {
             return *this;
         }
         // SUBSA
-        inline SIMDVec_f & suba(float b) {
+        UME_FORCE_INLINE SIMDVec_f & suba(float b) {
             mVec[0] = _mm256_sub_ps(mVec[0], _mm256_set1_ps(b));
             mVec[1] = _mm256_sub_ps(mVec[1], _mm256_set1_ps(b));
             return *this;
         }
-        inline SIMDVec_f & operator-= (float b) {
+        UME_FORCE_INLINE SIMDVec_f & operator-= (float b) {
             return suba(b);
         }
         // MSUBSA
-        inline SIMDVec_f & suba(SIMDVecMask<16> const & mask, float b) {
+        UME_FORCE_INLINE SIMDVec_f & suba(SIMDVecMask<16> const & mask, float b) {
             __m256 t0 = _mm256_sub_ps(mVec[0], _mm256_set1_ps(b));
             mVec[0] = BLEND(mVec[0], t0, mask.mMask[0]);
             __m256 t1 = _mm256_sub_ps(mVec[1], _mm256_set1_ps(b));
@@ -483,13 +483,13 @@ namespace SIMD {
         // SSUBSA
         // MSSUBSA
         // SUBFROMV
-        inline SIMDVec_f subfrom(SIMDVec_f const & b) const {
+        UME_FORCE_INLINE SIMDVec_f subfrom(SIMDVec_f const & b) const {
             __m256 t0 = _mm256_sub_ps(b.mVec[0], mVec[0]);
             __m256 t1 = _mm256_sub_ps(b.mVec[1], mVec[1]);
             return SIMDVec_f(t0, t1);
         }
         // MSUBFROMV
-        inline SIMDVec_f subfrom(SIMDVecMask<16> const & mask, SIMDVec_f const & b) const {
+        UME_FORCE_INLINE SIMDVec_f subfrom(SIMDVecMask<16> const & mask, SIMDVec_f const & b) const {
             __m256 t0 = _mm256_sub_ps(b.mVec[0], mVec[0]);
             __m256 t1 = BLEND(b.mVec[0], t0, mask.mMask[0]);
             __m256 t2 = _mm256_sub_ps(b.mVec[1], mVec[1]);
@@ -497,13 +497,13 @@ namespace SIMD {
             return SIMDVec_f(t1, t3);
         }
         // SUBFROMS
-        inline SIMDVec_f subfrom(float b) const {
+        UME_FORCE_INLINE SIMDVec_f subfrom(float b) const {
             __m256 t0 = _mm256_sub_ps(_mm256_set1_ps(b), mVec[0]);
             __m256 t1 = _mm256_sub_ps(_mm256_set1_ps(b), mVec[1]);
             return SIMDVec_f(t0, t1);
         }
         // MSUBFROMS
-        inline SIMDVec_f subfrom(SIMDVecMask<16> const & mask, float b) const {
+        UME_FORCE_INLINE SIMDVec_f subfrom(SIMDVecMask<16> const & mask, float b) const {
             __m256 t0 = _mm256_set1_ps(b);
             __m256 t1 = _mm256_sub_ps(t0, mVec[0]);
             __m256 t2 = BLEND(t0, t1, mask.mMask[0]);
@@ -512,13 +512,13 @@ namespace SIMD {
             return SIMDVec_f(t2, t4);
         }
         // SUBFROMVA
-        inline SIMDVec_f & subfroma(SIMDVec_f const & b) {
+        UME_FORCE_INLINE SIMDVec_f & subfroma(SIMDVec_f const & b) {
             mVec[0] = _mm256_sub_ps(b.mVec[0], mVec[0]);
             mVec[1] = _mm256_sub_ps(b.mVec[1], mVec[1]);
             return *this;
         }
         // MSUBFROMVA
-        inline SIMDVec_f & subfroma(SIMDVecMask<16> const & mask, SIMDVec_f const & b) {
+        UME_FORCE_INLINE SIMDVec_f & subfroma(SIMDVecMask<16> const & mask, SIMDVec_f const & b) {
             __m256 t0 = _mm256_sub_ps(b.mVec[0], mVec[0]);
             mVec[0] = BLEND(b.mVec[0], t0, mask.mMask[0]);
             __m256 t1 = _mm256_sub_ps(b.mVec[1], mVec[1]);
@@ -526,13 +526,13 @@ namespace SIMD {
             return *this;
         }
         // SUBFROMSA
-        inline SIMDVec_f & subfroma(float b) {
+        UME_FORCE_INLINE SIMDVec_f & subfroma(float b) {
             mVec[0] = _mm256_sub_ps(_mm256_set1_ps(b), mVec[0]);
             mVec[1] = _mm256_sub_ps(_mm256_set1_ps(b), mVec[1]);
             return *this;
         }
         // MSUBFROMSA
-        inline SIMDVec_f subfroma(SIMDVecMask<16> const & mask, float b) {
+        UME_FORCE_INLINE SIMDVec_f subfroma(SIMDVecMask<16> const & mask, float b) {
             __m256 t0 = _mm256_set1_ps(b);
             __m256 t1 = _mm256_sub_ps(t0, mVec[0]);
             mVec[0] = BLEND(t0, t1, mask.mMask[0]);
@@ -541,7 +541,7 @@ namespace SIMD {
             return *this;
         }
         // POSTDEC
-        inline SIMDVec_f postdec() {
+        UME_FORCE_INLINE SIMDVec_f postdec() {
             __m256 t0 = _mm256_set1_ps(1);
             __m256 t1 = mVec[0];
             mVec[0] = _mm256_sub_ps(mVec[0], t0);
@@ -549,11 +549,11 @@ namespace SIMD {
             mVec[1] = _mm256_sub_ps(mVec[1], t0);
             return SIMDVec_f(t1, t2);
         }
-        inline SIMDVec_f operator-- (int) {
+        UME_FORCE_INLINE SIMDVec_f operator-- (int) {
             return postdec();
         }
         // MPOSTDEC
-        inline SIMDVec_f postdec(SIMDVecMask<16> const & mask) {
+        UME_FORCE_INLINE SIMDVec_f postdec(SIMDVecMask<16> const & mask) {
             __m256 t0 = _mm256_set1_ps(1);
             __m256 t1 = mVec[0];
             __m256 t2 = _mm256_sub_ps(mVec[0], t0);
@@ -564,17 +564,17 @@ namespace SIMD {
             return SIMDVec_f(t1, t3);
         }
         // PREFDEC
-        inline SIMDVec_f & prefdec() {
+        UME_FORCE_INLINE SIMDVec_f & prefdec() {
             __m256 t0 = _mm256_set1_ps(1);
             mVec[0] = _mm256_sub_ps(mVec[0], t0);
             mVec[1] = _mm256_sub_ps(mVec[1], t0);
             return *this;
         }
-        inline SIMDVec_f & operator-- () {
+        UME_FORCE_INLINE SIMDVec_f & operator-- () {
             return prefdec();
         }
         // MPREFDEC
-        inline SIMDVec_f & prefdec(SIMDVecMask<16> const & mask) {
+        UME_FORCE_INLINE SIMDVec_f & prefdec(SIMDVecMask<16> const & mask) {
             __m256 t0 = _mm256_set1_ps(1);
             __m256 t1 = _mm256_sub_ps(mVec[0], t0);
             mVec[0] = BLEND(mVec[0], t1, mask.mMask[0]);
@@ -583,16 +583,16 @@ namespace SIMD {
             return *this;
         }
         // MULV
-        inline SIMDVec_f mul(SIMDVec_f const & b) const {
+        UME_FORCE_INLINE SIMDVec_f mul(SIMDVec_f const & b) const {
             __m256 t0 = _mm256_mul_ps(mVec[0], b.mVec[0]);
             __m256 t1 = _mm256_mul_ps(mVec[1], b.mVec[1]);
             return SIMDVec_f(t0, t1);
         }
-        inline SIMDVec_f operator* (SIMDVec_f const & b) const {
+        UME_FORCE_INLINE SIMDVec_f operator* (SIMDVec_f const & b) const {
             return mul(b);
         }
         // MMULV
-        inline SIMDVec_f mul(SIMDVecMask<16> const & mask, SIMDVec_f const & b) const {
+        UME_FORCE_INLINE SIMDVec_f mul(SIMDVecMask<16> const & mask, SIMDVec_f const & b) const {
             __m256 t0 = _mm256_mul_ps(mVec[0], b.mVec[0]);
             __m256 t1 = _mm256_mul_ps(mVec[1], b.mVec[1]);
             __m256 t2 = _mm256_blendv_ps(mVec[0], t0, _mm256_castsi256_ps(mask.mMask[0]));
@@ -600,16 +600,16 @@ namespace SIMD {
             return SIMDVec_f(t2, t3);
         }
         // MULS
-        inline SIMDVec_f mul(float b) const {
+        UME_FORCE_INLINE SIMDVec_f mul(float b) const {
             __m256 t0 = _mm256_mul_ps(this->mVec[0], _mm256_set1_ps(b));
             __m256 t1 = _mm256_mul_ps(this->mVec[1], _mm256_set1_ps(b));
             return SIMDVec_f(t0, t1);
         }
-        inline SIMDVec_f operator* (float b) const {
+        UME_FORCE_INLINE SIMDVec_f operator* (float b) const {
             return mul(b);
         }
         // MMULS
-        inline SIMDVec_f mul(SIMDVecMask<16> const & mask, float b) const {
+        UME_FORCE_INLINE SIMDVec_f mul(SIMDVecMask<16> const & mask, float b) const {
             __m256 t0 = _mm256_mul_ps(mVec[0], _mm256_set1_ps(b));
             __m256 t1 = _mm256_mul_ps(mVec[1], _mm256_set1_ps(b));
             __m256 t2 = _mm256_blendv_ps(mVec[0], t0, _mm256_castsi256_ps(mask.mMask[0]));
@@ -617,16 +617,16 @@ namespace SIMD {
             return SIMDVec_f(t2, t3);
         }
         // MULVA
-        inline SIMDVec_f & mula(SIMDVec_f const & b) {
+        UME_FORCE_INLINE SIMDVec_f & mula(SIMDVec_f const & b) {
             mVec[0] = _mm256_mul_ps(mVec[0], b.mVec[0]);
             mVec[1] = _mm256_mul_ps(mVec[1], b.mVec[1]);
             return *this;
         }
-        inline SIMDVec_f & operator*= (SIMDVec_f const & b) {
+        UME_FORCE_INLINE SIMDVec_f & operator*= (SIMDVec_f const & b) {
             return mula(b);
         }
         // MMULVA
-        inline SIMDVec_f & mula(SIMDVecMask<16> const & mask, SIMDVec_f const & b) {
+        UME_FORCE_INLINE SIMDVec_f & mula(SIMDVecMask<16> const & mask, SIMDVec_f const & b) {
             __m256 t0 = _mm256_mul_ps(mVec[0], b.mVec[0]);
             mVec[0] = BLEND(mVec[0], t0, mask.mMask[0]);
             __m256 t1 = _mm256_mul_ps(mVec[1], b.mVec[1]);
@@ -634,16 +634,16 @@ namespace SIMD {
             return *this;
         }
         // MULSA
-        inline SIMDVec_f & mula(float b) {
+        UME_FORCE_INLINE SIMDVec_f & mula(float b) {
             mVec[0] = _mm256_mul_ps(mVec[0], _mm256_set1_ps(b));
             mVec[1] = _mm256_mul_ps(mVec[1], _mm256_set1_ps(b));
             return *this;
         }
-        inline SIMDVec_f & operator*= (float b) {
+        UME_FORCE_INLINE SIMDVec_f & operator*= (float b) {
             return mula(b);
         }
         // MMULSA
-        inline SIMDVec_f & mula(SIMDVecMask<16> const & mask, float b) {
+        UME_FORCE_INLINE SIMDVec_f & mula(SIMDVecMask<16> const & mask, float b) {
             __m256 t0 = _mm256_mul_ps(mVec[0], _mm256_set1_ps(b));
             mVec[0] = BLEND(mVec[0], t0, mask.mMask[0]);
             __m256 t1 = _mm256_mul_ps(mVec[1], _mm256_set1_ps(b));
@@ -651,16 +651,16 @@ namespace SIMD {
             return *this;
         }
         // DIVV
-        inline SIMDVec_f div(SIMDVec_f const & b) const {
+        UME_FORCE_INLINE SIMDVec_f div(SIMDVec_f const & b) const {
             __m256 t0 = _mm256_div_ps(mVec[0], b.mVec[0]);
             __m256 t1 = _mm256_div_ps(mVec[1], b.mVec[1]);
             return SIMDVec_f(t0, t1);
         }
-        inline SIMDVec_f operator/ (SIMDVec_f const & b) const {
+        UME_FORCE_INLINE SIMDVec_f operator/ (SIMDVec_f const & b) const {
             return div(b);
         }
         // MDIVV
-        inline SIMDVec_f div(SIMDVecMask<16> const & mask, SIMDVec_f const & b) const {
+        UME_FORCE_INLINE SIMDVec_f div(SIMDVecMask<16> const & mask, SIMDVec_f const & b) const {
             __m256 t0 = _mm256_div_ps(mVec[0], b.mVec[0]);
             __m256 t1 = BLEND(mVec[0], t0, mask.mMask[0]);
             __m256 t2 = _mm256_div_ps(mVec[1], b.mVec[1]);
@@ -668,16 +668,16 @@ namespace SIMD {
             return SIMDVec_f(t1, t3);
         }
         // DIVS
-        inline SIMDVec_f div(float b) const {
+        UME_FORCE_INLINE SIMDVec_f div(float b) const {
             __m256 t0 = _mm256_div_ps(mVec[0], _mm256_set1_ps(b));
             __m256 t1 = _mm256_div_ps(mVec[1], _mm256_set1_ps(b));
             return SIMDVec_f(t0, t1);
         }
-        inline SIMDVec_f operator/ (float b) const {
+        UME_FORCE_INLINE SIMDVec_f operator/ (float b) const {
             return div(b);
         }
         // MDIVS
-        inline SIMDVec_f div(SIMDVecMask<16> const & mask, float b) const {
+        UME_FORCE_INLINE SIMDVec_f div(SIMDVecMask<16> const & mask, float b) const {
             __m256 t0 = _mm256_div_ps(mVec[0], _mm256_set1_ps(b));
             __m256 t1 = BLEND(mVec[0], t0, mask.mMask[0]);
             __m256 t2 = _mm256_div_ps(mVec[1], _mm256_set1_ps(b));
@@ -685,16 +685,16 @@ namespace SIMD {
             return SIMDVec_f(t1, t3);
         }
         // DIVVA
-        inline SIMDVec_f & diva(SIMDVec_f const & b) {
+        UME_FORCE_INLINE SIMDVec_f & diva(SIMDVec_f const & b) {
             mVec[0] = _mm256_div_ps(mVec[0], b.mVec[0]);
             mVec[1] = _mm256_div_ps(mVec[1], b.mVec[1]);
             return *this;
         }
-        inline SIMDVec_f & operator/= (SIMDVec_f const & b) {
+        UME_FORCE_INLINE SIMDVec_f & operator/= (SIMDVec_f const & b) {
             return diva(b);
         }
         // MDIVVA
-        inline SIMDVec_f & diva(SIMDVecMask<16> const & mask, SIMDVec_f const & b) {
+        UME_FORCE_INLINE SIMDVec_f & diva(SIMDVecMask<16> const & mask, SIMDVec_f const & b) {
             __m256 t0 = _mm256_div_ps(mVec[0], b.mVec[0]);
             mVec[0] = BLEND(mVec[0], t0, mask.mMask[0]);
             __m256 t1 = _mm256_div_ps(mVec[1], b.mVec[1]);
@@ -702,16 +702,16 @@ namespace SIMD {
             return *this;
         }
         // DIVSA
-        inline SIMDVec_f & diva(float b) {
+        UME_FORCE_INLINE SIMDVec_f & diva(float b) {
             mVec[0] = _mm256_div_ps(mVec[0], _mm256_set1_ps(b));
             mVec[1] = _mm256_div_ps(mVec[1], _mm256_set1_ps(b));
             return *this;
         }
-        inline SIMDVec_f & operator/= (float b) {
+        UME_FORCE_INLINE SIMDVec_f & operator/= (float b) {
             return diva(b);
         }
         // MDIVSA
-        inline SIMDVec_f & diva(SIMDVecMask<16> const & mask, float b) {
+        UME_FORCE_INLINE SIMDVec_f & diva(SIMDVecMask<16> const & mask, float b) {
             __m256 t0 = _mm256_div_ps(mVec[0], _mm256_set1_ps(b));
             mVec[0] = BLEND(mVec[0], t0, mask.mMask[0]);
             __m256 t1 = _mm256_div_ps(mVec[1], _mm256_set1_ps(b));
@@ -719,13 +719,13 @@ namespace SIMD {
             return *this;
         }
         // RCP
-        inline SIMDVec_f rcp() const {
+        UME_FORCE_INLINE SIMDVec_f rcp() const {
             __m256 t0 = _mm256_rcp_ps(mVec[0]);
             __m256 t1 = _mm256_rcp_ps(mVec[1]);
             return SIMDVec_f(t0, t1);
         }
         // MRCP
-        inline SIMDVec_f rcp(SIMDVecMask<16> const & mask) const {
+        UME_FORCE_INLINE SIMDVec_f rcp(SIMDVecMask<16> const & mask) const {
             __m256 t0 = _mm256_rcp_ps(mVec[0]);
             __m256 t1 = BLEND(mVec[0], t0, mask.mMask[0]);
             __m256 t2 = _mm256_rcp_ps(mVec[1]);
@@ -733,13 +733,13 @@ namespace SIMD {
             return SIMDVec_f(t1, t3);
         }
         // RCPS
-        inline SIMDVec_f rcp(float b) const {
+        UME_FORCE_INLINE SIMDVec_f rcp(float b) const {
             __m256 t0 = _mm256_mul_ps(_mm256_rcp_ps(mVec[0]), _mm256_set1_ps(b));
             __m256 t1 = _mm256_mul_ps(_mm256_rcp_ps(mVec[1]), _mm256_set1_ps(b));
             return SIMDVec_f(t0, t1);
         }
         // MRCPS
-        inline SIMDVec_f rcp(SIMDVecMask<16> const & mask, float b) const {
+        UME_FORCE_INLINE SIMDVec_f rcp(SIMDVecMask<16> const & mask, float b) const {
             __m256 t0 = _mm256_mul_ps(_mm256_rcp_ps(mVec[0]), _mm256_set1_ps(b));
             __m256 t1 = BLEND(mVec[0], t0, mask.mMask[0]);
             __m256 t2 = _mm256_mul_ps(_mm256_rcp_ps(mVec[1]), _mm256_set1_ps(b));
@@ -747,13 +747,13 @@ namespace SIMD {
             return SIMDVec_f(t1, t3);
         }
         // RCPA
-        inline SIMDVec_f & rcpa() {
+        UME_FORCE_INLINE SIMDVec_f & rcpa() {
             mVec[0] = _mm256_rcp_ps(mVec[0]);
             mVec[1] = _mm256_rcp_ps(mVec[1]);
             return *this;
         }
         // MRCPA
-        inline SIMDVec_f & rcpa(SIMDVecMask<16> const & mask) {
+        UME_FORCE_INLINE SIMDVec_f & rcpa(SIMDVecMask<16> const & mask) {
             __m256 t0 = _mm256_rcp_ps(mVec[0]);
             mVec[0] = BLEND(mVec[0], t0, mask.mMask[0]);
             __m256 t1 = _mm256_rcp_ps(mVec[1]);
@@ -761,13 +761,13 @@ namespace SIMD {
             return *this;
         }
         // RCPSA
-        inline SIMDVec_f & rcpa(float b) {
+        UME_FORCE_INLINE SIMDVec_f & rcpa(float b) {
             mVec[0] = _mm256_mul_ps(_mm256_rcp_ps(mVec[0]), _mm256_set1_ps(b));
             mVec[1] = _mm256_mul_ps(_mm256_rcp_ps(mVec[1]), _mm256_set1_ps(b));
             return *this;
         }
         // MRCPSA
-        inline SIMDVec_f & rcpa(SIMDVecMask<16> const & mask, float b) {
+        UME_FORCE_INLINE SIMDVec_f & rcpa(SIMDVecMask<16> const & mask, float b) {
             __m256 t0 = _mm256_mul_ps(_mm256_rcp_ps(mVec[0]), _mm256_set1_ps(b));
             mVec[0] = BLEND(mVec[0], t0, mask.mMask[0]);
             __m256 t1 = _mm256_mul_ps(_mm256_rcp_ps(mVec[1]), _mm256_set1_ps(b));
@@ -775,18 +775,18 @@ namespace SIMD {
             return *this;
         }
         // CMPEQV
-        inline SIMDVecMask<16> cmpeq(SIMDVec_f const & b) const {
+        UME_FORCE_INLINE SIMDVecMask<16> cmpeq(SIMDVec_f const & b) const {
             __m256 m0 = _mm256_cmp_ps(mVec[0], b.mVec[0], 0);
             __m256i m1 = _mm256_castps_si256(m0);
             __m256 m2 = _mm256_cmp_ps(mVec[1], b.mVec[1], 0);
             __m256i m3 = _mm256_castps_si256(m2);
             return SIMDVecMask<16>(m1, m3);
         }
-        inline SIMDVecMask<16> operator==(SIMDVec_f const & b) const {
+        UME_FORCE_INLINE SIMDVecMask<16> operator==(SIMDVec_f const & b) const {
             return cmpeq(b);
         }
         // CMPEQS
-        inline SIMDVecMask<16> cmpeq(float b) const {
+        UME_FORCE_INLINE SIMDVecMask<16> cmpeq(float b) const {
             __m256 t0 = _mm256_set1_ps(b);
             __m256 m0 = _mm256_cmp_ps(mVec[0], t0, _CMP_EQ_OQ);
             __m256i m1 = _mm256_castps_si256(m0);
@@ -794,22 +794,22 @@ namespace SIMD {
             __m256i m3 = _mm256_castps_si256(m2);
             return SIMDVecMask<16>(m1, m3);
         }
-        inline SIMDVecMask<16> operator== (float b) const {
+        UME_FORCE_INLINE SIMDVecMask<16> operator== (float b) const {
             return cmpeq(b);
         }
         // CMPNEV
-        inline SIMDVecMask<16> cmpne(SIMDVec_f const & b) const {
+        UME_FORCE_INLINE SIMDVecMask<16> cmpne(SIMDVec_f const & b) const {
             __m256 m0 = _mm256_cmp_ps(mVec[0], b.mVec[0], _CMP_NEQ_UQ);
             __m256i m1 = _mm256_castps_si256(m0);
             __m256 m2 = _mm256_cmp_ps(mVec[1], b.mVec[1], _CMP_NEQ_UQ);
             __m256i m3 = _mm256_castps_si256(m2);
             return SIMDVecMask<16>(m1, m3);
         }
-        inline SIMDVecMask<16> operator!= (SIMDVec_f const & b) const {
+        UME_FORCE_INLINE SIMDVecMask<16> operator!= (SIMDVec_f const & b) const {
             return cmpne(b);
         }
         // CMPNES
-        inline SIMDVecMask<16> cmpne(float b) const {
+        UME_FORCE_INLINE SIMDVecMask<16> cmpne(float b) const {
             __m256 t0 = _mm256_set1_ps(b);
             __m256 m0 = _mm256_cmp_ps(mVec[0], t0, _CMP_NEQ_UQ);
             __m256i m1 = _mm256_castps_si256(m0);
@@ -817,22 +817,22 @@ namespace SIMD {
             __m256i m3 = _mm256_castps_si256(m2);
             return SIMDVecMask<16>(m1, m3);
         }
-        inline SIMDVecMask<16> operator!= (float b) const {
+        UME_FORCE_INLINE SIMDVecMask<16> operator!= (float b) const {
             return cmpne(b);
         }
         // CMPGTV
-        inline SIMDVecMask<16> cmpgt(SIMDVec_f const & b) const {;
+        UME_FORCE_INLINE SIMDVecMask<16> cmpgt(SIMDVec_f const & b) const {;
             __m256 m0 = _mm256_cmp_ps(mVec[0], b.mVec[0], _CMP_GT_OS);
             __m256i m1 = _mm256_castps_si256(m0);
             __m256 m2 = _mm256_cmp_ps(mVec[1], b.mVec[1], _CMP_GT_OS);
             __m256i m3 = _mm256_castps_si256(m2);
             return SIMDVecMask<16>(m1, m3);
         }
-        inline SIMDVecMask<16> operator> (SIMDVec_f const & b) const {
+        UME_FORCE_INLINE SIMDVecMask<16> operator> (SIMDVec_f const & b) const {
             return cmpgt(b);
         }
         // CMPGTS
-        inline SIMDVecMask<16> cmpgt(float b) const {
+        UME_FORCE_INLINE SIMDVecMask<16> cmpgt(float b) const {
             __m256 t0 = _mm256_set1_ps(b);
             __m256 m0 = _mm256_cmp_ps(mVec[0], t0, _CMP_GT_OS);
             __m256i m1 = _mm256_castps_si256(m0);
@@ -840,22 +840,22 @@ namespace SIMD {
             __m256i m3 = _mm256_castps_si256(m2);
             return SIMDVecMask<16>(m1, m3);
         }
-        inline SIMDVecMask<16> operator> (float b) const {
+        UME_FORCE_INLINE SIMDVecMask<16> operator> (float b) const {
             return cmpgt(b);
         }
         // CMPLTV
-        inline SIMDVecMask<16> cmplt(SIMDVec_f const & b) const {
+        UME_FORCE_INLINE SIMDVecMask<16> cmplt(SIMDVec_f const & b) const {
             __m256 m0 = _mm256_cmp_ps(mVec[0], b.mVec[0], _CMP_LT_OS);
             __m256i m1 = _mm256_castps_si256(m0);
             __m256 m2 = _mm256_cmp_ps(mVec[1], b.mVec[1], _CMP_LT_OS);
             __m256i m3 = _mm256_castps_si256(m2);
             return SIMDVecMask<16>(m1, m3);
         }
-        inline SIMDVecMask<16> operator< (SIMDVec_f const & b) const {
+        UME_FORCE_INLINE SIMDVecMask<16> operator< (SIMDVec_f const & b) const {
             return cmplt(b);
         }
         // CMPLTS
-        inline SIMDVecMask<16> cmplt(float b) const {
+        UME_FORCE_INLINE SIMDVecMask<16> cmplt(float b) const {
             __m256 t0 = _mm256_set1_ps(b);
             __m256 m0 = _mm256_cmp_ps(mVec[0], t0, _CMP_LT_OS);
             __m256i m1 = _mm256_castps_si256(m0);
@@ -863,22 +863,22 @@ namespace SIMD {
             __m256i m3 = _mm256_castps_si256(m2);
             return SIMDVecMask<16>(m1, m3);
         }
-        inline SIMDVecMask<16> operator< (float b) const {
+        UME_FORCE_INLINE SIMDVecMask<16> operator< (float b) const {
             return cmplt(b);
         }
         // CMPGEV
-        inline SIMDVecMask<16> cmpge(SIMDVec_f const & b) const {
+        UME_FORCE_INLINE SIMDVecMask<16> cmpge(SIMDVec_f const & b) const {
             __m256 m0 = _mm256_cmp_ps(mVec[0], b.mVec[0], _CMP_GE_OS);
             __m256i m1 = _mm256_castps_si256(m0);
             __m256 m2 = _mm256_cmp_ps(mVec[1], b.mVec[1], _CMP_GE_OS);
             __m256i m3 = _mm256_castps_si256(m2);
             return SIMDVecMask<16>(m1, m3);
         }
-        inline SIMDVecMask<16> operator>= (SIMDVec_f const & b) const {
+        UME_FORCE_INLINE SIMDVecMask<16> operator>= (SIMDVec_f const & b) const {
             return cmpge(b);
         }
         // CMPGES
-        inline SIMDVecMask<16> cmpge(float b) const {
+        UME_FORCE_INLINE SIMDVecMask<16> cmpge(float b) const {
             __m256 t0 = _mm256_set1_ps(b);
             __m256 m0 = _mm256_cmp_ps(mVec[0], t0, _CMP_GE_OS);
             __m256i m1 = _mm256_castps_si256(m0);
@@ -886,22 +886,22 @@ namespace SIMD {
             __m256i m3 = _mm256_castps_si256(m2);
             return SIMDVecMask<16>(m1, m3);
         }
-        inline SIMDVecMask<16> operator>= (float b) const {
+        UME_FORCE_INLINE SIMDVecMask<16> operator>= (float b) const {
             return cmpge(b);
         }
         // CMPLEV
-        inline SIMDVecMask<16> cmple(SIMDVec_f const & b) const {
+        UME_FORCE_INLINE SIMDVecMask<16> cmple(SIMDVec_f const & b) const {
             __m256 m0 = _mm256_cmp_ps(mVec[0], b.mVec[0], _CMP_LE_OS);
             __m256i m1 = _mm256_castps_si256(m0);
             __m256 m2 = _mm256_cmp_ps(mVec[1], b.mVec[1], _CMP_LE_OS);
             __m256i m3 = _mm256_castps_si256(m2);
             return SIMDVecMask<16>(m1, m3);
         }
-        inline SIMDVecMask<16> operator<= (SIMDVec_f const & b) const {
+        UME_FORCE_INLINE SIMDVecMask<16> operator<= (SIMDVec_f const & b) const {
             return cmple(b);
         }
         // CMPLES
-        inline SIMDVecMask<16> cmple(float b) const {
+        UME_FORCE_INLINE SIMDVecMask<16> cmple(float b) const {
             __m256 t0 = _mm256_set1_ps(b);
             __m256 m0 = _mm256_cmp_ps(mVec[0], t0, _CMP_LE_OS);
             __m256i m1 = _mm256_castps_si256(m0);
@@ -909,11 +909,11 @@ namespace SIMD {
             __m256i m3 = _mm256_castps_si256(m2);
             return SIMDVecMask<16>(m1, m3);
         }
-        inline SIMDVecMask<16> operator<= (float b) const {
+        UME_FORCE_INLINE SIMDVecMask<16> operator<= (float b) const {
             return cmple(b);
         }
         // CMPEV
-        inline bool cmpe(SIMDVec_f const & b) const {
+        UME_FORCE_INLINE bool cmpe(SIMDVec_f const & b) const {
             alignas(32) int32_t raw[16];
             __m256 m0 = _mm256_cmp_ps(mVec[0], b.mVec[0], _CMP_EQ_OS);
             __m256i m1 = _mm256_castps_si256(m0);
@@ -927,7 +927,7 @@ namespace SIMD {
                    (raw[12] != 0) && (raw[13] != 0) && (raw[14] != 0) && (raw[15] != 0);
         }
         // CMPES
-        inline bool cmpe(float b) const {
+        UME_FORCE_INLINE bool cmpe(float b) const {
             alignas(32) int32_t raw[16];
             __m256 t0 = _mm256_set1_ps(b);
             __m256 m0 = _mm256_cmp_ps(mVec[0], t0, _CMP_EQ_OS);
@@ -942,7 +942,7 @@ namespace SIMD {
                    (raw[12] != 0) && (raw[13] != 0) && (raw[14] != 0) && (raw[15] != 0);
         }
         // UNIQUE
-        inline bool unique() const {
+        UME_FORCE_INLINE bool unique() const {
             /* alignas(32) int32_t raw[8];
             _mm256_store_si256((__m256i *)raw, mVec);
             for (unsigned int i = 0; i < 7; i++) {
@@ -955,7 +955,7 @@ namespace SIMD {
             return true;
         }
         // HADD
-        inline float hadd() const {
+        UME_FORCE_INLINE float hadd() const {
             __m256 t0 = _mm256_add_ps(mVec[0], mVec[1]);
             __m256 t1 = _mm256_hadd_ps(t0, t0);
             __m256 t2 = _mm256_hadd_ps(t1, t1);
@@ -966,7 +966,7 @@ namespace SIMD {
             return retval;
         }
         // MHADD
-        inline float hadd(SIMDVecMask<16> const & mask) const {
+        UME_FORCE_INLINE float hadd(SIMDVecMask<16> const & mask) const {
             __m256 t0 = _mm256_set1_ps(0.0f);
             __m256 t1 = BLEND(mVec[0], t0, mask.mMask[0]);
             __m256 t2 = BLEND(mVec[1], t0, mask.mMask[1]);
@@ -980,7 +980,7 @@ namespace SIMD {
             return retval;
         }
         // HADDS
-        inline float hadd(float b) const {
+        UME_FORCE_INLINE float hadd(float b) const {
             __m256 t0 = _mm256_add_ps(mVec[0], mVec[1]);
             __m256 t1 = _mm256_hadd_ps(t0, t0);
             __m256 t2 = _mm256_hadd_ps(t1, t1);
@@ -991,7 +991,7 @@ namespace SIMD {
             return retval + b;
         }
         // MHADDS
-        inline float hadd(SIMDVecMask<16> const & mask, float b) const {
+        UME_FORCE_INLINE float hadd(SIMDVecMask<16> const & mask, float b) const {
             __m256 t0 = _mm256_set1_ps(0.0f);
             __m256 t1 = BLEND(mVec[0], t0, mask.mMask[0]);
             __m256 t2 = BLEND(mVec[1], t0, mask.mMask[1]);
@@ -1005,7 +1005,7 @@ namespace SIMD {
             return retval + b;
         }
         // HMUL
-        inline float hmul() const {
+        UME_FORCE_INLINE float hmul() const {
             __m128 t0 = _mm_set1_ps(1.0f);
             __m256 t1 = _mm256_mul_ps(mVec[0], mVec[1]);
             __m128 t2 = _mm256_castps256_ps128(t1);
@@ -1019,7 +1019,7 @@ namespace SIMD {
             return retval;
         }
         // MHMUL
-        inline float hmul(SIMDVecMask<16> const & mask) const {
+        UME_FORCE_INLINE float hmul(SIMDVecMask<16> const & mask) const {
             __m128 t0 = _mm_set1_ps(1.0f);
             __m256 t1 = _mm256_set1_ps(1.0f);
             __m256 t2 = BLEND(mVec[0], t1, mask.mMask[0]);
@@ -1036,7 +1036,7 @@ namespace SIMD {
             return retval;
         }
         // HMULS
-        inline float hmul(float b) const {
+        UME_FORCE_INLINE float hmul(float b) const {
             __m128 t0 = _mm_set1_ps(1.0f);
             __m256 t1 = _mm256_mul_ps(mVec[0], mVec[1]);
             __m128 t2 = _mm256_castps256_ps128(t1);
@@ -1050,7 +1050,7 @@ namespace SIMD {
             return retval + b;
         }
         // MHMULS
-        inline float hmul(SIMDVecMask<16> const & mask, float b) const {
+        UME_FORCE_INLINE float hmul(SIMDVecMask<16> const & mask, float b) const {
             __m128 t0 = _mm_set1_ps(1.0f);
             __m256 t1 = _mm256_set1_ps(1.0f);
             __m256 t2 = BLEND(mVec[0], t1, mask.mMask[0]);
@@ -1067,7 +1067,7 @@ namespace SIMD {
             return retval + b;
         }
         // FMULADDV
-        inline SIMDVec_f fmuladd(SIMDVec_f const & b, SIMDVec_f const & c) const {
+        UME_FORCE_INLINE SIMDVec_f fmuladd(SIMDVec_f const & b, SIMDVec_f const & c) const {
 #ifdef FMA
             __m256 t0 = _mm256_fmadd_ps(mVec[0], b.mVec[0], c.mVec[0]);
             __m256 t1 = _mm256_fmadd_ps(mVec[1], b.mVec[1], c.mVec[1]);
@@ -1078,7 +1078,7 @@ namespace SIMD {
             return SIMDVec_f(t0, t1);
         }
         // MFMULADDV
-        inline SIMDVec_f fmuladd(SIMDVecMask<16> const & mask, SIMDVec_f const & b, SIMDVec_f const & c) const {
+        UME_FORCE_INLINE SIMDVec_f fmuladd(SIMDVecMask<16> const & mask, SIMDVec_f const & b, SIMDVec_f const & c) const {
 #ifdef FMA
             __m256 t0 = _mm256_fmadd_ps(mVec[0], b.mVec[0], c.mVec[0]);
             __m256 t1 = _mm256_fmadd_ps(mVec[1], b.mVec[1], c.mVec[1]);
@@ -1091,7 +1091,7 @@ namespace SIMD {
             return SIMDVec_f(t2, t3);
         }
         // FMULSUBV
-        inline SIMDVec_f fmulsub(SIMDVec_f const & b, SIMDVec_f const & c) const {
+        UME_FORCE_INLINE SIMDVec_f fmulsub(SIMDVec_f const & b, SIMDVec_f const & c) const {
             __m256 t0 = _mm256_mul_ps(mVec[0], b.mVec[0]);
             __m256 t1 = _mm256_sub_ps(t0, c.mVec[0]);
             __m256 t2 = _mm256_mul_ps(mVec[1], b.mVec[1]);
@@ -1099,7 +1099,7 @@ namespace SIMD {
             return SIMDVec_f(t1, t3);
         }
         // MFMULSUBV
-        inline SIMDVec_f fmulsub(SIMDVecMask<16> const & mask, SIMDVec_f const & b, SIMDVec_f const & c) const {
+        UME_FORCE_INLINE SIMDVec_f fmulsub(SIMDVecMask<16> const & mask, SIMDVec_f const & b, SIMDVec_f const & c) const {
             __m256 t0 = _mm256_mul_ps(mVec[0], b.mVec[0]);
             __m256 t1 = _mm256_sub_ps(t0, c.mVec[0]);
             __m256 t2 = BLEND(mVec[0], t1, mask.mMask[0]);
@@ -1109,7 +1109,7 @@ namespace SIMD {
             return SIMDVec_f(t2, t5);
         }
         // FADDMULV
-        inline SIMDVec_f faddmul(SIMDVec_f const & b, SIMDVec_f const & c) const {
+        UME_FORCE_INLINE SIMDVec_f faddmul(SIMDVec_f const & b, SIMDVec_f const & c) const {
             __m256 t0 = _mm256_add_ps(mVec[0], b.mVec[0]);
             __m256 t1 = _mm256_mul_ps(t0, c.mVec[0]);
             __m256 t2 = _mm256_add_ps(mVec[1], b.mVec[1]);
@@ -1117,7 +1117,7 @@ namespace SIMD {
             return SIMDVec_f(t1, t3);
         }
         // MFADDMULV
-        inline SIMDVec_f faddmul(SIMDVecMask<16> const & mask, SIMDVec_f const & b, SIMDVec_f const & c) const {
+        UME_FORCE_INLINE SIMDVec_f faddmul(SIMDVecMask<16> const & mask, SIMDVec_f const & b, SIMDVec_f const & c) const {
             __m256 t0 = _mm256_add_ps(mVec[0], b.mVec[0]);
             __m256 t1 = _mm256_mul_ps(t0, c.mVec[0]);
             __m256 t2 = BLEND(mVec[0], t1, mask.mMask[0]);
@@ -1127,7 +1127,7 @@ namespace SIMD {
             return SIMDVec_f(t2, t5);
         }
         // FSUBMULV
-        inline SIMDVec_f fsubmul(SIMDVec_f const & b, SIMDVec_f const & c) const {
+        UME_FORCE_INLINE SIMDVec_f fsubmul(SIMDVec_f const & b, SIMDVec_f const & c) const {
             __m256 t0 = _mm256_sub_ps(mVec[0], b.mVec[0]);
             __m256 t1 = _mm256_mul_ps(t0, c.mVec[0]);
             __m256 t2 = _mm256_sub_ps(mVec[1], b.mVec[1]);
@@ -1135,7 +1135,7 @@ namespace SIMD {
             return SIMDVec_f(t1, t3);
         }
         // MFSUBMULV
-        inline SIMDVec_f fsubmul(SIMDVecMask<16> const & mask, SIMDVec_f const & b, SIMDVec_f const & c) const {
+        UME_FORCE_INLINE SIMDVec_f fsubmul(SIMDVecMask<16> const & mask, SIMDVec_f const & b, SIMDVec_f const & c) const {
             __m256 t0 = _mm256_sub_ps(mVec[0], b.mVec[0]);
             __m256 t1 = _mm256_mul_ps(t0, c.mVec[0]);
             __m256 t2 = BLEND(mVec[0], t1, mask.mMask[0]);
@@ -1146,13 +1146,13 @@ namespace SIMD {
         }
 
         // MAXV
-        inline SIMDVec_f max(SIMDVec_f const & b) const {
+        UME_FORCE_INLINE SIMDVec_f max(SIMDVec_f const & b) const {
             __m256 t0 = _mm256_max_ps(mVec[0], b.mVec[0]);
             __m256 t1 = _mm256_max_ps(mVec[1], b.mVec[1]);
             return SIMDVec_f(t0, t1);
         }
         // MMAXV
-        inline SIMDVec_f max(SIMDVecMask<16> const & mask, SIMDVec_f const & b) const {
+        UME_FORCE_INLINE SIMDVec_f max(SIMDVecMask<16> const & mask, SIMDVec_f const & b) const {
             __m256 t0 = _mm256_max_ps(mVec[0], b.mVec[0]);
             __m256 t1 = BLEND(mVec[0], t0, mask.mMask[0]);
             __m256 t2 = _mm256_max_ps(mVec[1], b.mVec[1]);
@@ -1160,14 +1160,14 @@ namespace SIMD {
             return SIMDVec_f(t1, t3);
         }
         // MAXS
-        inline SIMDVec_f max(float b) const {
+        UME_FORCE_INLINE SIMDVec_f max(float b) const {
             __m256 t0 = _mm256_set1_ps(b);
             __m256 t1 = _mm256_max_ps(mVec[0], t0);
             __m256 t2 = _mm256_max_ps(mVec[1], t0);
             return SIMDVec_f(t1, t2);
         }
         // MMAXS
-        inline SIMDVec_f max(SIMDVecMask<16> const & mask, float b) const {
+        UME_FORCE_INLINE SIMDVec_f max(SIMDVecMask<16> const & mask, float b) const {
             __m256 t0 = _mm256_set1_ps(b);
             __m256 t1 = _mm256_max_ps(mVec[0], t0);
             __m256 t2 = BLEND(mVec[0], t1, mask.mMask[0]);
@@ -1176,13 +1176,13 @@ namespace SIMD {
             return SIMDVec_f(t2, t4);
         }
         // MAXVA
-        inline SIMDVec_f & maxa(SIMDVec_f const & b) {
+        UME_FORCE_INLINE SIMDVec_f & maxa(SIMDVec_f const & b) {
             mVec[0] = _mm256_max_ps(mVec[0], b.mVec[0]);
             mVec[1] = _mm256_max_ps(mVec[1], b.mVec[1]);
             return *this;
         }
         // MMAXVA
-        inline SIMDVec_f & maxa(SIMDVecMask<16> const & mask, SIMDVec_f const & b) {
+        UME_FORCE_INLINE SIMDVec_f & maxa(SIMDVecMask<16> const & mask, SIMDVec_f const & b) {
             __m256 t0 = _mm256_max_ps(mVec[0], b.mVec[0]);
             mVec[0] = BLEND(mVec[0], t0, mask.mMask[0]);
             __m256 t1 = _mm256_max_ps(mVec[1], b.mVec[1]);
@@ -1190,14 +1190,14 @@ namespace SIMD {
             return *this;
         }
         // MAXSA
-        inline SIMDVec_f & maxa(float b) {
+        UME_FORCE_INLINE SIMDVec_f & maxa(float b) {
             __m256 t0 = _mm256_set1_ps(b);
             mVec[0] = _mm256_max_ps(mVec[0], t0);
             mVec[1] = _mm256_max_ps(mVec[1], t0);
             return *this;
         }
         // MMAXSA
-        inline SIMDVec_f & maxa(SIMDVecMask<16> const & mask, float b) {
+        UME_FORCE_INLINE SIMDVec_f & maxa(SIMDVecMask<16> const & mask, float b) {
             __m256 t0 = _mm256_set1_ps(b);
             __m256 t1 = _mm256_max_ps(mVec[0], t0);
             mVec[0] = BLEND(mVec[0], t1, mask.mMask[0]);
@@ -1206,13 +1206,13 @@ namespace SIMD {
             return *this;
         }
         // MINV
-        inline SIMDVec_f min(SIMDVec_f const & b) const {
+        UME_FORCE_INLINE SIMDVec_f min(SIMDVec_f const & b) const {
             __m256 t0 = _mm256_min_ps(mVec[0], b.mVec[0]);
             __m256 t1 = _mm256_min_ps(mVec[1], b.mVec[1]);
             return SIMDVec_f(t0, t1);
         }
         // MMINV
-        inline SIMDVec_f min(SIMDVecMask<16> const & mask, SIMDVec_f const & b) const {
+        UME_FORCE_INLINE SIMDVec_f min(SIMDVecMask<16> const & mask, SIMDVec_f const & b) const {
             __m256 t0 = _mm256_min_ps(mVec[0], b.mVec[0]);
             __m256 t1 = BLEND(mVec[0], t0, mask.mMask[0]);
             __m256 t2 = _mm256_min_ps(mVec[1], b.mVec[1]);
@@ -1220,14 +1220,14 @@ namespace SIMD {
             return SIMDVec_f(t1, t3);
         }
         // MINS
-        inline SIMDVec_f min(float b) const {
+        UME_FORCE_INLINE SIMDVec_f min(float b) const {
             __m256 t0 = _mm256_set1_ps(b);
             __m256 t1 = _mm256_min_ps(mVec[0], t0);
             __m256 t2 = _mm256_min_ps(mVec[1], t0);
             return SIMDVec_f(t1, t2);
         }
         // MMINS
-        inline SIMDVec_f min(SIMDVecMask<16> const & mask, float b) const {
+        UME_FORCE_INLINE SIMDVec_f min(SIMDVecMask<16> const & mask, float b) const {
             __m256 t0 = _mm256_set1_ps(b);
             __m256 t1 = _mm256_min_ps(mVec[0], t0);
             __m256 t2 = BLEND(mVec[0], t1, mask.mMask[0]);
@@ -1236,13 +1236,13 @@ namespace SIMD {
             return SIMDVec_f(t2, t4);
         }
         // MINVA
-        inline SIMDVec_f & mina(SIMDVec_f const & b) {
+        UME_FORCE_INLINE SIMDVec_f & mina(SIMDVec_f const & b) {
             mVec[0] = _mm256_min_ps(mVec[0], b.mVec[0]);
             mVec[1] = _mm256_min_ps(mVec[1], b.mVec[1]);
             return *this;
         }
         // MMINVA
-        inline SIMDVec_f & mina(SIMDVecMask<16> const & mask, SIMDVec_f const & b) {
+        UME_FORCE_INLINE SIMDVec_f & mina(SIMDVecMask<16> const & mask, SIMDVec_f const & b) {
             __m256 t0 = _mm256_min_ps(mVec[0], b.mVec[0]);
             mVec[0] = BLEND(mVec[0], t0, mask.mMask[0]);
             __m256 t1 = _mm256_min_ps(mVec[1], b.mVec[1]);
@@ -1250,14 +1250,14 @@ namespace SIMD {
             return *this;
         }
         // MINSA
-        inline SIMDVec_f & mina(float b) {
+        UME_FORCE_INLINE SIMDVec_f & mina(float b) {
             __m256 t0 = _mm256_set1_ps(b);
             mVec[0] = _mm256_min_ps(mVec[0], t0);
             mVec[1] = _mm256_min_ps(mVec[1], t0);
             return *this;
         }
         // MMINSA
-        inline SIMDVec_f & mina(SIMDVecMask<16> const & mask, float b) {
+        UME_FORCE_INLINE SIMDVec_f & mina(SIMDVecMask<16> const & mask, float b) {
             __m256 t0 = _mm256_set1_ps(b);
             __m256 t1 = _mm256_min_ps(mVec[0], t0);
             mVec[0] = BLEND(mVec[0], t1, mask.mMask[0]);
@@ -1266,7 +1266,7 @@ namespace SIMD {
             return *this;
         }
         // HMAX
-        inline float hmax() const {
+        UME_FORCE_INLINE float hmax() const {
             __m128 t0 = _mm_set1_ps(std::numeric_limits<float>::min());
             __m128 t1 = _mm256_castps256_ps128(mVec[0]);
             __m128 t2 = _mm256_extractf128_ps(mVec[0], 1);
@@ -1283,7 +1283,7 @@ namespace SIMD {
             return retval;
         }
         // MHMAX
-        inline float hmax(SIMDVecMask<16> const & mask) const {
+        UME_FORCE_INLINE float hmax(SIMDVecMask<16> const & mask) const {
             __m128 t0 = _mm_set1_ps(std::numeric_limits<float>::min());
             __m256 t1 = _mm256_set1_ps(std::numeric_limits<float>::min());
             __m256 t2 = BLEND(mVec[0], t1, mask.mMask[0]);
@@ -1307,7 +1307,7 @@ namespace SIMD {
         // IMAX
         // MIMAX
         // HMIN
-        inline float hmin() const {
+        UME_FORCE_INLINE float hmin() const {
             __m128 t0 = _mm_set1_ps(std::numeric_limits<float>::max());
             __m128 t1 = _mm256_castps256_ps128(mVec[0]);
             __m128 t2 = _mm256_extractf128_ps(mVec[0], 1);
@@ -1324,7 +1324,7 @@ namespace SIMD {
             return retval;
         }
         // MHMIN
-        inline float hmin(SIMDVecMask<16> const & mask) const {
+        UME_FORCE_INLINE float hmin(SIMDVecMask<16> const & mask) const {
             __m128 t0 = _mm_set1_ps(std::numeric_limits<float>::max());
             __m256 t1 = _mm256_set1_ps(std::numeric_limits<float>::max());
             __m256 t2 = BLEND(mVec[0], t1, mask.mMask[0]);
@@ -1349,7 +1349,7 @@ namespace SIMD {
         // MIMIN
 
         // GATHERS
-        inline SIMDVec_f & gather(float const * baseAddr, uint32_t const * indices) {
+        UME_FORCE_INLINE SIMDVec_f & gather(float const * baseAddr, uint32_t const * indices) {
             __m256i t0 = _mm256_load_si256((__m256i*)indices);
             mVec[0] = _mm256_i32gather_ps((const float *)baseAddr, t0, 4);
             __m256i t1 = _mm256_load_si256((__m256i*)(indices + 8));
@@ -1357,7 +1357,7 @@ namespace SIMD {
             return *this;
         }
         // MGATHERS
-        inline SIMDVec_f & gather(SIMDVecMask<16> const & mask, float const * baseAddr, uint32_t const * indices) {
+        UME_FORCE_INLINE SIMDVec_f & gather(SIMDVecMask<16> const & mask, float const * baseAddr, uint32_t const * indices) {
             __m256i t0 = _mm256_loadu_si256((__m256i*)indices);
             __m256 t1 = _mm256_i32gather_ps((const float *)baseAddr, t0, 4);
             mVec[0] = BLEND(mVec[0], t1, mask.mMask[0]);
@@ -1367,13 +1367,13 @@ namespace SIMD {
             return *this;
         }
         // GATHERV
-        inline SIMDVec_f & gather(float const * baseAddr, SIMDVec_u<uint32_t, 16> const & indices) {
+        UME_FORCE_INLINE SIMDVec_f & gather(float const * baseAddr, SIMDVec_u<uint32_t, 16> const & indices) {
             mVec[0] = _mm256_i32gather_ps((const float *)baseAddr, indices.mVec[0], 4);
             mVec[1] = _mm256_i32gather_ps((const float *)baseAddr, indices.mVec[1], 4);
             return *this;
         }
         // MGATHERV
-        inline SIMDVec_f & gather(SIMDVecMask<16> const & mask, float const * baseAddr, SIMDVec_u<uint32_t, 16> const & indices) {
+        UME_FORCE_INLINE SIMDVec_f & gather(SIMDVecMask<16> const & mask, float const * baseAddr, SIMDVec_u<uint32_t, 16> const & indices) {
             __m256 t0 = _mm256_i32gather_ps((const float *)baseAddr, indices.mVec[0], 4);
             mVec[0] = BLEND(mVec[0], t0, mask.mMask[0]);
             __m256 t1 = _mm256_i32gather_ps((const float *)baseAddr, indices.mVec[1], 4);
@@ -1381,7 +1381,7 @@ namespace SIMD {
             return *this;
         }
         // SCATTERS
-        inline float* scatter(float* baseAddr, uint32_t* indices) const {
+        UME_FORCE_INLINE float* scatter(float* baseAddr, uint32_t* indices) const {
             alignas(32) float raw[16];
             _mm256_store_ps(raw, mVec[0]);
             for (int i = 0; i < 8; i++) { baseAddr[indices[i]] = raw[i]; };
@@ -1390,7 +1390,7 @@ namespace SIMD {
             return baseAddr;
         }
         // MSCATTERS
-        inline float* scatter(SIMDVecMask<16> const & mask, float* baseAddr, uint32_t* indices) const {
+        UME_FORCE_INLINE float* scatter(SIMDVecMask<16> const & mask, float* baseAddr, uint32_t* indices) const {
             alignas(32) float raw[16];
             alignas(32) uint32_t rawMask[16];
             _mm256_store_ps(raw, mVec[0]);
@@ -1402,7 +1402,7 @@ namespace SIMD {
             return baseAddr;
         }
         // SCATTERV
-        inline float* scatter(float* baseAddr, SIMDVec_u<uint32_t, 16> const & indices) const {
+        UME_FORCE_INLINE float* scatter(float* baseAddr, SIMDVec_u<uint32_t, 16> const & indices) const {
             alignas(32) float raw[16];
             alignas(32) uint32_t rawIndices[16];
             _mm256_store_ps(raw, mVec[0]);
@@ -1414,7 +1414,7 @@ namespace SIMD {
             return baseAddr;
         }
         // MSCATTERV
-        inline float* scatter(SIMDVecMask<16> const & mask, float* baseAddr, SIMDVec_u<uint32_t, 16> const & indices) const {
+        UME_FORCE_INLINE float* scatter(SIMDVecMask<16> const & mask, float* baseAddr, SIMDVec_u<uint32_t, 16> const & indices) const {
             alignas(32) float raw[16];
             alignas(32) uint32_t rawIndices[16];
             alignas(32) uint32_t rawMask[16];
@@ -1435,16 +1435,16 @@ namespace SIMD {
             return baseAddr;
         }
         // NEG
-        inline SIMDVec_f neg() const {
+        UME_FORCE_INLINE SIMDVec_f neg() const {
             __m256 t0 = _mm256_sub_ps(_mm256_set1_ps(0.0f), mVec[0]);
             __m256 t1 = _mm256_sub_ps(_mm256_set1_ps(0.0f), mVec[1]);
             return SIMDVec_f(t0, t1);
         }
-        inline SIMDVec_f operator- () const {
+        UME_FORCE_INLINE SIMDVec_f operator- () const {
             return neg();
         }
         // MNEG
-        inline SIMDVec_f neg(SIMDVecMask<16> const & mask) const {
+        UME_FORCE_INLINE SIMDVec_f neg(SIMDVecMask<16> const & mask) const {
             __m256 t0 = _mm256_sub_ps(_mm256_set1_ps(0.0f), mVec[0]);
             __m256 t1 = BLEND(mVec[0], t0, mask.mMask[0]);
             __m256 t2 = _mm256_sub_ps(_mm256_set1_ps(0.0f), mVec[1]);
@@ -1452,13 +1452,13 @@ namespace SIMD {
             return SIMDVec_f(t1, t3);
         }
         // NEGA
-        inline SIMDVec_f & nega() {
+        UME_FORCE_INLINE SIMDVec_f & nega() {
             mVec[0] = _mm256_sub_ps(_mm256_set1_ps(0.0f), mVec[0]);
             mVec[1] = _mm256_sub_ps(_mm256_set1_ps(0.0f), mVec[1]);
             return *this;
         }
         // MNEGA
-        inline SIMDVec_f & nega(SIMDVecMask<16> const & mask) {
+        UME_FORCE_INLINE SIMDVec_f & nega(SIMDVecMask<16> const & mask) {
             __m256 t0 = _mm256_sub_ps(_mm256_set1_ps(0.0f), mVec[0]);
             mVec[0] = BLEND(mVec[0], t0, mask.mMask[0]);
             __m256 t1 = _mm256_sub_ps(_mm256_set1_ps(0.0f), mVec[1]);
@@ -1466,7 +1466,7 @@ namespace SIMD {
             return *this;
         }
         // ABS
-        inline SIMDVec_f abs() const {
+        UME_FORCE_INLINE SIMDVec_f abs() const {
             __m256 t0 = _mm256_set1_ps(0.0f);
             __m256 t1 = _mm256_cmp_ps(mVec[0], t0, _CMP_LT_OS);
             __m256 t2 = _mm256_sub_ps(t0, mVec[0]);
@@ -1477,7 +1477,7 @@ namespace SIMD {
             return SIMDVec_f(t3, t6);
         }
         // MABS
-        inline SIMDVec_f abs(SIMDVecMask<16> const & mask) const {
+        UME_FORCE_INLINE SIMDVec_f abs(SIMDVecMask<16> const & mask) const {
             __m256 t0 = _mm256_set1_ps(0.0f);
             __m256 t1 = _mm256_cmp_ps(mVec[0], t0, _CMP_LT_OS);
             __m256 t2 = _mm256_and_ps(t1, _mm256_castsi256_ps(mask.mMask[0]));
@@ -1490,7 +1490,7 @@ namespace SIMD {
             return SIMDVec_f(t4, t8);
         }
         // ABSA
-        inline SIMDVec_f & absa() {
+        UME_FORCE_INLINE SIMDVec_f & absa() {
             __m256 t0 = _mm256_set1_ps(0.0f);
             __m256 t1 = _mm256_cmp_ps(mVec[0], t0, _CMP_LT_OS);
             __m256 t2 = _mm256_sub_ps(t0, mVec[0]);
@@ -1501,7 +1501,7 @@ namespace SIMD {
             return *this;
         }
         // MABSA
-        inline SIMDVec_f & absa(SIMDVecMask<16> const & mask) {
+        UME_FORCE_INLINE SIMDVec_f & absa(SIMDVecMask<16> const & mask) {
             __m256 t0 = _mm256_set1_ps(0.0f);
             __m256 t1 = _mm256_cmp_ps(mVec[0], t0, _CMP_LT_OS);
             __m256 t2 = _mm256_and_ps(t1, _mm256_castsi256_ps(mask.mMask[0]));
@@ -1517,13 +1517,13 @@ namespace SIMD {
         // CMPEQRS
 
         // SQR
-        inline SIMDVec_f sqr() const {
+        UME_FORCE_INLINE SIMDVec_f sqr() const {
             __m256 t0 = _mm256_mul_ps(mVec[0], mVec[0]);
             __m256 t1 = _mm256_mul_ps(mVec[1], mVec[1]);
             return SIMDVec_f(t0, t1);
         }
         // MSQR
-        inline SIMDVec_f sqr(SIMDVecMask<16> const & mask) const {
+        UME_FORCE_INLINE SIMDVec_f sqr(SIMDVecMask<16> const & mask) const {
             __m256 t0 = _mm256_mul_ps(mVec[0], mVec[0]);
             __m256 t1 = BLEND(mVec[0], t0, mask.mMask[0]);
             __m256 t2 = _mm256_mul_ps(mVec[1], mVec[1]);
@@ -1531,13 +1531,13 @@ namespace SIMD {
             return SIMDVec_f(t1, t3);
         }
         // SQRA
-        inline SIMDVec_f & sqra() {
+        UME_FORCE_INLINE SIMDVec_f & sqra() {
             mVec[0] = _mm256_mul_ps(mVec[0], mVec[0]);
             mVec[1] = _mm256_mul_ps(mVec[1], mVec[1]);
             return *this;
         }
         // MSQRA
-        inline SIMDVec_f & sqra(SIMDVecMask<16> const & mask) {
+        UME_FORCE_INLINE SIMDVec_f & sqra(SIMDVecMask<16> const & mask) {
             __m256 t0 = _mm256_mul_ps(mVec[0], mVec[0]);
             mVec[0] = BLEND(mVec[0], t0, mask.mMask[0]);
             __m256 t1 = _mm256_mul_ps(mVec[1], mVec[1]);
@@ -1545,13 +1545,13 @@ namespace SIMD {
             return *this;
         }
         // SQRT
-        inline SIMDVec_f sqrt() const {
+        UME_FORCE_INLINE SIMDVec_f sqrt() const {
             __m256 t0 = _mm256_sqrt_ps(mVec[0]);
             __m256 t1 = _mm256_sqrt_ps(mVec[1]);
             return SIMDVec_f(t0, t1);
         }
         // MSQRT
-        inline SIMDVec_f sqrt(SIMDVecMask<16> const & mask) const {
+        UME_FORCE_INLINE SIMDVec_f sqrt(SIMDVecMask<16> const & mask) const {
             __m256 t0 = _mm256_sqrt_ps(mVec[0]);
             __m256 t1 = BLEND(mVec[0], t0, mask.mMask[0]);
             __m256 t2 = _mm256_sqrt_ps(mVec[1]);
@@ -1559,13 +1559,13 @@ namespace SIMD {
             return SIMDVec_f(t1, t3);
         }
         // SQRTA
-        inline SIMDVec_f & sqrta() {
+        UME_FORCE_INLINE SIMDVec_f & sqrta() {
             mVec[0] = _mm256_sqrt_ps(mVec[0]);
             mVec[1] = _mm256_sqrt_ps(mVec[1]);
             return *this;
         }
         // MSQRTA
-        inline SIMDVec_f & sqrta(SIMDVecMask<16> const & mask) {
+        UME_FORCE_INLINE SIMDVec_f & sqrta(SIMDVecMask<16> const & mask) {
             __m256 t0 = _mm256_sqrt_ps(mVec[0]);
             mVec[0] = BLEND(mVec[0], t0, mask.mMask[0]);
             __m256 t1 = _mm256_sqrt_ps(mVec[1]);
@@ -1577,13 +1577,13 @@ namespace SIMD {
         // POWS
         // MPOWS
         // ROUND
-        inline SIMDVec_f round() const {
+        UME_FORCE_INLINE SIMDVec_f round() const {
             __m256 t0 = _mm256_round_ps(mVec[0], _MM_FROUND_TO_NEAREST_INT | _MM_FROUND_NO_EXC);
             __m256 t1 = _mm256_round_ps(mVec[1], _MM_FROUND_TO_NEAREST_INT | _MM_FROUND_NO_EXC);
             return SIMDVec_f(t0, t1);
         }
         // MROUND
-        inline SIMDVec_f round(SIMDVecMask<16> const & mask) const {
+        UME_FORCE_INLINE SIMDVec_f round(SIMDVecMask<16> const & mask) const {
             __m256 t0 = _mm256_round_ps(mVec[0], _MM_FROUND_TO_NEAREST_INT | _MM_FROUND_NO_EXC);
             __m256 t1 = BLEND(mVec[0], t0, mask.mMask[0]);
             __m256 t2 = _mm256_round_ps(mVec[1], _MM_FROUND_TO_NEAREST_INT | _MM_FROUND_NO_EXC);
@@ -1591,13 +1591,13 @@ namespace SIMD {
             return SIMDVec_f(t1, t3);
         }
         // TRUNC
-        inline SIMDVec_i<int32_t, 16> trunc() const {
+        UME_FORCE_INLINE SIMDVec_i<int32_t, 16> trunc() const {
             __m256i t0 = _mm256_cvttps_epi32(mVec[0]);
             __m256i t1 = _mm256_cvttps_epi32(mVec[1]);
             return SIMDVec_i<int32_t, 16>(t0, t1);
         }
         // MTRUNC
-        inline SIMDVec_i<int32_t, 16> trunc(SIMDVecMask<16> const & mask) const {
+        UME_FORCE_INLINE SIMDVec_i<int32_t, 16> trunc(SIMDVecMask<16> const & mask) const {
             __m256  t0 = _mm256_setzero_ps();
             __m256  t1 = BLEND(t0, mVec[0], mask.mMask[0]);
             __m256i t2 = _mm256_cvttps_epi32(t1);
@@ -1606,13 +1606,13 @@ namespace SIMD {
             return SIMDVec_i<int32_t, 16>(t2, t4);
         }
         // FLOOR
-        inline SIMDVec_f floor() const {
+        UME_FORCE_INLINE SIMDVec_f floor() const {
             __m256 t0 = _mm256_floor_ps(mVec[0]);
             __m256 t1 = _mm256_floor_ps(mVec[1]);
             return SIMDVec_f(t0, t1);
         }
         // MFLOOR
-        inline SIMDVec_f floor(SIMDVecMask<16> const & mask) const {
+        UME_FORCE_INLINE SIMDVec_f floor(SIMDVecMask<16> const & mask) const {
             __m256 t0 = _mm256_floor_ps(mVec[0]);
             __m256 t1 = BLEND(mVec[0], t0, mask.mMask[0]);
             __m256 t2 = _mm256_floor_ps(mVec[1]);
@@ -1620,13 +1620,13 @@ namespace SIMD {
             return SIMDVec_f(t1, t3);
         }
         // CEIL
-        inline SIMDVec_f ceil() const {
+        UME_FORCE_INLINE SIMDVec_f ceil() const {
             __m256 t0 = _mm256_ceil_ps(mVec[0]);
             __m256 t1 = _mm256_ceil_ps(mVec[1]);
             return SIMDVec_f(t0, t1);
         }
         // MCEIL
-        inline SIMDVec_f ceil(SIMDVecMask<16> const & mask) const {
+        UME_FORCE_INLINE SIMDVec_f ceil(SIMDVecMask<16> const & mask) const {
             __m256 t0 = _mm256_ceil_ps(mVec[0]);
             __m256 t1 = BLEND(mVec[0], t0, mask.mMask[0]);
             __m256 t2 = _mm256_ceil_ps(mVec[1]);
@@ -1670,44 +1670,44 @@ namespace SIMD {
         // MCTAN
 
         // PACK
-        inline SIMDVec_f & pack(SIMDVec_f<float, 8> const & a, SIMDVec_f<float, 8> const & b) {
+        UME_FORCE_INLINE SIMDVec_f & pack(SIMDVec_f<float, 8> const & a, SIMDVec_f<float, 8> const & b) {
             mVec[0] = a.mVec;
             mVec[1] = b.mVec;
             return *this;
         }
         // PACKLO
-        inline SIMDVec_f & packlo(SIMDVec_f<float, 8> const & a) {
+        UME_FORCE_INLINE SIMDVec_f & packlo(SIMDVec_f<float, 8> const & a) {
             mVec[0] = a.mVec;
             return *this;
         }
         // PACKHI
-        inline SIMDVec_f & packhi(SIMDVec_f<float, 8> const & b) {
+        UME_FORCE_INLINE SIMDVec_f & packhi(SIMDVec_f<float, 8> const & b) {
             mVec[1] = b.mVec;
             return *this;
         }
         // UNPACK
-        inline void unpack(SIMDVec_f<float, 8> & a, SIMDVec_f<float, 8> & b) const {
+        UME_FORCE_INLINE void unpack(SIMDVec_f<float, 8> & a, SIMDVec_f<float, 8> & b) const {
             a.mVec = mVec[0];
             b.mVec = mVec[1];
         }
         // UNPACKLO
-        inline SIMDVec_f<float, 8> unpacklo() const {
+        UME_FORCE_INLINE SIMDVec_f<float, 8> unpacklo() const {
             return SIMDVec_f<float, 8>(mVec[0]);
         }
         // UNPACKHI
-        inline SIMDVec_f<float, 8> unpackhi() const {
+        UME_FORCE_INLINE SIMDVec_f<float, 8> unpackhi() const {
             return SIMDVec_f<float, 8>(mVec[1]);
         }
 
         // PROMOTE
-        inline operator SIMDVec_f<double, 16>() const;
+        UME_FORCE_INLINE operator SIMDVec_f<double, 16>() const;
         // DEGRADE
         // -
 
         // FTOU
-        inline operator SIMDVec_u<uint32_t, 16>() const;
+        UME_FORCE_INLINE operator SIMDVec_u<uint32_t, 16>() const;
         // FTOI
-        inline operator SIMDVec_i<int32_t, 16>() const;
+        UME_FORCE_INLINE operator SIMDVec_i<int32_t, 16>() const;
     };
 }
 }
