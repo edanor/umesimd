@@ -401,9 +401,9 @@ namespace SIMD {
         // to be promoted to SCALAR_TYPE instead of SCALAR_TYPE*. This prevents
         // ambiguity between SET-CONSTR and LOAD-CONSTR.
         template<typename T>
-        inline SIMDVec_u(
+        UME_FORCE_INLINE SIMDVec_u(
             T i, 
-            typename std::enable_if< (std::is_integral<T>::value) && 
+            typename std::enable_if< (std::is_fundamental<T>::value) && 
                                     !std::is_same<T, SCALAR_UINT_TYPE>::value,
                                     void*>::type = nullptr)
         : SIMDVec_u(static_cast<SCALAR_UINT_TYPE>(i)) {}
@@ -2093,7 +2093,7 @@ namespace SIMD {
             return retval;
         }
         // BANDS
-        UME_FORCE_INLINE SIMDVec_u band(int32_t b) const {
+        UME_FORCE_INLINE SIMDVec_u band(SCALAR_UINT_TYPE b) const {
             SIMDVec_u retval;
             SCALAR_UINT_TYPE * local_retval_ptr = &retval.mVec[0];
             SCALAR_UINT_TYPE const * local_ptr = &mVec[0];
@@ -2103,11 +2103,11 @@ namespace SIMD {
             }
             return retval;
         }
-        UME_FORCE_INLINE SIMDVec_u operator& (int32_t b) const {
+        UME_FORCE_INLINE SIMDVec_u operator& (SCALAR_UINT_TYPE b) const {
             return band(b);
         }
         // MBANDS
-        UME_FORCE_INLINE SIMDVec_u band(SIMDVecMask<VEC_LEN> const & mask, int32_t b) const {
+        UME_FORCE_INLINE SIMDVec_u band(SIMDVecMask<VEC_LEN> const & mask, SCALAR_UINT_TYPE b) const {
             SIMDVec_u retval;
             SCALAR_UINT_TYPE * local_retval_ptr = &retval.mVec[0];
             SCALAR_UINT_TYPE const * local_ptr = &mVec[0];
@@ -2144,7 +2144,7 @@ namespace SIMD {
             return *this;
         }
         // BANDSA
-        UME_FORCE_INLINE SIMDVec_u & banda(int32_t b) {
+        UME_FORCE_INLINE SIMDVec_u & banda(SCALAR_UINT_TYPE b) {
             SCALAR_UINT_TYPE * local_ptr = &mVec[0];
             #pragma omp simd safelen(VEC_LEN)
             for(unsigned int i = 0; i < VEC_LEN; i++) {
@@ -2156,7 +2156,7 @@ namespace SIMD {
             return banda(b);
         }
         // MBANDSA
-        UME_FORCE_INLINE SIMDVec_u & banda(SIMDVecMask<VEC_LEN> const & mask, int32_t b) {
+        UME_FORCE_INLINE SIMDVec_u & banda(SIMDVecMask<VEC_LEN> const & mask, SCALAR_UINT_TYPE b) {
             SCALAR_UINT_TYPE * local_ptr = &mVec[0];
             bool const * local_mask_ptr = &mask.mMask[0];
             #pragma omp simd safelen(VEC_LEN)
@@ -2195,7 +2195,7 @@ namespace SIMD {
             return retval;
         }
         // BORS
-        UME_FORCE_INLINE SIMDVec_u bor(int32_t b) const {
+        UME_FORCE_INLINE SIMDVec_u bor(SCALAR_UINT_TYPE b) const {
             SIMDVec_u retval;
             SCALAR_UINT_TYPE * local_retval_ptr = &retval.mVec[0];
             SCALAR_UINT_TYPE const * local_ptr = &mVec[0];
@@ -2205,11 +2205,11 @@ namespace SIMD {
             }
             return retval;
         }
-        UME_FORCE_INLINE SIMDVec_u operator| (int32_t b) const {
+        UME_FORCE_INLINE SIMDVec_u operator| (SCALAR_UINT_TYPE b) const {
             return bor(b);
         }
         // MBORS
-        UME_FORCE_INLINE SIMDVec_u bor(SIMDVecMask<VEC_LEN> const & mask, int32_t b) const {
+        UME_FORCE_INLINE SIMDVec_u bor(SIMDVecMask<VEC_LEN> const & mask, SCALAR_UINT_TYPE b) const {
             SIMDVec_u retval;
             SCALAR_UINT_TYPE * local_retval_ptr = &retval.mVec[0];
             SCALAR_UINT_TYPE const * local_ptr = &mVec[0];
@@ -2246,7 +2246,7 @@ namespace SIMD {
             return *this;
         }
         // BORSA
-        UME_FORCE_INLINE SIMDVec_u & bora(int32_t b) {
+        UME_FORCE_INLINE SIMDVec_u & bora(SCALAR_UINT_TYPE b) {
             SCALAR_UINT_TYPE * local_ptr = &mVec[0];
             #pragma omp simd safelen(VEC_LEN)
             for(unsigned int i = 0; i < VEC_LEN; i++) {
@@ -2254,11 +2254,11 @@ namespace SIMD {
             }
             return *this;
         }
-        UME_FORCE_INLINE SIMDVec_u & operator|= (int32_t b) {
+        UME_FORCE_INLINE SIMDVec_u & operator|= (SCALAR_UINT_TYPE b) {
             return bora(b);
         }
         // MBORSA
-        UME_FORCE_INLINE SIMDVec_u & bora(SIMDVecMask<VEC_LEN> const & mask, int32_t b) {
+        UME_FORCE_INLINE SIMDVec_u & bora(SIMDVecMask<VEC_LEN> const & mask, SCALAR_UINT_TYPE b) {
             SCALAR_UINT_TYPE * local_ptr = &mVec[0];
             bool const * local_mask_ptr = &mask.mMask[0];
             #pragma omp simd safelen(VEC_LEN)
@@ -2297,7 +2297,7 @@ namespace SIMD {
             return retval;
         }
         // BXORS
-        UME_FORCE_INLINE SIMDVec_u bxor(int32_t b) const {
+        UME_FORCE_INLINE SIMDVec_u bxor(SCALAR_UINT_TYPE b) const {
             SIMDVec_u retval;
             SCALAR_UINT_TYPE * local_retval_ptr = &retval.mVec[0];
             SCALAR_UINT_TYPE const * local_ptr = &mVec[0];
@@ -2307,11 +2307,11 @@ namespace SIMD {
             }
             return retval;
         }
-        UME_FORCE_INLINE SIMDVec_u operator^ (int32_t b) const {
+        UME_FORCE_INLINE SIMDVec_u operator^ (SCALAR_UINT_TYPE b) const {
             return bxor(b);
         }
         // MBXORS
-        UME_FORCE_INLINE SIMDVec_u bxor(SIMDVecMask<VEC_LEN> const & mask, int32_t b) const {
+        UME_FORCE_INLINE SIMDVec_u bxor(SIMDVecMask<VEC_LEN> const & mask, SCALAR_UINT_TYPE b) const {
             SIMDVec_u retval;
             SCALAR_UINT_TYPE * local_retval_ptr = &retval.mVec[0];
             SCALAR_UINT_TYPE const * local_ptr = &mVec[0];
@@ -2348,7 +2348,7 @@ namespace SIMD {
             return *this;
         }
         // BXORSA
-        UME_FORCE_INLINE SIMDVec_u & bxora(int32_t b) {
+        UME_FORCE_INLINE SIMDVec_u & bxora(SCALAR_UINT_TYPE b) {
             SCALAR_UINT_TYPE * local_ptr = &mVec[0];
             #pragma omp simd safelen(VEC_LEN)
             for(unsigned int i = 0; i < VEC_LEN; i++) {
@@ -2356,11 +2356,11 @@ namespace SIMD {
             }
             return *this;
         }
-        UME_FORCE_INLINE SIMDVec_u & operator^= (int32_t b) {
+        UME_FORCE_INLINE SIMDVec_u & operator^= (SCALAR_UINT_TYPE b) {
             return bxora(b);
         }
         // MBXORSA
-        UME_FORCE_INLINE SIMDVec_u & bxora(SIMDVecMask<VEC_LEN> const & mask, int32_t b) {
+        UME_FORCE_INLINE SIMDVec_u & bxora(SIMDVecMask<VEC_LEN> const & mask, SCALAR_UINT_TYPE b) {
             SCALAR_UINT_TYPE * local_ptr = &mVec[0];
             bool const * local_mask_ptr = &mask.mMask[0];
             #pragma omp simd safelen(VEC_LEN)
