@@ -267,9 +267,9 @@ namespace SIMD {
         // to be promoted to SCALAR_TYPE instead of SCALAR_TYPE*. This prevents
         // ambiguity between SET-CONSTR and LOAD-CONSTR.
         template<typename T>
-        inline SIMDVec_f(
+        UME_FORCE_INLINE SIMDVec_f(
             T i, 
-            typename std::enable_if< std::is_floating_point<T>::value && 
+            typename std::enable_if< std::is_fundamental<T>::value && 
                                     !std::is_same<T, SCALAR_FLOAT_TYPE>::value,
                                     void*>::type = nullptr)
         : SIMDVec_f(static_cast<SCALAR_FLOAT_TYPE>(i)) {}
