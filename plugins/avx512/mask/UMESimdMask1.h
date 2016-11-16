@@ -66,6 +66,10 @@ namespace SIMD {
         UME_FORCE_INLINE explicit SIMDVecMask(bool const * p) {
             mMask = p[0];
         }
+
+#include "../../../utilities/ignore_warnings_push.h"
+#include "../../../utilities/ignore_warnings_unused_parameter.h"
+
         // EXTRACT
         UME_FORCE_INLINE bool extract(uint32_t index) const {
             return mMask;
@@ -79,6 +83,9 @@ namespace SIMD {
         UME_FORCE_INLINE void insert(uint32_t index, bool x) {
             mMask = x;
         }
+
+#include "../../../utilities/ignore_warnings_pop.h"
+
         // LOAD
         UME_FORCE_INLINE SIMDVecMask & load(bool * p) {
             mMask = p[0];

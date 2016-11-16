@@ -103,7 +103,7 @@ namespace SIMD {
         template<typename T>
         UME_FORCE_INLINE SIMDVec_u(
             T i, 
-            typename std::enable_if< std::is_same<T, int>::value && 
+            typename std::enable_if< std::is_fundamental<T>::value && 
                                     !std::is_same<T, uint64_t>::value,
                                     void*>::type = nullptr)
         : SIMDVec_u(static_cast<uint64_t>(i)) {}
@@ -1382,8 +1382,8 @@ namespace SIMD {
         UME_FORCE_INLINE uint32_t imax() const {
             alignas(32) uint64_t raw[4];
             _mm256_store_si256((__m256i*)raw, mVec);
-            uint64_t t0 = raw[0] > raw[1] ? 0 : 1;
-            uint64_t t1 = raw[2] > raw[3] ? 2 : 3;
+            uint32_t t0 = raw[0] > raw[1] ? 0 : 1;
+            uint32_t t1 = raw[2] > raw[3] ? 2 : 3;
             return raw[t0] > raw[t1] ? t0 : t1;
         }
         // MIMAX
@@ -1436,7 +1436,7 @@ namespace SIMD {
             return raw[t0] < raw[t1] ? t0 : t1;
         }
         // MIMIN
-        UME_FORCE_INLINE uint64_t imin(SIMDVecMask<4> const & mask) const {
+        UME_FORCE_INLINE uint32_t imin(SIMDVecMask<4> const & mask) const {
             alignas(32) uint64_t raw[4];
             _mm256_store_si256((__m256i*)raw, mVec);
             uint32_t i0 = 0xFFFFFFFF;

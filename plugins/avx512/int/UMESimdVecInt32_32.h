@@ -82,7 +82,7 @@ namespace SIMD {
         template<typename T>
         UME_FORCE_INLINE SIMDVec_i(
             T i, 
-            typename std::enable_if< std::is_same<T, int>::value && 
+            typename std::enable_if< std::is_fundamental<T>::value && 
                                     !std::is_same<T, int32_t>::value,
                                     void*>::type = nullptr)
         : SIMDVec_i(static_cast<int32_t>(i)) {}
@@ -1960,8 +1960,6 @@ namespace SIMD {
         }
         // MHBXOR
         UME_FORCE_INLINE int32_t hbxor(SIMDVecMask<32> const & mask) const {
-            __mmask16 m0 = mask.mMask & 0x0000FFFF;
-            __mmask16 m1 = (mask.mMask & 0xFFFF0000) >> 16;
             alignas(64) int32_t raw[32];
             _mm512_store_si512((__m512i*)raw, mVec[0]);
             _mm512_store_si512((__m512i*)(raw + 16), mVec[1]);

@@ -78,7 +78,7 @@ namespace SIMD {
         template<typename T>
         UME_FORCE_INLINE SIMDVec_i(
             T i, 
-            typename std::enable_if< std::is_same<T, int>::value && 
+            typename std::enable_if< std::is_fundamental<T>::value && 
                                     !std::is_same<T, int32_t>::value,
                                     void*>::type = nullptr)
         : SIMDVec_i(static_cast<int32_t>(i)) {}
@@ -905,7 +905,7 @@ namespace SIMD {
         UME_FORCE_INLINE SIMDVecMask<2> cmpge (int32_t b) const {
             bool m0 = mVec[0] >= b;
             bool m1 = mVec[1] >= b;
-            return SIMDVecMask<2>(m0);
+            return SIMDVecMask<2>(m0, m1);
         }
         UME_FORCE_INLINE SIMDVecMask<2> operator>= (int32_t b) const {
             return cmpge(b);

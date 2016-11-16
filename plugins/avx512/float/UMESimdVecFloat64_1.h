@@ -82,7 +82,7 @@ namespace SIMD {
         template<typename T>
         UME_FORCE_INLINE SIMDVec_f(
             T i, 
-            typename std::enable_if< std::is_same<T, int>::value && 
+            typename std::enable_if< std::is_fundamental<T>::value && 
                                     !std::is_same<T, double>::value,
                                     void*>::type = nullptr)
         : SIMDVec_f(static_cast<double>(i)) {}
@@ -90,6 +90,10 @@ namespace SIMD {
         UME_FORCE_INLINE explicit SIMDVec_f(double const *p) {
             mVec = p[0];
         }
+
+#include "../../../utilities/ignore_warnings_push.h"
+#include "../../../utilities/ignore_warnings_unused_parameter.h"
+
         // EXTRACT
         UME_FORCE_INLINE double extract(uint32_t index) const {
             return mVec;
@@ -105,6 +109,8 @@ namespace SIMD {
         UME_FORCE_INLINE IntermediateIndex<SIMDVec_f, double> operator[] (uint32_t index) {
             return IntermediateIndex<SIMDVec_f, double>(index, static_cast<SIMDVec_f &>(*this));
         }
+
+#include "../../../utilities/ignore_warnings_pop.h"
 
         // Override Mask Access operators
 #if defined(USE_PARENTHESES_IN_MASK_ASSIGNMENT)
@@ -942,6 +948,9 @@ namespace SIMD {
             return mask.mMask ? 0 : 0xFFFFFFFF;
         }
 
+#include "../../../utilities/ignore_warnings_push.h"
+#include "../../../utilities/ignore_warnings_unused_parameter.h"
+
         // GATHERU
         UME_FORCE_INLINE SIMDVec_f & gatheru(double const * baseAddr, uint64_t stride) {
             mVec = baseAddr[0];
@@ -952,6 +961,9 @@ namespace SIMD {
             if (mask.mMask == true) mVec = baseAddr[0];
             return *this;
         }
+
+#include "../../../utilities/ignore_warnings_pop.h"
+
         // GATHERS
         UME_FORCE_INLINE SIMDVec_f & gather(double const * baseAddr, uint64_t const * indices) {
             mVec = baseAddr[indices[0]];
@@ -972,6 +984,10 @@ namespace SIMD {
             if (mask.mMask == true) mVec = baseAddr[indices[0]];
             return *this;
         }
+
+#include "../../../utilities/ignore_warnings_push.h"
+#include "../../../utilities/ignore_warnings_unused_parameter.h"
+
         // SCATTERU
         UME_FORCE_INLINE double* scatteru(double* baseAddr, uint64_t stride) const {
             baseAddr[0] = mVec;
@@ -982,6 +998,9 @@ namespace SIMD {
             if (mask.mMask == true) baseAddr[0] = mVec;
             return baseAddr;
         }
+
+#include "../../../utilities/ignore_warnings_pop.h"
+
         // SCATTERS
         UME_FORCE_INLINE double * scatter(double * baseAddr, uint64_t * indices) const {
             baseAddr[indices[0]] = mVec;

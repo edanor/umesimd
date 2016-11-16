@@ -105,7 +105,7 @@ namespace SIMD {
         template<typename T>
         UME_FORCE_INLINE SIMDVec_u(
             T i, 
-            typename std::enable_if< std::is_same<T, int>::value && 
+            typename std::enable_if< std::is_fundamental<T>::value && 
                                     !std::is_same<T, uint32_t>::value,
                                     void*>::type = nullptr)
         : SIMDVec_u(static_cast<uint32_t>(i)) {}

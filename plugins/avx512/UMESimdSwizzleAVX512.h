@@ -53,39 +53,39 @@ namespace SIMD {
 
         explicit SIMDSwizzle(uint32_t m0) {
             UME_EMULATION_WARNING();
-            for (int i = 0; i < VEC_LEN; i++) {
+            for (unsigned int i = 0; i < VEC_LEN; i++) {
                 mMaskElements[i] = m0;
             }
         }
 
         explicit SIMDSwizzle(uint32_t *m) {
             UME_EMULATION_WARNING();
-            for (int i = 0; i < VEC_LEN; i++) {
+            for (unsigned int i = 0; i < VEC_LEN; i++) {
                 mMaskElements[i] = m[i];
             }
         }
 
-        inline uint32_t extract(uint32_t index) const {
+        UME_FORCE_INLINE uint32_t extract(uint32_t index) const {
             UME_EMULATION_WARNING();
             return mMaskElements[index];
         }
 
         // A non-modifying element-wise access operator
-        inline uint32_t operator[] (uint32_t index) const {
+        UME_FORCE_INLINE uint32_t operator[] (uint32_t index) const {
             UME_EMULATION_WARNING();
             return mMaskElements[index];
         }
 
 
         // Element-wise modification operator
-        inline void insert(uint32_t index, uint32_t x) {
+        UME_FORCE_INLINE void insert(uint32_t index, uint32_t x) {
             UME_EMULATION_WARNING();
             mMaskElements[index] = x;
         }
 
         SIMDSwizzle(SIMDSwizzle const & mask) {
             UME_EMULATION_WARNING();
-            for (int i = 0; i < VEC_LEN; i++)
+            for (unsigned int i = 0; i < VEC_LEN; i++)
             {
                 mMaskElements[i] = mask.mMaskElements[i];
             }

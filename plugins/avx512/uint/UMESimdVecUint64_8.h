@@ -101,7 +101,7 @@ namespace SIMD {
         template<typename T>
         UME_FORCE_INLINE SIMDVec_u(
             T i, 
-            typename std::enable_if< std::is_same<T, int>::value && 
+            typename std::enable_if< std::is_fundamental<T>::value && 
                                     !std::is_same<T, uint64_t>::value,
                                     void*>::type = nullptr)
         : SIMDVec_u(static_cast<uint64_t>(i)) {}
@@ -1298,7 +1298,6 @@ namespace SIMD {
             uint64_t t0 = hmax();
             __m512i t1 = _mm512_set1_epi64(t0);
             __mmask8 t2 = _mm512_cmp_epu64_mask(mVec, t1, _MM_CMPINT_EQ);
-            __mmask8 t3 = t2 & mask.mMask;
             // De Brujin number is: 00011101
             const uint8_t deBrujinConst = 0x1D;
             const uint8_t deBrujinMap[8] = { 0, 1, 6, 2, 7, 5, 4, 3 };
@@ -1365,7 +1364,6 @@ namespace SIMD {
             uint64_t t0 = hmin();
             __m512i t1 = _mm512_set1_epi64(t0);
             __mmask8 t2 = _mm512_cmp_epu64_mask(mVec, t1, _MM_CMPINT_EQ);
-            __mmask8 t3 = t2 & mask.mMask;
             // De Brujin number is: 00011101
             const uint8_t deBrujinConst = 0x1D;
             const uint8_t deBrujinMap[8] = { 0, 1, 6, 2, 7, 5, 4, 3 };

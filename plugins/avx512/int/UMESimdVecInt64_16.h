@@ -115,7 +115,7 @@ namespace SIMD {
         template<typename T>
         UME_FORCE_INLINE SIMDVec_i(
             T i, 
-            typename std::enable_if< std::is_same<T, int>::value && 
+            typename std::enable_if< std::is_fundamental<T>::value && 
                                     !std::is_same<T, int64_t>::value,
                                     void*>::type = nullptr)
         : SIMDVec_i(static_cast<int64_t>(i)) {}
@@ -1536,7 +1536,7 @@ namespace SIMD {
             alignas(64) int64_t raw[8];
             __m512i t0 = _mm512_add_epi64(mVec[0], mVec[1]);
             _mm512_store_si512((__m512i *)raw, t0);
-            return raw[0] + raw[1] + raw[2]  + raw[3];
+            return b + raw[0] + raw[1] + raw[2]  + raw[3];
 #else
             int64_t retval = _mm512_reduce_add_epi64(mVec[0]);
             retval += _mm512_reduce_add_epi64(mVec[1]);
