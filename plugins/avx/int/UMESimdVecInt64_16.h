@@ -98,7 +98,7 @@ namespace SIMD {
     private:
         __m256i mVec[4];
 
-        inline explicit SIMDVec_i(__m256i & x0, __m256i & x1, __m256i & x2, __m256i &x3) { 
+        UME_FORCE_INLINE explicit SIMDVec_i(__m256i & x0, __m256i & x1, __m256i & x2, __m256i &x3) { 
             mVec[0] = x0; 
             mVec[1] = x1;
             mVec[2] = x2;
@@ -110,10 +110,10 @@ namespace SIMD {
         constexpr static uint32_t alignment() { return 32; }
 
         // ZERO-CONSTR
-        inline SIMDVec_i() {};
+        UME_FORCE_INLINE SIMDVec_i() {};
 
         // SET-CONSTR
-        inline SIMDVec_i(int64_t i) {
+        UME_FORCE_INLINE SIMDVec_i(int64_t i) {
             mVec[0] = SET1_EPI64(i);
             mVec[1] = SET1_EPI64(i);
             mVec[2] = SET1_EPI64(i);
@@ -123,16 +123,16 @@ namespace SIMD {
         // to be promoted to SCALAR_TYPE instead of SCALAR_TYPE*. This prevents
         // ambiguity between SET-CONSTR and LOAD-CONSTR.
         template<typename T>
-        inline SIMDVec_i(
+        UME_FORCE_INLINE SIMDVec_i(
             T i, 
-            typename std::enable_if< std::is_same<T, int>::value && 
+            typename std::enable_if< std::is_fundamental<T>::value &&
                                     !std::is_same<T, int64_t>::value,
                                     void*>::type = nullptr)
         : SIMDVec_i(static_cast<int64_t>(i)) {}
         // LOAD-CONSTR
-        inline explicit SIMDVec_i(int64_t const *p) { this->load(p); };
+        UME_FORCE_INLINE explicit SIMDVec_i(int64_t const *p) { this->load(p); };
         // FULL-CONSTR
-        inline SIMDVec_i(int64_t i0, int64_t i1, int64_t i2, int64_t i3, int64_t i4, int64_t i5, int64_t i6, int64_t i7,
+        UME_FORCE_INLINE SIMDVec_i(int64_t i0, int64_t i1, int64_t i2, int64_t i3, int64_t i4, int64_t i5, int64_t i6, int64_t i7,
                          int64_t i8, int64_t i9, int64_t i10, int64_t i11, int64_t i12, int64_t i13, int64_t i14, int64_t i15)
         {
             mVec[0] = _mm256_setr_epi64x(i0, i1, i2, i3);
@@ -141,7 +141,7 @@ namespace SIMD {
             mVec[3] = _mm256_setr_epi64x(i12, i13, i14, i15);
         }
         // EXTRACT
-        inline int64_t extract(uint32_t index) const {
+        UME_FORCE_INLINE int64_t extract(uint32_t index) const {
             //return _mm256_extract_epi32(mVec, index); // TODO: this can be implemented in ICC
             alignas(32) int64_t raw[4];
             if (index < 4) {
@@ -161,12 +161,12 @@ namespace SIMD {
                 return raw[index - 12];
             }
         }
-        inline int64_t operator[] (uint32_t index) const {
+        UME_FORCE_INLINE int64_t operator[] (uint32_t index) const {
             return extract(index);
         }
 
         // INSERT
-        inline SIMDVec_i & insert(uint32_t index, int64_t value) {
+        UME_FORCE_INLINE SIMDVec_i & insert(uint32_t index, int64_t value) {
             alignas(32) int64_t raw[4];
             if (index < 4) {
                 _mm256_store_si256((__m256i*)raw, mVec[0]);
@@ -190,17 +190,17 @@ namespace SIMD {
             }
             return *this;
         }
-        inline IntermediateIndex<SIMDVec_i, int64_t> operator[] (uint32_t index) {
+        UME_FORCE_INLINE IntermediateIndex<SIMDVec_i, int64_t> operator[] (uint32_t index) {
             return IntermediateIndex<SIMDVec_i, int64_t>(index, static_cast<SIMDVec_i &>(*this));
         }
 
         // Override Mask Access operators
 #if defined(USE_PARENTHESES_IN_MASK_ASSIGNMENT)
-        inline IntermediateMask<SIMDVec_i, int64_t, SIMDVecMask<16>> operator() (SIMDVecMask<16> const & mask) {
+        UME_FORCE_INLINE IntermediateMask<SIMDVec_i, int64_t, SIMDVecMask<16>> operator() (SIMDVecMask<16> const & mask) {
             return IntermediateMask<SIMDVec_i, int64_t, SIMDVecMask<16>>(mask, static_cast<SIMDVec_i &>(*this));
         }
 #else
-        inline IntermediateMask<SIMDVec_i, int64_t, SIMDVecMask<16>> operator[] (SIMDVecMask<16> const & mask) {
+        UME_FORCE_INLINE IntermediateMask<SIMDVec_i, int64_t, SIMDVecMask<16>> operator[] (SIMDVecMask<16> const & mask) {
             return IntermediateMask<SIMDVec_i, int64_t, SIMDVecMask<16>>(mask, static_cast<SIMDVec_i &>(*this));
         }
 #endif
@@ -210,12 +210,12 @@ namespace SIMD {
         // ****************************************************************************************
 
         // ASSIGNV
-        inline SIMDVec_i & operator=(SIMDVec_i const & b) {
+        UME_FORCE_INLINE SIMDVec_i & operator=(SIMDVec_i const & b) {
             return assign(b);
         }
         // MASSIGNV
         // ASSIGNS
-        inline SIMDVec_i & operator= (int64_t b) {
+        UME_FORCE_INLINE SIMDVec_i & operator= (int64_t b) {
             return assign(b);
         }
         // MASSIGNS
@@ -225,7 +225,7 @@ namespace SIMD {
         // PREFETCH2
 
         // LOAD
-        inline SIMDVec_i & load(int64_t const * p) {
+        UME_FORCE_INLINE SIMDVec_i & load(int64_t const * p) {
             mVec[0] = _mm256_loadu_si256((__m256i*)p);
             mVec[1] = _mm256_loadu_si256((__m256i*)(p + 4));
             mVec[2] = _mm256_loadu_si256((__m256i*)(p + 8));
@@ -233,7 +233,7 @@ namespace SIMD {
             return *this;
         }
         // MLOAD
-        inline SIMDVec_i & load(SIMDVecMask<16> const & mask, int64_t const * p) {
+        UME_FORCE_INLINE SIMDVec_i & load(SIMDVecMask<16> const & mask, int64_t const * p) {
             __m256i t0 = _mm256_loadu_si256((__m256i*)p);
             __m256i t1 = _mm256_loadu_si256((__m256i*)(p + 4));
             __m256i t2 = _mm256_loadu_si256((__m256i*)(p + 8));
@@ -247,7 +247,7 @@ namespace SIMD {
             return *this;
         }
         // LOADA
-        inline SIMDVec_i & loada(int64_t const * p) {
+        UME_FORCE_INLINE SIMDVec_i & loada(int64_t const * p) {
             mVec[0] = _mm256_load_si256((__m256i*)p);
             mVec[1] = _mm256_load_si256((__m256i*)(p + 4));
             mVec[2] = _mm256_load_si256((__m256i*)(p + 8));
@@ -255,7 +255,7 @@ namespace SIMD {
             return *this;
         }
         // MLOADA
-        inline SIMDVec_i & loada(SIMDVecMask<16> const & mask, int64_t const * p) {
+        UME_FORCE_INLINE SIMDVec_i & loada(SIMDVecMask<16> const & mask, int64_t const * p) {
             __m256i t0 = _mm256_load_si256((__m256i*)p);
             __m256i t1 = _mm256_load_si256((__m256i*)(p + 4));
             __m256i t2 = _mm256_load_si256((__m256i*)(p + 8));
@@ -267,7 +267,7 @@ namespace SIMD {
             return *this;
         }
         // STORE
-        inline int64_t * store(int64_t * p) const {
+        UME_FORCE_INLINE int64_t * store(int64_t * p) const {
             _mm256_storeu_si256((__m256i*) p, mVec[0]);
             _mm256_storeu_si256((__m256i*) (p + 4), mVec[1]);
             _mm256_storeu_si256((__m256i*) (p + 8), mVec[2]);
@@ -275,7 +275,7 @@ namespace SIMD {
             return p;
         }
         // MSTORE
-        inline int64_t * store(SIMDVecMask<16> const & mask, int64_t * p) const {
+        UME_FORCE_INLINE int64_t * store(SIMDVecMask<16> const & mask, int64_t * p) const {
             __m256i t0 = _mm256_loadu_si256((__m256i*)p);
             __m256i t1 = _mm256_loadu_si256((__m256i*)(p + 4));
             __m256i t2 = _mm256_loadu_si256((__m256i*)(p + 8));
@@ -291,7 +291,7 @@ namespace SIMD {
             return p;
         }
         // STOREA
-        inline int64_t * storea(int64_t * p) const {
+        UME_FORCE_INLINE int64_t * storea(int64_t * p) const {
             _mm256_store_si256((__m256i *)p, mVec[0]);
             _mm256_store_si256((__m256i *)(p + 4), mVec[1]);
             _mm256_store_si256((__m256i *)(p + 8), mVec[2]);
@@ -299,7 +299,7 @@ namespace SIMD {
             return p;
         }
         // MSTOREA
-        inline int64_t * storea(SIMDVecMask<16> const & mask, int64_t * p) const {
+        UME_FORCE_INLINE int64_t * storea(SIMDVecMask<16> const & mask, int64_t * p) const {
             __m256i t0 = _mm256_load_si256((__m256i*)p);
             __m256i t1 = _mm256_load_si256((__m256i*)(p + 4));
             __m256i t2 = _mm256_load_si256((__m256i*)(p + 8));
@@ -551,12 +551,12 @@ namespace SIMD {
         // PROMOTE
         // -
         // DEGRADE
-        inline operator SIMDVec_i<int32_t, 16>() const;
+        UME_FORCE_INLINE operator SIMDVec_i<int32_t, 16>() const;
 
         // ITOU
-        inline operator SIMDVec_u<uint64_t, 16>() const;
+        UME_FORCE_INLINE operator SIMDVec_u<uint64_t, 16>() const;
         // ITOF
-        inline operator SIMDVec_f<double, 16>() const;
+        UME_FORCE_INLINE operator SIMDVec_f<double, 16>() const;
     };
 
 }

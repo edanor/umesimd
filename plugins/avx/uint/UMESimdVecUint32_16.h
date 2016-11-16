@@ -59,23 +59,23 @@ namespace SIMD {
         __m256i mVecLo;
         __m256i mVecHi;
 
-        inline explicit SIMDVec_u(__m256i & x_lo, __m256i & x_hi) {
+        UME_FORCE_INLINE explicit SIMDVec_u(__m256i & x_lo, __m256i & x_hi) {
             mVecLo = x_lo;
             mVecHi = x_hi;
         }
-        inline explicit SIMDVec_u(const __m256i & x_lo, const __m256i & x_hi) {
+        UME_FORCE_INLINE explicit SIMDVec_u(const __m256i & x_lo, const __m256i & x_hi) {
             mVecLo = x_lo;
             mVecHi = x_hi;
         }
     public:
         // ZERO-CONSTR
-        inline SIMDVec_u() {
+        UME_FORCE_INLINE SIMDVec_u() {
             mVecLo = _mm256_setzero_si256();
             mVecHi = mVecLo;
         }
 
         // SET-CONSTR
-        inline SIMDVec_u(uint32_t i) {
+        UME_FORCE_INLINE SIMDVec_u(uint32_t i) {
             mVecLo = _mm256_set1_epi32(i);
             mVecHi = mVecLo;
         }
@@ -83,19 +83,19 @@ namespace SIMD {
         // to be promoted to SCALAR_TYPE instead of SCALAR_TYPE*. This prevents
         // ambiguity between SET-CONSTR and LOAD-CONSTR.
         template<typename T>
-        inline SIMDVec_u(
+        UME_FORCE_INLINE SIMDVec_u(
             T i, 
-            typename std::enable_if< std::is_same<T, int>::value && 
+            typename std::enable_if< std::is_fundamental<T>::value && 
                                     !std::is_same<T, uint32_t>::value,
                                     void*>::type = nullptr)
         : SIMDVec_u(static_cast<uint32_t>(i)) {}
         // LOAD-CONSTR
-        inline explicit SIMDVec_u(uint32_t const * p) {
+        UME_FORCE_INLINE explicit SIMDVec_u(uint32_t const * p) {
             mVecLo = _mm256_loadu_si256((__m256i*)p);
             mVecHi = _mm256_loadu_si256((__m256i*)(p + 8));
         }
 
-        inline SIMDVec_u(uint32_t i0, uint32_t i1, uint32_t i2, uint32_t i3,
+        UME_FORCE_INLINE SIMDVec_u(uint32_t i0, uint32_t i1, uint32_t i2, uint32_t i3,
             uint32_t i4, uint32_t i5, uint32_t i6, uint32_t i7,
             uint32_t i8, uint32_t i9, uint32_t i10, uint32_t i11,
             uint32_t i12, uint32_t i13, uint32_t i14, uint32_t i15)
@@ -105,7 +105,7 @@ namespace SIMD {
         }
 
         // EXTRACT
-        inline uint32_t extract(uint32_t index) const {
+        UME_FORCE_INLINE uint32_t extract(uint32_t index) const {
             //UME_PERFORMANCE_UNOPTIMAL_WARNING(); // This routine can be optimized
             alignas(32) uint32_t raw[8];
             uint32_t value;
@@ -119,12 +119,12 @@ namespace SIMD {
             }
             return value;
         }
-        inline uint32_t operator[] (uint32_t index) const {
+        UME_FORCE_INLINE uint32_t operator[] (uint32_t index) const {
             return extract(index);
         }
 
         // INSERT
-        inline SIMDVec_u & insert(uint32_t index, uint32_t value) {
+        UME_FORCE_INLINE SIMDVec_u & insert(uint32_t index, uint32_t value) {
             //UME_PERFORMANCE_UNOPTIMAL_WARNING();
             alignas(32) uint32_t raw[8];
             if (index < 8) {
@@ -139,41 +139,41 @@ namespace SIMD {
             }
             return *this;
         }
-        inline IntermediateIndex<SIMDVec_u, uint32_t> operator[] (uint32_t index) {
+        UME_FORCE_INLINE IntermediateIndex<SIMDVec_u, uint32_t> operator[] (uint32_t index) {
             return IntermediateIndex<SIMDVec_u, uint32_t>(index, static_cast<SIMDVec_u &>(*this));
         }
 
         // Override Mask Access operators
 #if defined(USE_PARENTHESES_IN_MASK_ASSIGNMENT)
-        inline IntermediateMask<SIMDVec_u, uint32_t, SIMDVecMask<16>> operator() (SIMDVecMask<16> const & mask) {
+        UME_FORCE_INLINE IntermediateMask<SIMDVec_u, uint32_t, SIMDVecMask<16>> operator() (SIMDVecMask<16> const & mask) {
             return IntermediateMask<SIMDVec_u, uint32_t, SIMDVecMask<16>>(mask, static_cast<SIMDVec_u &>(*this));
         }
 #else
-        inline IntermediateMask<SIMDVec_u, uint32_t, SIMDVecMask<16>> operator[] (SIMDVecMask<16> const & mask) {
+        UME_FORCE_INLINE IntermediateMask<SIMDVec_u, uint32_t, SIMDVecMask<16>> operator[] (SIMDVecMask<16> const & mask) {
             return IntermediateMask<SIMDVec_u, uint32_t, SIMDVecMask<16>>(mask, static_cast<SIMDVec_u &>(*this));
         }
 #endif
 
         // ASSIGNV
-        inline SIMDVec_u & operator= (SIMDVec_u const & b) {
+        UME_FORCE_INLINE SIMDVec_u & operator= (SIMDVec_u const & b) {
             return assign(b);
         }
         // MASSIGNV
         // ASSIGNS
-        inline SIMDVec_u & operator= (uint32_t b) {
+        UME_FORCE_INLINE SIMDVec_u & operator= (uint32_t b) {
             return assign(b);
         }
         // MASSIGNS
 
         // PROMOTE
-        inline operator SIMDVec_u<uint64_t, 16>() const;
+        UME_FORCE_INLINE operator SIMDVec_u<uint64_t, 16>() const;
         // DEGRADE
-        inline operator SIMDVec_u<uint16_t, 16>() const;
+        UME_FORCE_INLINE operator SIMDVec_u<uint16_t, 16>() const;
 
         // UTOI
-        inline operator SIMDVec_i<int32_t, 16>() const;
+        UME_FORCE_INLINE operator SIMDVec_i<int32_t, 16>() const;
         // UTOF
-        inline operator SIMDVec_f<float, 16>() const;
+        UME_FORCE_INLINE operator SIMDVec_f<float, 16>() const;
     };
 }
 }
