@@ -47,6 +47,7 @@ namespace SIMD {
             float,
             1,
             uint32_t,
+            int32_t,
             SIMDVecMask<1>,
             SIMDSwizzle<1>>
     {
@@ -73,7 +74,7 @@ namespace SIMD {
         template<typename T>
         UME_FORCE_INLINE SIMDVec_f(
             T i, 
-            typename std::enable_if< std::is_same<T, int>::value && 
+            typename std::enable_if< std::is_fundamental<T>::value && 
                                     !std::is_same<T, float>::value,
                                     void*>::type = nullptr)
         : SIMDVec_f(static_cast<float>(i)) {}

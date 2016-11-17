@@ -48,6 +48,7 @@ namespace SIMD {
             double,
             2,
             uint64_t,
+            int64_t,
             SIMDVecMask<2>,
             SIMDSwizzle<2 >> ,
         public SIMDVecPackableInterface<
@@ -79,7 +80,7 @@ namespace SIMD {
         template<typename T>
         inline SIMDVec_f(
             T i, 
-            typename std::enable_if< std::is_same<T, int>::value && 
+            typename std::enable_if< std::is_fundamental<T>::value && 
                                     !std::is_same<T, double>::value,
                                     void*>::type = nullptr)
         : SIMDVec_f(static_cast<double>(i)) {}

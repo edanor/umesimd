@@ -67,6 +67,7 @@ namespace SIMD {
             double,
             4,
             uint64_t,
+            int64_t,
             SIMDVecMask<4>, // Using non-standard mask!
             SIMDSwizzle<4>> ,
         public SIMDVecPackableInterface<

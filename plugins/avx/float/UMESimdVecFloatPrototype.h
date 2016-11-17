@@ -225,6 +225,7 @@ namespace SIMD {
             SCALAR_FLOAT_TYPE,
             VEC_LEN,
             typename SIMDVec_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::SCALAR_UINT_TYPE,
+            typename SIMDVec_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::SCALAR_INT_TYPE,
             typename SIMDVec_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::MASK_TYPE,
             typename SIMDVec_f_traits<SCALAR_FLOAT_TYPE, VEC_LEN>::SWIZZLE_MASK_TYPE>,
         public SIMDVecPackableInterface<
@@ -261,7 +262,7 @@ namespace SIMD {
         template<typename T>
         inline SIMDVec_f(
             T i, 
-            typename std::enable_if< std::is_same<T, int>::value && 
+            typename std::enable_if< std::is_fundamental<T>::value && 
                                     !std::is_same<T, SCALAR_FLOAT_TYPE>::value,
                                     void*>::type = nullptr)
         : SIMDVec_f(static_cast<SCALAR_FLOAT_TYPE>(i)) {}

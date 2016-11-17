@@ -48,6 +48,7 @@ namespace SIMD {
             double,
             1,
             uint64_t,
+            int64_t,
             SIMDVecMask<1>,
             SIMDSwizzle<1>>
     {

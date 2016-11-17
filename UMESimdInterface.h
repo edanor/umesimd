@@ -3030,6 +3030,7 @@ namespace SIMD
              typename SCALAR_FLOAT_TYPE, 
              uint32_t VEC_LEN,
              typename SCALAR_UINT_TYPE,
+             typename SCALAR_INT_TYPE,
              typename MASK_TYPE,
              typename SWIZZLE_MASK_TYPE>
     class SIMDVecFloatInterface :  
@@ -3057,6 +3058,7 @@ namespace SIMD
                     SCALAR_FLOAT_TYPE,
                     VEC_LEN, 
                     SCALAR_UINT_TYPE,
+                    SCALAR_INT_TYPE,
                     MASK_TYPE,
                     SWIZZLE_MASK_TYPE> VEC_TYPE;
 
@@ -3198,13 +3200,13 @@ namespace SIMD
         // TRUNC
         UME_FORCE_INLINE DERIVED_VEC_INT_TYPE trunc () const {
             UME_EMULATION_WARNING();
-            return SCALAR_EMULATION::MATH::truncToInt<DERIVED_VEC_TYPE, SCALAR_FLOAT_TYPE, DERIVED_VEC_INT_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this));
+            return SCALAR_EMULATION::MATH::truncToInt<DERIVED_VEC_TYPE, SCALAR_FLOAT_TYPE, DERIVED_VEC_INT_TYPE, SCALAR_INT_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // MTRUNC
         UME_FORCE_INLINE DERIVED_VEC_INT_TYPE trunc (MASK_TYPE const & mask) const {
             UME_EMULATION_WARNING();
-            return SCALAR_EMULATION::MATH::truncToInt<DERIVED_VEC_TYPE, SCALAR_FLOAT_TYPE, DERIVED_VEC_INT_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE const &>(*this));
+            return SCALAR_EMULATION::MATH::truncToInt<DERIVED_VEC_TYPE, SCALAR_FLOAT_TYPE, DERIVED_VEC_INT_TYPE, SCALAR_INT_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
         // FLOOR

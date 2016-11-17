@@ -3296,20 +3296,20 @@ namespace SCALAR_EMULATION
         }
 
         // TRUNC
-        template<typename VEC_TYPE, typename SCALAR_TYPE, typename INT_VEC_TYPE>
+        template<typename VEC_TYPE, typename SCALAR_TYPE, typename INT_VEC_TYPE, typename SCALAR_INT_TYPE>
         UME_FORCE_INLINE INT_VEC_TYPE truncToInt(VEC_TYPE const & a) {
             INT_VEC_TYPE retval;
             for (uint32_t i = 0; i < VEC_TYPE::length(); i++) {
-                retval.insert(i, SCALAR_TYPE(std::trunc(a[i])));
+                retval.insert(i, SCALAR_INT_TYPE(std::trunc(a[i])));
             }
             return retval;
         }
         // MTRUNC
-        template<typename VEC_TYPE, typename SCALAR_TYPE, typename INT_VEC_TYPE, typename MASK_TYPE>
+        template<typename VEC_TYPE, typename SCALAR_TYPE, typename INT_VEC_TYPE, typename SCALAR_INT_TYPE, typename MASK_TYPE>
         UME_FORCE_INLINE INT_VEC_TYPE truncToInt(MASK_TYPE const & mask, VEC_TYPE const & a) {
             INT_VEC_TYPE retval;
             for (uint32_t i = 0; i < VEC_TYPE::length(); i++) {
-                if (mask[i] == true) retval.insert(i, SCALAR_TYPE(std::trunc(a[i])));
+                if (mask[i] == true) retval.insert(i, SCALAR_INT_TYPE(std::trunc(a[i])));
                 else retval.insert(i, 0);
             }
             return retval;
