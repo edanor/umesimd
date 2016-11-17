@@ -12,6 +12,16 @@ matrix:
           packages:
             - g++-4.9
       env: COMPILER=g++-4.9
+      env: INSTR_SET=scalar
+    - compiler: gcc
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-4.9
+      env: COMPILER=g++-4.9
+      env: INSTR_SET=avx
     - compiler: gcc
       addons:
         apt:
@@ -20,6 +30,25 @@ matrix:
           packages:
             - g++-5
       env: COMPILER=g++-5
+      env: INSTR_SET=scalar
+    - compiler: gcc
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-5
+      env: COMPILER=g++-5
+      env: INSTR_SET=avx
+    - compiler: gcc
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-5
+      env: COMPILER=g++-5
+      env: INSTR_SET=avx2
     - compiler: gcc
       addons:
         apt:
@@ -28,6 +57,43 @@ matrix:
           packages:
             - g++-6
       env: COMPILER=g++-6
+      env: INSTR_SET=scalar
+    - compiler: gcc
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-6
+      env: COMPILER=g++-6
+      env: INSTR_SET=avx
+    - compiler: gcc
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-6
+      env: COMPILER=g++-6
+      env: INSTR_SET=avx2
+    - compiler: gcc
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-6
+      env: COMPILER=g++-6
+      env: INSTR_SET=mic_avx512
+    - compiler: gcc
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-6
+      env: COMPILER=g++-6
+      env: INSTR_SET=core_avx512
     - compiler: clang
       addons:
         apt:
@@ -37,6 +103,27 @@ matrix:
           packages:
             - clang-3.6
       env: COMPILER=clang++-3.6
+      env: INSTR_SET=scalar
+    - compiler: clang
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-precise-3.6
+          packages:
+            - clang-3.6
+      env: COMPILER=clang++-3.6
+      env: INSTR_SET=avx
+    - compiler: clang
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-precise-3.6
+          packages:
+            - clang-3.6
+      env: COMPILER=clang++-3.6
+      env: INSTR_SET=avx2
     - compiler: clang
       addons:
         apt:
@@ -46,6 +133,27 @@ matrix:
           packages:
             - clang-3.7
       env: COMPILER=clang++-3.7
+      env: INSTR_SET=scalar
+    - compiler: clang
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-precise-3.7
+          packages:
+            - clang-3.7
+      env: COMPILER=clang++-3.7
+      env: INSTR_SET=avx
+    - compiler: clang
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-precise-3.7
+          packages:
+            - clang-3.7
+      env: COMPILER=clang++-3.7
+      env: INSTR_SET=avx2
     - compiler: clang
       addons:
         apt:
@@ -55,18 +163,101 @@ matrix:
           packages:
             - clang-3.8
       env: COMPILER=clang++-3.8
+      env: INSTR_SET=scalar
     - compiler: clang
       addons:
         apt:
           sources:
             - ubuntu-toolchain-r-test
-            - llvm-toolchain-precise-3.9
+            - llvm-toolchain-precise-3.8
+          packages:
+            - clang-3.8
+      env: COMPILER=clang++-3.8
+      env: INSTR_SET=avx
+    - compiler: clang
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-precise-3.8
+          packages:
+            - clang-3.8
+      env: COMPILER=clang++-3.8
+      env: INSTR_SET=avx2
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-precise-3.8
+          packages:
+            - clang-3.8
+      env: COMPILER=clang++-3.8
+      env: INSTR_SET=mic_avx512
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-precise-3.8
+          packages:
+            - clang-3.8
+      env: COMPILER=clang++-3.8
+      env: INSTR_SET=core_avx512
+    - compiler: clang
+      addons:
+        apt:
+          sources:
+            - sourceline: "deb http://apt.llvm.org/trusty/ llvm-toolchain-trusty-3.9 main"
+              key_url: "http://apt.llvm.org/llvm-snapshot.gpg.key"
+            - ubuntu-toolchain-r-test
           packages:
             - clang-3.9
       env: COMPILER=clang++-3.9
+      env: INSTR_SET=scalar
+    - compiler: clang
+      addons:
+        apt:
+          sources:
+            - sourceline: "deb http://apt.llvm.org/trusty/ llvm-toolchain-trusty-3.9 main"
+              key_url: "http://apt.llvm.org/llvm-snapshot.gpg.key"
+            - ubuntu-toolchain-r-test
+          packages:
+            - clang-3.9
+      env: COMPILER=clang++-3.9
+      env: INSTR_SET=avx
+    - compiler: clang
+      addons:
+        apt:
+          sources:
+            - sourceline: "deb http://apt.llvm.org/trusty/ llvm-toolchain-trusty-3.9 main"
+              key_url: "http://apt.llvm.org/llvm-snapshot.gpg.key"
+            - ubuntu-toolchain-r-test
+          packages:
+            - clang-3.9
+      env: COMPILER=clang++-3.9
+      env: INSTR_SET=avx2
+    - compiler: clang
+      addons:
+        apt:
+          sources:
+            - sourceline: "deb http://apt.llvm.org/trusty/ llvm-toolchain-trusty-3.9 main"
+              key_url: "http://apt.llvm.org/llvm-snapshot.gpg.key"
+            - ubuntu-toolchain-r-test
+          packages:
+            - clang-3.9
+      env: COMPILER=clang++-3.9
+      env: INSTR_SET=mic_avx512
+    - compiler: clang
+      addons:
+        apt:
+          sources:
+            - sourceline: "deb http://apt.llvm.org/trusty/ llvm-toolchain-trusty-3.9 main"
+              key_url: "http://apt.llvm.org/llvm-snapshot.gpg.key"
+            - ubuntu-toolchain-r-test
+          packages:
+            - clang-3.9
+      env: COMPILER=clang++-3.9
+      env: INSTR_SET=core_avx512
 
 script:
   - cd unittest
-  - make CXX=$COMPILER ISA=scalar BUILD=debug
-  - make CXX=$COMPILER ISA=avx BUILD=debug
-  - make CXX=$COMPILER ISA=avx2 BUILD=debug
+  - make -j8 CXX=$COMPILER ISA=$INSTR_SET BUILD=debug
