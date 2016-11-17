@@ -22,15 +22,15 @@ endif
 #some predefined rules
 ifeq ($(CXXCOMPILER), g++)
 	COMPILER_PREFIX=gcc
-	CXXFLAGS+=-W -Wall -pedantic -fstrict-aliasing -Wstrict-aliasing -Woverflow
+	CXXFLAGS+=-W -Wall -pedantic -fstrict-aliasing -Wstrict-aliasing -Woverflow -Werror
 endif
 ifeq ($(CXXCOMPILER), clang++)
 	COMPILER_PREFIX=clang
-	CXXFLAGS+=-W -Wall -pedantic -fstrict-aliasing -Wstrict-aliasing -Wshorten-64-to-32 -Woverflow
+	CXXFLAGS+=-W -Wall -pedantic -fstrict-aliasing -Wstrict-aliasing -Wshorten-64-to-32 -Woverflow -Werror
 endif
 ifeq ($(CXXCOMPILER), icc)
 	COMPILER_PREFIX=icc
-	CXXFLAGS+=-DUME_USE_SVML -W -Wall -pedantic -fstrict-aliasing -Wstrict-aliasing
+	CXXFLAGS+=-DUME_USE_SVML -W -Wall -pedantic -fstrict-aliasing -Wstrict-aliasing -Werror
 endif
 
 #select proper build flags
