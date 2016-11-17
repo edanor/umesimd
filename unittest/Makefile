@@ -22,11 +22,11 @@ endif
 #some predefined rules
 ifeq ($(CXXCOMPILER), g++)
 	COMPILER_PREFIX=gcc
-	CXXFLAGS+=-W -Wall -pedantic -fstrict-aliasing -Wstrict-aliasing
+	CXXFLAGS+=-W -Wall -pedantic -fstrict-aliasing -Wstrict-aliasing -Woverflow
 endif
 ifeq ($(CXXCOMPILER), clang++)
 	COMPILER_PREFIX=clang
-	CXXFLAGS+=-W -Wall -pedantic -fstrict-aliasing -Wstrict-aliasing -Wshorten-64-to-32
+	CXXFLAGS+=-W -Wall -pedantic -fstrict-aliasing -Wstrict-aliasing -Wshorten-64-to-32 -Woverflow
 endif
 ifeq ($(CXXCOMPILER), icc)
 	COMPILER_PREFIX=icc

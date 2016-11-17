@@ -84,145 +84,138 @@ matrix:
       env:
         - COMPILER=g++-6
         - INSTR_SET=avx2
-    - compiler: gcc
+# No g++6.3 with avx512 compatible binutils available on travis.
+# disabling configurations for now
+#    - compiler: gcc
+#      addons:
+#        apt:
+#          sources:
+#            - ubuntu-toolchain-r-test
+#          packages:
+#            - g++-6
+#      env:
+#        - COMPILER=g++-6
+#        - INSTR_SET=mic_avx512
+#    - compiler: gcc
+#      addons:
+#        apt:
+#          sources:
+#            - ubuntu-toolchain-r-test
+#          packages:
+#            - g++-6
+#      env:
+#        - COMPILER=g++-6
+#        - INSTR_SET=core_avx512
+    - compiler: clang
       addons:
         apt:
           sources:
             - ubuntu-toolchain-r-test
+            - llvm-toolchain-precise-3.6
           packages:
-            - g++-6
-      env:
-        - COMPILER=g++-6
+            - clang-3.6
+      env: 
+        - COMPILER=clang++-3.6
+        - INSTR_SET=scalar
+    - compiler: clang
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-precise-3.6
+          packages:
+            - clang-3.6
+      env: 
+        - COMPILER=clang++-3.6
+        - INSTR_SET=avx
+    - compiler: clang
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-precise-3.6
+          packages:
+            - clang-3.6
+      env: 
+        - COMPILER=clang++-3.6
+        - INSTR_SET=avx2
+    - compiler: clang
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-precise-3.7
+          packages:
+            - clang-3.7
+      env: 
+        - COMPILER=clang++-3.7
+        - INSTR_SET=scalar
+    - compiler: clang
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-precise-3.7
+          packages:
+            - clang-3.7
+      env: 
+        - COMPILER=clang++-3.7
+        - INSTR_SET=avx
+    - compiler: clang
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-precise-3.7
+          packages:
+            - clang-3.7
+      env: 
+        - COMPILER=clang++-3.7
+        - INSTR_SET=avx2
+    - compiler: clang
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-precise-3.8
+          packages:
+            - clang-3.8
+      env: 
+        - COMPILER=clang++-3.8
+        - INSTR_SET=scalar
+    - compiler: clang
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-precise-3.8
+          packages:
+            - clang-3.8
+      env: 
+        - COMPILER=clang++-3.8
+        - INSTR_SET=avx
+    - compiler: clang
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-precise-3.8
+          packages:
+            - clang-3.8
+      env: 
+        - COMPILER=clang++-3.8
+        - INSTR_SET=avx2
+    - compiler: clang
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-precise-3.8
+          packages:
+            - clang-3.8
+      env: 
+        - COMPILER=clang++-3.8
         - INSTR_SET=mic_avx512
-    - compiler: gcc
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-          packages:
-            - g++-6
-      env:
-        - COMPILER=g++-6
-        - INSTR_SET=core_avx512
-    - compiler: clang
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-            - llvm-toolchain-precise-3.6
-          packages:
-            - clang-3.6
-      env: 
-        - COMPILER=clang++-3.6
-        - INSTR_SET=scalar
-    - compiler: clang
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-            - llvm-toolchain-precise-3.6
-          packages:
-            - clang-3.6
-      env: 
-        - COMPILER=clang++-3.6
-        - INSTR_SET=avx
-    - compiler: clang
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-            - llvm-toolchain-precise-3.6
-          packages:
-            - clang-3.6
-      env: 
-        - COMPILER=clang++-3.6
-        - INSTR_SET=avx2
-    - compiler: clang
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-            - llvm-toolchain-precise-3.7
-          packages:
-            - clang-3.7
-      env: 
-        - COMPILER=clang++-3.7
-        - INSTR_SET=scalar
-    - compiler: clang
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-            - llvm-toolchain-precise-3.7
-          packages:
-            - clang-3.7
-      env: 
-        - COMPILER=clang++-3.7
-        - INSTR_SET=avx
-    - compiler: clang
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-            - llvm-toolchain-precise-3.7
-          packages:
-            - clang-3.7
-      env: 
-        - COMPILER=clang++-3.7
-        - INSTR_SET=avx2
-    - compiler: clang
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-            - llvm-toolchain-precise-3.8
-          packages:
-            - clang-3.8
-      env: 
-        - COMPILER=clang++-3.8
-        - INSTR_SET=scalar
-    - compiler: clang
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-            - llvm-toolchain-precise-3.8
-          packages:
-            - clang-3.8
-      env: 
-        - COMPILER=clang++-3.8
-        - INSTR_SET=avx
-    - compiler: clang
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-            - llvm-toolchain-precise-3.8
-          packages:
-            - clang-3.8
-      env: 
-        - COMPILER=clang++-3.8
-        - INSTR_SET=avx2
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-            - llvm-toolchain-precise-3.8
-          packages:
-            - clang-3.8
-      env: 
-        - COMPILER=clang++-3.8
-        - INSTR_SET=mic_avx512
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-            - llvm-toolchain-precise-3.8
-          packages:
-            - clang-3.8
-      env: 
-        - COMPILER=clang++-3.8
-        - INSTR_SET=core_avx512
     - compiler: clang
       addons:
         apt:
