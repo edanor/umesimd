@@ -1,0 +1,35 @@
+sudo: required
+dist: precise
+language: cpp
+
+matrix:
+  include:
+    - compiler: gcc
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-4.9
+      env: COMPILER=g++-4.9
+    - compiler: gcc
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-5.3
+      env: COMPILER=g++-5.3
+    - compiler: clang
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-precise-3.9
+          packages:
+            - clang-3.9
+      env: COMPILER=clang++-3.9
+
+script:
+  - cd unittest
+  - make CXX=$COMPILER ISA=scalar BUILD=debug
