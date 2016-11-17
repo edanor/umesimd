@@ -7,16 +7,28 @@
 
 CXXFLAGS=-std=c++11
 
+ifneq (,$(findstring clang,$(CXX)))
+	CXXCOMPILER=clang++
+else
+ifneq (,$(findstring g++,$(CXX)))
+	CXXCOMPILER=g++
+else
+ifneq (,$(findstring ic, $(CXX)))
+	CXXCOMPILER=icc
+endif
+endif
+endif
+
 #some predefined rules
-ifeq ($(CXX), g++)
+ifeq ($(CXXCOMPILER), g++)
 	COMPILER_PREFIX=gcc
 	CXXFLAGS+=-W -Wall -pedantic -fstrict-aliasing -Wstrict-aliasing
 endif
-ifeq ($(CXX), clang++)
+ifeq ($(CXXCOMPILER), clang++)
 	COMPILER_PREFIX=clang
 	CXXFLAGS+=-W -Wall -pedantic -fstrict-aliasing -Wstrict-aliasing -Wshorten-64-to-32
 endif
-ifeq ($(CXX), icc)
+ifeq ($(CXXCOMPILER), icc)
 	COMPILER_PREFIX=icc
 	CXXFLAGS+=-DUME_USE_SVML -W -Wall -pedantic -fstrict-aliasing -Wstrict-aliasing
 endif
@@ -24,7 +36,7 @@ endif
 #select proper build flags
 ifeq ($(BUILD), debug)
 	#for intel compiler use precise results generation
-	ifeq ($(CXX), icc)
+	ifeq ($(CXXCOMPILER), icc)
 		CXXFLAGS+=-fp-model=precise
 	endif
   
@@ -33,7 +45,7 @@ ifeq ($(BUILD), debug)
 endif
 ifeq ($(BUILD), release)
 	#for intel compiler use precise results generation
-	ifeq ($(CXX), icc)
+	ifeq ($(CXXCOMPILER), icc)
 		CXXFLAGS+=-fp-model=precise
 	endif
 
@@ -63,7 +75,7 @@ ifeq ($(ISA), avx)
 	ISA_PREFIX+=_avx
 endif
 ifeq ($(ISA), avx2)
-	ifeq ($(CXX), icc)
+	ifeq ($(CXXCOMPILER), icc)
 		CXXFLAGS+=-xCORE-AVX2
 	else
 		CXXFLAGS+=-mavx2
@@ -71,7 +83,7 @@ ifeq ($(ISA), avx2)
 	ISA_PREFIX+=_avx2
 endif
 ifeq ($(ISA), core_avx512)
-	ifeq ($(CXX), icc)
+	ifeq ($(CXXCOMPILER), icc)
 		CXXFLAGS+=-xCORE-AVX512
 	else
 		CXXFLAGS+=-march=skylake-avx512
@@ -79,7 +91,7 @@ ifeq ($(ISA), core_avx512)
 	ISA_PREFIX+=_core_avx512
 endif
 ifeq ($(ISA), mic_avx512) 
-	ifeq ($(CXX), icc)
+	ifeq ($(CXXCOMPILER), icc)
 		CXXFLAGS+=-xMIC-AVX512
 	else
 		CXXFLAGS+=-march=knl

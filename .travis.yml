@@ -286,4 +286,4 @@ matrix:
 
 script:
   - cd unittest
-  - make -j8 CXX=$COMPILER ISA=$INSTR_SET BUILD=debug
+  - make CXX=$COMPILER ISA=$INSTR_SET BUILD=debug
