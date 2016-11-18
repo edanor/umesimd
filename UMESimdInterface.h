@@ -1929,10 +1929,6 @@ namespace SIMD
         UME_FORCE_INLINE DERIVED_VEC_TYPE operator& (SCALAR_TYPE b) const {
             return band(b);
         }
-        /*
-        UME_FORCE_INLINE DERIVED_VEC_TYPE operator&& (SCALAR_TYPE b) const {
-            return band(b);
-        }*/
 
         // MBANDS
         UME_FORCE_INLINE DERIVED_VEC_TYPE band (MASK_TYPE const & mask, SCALAR_TYPE b) const {

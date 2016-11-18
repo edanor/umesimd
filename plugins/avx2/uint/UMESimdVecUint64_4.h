@@ -54,8 +54,12 @@
 
 #if defined UME_USE_MASK_64B
 #define BLEND(a_256i, b_256i, mask_256i) _mm256_blendv_epi8((a_256i), (b_256i), mask_256i)
+#define MASK_LOAD(a_256i, mask_256i) _mm256_maskload_epi64((a_256i), mask_256i)
+#define MASK_STORE(ptr_u64, mask_256i, a_256i) _mm256_maskstore_epi64((__int64 *)ptr_u64, mask_256i, a_256i);
 #else
 #define BLEND(a_256i, b_256i, mask_128i) _mm256_blendv_epi8((a_256i), (b_256i), (_mm256_cvtepi32_epi64(mask_128i)))
+#define MASK_LOAD(a_256i, mask_128i) _mm256_maskload_epi64((a_256i), (_mm256_cvtepi32_epi64(mask_128i)))
+#define MASK_STORE(ptr_u64, mask_128i, a_256i) _mm256_maskstore_epi64((__int64 *)ptr_u64, (_mm256_cvtepi32_epi64(mask_128i)), a_256i);
 #endif
 
 namespace UME {
@@ -190,7 +194,7 @@ namespace SIMD {
             __m256i t0 = _mm256_loadu_si256((const __m256i *) p);
             mVec = BLEND(mVec, t0, mask.mMask);
 #else
-            mVec = _mm256_maskload_epi64((__int64 const*)p, t0);
+            mVec = MASK_LOAD((__int64 const*)p, mask.mMask);
 #endif
             return *this;
         }
@@ -206,7 +210,7 @@ namespace SIMD {
             __m256i t0 = _mm256_load_si256((const __m256i *) p);
             mVec = BLEND(mVec, t0, mask.mMask);
 #else
-            mVec = _mm256_maskload_epi64((__int64 const*)p, t0);
+            mVec = MASK_LOAD((__int64 const*)p, mask.mMask);
 #endif
             return *this;
         }
@@ -223,7 +227,7 @@ namespace SIMD {
             __m256i t1 = BLEND(t0, mVec, mask.mMask);
             _mm256_storeu_si256((__m256i *)p, t1);
 #else
-            _mm256_maskstore_epi64((__int64 *)p, t0, mVec);
+            MASK_STORE(p, mask.mMask, mVec);
 #endif
             return p;
         }
@@ -240,7 +244,7 @@ namespace SIMD {
             __m256i t1 = BLEND(t0, mVec, mask.mMask);
             _mm256_store_si256((__m256i *)p, t1);
 #else
-            _mm256_maskstore_epi64((__int64 *)p, t0, mVec);
+            MASK_STORE(p, mask.mMask, mVec);
 #endif
             return p;
         }
@@ -503,5 +507,7 @@ namespace SIMD {
 
 #undef SET1_EPI64
 #undef BLEND
+#undef MASK_LOAD
+#undef MASK_STORE
 
 #endif

@@ -282,29 +282,14 @@ namespace SIMD {
         }
         // MADDVA
         UME_FORCE_INLINE SIMDVec_i & adda(SIMDVecMask<8> const & mask, SIMDVec_i const & b) {
-            __m128i a_low = _mm256_extractf128_si256(mVec, 0);
-            __m128i a_high = _mm256_extractf128_si256(mVec, 1);
-            __m128i b_low = _mm256_extractf128_si256(b.mVec, 0);
-            __m128i b_high = _mm256_extractf128_si256(b.mVec, 1);
-            __m128i r_low = _mm_add_epi32(a_low, b_low);
-            __m128i r_high = _mm_add_epi32(a_high, b_high);
-            __m128i m_low = _mm256_extractf128_si256(mask.mMask, 0);
-            __m128i m_high = _mm256_extractf128_si256(mask.mMask, 1);
-            r_low = _mm_blendv_epi8(a_low, r_low, m_low);
-            r_high = _mm_blendv_epi8(a_high, r_high, m_high);
-            mVec = _mm256_insertf128_si256(mVec, r_low, 0);
-            mVec = _mm256_insertf128_si256(mVec, r_high, 1);
+            __m256i t0 = _mm256_add_epi32(mVec, b.mVec);
+            mVec = _mm256_blendv_epi8(mVec, t0, mask.mMask);
             return *this;
         }
         // ADDSA
         UME_FORCE_INLINE SIMDVec_i & adda(int32_t b) {
-            __m128i a_low = _mm256_extractf128_si256(mVec, 0);
-            __m128i a_high = _mm256_extractf128_si256(mVec, 1);
-            __m128i b_vec = _mm_set1_epi32(b);
-            __m128i r_low = _mm_add_epi32(a_low, b_vec);
-            __m128i r_high = _mm_add_epi32(a_high, b_vec);
-            mVec = _mm256_insertf128_si256(mVec, r_low, 0);
-            mVec = _mm256_insertf128_si256(mVec, r_high, 1);
+            __m256i t0 = _mm256_set1_epi32(b);
+            mVec = _mm256_add_epi32(mVec, t0);
             return *this;
         }
         UME_FORCE_INLINE SIMDVec_i & operator+= (int32_t b) {
@@ -312,17 +297,9 @@ namespace SIMD {
         }
         // MADDSA
         UME_FORCE_INLINE SIMDVec_i & adda(SIMDVecMask<8> const & mask, int32_t b) {
-            __m128i b_vec = _mm_set1_epi32(b);
-            __m128i a_low = _mm256_extractf128_si256(mVec, 0);
-            __m128i a_high = _mm256_extractf128_si256(mVec, 1);
-            __m128i r_low = _mm_add_epi32(a_low, b_vec);
-            __m128i r_high = _mm_add_epi32(a_high, b_vec);
-            __m128i m_low = _mm256_extractf128_si256(mask.mMask, 0);
-            __m128i m_high = _mm256_extractf128_si256(mask.mMask, 1);
-            r_low = _mm_blendv_epi8(a_low, r_low, m_low);
-            r_high = _mm_blendv_epi8(a_high, r_high, m_high);
-            mVec = _mm256_insertf128_si256(mVec, r_low, 0);
-            mVec = _mm256_insertf128_si256(mVec, r_high, 1);
+            __m256i t0 = _mm256_set1_epi32(b);
+            __m256i t1 = _mm256_add_epi32(mVec, t0);
+            mVec = _mm256_blendv_epi8(mVec, t1, mask.mMask);
             return *this;
         }
         // SADDV

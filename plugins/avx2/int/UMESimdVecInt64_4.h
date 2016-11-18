@@ -47,7 +47,7 @@
                       int(x & 0x00000000FFFFFFFF), \
                       int((x & 0xFFFFFFFF00000000) >> 32), \
                       int(x & 0x00000000FFFFFFFF), \
-                      int((x & 0xFFFFFFFF00000000) >> 32));
+                      int((x & 0xFFFFFFFF00000000) >> 32))
 #else
 #define SET1_EPI64(x) _mm256_set1_epi64x(x)
 #endif
