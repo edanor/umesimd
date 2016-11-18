@@ -1,3 +1,6 @@
+
+[![Build Status](https://travis-ci.org/edanor/umesimd.svg?style=flat-square)](https://travis-ci.org/edanor/umesimd)
+
 **Current stable release is: v0.6.1-stable**  
 **To checkout stable release use:**  
  > git clone https://edanor@bitbucket.org/edanor/umesimd.git  
