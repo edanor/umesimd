@@ -2,8 +2,28 @@ language: cpp
 sudo: required
 dist: precise
 
+env:
+  global:
+    - secure: "TapRYOiHJernTcqUHu5i71V62TvdoyV6DDl3c4ViCmm0TJy2mHM5D9EJaRyoxP3uGw6dYx6k5FQeSuh/1pIv9NQjngg4SrRE8NeH6Lj+RI98XhwWPFseqBQA55a9fmxHKczTtsHz/Xvkq57EA4qb3g8poR9NrKfeo0UoOpFlhTOuxbzx/ugFrQImYDF4abjnhrlo+8d4F0HH20Na0zoLEzj+htdYq7GKHGDKXlVZOHJ+MWZv6U7E7hNcAwS39JlP0KgWfp6khO4T8tDXEY5w/aAQydeyL3beHgXocVwGpj4LLT6W7gJ9u2Fmx3R2ZfgNTe5IcWy+7J8NCxiNZP5EmlErjysEJpY/0EkAlao7PDnf95XMnUMg3uahG+X7KDUQ8xi9fW4BhiDv53TLxJt5Iax6GdSigUPpYN6vlQOrGZFwRzO5nSJdYyU/A2PTnp1H8AfW2YwFTaOKULYNSlEEcvKltZgpYqYhLK2M2qdHLwYggc2ZW9EbRDYIcgElSK3JGnBwzXcuyLspnXGDsau/QehTmA4bFOAMS6+2XkKEmhyUtMRBUi1jTIYdwLlVz+3i5gi8mLDcUgp0nVW9MHbXwju86sLgql/R9LZfiU19kpcfgNtZ2nJbhstn0/yHxwx8oxilSIWcpTncEAdB4hJBex5+LUeJ15jJtB2DMwZKNIM="
+
 matrix:
   include:
+	- compiler: icc
+	  env:
+	    - COMPILER=icc
+		- INSTR_SET=scalar
+	- compiler: icc
+	  env:
+	    - COMPILER=icc
+		- INSTR_SET=avx
+	- compiler: icc
+	  env:
+	    - COMPILER=icc
+		- INSTR_SET=avx2
+	- compiler: icc
+	  env:
+	    - COMPILER=icc
+		- INSTR_SET=mic_avx512
     - compiler: gcc
       addons:
         apt:
@@ -266,9 +286,19 @@ matrix:
         - COMPILER=clang++-3.9
         - INSTR_SET=core_avx512
 
+before_install:
+  - wget -q -O /dev/stdout \
+  'https://raw.githubusercontent.com/nemequ/icc-travis/master/install-icc.sh' | \
+  /bin/sh
+  - source ~/.bashrc
 script:
   - cd microbenchmarks
   - chmod +x build_tests.sh
   - ./build_tests.sh $COMPILER $INSTR_SET release
   - cd ../unittest
   - make CXX=$COMPILER ISA=$INSTR_SET BUILD=debug
+
+ after_script:
+  - '[[ ! -z "${INTEL_INSTALL_PATH}" ]] && uninstall_intel_software'
+
+   
