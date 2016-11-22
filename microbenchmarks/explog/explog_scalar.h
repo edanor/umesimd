@@ -116,9 +116,9 @@ UME_NEVER_INLINE benchmark_results<SCALAR_FLOAT_T> test_exp_scalar(const int ARR
     unsigned long long start, end;    // Time measurements
 
     const int LEN = ARRAY_SIZE;
-    SCALAR_FLOAT_T input[LEN];
-    SCALAR_FLOAT_T output[LEN];
-    SCALAR_FLOAT_T values[LEN];
+    SCALAR_FLOAT_T* input = (SCALAR_FLOAT_T*) UME::DynamicMemory::AlignedMalloc(ARRAY_SIZE*sizeof(SCALAR_FLOAT_T), 64);
+    SCALAR_FLOAT_T* output = (SCALAR_FLOAT_T*) UME::DynamicMemory::AlignedMalloc(ARRAY_SIZE*sizeof(SCALAR_FLOAT_T), 64);
+    SCALAR_FLOAT_T* values = (SCALAR_FLOAT_T*) UME::DynamicMemory::AlignedMalloc(ARRAY_SIZE*sizeof(SCALAR_FLOAT_T), 64);
 
     generate_some_exp_values<SCALAR_FLOAT_T>(LEN, input, output);
 
@@ -153,6 +153,11 @@ UME_NEVER_INLINE benchmark_results<SCALAR_FLOAT_T> test_exp_scalar(const int ARR
     result.elapsedTime = end - start;
     result.error_ulp = max_err;
     result.error_ulp = max_err;
+
+    UME::DynamicMemory::AlignedFree(input);
+    UME::DynamicMemory::AlignedFree(output);
+    UME::DynamicMemory::AlignedFree(values);
+
     return result;
 }
 
@@ -163,9 +168,9 @@ UME_NEVER_INLINE benchmark_results<SCALAR_FLOAT_T> test_log_scalar(int ARRAY_SIZ
     unsigned long long start, end;    // Time measurements
 
     const int LEN = ARRAY_SIZE;
-    SCALAR_FLOAT_T input[LEN];
-    SCALAR_FLOAT_T output[LEN];
-    SCALAR_FLOAT_T values[LEN];
+    SCALAR_FLOAT_T* input = (SCALAR_FLOAT_T*) UME::DynamicMemory::AlignedMalloc(ARRAY_SIZE*sizeof(SCALAR_FLOAT_T), 64);
+    SCALAR_FLOAT_T* output = (SCALAR_FLOAT_T*) UME::DynamicMemory::AlignedMalloc(ARRAY_SIZE*sizeof(SCALAR_FLOAT_T), 64);
+    SCALAR_FLOAT_T* values = (SCALAR_FLOAT_T*) UME::DynamicMemory::AlignedMalloc(ARRAY_SIZE*sizeof(SCALAR_FLOAT_T), 64);
 
     generate_some_log_values<SCALAR_FLOAT_T>(LEN, input, output);
 
@@ -200,6 +205,11 @@ UME_NEVER_INLINE benchmark_results<SCALAR_FLOAT_T> test_log_scalar(int ARRAY_SIZ
     result.elapsedTime = end - start;
     result.error_ulp = max_err;
     result.error_ulp = max_err;
+
+    UME::DynamicMemory::AlignedFree(input);
+    UME::DynamicMemory::AlignedFree(output);
+    UME::DynamicMemory::AlignedFree(values);
+
     return result;
 }
 
@@ -210,9 +220,9 @@ UME_NEVER_INLINE benchmark_results<SCALAR_FLOAT_T> test_log2_scalar(int ARRAY_SI
     unsigned long long start, end;    // Time measurements
 
     const int LEN = ARRAY_SIZE;
-    SCALAR_FLOAT_T input[LEN];
-    SCALAR_FLOAT_T output[LEN];
-    SCALAR_FLOAT_T values[LEN];
+    SCALAR_FLOAT_T* input = (SCALAR_FLOAT_T*) UME::DynamicMemory::AlignedMalloc(ARRAY_SIZE*sizeof(SCALAR_FLOAT_T), 64);
+    SCALAR_FLOAT_T* output = (SCALAR_FLOAT_T*) UME::DynamicMemory::AlignedMalloc(ARRAY_SIZE*sizeof(SCALAR_FLOAT_T), 64);
+    SCALAR_FLOAT_T* values = (SCALAR_FLOAT_T*) UME::DynamicMemory::AlignedMalloc(ARRAY_SIZE*sizeof(SCALAR_FLOAT_T), 64);
 
     generate_some_log2_values<SCALAR_FLOAT_T>(LEN, input, output);
 
@@ -247,6 +257,11 @@ UME_NEVER_INLINE benchmark_results<SCALAR_FLOAT_T> test_log2_scalar(int ARRAY_SI
     result.elapsedTime = end - start;
     result.error_ulp = max_err;
     result.error_ulp = max_err;
+
+    UME::DynamicMemory::AlignedFree(input);
+    UME::DynamicMemory::AlignedFree(output);
+    UME::DynamicMemory::AlignedFree(values);
+
     return result;
 }
 
@@ -257,9 +272,9 @@ UME_NEVER_INLINE benchmark_results<SCALAR_FLOAT_T> test_log10_scalar(int ARRAY_S
     unsigned long long start, end;    // Time measurements
 
     const int LEN = ARRAY_SIZE;
-    SCALAR_FLOAT_T input[LEN];
-    SCALAR_FLOAT_T output[LEN];
-    SCALAR_FLOAT_T values[LEN];
+    SCALAR_FLOAT_T* input = (SCALAR_FLOAT_T*) UME::DynamicMemory::AlignedMalloc(ARRAY_SIZE*sizeof(SCALAR_FLOAT_T), 64);
+    SCALAR_FLOAT_T* output = (SCALAR_FLOAT_T*) UME::DynamicMemory::AlignedMalloc(ARRAY_SIZE*sizeof(SCALAR_FLOAT_T), 64);
+    SCALAR_FLOAT_T* values = (SCALAR_FLOAT_T*) UME::DynamicMemory::AlignedMalloc(ARRAY_SIZE*sizeof(SCALAR_FLOAT_T), 64);
 
     generate_some_log10_values<SCALAR_FLOAT_T>(LEN, input, output);
 
@@ -294,6 +309,11 @@ UME_NEVER_INLINE benchmark_results<SCALAR_FLOAT_T> test_log10_scalar(int ARRAY_S
     result.elapsedTime = end - start;
     result.error_ulp = max_err;
     result.error_ulp = max_err;
+
+    UME::DynamicMemory::AlignedFree(input);
+    UME::DynamicMemory::AlignedFree(output);
+    UME::DynamicMemory::AlignedFree(values);
+
     return result;
 }
 #endif

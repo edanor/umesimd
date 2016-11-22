@@ -50,6 +50,9 @@
 const int ARRAY_SIZE = 600000+7; // Array size increased to show the peeling effect.
 //alignas(32) float x[ARRAY_SIZE];
 
+#include "../../utilities/ignore_warnings_push.h"
+#include "../../utilities/ignore_warnings_unused_but_set.h"
+
 // Scalar algorithm
 template<typename FLOAT_T>
 TIMING_RES test_scalar()
@@ -87,6 +90,8 @@ TIMING_RES test_scalar()
 
     return end - start;
 }
+
+#include "../../utilities/ignore_warnings_pop.h"
 
 TIMING_RES test_AVX_f_256()
 {

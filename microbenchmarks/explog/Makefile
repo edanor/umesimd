@@ -4,7 +4,7 @@
 # BUILD={debug, release, release_O3}
 # {FORCE_OPENMP_PLUGIN=ON | FORCE_SCALAR_PLUGIN=ON}
 
-CXXFLAGS=-std=c++11 -Wall
+CXXFLAGS=-std=c++11 -Werror
 
 #some predefined rules
 ifeq ($(CXX), g++)
@@ -93,7 +93,7 @@ ifeq ($(ISA), mic_avx512)
 	ifeq ($(CXX), icc)
 		CXXFLAGS+=-xMIC-AVX512
 	else
-	
+		CXXFLAGS+=-march=knl
 	endif
 	ISA_PREFIX+=_mic_avx512
 endif

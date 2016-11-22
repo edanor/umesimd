@@ -43,9 +43,9 @@ UME_NEVER_INLINE benchmark_results<SCALAR_FLOAT_T> test_exp_ume(const int ARRAY_
     unsigned long long start, end;    // Time measurements
 
     const int LEN = ARRAY_SIZE;
-    SCALAR_FLOAT_T input[LEN];
-    SCALAR_FLOAT_T output[LEN];
-    SCALAR_FLOAT_T values[LEN];
+    SCALAR_FLOAT_T* input = (SCALAR_FLOAT_T*) UME::DynamicMemory::AlignedMalloc(ARRAY_SIZE*sizeof(SCALAR_FLOAT_T), 64);
+    SCALAR_FLOAT_T* output = (SCALAR_FLOAT_T*) UME::DynamicMemory::AlignedMalloc(ARRAY_SIZE*sizeof(SCALAR_FLOAT_T), 64);
+    SCALAR_FLOAT_T* values = (SCALAR_FLOAT_T*) UME::DynamicMemory::AlignedMalloc(ARRAY_SIZE*sizeof(SCALAR_FLOAT_T), 64);
 
     generate_some_exp_values<SCALAR_FLOAT_T>(LEN, input, output);
 
@@ -74,6 +74,11 @@ UME_NEVER_INLINE benchmark_results<SCALAR_FLOAT_T> test_exp_ume(const int ARRAY_
     benchmark_results<SCALAR_FLOAT_T> result;
     result.elapsedTime = end - start;
     result.error_ulp = max_err;
+
+    UME::DynamicMemory::AlignedFree(input);
+    UME::DynamicMemory::AlignedFree(output);
+    UME::DynamicMemory::AlignedFree(values);
+
     return result;
 }
 
@@ -87,9 +92,9 @@ UME_NEVER_INLINE benchmark_results<SCALAR_FLOAT_T> test_log_ume(const int ARRAY_
     unsigned long long start, end;    // Time measurements
 
     const int LEN = ARRAY_SIZE;
-    SCALAR_FLOAT_T input[LEN];
-    SCALAR_FLOAT_T output[LEN];
-    SCALAR_FLOAT_T values[LEN];
+    SCALAR_FLOAT_T* input = (SCALAR_FLOAT_T*) UME::DynamicMemory::AlignedMalloc(ARRAY_SIZE*sizeof(SCALAR_FLOAT_T), 64);
+    SCALAR_FLOAT_T* output = (SCALAR_FLOAT_T*) UME::DynamicMemory::AlignedMalloc(ARRAY_SIZE*sizeof(SCALAR_FLOAT_T), 64);
+    SCALAR_FLOAT_T* values = (SCALAR_FLOAT_T*) UME::DynamicMemory::AlignedMalloc(ARRAY_SIZE*sizeof(SCALAR_FLOAT_T), 64);
 
     generate_some_log_values<SCALAR_FLOAT_T>(LEN, input, output);
 
@@ -118,6 +123,11 @@ UME_NEVER_INLINE benchmark_results<SCALAR_FLOAT_T> test_log_ume(const int ARRAY_
     benchmark_results<SCALAR_FLOAT_T> result;
     result.elapsedTime = end - start;
     result.error_ulp = max_err;
+
+    UME::DynamicMemory::AlignedFree(input);
+    UME::DynamicMemory::AlignedFree(output);
+    UME::DynamicMemory::AlignedFree(values);
+
     return result;
 }
 
@@ -131,9 +141,9 @@ UME_NEVER_INLINE benchmark_results<SCALAR_FLOAT_T> test_log2_ume(const int ARRAY
     unsigned long long start, end;    // Time measurements
 
     const int LEN = ARRAY_SIZE;
-    SCALAR_FLOAT_T input[LEN];
-    SCALAR_FLOAT_T output[LEN];
-    SCALAR_FLOAT_T values[LEN];
+    SCALAR_FLOAT_T* input = (SCALAR_FLOAT_T*) UME::DynamicMemory::AlignedMalloc(ARRAY_SIZE*sizeof(SCALAR_FLOAT_T), 64);
+    SCALAR_FLOAT_T* output = (SCALAR_FLOAT_T*) UME::DynamicMemory::AlignedMalloc(ARRAY_SIZE*sizeof(SCALAR_FLOAT_T), 64);
+    SCALAR_FLOAT_T* values = (SCALAR_FLOAT_T*) UME::DynamicMemory::AlignedMalloc(ARRAY_SIZE*sizeof(SCALAR_FLOAT_T), 64);
 
     generate_some_log2_values<SCALAR_FLOAT_T>(LEN, input, output);
 
@@ -162,6 +172,11 @@ UME_NEVER_INLINE benchmark_results<SCALAR_FLOAT_T> test_log2_ume(const int ARRAY
     benchmark_results<SCALAR_FLOAT_T> result;
     result.elapsedTime = end - start;
     result.error_ulp = max_err;
+
+    UME::DynamicMemory::AlignedFree(input);
+    UME::DynamicMemory::AlignedFree(output);
+    UME::DynamicMemory::AlignedFree(values);
+
     return result;
 }
 
@@ -175,9 +190,9 @@ UME_NEVER_INLINE benchmark_results<SCALAR_FLOAT_T> test_log10_ume(const int ARRA
     unsigned long long start, end;    // Time measurements
 
     const int LEN = ARRAY_SIZE;
-    SCALAR_FLOAT_T input[LEN];
-    SCALAR_FLOAT_T output[LEN];
-    SCALAR_FLOAT_T values[LEN];
+    SCALAR_FLOAT_T* input = (SCALAR_FLOAT_T*) UME::DynamicMemory::AlignedMalloc(ARRAY_SIZE*sizeof(SCALAR_FLOAT_T), 64);
+    SCALAR_FLOAT_T* output = (SCALAR_FLOAT_T*) UME::DynamicMemory::AlignedMalloc(ARRAY_SIZE*sizeof(SCALAR_FLOAT_T), 64);
+    SCALAR_FLOAT_T* values = (SCALAR_FLOAT_T*) UME::DynamicMemory::AlignedMalloc(ARRAY_SIZE*sizeof(SCALAR_FLOAT_T), 64);
 
     generate_some_log10_values<SCALAR_FLOAT_T>(LEN, input, output);
 
@@ -206,6 +221,11 @@ UME_NEVER_INLINE benchmark_results<SCALAR_FLOAT_T> test_log10_ume(const int ARRA
     benchmark_results<SCALAR_FLOAT_T> result;
     result.elapsedTime = end - start;
     result.error_ulp = max_err;
+
+    UME::DynamicMemory::AlignedFree(input);
+    UME::DynamicMemory::AlignedFree(output);
+    UME::DynamicMemory::AlignedFree(values);
+
     return result;
 }
 
@@ -214,7 +234,6 @@ template<typename SCALAR_FLOAT_T, int VEC_LEN>
 void benchmarkUMESIMD(std::string resultPrefix, int iterations, int array_size, ExplogResults<float> & reference)
 {
     ExplogResults<SCALAR_FLOAT_T> result;
-    SCALAR_FLOAT_T max_err_sin = 0, max_err_cos = 0;
 
     for (int i = 0; i < iterations; i++)
     {

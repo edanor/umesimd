@@ -79,25 +79,14 @@ Color getColor(int value) {
 
 #include "mandel_intel.h"
 #include "mandel_ume.h"
-#include "mandel_openmp.h"
 
-
-
-#ifdef __x86_64__
-#include <cpuid.h>
-
-static inline int
-is_avx_supported(void)
-{
-    unsigned int eax = 0, ebx = 0, ecx = 0, edx = 0;
-    __get_cpuid(1, &eax, &ebx, &ecx, &edx);
-    return ecx & bit_AVX ? 1 : 0;
-}
-#endif // __x86_64__
+#ifdef _OPENMP
+  #include "mandel_openmp.h"
+#endif
 
 alignas(32) unsigned short g_raw_image[640 * 640];
-int
-main(int argc, char *argv[])
+
+int main()
 {
     int ITERATIONS = 20;
 
@@ -363,8 +352,11 @@ main(int argc, char *argv[])
     std::cout << "AVX512 intrinsics code (float): not used\n";
     std::cout << "AVX512 intrinsics code (double): not used\n";
 #endif
-
+#ifdef _OPENMP
     benchmarkOpenMP(width, height, depth, "mandel openmp.bmp", "Openmp: ", ITERATIONS, stats_scalar_32f);
+#else
+    std::cout << "OpenMP code: not used\n";
+#endif
 
     benchmarkUMESIMD<UME::SIMD::SIMD1_32f>(width, height, depth, "mandel_umesimd_1_32f.bmp", "SIMD code (1x32f): ", ITERATIONS, stats_scalar_32f);
     benchmarkUMESIMD<UME::SIMD::SIMD2_32f>(width, height, depth, "mandel_umesimd_2_32f.bmp", "SIMD code (2x32f): ", ITERATIONS, stats_scalar_32f);

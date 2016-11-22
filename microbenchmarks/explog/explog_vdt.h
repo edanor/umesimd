@@ -11,6 +11,7 @@
 
 #include <cmath>
 #include <limits>
+#include <cassert>
 
 #include "vdtcore_common.h"
 #include "vdt_exp.h"
@@ -18,6 +19,8 @@
 
 template<typename SCALAR_FLOAT_T>
 inline SCALAR_FLOAT_T call_exp_vdt(SCALAR_FLOAT_T in) {
+    (void)in; // ignore unused parameter, do nothing
+    assert(0);
 }
 
 template<>
@@ -31,14 +34,14 @@ inline double call_exp_vdt<double>(double in) {
 }
 
 template<typename SCALAR_FLOAT_T>
-UME_NEVER_INLINE benchmark_results<SCALAR_FLOAT_T> test_exp_vdt_scalar(int array_size)
+UME_NEVER_INLINE benchmark_results<SCALAR_FLOAT_T> test_exp_vdt_scalar(int ARRAY_SIZE)
 {
     unsigned long long start, end;    // Time measurements
 
-    const int LEN = array_size;
-    SCALAR_FLOAT_T input[LEN];
-    SCALAR_FLOAT_T output[LEN];
-    SCALAR_FLOAT_T values[LEN];
+    const int LEN = ARRAY_SIZE;
+    SCALAR_FLOAT_T* input = (SCALAR_FLOAT_T*) UME::DynamicMemory::AlignedMalloc(ARRAY_SIZE*sizeof(SCALAR_FLOAT_T), 64);
+    SCALAR_FLOAT_T* output = (SCALAR_FLOAT_T*) UME::DynamicMemory::AlignedMalloc(ARRAY_SIZE*sizeof(SCALAR_FLOAT_T), 64);
+    SCALAR_FLOAT_T* values = (SCALAR_FLOAT_T*) UME::DynamicMemory::AlignedMalloc(ARRAY_SIZE*sizeof(SCALAR_FLOAT_T), 64);
 
     generate_some_exp_values<SCALAR_FLOAT_T>(LEN, input, output);
     
@@ -67,11 +70,18 @@ UME_NEVER_INLINE benchmark_results<SCALAR_FLOAT_T> test_exp_vdt_scalar(int array
     benchmark_results<SCALAR_FLOAT_T> result;
     result.elapsedTime = end - start;
     result.error_ulp = max_err;
+
+    UME::DynamicMemory::AlignedFree(input);
+    UME::DynamicMemory::AlignedFree(output);
+    UME::DynamicMemory::AlignedFree(values);
+
     return result;
 }
 
 template<typename SCALAR_FLOAT_T>
 UME_FORCE_INLINE SCALAR_FLOAT_T call_log_vdt(SCALAR_FLOAT_T in) {
+    (void)in; // ignore unused parameter, do nothing
+    assert(0);
 }
 
 template<>
@@ -105,14 +115,14 @@ UME_FORCE_INLINE double call_log10_vdt(double in) {
 }
 
 template<typename SCALAR_FLOAT_T>
-UME_NEVER_INLINE benchmark_results<SCALAR_FLOAT_T> test_log_vdt_scalar(int array_size)
+UME_NEVER_INLINE benchmark_results<SCALAR_FLOAT_T> test_log_vdt_scalar(int ARRAY_SIZE)
 {
     unsigned long long start, end;    // Time measurements
 
-    const int LEN = array_size;
-    SCALAR_FLOAT_T input[LEN];
-    SCALAR_FLOAT_T output[LEN];
-    SCALAR_FLOAT_T values[LEN];
+    const int LEN = ARRAY_SIZE;
+    SCALAR_FLOAT_T* input = (SCALAR_FLOAT_T*) UME::DynamicMemory::AlignedMalloc(ARRAY_SIZE*sizeof(SCALAR_FLOAT_T), 64);
+    SCALAR_FLOAT_T* output = (SCALAR_FLOAT_T*) UME::DynamicMemory::AlignedMalloc(ARRAY_SIZE*sizeof(SCALAR_FLOAT_T), 64);
+    SCALAR_FLOAT_T* values = (SCALAR_FLOAT_T*) UME::DynamicMemory::AlignedMalloc(ARRAY_SIZE*sizeof(SCALAR_FLOAT_T), 64);
 
     generate_some_log_values<SCALAR_FLOAT_T>(LEN, input, output);
     
@@ -141,18 +151,23 @@ UME_NEVER_INLINE benchmark_results<SCALAR_FLOAT_T> test_log_vdt_scalar(int array
     benchmark_results<SCALAR_FLOAT_T> result;
     result.elapsedTime = end - start;
     result.error_ulp = max_err;
+
+    UME::DynamicMemory::AlignedFree(input);
+    UME::DynamicMemory::AlignedFree(output);
+    UME::DynamicMemory::AlignedFree(values);
+
     return result;
 }
 
 template<typename SCALAR_FLOAT_T>
-UME_NEVER_INLINE benchmark_results<SCALAR_FLOAT_T> test_log2_vdt_scalar(int array_size)
+UME_NEVER_INLINE benchmark_results<SCALAR_FLOAT_T> test_log2_vdt_scalar(int ARRAY_SIZE)
 {
     unsigned long long start, end;    // Time measurements
 
-    const int LEN = array_size;
-    SCALAR_FLOAT_T input[LEN];
-    SCALAR_FLOAT_T output[LEN];
-    SCALAR_FLOAT_T values[LEN];
+    const int LEN = ARRAY_SIZE;
+    SCALAR_FLOAT_T* input = (SCALAR_FLOAT_T*) UME::DynamicMemory::AlignedMalloc(ARRAY_SIZE*sizeof(SCALAR_FLOAT_T), 64);
+    SCALAR_FLOAT_T* output = (SCALAR_FLOAT_T*) UME::DynamicMemory::AlignedMalloc(ARRAY_SIZE*sizeof(SCALAR_FLOAT_T), 64);
+    SCALAR_FLOAT_T* values = (SCALAR_FLOAT_T*) UME::DynamicMemory::AlignedMalloc(ARRAY_SIZE*sizeof(SCALAR_FLOAT_T), 64);
 
     generate_some_log_values<SCALAR_FLOAT_T>(LEN, input, output);
     
@@ -181,18 +196,23 @@ UME_NEVER_INLINE benchmark_results<SCALAR_FLOAT_T> test_log2_vdt_scalar(int arra
     benchmark_results<SCALAR_FLOAT_T> result;
     result.elapsedTime = end - start;
     result.error_ulp = max_err;
+
+    UME::DynamicMemory::AlignedFree(input);
+    UME::DynamicMemory::AlignedFree(output);
+    UME::DynamicMemory::AlignedFree(values);
+
     return result;
 }
 
 template<typename SCALAR_FLOAT_T>
-UME_NEVER_INLINE benchmark_results<SCALAR_FLOAT_T> test_log10_vdt_scalar(int array_size)
+UME_NEVER_INLINE benchmark_results<SCALAR_FLOAT_T> test_log10_vdt_scalar(int ARRAY_SIZE)
 {
     unsigned long long start, end;    // Time measurements
 
-    const int LEN = array_size;
-    SCALAR_FLOAT_T input[LEN];
-    SCALAR_FLOAT_T output[LEN];
-    SCALAR_FLOAT_T values[LEN];
+    const int LEN = ARRAY_SIZE;
+    SCALAR_FLOAT_T* input = (SCALAR_FLOAT_T*) UME::DynamicMemory::AlignedMalloc(ARRAY_SIZE*sizeof(SCALAR_FLOAT_T), 64);
+    SCALAR_FLOAT_T* output = (SCALAR_FLOAT_T*) UME::DynamicMemory::AlignedMalloc(ARRAY_SIZE*sizeof(SCALAR_FLOAT_T), 64);
+    SCALAR_FLOAT_T* values = (SCALAR_FLOAT_T*) UME::DynamicMemory::AlignedMalloc(ARRAY_SIZE*sizeof(SCALAR_FLOAT_T), 64);
 
     generate_some_log10_values<SCALAR_FLOAT_T>(LEN, input, output);
     
@@ -221,6 +241,11 @@ UME_NEVER_INLINE benchmark_results<SCALAR_FLOAT_T> test_log10_vdt_scalar(int arr
     benchmark_results<SCALAR_FLOAT_T> result;
     result.elapsedTime = end - start;
     result.error_ulp = max_err;
+
+    UME::DynamicMemory::AlignedFree(input);
+    UME::DynamicMemory::AlignedFree(output);
+    UME::DynamicMemory::AlignedFree(values);
+
     return result;
 }
 

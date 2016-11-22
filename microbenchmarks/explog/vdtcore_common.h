@@ -160,7 +160,7 @@ inline double getMantExponent(const double x, double & fe){
   uint64_t le = (n >> 52);
 
   // chop the head of the number: an int contains more than 11 bits (32)
-  int32_t e = le; // This is important since sums on uint64_t do not vectorise
+  int32_t e = (int32_t)le; // This is important since sums on uint64_t do not vectorise
   fe = e-1023 ;
 
   // This puts to 11 zeroes the exponent

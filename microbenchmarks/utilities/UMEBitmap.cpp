@@ -96,6 +96,8 @@ bool UME::operator != (UME::BitmapDIBHeader & h0, UME::BitmapDIBHeader & h1)
 
 UME::Bitmap::Bitmap(uint32_t width, uint32_t height, PIXEL_TYPE type)
 {
+    (void)type; // ignore unuesed parameter
+
     uint32_t imageSize;// = ((24*width + 31)/32)*4*height; // Size of data. Every horizontal line has to be 32b aligned.
     //mPaddedWidth = (uint32_t) std::ceil(((double)width*3) / 32) * 32;
     mPaddedWidth = (uint32_t) std::ceil((double)width*24 / 32)*4;
@@ -301,7 +303,7 @@ uint8_t UME::Bitmap::GetPixelSize()
 // every line has to be 32b aligned
 UME::PixelCoord2D UME::Bitmap::GetPixelCoord(uint8_t *pixel)
 {
-    uint32_t offset = pixel - mRasterData;
+    uint32_t offset = (uint32_t)(pixel - mRasterData);
     uint32_t y = offset / (mDIBHeader.width * GetPixelSize());
     uint32_t x = offset/GetPixelSize() - y*mDIBHeader.width;
 

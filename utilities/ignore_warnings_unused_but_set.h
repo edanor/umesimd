@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2015 CERN
+// Copyright (c) 2016 CERN
 //
 // Author: Przemyslaw Karpinski
 //
@@ -28,20 +28,18 @@
 //  7th Framework programme Marie Curie Actions under grant PITN-GA-2012-316596".
 //
 
-#ifndef GLOBAL_CONSTANTS_H_
-#define GLOBAL_CONSTANTS_H_
+// This file can be included as many times as necessary in the code. It serves a purpose
+// of consciously disabling specific compiler warnings for closed fragments of code.
+// It should be enclosed with includes for 'ignore_warnings_push.h' and 'ignore_warnings_pop.h'.
 
-namespace UME
-{
-    // This namespace allows easier aggregation of precomputed mathematical constants
-    namespace CONSTANTS
-    {
-        const double PI              = 3.1415926535897932384626433832795;
-        const double PI_HALF         = 1.5707963267948966192313216916398;
-        const double PI_ONE_AND_HALF = 4.7123889803846898576939650749193;
-        const double PI_TWO          = 6.2831853071795864769252867665590;
-    }
-}
-
-
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic ignored "-Wunused-but-set-variable"
 #endif
+
+#if defined(__clang__)
+# if __has_warning("-Wunused-but-set-variable")
+#  pragma clang diagnostic ignored "-Wunused-but-set-variable"
+# endif
+#endif
+
+

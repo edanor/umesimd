@@ -103,6 +103,8 @@ TIMING_RES test_scalar()
 
     end = get_timestamp();
 
+    (void)y; // avoid 'unused-variable' warnings
+
     UME::DynamicMemory::AlignedFree(x);
 
     return end - start;
@@ -790,7 +792,7 @@ void benchmarkSIMD(std::string const & resultPrefix,
         << " (speedup: " << stats.calculateSpeedup(reference) << "x)\n";
 }
 #if defined(__AVX2__) || defined(__AVX__)
-void benchmark_avx_32f(char * resultPrefix,
+void benchmark_avx_32f(std::string const & resultPrefix,
                        int iterations,
                        TimingStatistics & reference)
 {
@@ -806,7 +808,8 @@ void benchmark_avx_32f(char * resultPrefix,
         << " (speedup: " << stats.calculateSpeedup(reference) << "x)\n";
 }
 
-void benchmark_avx_64f(char * resultPrefix,
+void benchmark_avx_64f(
+    std::string const & resultPrefix,
     int iterations,
     TimingStatistics & reference)
 {
@@ -824,7 +827,7 @@ void benchmark_avx_64f(char * resultPrefix,
 #endif
 
 #if defined(__AVX512F__)
-void benchmark_avx512_32f(char * resultPrefix,
+void benchmark_avx512_32f(std::string const & resultPrefix,
                        int iterations,
                        TimingStatistics & reference)
 {

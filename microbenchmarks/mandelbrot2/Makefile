@@ -4,7 +4,7 @@
 # BUILD={debug, release, release_O3}
 # {FORCE_OPENMP_PLUGIN=ON | FORCE_SCALAR_PLUGIN=ON}
 
-CXXFLAGS=-std=c++11 -Wall
+CXXFLAGS=-std=c++11 -Werror
 
 #some predefined rules
 ifeq ($(CXX), g++)

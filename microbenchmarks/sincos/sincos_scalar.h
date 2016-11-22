@@ -41,11 +41,11 @@ benchmark_results<SCALAR_FLOAT_T> test_sincos_scalar(int ARRAY_SIZE)
     std::mt19937 gen(rd());
 
     const int LEN = ARRAY_SIZE;
-    SCALAR_FLOAT_T inputA[LEN];
-    SCALAR_FLOAT_T output_sin[LEN];
-    SCALAR_FLOAT_T output_cos[LEN];
-    SCALAR_FLOAT_T values_sin[LEN];
-    SCALAR_FLOAT_T values_cos[LEN];
+    SCALAR_FLOAT_T *inputA = (SCALAR_FLOAT_T *) UME::DynamicMemory::AlignedMalloc(ARRAY_SIZE*sizeof(SCALAR_FLOAT_T), sizeof(SCALAR_FLOAT_T));
+    SCALAR_FLOAT_T *output_sin = (SCALAR_FLOAT_T *) UME::DynamicMemory::AlignedMalloc(ARRAY_SIZE*sizeof(SCALAR_FLOAT_T), sizeof(SCALAR_FLOAT_T));
+    SCALAR_FLOAT_T *output_cos = (SCALAR_FLOAT_T *) UME::DynamicMemory::AlignedMalloc(ARRAY_SIZE*sizeof(SCALAR_FLOAT_T), sizeof(SCALAR_FLOAT_T));
+    SCALAR_FLOAT_T *values_sin = (SCALAR_FLOAT_T *) UME::DynamicMemory::AlignedMalloc(ARRAY_SIZE*sizeof(SCALAR_FLOAT_T), sizeof(SCALAR_FLOAT_T));
+    SCALAR_FLOAT_T *values_cos = (SCALAR_FLOAT_T *) UME::DynamicMemory::AlignedMalloc(ARRAY_SIZE*sizeof(SCALAR_FLOAT_T), sizeof(SCALAR_FLOAT_T));
 
     std::uniform_real_distribution<SCALAR_FLOAT_T> dist(-5 * SCALAR_FLOAT_T(M_PI), 5 * SCALAR_FLOAT_T(M_PI));
 
@@ -93,6 +93,13 @@ benchmark_results<SCALAR_FLOAT_T> test_sincos_scalar(int ARRAY_SIZE)
     result.elapsedTime = end - start;
     result.sin_error_ulp = max_sin_err;
     result.cos_error_ulp = max_cos_err;
+
+    UME::DynamicMemory::AlignedFree(inputA);
+    UME::DynamicMemory::AlignedFree(output_sin);
+    UME::DynamicMemory::AlignedFree(output_cos);
+    UME::DynamicMemory::AlignedFree(values_sin);
+    UME::DynamicMemory::AlignedFree(values_cos);
+
     return result;
 }
 

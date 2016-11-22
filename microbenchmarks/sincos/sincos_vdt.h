@@ -36,6 +36,7 @@
 
 #include <cmath>
 #include <limits>
+#include <cassert>
 
 #ifndef SINCOS_COMMON_H_
 #define SINCOS_COMMON_H_
@@ -251,6 +252,11 @@ inline void fast_sincosf( const float xx, float & s, float &c ) {
 
 template<typename SCALAR_FLOAT_T>
 inline void call_sincos_vdt(SCALAR_FLOAT_T const x, SCALAR_FLOAT_T & y_sin, SCALAR_FLOAT_T & y_cos) {
+    // Ignore 'unused argument' warnings
+    (void)x;
+    (void)y_sin;
+    (void)y_cos;
+    assert(0);
 }
 
 template<>
@@ -265,19 +271,19 @@ inline void call_sincos_vdt<double>(double const x, double & y_sin, double & y_c
 
 
 template<typename SCALAR_FLOAT_T>
-benchmark_results<SCALAR_FLOAT_T> test_sincos_vdt_scalar(int array_size)
+benchmark_results<SCALAR_FLOAT_T> test_sincos_vdt_scalar(int ARRAY_SIZE)
 {
     unsigned long long start, end;    // Time measurements
 
     std::random_device rd;
     std::mt19937 gen(rd());
 
-    const int LEN = array_size;
-    SCALAR_FLOAT_T inputA[LEN];
-    SCALAR_FLOAT_T output_sin[LEN];
-    SCALAR_FLOAT_T output_cos[LEN];
-    SCALAR_FLOAT_T values_sin[LEN];
-    SCALAR_FLOAT_T values_cos[LEN];
+    const int LEN = ARRAY_SIZE;
+    SCALAR_FLOAT_T *inputA = (SCALAR_FLOAT_T *) UME::DynamicMemory::AlignedMalloc(ARRAY_SIZE*sizeof(SCALAR_FLOAT_T), sizeof(SCALAR_FLOAT_T));
+    SCALAR_FLOAT_T *output_sin = (SCALAR_FLOAT_T *) UME::DynamicMemory::AlignedMalloc(ARRAY_SIZE*sizeof(SCALAR_FLOAT_T), sizeof(SCALAR_FLOAT_T));
+    SCALAR_FLOAT_T *output_cos = (SCALAR_FLOAT_T *) UME::DynamicMemory::AlignedMalloc(ARRAY_SIZE*sizeof(SCALAR_FLOAT_T), sizeof(SCALAR_FLOAT_T));
+    SCALAR_FLOAT_T *values_sin = (SCALAR_FLOAT_T *) UME::DynamicMemory::AlignedMalloc(ARRAY_SIZE*sizeof(SCALAR_FLOAT_T), sizeof(SCALAR_FLOAT_T));
+    SCALAR_FLOAT_T *values_cos = (SCALAR_FLOAT_T *) UME::DynamicMemory::AlignedMalloc(ARRAY_SIZE*sizeof(SCALAR_FLOAT_T), sizeof(SCALAR_FLOAT_T));
 
     std::uniform_real_distribution<SCALAR_FLOAT_T> dist(-5 * SCALAR_FLOAT_T(M_PI), 5 * SCALAR_FLOAT_T(M_PI));
 
@@ -324,6 +330,13 @@ benchmark_results<SCALAR_FLOAT_T> test_sincos_vdt_scalar(int array_size)
     result.elapsedTime = end - start;
     result.sin_error_ulp = max_sin_err;
     result.cos_error_ulp = max_cos_err;
+
+    UME::DynamicMemory::AlignedFree(inputA);
+    UME::DynamicMemory::AlignedFree(output_sin);
+    UME::DynamicMemory::AlignedFree(output_cos);
+    UME::DynamicMemory::AlignedFree(values_sin);
+    UME::DynamicMemory::AlignedFree(values_cos);
+
     return result;
 }
 

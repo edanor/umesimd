@@ -267,5 +267,7 @@ matrix:
         - INSTR_SET=core_avx512
 
 script:
-  - cd unittest
+  - cd microbenchmarks
+  - . build_tests.sh $COMPILER $INSTR_SET release
+  - cd ../unittest
   - make CXX=$COMPILER ISA=$INSTR_SET BUILD=debug
