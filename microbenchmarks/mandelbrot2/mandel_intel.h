@@ -302,7 +302,7 @@ void MandelbrotAVX512(float x1, float y1, float x2, float y2, int width, int hei
 
     alignas(64) float incr[16] = { 0.0f, 1.0f, 2.0f,  3.0f,  4.0f,  5.0f,  6.0f,  7.0f,
                                    8.0f, 9.0f, 10.0f, 11.0f, 12.0f, 13.0f, 14.0f, 15.0f}; // used to reset the i position when j increases
-    __m512 zmm6 = _mm512_set1_ps(0.0f); // zero out j counter (ymm0 is just a dummy)
+    __m512 zmm6 = _mm512_set1_ps(0.0f); // zero out j counter (zmm0 is just a dummy)
 
     alignas(64) unsigned short raw_outputs[16];
 
@@ -384,10 +384,10 @@ void MandelbrotAVX512_double(double x1, double y1, double x2, double y2, int wid
         for (int i = 0; i < roundedWidth; i += 8)
         {
             __m512d zmm8 = _mm512_mul_pd(zmm7, zmm0);  // x0 = (i+k)*dx 
-            zmm8 = _mm512_add_pd(ymm8, ymm2);         // x0 = x1+(i+k)*dx
+            zmm8 = _mm512_add_pd(zmm8, zmm2);         // x0 = x1+(i+k)*dx
             __m512d zmm9 = _mm512_mul_pd(zmm6, zmm1);  // y0 = j*dy
             zmm9 = _mm512_add_pd(zmm9, zmm3);         // y0 = y1+j*dy
-            __m512d zmm10 = _mm512_set1_pd(0.0);      // zero out iteration counter (ymm0 is just a dummy)
+            __m512d zmm10 = _mm512_set1_pd(0.0);      // zero out iteration counter (zmm0 is just a dummy)
             __m512d zmm11 = zmm10, zmm12 = zmm10;        // set initial xi=0, yi=0
 
             __mmask8 m0 = 0;

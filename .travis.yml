@@ -296,7 +296,5 @@ script:
   - cd ../unittest
   - make CXX=$COMPILER ISA=$INSTR_SET BUILD=debug
 
- after_script:
+after_script:
   - '[[ ! -z "${INTEL_INSTALL_PATH}" ]] && uninstall_intel_software'
-
-   
