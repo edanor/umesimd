@@ -710,10 +710,10 @@ TIMING_RES test_UME_SIMD_double()
     return end - start;
 } */
 
+#if defined(__AVX2__) || defined(__AVX512F__)
 void benchmarkAVX256_f(int iterations, TimingStatistics & reference)
 {
     TimingStatistics stats;
-#if defined(__AVX2__) || defined(__AVX512F__)
     for (int i = 0; i < iterations; i++)
     {
         unsigned long long elapsed = test_AVX_f_256();
@@ -727,10 +727,8 @@ void benchmarkAVX256_f(int iterations, TimingStatistics & reference)
         << " (speedup: "
         << stats.calculateSpeedup(reference) << ")"
         << std::endl;
-#else
-    std::cout << "AVX2 (float): disabled, cannot run measurements.\n";
-#endif
 }
+#endif
 
 void benchmarkAVX512_f(int iterations, TimingStatistics & reference)
 {
@@ -754,10 +752,10 @@ void benchmarkAVX512_f(int iterations, TimingStatistics & reference)
 #endif
 }
 
+#if defined(__AVX2__) || defined(__AVX512F__)
 void benchmarkAVX256_d(int iterations, TimingStatistics & reference)
 {
     TimingStatistics stats;
-#if defined(__AVX2__) || defined(__AVX512F__)
     for (int i = 0; i < iterations; i++)
     {
         unsigned long long elapsed = test_AVX_d_256();
@@ -771,16 +769,13 @@ void benchmarkAVX256_d(int iterations, TimingStatistics & reference)
         << " (speedup: "
         << stats.calculateSpeedup(reference) << ")"
         << std::endl;
-#else
-    std::cout << "AVX2 (double): disabled, cannot run measurements.\n";
-#endif
 }
+#endif
 
-
+#if defined(__AVX512F__)
 void benchmarkAVX512_d(int iterations, TimingStatistics & reference)
 {
     TimingStatistics stats;
-#if defined(__AVX512F__)
     for (int i = 0; i < iterations; i++)
     {
         unsigned long long elapsed = test_AVX512_d();
@@ -794,10 +789,8 @@ void benchmarkAVX512_d(int iterations, TimingStatistics & reference)
         << " (speedup: "
         << stats.calculateSpeedup(reference) << ")"
         << std::endl;
-#else
-    std::cout << "AVX512 (double): disabled, cannot run measurements.\n";
-#endif
 }
+#endif
 
 template<typename VEC_T>
 void benchmarkUMESIMD(std::string const & resultPrefix, int iterations, TimingStatistics & reference)
@@ -867,8 +860,16 @@ int main()
         << " (speedup: 1.0x)"
         << std::endl;
 
+#if defined(__AVX2__) || defined(__AVX512F__)
     benchmarkAVX256_f(ITERATIONS, stats_scalar_f);
+#else
+    std::cout << "AVX2 (float): disabled, cannot run measurements.\n";
+#endif
+#if defined(__AVX512F__)
     benchmarkAVX512_f(ITERATIONS, stats_scalar_f);
+#else
+    std::cout << "AVX512 (float): disabled, cannot run measurements.\n";
+#endif
 
     benchmarkUMESIMD<UME::SIMD::SIMD1_32f>("SIMD code (1x32f): ", ITERATIONS, stats_scalar_f);
     benchmarkUMESIMD<UME::SIMD::SIMD2_32f>("SIMD code (2x32f): ", ITERATIONS, stats_scalar_f);
@@ -889,8 +890,16 @@ int main()
         << " (speedup: " << stats_scalar_d.getAverage()/stats_scalar_f.getAverage() << ")"
         << std::endl;
 
+#if defined(__AVX2__) || defined(__AVX512F__)
     benchmarkAVX256_d(ITERATIONS, stats_scalar_f);
+#else
+    std::cout << "AVX2 (double): disabled, cannot run measurements.\n";
+#endif
+#if defined(__AVX512F__)
     benchmarkAVX512_d(ITERATIONS, stats_scalar_f);
+#else
+    std::cout << "AVX512 (double): disabled, cannot run measurements.\n";
+#endif
 
     benchmarkUMESIMD_double<UME::SIMD::SIMD1_64f>("SIMD code (1x64f): ", ITERATIONS, stats_scalar_f);
     benchmarkUMESIMD_double<UME::SIMD::SIMD2_64f>("SIMD code (2x64f): ", ITERATIONS, stats_scalar_f);

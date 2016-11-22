@@ -184,6 +184,7 @@ bool UME::Bitmap::LoadFromFile(std::string const & fileName)
 {
     FILE *file = NULL;
     bool retval = true;
+    size_t read_size = 0;
     
     do
     {
@@ -200,7 +201,10 @@ bool UME::Bitmap::LoadFromFile(std::string const & fileName)
         }
 
         // Read the file header
-        fread(mHeader.raw, 1, UME_BITMAP_HEADER_LENGTH, file);
+        read_size = fread(mHeader.raw, 1, UME_BITMAP_HEADER_LENGTH, file);
+        if(read_size != UME_BITMAP_HEADER_LENGTH) {
+            std::cerr << "Error: reading bitmap header: " << fileName << std::endl;
+        }
 
         // Parse the header 
         mHeader.headerID = READ_WORD(mHeader.raw);
@@ -211,7 +215,10 @@ bool UME::Bitmap::LoadFromFile(std::string const & fileName)
 
         // Read the DIB header
 
-        fread(mDIBHeader.raw, 1, 4, file);
+        read_size = fread(mDIBHeader.raw, 1, 4, file);
+        if(read_size != 4) {
+            std::cerr << "Error: reading DIB header size: " << fileName << std::endl;
+        }
         mDIBHeader.headerSize = READ_DWORD(mDIBHeader.raw);
 
         // TODO: different types of headers can be supported. Differentiation depends on header size.
@@ -222,7 +229,10 @@ bool UME::Bitmap::LoadFromFile(std::string const & fileName)
             break;
         }
 
-        fread(mDIBHeader.raw + 4, 1, mDIBHeader.headerSize - 4, file);
+        read_size = fread(mDIBHeader.raw + 4, 1, mDIBHeader.headerSize - 4, file);
+        if(read_size != mDIBHeader.headerSize - 4) {
+            std::cerr << "Error: reading DIB header: " << fileName << std::endl;
+        }
 
         mDIBHeader.width  = READ_DWORD(mDIBHeader.raw + 4);
         mDIBHeader.height = READ_DWORD(mDIBHeader.raw + 8);
@@ -240,7 +250,10 @@ bool UME::Bitmap::LoadFromFile(std::string const & fileName)
         }
 
         mRasterData = (uint8_t*)UME::DynamicMemory::Malloc(bitmapSize);
-        fread(mRasterData, 1, bitmapSize, file);
+        read_size = fread(mRasterData, 1, bitmapSize, file);
+        if(read_size != bitmapSize) {
+            std::cerr << "Error: reading bitmap data: " << fileName << std::endl;
+        }
     } while (0);
 
     fclose(file);

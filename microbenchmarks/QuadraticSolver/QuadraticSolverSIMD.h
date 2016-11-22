@@ -79,9 +79,8 @@ UME_NEVER_INLINE void QuadSolveSIMD(
     r1 = r3.blend(mask2, r1);
     r2 = r3.blend(mask2, r2);
 
-    //INT_VEC_T int_roots(nr);
-    UME::SIMD::SIMDVec<int, INT_VEC_T::length()> int_roots2;
-    int_roots2 = UME::SIMD::SIMDVec<int32_t, INT_VEC_T::length()>(nr);
+    INT_VEC_T int_roots(nr);
+    UME::SIMD::SIMDVec<int, INT_VEC_T::length()> int_roots2(int_roots);
     int_roots2.store(roots);
     r1.store(x1);
     r2.store(x2);
