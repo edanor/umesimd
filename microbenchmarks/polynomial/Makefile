@@ -6,16 +6,28 @@
 
 CXXFLAGS=-std=c++11 -Werror
 
+ifneq (,$(findstring clang,$(CXX)))
+	CXXCOMPILER=clang++
+else
+ifneq (,$(findstring g++,$(CXX)))
+	CXXCOMPILER=g++
+else
+ifneq (,$(findstring ic, $(CXX)))
+	CXXCOMPILER=icc
+endif
+endif
+endif
+
 #some predefined rules
-ifeq ($(CXX), g++)
+ifeq ($(CXXCOMPILER), g++)
 	COMPILER_PREFIX=gcc
 	CXXFLAGS+=-W -Wall -pedantic -fstrict-aliasing -Wstrict-aliasing
 endif
-ifeq ($(CXX), clang++)
+ifeq ($(CXXCOMPILER), clang++)
 	COMPILER_PREFIX=clang
 	CXXFLAGS+=-W -Wall -pedantic -fstrict-aliasing -Wstrict-aliasing -Wshorten-64-to-32
 endif
-ifeq ($(CXX), icc)
+ifeq ($(CXXCOMPILER), icc)
 	COMPILER_PREFIX=icc
 	CXXFLAGS+=-DUME_USE_SVML -W -Wall -pedantic -fstrict-aliasing -Wstrict-aliasing
 endif
@@ -32,7 +44,7 @@ ifeq ($(BUILD), debug)
 endif
 ifeq ($(BUILD), release)
 	#for intel compiler use precise results generation
-	ifeq ($(CXX), icc)
+	ifeq ($(CXXCOMPILER), icc)
 		CXXFLAGS+=-fp-model=precise -qopt-streaming-stores=never
 	endif
 
@@ -48,7 +60,7 @@ ifeq ($(BUILD), release_o3)
 endif
 
 ifeq ($(FORCE_OPENMP_PLUGIN), ON)
-	ifeq ($(CXX), icc)
+	ifeq ($(CXXCOMPILER), icc)
 		CXXFLAGS+=-fopenmp
         else
 		CXXFLAGS+=-openmp
@@ -64,7 +76,7 @@ endif
 
 # Select proper instruction set flags
 ifeq ($(ISA), scalar)
-	ifeq ($(CXX), icc)
+	ifeq ($(CXXCOMPILER), icc)
 		CXXFLAGS+=-no-vec
 	endif
 	ISA_PREFIX+=_scalar
@@ -74,7 +86,7 @@ ifeq ($(ISA), avx)
 	ISA_PREFIX+=_avx
 endif
 ifeq ($(ISA), avx2)
-	ifeq ($(CXX), icc)
+	ifeq ($(CXXCOMPILER), icc)
 		CXXFLAGS+=-xCORE-AVX2
 	else
 		CXXFLAGS+=-mavx2
@@ -82,7 +94,7 @@ ifeq ($(ISA), avx2)
 	ISA_PREFIX+=_avx2
 endif
 ifeq ($(ISA), core_avx512)
-	ifeq ($(CXX), icc)
+	ifeq ($(CXXCOMPILER), icc)
 		CXXFLAGS+=-xCORE-AVX512
 	else
 	
@@ -90,7 +102,7 @@ ifeq ($(ISA), core_avx512)
 	ISA_PREFIX+=_core_avx512
 endif
 ifeq ($(ISA), mic_avx512) 
-	ifeq ($(CXX), icc)
+	ifeq ($(CXXCOMPILER), icc)
 		CXXFLAGS+=-xMIC-AVX512
 	else
 		CXXFLAGS+=-march=knl
@@ -103,6 +115,10 @@ ifeq ($(ISA), imci)
 endif
 ifeq ($(ISA), arm)
 	ISA_PREFIX+=_arm
+endif
+ifeq ($(ISA), altivec)
+	CXXFLAGS+=-maltivec
+	ISA_PREFIX+=_altivec
 endif
 
 OUT_NAME=$(join $(join $(join $(join $(COMPILER_PREFIX), $(ISA_PREFIX)), $(BUILD_PREFIX)), $(FORCE_PREFIX)), .out)

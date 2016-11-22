@@ -827,7 +827,7 @@ void benchmarkUMESIMD_double(std::string const & resultPrefix, int iterations, T
     for (int i = 0; i < iterations; i++)
     {
         //unsigned long long elapsed = test_UME_SIMD_double<VEC_T>();
-        stats.update(elapsed);
+        //stats.update(elapsed);
     }
 
     std::cout << resultPrefix << (unsigned long long) stats.getAverage()
