@@ -12,30 +12,50 @@ BUILD="BUILD=$3"
 RESULT="average_$1_$2_$3.txt"
 cd average
 make $COMPILER $ISA $BUILD
+if [ $? -ne 0 ]
+then
+    exit 1
+fi
 rm *.out
 cd ..
 
 RESULT="explog_$1_$2_$3.txt"
 cd explog
 make $COMPILER $ISA $BUILD
+if [ $? -ne 0 ]
+then
+    exit 1
+fi
 rm *.out
 cd ..
 
 RESULT="histogram1_$1_$2_$3.txt"
 cd histogram1
 make $COMPILER $ISA $BUILD
+if [ $? -ne 0 ]
+then
+    exit 1
+fi
 rm *.out
 cd ..
 
 RESULT="histogram2_$1_$2_$3.txt"
 cd histogram2
 make $COMPILER $ISA $BUILD
+if [ $? -ne 0 ]
+then
+    exit 1
+fi
 rm *.out
 cd ..
 
 RESULT="mandelbrot1_$1_$2_$3.txt"
 cd mandelbrot1
 make $COMPILER $ISA $BUILD
+if [ $? -ne 0 ]
+then
+    exit 1
+fi
 rm *.out
 rm *.bmp
 cd ..
@@ -43,6 +63,10 @@ cd ..
 RESULT="mandelbrot2_$1_$2_$3.txt"
 cd mandelbrot2
 make $COMPILER $ISA $BUILD
+if [ $? -ne 0 ]
+then
+    exit 1
+fi
 rm *.out
 rm *.bmp
 cd ..
@@ -51,24 +75,38 @@ cd ..
 #RESULT="matmul_$1_$2_$3.txt"
 #cd matmul
 #make $COMPILER $ISA $BUILD
-#for i in *.out; do "./$i" > "../$RESULT"; done
+#if [ $? -ne 0 ] then
+#    exit 1
+#fi
 #rm *.out
 #cd ..
 
 RESULT="polynomial_$1_$2_$3.txt"
 cd polynomial
 make $COMPILER $ISA $BUILD
+if [ $? -ne 0 ]
+then
+    exit 1
+fi
 rm *.out
 cd ..
 
 RESULT="quadraticsolver_$1_$2_$3.txt"
 cd QuadraticSolver
 make $COMPILER $ISA $BUILD
+if [ $? -ne 0 ]
+then
+    exit 1
+fi
 rm *.out
 cd ..
 
 RESULT="sincos_$1_$2_$3.txt"
 cd sincos
 make $COMPILER $ISA $BUILD
+if [ $? -ne 0 ]
+then
+    exit 1
+fi
 rm *.out
 cd ..
