@@ -8,22 +8,22 @@ env:
 
 matrix:
   include:
-	- compiler: icc
-	  env:
-	    - COMPILER=icc
-		- INSTR_SET=scalar
-	- compiler: icc
-	  env:
-	    - COMPILER=icc
-		- INSTR_SET=avx
-	- compiler: icc
-	  env:
-	    - COMPILER=icc
-		- INSTR_SET=avx2
-	- compiler: icc
-	  env:
-	    - COMPILER=icc
-		- INSTR_SET=mic_avx512
+    - compiler: icc
+      env:
+        - COMPILER=icc
+        - INSTR_SET=scalar
+    - compiler: icc
+      env:
+        - COMPILER=icc
+        - INSTR_SET=avx
+    - compiler: icc
+      env:
+        - COMPILER=icc
+        - INSTR_SET=avx2
+    - compiler: icc
+      env:
+        - COMPILER=icc
+        - INSTR_SET=mic_avx512
     - compiler: gcc
       addons:
         apt:
