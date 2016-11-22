@@ -161,7 +161,6 @@ TIMING_RES test_AVX_f_256()
         __m256 coeff_vec = _mm256_set1_ps(float(HIST_SIZE) / static_cast<float>(1000));
 
         __m256i index_vec;
-        alignas(ALIGNMENT) uint32_t indices[VEC_LEN];
 
         unsigned int bin;
 
@@ -250,7 +249,6 @@ TIMING_RES test_AVX_d_256()
         __m256d coeff_vec = _mm256_set1_pd(double(HIST_SIZE) / static_cast<double>(1000));
 
         __m128i index_vec;
-        alignas(ALIGNMENT) uint64_t indices[VEC_LEN];
 
         unsigned int bin;
 
