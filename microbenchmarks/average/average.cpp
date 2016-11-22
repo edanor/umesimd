@@ -66,13 +66,13 @@ TIMING_RES test_scalar()
         // Generate random numbers in range (0.0;1000.0)
         x[i] = static_cast <FLOAT_T> (rand()) / static_cast <FLOAT_T> (RAND_MAX/1000);
     }
-    
-    {    
+
+    {
         FLOAT_T sum = 0.0f;
         volatile FLOAT_T avg = 0.0f;
-    
+
         start = get_timestamp();
-      
+
         for(int i = 0; i < ARRAY_SIZE; i++)
         {
             sum += x[i];
@@ -82,7 +82,7 @@ TIMING_RES test_scalar()
         
         end = get_timestamp();
     }
-    
+
     UME::DynamicMemory::AlignedFree(x);
 
     return end - start;
@@ -90,7 +90,7 @@ TIMING_RES test_scalar()
 
 TIMING_RES test_AVX_f_256()
 {
-#if defined(__AVX__) || defined(__AVX2__) || defined(__AVX512__)
+#if defined(__AVX__) || defined(__AVX2__) || defined(__AVX512F__)
     unsigned long long start, end;    // Time measurements
     
     float *x;
@@ -103,18 +103,18 @@ TIMING_RES test_AVX_f_256()
         // Generate random numbers in range (0.0;1000.0)
         x[i] = static_cast <float> (rand()) / static_cast <float> (RAND_MAX/1000);
     }
-   
+
     float sum = 0.0f;
     volatile float avg = 0.0f;
-      
+
     // Calculate loop-peeling division
     int PEEL_COUNT = ARRAY_SIZE/8;             // Divide array size by vector length.
     int REM_COUNT = ARRAY_SIZE - PEEL_COUNT*8; // 
             
     alignas(32) float temp[8];
-  
+
     start = get_timestamp();
-      
+
     __m256 x_vec;
     __m256 sum_vec = _mm256_setzero_ps();
     // Instead of adding single elements, we are using SIMD to add elements
@@ -124,24 +124,24 @@ TIMING_RES test_AVX_f_256()
         x_vec = _mm256_load_ps(&x[i*8]); // load elements with STRIDE-8
         sum_vec = _mm256_add_ps(sum_vec, x_vec); // accumulate sum of values
     }
-      
+
     // Now the reduction operation converting a vector into a scalar value
     _mm256_store_ps(temp, sum_vec);
     for(int i = 0; i < 8; ++i)
     {
         sum += temp[i];  
     }
-      
+
     // Calculating loop reminder
     for(int i = 0; i < REM_COUNT; i++)
     {
         sum += x[PEEL_COUNT*8 + i];
     }
-      
+
     avg = sum/(float)ARRAY_SIZE;
       
     end = get_timestamp();
-      
+
     // Verify the result is correct
     float test_sum = 0.0f;
     float test_avg = 0.0f;
@@ -149,7 +149,7 @@ TIMING_RES test_AVX_f_256()
     {
         test_sum += x[i];
     }
-      
+
     test_avg = test_sum/(float)ARRAY_SIZE;
     float normalized_res = avg/test_avg;
     float err_margin = 0.001f;
@@ -158,7 +158,7 @@ TIMING_RES test_AVX_f_256()
     {
         std::cout << "Result invalid: " << avg << " expected: " << test_avg << std::endl;
     }
-    
+
     UME::DynamicMemory::AlignedFree(x);
 
     return end - start;
@@ -168,22 +168,21 @@ TIMING_RES test_AVX_f_256()
 
 TIMING_RES test_AVX_d_256() {
     
-#if defined(__AVX__) || defined(__AVX2__) || defined(__AVX512__)
+#if defined(__AVX__) || defined(__AVX2__) || defined(__AVX512F__)
     unsigned long long start, end;    // Time measurements
-    
-   
+
     double sum = 0.0f;
     volatile double avg = 0.0f;
-      
+
     // Calculate loop-peeling division
     int PEEL_COUNT = ARRAY_SIZE/4;             // Divide array size by vector length.
     int REM_COUNT = ARRAY_SIZE - PEEL_COUNT*4; // 
-            
+
     alignas(32) double temp[4];
 
     double *x;
     x = (double *) UME::DynamicMemory::AlignedMalloc(ARRAY_SIZE*sizeof(double), 4*sizeof(double));
-        
+
     // Initialize arrays with random data
     for(int i = 0; i < ARRAY_SIZE; i++)
     {
@@ -192,7 +191,7 @@ TIMING_RES test_AVX_d_256() {
     }
 
     start = get_timestamp();
-      
+
     __m256d x_vec;
     __m256d sum_vec = _mm256_setzero_pd();
     // Instead of adding single elements, we are using SIMD to add elements
@@ -202,24 +201,24 @@ TIMING_RES test_AVX_d_256() {
         x_vec = _mm256_load_pd(&x[i*4]); // load elements with STRIDE-8
         sum_vec = _mm256_add_pd(sum_vec, x_vec); // accumulate sum of values
     }
-      
+
     // Now the reduction operation converting a vector into a scalar value
     _mm256_store_pd(temp, sum_vec);
     for(int i = 0; i < 4; ++i)
     {
         sum += temp[i];  
     }
-      
+
     // Calculating loop reminder
     for(int i = 0; i < REM_COUNT; i++)
     {
         sum += x[PEEL_COUNT*4 + i];
     }
-      
+
     avg = sum/(double)ARRAY_SIZE;
-      
+
     end = get_timestamp();
-      
+
     // Verify the result is correct
     double test_sum = 0.0f;
     double test_avg = 0.0f;
@@ -227,7 +226,7 @@ TIMING_RES test_AVX_d_256() {
     {
         test_sum += x[i];
     }
-      
+
     test_avg = test_sum/(double)ARRAY_SIZE;
     double normalized_res = avg/test_avg;
     double err_margin = 0.001f;
@@ -236,31 +235,31 @@ TIMING_RES test_AVX_d_256() {
     {
         std::cout << "Result invalid: " << avg << " expected: " << test_avg << std::endl;
     }
-    
+
     UME::DynamicMemory::AlignedFree(x);
 
     return end - start;
 #endif
     return 0;
 }
+
+#if defined(__AVX512F__) || defined(__MIC__)
 TIMING_RES test_AVX_f_512()
 {
-#if defined(__AVX512F__) || defined(__MIC__)
     unsigned long long start, end;    // Time measurements
-    
-   
+
     float sum = 0.0f;
     volatile float avg = 0.0f;
-      
+
     // Calculate loop-peeling division
     int PEEL_COUNT = ARRAY_SIZE/16;             // Divide array size by vector length.
     int REM_COUNT = ARRAY_SIZE - PEEL_COUNT*16; // 
-            
+
     alignas(64) float temp[16];
-  
+
     float *x;
     x = (float *) UME::DynamicMemory::AlignedMalloc(ARRAY_SIZE*sizeof(float), 16*sizeof(float));
-    
+
     // Initialize arrays with random data
     for(int i = 0; i < ARRAY_SIZE; i++)
     {
@@ -269,34 +268,34 @@ TIMING_RES test_AVX_f_512()
     }
 
     start = get_timestamp();
-      
+
     __m512 x_vec;
     __m512 sum_vec = _mm512_setzero_ps();
     // Instead of adding single elements, we are using SIMD to add elements
-    // with STRIDE-8 distance. We then perform reduction using scalar code
+    // with STRIDE-16 distance. We then perform reduction using scalar code
     for(int i = 0; i < PEEL_COUNT; i++)
     {
         x_vec = _mm512_load_ps(&x[i*16]); // load elements with STRIDE-16
         sum_vec = _mm512_add_ps(sum_vec, x_vec); // accumulate sum of values
     }
-      
+
     // Now the reduction operation converting a vector into a scalar value
     _mm512_store_ps(temp, sum_vec);
-    for(int i = 0; i < 16; ++i)
+    for(int i = 0; i < 16; i++)
     {
-        sum += temp[i];  
+        sum += temp[i];
     }
-      
+
     // Calculating loop reminder
     for(int i = 0; i < REM_COUNT; i++)
     {
         sum += x[PEEL_COUNT*16 + i];
     }
-      
+
     avg = sum/(float)ARRAY_SIZE;
-      
+
     end = get_timestamp();
-      
+
     // Verify the result is correct
     float test_sum = 0.0f;
     float test_avg = 0.0f;
@@ -304,7 +303,7 @@ TIMING_RES test_AVX_f_512()
     {
         test_sum += x[i];
     }
-      
+
     test_avg = test_sum/(float)ARRAY_SIZE;
     float normalized_res = avg/test_avg;
     float err_margin = 0.001f;
@@ -313,13 +312,89 @@ TIMING_RES test_AVX_f_512()
     {
         std::cout << "Result invalid: " << avg << " expected: " << test_avg << std::endl;
     }
-    
+
     UME::DynamicMemory::AlignedFree(x);
 
     return end - start;
-#endif
-    return 0;
 }
+#endif
+
+#if defined(__AVX512F__) || defined(__MIC__)
+TIMING_RES test_AVX_d_512()
+{
+    unsigned long long start, end;    // Time measurements
+
+
+    double sum = 0.0f;
+    volatile double avg = 0.0f;
+
+    // Calculate loop-peeling division
+    int PEEL_COUNT = ARRAY_SIZE/8;             // Divide array size by vector length.
+    int REM_COUNT = ARRAY_SIZE - PEEL_COUNT*8;
+
+    alignas(64) double temp[8];
+
+    double *x;
+    x = (double *) UME::DynamicMemory::AlignedMalloc(ARRAY_SIZE*sizeof(double), 8*sizeof(double));
+
+    // Initialize arrays with random data
+    for(int i = 0; i < ARRAY_SIZE; i++)
+    {
+        // Generate random numbers in range (0.0;1000.0)
+        x[i] = static_cast <double> (rand()) / static_cast <double> (RAND_MAX/1000);
+    }
+
+    start = get_timestamp();
+
+    __m512d x_vec;
+    __m512d sum_vec = _mm512_setzero_pd();
+    // Instead of adding single elements, we are using SIMD to add elements
+    // with STRIDE-8 distance. We then perform reduction using scalar code
+    for(int i = 0; i < PEEL_COUNT; i++)
+    {
+        x_vec = _mm512_load_pd(&x[i*8]);         // load elements with STRIDE-8
+        sum_vec = _mm512_add_pd(sum_vec, x_vec); // accumulate sum of values
+    }
+
+    // Now the reduction operation converting a vector into a scalar value
+    _mm512_store_pd(temp, sum_vec);
+    for(int i = 0; i < 8; ++i)
+    {
+        sum += temp[i];
+    }
+
+    // Calculating loop reminder
+    for(int i = 0; i < REM_COUNT; i++)
+    {
+        sum += x[PEEL_COUNT*8 + i];
+    }
+
+    avg = sum/(double)ARRAY_SIZE;
+
+    end = get_timestamp();
+
+    // Verify the result is correct
+    double test_sum = 0.0;
+    double test_avg = 0.0;
+    for(int i = 0; i < ARRAY_SIZE; i++)
+    {
+        test_sum += x[i];
+    }
+
+    test_avg = test_sum/(double)ARRAY_SIZE;
+    double normalized_res = avg/test_avg;
+    double err_margin = 0.001;
+    if(    normalized_res > (1.0 + err_margin)
+        || normalized_res < (1.0 - err_margin) )
+    {
+        std::cout << "Result invalid: " << avg << " expected: " << test_avg << std::endl;
+    }
+
+    UME::DynamicMemory::AlignedFree(x);
+
+    return end - start;
+}
+#endif
 
 template<typename FLOAT_VEC_TYPE>
 TIMING_RES test_UME_SIMD()
@@ -341,20 +416,20 @@ TIMING_RES test_UME_SIMD()
         // Generate random numbers in range (0.0;1000.0)
         x[i] = static_cast <FLOAT_T> (rand()) / static_cast <FLOAT_T> (RAND_MAX/1000);
     }
-   
+
     FLOAT_T sum = 0.0f;
     volatile FLOAT_T avg = 0.0f;
-      
+
     // Calculate loop-peeling division
     uint32_t PEEL_COUNT = ARRAY_SIZE/VEC_LEN;             // Divide array size by vector length.
     uint32_t REM_COUNT = ARRAY_SIZE - PEEL_COUNT*VEC_LEN; // 
-            
+
     FLOAT_T* temp;
     
     temp = (FLOAT_T*) UME::DynamicMemory::AlignedMalloc(ARRAY_SIZE*sizeof(FLOAT_T), ALIGNMENT);
 
     start = get_timestamp();
-      
+
     FLOAT_VEC_TYPE x_vec;
     FLOAT_VEC_TYPE sum_vec(0.0f);
     // Instead of adding single elements, we are using SIMD to add elements
@@ -366,7 +441,7 @@ TIMING_RES test_UME_SIMD()
         sum_vec.adda(x_vec);
         //sum_vec = _mm256_add_ps(sum_vec, x_vec); // accumulate sum of values
     }
-      
+
     sum_vec.store(temp);
 
     // TODO: replace with reduce-add
@@ -374,17 +449,17 @@ TIMING_RES test_UME_SIMD()
     {
         sum += temp[i];  
     }
-      
+
     // Calculating loop reminder
     for(uint32_t i = 0; i < REM_COUNT; i++)
     {
         sum += x[PEEL_COUNT*VEC_LEN + i];
     }
-      
+
     avg = sum/(FLOAT_T)ARRAY_SIZE;
       
     end = get_timestamp();
-      
+
     // Verify the result is correct
     FLOAT_T test_sum = 0.0f;
     FLOAT_T test_avg = 0.0f;
@@ -392,7 +467,7 @@ TIMING_RES test_UME_SIMD()
     {
         test_sum += x[i];
     }
-      
+
     test_avg = test_sum/(FLOAT_T)ARRAY_SIZE;
     FLOAT_T normalized_res = avg/test_avg;
     FLOAT_T err_margin = 0.001f;
@@ -462,7 +537,7 @@ int main()
         << stats_scalar_d.calculateSpeedup(stats_scalar_f) << ")"
         << std::endl;
 
-#if defined(__AVX__) || defined(__AVX2__) || defined(__AVX512__)
+#if defined(__AVX__) || defined(__AVX2__) || defined(__AVX512F__)
     TimingStatistics stats_avx_f, stats_avx_d;
 
     for (int i = 0; i < ITERATIONS; i++) {
@@ -488,7 +563,7 @@ int main()
     std::cout << "256b intrinsic code:     AVX/AVX2/AVX512 disabled, cannot run measurement\n";
 #endif
 
-#if defined(__AVX512__) || defined(__MIC__)
+#if defined(__AVX512F__) || defined(__MIC__)
     TimingStatistics stats_avx512_f, stats_avx512_d;
 
     for (int i = 0; i < ITERATIONS; i++) {
@@ -501,6 +576,15 @@ int main()
         << stats_avx512_f.calculateSpeedup(stats_scalar_f) << ")"
         << std::endl;
 
+    for (int i = 0; i < ITERATIONS; i++) {
+        stats_avx512_d.update(test_AVX_d_512());
+    }
+
+    std::cout << "512b intrinsic code (double): " << (unsigned long long)stats_avx512_d.getAverage()
+        << ", dev: " << (unsigned long long) stats_avx512_d.getStdDev()
+        << " (speedup: "
+        << stats_avx512_d.calculateSpeedup(stats_scalar_f) << ")"
+        << std::endl;
 #else
     std::cout << "512b intrinsic code:     AVX512/KNC disabled, cannot run measurement\n";
 #endif

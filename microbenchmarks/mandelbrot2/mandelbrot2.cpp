@@ -111,6 +111,9 @@ main(int argc, char *argv[])
                      stats_sse,
                      stats_avx,
                      stats_avx2,
+                     stats_avx2_double,
+                     stats_avx512,
+                     stats_avx512_double,
                      stats_SIMD1_32f,
                      stats_SIMD2_32f,
                      stats_SIMD4_32f,
@@ -260,14 +263,105 @@ main(int argc, char *argv[])
         // Saving to file to make sure the results generated are correct
         bmp.SaveToFile("mandel_intel_avx.bmp");
         bmp.ClearTarget(0, 255, 0);
-}
+    }
 
     std::cout << "AVX intrinsics code (float): " << (unsigned long long)stats_avx2.getAverage()
         << ", dev: " << (unsigned long long)stats_avx2.getStdDev()
         << " (speedup: "
         << stats_avx2.calculateSpeedup(stats_scalar_32f) << ")\n";
+
+    for (int i = 0; i < ITERATIONS; i++) {
+        TIMING_RES start, end;
+
+        memset(raw_image, 0, width*height *sizeof(unsigned short));
+        start = get_timestamp();
+        MandelbrotAVX_double(0.29768, 0.48364, 0.29778, 0.48354, width, height, depth, raw_image);
+        end = get_timestamp();
+
+        stats_avx2_double.update(end - start);
+        for (int k = 0; k < 640; k++) {
+            for (int j = 0; j < 640; j++) {
+                int value = raw_image[k*640 + j];
+                Color c = getColor(value);
+                image[3 * k * 640 + 3 * j] = c.r;
+                image[3 * k * 640 + 3 * j + 1] = c.g;
+                image[3 * k * 640 + 3 * j + 2] = c.b;
+            }
+        }
+        // Saving to file to make sure the results generated are correct
+        bmp.SaveToFile("mandel_intel_avx_double.bmp");
+        bmp.ClearTarget(0, 255, 0);
+    }
+
+    std::cout << "AVX intrinsics code (double): " << (unsigned long long)stats_avx2_double.getAverage()
+        << ", dev: " << (unsigned long long)stats_avx2_double.getStdDev()
+        << " (speedup: "
+        << stats_avx2_double.calculateSpeedup(stats_scalar_32f) << ")\n";
 #else
     std::cout << "AVX intrinsics code (float): not used\n";
+    std::cout << "AVX intrinsics code (double): not used\n";
+#endif
+
+
+#if defined __AVX512F__
+    for (int i = 0; i < ITERATIONS; i++) {
+        TIMING_RES start, end;
+
+        memset(raw_image, 0, width*height *sizeof(unsigned short));
+        start = get_timestamp();
+        MandelbrotAVX512(0.29768f, 0.48364f, 0.29778f, 0.48354f, width, height, depth, raw_image);
+        end = get_timestamp();
+
+        stats_avx512.update(end - start);
+        for (int k = 0; k < 640; k++) {
+            for (int j = 0; j < 640; j++) {
+                int value = raw_image[k*640 + j];
+                Color c = getColor(value);
+                image[3 * k * 640 + 3 * j] = c.r;
+                image[3 * k * 640 + 3 * j + 1] = c.g;
+                image[3 * k * 640 + 3 * j + 2] = c.b;
+            }
+        }
+        // Saving to file to make sure the results generated are correct
+        bmp.SaveToFile("mandel_intel_avx512.bmp");
+        bmp.ClearTarget(0, 255, 0);
+    }
+
+    std::cout << "AVX512 intrinsics code (float): " << (unsigned long long)stats_avx512.getAverage()
+        << ", dev: " << (unsigned long long)stats_avx512.getStdDev()
+        << " (speedup: "
+        << stats_avx512.calculateSpeedup(stats_scalar_32f) << ")\n";
+
+    for (int i = 0; i < ITERATIONS; i++) {
+        TIMING_RES start, end;
+
+        memset(raw_image, 0, width*height *sizeof(unsigned short));
+        start = get_timestamp();
+        MandelbrotAVX512_double(0.29768, 0.48364, 0.29778, 0.48354, width, height, depth, raw_image);
+        end = get_timestamp();
+
+        stats_avx512_double.update(end - start);
+        for (int k = 0; k < 640; k++) {
+            for (int j = 0; j < 640; j++) {
+                int value = raw_image[k*640 + j];
+                Color c = getColor(value);
+                image[3 * k * 640 + 3 * j] = c.r;
+                image[3 * k * 640 + 3 * j + 1] = c.g;
+                image[3 * k * 640 + 3 * j + 2] = c.b;
+            }
+        }
+        // Saving to file to make sure the results generated are correct
+        bmp.SaveToFile("mandel_intel_avx512_double.bmp");
+        bmp.ClearTarget(0, 255, 0);
+    }
+
+    std::cout << "AVX512 intrinsics code (double): " << (unsigned long long)stats_avx512_double.getAverage()
+        << ", dev: " << (unsigned long long)stats_avx512_double.getStdDev()
+        << " (speedup: "
+        << stats_avx512_double.calculateSpeedup(stats_scalar_32f) << ")\n";
+#else
+    std::cout << "AVX512 intrinsics code (float): not used\n";
+    std::cout << "AVX512 intrinsics code (double): not used\n";
 #endif
 
     benchmarkOpenMP(width, height, depth, "mandel openmp.bmp", "Openmp: ", ITERATIONS, stats_scalar_32f);

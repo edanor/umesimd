@@ -42,7 +42,7 @@ const int ARRAY_SIZE = 1024 * 1024 * 8;
 #include "QuadraticSolverNaive.h"
 #include "QuadraticSolverOptimized.h"
 #include "QuadraticSolverSIMD.h"
-#include "QuadraticSolverAVX2.h"
+#include "QuadraticSolverAVXx.h"
 #include "QuadraticSolverSIMD_nontemplate.h"
 
 TimingStatistics benchmarkScalarNaiveFloat(std::string resultPrefix, int iterations)
@@ -129,6 +129,41 @@ void benchmarkAVX2(std::string const & resultPrefix,
 }
 #endif
 
+
+#ifdef __AVX512F__
+void benchmarkAVX512(std::string const & resultPrefix,
+    int iterations,
+    TimingStatistics & reference)
+{
+    TimingStatistics stats;
+
+    for (int i = 0; i < iterations; i++)
+    {
+        stats.update(run_AVX512());
+    }
+
+    std::cout << resultPrefix << (unsigned long long) stats.getAverage()
+        << ", dev: " << (unsigned long long) stats.getStdDev()
+        << " (speedup: " << stats.calculateSpeedup(reference) << "x)\n";
+}
+
+void benchmarkAVX512_double(std::string const & resultPrefix,
+    int iterations,
+    TimingStatistics & reference)
+{
+    TimingStatistics stats;
+
+    for (int i = 0; i < iterations; i++)
+    {
+        stats.update(run_AVX512_double());
+    }
+
+    std::cout << resultPrefix << (unsigned long long) stats.getAverage()
+        << ", dev: " << (unsigned long long) stats.getStdDev()
+        << " (speedup: " << stats.calculateSpeedup(reference) << "x)\n";
+}
+#endif
+
 void benchmarkSIMD_nontemplate(char * resultPrefix,
     int iterations,
     TimingStatistics & reference)
@@ -166,12 +201,20 @@ int main()
     ref = benchmarkScalarNaiveFloat(std::string("Scalar naive (float):"), ITERATIONS);
     //benchmarkScalarOptimized<float>("Scalar optimized (float):", ITERATIONS, ref);
 
+    benchmarkSIMD<double, 8>("UME::SIMD (double, 8): ", ITERATIONS, ref);
 #ifdef __AVX2__
     benchmarkAVX2("AVX2 intrinsic code (float, 8):", ITERATIONS, ref);
 #else
     std::cout << "AVX2 intrinsic code (float, 8): unavailable\n";
 #endif
 
+#ifdef __AVX512F__
+    benchmarkAVX512("AVX512 intrinsic code (float, 16):", ITERATIONS, ref);
+    benchmarkAVX512_double("AVX512 intrinsic code (double, 8):", ITERATIONS, ref);
+#else
+    std::cout << "AVX512 intrinsic code (float, 16): unavailable\n";
+    std::cout << "AVX512 intrinsic code (double, 8): unavailable\n";
+#endif
     //benchmarkSIMD_nontemplate("UME::SIMD (float, 8) nontemplate:", ITERATIONS, ref);
 
     benchmarkSIMD<float, 1>("UME::SIMD (float, 1): ", ITERATIONS, ref);

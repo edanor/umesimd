@@ -93,7 +93,7 @@ ifeq ($(ISA), mic_avx512)
 	ifeq ($(CXX), icc)
 		CXXFLAGS+=-xMIC-AVX512
 	else
-	
+		CXXFLAGS+=-march=knl
 	endif
 	ISA_PREFIX+=_mic_avx512
 endif

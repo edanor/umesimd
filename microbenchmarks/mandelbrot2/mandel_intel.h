@@ -159,7 +159,7 @@ void MandelbrotAVX(float x1, float y1, float x2, float y2, int width, int height
         __m256 ymm7 = _mm256_load_ps(incr);  // i counter set to 0,1,2,..,7
         for (int i = 0; i < roundedWidth; i += 8)
         {
-            __m256 ymm8 = _mm256_mul_ps(ymm7, ymm0);  // x0 = (i+k)*dx 
+            __m256 ymm8 = _mm256_mul_ps(ymm7, ymm0);  // x0 = (i+k)*dx
             ymm8 = _mm256_add_ps(ymm8, ymm2);         // x0 = x1+(i+k)*dx
             __m256 ymm9 = _mm256_mul_ps(ymm6, ymm1);  // y0 = j*dy
             ymm9 = _mm256_add_ps(ymm9, ymm3);         // y0 = y1+j*dy
@@ -185,7 +185,7 @@ void MandelbrotAVX(float x1, float y1, float x2, float y2, int width, int height
                 ymm11 = _mm256_sub_ps(ymm13, ymm14);        // xi*xi-yi*yi
                 ymm11 = _mm256_add_ps(ymm11, ymm8);         // xi <- xi*xi-yi*yi+x0 done!
                 ymm12 = _mm256_add_ps(ymm15, ymm15);        // 2*xi*yi
-                ymm12 = _mm256_add_ps(ymm12, ymm9);         // yi <- 2*xi*yi+y0            
+                ymm12 = _mm256_add_ps(ymm12, ymm9);         // yi <- 2*xi*yi+y0
 
                 ++iter;
             } while ((test != 0) && (iter < maxIters));
@@ -204,6 +204,229 @@ void MandelbrotAVX(float x1, float y1, float x2, float y2, int width, int height
             ymm7 = _mm256_add_ps(ymm7, ymm5);
         }
         ymm6 = _mm256_add_ps(ymm6, ymm4); // increment j counter
+    }
+}
+
+
+// Intel AVX based mandelbrot
+void MandelbrotAVX_double(double x1, double y1, double x2, double y2, int width, int height, int maxIters, unsigned short * image)
+{
+    double dx = (x2 - x1) / width;
+    double dy = (y2 - y1) / height;
+    // round up width to next multiple of 4
+    int roundedWidth = (width + 3) & ~3UL;
+
+    double constants[] = { dx, dy, x1, y1, 1.0, 4.0 };
+    __m256d ymm0 = _mm256_broadcast_sd(constants);   // all dx
+    __m256d ymm1 = _mm256_broadcast_sd(constants + 1); // all dy
+    __m256d ymm2 = _mm256_broadcast_sd(constants + 2); // all x1
+    __m256d ymm3 = _mm256_broadcast_sd(constants + 3); // all y1
+    __m256d ymm4 = _mm256_broadcast_sd(constants + 4); // all 1's (iter increments)
+    __m256d ymm5 = _mm256_broadcast_sd(constants + 5); // all 4's (comparisons)
+
+    alignas(32) double incr[4] = { 0.0,1.0,2.0,3.0}; // used to reset the i position when j increases
+    __m256d ymm6 = _mm256_xor_pd(ymm0, ymm0); // zero out j counter (ymm0 is just a dummy)
+
+    alignas(32) unsigned short raw_outputs[16];
+
+    for (int j = 0; j < height; j += 1)
+    {
+        __m256d ymm7 = _mm256_load_pd(incr);  // i counter set to 0,1,2,..,7
+        for (int i = 0; i < roundedWidth; i += 4)
+        {
+            __m256d ymm8 = _mm256_mul_pd(ymm7, ymm0);  // x0 = (i+k)*dx
+            ymm8 = _mm256_add_pd(ymm8, ymm2);         // x0 = x1+(i+k)*dx
+            __m256d ymm9 = _mm256_mul_pd(ymm6, ymm1);  // y0 = j*dy
+            ymm9 = _mm256_add_pd(ymm9, ymm3);         // y0 = y1+j*dy
+            __m256d ymm10 = _mm256_xor_pd(ymm0, ymm0);  // zero out iteration counter (ymm0 is just a dummy)
+            __m256d ymm11 = ymm10, ymm12 = ymm10;        // set initial xi=0, yi=0
+
+            unsigned int test = 0;
+            int iter = 0;
+            do
+            {
+                __m256d ymm13 = _mm256_mul_pd(ymm11, ymm11); // xi*xi
+                __m256d ymm14 = _mm256_mul_pd(ymm12, ymm12); // yi*yi
+                __m256d ymm15 = _mm256_add_pd(ymm13, ymm14); // xi*xi+yi*yi
+
+                ymm15 = _mm256_cmp_pd(ymm15, ymm5, _CMP_LT_OQ);        // xi*xi+yi*yi < 4 in each slot
+                                                                       // now ymm15 has all 1s in the non overflowed locations
+                test = _mm256_movemask_pd(ymm15) & 255;      // lower 8 bits are comparisons
+                ymm15 = _mm256_and_pd(ymm15, ymm4);           // get 1.0f or 0.0f in each field as counters
+                ymm10 = _mm256_add_pd(ymm10, ymm15);        // counters for each pixel iteration
+
+                ymm15 = _mm256_mul_pd(ymm11, ymm12);        // xi*yi
+
+                ymm11 = _mm256_sub_pd(ymm13, ymm14);        // xi*xi-yi*yi
+                ymm11 = _mm256_add_pd(ymm11, ymm8);         // xi <- xi*xi-yi*yi+x0 done!
+                ymm12 = _mm256_add_pd(ymm15, ymm15);        // 2*xi*yi
+                ymm12 = _mm256_add_pd(ymm12, ymm9);         // yi <- 2*xi*yi+y0
+
+                ++iter;
+            } while ((test != 0) && (iter < maxIters));
+
+            // convert iterations to output values
+            __m128i ymm10i = _mm_cvtps_epi32(_mm256_cvtpd_ps(ymm10));
+
+            // write only where needed
+            _mm_store_si128((__m128i*) raw_outputs, ymm10i);
+            int top = (i + 3) < width ? 4 : width & 3;
+            for (int k = 0; k < top; ++k)
+                image[i + k + j*width] = raw_outputs[2 * k];
+
+            // next i position - increment each slot by 8
+            ymm7 = _mm256_add_pd(ymm7, ymm5);
+            ymm7 = _mm256_add_pd(ymm7, ymm5);
+        }
+        ymm6 = _mm256_add_pd(ymm6, ymm4); // increment j counter
+    }
+}
+#endif
+
+#if defined(__AVX512F__)
+
+// Intel AVX512 based mandelbrot
+void MandelbrotAVX512(float x1, float y1, float x2, float y2, int width, int height, int maxIters, unsigned short * image)
+{
+    float dx = (x2 - x1) / width;
+    float dy = (y2 - y1) / height;
+    // round up width to next multiple of 8
+    int roundedWidth = (width + 16) & ~15UL;
+
+    __m512 zmm0 = _mm512_set1_ps(dx);   // all dx
+    __m512 zmm1 = _mm512_set1_ps(dy); // all dy
+    __m512 zmm2 = _mm512_set1_ps(x1); // all x1
+    __m512 zmm3 = _mm512_set1_ps(y1); // all y1
+    __m512 zmm4 = _mm512_set1_ps(1.0f); // all 1's (iter increments)
+    __m512 zmm5 = _mm512_set1_ps(4.0f); // all 4's (comparisons)
+
+    alignas(64) float incr[16] = { 0.0f, 1.0f, 2.0f,  3.0f,  4.0f,  5.0f,  6.0f,  7.0f,
+                                   8.0f, 9.0f, 10.0f, 11.0f, 12.0f, 13.0f, 14.0f, 15.0f}; // used to reset the i position when j increases
+    __m512 zmm6 = _mm512_set1_ps(0.0f); // zero out j counter (ymm0 is just a dummy)
+
+    alignas(64) unsigned short raw_outputs[16];
+
+    for (int j = 0; j < height; j += 1)
+    {
+        __m512 zmm7 = _mm512_load_ps(incr);  // i counter set to 0,1,2,..,7
+        for (int i = 0; i < roundedWidth; i += 16)
+        {
+            __m512 zmm8 = _mm512_mul_ps(zmm7, zmm0);  // x0 = (i+k)*dx
+            zmm8 = _mm512_add_ps(zmm8, zmm2);         // x0 = x1+(i+k)*dx
+            __m512 zmm9 = _mm512_mul_ps(zmm6, zmm1);  // y0 = j*dy
+            zmm9 = _mm512_add_ps(zmm9, zmm3);         // y0 = y1+j*dy
+            __m512 zmm10 = _mm512_set1_ps(0.0f);      // zero out iteration counter (zmm0 is just a dummy)
+            __m512 zmm11 = zmm10, zmm12 = zmm10;        // set initial xi=0, yi=0
+
+            __mmask16 m0 = 0;
+            int iter = 0;
+            do
+            {
+                __m512 zmm13 = _mm512_mul_ps(zmm11, zmm11); // xi*xi
+                __m512 zmm14 = _mm512_mul_ps(zmm12, zmm12); // yi*yi
+                __m512 zmm15 = _mm512_add_ps(zmm13, zmm14); // xi*xi+yi*yi
+
+                m0 = _mm512_cmp_ps_mask(zmm15, zmm5, _CMP_LT_OQ);        // xi*xi+yi*yi < 4 in each slot
+                __m512 zmm16 = _mm512_set1_ps(0.0f);
+                zmm16 = _mm512_mask_mov_ps(zmm16, m0, zmm4);
+                zmm10 = _mm512_add_ps(zmm10, zmm16);        // counters for each pixel iteration
+
+                zmm15 = _mm512_mul_ps(zmm11, zmm12);        // xi*yi
+
+                zmm11 = _mm512_sub_ps(zmm13, zmm14);        // xi*xi-yi*yi
+                zmm11 = _mm512_add_ps(zmm11, zmm8);         // xi <- xi*xi-yi*yi+x0 done!
+                zmm12 = _mm512_add_ps(zmm15, zmm15);        // 2*xi*yi
+                zmm12 = _mm512_add_ps(zmm12, zmm9);         // yi <- 2*xi*yi+y0
+
+                ++iter;
+            } while ((m0 != 0) && (iter < maxIters));
+
+            // convert iterations to output values
+            __m512i zmm10i = _mm512_cvtps_epi32(zmm10);
+
+            // write only where needed
+            _mm512_store_si512((__m512i*) raw_outputs, zmm10i);
+            int top = (i + 15) < width ? 16 : width & 15;
+            for (int k = 0; k < top; ++k)
+                image[i + k + j*width] = raw_outputs[2 * k];
+
+            // next i position - increment each slot by 8
+            zmm7 = _mm512_add_ps(zmm7, zmm5);
+            zmm7 = _mm512_add_ps(zmm7, zmm5);
+        }
+        zmm6 = _mm512_add_ps(zmm6, zmm4); // increment j counter
+    }
+}
+
+// Intel AVX512 based mandelbrot
+void MandelbrotAVX512_double(double x1, double y1, double x2, double y2, int width, int height, int maxIters, unsigned short * image)
+{
+    double dx = (x2 - x1) / width;
+    double dy = (y2 - y1) / height;
+    // round up width to next multiple of 8
+    int roundedWidth = (width + 8) & ~7UL;
+
+    __m512d zmm0 = _mm512_set1_pd(dx);   // all dx
+    __m512d zmm1 = _mm512_set1_pd(dy); // all dy
+    __m512d zmm2 = _mm512_set1_pd(x1); // all x1
+    __m512d zmm3 = _mm512_set1_pd(y1); // all y1
+    __m512d zmm4 = _mm512_set1_pd(1.0); // all 1's (iter increments)
+    __m512d zmm5 = _mm512_set1_pd(4.0); // all 4's (comparisons)
+
+    alignas(64) double incr[8] = { 0.0, 1.0, 2.0,  3.0,  4.0,  5.0,  6.0,  7.0}; // used to reset the i position when j increases
+    __m512d zmm6 = _mm512_set1_pd(0.0); // zero out j counter (zmm0 is just a dummy)
+
+    alignas(64) unsigned short raw_outputs[16];
+
+    for (int j = 0; j < height; j += 1)
+    {
+        __m512d zmm7 = _mm512_load_pd(incr);  // i counter set to 0,1,2,..,7
+        for (int i = 0; i < roundedWidth; i += 8)
+        {
+            __m512d zmm8 = _mm512_mul_pd(zmm7, zmm0);  // x0 = (i+k)*dx 
+            zmm8 = _mm512_add_pd(ymm8, ymm2);         // x0 = x1+(i+k)*dx
+            __m512d zmm9 = _mm512_mul_pd(zmm6, zmm1);  // y0 = j*dy
+            zmm9 = _mm512_add_pd(zmm9, zmm3);         // y0 = y1+j*dy
+            __m512d zmm10 = _mm512_set1_pd(0.0);      // zero out iteration counter (ymm0 is just a dummy)
+            __m512d zmm11 = zmm10, zmm12 = zmm10;        // set initial xi=0, yi=0
+
+            __mmask8 m0 = 0;
+            int iter = 0;
+            do
+            {
+                __m512d zmm13 = _mm512_mul_pd(zmm11, zmm11); // xi*xi
+                __m512d zmm14 = _mm512_mul_pd(zmm12, zmm12); // yi*yi
+                __m512d zmm15 = _mm512_add_pd(zmm13, zmm14); // xi*xi+yi*yi
+
+                m0 = _mm512_cmp_pd_mask(zmm15, zmm5, _CMP_LT_OQ);        // xi*xi+yi*yi < 4 in each slot
+                __m512d zmm16 = _mm512_set1_pd(0.0);
+                zmm16 = _mm512_mask_mov_pd(zmm16, m0, zmm4);
+                zmm10 = _mm512_add_pd(zmm10, zmm16);        // counters for each pixel iteration
+
+                zmm15 = _mm512_mul_pd(zmm11, zmm12);        // xi*yi
+
+                zmm11 = _mm512_sub_pd(zmm13, zmm14);        // xi*xi-yi*yi
+                zmm11 = _mm512_add_pd(zmm11, zmm8);         // xi <- xi*xi-yi*yi+x0 done!
+                zmm12 = _mm512_add_pd(zmm15, zmm15);        // 2*xi*yi
+                zmm12 = _mm512_add_pd(zmm12, zmm9);         // yi <- 2*xi*yi+y0
+
+                ++iter;
+            } while ((m0 != 0) && (iter < maxIters));
+
+            // convert iterations to output values
+            __m256i ymm10i = _mm512_cvtpd_epi32(zmm10);
+
+            // write only where needed
+            _mm256_store_si256((__m256i*) raw_outputs, ymm10i);
+            int top = (i + 8) < width ? 8 : width & 7;
+            for (int k = 0; k < top; ++k)
+                image[i + k + j*width] = raw_outputs[2 * k];
+
+            // next i position - increment each slot by 8
+            zmm7 = _mm512_add_pd(zmm7, zmm5);
+            zmm7 = _mm512_add_pd(zmm7, zmm5);
+        }
+        zmm6 = _mm512_add_pd(zmm6, zmm4); // increment j counter
     }
 }
 #endif
