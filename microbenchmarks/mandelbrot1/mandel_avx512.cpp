@@ -24,8 +24,10 @@ mandel_avx512(unsigned char *image, const struct spec *s)
     __m512 depth_scale = _mm512_set1_ps(float(s->depth - 1));
 
     for (int y = 0; y < s->height; y++) {
-        for (int x = 0; x < s->width; x += 8) {
-            __m512 mx = _mm512_set_ps(float(x + 7), float(x + 6), float(x + 5), float(x + 4),
+        for (int x = 0; x < s->width; x += 16) {
+            __m512 mx = _mm512_set_ps(float(x + 15), float(x + 14), float(x + 13), float(x + 12),
+                                      float(x + 11), float(x + 10), float(x + 9), float(x + 8),
+                                      float(x + 7), float(x + 6), float(x + 5), float(x + 4),
                                       float(x + 3), float(x + 2), float(x + 1), float(x + 0));
             __m512 my = _mm512_set1_ps(float(y));
             __m512 cr = _mm512_add_ps(_mm512_mul_ps(mx, xscale), xmin);
@@ -48,7 +50,7 @@ mandel_avx512(unsigned char *image, const struct spec *s)
                 zr2 = _mm512_mul_ps(zr, zr);
                 zi2 = _mm512_mul_ps(zi, zi);
                 __m512 mag2 = _mm512_add_ps(zr2, zi2);
-                __mmask16 mask = _mm512_cmplt_ps_mask(mag2, threshold);
+                __mmask16 mask = _mm512_cmp_ps_mask(mag2, threshold, _CMP_LT_OQ);
                 mk = _mm512_mask_add_ps(mk, mask, one, mk);
 
                 /* Early bailout? */
