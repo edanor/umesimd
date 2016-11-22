@@ -9,6 +9,8 @@
 
 UME::SIMD is an explicit vectorization library. The library defines homogeneous interface for accessing functionality of SIMD registers of AVX, AVX2, AVX512 and IMCI (KNCNI, k1om) instruction set. 
 
+Draft of the UME::SIMD specification: [UME::SIMD spec](https://gainperformance.files.wordpress.com/2016/11/ume_simd-interface_v0_5.pdf)
+
 This piece of code was developed as part of ICE-DIP project at CERN.
 
  "ICE-DIP is a European Industrial Doctorate project funded by the 
@@ -32,7 +34,6 @@ Please refer to the wiki for introduction and additional information:
 
    >   [wiki pages](https://bitbucket.org/edanor/umesimd/wiki/Home)
 
-   
    
 **RELEASE NOTES for v0.6.1-stable**   
 Interface:   
