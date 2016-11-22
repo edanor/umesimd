@@ -43,18 +43,6 @@ void mandel_basic_64f(unsigned char *image, const struct spec *s);
 void mandel_avx(unsigned char *image, const struct spec *s);
 void mandel_sse2(unsigned char *image, const struct spec *s);
 
-#ifdef __x86_64__
-#include <cpuid.h>
-
-static inline int
-is_avx_supported(void)
-{
-    unsigned int eax = 0, ebx = 0, ecx = 0, edx = 0;
-    __get_cpuid(1, &eax, &ebx, &ecx, &edx);
-    return ecx & bit_AVX ? 1 : 0;
-}
-#endif // __x86_64__
-
 template<typename SIMD_T>
 void benchmarkUMESIMD(struct spec & spec,
                       std::string const & filename, 
