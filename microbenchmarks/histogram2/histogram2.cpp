@@ -730,10 +730,10 @@ void benchmarkAVX256_f(int iterations, TimingStatistics & reference)
 }
 #endif
 
+#if defined(__AVX512F__)
 void benchmarkAVX512_f(int iterations, TimingStatistics & reference)
 {
     TimingStatistics stats;
-#if defined(__AVX512F__)
     for (int i = 0; i < iterations; i++)
     {
         unsigned long long elapsed = test_AVX512_f();
@@ -747,10 +747,8 @@ void benchmarkAVX512_f(int iterations, TimingStatistics & reference)
         << " (speedup: "
         << stats.calculateSpeedup(reference) << ")"
         << std::endl;
-#else
-    std::cout << "AVX512 (float): disabled, cannot run measurements.\n";
-#endif
 }
+#endif
 
 #if defined(__AVX2__) || defined(__AVX512F__)
 void benchmarkAVX256_d(int iterations, TimingStatistics & reference)
