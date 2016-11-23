@@ -12,18 +12,38 @@ matrix:
       env:
         - COMPILER=icc
         - INSTR_SET=scalar
+      before_install:
+        - wget -q -O /dev/stdout 'https://raw.githubusercontent.com/nemequ/icc-travis/master/install-icc.sh' |  /bin/sh
+        - source ~/.bashrc
+      after_script:
+        - '[[ ! -z "${INTEL_INSTALL_PATH}" ]] && uninstall_intel_software'
     - compiler: icc
       env:
         - COMPILER=icc
         - INSTR_SET=avx
+      before_install:
+        - wget -q -O /dev/stdout 'https://raw.githubusercontent.com/nemequ/icc-travis/master/install-icc.sh' |  /bin/sh
+        - source ~/.bashrc
+      after_script:
+        - '[[ ! -z "${INTEL_INSTALL_PATH}" ]] && uninstall_intel_software'
     - compiler: icc
       env:
         - COMPILER=icc
         - INSTR_SET=avx2
+      before_install:
+        - wget -q -O /dev/stdout 'https://raw.githubusercontent.com/nemequ/icc-travis/master/install-icc.sh' |  /bin/sh
+        - source ~/.bashrc
+      after_script:
+        - '[[ ! -z "${INTEL_INSTALL_PATH}" ]] && uninstall_intel_software'
     - compiler: icc
       env:
         - COMPILER=icc
         - INSTR_SET=mic_avx512
+      before_install:
+        - wget -q -O /dev/stdout 'https://raw.githubusercontent.com/nemequ/icc-travis/master/install-icc.sh' |  /bin/sh
+        - source ~/.bashrc
+      after_script:
+        - '[[ ! -z "${INTEL_INSTALL_PATH}" ]] && uninstall_intel_software'
     - compiler: gcc
       addons:
         apt:
@@ -286,9 +306,6 @@ matrix:
         - COMPILER=clang++-3.9
         - INSTR_SET=core_avx512
 
-before_install:
-  - wget -q -O /dev/stdout 'https://raw.githubusercontent.com/nemequ/icc-travis/master/install-icc.sh' |  /bin/sh
-  - source ~/.bashrc
 script:
   - cd microbenchmarks
   - chmod +x build_tests.sh
@@ -296,5 +313,3 @@ script:
   - cd ../unittest
   - make CXX=$COMPILER ISA=$INSTR_SET BUILD=debug
 
-after_script:
-  - '[[ ! -z "${INTEL_INSTALL_PATH}" ]] && uninstall_intel_software'
