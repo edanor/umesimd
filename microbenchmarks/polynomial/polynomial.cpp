@@ -843,7 +843,8 @@ void benchmark_avx512_32f(std::string const & resultPrefix,
         << " (speedup: " << stats.calculateSpeedup(reference) << "x)\n";
 }
 
-void benchmark_avx512_64f(char * resultPrefix,
+void benchmark_avx512_64f(
+    std::string const & resultPrefix,
     int iterations,
     TimingStatistics & reference)
 {
