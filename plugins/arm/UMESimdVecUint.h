@@ -50,4 +50,7 @@
 #include "uint/UMESimdVecUint32_4.h"
 #include "uint/UMESimdVecUint32_8.h"
 
+#include "uint/UMESimdVecUint64_1.h"
+#include "uint/UMESimdVecUint64_2.h"
+
 #endif

@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2015 CERN
+// Copyright (c) 2016 CERN
 //
 // Author: Przemyslaw Karpinski
 //
