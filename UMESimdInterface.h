@@ -665,15 +665,15 @@ namespace SIMD
         }
         UME_FORCE_INLINE bool operator== (IntermediateIndex const & x) {
             return mVecRef_RW.extract(mIndexRef) ==
-                x.mVecRef_RW.extract(mIndexRef);
+                x.mVecRef_RW.extract(x.mIndexRef);
         }
         template<typename T>
         UME_FORCE_INLINE bool operator!=(T const & rhs) {
-            return mVecRef_RW.extract(mIndexRef) != rhs;
+            return mVecRef_RW.extract(mIndexRef) != SCALAR_TYPE(rhs);
         }
         UME_FORCE_INLINE bool operator!= (IntermediateIndex const & x) {
             return mVecRef_RW.extract(mIndexRef) !=
-                x.mVecRef_RW.extract(mIndexRef);
+                x.mVecRef_RW.extract(x.mIndexRef);
         }
         template<typename T>
         UME_FORCE_INLINE SCALAR_TYPE operator+ (T const & x) {
@@ -681,7 +681,7 @@ namespace SIMD
         }
         UME_FORCE_INLINE SCALAR_TYPE operator+ (IntermediateIndex const & x) {
             return mVecRef_RW.extract(mIndexRef) +
-                x.mVecRef_RW.extract(mIndexRef);
+                x.mVecRef_RW.extract(x.mIndexRef);
         }
         template<typename T>
         UME_FORCE_INLINE SCALAR_TYPE operator- (T const & x) {
@@ -689,7 +689,7 @@ namespace SIMD
         }
         UME_FORCE_INLINE SCALAR_TYPE operator- (IntermediateIndex const & x) {
             return mVecRef_RW.extract(mIndexRef) -
-                x.mVecRef_RW.extract(mIndexRef);
+                x.mVecRef_RW.extract(x.mIndexRef);
         }
         template<typename T>
         UME_FORCE_INLINE SCALAR_TYPE operator* (T const & x) {
@@ -697,7 +697,7 @@ namespace SIMD
         }
         UME_FORCE_INLINE SCALAR_TYPE operator* (IntermediateIndex const & x) {
             return mVecRef_RW.extract(mIndexRef) *
-                x.mVecRef_RW.extract(mIndexRef);
+                x.mVecRef_RW.extract(x.mIndexRef);
         }
         template<typename T>
         UME_FORCE_INLINE SCALAR_TYPE operator/ (T const & x) {
@@ -705,7 +705,7 @@ namespace SIMD
         }
         UME_FORCE_INLINE SCALAR_TYPE operator/ (IntermediateIndex const & x) {
             return mVecRef_RW.extract(mIndexRef) /
-                x.mVecRef_RW.extract(mIndexRef);
+                x.mVecRef_RW.extract(x.mIndexRef);
         }
         template<typename T>
         UME_FORCE_INLINE SCALAR_TYPE operator% (T const & x) {
@@ -713,7 +713,7 @@ namespace SIMD
         }
         UME_FORCE_INLINE SCALAR_TYPE operator% (IntermediateIndex const & x) {
             return mVecRef_RW.extract(mIndexRef) %
-                x.mVecRef_RW.extract(mIndexRef);
+                x.mVecRef_RW.extract(x.mIndexRef);
         }
         template<typename T>
         UME_FORCE_INLINE SCALAR_TYPE operator& (T const & x) {
@@ -721,7 +721,7 @@ namespace SIMD
         }
         UME_FORCE_INLINE SCALAR_TYPE operator& (IntermediateIndex const & x) {
             return mVecRef_RW.extract(mIndexRef) &
-                x.mVecRef_RW.extract(mIndexRef);
+                x.mVecRef_RW.extract(x.mIndexRef);
         }
         template<typename T>
         UME_FORCE_INLINE SCALAR_TYPE operator| (T const & x) {
@@ -729,7 +729,7 @@ namespace SIMD
         }
         UME_FORCE_INLINE SCALAR_TYPE operator| (IntermediateIndex const & x) {
             return mVecRef_RW.extract(mIndexRef) |
-                x.mVecRef_RW.extract(mIndexRef);
+                x.mVecRef_RW.extract(x.mIndexRef);
         }
         template<typename T>
         UME_FORCE_INLINE SCALAR_TYPE operator^ (T const & x) {
@@ -737,7 +737,7 @@ namespace SIMD
         }
         UME_FORCE_INLINE SCALAR_TYPE operator^ (IntermediateIndex const & x) {
             return mVecRef_RW.extract(mIndexRef) ^
-                x.mVecRef_RW.extract(mIndexRef);
+                x.mVecRef_RW.extract(x.mIndexRef);
         }
         template<typename T>
         UME_FORCE_INLINE SCALAR_TYPE operator<< (T const & x) {
@@ -745,7 +745,7 @@ namespace SIMD
         }
         UME_FORCE_INLINE SCALAR_TYPE operator<< (IntermediateIndex const & x) {
             return mVecRef_RW.extract(mIndexRef) <<
-                x.mVecRef_RW.extract(mIndexRef);
+                x.mVecRef_RW.extract(x.mIndexRef);
         }
         template<typename T>
         UME_FORCE_INLINE SCALAR_TYPE operator>> (T const & x) {
@@ -753,7 +753,7 @@ namespace SIMD
         }
         UME_FORCE_INLINE SCALAR_TYPE operator>> (IntermediateIndex const & x) {
             return mVecRef_RW.extract(mIndexRef) >>
-                x.mVecRef_RW.extract(mIndexRef);
+                x.mVecRef_RW.extract(x.mIndexRef);
         }
 
     private:
