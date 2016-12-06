@@ -223,26 +223,21 @@ namespace SIMD {
             if (mask.mMask[3] == true) p[3] = mVec[3];
             return p;
         }
+*/
 
         // BLENDV
         UME_FORCE_INLINE SIMDVec_f blend(SIMDVecMask<4> const & mask, SIMDVec_f const & b) const {
-            float t0 = mask.mMask[0] ? b.mVec[0] : mVec[0];
-            float t1 = mask.mMask[1] ? b.mVec[1] : mVec[1];
-            float t2 = mask.mMask[2] ? b.mVec[2] : mVec[2];
-            float t3 = mask.mMask[3] ? b.mVec[3] : mVec[3];
-            return SIMDVec_f(t0, t1, t2, t3);
+            float32x4_t t0 = BLEND(mVec, b.mVec, mask.mMask);
+            return SIMDVec_f(t0);
         }
         // BLENDS
         UME_FORCE_INLINE SIMDVec_f blend(SIMDVecMask<4> const & mask, float b) const {
-            float t0 = mask.mMask[0] ? b : mVec[0];
-            float t1 = mask.mMask[1] ? b : mVec[1];
-            float t2 = mask.mMask[2] ? b : mVec[2];
-            float t3 = mask.mMask[3] ? b : mVec[3];
-            return SIMDVec_f(t0, t1, t2, t3);
+            float32x4_t t0 = vdupq_n_f32(b);
+            float32x4_t t1 = BLEND(mVec, t0, mask.mMask);
+            return SIMDVec_f(t1);
         }
         // SWIZZLE
         // SWIZZLEA
-*/
         // ADDV
         UME_FORCE_INLINE SIMDVec_f add(SIMDVec_f const & b) const {
             float32x4_t t0 = vaddq_f32(mVec, b.mVec);
@@ -757,30 +752,25 @@ namespace SIMD {
         }
         // MMULV
         UME_FORCE_INLINE SIMDVec_f mul(SIMDVecMask<4> const & mask, SIMDVec_f const & b) const {
-            float t0 = mask.mMask[0] ? mVec[0] * b.mVec[0] : mVec[0];
-            float t1 = mask.mMask[1] ? mVec[1] * b.mVec[1] : mVec[1];
-            float t2 = mask.mMask[2] ? mVec[2] * b.mVec[2] : mVec[2];
-            float t3 = mask.mMask[3] ? mVec[3] * b.mVec[3] : mVec[3];
-            return SIMDVec_f(t0, t1, t2, t3);
+            float32x4_t t0 = vmulq_f32(mVec, b.mVec);
+            float32x4_t t1 = BLEND(mVec, t0, mask.mMask);
+            return SIMDVec_f(t1);
         }
         // MULS
         UME_FORCE_INLINE SIMDVec_f mul(float b) const {
-            float t0 = mVec[0] * b;
-            float t1 = mVec[1] * b;
-            float t2 = mVec[2] * b;
-            float t3 = mVec[3] * b;
-            return SIMDVec_f(t0, t1, t2, t3);
+            float32x4_t t0 = vdupq_n_f32(b);
+            float32x4_t t1 = vmulq_f32(mVec, t0);
+            return SIMDVec_f(t1);
         }
         UME_FORCE_INLINE SIMDVec_f operator* (float b) const {
             return mul(b);
         }
         // MMULS
         UME_FORCE_INLINE SIMDVec_f mul(SIMDVecMask<4> const & mask, float b) const {
-            float t0 = mask.mMask[0] ? mVec[0] * b : mVec[0];
-            float t1 = mask.mMask[1] ? mVec[1] * b : mVec[1];
-            float t2 = mask.mMask[2] ? mVec[2] * b : mVec[2];
-            float t3 = mask.mMask[3] ? mVec[3] * b : mVec[3];
-            return SIMDVec_f(t0, t1, t2, t3);
+            float32x4_t t0 = vdupq_n_f32(b);
+            float32x4_t t1 = vmulq_f32(mVec, t0);
+            float32x4_t t2 = BLEND(mVec, t1, mask.mMask);
+            return SIMDVec_f(t2);
         }
         /*
         // MULVA
@@ -820,45 +810,37 @@ namespace SIMD {
             mVec[2] = mask.mMask[2] ? mVec[2] * b : mVec[2];
             mVec[3] = mask.mMask[3] ? mVec[3] * b : mVec[3];
             return *this;
-        }
+        }*/
         // DIVV
         UME_FORCE_INLINE SIMDVec_f div(SIMDVec_f const & b) const {
-            float t0 = mVec[0] / b.mVec[0];
-            float t1 = mVec[1] / b.mVec[1];
-            float t2 = mVec[2] / b.mVec[2];
-            float t3 = mVec[3] / b.mVec[3];
-            return SIMDVec_f(t0, t1, t2, t3);
+            float32x4_t t0 = vdivq_f32(mVec, b.mVec);
+            return SIMDVec_f(t0);
         }
         UME_FORCE_INLINE SIMDVec_f operator/ (SIMDVec_f const & b) const {
             return div(b);
         }
         // MDIVV
         UME_FORCE_INLINE SIMDVec_f div(SIMDVecMask<4> const & mask, SIMDVec_f const & b) const {
-            float t0 = mask.mMask[0] ? mVec[0] / b.mVec[0] : mVec[0];
-            float t1 = mask.mMask[1] ? mVec[1] / b.mVec[1] : mVec[1];
-            float t2 = mask.mMask[2] ? mVec[2] / b.mVec[2] : mVec[2];
-            float t3 = mask.mMask[3] ? mVec[3] / b.mVec[3] : mVec[3];
-            return SIMDVec_f(t0, t1, t2, t3);
+            float32x4_t t0 = vdivq_f32(mVec, b.mVec);
+            float32x4_t t1 = BLEND(mVec, t0, mask.mMask);
+            return SIMDVec_f(t1);
         }
         // DIVS
         UME_FORCE_INLINE SIMDVec_f div(float b) const {
-            float t0 = mVec[0] / b;
-            float t1 = mVec[1] / b;
-            float t2 = mVec[2] / b;
-            float t3 = mVec[3] / b;
-            return SIMDVec_f(t0, t1, t2, t3);
+            float32x4_t t0 = vdupq_n_f32(b);
+            float32x4_t t1 = vdivq_f32(mVec, t0);
+            return SIMDVec_f(t1);
         }
         UME_FORCE_INLINE SIMDVec_f operator/ (float b) const {
             return div(b);
         }
         // MDIVS
         UME_FORCE_INLINE SIMDVec_f div(SIMDVecMask<4> const & mask, float b) const {
-            float t0 = mask.mMask[0] ? mVec[0] / b : mVec[0];
-            float t1 = mask.mMask[1] ? mVec[1] / b : mVec[1];
-            float t2 = mask.mMask[2] ? mVec[2] / b : mVec[2];
-            float t3 = mask.mMask[3] ? mVec[3] / b : mVec[3];
-            return SIMDVec_f(t0, t1, t2, t3);
-        }
+            float32x4_t t0 = vdupq_n_f32(b);
+            float32x4_t t1 = vdivq_f32(mVec, t0);
+            float32x4_t t2 = BLEND(mVec, t1, mask.mMask);
+            return SIMDVec_f(t2);
+        }/*
         // DIVVA
         UME_FORCE_INLINE SIMDVec_f & diva(SIMDVec_f const & b) {
             mVec[0] /= b.mVec[0];
@@ -1637,7 +1619,7 @@ namespace SIMD {
             if ((mask.mMask[3] == true) && (mVec[3] < 0)) mVec[3] = -mVec[3];
             return *this;
         }
-
+*/
         // CMPEQRV
         // CMPEQRS
 
@@ -1646,7 +1628,16 @@ namespace SIMD {
         // SQRA
         // MSQRA
         // SQRT
+        UME_FORCE_INLINE SIMDVec_f sqrt() const {
+            float32x4_t t0 = vsqrtq_f32(mVec);
+            return SIMDVec_f(t0);
+        }
         // MSQRT
+        UME_FORCE_INLINE SIMDVec_f sqrt(SIMDVecMask<4> const & mask) const {
+            float32x4_t t0 = vsqrtq_f32(mVec);
+            float32x4_t t1 = BLEND(mVec, t0, mask.mMask);
+            return SIMDVec_f(t1);
+        }
         // SQRTA
         // MSQRTA
         // POWV
@@ -1655,7 +1646,7 @@ namespace SIMD {
         // MPOWS
         // ROUND
         // MROUND
-        */
+
         // TRUNC
         UME_FORCE_INLINE SIMDVec_i<int32_t, 4> trunc() const {
             int32x4_t t0 = vcvtq_s32_f32(mVec);
@@ -1669,7 +1660,6 @@ namespace SIMD {
             int32_t t3 = mask.mMask[3] ? (int32_t)mVec[3] : 0;
             return SIMDVec_i<int32_t, 4>(t0, t1, t2, t3);
         }
-        /*
         // FLOOR
         // MFLOOR
         // CEIL
@@ -1681,15 +1671,58 @@ namespace SIMD {
         // ISSUB
         // ISZERO
         // ISZEROSUB
+        // EXP
+        UME_FORCE_INLINE SIMDVec_f exp() const {
+            return VECTOR_EMULATION::expf<SIMDVec_f, SIMDVec_u<uint32_t, 4>>(*this);
+        }
+        // MEXP
+        UME_FORCE_INLINE SIMDVec_f exp(SIMDVecMask<4> const & mask) const {
+            return VECTOR_EMULATION::expf<SIMDVec_f, SIMDVec_u<uint32_t, 4>, SIMDVecMask<4>>(mask, *this);
+        }
+        // LOG
+        UME_FORCE_INLINE SIMDVec_f log() const {
+            return VECTOR_EMULATION::logf<SIMDVec_f, SIMDVec_u<uint32_t, 4>>(*this);
+        }
+        // MLOG
+        UME_FORCE_INLINE SIMDVec_f log(SIMDVecMask<4> const & mask) const {
+            return VECTOR_EMULATION::logf<SIMDVec_f, SIMDVec_u<uint32_t, 4>, SIMDVecMask<4>>(mask, *this);
+        }
+        // LOG2
+        // MLOG2
+        // LOG10
+        // MLOG10
+
         // SIN
+        UME_FORCE_INLINE SIMDVec_f sin() const {
+            return VECTOR_EMULATION::sinf<SIMDVec_f, SIMDVec_i<int32_t, 4>, SIMDVecMask<4>>(*this);
+        }
         // MSIN
+        UME_FORCE_INLINE SIMDVec_f sin(SIMDVecMask<4> const & mask) const {
+            return VECTOR_EMULATION::sinf<SIMDVec_f, SIMDVec_i<int32_t, 4>, SIMDVecMask<4>>(mask, *this);
+        }
         // COS
+        UME_FORCE_INLINE SIMDVec_f cos() const {
+            return VECTOR_EMULATION::cosf<SIMDVec_f, SIMDVec_i<int32_t, 4>, SIMDVecMask<4>>(*this);
+        }
         // MCOS
+        UME_FORCE_INLINE SIMDVec_f cos(SIMDVecMask<4> const & mask) const {
+            return VECTOR_EMULATION::cosf<SIMDVec_f, SIMDVec_i<int32_t, 4>, SIMDVecMask<4>>(mask, *this);
+        }
+        // SINCOS
+        UME_FORCE_INLINE void sincos(SIMDVec_f & sinvec, SIMDVec_f & cosvec) const {
+            VECTOR_EMULATION::sincosf<SIMDVec_f, SIMDVec_i<int32_t, 4>, SIMDVecMask<4>>(*this, sinvec, cosvec);
+        }
+        // MSINCOS
+        UME_FORCE_INLINE void sincos(SIMDVecMask<4> const & mask, SIMDVec_f & sinvec, SIMDVec_f & cosvec) const {
+            sinvec = SCALAR_EMULATION::MATH::sin<SIMDVec_f, SIMDVecMask<4>>(mask, *this);
+            cosvec = SCALAR_EMULATION::MATH::cos<SIMDVec_f, SIMDVecMask<4>>(mask, *this);
+        }
         // TAN
         // MTAN
         // CTAN
         // MCTAN
 
+        /*
         // PACK
         UME_FORCE_INLINE SIMDVec_f & pack(SIMDVec_f<float, 2> const & a, SIMDVec_f<float, 2> const & b) {
             mVec[0] = a[0];

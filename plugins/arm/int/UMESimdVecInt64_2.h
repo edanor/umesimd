@@ -283,11 +283,6 @@ namespace SIMD {
         // MBANDS
         // BANDVA
         // MBANDVA
-        UME_FORCE_INLINE SIMDVec_i & banda(SIMDVecMask<2> const & mask, SIMDVec_i const & b) {
-            if (mask.mMask[0]) mVec[0] &= b.mVec[0];
-            if (mask.mMask[1]) mVec[1] &= b.mVec[1];
-            return *this;
-        }
         // BANDSA
         // MBANDSA
         // BORV
@@ -311,9 +306,6 @@ namespace SIMD {
         // BNOTA
         // MBNOTA
         // HBAND
-        UME_FORCE_INLINE int64_t hband() const {
-            return mVec[0] & mVec[1];
-        }
         // MHBAND
         // HBANDS
         // MHBANDS
@@ -321,11 +313,6 @@ namespace SIMD {
         // MHBOR
         // HBORS
         // MHBORS
-        UME_FORCE_INLINE int64_t hbor(SIMDVecMask<2> const & mask, int64_t b) const {
-            int64_t t0 = mask.mMask[0] ? mVec[0] | b : b;
-            int64_t t1 = mask.mMask[1] ? mVec[1] | t0 : t0;
-            return t1;
-        }
         // HBXOR
         // MHBXOR
         // HBXORS

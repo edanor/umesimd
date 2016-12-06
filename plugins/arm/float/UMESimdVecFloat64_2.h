@@ -48,8 +48,8 @@ namespace SIMD {
             1,
             uint64_t,
             int64_t,
-            SIMDVecMask<1>,
-            SIMDSwizzle<1>>,
+            SIMDVecMask<2>,
+            SIMDSwizzle<2>>,
         public SIMDVecPackableInterface<
             SIMDVec_f<double, 2>,
             SIMDVec_f<double, 1>>
@@ -111,12 +111,12 @@ namespace SIMD {
 
         // Override Mask Access operators
 #if defined(USE_PARENTHESES_IN_MASK_ASSIGNMENT)
-        UME_FORCE_INLINE IntermediateMask<SIMDVec_f, double, SIMDVecMask<1>> operator() (SIMDVecMask<1> const & mask) {
-            return IntermediateMask<SIMDVec_f, double, SIMDVecMask<1>>(mask, static_cast<SIMDVec_f &>(*this));
+        UME_FORCE_INLINE IntermediateMask<SIMDVec_f, double, SIMDVecMask<2>> operator() (SIMDVecMask<2> const & mask) {
+            return IntermediateMask<SIMDVec_f, double, SIMDVecMask<2>>(mask, static_cast<SIMDVec_f &>(*this));
         }
 #else
-        UME_FORCE_INLINE IntermediateMask<SIMDVec_f, double, SIMDVecMask<1>> operator[] (SIMDVecMask<1> const & mask) {
-            return IntermediateMask<SIMDVec_f, double, SIMDVecMask<1>>(mask, static_cast<SIMDVec_f &>(*this));
+        UME_FORCE_INLINE IntermediateMask<SIMDVec_f, double, SIMDVecMask<2>> operator[] (SIMDVecMask<2> const & mask) {
+            return IntermediateMask<SIMDVec_f, double, SIMDVecMask<2>>(mask, static_cast<SIMDVec_f &>(*this));
         }
 #endif
 
@@ -1209,10 +1209,51 @@ namespace SIMD {
         // ISSUB
         // ISZERO
         // ISZEROSUB
+        // EXP
+        UME_FORCE_INLINE SIMDVec_f exp() const {
+            return VECTOR_EMULATION::expd<SIMDVec_f, SIMDVec_u<uint64_t, 2>>(*this);
+        }
+        // MEXP
+        UME_FORCE_INLINE SIMDVec_f exp(SIMDVecMask<2> const & mask) const {
+            return VECTOR_EMULATION::expd<SIMDVec_f, SIMDVec_u<uint64_t, 2>, SIMDVecMask<2>>(mask, *this);
+        }
+        // LOG
+        UME_FORCE_INLINE SIMDVec_f log() const {
+            return VECTOR_EMULATION::logd<SIMDVec_f, SIMDVec_u<uint64_t, 2>>(*this);
+        }
+        // MLOG
+        UME_FORCE_INLINE SIMDVec_f log(SIMDVecMask<2> const & mask) const {
+            return VECTOR_EMULATION::logd<SIMDVec_f, SIMDVec_u<uint64_t, 2>, SIMDVecMask<2>>(mask, *this);
+        }
+        // LOG2
+        // MLOG2
+        // LOG10
+        // MLOG10
         // SIN
+        UME_FORCE_INLINE SIMDVec_f sin() const {
+            return VECTOR_EMULATION::sind<SIMDVec_f, SIMDVec_i<int64_t, 2>, SIMDVecMask<2>>(*this);
+        }
         // MSIN
+        UME_FORCE_INLINE SIMDVec_f sin(SIMDVecMask<2> const & mask) const {
+            return VECTOR_EMULATION::sind<SIMDVec_f, SIMDVec_i<int64_t, 2>, SIMDVecMask<2>>(mask, *this);
+        }
         // COS
+        UME_FORCE_INLINE SIMDVec_f cos() const {
+            return VECTOR_EMULATION::cosd<SIMDVec_f, SIMDVec_i<int64_t, 2>, SIMDVecMask<2>>(*this);
+        }
         // MCOS
+        UME_FORCE_INLINE SIMDVec_f cos(SIMDVecMask<2> const & mask) const {
+            return VECTOR_EMULATION::cosd<SIMDVec_f, SIMDVec_i<int64_t, 2>, SIMDVecMask<2>>(mask, *this);
+        }
+        // SINCOS
+        UME_FORCE_INLINE void sincos(SIMDVec_f & sinvec, SIMDVec_f & cosvec) const {
+            VECTOR_EMULATION::sincosd<SIMDVec_f, SIMDVec_i<int64_t, 2>, SIMDVecMask<2>>(*this, sinvec, cosvec);
+        }
+        // MSINCOS
+        UME_FORCE_INLINE void sincos(SIMDVecMask<2> const & mask, SIMDVec_f & sinvec, SIMDVec_f & cosvec) const {
+            sinvec = VECTOR_EMULATION::sind<SIMDVec_f, SIMDVec_i<int64_t, 2>, SIMDVecMask<2>>(mask, *this);
+            cosvec = VECTOR_EMULATION::cosd<SIMDVec_f, SIMDVec_i<int64_t, 2>, SIMDVecMask<2>>(mask, *this);
+        }
         // TAN
         // MTAN
         // CTAN
