@@ -756,15 +756,16 @@ namespace SIMD
                 x.mVecRef_RW.extract(mIndexRef);
         }
 
+        IntermediateIndex & operator= (IntermediateIndex const & x) {
+            mVecRef_RW.insert(mIndexRef) = x.mVecRef_RW.extract(x.mIndexRef);
+            return *this;
+        }
+
     private:
         // This object should be only constructible by the
         // vector type using it.
         IntermediateIndex() {}
         IntermediateIndex(IntermediateIndex const & x) : mIndexRef(x.mIndexRef), mVecRef_RW(x.mVecRef_RW) {}
-        IntermediateIndex & operator= (IntermediateIndex const & x) {
-            mIndexRef = x.mIndexRef;
-            mVecRef_RW = x.mVecRef_RW;
-        }
 
         friend VEC_TYPE;
 

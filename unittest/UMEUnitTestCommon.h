@@ -1253,6 +1253,45 @@ void genericINSERTTest()
     }
 }
 
+template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN>
+void genericIntermediateIndexTest_random()
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    SCALAR_TYPE inputA[VEC_LEN];
+    SCALAR_TYPE inputB[VEC_LEN];
+    SCALAR_TYPE output[VEC_LEN];
+    uint32_t index1[VEC_LEN];
+    uint32_t index2[VEC_LEN];
+
+    for (int i = 0; i < VEC_LEN; i++) {
+        inputA[i] = randomValue<SCALAR_TYPE>(gen);
+        output[i] = inputA[i]; // initialize the output vector
+        inputB[i] = randomValue<SCALAR_TYPE>(gen);
+        index1[i] = randomValue<uint32_t>(gen) % VEC_LEN;
+        index2[i] = randomValue<uint32_t>(gen) % VEC_LEN;
+    }
+
+    // calculate the output vector
+    for (int i = 0; i < VEC_LEN; i++) {
+        output[index1[i]] = inputB[index2[i]];
+    }
+
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(inputA);
+
+        for(int i = 0; i < VEC_LEN; i++) {
+            vec0[index1[i]] = inputB[index2[i]];
+        }
+
+        vec0.store(values);
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange), "IntermediateIndex");
+    }
+}
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericASSIGNVTest()
 {
@@ -10985,6 +11024,7 @@ void genericBaseInterfaceTest()
 
     genericINSERTTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
     genericEXTRACTTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
+    genericIntermediateIndexTest_random<VEC_TYPE, SCALAR_TYPE, VEC_LEN>();
     genericASSIGNVTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
     genericMASSIGNVTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
     genericASSIGNSTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
