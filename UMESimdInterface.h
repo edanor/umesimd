@@ -606,6 +606,12 @@ namespace SIMD
     template<class VEC_TYPE, class SCALAR_TYPE>
     class IntermediateIndex {
     public:
+        IntermediateIndex(IntermediateIndex const & x) : mIndexRef(x.mIndexRef), mVecRef_RW(x.mVecRef_RW) {}
+        IntermediateIndex & operator= (IntermediateIndex const & x) {
+            mVecRef_RW.insert(mIndexRef, x.mVecRef_RW.extract(x.mIndexRef));
+            return *this;
+        }
+
         // MASSIGNS
         UME_FORCE_INLINE void operator= (SCALAR_TYPE scalarRhs) {
             mVecRef_RW.insert(mIndexRef, scalarRhs);
@@ -756,16 +762,10 @@ namespace SIMD
                 x.mVecRef_RW.extract(x.mIndexRef);
         }
 
-        IntermediateIndex & operator= (IntermediateIndex const & x) {
-            mVecRef_RW.insert(mIndexRef) = x.mVecRef_RW.extract(x.mIndexRef);
-            return *this;
-        }
-
     private:
         // This object should be only constructible by the
         // vector type using it.
         IntermediateIndex() {}
-        IntermediateIndex(IntermediateIndex const & x) : mIndexRef(x.mIndexRef), mVecRef_RW(x.mVecRef_RW) {}
 
         friend VEC_TYPE;
 

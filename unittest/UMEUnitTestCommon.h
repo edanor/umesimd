@@ -1288,7 +1288,20 @@ void genericIntermediateIndexTest_random()
 
         vec0.store(values);
         bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
-        CHECK_CONDITION((inRange), "IntermediateIndex");
+        CHECK_CONDITION((inRange), "IntermediateIndex (Index <- scalar)");
+    }
+    {
+        SCALAR_TYPE values[VEC_LEN];
+        VEC_TYPE vec0(inputA);
+        VEC_TYPE vec1(inputB);
+
+        for(int i = 0; i < VEC_LEN; i++) {
+            vec0[index1[i]] = vec1[index2[i]];
+        }
+
+        vec0.store(values);
+        bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
+        CHECK_CONDITION((inRange), "IntermediateIndex (Index <- Index)");
     }
 }
 
@@ -8009,7 +8022,7 @@ void genericMIMINTest_random()
         SCALAR_TYPE inputA[VEC_LEN];
         bool inputMask[VEC_LEN];
         SCALAR_TYPE minVal = std::numeric_limits<SCALAR_TYPE>::max();
-        uint32_t index;
+        uint32_t index = 0xFFFFFFFF;
         bool maskEmpty = true; // Ignore result if the masks is all 'false'
 
         for (int i = 0; i < VEC_LEN; i++) {
@@ -8032,7 +8045,7 @@ void genericMIMINTest_random()
         SCALAR_TYPE inputA[VEC_LEN];
         bool inputMask[VEC_LEN];
         SCALAR_TYPE minVal = std::numeric_limits<SCALAR_TYPE>::max();
-        uint32_t index;
+        uint32_t index = 0xFFFFFFFF;
         bool maskEmpty = true; // Ignore result if the masks is all 'false'
 
         for (int i = 0; i < VEC_LEN; i++) {
@@ -8080,7 +8093,7 @@ void genericLSHVTest_random()
     // We already ensure that RHS operand is non-negative, by using 'unsigned' type.
 
     const uint32_t MAX_BIT_COUNT = MAX_BIT_COUNT_helper<SCALAR_TYPE>();
-
+ 
     // The C++ standard states (5.8.2):
     // "Otherwise, if E1 has a signed type and non-negative value, and E1×2^E2 is representable
     //  in the result type, then that is the resulting value; otherwise, the behavior is undefined."
@@ -8636,7 +8649,7 @@ void genericRSHVTest_random()
 
         for (int i = 0; i < VEC_LEN; i++) {
             inputB[i] = randomValue<SCALAR_UINT_TYPE>(gen) % MAX_BIT_COUNT;
-            uint32_t inputA_range = 1 << MAX_BIT_COUNT;
+            SCALAR_UINT_TYPE inputA_range = 1 << MAX_BIT_COUNT;
             inputA[i] = randomValue<SCALAR_TYPE>(gen) % inputA_range;
             output[i] = inputA[i] >> inputB[i];
         }
@@ -8658,7 +8671,7 @@ void genericRSHVTest_random()
 
         for (int i = 0; i < VEC_LEN; i++) {
             inputB[i] = randomValue<SCALAR_UINT_TYPE>(gen) % MAX_BIT_COUNT;
-            uint32_t inputA_range = 1 << MAX_BIT_COUNT;
+            SCALAR_UINT_TYPE inputA_range = 1 << MAX_BIT_COUNT;
             inputA[i] = randomValue<SCALAR_TYPE>(gen) % inputA_range;
             output[i] = inputA[i] >> inputB[i];
         }
@@ -8680,7 +8693,7 @@ void genericRSHVTest_random()
 
         for (int i = 0; i < VEC_LEN; i++) {
             inputB[i] = randomValue<SCALAR_UINT_TYPE>(gen) % MAX_BIT_COUNT;
-            uint32_t inputA_range = 1 << MAX_BIT_COUNT;
+            SCALAR_UINT_TYPE inputA_range = 1 << MAX_BIT_COUNT;
             inputA[i] = randomValue<SCALAR_TYPE>(gen) % inputA_range;
             output[i] = inputA[i] >> inputB[i];
         }
