@@ -978,6 +978,115 @@ namespace SIMD
             return SCALAR_EMULATION::swizzle<DERIVED_VEC_TYPE, SWIZZLE_MASK_TYPE> (sMask, static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
+        template<int i0>
+        UME_FORCE_INLINE DERIVED_VEC_TYPE swizzle() const {
+            UME_EMULATION_WARNING();
+            static_assert(VEC_LEN == 1, "Invalid number of template parameters.");
+            SWIZZLE_MASK_TYPE sMask(i0);
+            return SCALAR_EMULATION::swizzle<DERIVED_VEC_TYPE, SWIZZLE_MASK_TYPE> (sMask, static_cast<DERIVED_VEC_TYPE const &>(*this));
+        }
+
+        template<int i0, int i1>
+        UME_FORCE_INLINE DERIVED_VEC_TYPE swizzle() const {
+            UME_EMULATION_WARNING();
+            static_assert(VEC_LEN == 2, "Invalid number of template parameters.");
+            SWIZZLE_MASK_TYPE sMask(i0, i1);
+            return SCALAR_EMULATION::swizzle<DERIVED_VEC_TYPE, SWIZZLE_MASK_TYPE> (sMask, static_cast<DERIVED_VEC_TYPE const &>(*this));
+        }
+
+        template<int i0, int i1, int i2, int i3>
+        UME_FORCE_INLINE DERIVED_VEC_TYPE swizzle() const {
+            UME_EMULATION_WARNING();
+            static_assert(VEC_LEN == 4, "Invalid number of template parameters.");
+            SWIZZLE_MASK_TYPE sMask(i0, i1, i2, i3);
+            return SCALAR_EMULATION::swizzle<DERIVED_VEC_TYPE, SWIZZLE_MASK_TYPE> (sMask, static_cast<DERIVED_VEC_TYPE const &>(*this));
+        }
+
+        template<int i0, int i1, int i2, int i3, int i4, int i5, int i6, int i7>
+        UME_FORCE_INLINE DERIVED_VEC_TYPE swizzle() const {
+            UME_EMULATION_WARNING();
+            static_assert(VEC_LEN == 8, "Invalid number of template parameters.");
+            SWIZZLE_MASK_TYPE sMask(i0, i1, i2, i3, i4, i5, i6, i7);
+            return SCALAR_EMULATION::swizzle<DERIVED_VEC_TYPE, SWIZZLE_MASK_TYPE> (sMask, static_cast<DERIVED_VEC_TYPE const &>(*this));
+        }
+
+        template<
+            int i0, int i1, int i2, int i3, int i4, int i5, int i6, int i7, 
+            int i8, int i9, int i10, int i11, int i12, int i13, int i14, int i15>
+        UME_FORCE_INLINE DERIVED_VEC_TYPE swizzle() const {
+            UME_EMULATION_WARNING();
+            static_assert(VEC_LEN == 16, "Invalid number of template parameters.");
+            SWIZZLE_MASK_TYPE sMask(i0, i1, i2, i3, i4, i5, i6, i7, i8, i9, i10, i11, i12, i13, i14, i15);
+            return SCALAR_EMULATION::swizzle<DERIVED_VEC_TYPE, SWIZZLE_MASK_TYPE> (sMask, static_cast<DERIVED_VEC_TYPE const &>(*this));
+        }
+
+        template<
+            int i0, int i1, int i2, int i3, int i4, int i5, int i6, int i7, 
+            int i8, int i9, int i10, int i11, int i12, int i13, int i14, int i15,
+            int i16, int i17, int i18, int i19, int i20, int i21, int i22, int i23,
+            int i24, int i25, int i26, int i27, int i28, int i29, int i30, int i31>
+        UME_FORCE_INLINE DERIVED_VEC_TYPE swizzle() const {
+            UME_EMULATION_WARNING();
+            static_assert(VEC_LEN == 31, "Invalid number of template parameters.");
+            SWIZZLE_MASK_TYPE sMask(
+                i0, i1, i2, i3, i4, i5, i6, i7, i8, i9, i10, i11, i12, i13, i14, i15,
+                i16, i17, i18, i19, i20, i21, i22, i23, i24, i25, i26, i27, i28, i29, i30, i31);
+            return SCALAR_EMULATION::swizzle<DERIVED_VEC_TYPE, SWIZZLE_MASK_TYPE> (sMask, static_cast<DERIVED_VEC_TYPE const &>(*this));
+        }
+
+        template<
+            int i0, int i1, int i2, int i3, int i4, int i5, int i6, int i7, 
+            int i8, int i9, int i10, int i11, int i12, int i13, int i14, int i15,
+            int i16, int i17, int i18, int i19, int i20, int i21, int i22, int i23,
+            int i24, int i25, int i26, int i27, int i28, int i29, int i30, int i31,
+            int i32, int i33, int i34, int i35, int i36, int i37, int i38, int i39,
+            int i40, int i41, int i42, int i43, int i44, int i45, int i46, int i47,
+            int i48, int i49, int i50, int i51, int i52, int i53, int i54, int i55,
+            int i56, int i57, int i58, int i59, int i60, int i61, int i62, int i63>
+        UME_FORCE_INLINE DERIVED_VEC_TYPE swizzle() const {
+            UME_EMULATION_WARNING();
+            static_assert(VEC_LEN == 64, "Invalid number of template parameters.");
+            SWIZZLE_MASK_TYPE sMask(
+                i0, i1, i2, i3, i4, i5, i6, i7, i8, i9, i10, i11, i12, i13, i14, i15,
+                i16, i17, i18, i19, i20, i21, i22, i23, i24, i25, i26, i27, i28, i29, i30, i31,
+                i32, i33, i34, i35, i36, i37, i38, i39, i40, i41, i42, i43, i44, i45, i46, i47,
+                i48, i49, i50, i51, i52, i53, i54, i55, i56, i57, i58, i59, i60, i61, i62, i63);
+            return SCALAR_EMULATION::swizzle<DERIVED_VEC_TYPE, SWIZZLE_MASK_TYPE> (sMask, static_cast<DERIVED_VEC_TYPE const &>(*this));
+        }
+
+        template<
+            int i0, int i1, int i2, int i3, int i4, int i5, int i6, int i7, 
+            int i8, int i9, int i10, int i11, int i12, int i13, int i14, int i15,
+            int i16, int i17, int i18, int i19, int i20, int i21, int i22, int i23,
+            int i24, int i25, int i26, int i27, int i28, int i29, int i30, int i31,
+            int i32, int i33, int i34, int i35, int i36, int i37, int i38, int i39,
+            int i40, int i41, int i42, int i43, int i44, int i45, int i46, int i47,
+            int i48, int i49, int i50, int i51, int i52, int i53, int i54, int i55,
+            int i56, int i57, int i58, int i59, int i60, int i61, int i62, int i63,
+            int i64, int i65, int i66, int i67, int i68, int i69, int i70, int i71,
+            int i72, int i73, int i74, int i75, int i76, int i77, int i78, int i79,
+            int i80, int i81, int i82, int i83, int i84, int i85, int i86, int i87,
+            int i88, int i89, int i90, int i91, int i92, int i93, int i94, int i95,
+            int i96, int i97, int i98, int i99, int i100, int i101, int i102, int i103,
+            int i104, int i105, int i106, int i107, int i108, int i109, int i110, int i111,
+            int i112, int i113, int i114, int i115, int i116, int i117, int i118, int i119,
+            int i120, int i121, int i122, int i123, int i124, int i125, int i126, int i127>
+        UME_FORCE_INLINE DERIVED_VEC_TYPE swizzle() const {
+            UME_EMULATION_WARNING();
+            static_assert(VEC_LEN == 128, "Invalid number of template parameters.");
+            SWIZZLE_MASK_TYPE sMask(
+                i0, i1, i2, i3, i4, i5, i6, i7, i8, i9, i10, i11, i12, i13, i14, i15,
+                i16, i17, i18, i19, i20, i21, i22, i23, i24, i25, i26, i27, i28, i29, i30, i31,
+                i32, i33, i34, i35, i36, i37, i38, i39, i40, i41, i42, i43, i44, i45, i46, i47,
+                i48, i49, i50, i51, i52, i53, i54, i55, i56, i57, i58, i59, i60, i61, i62, i63,
+                i64, i65, i66, i67, i68, i69, i70, i71, i72, i73, i74, i75, i76, i77, i78, i79,
+                i80, i81, i82, i83, i84, i85, i86, i87, i88, i89, i90, i91, i92, i93, i94, i95,
+                i96, i97, i98, i99, i100, i101, i102, i103, i104, i105, i106, i107, i108, i109, i110, i111,
+                i112, i113, i114, i115, i116, i117, i118, i119, i120, i121, i122, i123, i124, i125, i126, i127);
+            return SCALAR_EMULATION::swizzle<DERIVED_VEC_TYPE, SWIZZLE_MASK_TYPE> (sMask, static_cast<DERIVED_VEC_TYPE const &>(*this));
+        }
+
+
         // SWIZZLEA
         UME_FORCE_INLINE DERIVED_VEC_TYPE swizzlea (SWIZZLE_MASK_TYPE const & sMask) {
             UME_EMULATION_WARNING();

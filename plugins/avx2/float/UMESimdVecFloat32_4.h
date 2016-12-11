@@ -231,6 +231,14 @@ namespace SIMD {
         // BLENDS
         // SWIZZLE
         // SWIZZLEA
+        // PERMUTE
+        template<int i0, int i1, int i2, int i3>
+        UME_FORCE_INLINE SIMDVec_f permute() {
+            const int index = i0 | (i1 << 2) | (i2 << 4) | (i3 << 6);
+            __m128 t0 = _mm_permute_ps(mVec, index);
+            return SIMDVec_f(t0);
+        }
+        
 
         // ADDV
         UME_FORCE_INLINE SIMDVec_f add(SIMDVec_f const & b) const {
