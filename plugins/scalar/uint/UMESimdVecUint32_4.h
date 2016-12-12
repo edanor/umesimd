@@ -248,7 +248,13 @@ namespace SIMD {
             return SIMDVec_u(t0, t1, t2, t3);
         }
         // SWIZZLE
-        // SWIZZLEA
+        UME_FORCE_INLINE SIMDVec_u swizzle(SIMDSwizzle<4> const & sMask) const {
+            uint32_t t0 = mVec[sMask[0]];
+            uint32_t t1 = mVec[sMask[1]];
+            uint32_t t2 = mVec[sMask[2]];
+            uint32_t t3 = mVec[sMask[3]];
+            return SIMDVec_u(t0, t1, t2, t3);
+        }
         template<int i0, int i1, int i2, int i3>
         UME_FORCE_INLINE SIMDVec_u swizzle() {
             uint32_t t0 = mVec[i0];
@@ -256,6 +262,18 @@ namespace SIMD {
             uint32_t t2 = mVec[i2];
             uint32_t t3 = mVec[i3];
             return SIMDVec_u(t0, t1, t2, t3);
+        }
+        // SWIZZLEA
+        UME_FORCE_INLINE SIMDVec_u & swizzlea(SIMDSwizzle<4> const & sMask) {
+            uint32_t t0 = mVec[sMask[0]];
+            uint32_t t1 = mVec[sMask[1]];
+            uint32_t t2 = mVec[sMask[2]];
+            uint32_t t3 = mVec[sMask[3]];
+            mVec[0] = t0;
+            mVec[1] = t1;
+            mVec[2] = t2;
+            mVec[3] = t3;
+            return *this;
         }
 
         // ADDV
