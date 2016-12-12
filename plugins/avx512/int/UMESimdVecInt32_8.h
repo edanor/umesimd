@@ -967,7 +967,7 @@ namespace SIMD {
         }
         // HADD
         UME_FORCE_INLINE int32_t hadd() const {
-#if defined(__GNUG__)
+#if defined(WA_GCC_INTR_SUPPORT_6_2)
             alignas(32) int32_t raw[8];
             _mm256_store_si256((__m256i*)raw, mVec);
             return raw[0] + raw[1] + raw[2] + raw[3] + raw[4] + raw[5] + raw[6] + raw[7];
@@ -979,7 +979,7 @@ namespace SIMD {
         }
         // MHADD
         UME_FORCE_INLINE int32_t hadd(SIMDVecMask<8> const & mask) const {
-#if defined(__GNUG__)
+#if defined(WA_GCC_INTR_SUPPORT_6_2)
             alignas(32) int32_t raw[8];
             _mm256_store_si256((__m256i*)raw, mVec);
             uint32_t t0 = ((mask.mMask & 0x01) != 0) ? raw[0] : 0;
@@ -1000,7 +1000,7 @@ namespace SIMD {
         }
         // HADDS
         UME_FORCE_INLINE int32_t hadd(int32_t b) const {
-#if defined(__GNUG__)
+#if defined(WA_GCC_INTR_SUPPORT_6_2)
             alignas(32) int32_t raw[8];
             _mm256_store_si256((__m256i*)raw, mVec);
             return b + raw[0] + raw[1] + raw[2] + raw[3] + raw[4] + raw[5] + raw[6] + raw[7];
@@ -1012,7 +1012,7 @@ namespace SIMD {
         }
         // MHADDS
         UME_FORCE_INLINE int32_t hadd(SIMDVecMask<8> const & mask, int32_t b) const {
-#if defined(__GNUG__)
+#if defined(WA_GCC_INTR_SUPPORT_6_2)
             alignas(32) int32_t raw[8];
             _mm256_store_si256((__m256i*)raw, mVec);
             int32_t t0 = ((mask.mMask & 0x01) != 0) ? raw[0] : 0;
@@ -1033,7 +1033,7 @@ namespace SIMD {
         }
         // HMUL
         UME_FORCE_INLINE int32_t hmul() const {
-#if defined(__GNUG__)
+#if defined(WA_GCC_INTR_SUPPORT_6_2)
             alignas(32) int32_t raw[8];
             _mm256_store_si256((__m256i*)raw, mVec);
             return raw[0] * raw[1] * raw[2] * raw[3] * raw[4] * raw[5] * raw[6] * raw[7];
@@ -1045,7 +1045,7 @@ namespace SIMD {
         }
         // MHMUL
         UME_FORCE_INLINE int32_t hmul(SIMDVecMask<8> const & mask) const {
-#if defined(__GNUG__)
+#if defined(WA_GCC_INTR_SUPPORT_6_2)
             alignas(32) int32_t raw[8];
             _mm256_store_si256((__m256i*)raw, mVec);
             int32_t t0 = ((mask.mMask & 0x01) != 0) ? raw[0] : 1;
@@ -1066,7 +1066,7 @@ namespace SIMD {
         }
         // HMULS
         UME_FORCE_INLINE int32_t hmul(int32_t b) const {
-#if defined(__GNUG__)
+#if defined(WA_GCC_INTR_SUPPORT_6_2)
             alignas(32) int32_t raw[8];
             _mm256_store_si256((__m256i*)raw, mVec);
             return b * raw[0] * raw[1] * raw[2] * raw[3] * raw[4] * raw[5] * raw[6] * raw[7];
@@ -1079,7 +1079,7 @@ namespace SIMD {
         }
         // MHMULS
         UME_FORCE_INLINE int32_t hmul(SIMDVecMask<8> const & mask, int32_t b) const {
-#if defined(__GNUG__)
+#if defined(WA_GCC_INTR_SUPPORT_6_2)
             alignas(32) int32_t raw[8];
             _mm256_store_si256((__m256i*)raw, mVec);
             int32_t t0 = ((mask.mMask & 0x01) != 0) ? raw[0] : 1;
@@ -1329,7 +1329,7 @@ namespace SIMD {
         }
         // HMAX
         UME_FORCE_INLINE int32_t hmax() const {
-#if defined(__GNUG__)
+#if defined(WA_GCC_INTR_SUPPORT_6_2)
             alignas(32) int32_t raw[8];
             _mm256_store_si256((__m256i*)raw, mVec);
             int32_t t0 = raw[0] > raw[1] ? raw[0] : raw[1];
@@ -1347,7 +1347,7 @@ namespace SIMD {
         }       
         // MHMAX
         UME_FORCE_INLINE int32_t hmax(SIMDVecMask<8> const & mask) const {
-#if defined (__GNUG__)
+#if defined (WA_GCC_INTR_SUPPORT_6_2)
             alignas(32) int32_t raw[8];
             _mm256_store_si256((__m256i*)raw, mVec);
             int32_t t0 = ((mask.mMask & 0x01) != 0) ? raw[0] : std::numeric_limits<int32_t>::lowest();
@@ -1369,7 +1369,7 @@ namespace SIMD {
         // MIMAX
         // HMIN
         UME_FORCE_INLINE int32_t hmin() const {
-#if defined(__GNUG__)
+#if defined(WA_GCC_INTR_SUPPORT_6_2)
             alignas(32) int32_t raw[8];
             _mm256_store_si256((__m256i*)raw, mVec);
             int32_t t0 = raw[0] < raw[1] ? raw[0] : raw[1];
@@ -1387,7 +1387,7 @@ namespace SIMD {
         }       
         // MHMIN
         UME_FORCE_INLINE int32_t hmin(SIMDVecMask<8> const & mask) const {
-#if defined (__GNUG__)
+#if defined (WA_GCC_INTR_SUPPORT_6_2)
             alignas(32) int32_t raw[8];
             _mm256_store_si256((__m256i*)raw, mVec);
             int32_t t0 = ((mask.mMask & 0x01) != 0) ? raw[0] : std::numeric_limits<int32_t>::max();
@@ -1703,7 +1703,7 @@ namespace SIMD {
         }
         // HBAND
         UME_FORCE_INLINE int32_t hband() const {
-#if defined (__GNUG__)
+#if defined (WA_GCC_INTR_SUPPORT_6_2)
             alignas(32) int32_t raw[8];
             _mm256_store_si256((__m256i*)raw, mVec);
             return raw[0] & raw[1] & raw[2] & raw[3] &
@@ -1716,7 +1716,7 @@ namespace SIMD {
         }
         // MHBAND
         UME_FORCE_INLINE int32_t hband(SIMDVecMask<8> const & mask) const {
-#if defined (__GNUG__)
+#if defined (WA_GCC_INTR_SUPPORT_6_2)
             alignas(32) int32_t raw[8];
             _mm256_store_si256((__m256i*)raw, mVec);
             int32_t t0 = 0xFFFFFFFF;
@@ -1737,7 +1737,7 @@ namespace SIMD {
         }
         // HBANDS
         UME_FORCE_INLINE int32_t hband(int32_t b) const {
-#if defined (__GNUG__)
+#if defined (WA_GCC_INTR_SUPPORT_6_2)
             alignas(32) int32_t raw[8];
             _mm256_store_si256((__m256i*)raw, mVec);
             return b & raw[0] & raw[1] & raw[2] & raw[3] &
@@ -1751,7 +1751,7 @@ namespace SIMD {
         }
         // MHBANDS
         UME_FORCE_INLINE int32_t hband(SIMDVecMask<8> const & mask, int32_t b) const {
-#if defined (__GNUG__)
+#if defined (WA_GCC_INTR_SUPPORT_6_2)
             alignas(32) int32_t raw[8];
             _mm256_store_si256((__m256i*)raw, mVec);
             int32_t t0 = b;
@@ -1773,7 +1773,7 @@ namespace SIMD {
         }
         // HBOR
         UME_FORCE_INLINE int32_t hbor() const {
-#if defined (__GNUG__)
+#if defined (WA_GCC_INTR_SUPPORT_6_2)
             alignas(32) int32_t raw[8];
             _mm256_store_si256((__m256i*)raw, mVec);
             return raw[0] | raw[1] | raw[2] | raw[3] |
@@ -1786,7 +1786,7 @@ namespace SIMD {
         }
         // MHBOR
         UME_FORCE_INLINE int32_t hbor(SIMDVecMask<8> const & mask) const {
-#if defined (__GNUG__)
+#if defined (WA_GCC_INTR_SUPPORT_6_2)
             alignas(32) int32_t raw[8];
             _mm256_store_si256((__m256i*)raw, mVec);
             int32_t t0 = 0;
@@ -1807,7 +1807,7 @@ namespace SIMD {
         }
         // HBORS
         UME_FORCE_INLINE int32_t hbor(int32_t b) const {
-#if defined (__GNUG__)
+#if defined (WA_GCC_INTR_SUPPORT_6_2)
             alignas(32) int32_t raw[8];
             _mm256_store_si256((__m256i*)raw, mVec);
             return b | raw[0] | raw[1] | raw[2] | raw[3] |
@@ -1821,7 +1821,7 @@ namespace SIMD {
         }
         // MHBORS
         UME_FORCE_INLINE int32_t hbor(SIMDVecMask<8> const & mask, int32_t b) const {
-#if defined (__GNUG__)
+#if defined (WA_GCC_INTR_SUPPORT_6_2)
             alignas(32) int32_t raw[8];
             _mm256_store_si256((__m256i*)raw, mVec);
             int32_t t0 = b;

@@ -787,7 +787,7 @@ namespace SIMD {
         // SWIZZLEA
         // HADD
         UME_FORCE_INLINE float hadd() const {
-#if defined (__GNUG__)
+#if defined (WA_GCC_INTR_SUPPORT_6_2)
             alignas(64) float raw[16];
             _mm512_store_ps(raw, mVec);
             return raw[0] + raw[1] + raw[2]  + raw[3]  + raw[4]  + raw[5]  + raw[6]  + raw[7] +
@@ -799,7 +799,7 @@ namespace SIMD {
         }
         // MHADD
         UME_FORCE_INLINE float hadd(SIMDVecMask<16> const & mask) const {
-#if defined (__GNUG__)
+#if defined (WA_GCC_INTR_SUPPORT_6_2)
             alignas(64) float raw[16];
             _mm512_store_ps(raw, mVec);
             float t0 = 0;
@@ -827,7 +827,7 @@ namespace SIMD {
         }
         // HADDS
         UME_FORCE_INLINE float hadd(float b) const {
-#if defined (__GNUG__)
+#if defined (WA_GCC_INTR_SUPPORT_6_2)
             alignas(64) float raw[16];
             _mm512_store_ps(raw, mVec);
             return b + raw[0] + raw[1] + raw[2]  + raw[3]  + raw[4]  + raw[5]  + raw[6]  + raw[7] +
@@ -839,7 +839,7 @@ namespace SIMD {
         }
         // MHADDS
         UME_FORCE_INLINE float hadd(SIMDVecMask<16> const & mask, float b) const {
-#if defined (__GNUG__)
+#if defined (WA_GCC_INTR_SUPPORT_6_2)
             alignas(64) float raw[16];
             _mm512_store_ps(raw, mVec);
             float t0 = b;
@@ -867,7 +867,7 @@ namespace SIMD {
         }
         // HMUL
         UME_FORCE_INLINE float hmul() const {
-#if defined (__GNUG__)
+#if defined (WA_GCC_INTR_SUPPORT_6_2)
             alignas(64) float raw[16];
             _mm512_store_ps(raw, mVec);
             return raw[0] * raw[1] * raw[2]  * raw[3]  * raw[4]  * raw[5]  * raw[6]  * raw[7] *
@@ -879,7 +879,7 @@ namespace SIMD {
         }
         // MHMUL
         UME_FORCE_INLINE float hmul(SIMDVecMask<16> const & mask) const {
-#if defined (__GNUG__)
+#if defined (WA_GCC_INTR_SUPPORT_6_2)
             alignas(64) float raw[16];
             _mm512_store_ps(raw, mVec);
             float t0 = 1;
@@ -907,7 +907,7 @@ namespace SIMD {
         }
         // HMULS
         UME_FORCE_INLINE float hmul(float b) const {
-#if defined (__GNUG__)
+#if defined (WA_GCC_INTR_SUPPORT_6_2)
             alignas(64) float raw[16];
             _mm512_store_ps(raw, mVec);
             return b * raw[0] * raw[1] * raw[2]  * raw[3]  * raw[4]  * raw[5]  * raw[6]  * raw[7] *
@@ -920,7 +920,7 @@ namespace SIMD {
         }
         // MHMULS
         UME_FORCE_INLINE float hmul(SIMDVecMask<16> const & mask, float b) const {
-#if defined (__GNUG__)
+#if defined (WA_GCC_INTR_SUPPORT_6_2)
             alignas(64) float raw[16];
             _mm512_store_ps(raw, mVec);
             float t0 = b;
@@ -1081,7 +1081,7 @@ namespace SIMD {
         }
         // HMAX
         UME_FORCE_INLINE float hmax() const {
-#if defined (__GNUG__)
+#if defined (WA_GCC_INTR_SUPPORT_6_2)
             alignas(64) float raw[16];
             _mm512_store_ps(raw, mVec);
             float t0 = raw[0] > raw[1] ? raw[0] : raw[1];
@@ -1106,7 +1106,7 @@ namespace SIMD {
         }
         // MHMAX
         UME_FORCE_INLINE float hmax(SIMDVecMask<16> const & mask) const {
-#if defined (__GNUG__)
+#if defined (WA_GCC_INTR_SUPPORT_6_2)
             alignas(64) float raw[16];
             _mm512_store_ps(raw, mVec);
             float t0 =  ((mask.mMask & 0x0001) != 0) ? raw[0] : std::numeric_limits<float>::lowest();
@@ -1134,7 +1134,7 @@ namespace SIMD {
         // IMAX
         // HMIN
         UME_FORCE_INLINE float hmin() const {
-#if defined (__GNUG__)
+#if defined (WA_GCC_INTR_SUPPORT_6_2)
             alignas(64) float raw[16];
             _mm512_store_ps(raw, mVec);
             float t0 = raw[0] < raw[1] ? raw[0] : raw[1];
@@ -1159,7 +1159,7 @@ namespace SIMD {
         }
         // MHMIN
         UME_FORCE_INLINE float hmin(SIMDVecMask<16> const & mask) const {
-#if defined (__GNUG__)
+#if defined (WA_GCC_INTR_SUPPORT_6_2)
             alignas(64) float raw[16];
             _mm512_store_ps(raw, mVec);
             float t0 =  ((mask.mMask & 0x0001) != 0) ? raw[0] : std::numeric_limits<float>::max();
@@ -1291,7 +1291,7 @@ namespace SIMD {
         }
         // ABS
         UME_FORCE_INLINE SIMDVec_f abs() const {
-#if defined (__GNUG__)
+#if defined (WA_GCC_INTR_SUPPORT_6_2)
             __m512i t0 = _mm512_castps_si512(mVec);
             __m512i t1 = _mm512_set1_epi32(0x7FFFFFFF);
             __m512i t2 = _mm512_and_epi32(t0, t1);
@@ -1304,7 +1304,7 @@ namespace SIMD {
         }
         // MABS
         UME_FORCE_INLINE SIMDVec_f abs(SIMDVecMask<16> const & mask) const {
-#if defined (__GNUG__)
+#if defined (WA_GCC_INTR_SUPPORT_6_2)
             __m512i t0 = _mm512_castps_si512(mVec);
             __m512i t1 = _mm512_set1_epi32(0x7FFFFFFF);
             __m512i t2 = _mm512_and_epi32(t0, t1);
@@ -1318,7 +1318,7 @@ namespace SIMD {
         }
         // ABSA
         UME_FORCE_INLINE SIMDVec_f & absa() {
-#if defined (__GNUG__)
+#if defined (WA_GCC_INTR_SUPPORT_6_2)
             __m512i t0 = _mm512_castps_si512(mVec);
             __m512i t1 = _mm512_set1_epi32(0x7FFFFFFF);
             __m512i t2 = _mm512_and_epi32(t0, t1);
@@ -1331,7 +1331,7 @@ namespace SIMD {
         }
         // MABSA
         UME_FORCE_INLINE SIMDVec_f & absa(SIMDVecMask<16> const & mask) {
-#if defined (__GNUG__)
+#if defined (WA_GCC_INTR_SUPPORT_6_2)
             __m512i t0 = _mm512_castps_si512(mVec);
             __m512i t1 = _mm512_set1_epi32(0x7FFFFFFF);
             __m512i t2 = _mm512_and_epi32(t0, t1);

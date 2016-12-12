@@ -246,7 +246,27 @@ namespace SIMD {
             return SIMDVec_u(t1);
         }
         // SWIZZLE
+        UME_FORCE_INLINE SIMDVec_u swizzle(SIMDSwizzle<4> const & sMask) const {
+            __m128 t0 = _mm_castsi128_ps(mVec);
+            __m128 t1 = _mm_permutevar_ps(t0, sMask.mVec);
+            __m128i t2 = _mm_castps_si128(t1);
+            return SIMDVec_u(t2);
+        }
+        template<int i0, int i1, int i2, int i3>
+        UME_FORCE_INLINE SIMDVec_u swizzle() {
+            const int index = i0 | (i1 << 2) | (i2 << 4) | (i3 << 6);
+            __m128 t0 = _mm_castsi128_ps(mVec);
+            __m128 t1 = _mm_permute_ps(t0, index);
+            __m128i t2 = _mm_castps_si128(t1);
+            return SIMDVec_u(t2);
+        }
         // SWIZZLEA
+        UME_FORCE_INLINE SIMDVec_u & swizzlea(SIMDSwizzle<4> const & sMask) {
+            __m128 t0 = _mm_castsi128_ps(mVec);
+            __m128 t1 = _mm_permutevar_ps(t0, sMask.mVec);
+            mVec = _mm_castps_si128(t1);
+            return *this;
+        }
         // ADDV
         UME_FORCE_INLINE SIMDVec_u add(SIMDVec_u const & b) const {
             __m128i t0 = _mm_add_epi32(mVec, b.mVec);

@@ -25,9 +25,9 @@ int main() {
 
     v1 = v0.swizzle(s0); // Permute using run-time defined swizzle vector
 
-    v2 = v0.swizzle<3, 2, 0, 1>(); // Permute using compile-time defined permutation
+    v2 = v0.template swizzle<3, 2, 0, 1>(); // Permute using compile-time defined permutation
     
-    v3 = v0.swizzle<0, 0, 0, 0>(); // 
+    v3 = v0.template swizzle<0, 0, 0, 0>(); // 
     
     printVector(v0);
     printVector(v1);

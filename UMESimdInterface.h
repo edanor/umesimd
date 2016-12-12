@@ -107,6 +107,10 @@ namespace SIMD
             return SCALAR_EMULATION::load<DERIVED_SWIZZLE_TYPE, uint32_t>(static_cast<DERIVED_SWIZZLE_TYPE &>(*this), addr);
         }
 
+        UME_FORCE_INLINE DERIVED_SWIZZLE_TYPE & load(uint64_t const * addr) {
+            return SCALAR_EMULATION::load<DERIVED_SWIZZLE_TYPE, uint64_t>(static_cast<DERIVED_SWIZZLE_TYPE &>(*this), addr);
+        }
+
         // ALIGNMENT
         static int alignment () { return SMASK_LEN*sizeof(uint32_t); };
     };
@@ -1086,9 +1090,8 @@ namespace SIMD
             return SCALAR_EMULATION::swizzle<DERIVED_VEC_TYPE, SWIZZLE_MASK_TYPE> (sMask, static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
-
         // SWIZZLEA
-        UME_FORCE_INLINE DERIVED_VEC_TYPE swizzlea (SWIZZLE_MASK_TYPE const & sMask) {
+        UME_FORCE_INLINE DERIVED_VEC_TYPE & swizzlea (SWIZZLE_MASK_TYPE const & sMask) {
             UME_EMULATION_WARNING();
             return SCALAR_EMULATION::swizzleAssign<DERIVED_VEC_TYPE, SWIZZLE_MASK_TYPE> (sMask, static_cast<DERIVED_VEC_TYPE &>(*this));
         }

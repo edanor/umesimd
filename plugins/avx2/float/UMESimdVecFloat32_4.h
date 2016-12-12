@@ -230,15 +230,21 @@ namespace SIMD {
         // BLENDV
         // BLENDS
         // SWIZZLE
-        // SWIZZLEA
-        // PERMUTE
+        UME_FORCE_INLINE SIMDVec_f swizzle(SIMDSwizzle<4> const & sMask) const {
+            __m128 t0 = _mm_permutevar_ps(mVec, sMask.mVec);
+            return SIMDVec_f(t0);
+        }
         template<int i0, int i1, int i2, int i3>
-        UME_FORCE_INLINE SIMDVec_f permute() {
+        UME_FORCE_INLINE SIMDVec_f swizzle() {
             const int index = i0 | (i1 << 2) | (i2 << 4) | (i3 << 6);
             __m128 t0 = _mm_permute_ps(mVec, index);
             return SIMDVec_f(t0);
         }
-        
+        // SWIZZLEA
+        UME_FORCE_INLINE SIMDVec_f & swizzlea(SIMDSwizzle<4> const & sMask) {
+            mVec = _mm_permutevar_ps(mVec, sMask.mVec);
+            return *this;
+        }
 
         // ADDV
         UME_FORCE_INLINE SIMDVec_f add(SIMDVec_f const & b) const {

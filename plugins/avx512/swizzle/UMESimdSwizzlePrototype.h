@@ -39,11 +39,6 @@ namespace UME {
 namespace SIMD {
 
     template<uint32_t VEC_LEN>
-    struct SIMDSwizzle_traits {};
-
-    // No specialized traits
-
-    template<uint32_t VEC_LEN>
     class SIMDSwizzle :
         public SIMDSwizzleMaskBaseInterface<
             SIMDSwizzle<VEC_LEN>,
@@ -66,6 +61,9 @@ namespace SIMD {
 
         // LOAD-CONSTR - Construct by loading from memory
         UME_FORCE_INLINE explicit SIMDSwizzle(uint32_t const * p) { this->load(p); }
+        UME_FORCE_INLINE explicit SIMDSwizzle(uint64_t const * p) { 
+            for(unsigned int i = 0; i < VEC_LEN; i++) mVec[i] = (uint32_t)p[i];
+        }
 
         // TODO: this should be handled using variadic templates, but unfortunatelly Visual Studio does not support this feature...
         UME_FORCE_INLINE SIMDSwizzle(uint32_t m0, uint32_t m1)

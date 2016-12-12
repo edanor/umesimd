@@ -28,71 +28,23 @@
 //  7th Framework programme Marie Curie Actions under grant PITN-GA-2012-316596".
 //
 
-#ifndef UME_SIMD_SWIZZLE_AVX512_H_
-#define UME_SIMD_SWIZZLE_AVX512_H_
+#ifndef UME_SIMD_SWIZZLE_H_
+#define UME_SIMD_SWIZZLE_H_
 
 #include <type_traits>
 #include "../../UMESimdInterface.h"
 #include <immintrin.h>
 
-namespace UME {
-namespace SIMD {
-    // ********************************************************************************************
-    // SWIZZLE MASKS
-    // ********************************************************************************************
-    template<uint32_t VEC_LEN>
-    class SIMDSwizzle :
-        public SIMDSwizzleMaskBaseInterface<
-        SIMDSwizzle<VEC_LEN>,
-        VEC_LEN>
-    {
-    private:
-        uint32_t mMaskElements[VEC_LEN];
-    public:
-        SIMDSwizzle() { };
+// ********************************************************************************************
+// MASK VECTOR TEMPLATE
+// ********************************************************************************************
+#include "swizzle/UMESimdSwizzlePrototype.h"
 
-        explicit SIMDSwizzle(uint32_t m0) {
-            UME_EMULATION_WARNING();
-            for (unsigned int i = 0; i < VEC_LEN; i++) {
-                mMaskElements[i] = m0;
-            }
-        }
-
-        explicit SIMDSwizzle(uint32_t *m) {
-            UME_EMULATION_WARNING();
-            for (unsigned int i = 0; i < VEC_LEN; i++) {
-                mMaskElements[i] = m[i];
-            }
-        }
-
-        UME_FORCE_INLINE uint32_t extract(uint32_t index) const {
-            UME_EMULATION_WARNING();
-            return mMaskElements[index];
-        }
-
-        // A non-modifying element-wise access operator
-        UME_FORCE_INLINE uint32_t operator[] (uint32_t index) const {
-            UME_EMULATION_WARNING();
-            return mMaskElements[index];
-        }
-
-
-        // Element-wise modification operator
-        UME_FORCE_INLINE void insert(uint32_t index, uint32_t x) {
-            UME_EMULATION_WARNING();
-            mMaskElements[index] = x;
-        }
-
-        SIMDSwizzle(SIMDSwizzle const & mask) {
-            UME_EMULATION_WARNING();
-            for (unsigned int i = 0; i < VEC_LEN; i++)
-            {
-                mMaskElements[i] = mask.mMaskElements[i];
-            }
-        }
-    };
-
-}
-}
+// ********************************************************************************************
+// MASK VECTOR SPECIALIZATIONS
+// ********************************************************************************************
+#include "swizzle/UMESimdSwizzle4.h"
+#include "swizzle/UMESimdSwizzle8.h"
+#include "swizzle/UMESimdSwizzle16.h"
 
 #endif

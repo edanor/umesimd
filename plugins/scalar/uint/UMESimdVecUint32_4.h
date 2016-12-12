@@ -249,6 +249,14 @@ namespace SIMD {
         }
         // SWIZZLE
         // SWIZZLEA
+        template<int i0, int i1, int i2, int i3>
+        UME_FORCE_INLINE SIMDVec_u swizzle() {
+            uint32_t t0 = mVec[i0];
+            uint32_t t1 = mVec[i1];
+            uint32_t t2 = mVec[i2];
+            uint32_t t3 = mVec[i3];
+            return SIMDVec_u(t0, t1, t2, t3);
+        }
 
         // ADDV
         UME_FORCE_INLINE SIMDVec_u add(SIMDVec_u const & b) const {

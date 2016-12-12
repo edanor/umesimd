@@ -39,11 +39,6 @@ namespace UME {
 namespace SIMD {
 
     template<uint32_t VEC_LEN>
-    struct SIMDSwizzle_traits {};
-
-    // No specialized traits
-
-    template<uint32_t VEC_LEN>
     class SIMDSwizzle :
         public SIMDSwizzleMaskBaseInterface<
             SIMDSwizzle<VEC_LEN>,
@@ -53,11 +48,11 @@ namespace SIMD {
         uint32_t mVec[VEC_LEN]; // each entry represents single mask element. For real SIMD vectors, mVec will be of mask intrinsic type.
 
     public:
-        inline SIMDSwizzle() {}
+        UME_FORCE_INLINE SIMDSwizzle() {}
 
         // Regardless of the mask representation, the interface should only allow initialization using 
         // standard bool or using equivalent mask
-        inline explicit SIMDSwizzle(uint32_t m) {
+        UME_FORCE_INLINE explicit SIMDSwizzle(uint32_t m) {
             for (unsigned int i = 0; i < VEC_LEN; i++)
             {
                 mVec[i] = m;
@@ -65,16 +60,19 @@ namespace SIMD {
         }
 
         // LOAD-CONSTR - Construct by loading from memory
-        inline explicit SIMDSwizzle(uint32_t const * p) { this->load(p); }
+        UME_FORCE_INLINE explicit SIMDSwizzle(uint32_t const * p) { this->load(p); }
+        UME_FORCE_INLINE explicit SIMDSwizzle(uint64_t const * p) { 
+            for(unsigned int i = 0; i < VEC_LEN; i++) mVec[i] = (uint32_t)p[i];
+        }
 
         // TODO: this should be handled using variadic templates, but unfortunatelly Visual Studio does not support this feature...
-        inline SIMDSwizzle(uint32_t m0, uint32_t m1)
+        UME_FORCE_INLINE SIMDSwizzle(uint32_t m0, uint32_t m1)
         {
             mVec[0] = m0;
             mVec[1] = m1;
         }
 
-        inline SIMDSwizzle(uint32_t m0, uint32_t m1, uint32_t m2, uint32_t m3)
+        UME_FORCE_INLINE SIMDSwizzle(uint32_t m0, uint32_t m1, uint32_t m2, uint32_t m3)
         {
             mVec[0] = m0;
             mVec[1] = m1;
@@ -82,7 +80,7 @@ namespace SIMD {
             mVec[3] = m3;
         }
 
-        inline SIMDSwizzle(uint32_t m0, uint32_t m1, uint32_t m2, uint32_t m3,
+        UME_FORCE_INLINE SIMDSwizzle(uint32_t m0, uint32_t m1, uint32_t m2, uint32_t m3,
                            uint32_t m4, uint32_t m5, uint32_t m6, uint32_t m7)
         {
             mVec[0] = m0; mVec[1] = m1;
@@ -91,7 +89,7 @@ namespace SIMD {
             mVec[6] = m6; mVec[7] = m7;
         }
 
-        inline SIMDSwizzle(uint32_t m0,  uint32_t m1,  uint32_t m2,  uint32_t m3,
+        UME_FORCE_INLINE SIMDSwizzle(uint32_t m0,  uint32_t m1,  uint32_t m2,  uint32_t m3,
                            uint32_t m4,  uint32_t m5,  uint32_t m6,  uint32_t m7,
                            uint32_t m8,  uint32_t m9,  uint32_t m10, uint32_t m11,
                            uint32_t m12, uint32_t m13, uint32_t m14, uint32_t m15)
@@ -106,7 +104,7 @@ namespace SIMD {
             mVec[14] = m14; mVec[15] = m15;
         }
 
-        inline SIMDSwizzle(uint32_t m0, uint32_t m1, uint32_t m2, uint32_t m3,
+        UME_FORCE_INLINE SIMDSwizzle(uint32_t m0, uint32_t m1, uint32_t m2, uint32_t m3,
                            uint32_t m4,  uint32_t m5,  uint32_t m6,  uint32_t m7,
                            uint32_t m8,  uint32_t m9,  uint32_t m10, uint32_t m11,
                            uint32_t m12, uint32_t m13, uint32_t m14, uint32_t m15,
@@ -134,19 +132,19 @@ namespace SIMD {
         }
 
         // A non-modifying element-wise access operator
-        inline uint32_t operator[] (uint32_t index) const { return mVec[index]; }
+        UME_FORCE_INLINE uint32_t operator[] (uint32_t index) const { return mVec[index]; }
 
-        inline uint32_t extract(uint32_t index)
+        UME_FORCE_INLINE uint32_t extract(uint32_t index)
         {
             return mVec[index];
         }
 
         // Element-wise modification operator
-        inline void insert(uint32_t index, uint32_t x) {
+        UME_FORCE_INLINE void insert(uint32_t index, uint32_t x) {
             mVec[index] = x;
         }
 
-        inline SIMDSwizzle(SIMDSwizzle const & swizzle) {
+        UME_FORCE_INLINE SIMDSwizzle(SIMDSwizzle const & swizzle) {
             for (unsigned int i = 0; i < VEC_LEN; i++)
             {
                 mVec[i] = swizzle.mVec[i];
