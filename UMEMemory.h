@@ -39,7 +39,7 @@
 
 #if defined (_MSC_VER)
 //#define UME_ALIGN(alignment) __declspec(align(alignment))
-    #if (_MSC_VER <= 1900)
+    #if (_MSC_VER < 1900)
         // Visual studio until 2015 is not supporting standard 'alignas' keyword
         #ifdef alignas
             // This check can be removed when verified that for all other versions alignas works as requested
