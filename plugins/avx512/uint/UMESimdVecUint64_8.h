@@ -881,7 +881,7 @@ namespace SIMD {
         // MRCPSA
         // CMPEQV
         UME_FORCE_INLINE SIMDVecMask<8> cmpeq (SIMDVec_u const & b) const {
-            __mmask8 m0 = _mm512_cmpeq_epi64_mask(mVec, b.mVec);
+            __mmask8 m0 = _mm512_cmpeq_epu64_mask(mVec, b.mVec);
             SIMDVecMask<8> ret_mask;
             ret_mask.mMask = m0;
             return ret_mask;
@@ -891,7 +891,7 @@ namespace SIMD {
         }
         // CMPEQS
         UME_FORCE_INLINE SIMDVecMask<8> cmpeq (uint64_t b) const {
-            __mmask8 m0 = _mm512_cmpeq_epi64_mask(mVec, _mm512_set1_epi64(b));
+            __mmask8 m0 = _mm512_cmpeq_epu64_mask(mVec, _mm512_set1_epi64(b));
             SIMDVecMask<8> ret_mask;
             ret_mask.mMask = m0;
             return ret_mask;
@@ -901,7 +901,7 @@ namespace SIMD {
         }
         // CMPNEV
         UME_FORCE_INLINE SIMDVecMask<8> cmpne (SIMDVec_u const & b) const {
-            __mmask8 m0 = _mm512_cmpneq_epi64_mask(mVec, b.mVec);
+            __mmask8 m0 = _mm512_cmpneq_epu64_mask(mVec, b.mVec);
             SIMDVecMask<8> ret_mask;
             ret_mask.mMask = m0;
             return ret_mask;
@@ -911,7 +911,7 @@ namespace SIMD {
         }
         // CMPNES
         UME_FORCE_INLINE SIMDVecMask<8> cmpne (uint64_t b) const {
-            __mmask8 m0 = _mm512_cmpneq_epi64_mask(mVec, _mm512_set1_epi64(b));
+            __mmask8 m0 = _mm512_cmpneq_epu64_mask(mVec, _mm512_set1_epi64(b));
             SIMDVecMask<8> ret_mask;
             ret_mask.mMask = m0;
             return ret_mask;
@@ -921,7 +921,7 @@ namespace SIMD {
         }
         // CMPGTV
         UME_FORCE_INLINE SIMDVecMask<8> cmpgt (SIMDVec_u const & b) const {
-            __mmask8 m0 = _mm512_cmpgt_epi64_mask(mVec, b.mVec);
+            __mmask8 m0 = _mm512_cmpgt_epu64_mask(mVec, b.mVec);
             SIMDVecMask<8> ret_mask;
             ret_mask.mMask = m0;
             return ret_mask;
@@ -931,7 +931,7 @@ namespace SIMD {
         }
         // CMPGTS
         UME_FORCE_INLINE SIMDVecMask<8> cmpgt (uint64_t b) const {
-            __mmask8 m0 = _mm512_cmpgt_epi64_mask(mVec, _mm512_set1_epi64(b));
+            __mmask8 m0 = _mm512_cmpgt_epu64_mask(mVec, _mm512_set1_epi64(b));
             SIMDVecMask<8> ret_mask;
             ret_mask.mMask = m0;
             return ret_mask;
@@ -941,7 +941,7 @@ namespace SIMD {
         }
         // CMPLTV
         UME_FORCE_INLINE SIMDVecMask<8> cmplt (SIMDVec_u const & b) const {
-            __mmask8 m0 = _mm512_cmplt_epi64_mask(mVec, b.mVec);
+            __mmask8 m0 = _mm512_cmplt_epu64_mask(mVec, b.mVec);
             SIMDVecMask<8> ret_mask;
             ret_mask.mMask = m0;
             return ret_mask;
@@ -951,7 +951,7 @@ namespace SIMD {
         }
         // CMPLTS
         UME_FORCE_INLINE SIMDVecMask<8> cmplt (uint64_t b) const {
-            __mmask8 m0 = _mm512_cmplt_epi64_mask(mVec, _mm512_set1_epi64(b));
+            __mmask8 m0 = _mm512_cmplt_epu64_mask(mVec, _mm512_set1_epi64(b));
             SIMDVecMask<8> ret_mask;
             ret_mask.mMask = m0;
             return ret_mask;
@@ -961,7 +961,7 @@ namespace SIMD {
         }
         // CMPGEV
         UME_FORCE_INLINE SIMDVecMask<8> cmpge (SIMDVec_u const & b) const {
-            __mmask8 m0 = _mm512_cmpge_epi64_mask(mVec, b.mVec);
+            __mmask8 m0 = _mm512_cmpge_epu64_mask(mVec, b.mVec);
             SIMDVecMask<8> ret_mask;
             ret_mask.mMask = m0;
             return ret_mask;
@@ -971,7 +971,7 @@ namespace SIMD {
         }
         // CMPGES
         UME_FORCE_INLINE SIMDVecMask<8> cmpge (uint64_t b) const {
-            __mmask8 m0 = _mm512_cmpge_epi64_mask(mVec, _mm512_set1_epi64(b));
+            __mmask8 m0 = _mm512_cmpge_epu64_mask(mVec, _mm512_set1_epi64(b));
             SIMDVecMask<8> ret_mask;
             ret_mask.mMask = m0;
             return ret_mask;
@@ -981,7 +981,7 @@ namespace SIMD {
         }
         // CMPLEV
         UME_FORCE_INLINE SIMDVecMask<8> cmple (SIMDVec_u const & b) const {
-            __mmask8 m0 = _mm512_cmple_epi64_mask(mVec, b.mVec);
+            __mmask8 m0 = _mm512_cmple_epu64_mask(mVec, b.mVec);
             SIMDVecMask<8> ret_mask;
             ret_mask.mMask = m0;
             return ret_mask;
@@ -991,7 +991,7 @@ namespace SIMD {
         }
         // CMPLES
         UME_FORCE_INLINE SIMDVecMask<8> cmple (uint64_t b) const {
-            __mmask8 m0 = _mm512_cmple_epi64_mask(mVec, _mm512_set1_epi64(b));
+            __mmask8 m0 = _mm512_cmple_epu64_mask(mVec, _mm512_set1_epi64(b));
             SIMDVecMask<8> ret_mask;
             ret_mask.mMask = m0;
             return ret_mask;
@@ -1001,12 +1001,12 @@ namespace SIMD {
         }
         // CMPEV
         UME_FORCE_INLINE bool cmpe (SIMDVec_u const & b) const {
-            __mmask8 m0 = _mm512_cmpeq_epi64_mask(mVec, b.mVec);
+            __mmask8 m0 = _mm512_cmpeq_epu64_mask(mVec, b.mVec);
             return m0 == 0x03;
         }
         // CMPES
         UME_FORCE_INLINE bool cmpe(uint64_t b) const {
-            __mmask8 m0 = _mm512_cmpeq_epi64_mask(mVec, _mm512_set1_epi64(b));
+            __mmask8 m0 = _mm512_cmpeq_epu64_mask(mVec, _mm512_set1_epi64(b));
             return m0 == 0x03;
         }
         // UNIQUE
@@ -1166,82 +1166,82 @@ namespace SIMD {
 
         // MAXV
         UME_FORCE_INLINE SIMDVec_u max(SIMDVec_u const & b) const {
-            __m512i t0 = _mm512_max_epi64(mVec, b.mVec);
+            __m512i t0 = _mm512_max_epu64(mVec, b.mVec);
             return SIMDVec_u(t0);
         }
         // MMAXV
         UME_FORCE_INLINE SIMDVec_u max(SIMDVecMask<8> const & mask, SIMDVec_u const & b) const {
-            __m512i t0 = _mm512_mask_max_epi64(mVec, mask.mMask, mVec, b.mVec);
+            __m512i t0 = _mm512_mask_max_epu64(mVec, mask.mMask, mVec, b.mVec);
             return SIMDVec_u(t0);
         }
         // MAXS
         UME_FORCE_INLINE SIMDVec_u max(uint64_t b) const {
-            __m512i t0 = _mm512_max_epi64(mVec, _mm512_set1_epi64(b));
+            __m512i t0 = _mm512_max_epu64(mVec, _mm512_set1_epi64(b));
             return SIMDVec_u(t0);
         }
         // MMAXS
         UME_FORCE_INLINE SIMDVec_u max(SIMDVecMask<8> const & mask, uint64_t b) const {
-            __m512i t0 = _mm512_mask_max_epi64(mVec, mask.mMask, mVec, _mm512_set1_epi64(b));
+            __m512i t0 = _mm512_mask_max_epu64(mVec, mask.mMask, mVec, _mm512_set1_epi64(b));
             return SIMDVec_u(t0);
         }
         // MAXVA
         UME_FORCE_INLINE SIMDVec_u & maxa(SIMDVec_u const & b) {
-            mVec = _mm512_max_epi64(mVec, b.mVec);
+            mVec = _mm512_max_epu64(mVec, b.mVec);
             return *this;
         }
         // MMAXVA
         UME_FORCE_INLINE SIMDVec_u & maxa(SIMDVecMask<8> const & mask, SIMDVec_u const & b) {
-            mVec = _mm512_mask_max_epi64(mVec, mask.mMask, mVec, b.mVec);
+            mVec = _mm512_mask_max_epu64(mVec, mask.mMask, mVec, b.mVec);
             return *this;
         }
         // MAXSA
         UME_FORCE_INLINE SIMDVec_u & maxa(uint64_t b) {
-            mVec = _mm512_max_epi64(mVec, _mm512_set1_epi64(b));
+            mVec = _mm512_max_epu64(mVec, _mm512_set1_epi64(b));
             return *this;
         }
         // MMAXSA
         UME_FORCE_INLINE SIMDVec_u & maxa(SIMDVecMask<8> const & mask, uint64_t b) {
-            mVec = _mm512_mask_max_epi64(mVec, mask.mMask, mVec, _mm512_set1_epi64(b));
+            mVec = _mm512_mask_max_epu64(mVec, mask.mMask, mVec, _mm512_set1_epi64(b));
             return *this;
         }
         // MINV
         UME_FORCE_INLINE SIMDVec_u min(SIMDVec_u const & b) const {
-            __m512i t0 = _mm512_min_epi64(mVec, b.mVec);
+            __m512i t0 = _mm512_min_epu64(mVec, b.mVec);
             return SIMDVec_u(t0);
         }
         // MMINV
         UME_FORCE_INLINE SIMDVec_u min(SIMDVecMask<8> const & mask, SIMDVec_u const & b) const {
-            __m512i t0 = _mm512_mask_min_epi64(mVec, mask.mMask, mVec, b.mVec);
+            __m512i t0 = _mm512_mask_min_epu64(mVec, mask.mMask, mVec, b.mVec);
             return SIMDVec_u(t0);
         }
         // MINS
         UME_FORCE_INLINE SIMDVec_u min(uint64_t b) const {
-            __m512i t0 = _mm512_min_epi64(mVec, _mm512_set1_epi64(b));
+            __m512i t0 = _mm512_min_epu64(mVec, _mm512_set1_epi64(b));
             return SIMDVec_u(t0);
         }
         // MMINS
         UME_FORCE_INLINE SIMDVec_u min(SIMDVecMask<8> const & mask, uint64_t b) const {
-            __m512i t0 = _mm512_mask_min_epi64(mVec, mask.mMask, mVec, _mm512_set1_epi64(b));
+            __m512i t0 = _mm512_mask_min_epu64(mVec, mask.mMask, mVec, _mm512_set1_epi64(b));
             return SIMDVec_u(t0);
         }
         // MINVA
         UME_FORCE_INLINE SIMDVec_u & mina(SIMDVec_u const & b) {
-            mVec = _mm512_min_epi64(mVec, b.mVec);
+            mVec = _mm512_min_epu64(mVec, b.mVec);
             return *this;
         }
         // MMINVA
         UME_FORCE_INLINE SIMDVec_u & mina(SIMDVecMask<8> const & mask, SIMDVec_u const & b) {
-            mVec = _mm512_mask_min_epi64(mVec, mask.mMask, mVec, b.mVec);
+            mVec = _mm512_mask_min_epu64(mVec, mask.mMask, mVec, b.mVec);
             return *this;
         }
         // MINSA
         UME_FORCE_INLINE SIMDVec_u & mina(uint64_t b) {
-            mVec = _mm512_min_epi64(mVec, _mm512_set1_epi64(b));
+            mVec = _mm512_min_epu64(mVec, _mm512_set1_epi64(b));
             return *this;
         }
         // MMINSA
         UME_FORCE_INLINE SIMDVec_u & mina(SIMDVecMask<8> const & mask, uint64_t b) {
-            mVec = _mm512_mask_min_epi64(mVec, mask.mMask, mVec, _mm512_set1_epi64(b));
+            mVec = _mm512_mask_min_epu64(mVec, mask.mMask, mVec, _mm512_set1_epi64(b));
             return *this;
         }
 
