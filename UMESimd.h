@@ -31,6 +31,11 @@
 #ifndef UME_SIMD_H_
 #define UME_SIMD_H_
 
+// Version macros.
+#define UME_SIMD_VERSION_MAJOR 0
+#define UME_SIMD_VERSION_MINOR 6
+#define UME_SIMD_VERSION_PATCH 1
+
 #include <iostream>
 
 #include "UMEBasicTypes.h"
