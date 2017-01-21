@@ -276,26 +276,39 @@ namespace SIMD {
             return SIMDVec_u(t3);
 #endif
         }
+        
         // SWIZZLE
         UME_FORCE_INLINE SIMDVec_u swizzle(SIMDSwizzle<8> const & sMask) const {
-#if defined(__AVX512VL__)
-            __m256i t0 = _mm256_permutexvar_epi32(mVec, sMask.mVec);
+#if defined(WA_GCC_INTR_SUPPORT_6_2)
+            // Use AVX2 intrinsics
+            __m256i t0  = _mm256_permutevar8x32_epi32(mVec, sMask.mVec);
             return SIMDVec_u(t0);
 #else
+  #if defined(__AVX512VL__)
+            __m256i t0 = _mm256_permutexvar_epi32(mVec, sMask.mVec);
+            return SIMDVec_u(t0);
+  #else
             __m512i t0 = _mm512_castsi256_si512(sMask.mVec);
             __m512i t1 = _mm512_castsi256_si512(mVec);
             __m512i t2 = _mm512_permutexvar_epi32(t0, t1);
             __m256i t3 = _mm512_castsi512_si256(t2);
             return SIMDVec_u(t3);
+  #endif
 #endif
         }
         template<int i0, int i1, int i2, int i3, int i4, int i5, int i6, int i7>
         UME_FORCE_INLINE SIMDVec_u swizzle() {
-#if defined(__AVX512VL__)
+#if defined(WA_GCC_INTR_SUPPORT_6_2)
+            // Use AVX2 intrinsics
+            __m256i t0  = _mm256_setr_epi32(i0, i1, i2, i3, i4, i5, i6, i7);
+            __m256i t1  = _mm256_permutevar8x32_epi32(mVec, t0);
+            return SIMDVec_u(t1);
+#else
+  #if defined(__AVX512VL__)
             __m256i t0 = _mm256_setr_epi32(i0, i1, i2, i3, i4, i5, i6, i7);
             __m256i t1 = _mm256_permutexvar_epi32(mVec, t0);
             return SIMDVec_u(t1);
-#else
+  #else
             __m512i t0 = _mm512_setr_epi32(
                 i0, i1, i2, i3, i4, i5, i6, i7,
                 i0, i1, i2, i3, i4, i5, i6, i7);
@@ -303,21 +316,29 @@ namespace SIMD {
             __m512i t2 = _mm512_permutexvar_epi32(t0, t1);
             __m256i t3 = _mm512_castsi512_si256(t2);
             return SIMDVec_u(t3);
+  #endif
 #endif
         }
         // SWIZZLEA
         UME_FORCE_INLINE SIMDVec_u & swizzlea(SIMDSwizzle<8> const & sMask) {
-#if defined(__AVX512VL__)
-            mVec = _mm256_permutexvar_epi32(mVec, sMask.mVec);
+#if defined(WA_GCC_INTR_SUPPORT_6_2)
+            // Use AVX2 intrinsics
+            mVec  = _mm256_permutevar8x32_epi32(mVec, sMask.mVec);
             return *this;
 #else
+  #if defined(__AVX512VL__)
+            mVec = _mm256_permutexvar_epi32(mVec, sMask.mVec);
+            return *this;
+  #else
             __m512i t0 = _mm512_castsi256_si512(sMask.mVec);
             __m512i t1 = _mm512_castsi256_si512(mVec);
             __m512i t2 = _mm512_permutexvar_epi32(t0, t1);
             mVec = _mm512_castsi512_si256(t2);
             return *this;
+  #endif
 #endif
         }
+
         // SORTA
         // SORTD
 
