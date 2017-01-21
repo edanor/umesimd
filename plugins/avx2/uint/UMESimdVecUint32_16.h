@@ -1635,7 +1635,7 @@ namespace SIMD {
             _mm256_store_si256((__m256i*) rawMask, mask.mMask[0]);
             _mm256_store_si256((__m256i*) (raw + 8), mVec[1]);
             _mm256_store_si256((__m256i*) (rawMask + 8), mask.mMask[1]);
-            for (int i = 0; i < 16; i++) { if (rawMask[i] == SIMDVecMask<16>::TRUE()) baseAddr[indices[i]] = raw[i]; };
+            for (int i = 0; i < 16; i++) { if (rawMask[i] == SIMDVecMask<16>::TRUE_VAL()) baseAddr[indices[i]] = raw[i]; };
             return baseAddr;
         }
         // SCATTERV
@@ -1661,7 +1661,7 @@ namespace SIMD {
             _mm256_store_si256((__m256i*) (rawIndices + 8), indices.mVec[1]);
             _mm256_store_si256((__m256i*) (rawMask + 8), mask.mMask[1]);
             for (int i = 0; i < 16; i++) {
-                if (rawMask[i] == SIMDVecMask<16>::TRUE())
+                if (rawMask[i] == SIMDVecMask<16>::TRUE_VAL())
                     baseAddr[rawIndices[i]] = raw[i];
             };
             return baseAddr;

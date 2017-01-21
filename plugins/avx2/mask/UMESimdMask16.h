@@ -41,11 +41,11 @@ namespace SIMD {
         uint32_t,
         16>
     {
-        static uint32_t TRUE() { return 0xFFFFFFFF; };
-        static uint32_t FALSE() { return 0x00000000; };
+        static uint32_t TRUE_VAL() { return 0xFFFFFFFF; };
+        static uint32_t FALSE_VAL() { return 0x00000000; };
 
         // This function returns internal representation of boolean value based on bool input
-        static inline uint32_t toMaskBool(bool m) { if (m == true) return TRUE(); else return FALSE(); }
+        static inline uint32_t toMaskBool(bool m) { if (m == true) return TRUE_VAL(); else return FALSE_VAL(); }
         // This function returns a boolean value based on internal representation
         static inline bool toBool(uint32_t m) { if ((m & 0x80000000) != 0) return true; else return false; }
 
@@ -78,7 +78,7 @@ namespace SIMD {
         inline explicit SIMDVecMask(bool const *p) {
             alignas(32) uint32_t raw[16];
             for (int i = 0; i < 16; i++) {
-                raw[i] = p[i] ? TRUE() : FALSE();
+                raw[i] = p[i] ? TRUE_VAL() : FALSE_VAL();
             }
             mMask[0] = _mm256_loadu_si256((__m256i*)raw);
             mMask[1] = _mm256_loadu_si256((__m256i*)(raw + 8));
@@ -108,11 +108,11 @@ namespace SIMD {
                 alignas(32) uint32_t raw[8];
             if (index < 8) {
                 _mm256_store_si256((__m256i*)raw, mMask[0]);
-                return raw[index] == TRUE();
+                return raw[index] == TRUE_VAL();
             }
             else {
                 _mm256_store_si256((__m256i*)raw, mMask[1]);
-                return raw[index - 8] == TRUE();
+                return raw[index - 8] == TRUE_VAL();
             }
         }
         inline bool operator[] (uint32_t index) const {
@@ -153,7 +153,7 @@ namespace SIMD {
         }
         // LANDS
         inline SIMDVecMask land(bool b) const {
-            __m256i t0 = _mm256_set1_epi32(b ? TRUE() : FALSE());
+            __m256i t0 = _mm256_set1_epi32(b ? TRUE_VAL() : FALSE_VAL());
             __m256i t1 = _mm256_and_si256(mMask[0], t0);
             __m256i t2 = _mm256_and_si256(mMask[1], t0);
             return SIMDVecMask(t1, t2);
@@ -175,7 +175,7 @@ namespace SIMD {
         }
         // LANDSA
         inline SIMDVecMask & landa(bool b) {
-            __m256i t0 = _mm256_set1_epi32(b ? TRUE() : FALSE());
+            __m256i t0 = _mm256_set1_epi32(b ? TRUE_VAL() : FALSE_VAL());
             mMask[0] = _mm256_and_si256(mMask[0], t0);
             mMask[1] = _mm256_and_si256(mMask[1], t0);
             return *this;
@@ -197,7 +197,7 @@ namespace SIMD {
         }
         // LORS
         inline SIMDVecMask lor(bool b) const {
-            __m256i t0 = _mm256_set1_epi32(b ? TRUE() : FALSE());
+            __m256i t0 = _mm256_set1_epi32(b ? TRUE_VAL() : FALSE_VAL());
             __m256i t1 = _mm256_or_si256(mMask[0], t0);
             __m256i t2 = _mm256_or_si256(mMask[1], t0);
             return SIMDVecMask(t1, t2);
@@ -219,7 +219,7 @@ namespace SIMD {
         }
         // LORSA
         inline SIMDVecMask & lora(bool b) {
-            __m256i t0 = _mm256_set1_epi32(b ? TRUE() : FALSE());
+            __m256i t0 = _mm256_set1_epi32(b ? TRUE_VAL() : FALSE_VAL());
             mMask[0] = _mm256_or_si256(mMask[0], t0);
             mMask[1] = _mm256_or_si256(mMask[1], t0);
             return *this;
@@ -238,7 +238,7 @@ namespace SIMD {
         }
         // LXORS
         inline SIMDVecMask lxor(bool b) const {
-            __m256i t0 = _mm256_set1_epi32(b ? TRUE() : FALSE());
+            __m256i t0 = _mm256_set1_epi32(b ? TRUE_VAL() : FALSE_VAL());
             __m256i t1 = _mm256_xor_si256(mMask[0], t0);
             __m256i t2 = _mm256_xor_si256(mMask[1], t0);
             return SIMDVecMask(t1, t2);
@@ -257,7 +257,7 @@ namespace SIMD {
         }
         // LXORSA
         inline SIMDVecMask & lxora(bool b) {
-            __m256i t0 = _mm256_set1_epi32(b ? TRUE() : FALSE());
+            __m256i t0 = _mm256_set1_epi32(b ? TRUE_VAL() : FALSE_VAL());
             mMask[0] = _mm256_xor_si256(mMask[0], t0);
             mMask[1] = _mm256_xor_si256(mMask[1], t0);
             return *this;
@@ -267,7 +267,7 @@ namespace SIMD {
         }
         // LNOT
         inline SIMDVecMask lnot() const {
-            __m256i t0 = _mm256_set1_epi32(TRUE());
+            __m256i t0 = _mm256_set1_epi32(TRUE_VAL());
             __m256i t1 = _mm256_xor_si256(mMask[0], t0);
             __m256i t2 = _mm256_xor_si256(mMask[1], t0);
             return SIMDVecMask(t1, t2);
@@ -277,7 +277,7 @@ namespace SIMD {
         }
         // LNOTA
         inline SIMDVecMask & lnota() {
-            __m256i t0 = _mm256_set1_epi32(TRUE());
+            __m256i t0 = _mm256_set1_epi32(TRUE_VAL());
             mMask[0] = _mm256_xor_si256(mMask[0], t0);
             mMask[1] = _mm256_xor_si256(mMask[1], t0);
             return *this;

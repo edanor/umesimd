@@ -43,11 +43,11 @@ namespace SIMD {
             uint32_t,
             4>
     {
-        static uint32_t TRUE() { return 0xFFFFFFFF; };
-        static uint32_t FALSE() { return 0x00000000; };
+        static uint32_t TRUE_VAL() { return 0xFFFFFFFF; };
+        static uint32_t FALSE_VAL() { return 0x00000000; };
 
         // This function returns internal representation of boolean value based on bool input
-        static inline uint32_t toMaskBool(bool m) { if (m == true) return TRUE(); else return FALSE(); }
+        static inline uint32_t toMaskBool(bool m) { if (m == true) return TRUE_VAL(); else return FALSE_VAL(); }
         // This function returns a boolean value based on internal representation
         static inline bool toBool(uint32_t m) { if ((m & 0x80000000) != 0) return true; else return false; }
 
@@ -81,7 +81,7 @@ namespace SIMD {
         inline explicit SIMDVecMask(bool const *p) {
             alignas(16) uint32_t raw[4];
             for (int i = 0; i < 4; i++) {
-                raw[i] = p[i] ? TRUE() : FALSE();
+                raw[i] = p[i] ? TRUE_VAL() : FALSE_VAL();
             }
             mMask = _mm_load_si128((__m128i*)raw);
         }
@@ -99,7 +99,7 @@ namespace SIMD {
             UME_PERFORMANCE_UNOPTIMAL_WARNING()
                 alignas(16) uint32_t raw[4];
             _mm_store_si128((__m128i*)raw, mMask);
-            return raw[index] == TRUE();
+            return raw[index] == TRUE_VAL();
         }
         inline bool operator[] (uint32_t index) const {
             return extract(index);
@@ -115,20 +115,20 @@ namespace SIMD {
         // LOAD
         inline SIMDVecMask & load(bool const * p) {
             alignas(16) uint32_t raw[4];
-            raw[0] = p[0] ? TRUE() : FALSE();
-            raw[1] = p[1] ? TRUE() : FALSE();
-            raw[2] = p[2] ? TRUE() : FALSE();
-            raw[3] = p[3] ? TRUE() : FALSE();
+            raw[0] = p[0] ? TRUE_VAL() : FALSE_VAL();
+            raw[1] = p[1] ? TRUE_VAL() : FALSE_VAL();
+            raw[2] = p[2] ? TRUE_VAL() : FALSE_VAL();
+            raw[3] = p[3] ? TRUE_VAL() : FALSE_VAL();
             mMask = _mm_load_si128((__m128i*)raw);
             return *this;
         }
         // LOADA
         inline SIMDVecMask & loada(bool const * p) {
             alignas(16) uint32_t raw[4];
-            raw[0] = p[0] ? TRUE() : FALSE();
-            raw[1] = p[1] ? TRUE() : FALSE();
-            raw[2] = p[2] ? TRUE() : FALSE();
-            raw[3] = p[3] ? TRUE() : FALSE();
+            raw[0] = p[0] ? TRUE_VAL() : FALSE_VAL();
+            raw[1] = p[1] ? TRUE_VAL() : FALSE_VAL();
+            raw[2] = p[2] ? TRUE_VAL() : FALSE_VAL();
+            raw[3] = p[3] ? TRUE_VAL() : FALSE_VAL();
             mMask = _mm_load_si128((__m128i*)raw);
             return *this;
         }
@@ -136,20 +136,20 @@ namespace SIMD {
         inline bool* store(bool * p) const {
             alignas(16) uint32_t raw[4];
             _mm_store_si128((__m128i*)raw, mMask);
-            p[0] = raw[0] == TRUE();
-            p[1] = raw[1] == TRUE();
-            p[2] = raw[2] == TRUE();
-            p[3] = raw[3] == TRUE();
+            p[0] = raw[0] == TRUE_VAL();
+            p[1] = raw[1] == TRUE_VAL();
+            p[2] = raw[2] == TRUE_VAL();
+            p[3] = raw[3] == TRUE_VAL();
             return p;
         }
         // STOREA
         inline bool* storea(bool * p) const {
             alignas(16) uint32_t raw[4];
             _mm_store_si128((__m128i*)raw, mMask);
-            p[0] = raw[0] == TRUE();
-            p[1] = raw[1] == TRUE();
-            p[2] = raw[2] == TRUE();
-            p[3] = raw[3] == TRUE();
+            p[0] = raw[0] == TRUE_VAL();
+            p[1] = raw[1] == TRUE_VAL();
+            p[2] = raw[2] == TRUE_VAL();
+            p[3] = raw[3] == TRUE_VAL();
             return p;
         }
         // ASSIGN
@@ -170,7 +170,7 @@ namespace SIMD {
         }
         // LANDS
         inline SIMDVecMask land(bool b) const {
-            __m128i t0 = _mm_set1_epi32(b ? TRUE() : FALSE());
+            __m128i t0 = _mm_set1_epi32(b ? TRUE_VAL() : FALSE_VAL());
             __m128i t1 = _mm_and_si128(mMask, t0);
             return SIMDVecMask(t1);
         }
@@ -190,7 +190,7 @@ namespace SIMD {
         }
         // LANDSA
         inline SIMDVecMask & landa(bool b) {
-            __m128i t0 = _mm_set1_epi32(b ? TRUE() : FALSE());
+            __m128i t0 = _mm_set1_epi32(b ? TRUE_VAL() : FALSE_VAL());
             mMask = _mm_and_si128(mMask, t0);
             return *this;
         }
@@ -210,7 +210,7 @@ namespace SIMD {
         }
         // LORS
         inline SIMDVecMask lor(bool b) const {
-            __m128i t0 = _mm_set1_epi32(b ? TRUE() : FALSE());
+            __m128i t0 = _mm_set1_epi32(b ? TRUE_VAL() : FALSE_VAL());
             __m128i t1 = _mm_or_si128(mMask, t0);
             return SIMDVecMask(t1);
         }
@@ -230,7 +230,7 @@ namespace SIMD {
         }
         // LORSA
         inline SIMDVecMask & lora(bool b) {
-            __m128i t0 = _mm_set1_epi32(b ? TRUE() : FALSE());
+            __m128i t0 = _mm_set1_epi32(b ? TRUE_VAL() : FALSE_VAL());
             mMask = _mm_or_si128(mMask, t0);
             return *this;
         }
@@ -247,7 +247,7 @@ namespace SIMD {
         }
         // LXORS
         inline SIMDVecMask lxor(bool b) const {
-            __m128i t0 = _mm_set1_epi32(b ? TRUE() : FALSE());
+            __m128i t0 = _mm_set1_epi32(b ? TRUE_VAL() : FALSE_VAL());
             __m128i t1 = _mm_xor_si128(mMask, t0);
             return SIMDVecMask(t1);
         }
@@ -264,7 +264,7 @@ namespace SIMD {
         }
         // LXORSA
         inline SIMDVecMask & lxora(bool b) {
-            __m128i t0 = _mm_set1_epi32(b ? TRUE() : FALSE());
+            __m128i t0 = _mm_set1_epi32(b ? TRUE_VAL() : FALSE_VAL());
             mMask = _mm_xor_si128(mMask, t0);
             return *this;
         }
@@ -273,7 +273,7 @@ namespace SIMD {
         }
         // LNOT
         inline SIMDVecMask lnot() const {
-            __m128i t0 = _mm_set1_epi32(TRUE());
+            __m128i t0 = _mm_set1_epi32(TRUE_VAL());
             __m128i t1 = _mm_andnot_si128(mMask, t0);
             return SIMDVecMask(t1);
         }
@@ -282,7 +282,7 @@ namespace SIMD {
         }
         // LNOTA
         inline SIMDVecMask lnota() {
-            __m128i t0 = _mm_set1_epi32(TRUE());
+            __m128i t0 = _mm_set1_epi32(TRUE_VAL());
             mMask = _mm_andnot_si128(mMask, t0);
             return *this;
         }

@@ -607,7 +607,7 @@ namespace SIMD {
         // CMPNEV
         UME_FORCE_INLINE SIMDVecMask<4> cmpne(SIMDVec_u const & b) const {
             __m128i t0 = _mm_cmpeq_epi32(mVec, b.mVec);
-            __m128i m0 = _mm_set1_epi32(SIMDVecMask<4>::TRUE());
+            __m128i m0 = _mm_set1_epi32(SIMDVecMask<4>::TRUE_VAL());
             __m128i t1 = _mm_xor_si128(t0, m0);
             return SIMDVecMask<4>(t1);
         }
@@ -618,7 +618,7 @@ namespace SIMD {
         UME_FORCE_INLINE SIMDVecMask<4> cmpne(uint32_t b) const {
             __m128i t0 = _mm_set1_epi32(b);
             __m128i t1 = _mm_cmpeq_epi32(mVec, t0);
-            __m128i m0 = _mm_set1_epi32(SIMDVecMask<4>::TRUE());
+            __m128i m0 = _mm_set1_epi32(SIMDVecMask<4>::TRUE_VAL());
             __m128i t2 = _mm_xor_si128(t1, m0);
             return SIMDVecMask<4>(t2);
         }
@@ -1281,7 +1281,7 @@ namespace SIMD {
 #endif
             alignas(16) uint32_t raw[4];
             _mm_store_si128((__m128i*) raw, mVec);
-            for (int i = 0; i < 4; i++) { if (rawMask[i] == SIMDVecMask<4>::TRUE()) baseAddr[indices[i]] = raw[i]; };
+            for (int i = 0; i < 4; i++) { if (rawMask[i] == SIMDVecMask<4>::TRUE_VAL()) baseAddr[indices[i]] = raw[i]; };
             return baseAddr;
         }
         // SCATTERV
@@ -1307,7 +1307,7 @@ namespace SIMD {
             _mm_store_si128((__m128i*) raw, mVec);
             _mm_store_si128((__m128i*) rawIndices, indices.mVec);
             for (int i = 0; i < 4; i++) {
-                if (rawMask[i] == SIMDVecMask<4>::TRUE())
+                if (rawMask[i] == SIMDVecMask<4>::TRUE_VAL())
                     baseAddr[rawIndices[i]] = raw[i];
             };
             return baseAddr;

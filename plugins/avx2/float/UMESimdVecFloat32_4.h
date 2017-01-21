@@ -1069,7 +1069,7 @@ namespace SIMD {
 #endif
             alignas(16) float raw[4];
             _mm_store_ps(raw, mVec);
-            for (int i = 0; i < 4; i++) { if (rawMask[i] == SIMDVecMask<4>::TRUE()) baseAddr[indices[i]] = raw[i]; };
+            for (int i = 0; i < 4; i++) { if (rawMask[i] == SIMDVecMask<4>::TRUE_VAL()) baseAddr[indices[i]] = raw[i]; };
             return baseAddr;
         }
         // SCATTERV
@@ -1095,7 +1095,7 @@ namespace SIMD {
             _mm_store_ps(raw, mVec);
             _mm_store_si128((__m128i*) rawIndices, indices.mVec);
             for (int i = 0; i < 4; i++) {
-                if (rawMask[i] == SIMDVecMask<4>::TRUE())
+                if (rawMask[i] == SIMDVecMask<4>::TRUE_VAL())
                     baseAddr[rawIndices[i]] = raw[i];
             };
             return baseAddr;

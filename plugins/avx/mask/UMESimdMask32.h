@@ -43,11 +43,11 @@ namespace SIMD {
         uint32_t,
         32>
     {
-        static uint32_t TRUE() { return 0xFFFFFFFF; };
-        static uint32_t FALSE() { return 0x00000000; };
+        static uint32_t TRUE_VAL() { return 0xFFFFFFFF; };
+        static uint32_t FALSE_VAL() { return 0x00000000; };
 
         // This function returns internal representation of boolean value based on bool input
-        static inline uint32_t toMaskBool(bool m) { if (m == true) return TRUE(); else return FALSE(); }
+        static inline uint32_t toMaskBool(bool m) { if (m == true) return TRUE_VAL(); else return FALSE_VAL(); }
         // This function returns a boolean value based on internal representation
         static inline bool toBool(uint32_t m) { if ((m & 0x80000000) != 0) return true; else return false; }
 
@@ -82,7 +82,7 @@ namespace SIMD {
         inline explicit SIMDVecMask(bool const *p) {
             alignas(32) uint32_t raw[32];
             for (int i = 0; i < 32; i++) {
-                raw[i] = p[i] ? TRUE() : FALSE();
+                raw[i] = p[i] ? TRUE_VAL() : FALSE_VAL();
             }
             mMask[0] = _mm256_loadu_si256((__m256i*)raw);
             mMask[1] = _mm256_loadu_si256((__m256i*)(raw + 8));
@@ -130,19 +130,19 @@ namespace SIMD {
 
             if (index < 8) {
                 _mm256_store_si256((__m256i*)raw, mMask[0]);
-                return raw[index] == TRUE();
+                return raw[index] == TRUE_VAL();
             }
             else if (index < 16) {
                 _mm256_store_si256((__m256i*)raw, mMask[1]);
-                return raw[index - 8] == TRUE();
+                return raw[index - 8] == TRUE_VAL();
             }
             else if (index < 24) {
                 _mm256_store_si256((__m256i*)raw, mMask[2]);
-                return raw[index - 16] == TRUE();
+                return raw[index - 16] == TRUE_VAL();
             }
             else {
                 _mm256_store_si256((__m256i*)raw, mMask[3]);
-                return raw[index - 24] == TRUE();
+                return raw[index - 24] == TRUE_VAL();
             }
         }
 

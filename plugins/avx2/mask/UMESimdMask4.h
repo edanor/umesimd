@@ -46,13 +46,13 @@ namespace SIMD {
 
         // This function returns internal representation of boolean value based on bool input
 #if defined UME_USE_MASK_64B
-        static uint64_t TRUE() { return 0xFFFFFFFFFFFFFFFF; };
-        static uint64_t FALSE() { return 0x0000000000000000; };
-        static UME_FORCE_INLINE uint64_t toMaskBool(bool m) {if (m == true) return TRUE(); else return FALSE(); }
+        static uint64_t TRUE_VAL() { return 0xFFFFFFFFFFFFFFFF; };
+        static uint64_t FALSE_VAL() { return 0x0000000000000000; };
+        static UME_FORCE_INLINE uint64_t toMaskBool(bool m) {if (m == true) return TRUE_VAL(); else return FALSE_VAL(); }
 #else
-        static uint32_t TRUE() { return 0xFFFFFFFF; };
-        static uint32_t FALSE() { return 0x00000000; };
-        static UME_FORCE_INLINE uint32_t toMaskBool(bool m) {if (m == true) return TRUE(); else return FALSE(); }
+        static uint32_t TRUE_VAL() { return 0xFFFFFFFF; };
+        static uint32_t FALSE_VAL() { return 0x00000000; };
+        static UME_FORCE_INLINE uint32_t toMaskBool(bool m) {if (m == true) return TRUE_VAL(); else return FALSE_VAL(); }
 #endif
 
         friend class SIMDVec_u<uint8_t, 4>;
@@ -104,13 +104,13 @@ namespace SIMD {
 #if defined UME_USE_MASK_64B
             alignas(32) uint64_t raw[4];
             for (int i = 0; i < 4; i++) {
-                raw[i] = p[i] ? TRUE() : FALSE();
+                raw[i] = p[i] ? TRUE_VAL() : FALSE_VAL();
             }
             mMask = _mm256_load_si256((__m256i*)raw);
 #else
             alignas(16) uint32_t raw[4];
             for (int i = 0; i < 4; i++) {
-                raw[i] = p[i] ? TRUE() : FALSE();
+                raw[i] = p[i] ? TRUE_VAL() : FALSE_VAL();
             }
             mMask = _mm_load_si128((__m128i*)raw);
 #endif
@@ -134,11 +134,11 @@ namespace SIMD {
 #if defined UME_USE_MASK_64B
             alignas(32) uint64_t raw[4];
             _mm256_store_si256((__m256i*)raw, mMask);
-            return raw[index] == TRUE();
+            return raw[index] == TRUE_VAL();
 #else
             alignas(16) uint32_t raw[4];
             _mm_store_si128((__m128i*)raw, mMask);
-            return raw[index] == TRUE();
+            return raw[index] == TRUE_VAL();
 #endif
         }
         UME_FORCE_INLINE bool operator[] (uint32_t index) const {
@@ -162,17 +162,17 @@ namespace SIMD {
         UME_FORCE_INLINE SIMDVecMask & load(bool const * p) {
 #if defined UME_USE_MASK_64B
             alignas(32) uint64_t raw[4];
-            raw[0] = p[0] ? TRUE() : FALSE();
-            raw[1] = p[1] ? TRUE() : FALSE();
-            raw[2] = p[2] ? TRUE() : FALSE();
-            raw[3] = p[3] ? TRUE() : FALSE();
+            raw[0] = p[0] ? TRUE_VAL() : FALSE_VAL();
+            raw[1] = p[1] ? TRUE_VAL() : FALSE_VAL();
+            raw[2] = p[2] ? TRUE_VAL() : FALSE_VAL();
+            raw[3] = p[3] ? TRUE_VAL() : FALSE_VAL();
             mMask = _mm256_load_si256((__m256i*)raw);
 #else
             alignas(16) uint32_t raw[4];
-            raw[0] = p[0] ? TRUE() : FALSE();
-            raw[1] = p[1] ? TRUE() : FALSE();
-            raw[2] = p[2] ? TRUE() : FALSE();
-            raw[3] = p[3] ? TRUE() : FALSE();
+            raw[0] = p[0] ? TRUE_VAL() : FALSE_VAL();
+            raw[1] = p[1] ? TRUE_VAL() : FALSE_VAL();
+            raw[2] = p[2] ? TRUE_VAL() : FALSE_VAL();
+            raw[3] = p[3] ? TRUE_VAL() : FALSE_VAL();
             mMask = _mm_load_si128((__m128i*)raw);
 #endif
             return *this;
@@ -181,17 +181,17 @@ namespace SIMD {
         UME_FORCE_INLINE SIMDVecMask & loada(bool const * p) {
 #if defined UME_USE_MASK_64B
             alignas(32) uint64_t raw[4];
-            raw[0] = p[0] ? TRUE() : FALSE();
-            raw[1] = p[1] ? TRUE() : FALSE();
-            raw[2] = p[2] ? TRUE() : FALSE();
-            raw[3] = p[3] ? TRUE() : FALSE();
+            raw[0] = p[0] ? TRUE_VAL() : FALSE_VAL();
+            raw[1] = p[1] ? TRUE_VAL() : FALSE_VAL();
+            raw[2] = p[2] ? TRUE_VAL() : FALSE_VAL();
+            raw[3] = p[3] ? TRUE_VAL() : FALSE_VAL();
             mMask = _mm256_load_si256((__m256i*)raw);
 #else
             alignas(16) uint32_t raw[4];
-            raw[0] = p[0] ? TRUE() : FALSE();
-            raw[1] = p[1] ? TRUE() : FALSE();
-            raw[2] = p[2] ? TRUE() : FALSE();
-            raw[3] = p[3] ? TRUE() : FALSE();
+            raw[0] = p[0] ? TRUE_VAL() : FALSE_VAL();
+            raw[1] = p[1] ? TRUE_VAL() : FALSE_VAL();
+            raw[2] = p[2] ? TRUE_VAL() : FALSE_VAL();
+            raw[3] = p[3] ? TRUE_VAL() : FALSE_VAL();
             mMask = _mm_load_si128((__m128i*)raw);
 #endif
             return *this;
@@ -201,17 +201,17 @@ namespace SIMD {
 #if defined UME_USE_MASK_64B
             alignas(32) uint64_t raw[4];
             _mm256_store_si256((__m256i*)raw, mMask);
-            p[0] = raw[0] == TRUE();
-            p[1] = raw[1] == TRUE();
-            p[2] = raw[2] == TRUE();
-            p[3] = raw[3] == TRUE();
+            p[0] = raw[0] == TRUE_VAL();
+            p[1] = raw[1] == TRUE_VAL();
+            p[2] = raw[2] == TRUE_VAL();
+            p[3] = raw[3] == TRUE_VAL();
 #else
             alignas(16) uint32_t raw[4];
             _mm_store_si128((__m128i*)raw, mMask);
-            p[0] = raw[0] == TRUE();
-            p[1] = raw[1] == TRUE();
-            p[2] = raw[2] == TRUE();
-            p[3] = raw[3] == TRUE();
+            p[0] = raw[0] == TRUE_VAL();
+            p[1] = raw[1] == TRUE_VAL();
+            p[2] = raw[2] == TRUE_VAL();
+            p[3] = raw[3] == TRUE_VAL();
 #endif
             return p;
         }
@@ -220,17 +220,17 @@ namespace SIMD {
 #if defined UME_USE_MASK_64B
             alignas(32) uint64_t raw[4];
             _mm256_store_si256((__m256i*)raw, mMask);
-            p[0] = raw[0] == TRUE();
-            p[1] = raw[1] == TRUE();
-            p[2] = raw[2] == TRUE();
-            p[3] = raw[3] == TRUE();
+            p[0] = raw[0] == TRUE_VAL();
+            p[1] = raw[1] == TRUE_VAL();
+            p[2] = raw[2] == TRUE_VAL();
+            p[3] = raw[3] == TRUE_VAL();
 #else
             alignas(16) uint32_t raw[4];
             _mm_store_si128((__m128i*)raw, mMask);
-            p[0] = raw[0] == TRUE();
-            p[1] = raw[1] == TRUE();
-            p[2] = raw[2] == TRUE();
-            p[3] = raw[3] == TRUE();
+            p[0] = raw[0] == TRUE_VAL();
+            p[1] = raw[1] == TRUE_VAL();
+            p[2] = raw[2] == TRUE_VAL();
+            p[3] = raw[3] == TRUE_VAL();
 #endif
             return p;
         }
@@ -261,10 +261,10 @@ namespace SIMD {
         // LANDS
         UME_FORCE_INLINE SIMDVecMask land(bool b) const {
 #if defined UME_USE_MASK_64B
-            __m256i t0 = _mm256_set1_epi64x(b ? TRUE() : FALSE());
+            __m256i t0 = _mm256_set1_epi64x(b ? TRUE_VAL() : FALSE_VAL());
             __m256i t1 = _mm256_and_si256(mMask, t0);
 #else
-            __m128i t0 = _mm_set1_epi32(b ? TRUE() : FALSE());
+            __m128i t0 = _mm_set1_epi32(b ? TRUE_VAL() : FALSE_VAL());
             __m128i t1 = _mm_and_si128(mMask, t0);
 #endif
             return SIMDVecMask(t1);
@@ -290,10 +290,10 @@ namespace SIMD {
         // LANDSA
         UME_FORCE_INLINE SIMDVecMask & landa(bool b) {
 #if defined UME_USE_MASK_64B
-            __m256i t0 = _mm256_set1_epi64x(b ? TRUE() : FALSE());
+            __m256i t0 = _mm256_set1_epi64x(b ? TRUE_VAL() : FALSE_VAL());
             mMask = _mm256_and_si256(mMask, t0);
 #else
-            __m128i t0 = _mm_set1_epi32(b ? TRUE() : FALSE());
+            __m128i t0 = _mm_set1_epi32(b ? TRUE_VAL() : FALSE_VAL());
             mMask = _mm_and_si128(mMask, t0);
 #endif
             return *this;
@@ -319,10 +319,10 @@ namespace SIMD {
         // LORS
         UME_FORCE_INLINE SIMDVecMask lor(bool b) const {
 #if defined UME_USE_MASK_64B
-            __m256i t0 = _mm256_set1_epi64x(b ? TRUE() : FALSE());
+            __m256i t0 = _mm256_set1_epi64x(b ? TRUE_VAL() : FALSE_VAL());
             __m256i t1 = _mm256_or_si256(mMask, t0);
 #else
-            __m128i t0 = _mm_set1_epi32(b ? TRUE() : FALSE());
+            __m128i t0 = _mm_set1_epi32(b ? TRUE_VAL() : FALSE_VAL());
             __m128i t1 = _mm_or_si128(mMask, t0);
 #endif
             return SIMDVecMask(t1);
@@ -348,10 +348,10 @@ namespace SIMD {
         // LORSA
         UME_FORCE_INLINE SIMDVecMask & lora(bool b) {
 #if defined UME_USE_MASK_64B
-            __m256i t0 = _mm256_set1_epi64x(b ? TRUE() : FALSE());
+            __m256i t0 = _mm256_set1_epi64x(b ? TRUE_VAL() : FALSE_VAL());
             mMask = _mm256_or_si256(mMask, t0);
 #else
-            __m128i t0 = _mm_set1_epi32(b ? TRUE() : FALSE());
+            __m128i t0 = _mm_set1_epi32(b ? TRUE_VAL() : FALSE_VAL());
             mMask = _mm_or_si128(mMask, t0);
 #endif
             return *this;
@@ -374,10 +374,10 @@ namespace SIMD {
         // LXORS
         UME_FORCE_INLINE SIMDVecMask lxor(bool b) const {
 #if defined UME_USE_MASK_64B
-            __m256i t0 = _mm256_set1_epi64x(b ? TRUE() : FALSE());
+            __m256i t0 = _mm256_set1_epi64x(b ? TRUE_VAL() : FALSE_VAL());
             __m256i t1 = _mm256_xor_si256(mMask, t0);
 #else
-            __m128i t0 = _mm_set1_epi32(b ? TRUE() : FALSE());
+            __m128i t0 = _mm_set1_epi32(b ? TRUE_VAL() : FALSE_VAL());
             __m128i t1 = _mm_xor_si128(mMask, t0);
 #endif
             return SIMDVecMask(t1);
@@ -400,10 +400,10 @@ namespace SIMD {
         // LXORSA
         UME_FORCE_INLINE SIMDVecMask & lxora(bool b) {
 #if defined UME_USE_MASK_64B
-            __m256i t0 = _mm256_set1_epi64x(b ? TRUE() : FALSE());
+            __m256i t0 = _mm256_set1_epi64x(b ? TRUE_VAL() : FALSE_VAL());
             mMask = _mm256_xor_si256(mMask, t0);
 #else
-            __m128i t0 = _mm_set1_epi32(b ? TRUE() : FALSE());
+            __m128i t0 = _mm_set1_epi32(b ? TRUE_VAL() : FALSE_VAL());
             mMask = _mm_xor_si128(mMask, t0);
 #endif
             return *this;
@@ -439,10 +439,10 @@ namespace SIMD {
         // HLAND
         UME_FORCE_INLINE bool hland() const {
 #if defined UME_USE_MASK_64B
-            __m256i t0 = _mm256_set1_epi64x(TRUE());
+            __m256i t0 = _mm256_set1_epi64x(TRUE_VAL());
             int t1 = _mm256_testc_si256(mMask, t0);
 #else
-            __m128i t0 = _mm_set1_epi32(TRUE());
+            __m128i t0 = _mm_set1_epi32(TRUE_VAL());
             int t1 = _mm_testc_si128(mMask, t0);
 #endif
             return t1 != 0;
