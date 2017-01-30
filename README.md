@@ -1,4 +1,6 @@
 
+**NOTE**: UME::Vector library has been moved to github! Please see: [https://github.com/edanor/umevector](https://github.com/edanor/umevector)
+
 [![Build Status](https://travis-ci.org/edanor/umesimd.svg?style=flat-square)](https://travis-ci.org/edanor/umesimd)
 
 **Current stable release is: v0.6.1-stable**  
