@@ -81,7 +81,7 @@ namespace SIMD {
         // A non-modifying element-wise access operator
         UME_FORCE_INLINE uint32_t extract(uint32_t index) const
         {
-            alignas(16) uint32_t raw[4];
+            alignas(16) uint32_t raw[8];
             _mm256_store_si256((__m256i*) raw, mVec);
             return raw[index];
         }
@@ -90,7 +90,7 @@ namespace SIMD {
 
         // Element-wise modification operator
         UME_FORCE_INLINE SIMDSwizzle & insert(uint32_t index, uint32_t value) {
-            alignas(16) uint32_t raw[4];
+            alignas(16) uint32_t raw[8];
             _mm256_store_si256((__m256i*)raw, mVec);
             raw[index] = value;
             mVec = _mm256_load_si256((__m256i*)raw);
