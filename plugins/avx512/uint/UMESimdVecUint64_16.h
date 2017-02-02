@@ -289,7 +289,7 @@ namespace SIMD {
             }
             
             mVec[0] = _mm512_load_epi64(&result[0]);
-            mVec[1] = _mm512_load_epi64(&result[1]);
+            mVec[1] = _mm512_load_epi64(&result[8]);
             return *this;
         }
         // ADDV
