@@ -3,10 +3,10 @@
 
 [![Build Status](https://travis-ci.org/edanor/umesimd.svg?style=flat-square)](https://travis-ci.org/edanor/umesimd)
 
-**Current stable release is: v0.6.1-stable**  
+**Current stable release is: v0.7.1-stable**  
 **To checkout stable release use:**  
  > git clone https://edanor@bitbucket.org/edanor/umesimd.git  
- > git checkout tags/v0.6.1-stable
+ > git checkout tags/v0.7.1-stable
 
 
 UME::SIMD is an explicit vectorization library. The library defines homogeneous interface for accessing functionality of SIMD registers of AVX, AVX2, AVX512 and IMCI (KNCNI, k1om) instruction set. 
