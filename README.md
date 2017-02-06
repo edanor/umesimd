@@ -37,39 +37,38 @@ Please refer to the wiki for introduction and additional information:
    >   [wiki pages](https://bitbucket.org/edanor/umesimd/wiki/Home)
 
 
-**RELEASE NOTES for v0.7.1-stable**
-Interface:
-    - Add swizzle for compile-time permutations.
+**RELEASE NOTES for v0.7.1-stable**  
 
-
-Performance tuning:
-    - AVX2, AVX512: Swizzle specializations
-    - Scalar: Add SIMD1/2x64 specializations.
-    - ARM: SIMD64x2: simplified emulation.
- 
-Benchmarks:
-    - Fix makefiles to compile with different comiler versions. 
-    - Add 'vertical FIR' microbenchmark. 
-    - Mandelbrot: Fix AVX512 intrinsic compatibility problem.
-    - QuadSolver: Update benchmarks with AVX512 intrinsic codes.
-
-Fixes:
-    - Do not redefine alignas() in VS2015,  Intel compiler and clang compiler set _MSC_VER=1900
-    - Various swizzle errors
-    - [Issue #46] Update copyright headers to 2015-2017. 
-    - [Issue #57]: Rename TRUE/FALSE macros in AVX and AVX2. 
-    - [Issue #54]: Fix compilation errors by WA on GCC version. 
-    - [Issue #55]: [AVX512] Unsigned 64bit-integer comparison fails 
-    - [Issues #48, #50] Fixes for IntermediateIndex handling.
-    - [Scalar]: incorret return type from IMAX/IMIN
+Interface:  
+    - Add swizzle for compile-time permutations.  
+  
+Performance tuning:  
+    - AVX2, AVX512: Swizzle specializations  
+    - Scalar: Add SIMD1/2x64 specializations.  
+    - ARM: SIMD64x2: simplified emulation.  
+   
+Benchmarks:  
+    - Fix makefiles to compile with different comiler versions.  
+    - Add 'vertical FIR' microbenchmark.  
+    - Mandelbrot: Fix AVX512 intrinsic compatibility problem.  
+    - QuadSolver: Update benchmarks with AVX512 intrinsic codes.  
+  
+Fixes:  
+    - Do not redefine alignas() in VS2015,  Intel compiler and clang compiler set _MSC_VER=1900  
+    - Various swizzle errors  
+    - [Issue #46] Update copyright headers to 2015-2017.  
+    - [Issue #57]: Rename TRUE/FALSE macros in AVX and AVX2.  
+    - [Issue #54]: Fix compilation errors by WA on GCC version.  
+    - [Issue #55]: [AVX512] Unsigned 64bit-integer comparison fails   
+    - [Issues #48, #50] Fixes for IntermediateIndex handling.  
+    - [Scalar]: incorret return type from IMAX/IMIN  
     
-Tests:
-    - add Travis automation
-    - Update 'gold' image for unittest results.
-
-
-Other:
-    - Add simple installation cmake file. 
-    - [Issue #58] Add version macros to the main header.
-    - Update licence header dates.
+Tests:  
+    - add Travis automation  
+    - Update 'gold' image for unittest results.  
+  
+Other:  
+    - Add simple installation cmake file.  
+    - [Issue #58] Add version macros to the main header.  
+    - Update licence header dates.  
 
