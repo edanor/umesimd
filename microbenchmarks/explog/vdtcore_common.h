@@ -32,6 +32,8 @@
 #include "inttypes.h"
 #include <cmath>
 
+#include "../../UMEMemory.h"
+
 namespace vdt{
 
 namespace details{
@@ -179,8 +181,7 @@ inline float getMantExponentf(const float x, float & fe){
 
     uint32_t n = sp2uint32(x);
     int32_t e = (n >> 23)-127;
-    fe = *reinterpret_cast<float*>(&e);
-
+    fe = UME::reinterpretCast<float, int32_t>(e);
     // fractional part
     const uint32_t p05f = 0x3f000000; // //sp2uint32(0.5);
     n &= 0x807fffff;// ~0x7f800000;

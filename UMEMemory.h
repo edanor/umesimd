@@ -37,6 +37,8 @@
 
 #include <iostream>
 
+#include "UMEInline.h"
+
 #if defined (_MSC_VER)
 //#define UME_ALIGN(alignment) __declspec(align(alignment))
     #if (_MSC_VER < 1900)
@@ -129,7 +131,14 @@ namespace UME
         }
     };
 
-
+    template<typename T1, typename T2>
+    UME_FORCE_INLINE T1 reinterpretCast(T2 from) {
+        T1 to;
+        char* fromPtr = (char*)&from;
+        char* toPtr = (char*)&to;
+        memcpy(toPtr, fromPtr, sizeof(T2));
+        return to;
+    }
 }
 
 
