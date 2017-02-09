@@ -179,7 +179,7 @@ inline float getMantExponentf(const float x, float & fe){
 
     uint32_t n = sp2uint32(x);
     int32_t e = (n >> 23)-127;
-    fe = reinterpret_cast<float&>(e);
+    fe = *reinterpret_cast<float*>(&e);
 
     // fractional part
     const uint32_t p05f = 0x3f000000; // //sp2uint32(0.5);
