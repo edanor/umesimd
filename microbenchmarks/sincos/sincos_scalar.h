@@ -31,6 +31,8 @@
 #ifndef SINCOS_SCALAR_H_
 #define SINCOS_SCALAR_H_
 
+#include "sincos.h"
+
 // Kernel for benchmarking using std::sin/std::cos function calls.
 template<typename SCALAR_FLOAT_T>
 benchmark_results<SCALAR_FLOAT_T> test_sincos_scalar(int ARRAY_SIZE)

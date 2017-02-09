@@ -43,11 +43,11 @@ const double PIO2 = M_PI_2;
 const double PIO4 = M_PI_4;
 const double ONEOPIO4 = 4./M_PI;
 
-const float TWOPIF = 2.*M_PI;
-const float PIF = M_PI;
-const float PIO2F = M_PI_2;
-const float PIO4F = M_PI_4;
-const float ONEOPIO4F = 4./M_PI;
+const float TWOPIF = 2.f*float(M_PI);
+const float PIF = float(M_PI);
+const float PIO2F = float(M_PI_2);
+const float PIO4F = float(M_PI_4);
+const float ONEOPIO4F = 4.f/float(M_PI);
 
 const double MOREBITS = 6.123233995736765886130E-17;
 
@@ -179,7 +179,7 @@ inline float getMantExponentf(const float x, float & fe){
 
     uint32_t n = sp2uint32(x);
     int32_t e = (n >> 23)-127;
-    fe = e;
+    fe = reinterpret_cast<float&>(e);
 
     // fractional part
     const uint32_t p05f = 0x3f000000; // //sp2uint32(0.5);
@@ -217,7 +217,7 @@ inline double int2fp(uint64_t i) {
 inline double fpfloor(const double x){
   // no problem since exp is defined between -708 and 708. Int is enough for it!
   int32_t ret = int32_t (x);
-  ret-=(sp2uint32(x)>>31);  
+  ret-=(sp2uint32(float(x))>>31);  
   return ret;
 
 }
@@ -230,7 +230,7 @@ inline double fpfloor(const double x){
 inline float fpfloor(const float x){
   int32_t ret = int32_t (x);
   ret-=(sp2uint32(x)>>31);  
-  return ret;
+  return float(ret);
 
 }
 

@@ -50,14 +50,16 @@
     #endif
 #elif defined (__GNUC__)
 #define UME_ALIGN(alignment) __attribute__ ((aligned(alignment)))
+
 #elif defined (__ICC) || defined(__INTEL_COMPILER)
 #endif
-/*
-void * aligned_alloc(size_t alignment, size_t size) {
-    void* ptr = malloc(size);
-    return std::align(alignment, size, ptr, size);    
-}
-*/
+
+#if defined (_MSC_VER) 
+    #define UME_RESTRICT __restrict
+#else
+    #define UME_RESTRICT __restrict__
+#endif
+
 
 #define ALIGNED_TYPE(type, alignment) typedef type UME_ALIGN(alignment)
 
@@ -77,7 +79,8 @@ namespace UME
         {
             
 #if defined(_MSC_VER)
-            return _aligned_malloc(size, alignment);
+            void* ptr = _aligned_malloc(size, alignment);
+            return ptr;
 #elif defined(__GNUC__) || (__ICC) || defined(__INTEL_COMPILER)
             void* memptr;
             //std::cout << "AlignedMalloc: memptr(before):" << memptr;

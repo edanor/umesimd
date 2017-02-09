@@ -50,7 +50,7 @@ UME_NEVER_INLINE void generate_some_exp_values<float> (int N, float * in, float 
     // For 32b floating point numbers maximum value reachable is 3.4028235E38 from which natural logarithm is ~88.72. Using 
     // higher values would cause us to hit the infinities and then destroy our benchmarking environment.
     // Limit the argument to fall between 0 and 88.
-    std::uniform_real_distribution<float> dist(std::numeric_limits<float>::lowest(), 88.0f);
+    std::uniform_real_distribution<float> dist(0.0f, 88.0f);
 
     for (int i = 0; i < N; i++) {
         in[i] = dist(gen);

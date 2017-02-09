@@ -29,6 +29,7 @@
 //
 
 #include <time.h>
+#include <string>
 
 #include "../../UMESimd.h"
 #include "../utilities/TimingStatistics.h"

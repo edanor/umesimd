@@ -20,12 +20,12 @@
 // If streaming operations are generated for such kernels, the result will be a slow-down instead of speedup.
 // Force inline on every kernel being benchmarked. While there will be some function-call overhead, this will only introduce systematic error, the same (ideally) for all configurations.
 UME_NEVER_INLINE void QuadSolveAVX2(
-    const float* __restrict__ a,
-    const float* __restrict__ b,
-    const float* __restrict__ c,
-    float* __restrict__ x1,
-    float* __restrict__ x2,
-    int* __restrict__ roots)
+    const float* UME_RESTRICT a,
+    const float* UME_RESTRICT b,
+    const float* UME_RESTRICT c,
+    float* UME_RESTRICT x1,
+    float* UME_RESTRICT x2,
+    int* UME_RESTRICT roots)
 {
     __m256 one = _mm256_set1_ps(1.0f);
     __m256 va = _mm256_load_ps(a);

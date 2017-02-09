@@ -73,7 +73,7 @@ const double DP3 = 3.06161699786838294307E-17;
 
 const float DP1F = 0.78515625;
 const float DP2F = 2.4187564849853515625e-4;
-const float DP3F = 3.77489497744594108e-8;
+const float DP3F = float(3.77489497744594108e-8);
 
 const float T24M1 = 16777215.;
 

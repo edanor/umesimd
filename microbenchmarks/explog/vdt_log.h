@@ -202,10 +202,10 @@ inline float fast_logf( float x ) {
 
 //------------------------------------------------------------------------------
 
-void logv(const uint32_t size, double const * __restrict__ iarray, double* __restrict__ oarray);
-void fast_logv(const uint32_t size, double const * __restrict__ iarray, double* __restrict__ oarray);
-void logfv(const uint32_t size, float const * __restrict__ iarray, float* __restrict__ oarray);
-void fast_logfv(const uint32_t size, float const * __restrict__ iarray, float* __restrict__ oarray);
+void logv(const uint32_t size, double const * UME_RESTRICT iarray, double* UME_RESTRICT oarray);
+void fast_logv(const uint32_t size, double const * UME_RESTRICT iarray, double* UME_RESTRICT oarray);
+void logfv(const uint32_t size, float const * UME_RESTRICT iarray, float* UME_RESTRICT oarray);
+void fast_logfv(const uint32_t size, float const * UME_RESTRICT iarray, float* UME_RESTRICT oarray);
 
 } //vdt namespace
 

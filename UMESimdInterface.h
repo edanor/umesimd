@@ -1129,7 +1129,7 @@ namespace SIMD
             UME_EMULATION_WARNING();
             return SCALAR_EMULATION::addScalar<DERIVED_VEC_TYPE, SCALAR_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
-
+        
         UME_FORCE_INLINE DERIVED_VEC_TYPE operator+ (SCALAR_TYPE b) const {
             return add(b);
         }

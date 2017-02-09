@@ -52,30 +52,24 @@ UME_NEVER_INLINE void QuadSolveSIMD(
 {
     typedef typename UME::SIMD::SIMDTraits<FLOAT_VEC_T>::MASK_T MASK_T;
 
-    FLOAT_VEC_T one(1.0f);
     FLOAT_VEC_T va(&a[0]);
     FLOAT_VEC_T vb(&b[0]);
-    FLOAT_VEC_T zero(0.0f);
-    FLOAT_VEC_T a_inv = one / va;
+    FLOAT_VEC_T a_inv = FLOAT_VEC_T(1.0f) / va;
     FLOAT_VEC_T b2 = vb * vb;
-    FLOAT_VEC_T eps(std::numeric_limits<SCALAR_FLOAT_T>::epsilon());
     FLOAT_VEC_T vc(&c[0]);
-    FLOAT_VEC_T negone(-1.0f);
     FLOAT_VEC_T ac = va * vc;
-    FLOAT_VEC_T sign = negone.blend(vb >= zero, one);
-    FLOAT_VEC_T negfour(-4.0f);
-    FLOAT_VEC_T delta = negfour.fmuladd(ac, b2);
+    FLOAT_VEC_T sign = FLOAT_VEC_T(-1.0f).blend(vb >= 0.0f, 1.0f);
+    FLOAT_VEC_T delta = FLOAT_VEC_T(-4.0f).fmuladd(ac, b2);
     FLOAT_VEC_T r1 = sign.fmuladd(delta.sqrt(), vb);
-    MASK_T mask0 = delta < zero;
-    MASK_T mask2 = delta >= eps;
+    MASK_T mask0 = delta < 0.0f;
+    MASK_T mask2 = delta >= std::numeric_limits<SCALAR_FLOAT_T>::epsilon();
     r1 = r1.mul(-0.5f);
     FLOAT_VEC_T r2 = vc / r1;
     r1 = a_inv * r1;
     FLOAT_VEC_T r3 = vb * a_inv * (-0.5f);
-    FLOAT_VEC_T two(2.0f);
-    FLOAT_VEC_T nr = one.blend(mask2, two);
-    nr = nr.blend(mask0, zero);
-    r3 = r3.blend(mask0, zero);
+    FLOAT_VEC_T nr = FLOAT_VEC_T(1.0f).blend(mask2, 2.0f);
+    nr.assign(mask0, 0.0f);
+    r3.assign(mask0, 0.0f);
     r1 = r3.blend(mask2, r1);
     r2 = r3.blend(mask2, r2);
 

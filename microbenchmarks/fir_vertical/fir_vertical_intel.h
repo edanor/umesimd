@@ -31,6 +31,7 @@
 #ifndef UME_FIR_VERTICAL_INTEL_H_
 #define UME_FIR_VERTICAL_INTEL_H_
 
+#include <string>
 
 #if defined(__AVX2__) || defined(__AVX512F__)
 UME_NEVER_INLINE TIMING_RES test_intel_FIR8_float()

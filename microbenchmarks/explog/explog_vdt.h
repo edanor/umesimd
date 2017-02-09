@@ -95,7 +95,7 @@ UME_FORCE_INLINE double call_log_vdt<double>(double in) {
 }
 
 UME_FORCE_INLINE float call_log2_vdt(float in) {
-    float inv_log_of_2 = 1.4426950408889634073599246810019; // 1/log(2)
+    float inv_log_of_2 = 1.4426950408889634073599246810019f; // 1/log(2)
     return inv_log_of_2 * vdt::fast_logf(in);
 }
 
@@ -105,7 +105,7 @@ UME_FORCE_INLINE double call_log2_vdt(double in) {
 }
 
 UME_FORCE_INLINE float call_log10_vdt(float in) {
-    float inv_log_of_10 = 0.4342944819032518276511289189166; // 1/log(10)
+    float inv_log_of_10 = 0.4342944819032518276511289189166f; // 1/log(10)
     return inv_log_of_10 * vdt::fast_logf(in);
 }
 

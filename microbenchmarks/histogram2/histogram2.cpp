@@ -38,6 +38,7 @@
 #include <cmath>
 #include <time.h>
 #include <stdlib.h>
+#include <string>
 
 //#define UME_SIMD_SHOW_EMULATION_WARNINGS 1
 #include "../../UMESimd.h"

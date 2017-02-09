@@ -2456,7 +2456,7 @@ namespace SCALAR_EMULATION
     UME_FORCE_INLINE VEC_TYPE blend(MASK_TYPE const & mask, VEC_TYPE const & a, SCALAR_TYPE b) {
         VEC_TYPE retval;
         for (uint32_t i = 0; i < VEC_TYPE::length(); i++) {
-            retval.insert(i, mask[i] ? b[i] : a);
+            retval.insert(i, mask[i] ? b : a[i]);
         }
         return retval;
     }

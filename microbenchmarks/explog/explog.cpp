@@ -35,6 +35,8 @@
 
 using namespace UME::SIMD;
 
+#include <crtdbg.h>
+
 // Definitions required for benchmarking kernels.
 template<typename SCALAR_FLOAT_T>
 SCALAR_FLOAT_T HUGE_VALUE() {
@@ -102,9 +104,10 @@ struct ExplogResults {
     }
 };
 
+#include "explog.h"
 #include "explog_scalar.h"
-#include "explog_vdt.h"
 #include "explog_ume.h"
+#include "explog_vdt.h"
 
 int main()
 {

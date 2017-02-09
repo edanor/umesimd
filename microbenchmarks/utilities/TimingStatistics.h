@@ -32,12 +32,12 @@ public:
     }
 
     float getAverage() { return average; }
-    float getStdDev() { return sqrtf(variance)/float(count); }
+    float getStdDev() { return count > 0 ? sqrtf(variance)/float(count) : 0.0f; }
     float calculateSpeedup(float reference) {
         return reference / average;
     }
     float calculateSpeedup(TimingStatistics & reference) {
-        return reference.getAverage() / average;
+        return average > 0.0f ? reference.getAverage() / average : 0.0f;
     }
 
     void printList() {
@@ -119,7 +119,7 @@ public:
 };
 
 #include <chrono>
-static __inline__ unsigned long long get_timestamp(void)
+static inline unsigned long long get_timestamp(void)
 {
     auto t0 = std::chrono::high_resolution_clock::now().time_since_epoch();
     auto t1 = std::chrono::duration_cast<std::chrono::nanoseconds>(t0);
