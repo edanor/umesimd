@@ -35,8 +35,6 @@
 
 using namespace UME::SIMD;
 
-#include <crtdbg.h>
-
 // Definitions required for benchmarking kernels.
 template<typename SCALAR_FLOAT_T>
 SCALAR_FLOAT_T HUGE_VALUE() {
