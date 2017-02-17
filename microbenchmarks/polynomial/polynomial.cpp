@@ -41,7 +41,7 @@
 #include <string>
 
 //#define UME_SIMD_SHOW_EMULATION_WARNINGS 1
-#include "../../UMESimd.h"
+#include <ume/simd>
 #include "../utilities/TimingStatistics.h"
 
 // Introducing inline assembly forces compiler to generate

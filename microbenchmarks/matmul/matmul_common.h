@@ -32,7 +32,7 @@
 #define MATMUL_COMMON_H_
 
 //#define UME_SIMD_SHOW_EMULATION_WARNINGS 1
-#include "../../UMESimd.h"
+#include <ume/simd>
 #include "../utilities/TimingStatistics.h"
 
 template<typename FLOAT_T>

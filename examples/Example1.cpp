@@ -24,11 +24,11 @@
 //
 //
 //  This piece of code was developed as part of ICE-DIP project at CERN.
-//  "ICE-DIP is a European Industrial Doctorate project funded by the European Community's 
+//  "ICE-DIP is a European Industrial Doctorate project funded by the European Community's
 //  7th Framework programme Marie Curie Actions under grant PITN-GA-2012-316596".
 //
 
-#include "../UMESimd.h"
+#include <ume/simd>
 
 using namespace UME::SIMD;
 
@@ -54,18 +54,18 @@ SIMD4_64f test(SIMD4_64f & a, SIMD4_64f & b) {
 // of operations however it doesn't expose whole functionality of the MFI. A very
 // important group of operations that are not permitted using operator syntax,
 // are masking operations (e.g. MMUL - masked multiplication). Another are reduction
-// operations (e.g. HADD - horizontal addition). For some applications operator 
-// syntax might be enough, while for others it will also 
+// operations (e.g. HADD - horizontal addition). For some applications operator
+// syntax might be enough, while for others it will also
 //   Operator syntax does not allow mixing scalar/SIMD types. A vector with broadcasted
 // scalar value needs to be created before that (e.g. using broadcast constructor).
 SIMD4_64f test2(SIMD4_64f & a, SIMD4_64f & b) {
     return a + SIMD4_64f(2.)*b;
 }
 
-//   Third test function shows usage of 'Fused Multiply and Add' operation. FMA are 
+//   Third test function shows usage of 'Fused Multiply and Add' operation. FMA are
 // a group of specialized instructions performing multiple arithmetic operations.
 // This set of instructions have been introduced so that common computational patterns
-// can be accelerated. 
+// can be accelerated.
 SIMD4_64f test3(SIMD4_64f & a, SIMD4_64f & b) {
     return b.fmuladd(SIMD4_64f(2.), a);
 }

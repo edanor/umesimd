@@ -24,18 +24,18 @@
 //
 //
 //  This piece of code was developed as part of ICE-DIP project at CERN.
-//  "ICE-DIP is a European Industrial Doctorate project funded by the European Community's 
+//  "ICE-DIP is a European Industrial Doctorate project funded by the European Community's
 //  7th Framework programme Marie Curie Actions under grant PITN-GA-2012-316596".
 //
 
 #include "UMEBitmap.h"
 #include "UMEEndianness.h"
-#include "../../UMEMemory.h"
 
 #include <iostream>
 #include <stdio.h>
 #include <cmath>
 #include <cstring>
+#include <ume/internal/simd/UMEMemory.h>
 
 bool UME::operator == (UME::BitmapFileHeader & h0, UME::BitmapFileHeader & h1)
 {
@@ -113,7 +113,7 @@ UME::Bitmap::Bitmap(uint32_t width, uint32_t height, PIXEL_TYPE type)
         WRITE_WORD(mHeader.raw + 8, mHeader.reserved2);
     mHeader.imageOffset = 0x36;
         WRITE_DWORD(mHeader.raw + 10, mHeader.imageOffset);
-    
+
     // DIB header length is 40 bytes
     mDIBHeader.headerSize = 0x28;
         WRITE_DWORD(mDIBHeader.raw + 0, mDIBHeader.headerSize);
@@ -125,9 +125,9 @@ UME::Bitmap::Bitmap(uint32_t width, uint32_t height, PIXEL_TYPE type)
         WRITE_WORD(mDIBHeader.raw + 12, mDIBHeader.colorPlanes);
     mDIBHeader.bitsPerPixel = 24;   // use RGB only data
         WRITE_WORD(mDIBHeader.raw + 14, mDIBHeader.bitsPerPixel);
-    
+
         WRITE_DWORD(mDIBHeader.raw + 16, 0); // compresion method (0 == BI_RGB - none)
-        WRITE_DWORD(mDIBHeader.raw + 20, imageSize); // image size 
+        WRITE_DWORD(mDIBHeader.raw + 20, imageSize); // image size
         WRITE_DWORD(mDIBHeader.raw + 24, 0); // horizontal resolution
         WRITE_DWORD(mDIBHeader.raw + 28, 0); // vertical re solution
         WRITE_DWORD(mDIBHeader.raw + 32, 0); // number of colors in the color palette (0 for 2^n)
@@ -150,10 +150,10 @@ UME::Bitmap::Bitmap(Bitmap & original, bool copyData)
     this->mHeader = original.mHeader;
     this->mDIBHeader = original.mDIBHeader;
     this->mPaddedWidth = original.mPaddedWidth;
-    
+
     unsigned int bitmapSize = GetBitmapSize();
     this->mRasterData = (uint8_t*)UME::DynamicMemory::Malloc(bitmapSize);
-    
+
     if(copyData) // copy whole blob
     {
         std::memcpy(this->mRasterData, original.mRasterData, bitmapSize);
@@ -171,7 +171,7 @@ UME::Bitmap::Bitmap(UME::BitmapFileHeader &header, UME::BitmapDIBHeader &dIBHead
     this->mDIBHeader = dIBHeader;
 
     memset(this->mRasterData, 0, rasterSize);
-    
+
     mPaddedWidth = (uint32_t) std::ceil((double)mDIBHeader.width*mDIBHeader.bitsPerPixel / 32)*4;
 }
 
@@ -185,7 +185,7 @@ bool UME::Bitmap::LoadFromFile(std::string const & fileName)
     FILE *file = NULL;
     bool retval = true;
     size_t read_size = 0;
-    
+
     do
     {
 #if defined (_MSC_VER)
@@ -206,7 +206,7 @@ bool UME::Bitmap::LoadFromFile(std::string const & fileName)
             std::cerr << "Error: reading bitmap header: " << fileName << std::endl;
         }
 
-        // Parse the header 
+        // Parse the header
         mHeader.headerID = READ_WORD(mHeader.raw);
         mHeader.fileSize = READ_DWORD(mHeader.raw + 2);
         mHeader.reserved1 = READ_WORD(mHeader.raw + 6);
@@ -238,7 +238,7 @@ bool UME::Bitmap::LoadFromFile(std::string const & fileName)
         mDIBHeader.height = READ_DWORD(mDIBHeader.raw + 8);
         mDIBHeader.colorPlanes = READ_WORD(mDIBHeader.raw + 12);
         mDIBHeader.bitsPerPixel = READ_WORD(mDIBHeader.raw + 14);
-        
+
         mPaddedWidth = (uint32_t) std::ceil((double)mDIBHeader.width*mDIBHeader.bitsPerPixel / 32)*4;
 
         // Read the bitmap
@@ -301,7 +301,7 @@ void UME::Bitmap::CopyRasterData(uint8_t* data)
 {
     memcpy(mRasterData, data, GetBitmapSize());
 }
-        
+
 
 uint32_t UME::Bitmap::GetPixelCount()
 {
@@ -332,7 +332,7 @@ uint32_t UME::Bitmap::GetPixelValue(uint32_t x, uint32_t y)
     {
         value += mRasterData[rasterDataOffset + i] << 8*i;
     }
-    
+
     return value;
 }
 
@@ -358,7 +358,7 @@ uint32_t * UME::Bitmap::GetPixelValues(uint32_t start_x, uint32_t start_y, int c
 void UME::Bitmap::SetPixelValue(uint32_t x, uint32_t y, uint32_t value)
 {
     uint32_t rasterDataOffset = y*GetPaddedWidth() + x*GetPixelSize();
-   
+
     for(int channel = 0; channel < GetPixelSize(); channel++)
     {
         mRasterData[rasterDataOffset + channel] = (uint8_t)((( 0xFF << 8*channel) & value) >> 8*channel);

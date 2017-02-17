@@ -24,7 +24,7 @@
 //
 //
 //  This piece of code was developed as part of ICE-DIP project at CERN.
-//  "ICE-DIP is a European Industrial Doctorate project funded by the European Community's 
+//  "ICE-DIP is a European Industrial Doctorate project funded by the European Community's
 //  7th Framework programme Marie Curie Actions under grant PITN-GA-2012-316596".
 //
 
@@ -32,7 +32,7 @@
 #include <memory>
 
 #if defined(__i386__) || defined(__x86_64__)
-#include <immintrin.h> 
+#include <immintrin.h>
 #endif
 
 #include <cmath>
@@ -41,7 +41,7 @@
 #include <string>
 
 //#define UME_SIMD_SHOW_EMULATION_WARNINGS 1
-#include "../../UMESimd.h"
+#include <ume/simd>
 
 #include "../utilities/TimingStatistics.h"
 
@@ -51,15 +51,15 @@
 const int ARRAY_SIZE = 600000+7; // Array size increased to show the peeling effect.
 //alignas(32) float x[ARRAY_SIZE];
 
-#include "../../utilities/ignore_warnings_push.h"
-#include "../../utilities/ignore_warnings_unused_but_set.h"
+#include <ume/internal/utilities/ignore_warnings_push.h>
+#include <ume/internal/utilities/ignore_warnings_unused_but_set.h>
 
 // Scalar algorithm
 template<typename FLOAT_T>
 TIMING_RES test_scalar()
 {
     unsigned long long start, end;    // Time measurements
-    
+
     FLOAT_T *x;
 
     x = (FLOAT_T *) UME::DynamicMemory::AlignedMalloc(ARRAY_SIZE*sizeof(FLOAT_T), sizeof(FLOAT_T));
@@ -81,9 +81,9 @@ TIMING_RES test_scalar()
         {
             sum += x[i];
         }
-        
+
         avg = sum/(FLOAT_T)ARRAY_SIZE;
-        
+
         end = get_timestamp();
     }
 
@@ -92,13 +92,11 @@ TIMING_RES test_scalar()
     return end - start;
 }
 
-#include "../../utilities/ignore_warnings_pop.h"
-
 TIMING_RES test_AVX_f_256()
 {
 #if defined(__AVX__) || defined(__AVX2__) || defined(__AVX512F__)
     unsigned long long start, end;    // Time measurements
-    
+
     float *x;
 
     x = (float *) UME::DynamicMemory::AlignedMalloc(ARRAY_SIZE*sizeof(float), sizeof(float));
@@ -115,8 +113,8 @@ TIMING_RES test_AVX_f_256()
 
     // Calculate loop-peeling division
     int PEEL_COUNT = ARRAY_SIZE/8;             // Divide array size by vector length.
-    int REM_COUNT = ARRAY_SIZE - PEEL_COUNT*8; // 
-            
+    int REM_COUNT = ARRAY_SIZE - PEEL_COUNT*8; //
+
     alignas(32) float temp[8];
 
     start = get_timestamp();
@@ -135,7 +133,7 @@ TIMING_RES test_AVX_f_256()
     _mm256_store_ps(temp, sum_vec);
     for(int i = 0; i < 8; ++i)
     {
-        sum += temp[i];  
+        sum += temp[i];
     }
 
     // Calculating loop reminder
@@ -145,7 +143,7 @@ TIMING_RES test_AVX_f_256()
     }
 
     avg = sum/(float)ARRAY_SIZE;
-      
+
     end = get_timestamp();
 
     // Verify the result is correct
@@ -159,7 +157,7 @@ TIMING_RES test_AVX_f_256()
     test_avg = test_sum/(float)ARRAY_SIZE;
     float normalized_res = avg/test_avg;
     float err_margin = 0.001f;
-    if(    normalized_res > (1.0f + err_margin)  
+    if(    normalized_res > (1.0f + err_margin)
         || normalized_res < (1.0f - err_margin) )
     {
         std::cout << "Result invalid: " << avg << " expected: " << test_avg << std::endl;
@@ -173,7 +171,7 @@ TIMING_RES test_AVX_f_256()
 }
 
 TIMING_RES test_AVX_d_256() {
-    
+
 #if defined(__AVX__) || defined(__AVX2__) || defined(__AVX512F__)
     unsigned long long start, end;    // Time measurements
 
@@ -182,7 +180,7 @@ TIMING_RES test_AVX_d_256() {
 
     // Calculate loop-peeling division
     int PEEL_COUNT = ARRAY_SIZE/4;             // Divide array size by vector length.
-    int REM_COUNT = ARRAY_SIZE - PEEL_COUNT*4; // 
+    int REM_COUNT = ARRAY_SIZE - PEEL_COUNT*4; //
 
     alignas(32) double temp[4];
 
@@ -212,7 +210,7 @@ TIMING_RES test_AVX_d_256() {
     _mm256_store_pd(temp, sum_vec);
     for(int i = 0; i < 4; ++i)
     {
-        sum += temp[i];  
+        sum += temp[i];
     }
 
     // Calculating loop reminder
@@ -236,7 +234,7 @@ TIMING_RES test_AVX_d_256() {
     test_avg = test_sum/(double)ARRAY_SIZE;
     double normalized_res = avg/test_avg;
     double err_margin = 0.001f;
-    if(    normalized_res > (1.0f + err_margin)  
+    if(    normalized_res > (1.0f + err_margin)
         || normalized_res < (1.0f - err_margin) )
     {
         std::cout << "Result invalid: " << avg << " expected: " << test_avg << std::endl;
@@ -259,7 +257,7 @@ TIMING_RES test_AVX_f_512()
 
     // Calculate loop-peeling division
     int PEEL_COUNT = ARRAY_SIZE/16;             // Divide array size by vector length.
-    int REM_COUNT = ARRAY_SIZE - PEEL_COUNT*16; // 
+    int REM_COUNT = ARRAY_SIZE - PEEL_COUNT*16; //
 
     alignas(64) float temp[16];
 
@@ -313,7 +311,7 @@ TIMING_RES test_AVX_f_512()
     test_avg = test_sum/(float)ARRAY_SIZE;
     float normalized_res = avg/test_avg;
     float err_margin = 0.001f;
-    if(    normalized_res > (1.0f + err_margin)  
+    if(    normalized_res > (1.0f + err_margin)
         || normalized_res < (1.0f - err_margin) )
     {
         std::cout << "Result invalid: " << avg << " expected: " << test_avg << std::endl;
@@ -411,11 +409,11 @@ TIMING_RES test_UME_SIMD()
     const int ALIGNMENT = FLOAT_VEC_TYPE::alignment();
 
     unsigned long long start, end;    // Time measurements
-    
+
     FLOAT_T *x;
 
     x = (FLOAT_T *) UME::DynamicMemory::AlignedMalloc(ARRAY_SIZE*sizeof(FLOAT_T), ALIGNMENT);
-    
+
     // Initialize arrays with random data
     for(int i = 0; i < ARRAY_SIZE; i++)
     {
@@ -428,10 +426,10 @@ TIMING_RES test_UME_SIMD()
 
     // Calculate loop-peeling division
     uint32_t PEEL_COUNT = ARRAY_SIZE/VEC_LEN;             // Divide array size by vector length.
-    uint32_t REM_COUNT = ARRAY_SIZE - PEEL_COUNT*VEC_LEN; // 
+    uint32_t REM_COUNT = ARRAY_SIZE - PEEL_COUNT*VEC_LEN; //
 
     FLOAT_T* temp;
-    
+
     temp = (FLOAT_T*) UME::DynamicMemory::AlignedMalloc(ARRAY_SIZE*sizeof(FLOAT_T), ALIGNMENT);
 
     start = get_timestamp();
@@ -453,7 +451,7 @@ TIMING_RES test_UME_SIMD()
     // TODO: replace with reduce-add
     for(uint32_t i = 0; i < VEC_LEN; ++i)
     {
-        sum += temp[i];  
+        sum += temp[i];
     }
 
     // Calculating loop reminder
@@ -463,7 +461,7 @@ TIMING_RES test_UME_SIMD()
     }
 
     avg = sum/(FLOAT_T)ARRAY_SIZE;
-      
+
     end = get_timestamp();
 
     // Verify the result is correct
@@ -477,7 +475,7 @@ TIMING_RES test_UME_SIMD()
     test_avg = test_sum/(FLOAT_T)ARRAY_SIZE;
     FLOAT_T normalized_res = avg/test_avg;
     FLOAT_T err_margin = 0.001f;
-    if(    normalized_res > (1.0f + err_margin)  
+    if(    normalized_res > (1.0f + err_margin)
         || normalized_res < (1.0f - err_margin) )
     {
             std::cout << "Result invalid: " << avg << " expected: " << test_avg << std::endl;
@@ -609,3 +607,6 @@ int main()
 
     return 0;
 }
+
+#include <ume/internal/utilities/ignore_warnings_pop.h>
+

@@ -24,7 +24,7 @@
 //
 //
 //  This piece of code was developed as part of ICE-DIP project at CERN.
-//  "ICE-DIP is a European Industrial Doctorate project funded by the European Community's 
+//  "ICE-DIP is a European Industrial Doctorate project funded by the European Community's
 //  7th Framework programme Marie Curie Actions under grant PITN-GA-2012-3VEC_LEN596".
 //
 
@@ -32,7 +32,8 @@
 #define UME_UNIT_TEST_COMMON_H_
 
 #include <iostream>
-#include "../UMESimd.h"
+#include <ume/simd>
+
 #include "UMEUnitTestDataSets8.h"
 #include "UMEUnitTestDataSets16.h"
 #include "UMEUnitTestDataSets32.h"
@@ -74,7 +75,7 @@ void check_condition(bool cond, std::string msg);
 
 #define PRINT_MESSAGE(msg) if(g_supressMessages == false) std::cout << g_test_header_ptr <<  msg << std::endl;
 
-// This PI value is used over all unit tests. Defining it here makes it is 
+// This PI value is used over all unit tests. Defining it here makes it is
 // possible to use different values in real codes.
 #define UME_PI_D 3.141592653589793238462643383279502884197VEC_LEN93993751058209749445923078VEC_LEN4062
 #define UME_2PI_D (2.0*UME_PI_D)
@@ -102,7 +103,7 @@ bool valuesExact(bool const *values, bool const *expectedValues, unsigned int co
 bool valuesInRange(float const *values, float const *expectedValues, unsigned int count, float errMargin);
 bool valuesInRange(double const *values, double const *expectedValues, unsigned int count, double errMargin);
 
-// This is a dirty hack to use the same testing function for both int and float types... 
+// This is a dirty hack to use the same testing function for both int and float types...
 bool valuesInRange(uint8_t const *values, uint8_t const *expectedValues, unsigned int count, double errMargin);
 bool valuesInRange(int8_t const *values, int8_t const *expectedValues, unsigned int count, double errMargin);
 bool valuesInRange(uint16_t const *values, uint16_t const *expectedValues, unsigned int count, double errMargin);
@@ -126,8 +127,8 @@ template<> float randomValue<float>(std::mt19937 & generator);
 template<> double randomValue<double>(std::mt19937 & generator);
 template<> bool randomValue<bool>(std::mt19937 & generator);
 
-#include "../utilities/ignore_warnings_push.h"
-#include "../utilities/ignore_warnings_unused_force_value_to_bool.h"
+#include <ume/internal/utilities/ignore_warnings_push.h>
+#include <ume/internal/utilities/ignore_warnings_unused_force_value_to_bool.h>
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename FROM_SCALAR_TYPE, int VEC_LEN>
 void genericSETCONSTRTest_random_helper(std::string const & type_name)
@@ -171,7 +172,7 @@ void genericSETCONSTRTest_random_helper(std::string const & type_name)
     }
 }
 
-#include "../utilities/ignore_warnings_pop.h"
+#include <ume/internal/utilities/ignore_warnings_pop.h>
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN>
 void genericSETCONSTRTest_random()
@@ -233,7 +234,7 @@ void genericLANDVTest()
         bool exact = true;
         for(int i = 0; i < VEC_LEN; i++) {
             if(values[i] != DATA_SET::outputs::LANDV[i]) {
-                exact = false; 
+                exact = false;
                 break;
             }
         }
@@ -248,7 +249,7 @@ void genericLANDVTest()
         bool exact = true;
         for(int i = 0; i < VEC_LEN; i++) {
             if(values[i] != DATA_SET::outputs::LANDV[i]) {
-                exact = false; 
+                exact = false;
                 break;
             }
         }
@@ -292,7 +293,7 @@ void genericLANDVTest_random()
         VEC_TYPE t0(inputA);
         VEC_TYPE t1(inputB);
         // Return type of LAND should be a mask, regardless of VEC_TYPE.
-        auto t2 = t0.land(t1); 
+        auto t2 = t0.land(t1);
         t2.store(values);
         CHECK_CONDITION(valuesExact(values, outputs, VEC_LEN), "LANDV gen");
     }
@@ -484,7 +485,7 @@ void genericLANDVATest()
         bool exact = true;
         for(int i = 0; i < VEC_LEN; i++) {
             if(values[i] != DATA_SET::outputs::LANDV[i]) {
-                exact = false; 
+                exact = false;
                 break;
             }
         }
@@ -499,7 +500,7 @@ void genericLANDVATest()
         bool exact = true;
         for(int i = 0; i < VEC_LEN; i++) {
             if(values[i] != DATA_SET::outputs::LANDV[i]) {
-                exact = false; 
+                exact = false;
                 break;
             }
         }
@@ -554,7 +555,7 @@ void genericLORVTest()
         bool exact = true;
         for(int i = 0; i < VEC_LEN; i++) {
             if(values[i] != DATA_SET::outputs::LORV[i]) {
-                exact = false; 
+                exact = false;
                 break;
             }
         }
@@ -569,7 +570,7 @@ void genericLORVTest()
         bool exact = true;
         for(int i = 0; i < VEC_LEN; i++) {
             if(values[i] != DATA_SET::outputs::LORV[i]) {
-                exact = false; 
+                exact = false;
                 break;
             }
         }
@@ -584,7 +585,7 @@ void genericLORVTest()
         bool exact = true;
         for(int i = 0; i < VEC_LEN; i++) {
             if(values[i] != DATA_SET::outputs::LORV[i]) {
-                exact = false; 
+                exact = false;
                 break;
             }
         }
@@ -805,7 +806,7 @@ void genericLORVATest()
         bool exact = true;
         for(int i = 0; i < VEC_LEN; i++) {
             if(values[i] != DATA_SET::outputs::LORV[i]) {
-                exact = false; 
+                exact = false;
                 break;
             }
         }
@@ -820,7 +821,7 @@ void genericLORVATest()
         bool exact = true;
         for(int i = 0; i < VEC_LEN; i++) {
             if(values[i] != DATA_SET::outputs::LORV[i]) {
-                exact = false; 
+                exact = false;
                 break;
             }
         }
@@ -875,7 +876,7 @@ void genericLXORVTest()
         bool exact = true;
         for(int i = 0; i < VEC_LEN; i++) {
             if(values[i] != DATA_SET::outputs::LXORV[i]) {
-                exact = false; 
+                exact = false;
                 break;
             }
         }
@@ -890,7 +891,7 @@ void genericLXORVTest()
         bool exact = true;
         for(int i = 0; i < VEC_LEN; i++) {
             if(values[i] != DATA_SET::outputs::LXORV[i]) {
-                exact = false; 
+                exact = false;
                 break;
             }
         }
@@ -1005,7 +1006,7 @@ void genericLXORVATest()
         bool exact = true;
         for(int i = 0; i < VEC_LEN; i++) {
             if(values[i] != DATA_SET::outputs::LXORV[i]) {
-                exact = false; 
+                exact = false;
                 break;
             }
         }
@@ -1020,7 +1021,7 @@ void genericLXORVATest()
         bool exact = true;
         for(int i = 0; i < VEC_LEN; i++) {
             if(values[i] != DATA_SET::outputs::LXORV[i]) {
-                exact = false; 
+                exact = false;
                 break;
             }
         }
@@ -1074,7 +1075,7 @@ void genericLNOTTest()
         bool exact = true;
         for(int i = 0; i < VEC_LEN; i++) {
             if(values[i] != DATA_SET::outputs::LNOT[i]) {
-                exact = false; 
+                exact = false;
                 break;
             }
         }
@@ -1088,7 +1089,7 @@ void genericLNOTTest()
         bool exact = true;
         for(int i = 0; i < VEC_LEN; i++) {
             if(values[i] != DATA_SET::outputs::LNOT[i]) {
-                exact = false; 
+                exact = false;
                 break;
             }
         }
@@ -1107,7 +1108,7 @@ void genericLNOTATest()
         bool exact = true;
         for(int i = 0; i < VEC_LEN; i++) {
             if(values[i] != DATA_SET::outputs::LNOT[i]) {
-                exact = false; 
+                exact = false;
                 break;
             }
         }
@@ -1335,8 +1336,8 @@ void genericMASSIGNVTest()
         SCALAR_TYPE values[VEC_LEN];
         SCALAR_TYPE expected[VEC_LEN];
         for (int i = 0; i < VEC_LEN; i++) {
-            expected[i] = DATA_SET::inputs::maskA[i] ? 
-                          DATA_SET::inputs::inputB[i] : 
+            expected[i] = DATA_SET::inputs::maskA[i] ?
+                          DATA_SET::inputs::inputB[i] :
                           DATA_SET::inputs::inputA[i];
         }
         VEC_TYPE vec0(DATA_SET::inputs::inputA);
@@ -1401,7 +1402,7 @@ void genericMASSIGNSTest()
         SCALAR_TYPE values[VEC_LEN];
         SCALAR_TYPE expected[VEC_LEN];
         for (int i = 0; i < VEC_LEN; i++) {
-            expected[i] = DATA_SET::inputs::maskA[i] ?  
+            expected[i] = DATA_SET::inputs::maskA[i] ?
                           DATA_SET::inputs::scalarA :
                           DATA_SET::inputs::inputA[i];
         }
@@ -2036,7 +2037,7 @@ void genericADDVATest()
         CHECK_CONDITION(inRange, "ADDVA(operator+=)");
     }
 }
-    
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMADDVATest()
     {
@@ -2065,7 +2066,7 @@ void genericMADDVATest()
         CHECK_CONDITION(inRange, "MADDVA(vec[mask] +=)");
     }
 }
-    
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericADDSATest()
 {
@@ -2204,7 +2205,7 @@ void genericPOSTINCTest()
         CHECK_CONDITION(inRange0 && inRange1, "POSTINC(function)");
     }
 }
-    
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMPOSTINCTest()
 {
@@ -2271,7 +2272,7 @@ void genericPREFINCTest()
         CHECK_CONDITION(inRange0 && inRange1, "PREFINC(function)");
     }
 }
-    
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMPREFINCTest()
 {
@@ -2300,7 +2301,7 @@ void genericMPREFINCTest()
         CHECK_CONDITION(inRange0 && inRange1, "MPREFINC(function)");
     }
 }
-    
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericSUBVTest()
 {
@@ -2636,7 +2637,7 @@ void genericSUBSATest()
     bool inRange = valuesInRange(values, DATA_SET::outputs::SUBS, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "SUBSA");
 }
-    
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMSUBSATest()
 {
@@ -2696,7 +2697,7 @@ void genericMSUBFROMVTest()
         CHECK_CONDITION((inRange && isUnmodified), "MSUBFROMV");
     }
 }
-    
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericSUBFROMSTest()
 {
@@ -2719,7 +2720,7 @@ void genericSUBFROMSTest()
         CHECK_CONDITION(inRange, "SUBFROMS(operator- LHS scalar)");
     }
 }
-    
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMSUBFROMSTest()
 {
@@ -2771,7 +2772,7 @@ void genericMSUBFROMVATest()
     bool inRange = valuesInRange(values, DATA_SET::outputs::MSUBFROMV, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MSUBFROMVA");
 }
-    
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericSUBFROMSATest()
 {
@@ -2782,7 +2783,7 @@ void genericSUBFROMSATest()
     bool inRange = valuesInRange(values, DATA_SET::outputs::SUBFROMS, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "SUBFROMSA");
 }
-    
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMSUBFROMSATest()
 {
@@ -2794,7 +2795,7 @@ void genericMSUBFROMSATest()
     bool inRange = valuesInRange(values, DATA_SET::outputs::MSUBFROMS, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MSUBFROMSA");
 }
-    
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericPOSTDECTest()
 {
@@ -2832,7 +2833,7 @@ void genericPOSTDECTest()
         CHECK_CONDITION(inRange0 && inRange1, "POSTDEC(function)");
     }
 }
-    
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMPOSTDECTest()
 {
@@ -2899,7 +2900,7 @@ void genericPREFDECTest()
         CHECK_CONDITION(inRange0 && inRange1, "PREFDEC(function)");
     }
 }
-    
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMPREFDECTest()
 {
@@ -3154,7 +3155,7 @@ void genericMMULVATest()
         CHECK_CONDITION(inRange, "MMULVA(vec[mask] /=)");
     }
 }
-    
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMULSATest()
 {
@@ -3175,7 +3176,7 @@ void genericMULSATest()
         CHECK_CONDITION(inRange, "MULSA(operator*=)");
     }
 }
-    
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMMULSATest()
 {
@@ -3187,7 +3188,7 @@ void genericMMULSATest()
     bool inRange = valuesInRange(values, DATA_SET::outputs::MMULS, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MMULSA");
 }
-    
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericDIVVTest()
 {
@@ -3431,7 +3432,7 @@ void genericDIVSATest()
         CHECK_CONDITION(inRange, "DIVSA(operator/=)");
     }
 }
-    
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMDIVSATest()
 {
@@ -3471,14 +3472,14 @@ void genericREMVTest_random()
 
     for (int i = 0; i < VEC_LEN; i++) {
         // C++ standard says:
-        // "The binary / operator yields the quotient, and the binary % operator 
+        // "The binary / operator yields the quotient, and the binary % operator
         //  yields the remainder from the division of the first expression by the
-        //  second. If the second operand of / or % is zero the behavior is undefined. 
-        //  For integral operands the / operator yields the algebraic quotient with any 
-        //  fractional part discarded; if the quotient a/b is representable in the type 
+        //  second. If the second operand of / or % is zero the behavior is undefined.
+        //  For integral operands the / operator yields the algebraic quotient with any
+        //  fractional part discarded; if the quotient a/b is representable in the type
         //  of the result, (a/b)*b + a%b is equal to a."
         // And also:
-        // "If both operands are nonnegative then the remainder is nonnegative; 
+        // "If both operands are nonnegative then the remainder is nonnegative;
         //  if not, the sign of the remainder is implementation-defined."
         // This means we can only check this operation for non-negative left operand
         // and positive, non-zero right operand.
@@ -3540,14 +3541,14 @@ void genericMREMVTest_random()
 
     for (int i = 0; i < VEC_LEN; i++) {
         // C++ standard says:
-        // "The binary / operator yields the quotient, and the binary % operator 
+        // "The binary / operator yields the quotient, and the binary % operator
         //  yields the remainder from the division of the first expression by the
-        //  second. If the second operand of / or % is zero the behavior is undefined. 
-        //  For integral operands the / operator yields the algebraic quotient with any 
-        //  fractional part discarded; if the quotient a/b is representable in the type 
+        //  second. If the second operand of / or % is zero the behavior is undefined.
+        //  For integral operands the / operator yields the algebraic quotient with any
+        //  fractional part discarded; if the quotient a/b is representable in the type
         //  of the result, (a/b)*b + a%b is equal to a."
         // And also:
-        // "If both operands are nonnegative then the remainder is nonnegative; 
+        // "If both operands are nonnegative then the remainder is nonnegative;
         //  if not, the sign of the remainder is implementation-defined."
         // This means we can only check this operation for non-negative left operand
         // and positive, non-zero right operand.
@@ -3751,7 +3752,7 @@ void genericRCPSTest()
         CHECK_CONDITION((inRange && isUnmodified), "RCPS(function)");
     }
 }
-    
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMRCPSTest()
 {
@@ -3774,7 +3775,7 @@ void genericMRCPSTest()
         CHECK_CONDITION(inRange, "MRCPS (function)");
     }
 }
-    
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericRCPATest()
 {
@@ -3785,7 +3786,7 @@ void genericRCPATest()
     bool inRange = valuesInRange(values, DATA_SET::outputs::RCP, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "RCPA");
 }
-    
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMRCPATest()
 {
@@ -3797,7 +3798,7 @@ void genericMRCPATest()
     bool inRange = valuesInRange(values, DATA_SET::outputs::MRCP, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MRCPA");
 }
-    
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericRCPSATest()
 {
@@ -3808,7 +3809,7 @@ void genericRCPSATest()
     bool inRange = valuesInRange(values, DATA_SET::outputs::RCPS, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "RCPSA");
 }
-    
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMRCPSATest()
 {
@@ -4368,7 +4369,7 @@ void genericCMPESTest()
         CHECK_CONDITION(value == DATA_SET::outputs::CMPES, "CMPES(function - LHS scalar)");
     }
 }
- 
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericBANDVTest()
 {
@@ -5896,7 +5897,7 @@ public:
         // UNPACK   - Unpack lower and upper halfs to half-length vectors.
         // UNPACKLO - Unpack lower half and return as a half-length vector.
         // UNPACKHI - Unpack upper half and return as a half-length vector.
- 
+
         //(Blend/Swizzle operations)
         // BLENDV   - Blend (mix) two vectors
 
@@ -7109,7 +7110,7 @@ void genericFMULADDVTest()
         CHECK_CONDITION((inRange && isUnmodified), "FMULADDV(function)");
     }
 }
-    
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMFMULADDVTest()
 {
@@ -7140,7 +7141,7 @@ void genericMFMULADDVTest()
         CHECK_CONDITION((inRange && isUnmodified), "MFMULADDV(function)");
     }
 }
-    
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericFMULSUBVTest()
 {
@@ -7347,7 +7348,7 @@ void genericMAXVTest()
         CHECK_CONDITION((inRange && isUnmodified), "MAXV(function)");
     }
 }
-    
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMMAXVTest()
 {
@@ -7376,7 +7377,7 @@ void genericMMAXVTest()
         CHECK_CONDITION((inRange && isUnmodified), "MMAXV(function)");
     }
 }
-    
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMAXSTest()
 {
@@ -7462,7 +7463,7 @@ void genericMAXVATest()
     bool inRange = valuesInRange(values, DATA_SET::outputs::MAXV, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MAXVA");
 }
-    
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMMAXVATest()
 {
@@ -7475,7 +7476,7 @@ void genericMMAXVATest()
     bool inRange = valuesInRange(values, DATA_SET::outputs::MMAXV, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MMAXVA");
 }
-    
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMAXSATest()
 {
@@ -7486,7 +7487,7 @@ void genericMAXSATest()
     bool inRange = valuesInRange(values, DATA_SET::outputs::MAXS, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MAXSA");
 }
-    
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMMAXSATest()
 {
@@ -7498,7 +7499,7 @@ void genericMMAXSATest()
     bool inRange = valuesInRange(values, DATA_SET::outputs::MMAXS, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MMAXSA");
 }
-    
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMINVTest()
 {
@@ -7640,7 +7641,7 @@ void genericMINVATest()
     bool inRange = valuesInRange(values, DATA_SET::outputs::MINV, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MINVA");
 }
-    
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMMINVATest()
 {
@@ -7653,7 +7654,7 @@ void genericMMINVATest()
     bool inRange = valuesInRange(values, DATA_SET::outputs::MMINV, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MMINVA");
 }
-    
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMINSATest()
 {
@@ -7752,7 +7753,7 @@ void genericMHMAXTest_random()
         MASK_TYPE mask(inputMask);
         SCALAR_TYPE value = vec0.hmax(mask);
         bool inRange = valueInRange(value, maxVal, SCALAR_TYPE(0.01f));
-        
+
         CHECK_CONDITION(inRange, "MHMAX");
     }
     {
@@ -8087,13 +8088,13 @@ void genericLSHVTest_random()
     std::mt19937 gen(rd());
 
     // The C++ standard states (5.8.1):
-    // "The behavior is undefined if the right operand is negative, or greater 
+    // "The behavior is undefined if the right operand is negative, or greater
     //  than or equal to the length in bits of the promoted left operand."
     // Thus we have to choose RHS operand so that it is lower than mentioned length in bits.
     // We already ensure that RHS operand is non-negative, by using 'unsigned' type.
 
     const uint32_t MAX_BIT_COUNT = MAX_BIT_COUNT_helper<SCALAR_TYPE>();
- 
+
     // The C++ standard states (5.8.2):
     // "Otherwise, if E1 has a signed type and non-negative value, and E1×2^E2 is representable
     //  in the result type, then that is the resulting value; otherwise, the behavior is undefined."
@@ -8176,7 +8177,7 @@ void genericMLSHVTest_random()
     std::mt19937 gen(rd());
 
     // The C++ standard states (5.8.1):
-    // "The behavior is undefined if the right operand is negative, or greater 
+    // "The behavior is undefined if the right operand is negative, or greater
     //  than or equal to the length in bits of the promoted left operand."
     // Thus we have to choose RHS operand so that it is lower than mentioned length in bits.
     // We already ensure that RHS operand is non-negative, by using 'unsigned' type.
@@ -8251,7 +8252,7 @@ void genericLSHSTest_random()
     std::mt19937 gen(rd());
 
     // The C++ standard states (5.8.1):
-    // "The behavior is undefined if the right operand is negative, or greater 
+    // "The behavior is undefined if the right operand is negative, or greater
     //  than or equal to the length in bits of the promoted left operand."
     // Thus we have to choose RHS operand so that it is lower than mentioned length in bits.
     // We already ensure that RHS operand is non-negative, by using 'unsigned' type.
@@ -8337,7 +8338,7 @@ void genericMLSHSTest_random()
     std::mt19937 gen(rd());
 
     // The C++ standard states (5.8.1):
-    // "The behavior is undefined if the right operand is negative, or greater 
+    // "The behavior is undefined if the right operand is negative, or greater
     //  than or equal to the length in bits of the promoted left operand."
     // Thus we have to choose RHS operand so that it is lower than mentioned length in bits.
     // We already ensure that RHS operand is non-negative, by using 'unsigned' type.
@@ -8410,7 +8411,7 @@ void genericLSHVATest_random()
     std::mt19937 gen(rd());
 
     // The C++ standard states (5.8.1):
-    // "The behavior is undefined if the right operand is negative, or greater 
+    // "The behavior is undefined if the right operand is negative, or greater
     //  than or equal to the length in bits of the promoted left operand."
     // Thus we have to choose RHS operand so that it is lower than mentioned length in bits.
     // We already ensure that RHS operand is non-negative, by using 'unsigned' type.
@@ -8473,7 +8474,7 @@ void genericMLSHVATest_random()
     std::mt19937 gen(rd());
 
     // The C++ standard states (5.8.1):
-    // "The behavior is undefined if the right operand is negative, or greater 
+    // "The behavior is undefined if the right operand is negative, or greater
     //  than or equal to the length in bits of the promoted left operand."
     // Thus we have to choose RHS operand so that it is lower than mentioned length in bits.
     // We already ensure that RHS operand is non-negative, by using 'unsigned' type.
@@ -8520,7 +8521,7 @@ void genericLSHSATest_random()
     std::mt19937 gen(rd());
 
     // The C++ standard states (5.8.1):
-    // "The behavior is undefined if the right operand is negative, or greater 
+    // "The behavior is undefined if the right operand is negative, or greater
     //  than or equal to the length in bits of the promoted left operand."
     // Thus we have to choose RHS operand so that it is lower than mentioned length in bits.
     // We already ensure that RHS operand is non-negative, by using 'unsigned' type.
@@ -8581,7 +8582,7 @@ void genericMLSHSATest_random()
     std::mt19937 gen(rd());
 
     // The C++ standard states (5.8.1):
-    // "The behavior is undefined if the right operand is negative, or greater 
+    // "The behavior is undefined if the right operand is negative, or greater
     //  than or equal to the length in bits of the promoted left operand."
     // Thus we have to choose RHS operand so that it is lower than mentioned length in bits.
     // We already ensure that RHS operand is non-negative, by using 'unsigned' type.
@@ -8627,7 +8628,7 @@ void genericRSHVTest_random()
     std::mt19937 gen(rd());
 
     // The C++ standard states (5.8.1):
-    // "The behavior is undefined if the right operand is negative, or greater 
+    // "The behavior is undefined if the right operand is negative, or greater
     //  than or equal to the length in bits of the promoted left operand."
     // Thus we have to choose RHS operand so that it is lower than mentioned length in bits.
     // We already ensure that RHS operand is non-negative, by using 'unsigned' type.
@@ -8716,7 +8717,7 @@ void genericMRSHVTest_random()
     std::mt19937 gen(rd());
 
     // The C++ standard states (5.8.1):
-    // "The behavior is undefined if the right operand is negative, or greater 
+    // "The behavior is undefined if the right operand is negative, or greater
     //  than or equal to the length in bits of the promoted left operand."
     // Thus we have to choose RHS operand so that it is lower than mentioned length in bits.
     // We already ensure that RHS operand is non-negative, by using 'unsigned' type.
@@ -8791,7 +8792,7 @@ void genericRSHSTest_random()
     std::mt19937 gen(rd());
 
     // The C++ standard states (5.8.1):
-    // "The behavior is undefined if the right operand is negative, or greater 
+    // "The behavior is undefined if the right operand is negative, or greater
     //  than or equal to the length in bits of the promoted left operand."
     // Thus we have to choose RHS operand so that it is lower than mentioned length in bits.
     // We already ensure that RHS operand is non-negative, by using 'unsigned' type.
@@ -8877,7 +8878,7 @@ void genericMRSHSTest_random()
     std::mt19937 gen(rd());
 
     // The C++ standard states (5.8.1):
-    // "The behavior is undefined if the right operand is negative, or greater 
+    // "The behavior is undefined if the right operand is negative, or greater
     //  than or equal to the length in bits of the promoted left operand."
     // Thus we have to choose RHS operand so that it is lower than mentioned length in bits.
     // We already ensure that RHS operand is non-negative, by using 'unsigned' type.
@@ -8950,7 +8951,7 @@ void genericRSHVATest_random()
     std::mt19937 gen(rd());
 
     // The C++ standard states (5.8.1):
-    // "The behavior is undefined if the right operand is negative, or greater 
+    // "The behavior is undefined if the right operand is negative, or greater
     //  than or equal to the length in bits of the promoted left operand."
     // Thus we have to choose RHS operand so that it is lower than mentioned length in bits.
     // We already ensure that RHS operand is non-negative, by using 'unsigned' type.
@@ -9013,7 +9014,7 @@ void genericMRSHVATest_random()
     std::mt19937 gen(rd());
 
     // The C++ standard states (5.8.1):
-    // "The behavior is undefined if the right operand is negative, or greater 
+    // "The behavior is undefined if the right operand is negative, or greater
     //  than or equal to the length in bits of the promoted left operand."
     // Thus we have to choose RHS operand so that it is lower than mentioned length in bits.
     // We already ensure that RHS operand is non-negative, by using 'unsigned' type.
@@ -9060,7 +9061,7 @@ void genericRSHSATest_random()
     std::mt19937 gen(rd());
 
     // The C++ standard states (5.8.1):
-    // "The behavior is undefined if the right operand is negative, or greater 
+    // "The behavior is undefined if the right operand is negative, or greater
     //  than or equal to the length in bits of the promoted left operand."
     // Thus we have to choose RHS operand so that it is lower than mentioned length in bits.
     // We already ensure that RHS operand is non-negative, by using 'unsigned' type.
@@ -9121,7 +9122,7 @@ void genericMRSHSATest_random()
     std::mt19937 gen(rd());
 
     // The C++ standard states (5.8.1):
-    // "The behavior is undefined if the right operand is negative, or greater 
+    // "The behavior is undefined if the right operand is negative, or greater
     //  than or equal to the length in bits of the promoted left operand."
     // Thus we have to choose RHS operand so that it is lower than mentioned length in bits.
     // We already ensure that RHS operand is non-negative, by using 'unsigned' type.
@@ -9188,7 +9189,7 @@ void genericROLVTest()
 }
 
 template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
-void genericMROLVTest() 
+void genericMROLVTest()
 {
     {
         SCALAR_TYPE values[VEC_LEN];
@@ -9253,7 +9254,7 @@ void genericROLSTest()
 }
 
 template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
-void genericMROLSTest() 
+void genericMROLSTest()
 {
     {
         SCALAR_TYPE values[VEC_LEN];
@@ -9292,7 +9293,7 @@ void genericMROLSTest()
 }
 
 template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
-void genericROLVATest() 
+void genericROLVATest()
 {
     SCALAR_TYPE values[VEC_LEN];
     VEC_TYPE vec0(DATA_SET::inputs::inputA);
@@ -9302,9 +9303,9 @@ void genericROLVATest()
     bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::ROLV, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "ROLVA");
 }
-    
+
 template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
-void genericMROLVATest() 
+void genericMROLVATest()
 {
     SCALAR_TYPE values[VEC_LEN];
     VEC_TYPE vec0(DATA_SET::inputs::inputA);
@@ -9317,7 +9318,7 @@ void genericMROLVATest()
 }
 
 template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
-void genericROLSATest() 
+void genericROLSATest()
 {
     SCALAR_TYPE values[VEC_LEN];
     VEC_TYPE vec0(DATA_SET::inputs::inputA);
@@ -9326,9 +9327,9 @@ void genericROLSATest()
     bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::ROLS, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "ROLSA");
 }
-    
+
 template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
-void genericMROLSATest() 
+void genericMROLSATest()
 {
     SCALAR_TYPE values[VEC_LEN];
     VEC_TYPE vec0(DATA_SET::inputs::inputA);
@@ -9337,7 +9338,7 @@ void genericMROLSATest()
     vec0.store(values);
     bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MROLS, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MROLSA");
-} 
+}
 
 template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericRORVTest()
@@ -9365,7 +9366,7 @@ void genericRORVTest()
         CHECK_CONDITION((inRange && isUnmodified), "RORV(function)");
     }
 }
-    
+
 template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMRORVTest()
 {
@@ -9396,7 +9397,7 @@ void genericMRORVTest()
 }
 
 template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
-void genericRORSTest() 
+void genericRORSTest()
 {
     {
         SCALAR_TYPE values[VEC_LEN];
@@ -9430,9 +9431,9 @@ void genericRORSTest()
         // TODO: this test requires separate output data
     }
 }
-    
+
 template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
-void genericMRORSTest() 
+void genericMRORSTest()
 {
     {
         SCALAR_TYPE values[VEC_LEN];
@@ -9471,7 +9472,7 @@ void genericMRORSTest()
 }
 
 template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
-void genericRORVATest() 
+void genericRORVATest()
 {
     SCALAR_TYPE values[VEC_LEN];
     VEC_TYPE vec0(DATA_SET::inputs::inputA);
@@ -9481,9 +9482,9 @@ void genericRORVATest()
     bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::RORV, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "RORVA");
 }
-    
+
 template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
-void genericMRORVATest() 
+void genericMRORVATest()
 {
     SCALAR_TYPE values[VEC_LEN];
     VEC_TYPE vec0(DATA_SET::inputs::inputA);
@@ -9496,7 +9497,7 @@ void genericMRORVATest()
 }
 
 template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
-void genericRORSATest() 
+void genericRORSATest()
 {
     SCALAR_TYPE values[VEC_LEN];
     VEC_TYPE vec0(DATA_SET::inputs::inputA);
@@ -9505,9 +9506,9 @@ void genericRORSATest()
     bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::RORS, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "RORSA");
 }
-    
+
 template<typename VEC_TYPE, typename UINT_VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
-void genericMRORSATest() 
+void genericMRORSATest()
 {
     SCALAR_TYPE values[VEC_LEN];
     VEC_TYPE vec0(DATA_SET::inputs::inputA);
@@ -9516,7 +9517,7 @@ void genericMRORSATest()
     vec0.store(values);
     bool inRange = valuesInRange(values, (SCALAR_TYPE*)DATA_SET::outputs::MRORS, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MRORSA");
-} 
+}
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericNEGTest()
 {
@@ -9551,7 +9552,7 @@ void genericNEGTest()
         CHECK_CONDITION((inRange && isUnmodified), "NEG(function)");
     }
 }
-    
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMNEGTest()
 {
@@ -9578,7 +9579,7 @@ void genericMNEGTest()
         CHECK_CONDITION((inRange && isUnmodified), "MNEG(function)");
     }
 }
-    
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericNEGATest()
 {
@@ -9589,7 +9590,7 @@ void genericNEGATest()
     bool inRange = valuesInRange(values, DATA_SET::outputs::NEG, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "NEGA");
 }
-    
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMNEGATest()
 {
@@ -9601,7 +9602,7 @@ void genericMNEGATest()
     bool inRange = valuesInRange(values, DATA_SET::outputs::MNEG, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MNEGA");
 }
-    
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericABSTest()
 {
@@ -9626,7 +9627,7 @@ void genericABSTest()
         CHECK_CONDITION((inRange && isUnmodified), "ABS(function)");
     }
 }
-    
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMABSTest()
 {
@@ -9653,7 +9654,7 @@ void genericMABSTest()
         CHECK_CONDITION((inRange && isUnmodified), "MABS(function)");
     }
 }
-    
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericABSATest()
 {
@@ -9664,7 +9665,7 @@ void genericABSATest()
     bool inRange = valuesInRange(values, DATA_SET::outputs::ABS, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "ABSA");
 }
-    
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMABSATest()
 {
@@ -9677,8 +9678,8 @@ void genericMABSATest()
     CHECK_CONDITION(inRange, "MABSA");
 }
 
-#include "../utilities/ignore_warnings_push.h"
-#include "../utilities/ignore_warnings_truncation_from_double_to_float.h"
+#include <ume/internal/utilities/ignore_warnings_push.h>
+#include <ume/internal/utilities/ignore_warnings_truncation_from_double_to_float.h>
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN>
 void genericCOPYSIGNTest_random()
@@ -9725,7 +9726,7 @@ void genericCOPYSIGNTest_random()
     }
 }
 
-#include "../utilities/ignore_warnings_pop.h"
+#include <ume/internal/utilities/ignore_warnings_pop.h>
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericSQRTest()
@@ -9751,7 +9752,7 @@ void genericSQRTest()
         CHECK_CONDITION((inRange && isUnmodified), "SQR(function)");
     }
 }
-    
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMSQRTest()
 {
@@ -9778,7 +9779,7 @@ void genericMSQRTest()
         CHECK_CONDITION(inRange && isUnmodified, "MSQR(function)");
     }
 }
-    
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericSQRATest()
 {
@@ -9801,7 +9802,7 @@ void genericMSQRATest()
     bool inRange = valuesInRange(values, DATA_SET::outputs::MSQR, VEC_LEN, SCALAR_TYPE(0.01f));
     CHECK_CONDITION(inRange, "MSQRA");
 }
-    
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericSQRTTest()
 {
@@ -9828,7 +9829,7 @@ void genericSQRTTest()
         CHECK_CONDITION((inRange && isUnmodified), "SQRT(function)");
     }
 }
-    
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMSQRTTest()
 {
@@ -9915,7 +9916,7 @@ void genericMROUNDTest()
         SCALAR_TYPE values[VEC_LEN];
         VEC_TYPE vec0(DATA_SET::inputs::inputA);
         MASK_TYPE mask(DATA_SET::inputs::maskA);
-        VEC_TYPE vec1 = vec0.round(mask); 
+        VEC_TYPE vec1 = vec0.round(mask);
         vec1.store(values);
         bool inRange = valuesInRange(values, DATA_SET::outputs::MROUND, VEC_LEN, SCALAR_TYPE(0.01f));
         vec0.store(values);
@@ -10071,7 +10072,7 @@ void genericFLOORTest()
         CHECK_CONDITION((inRange && isUnmodified), "FLOOR(function)");
     }
 }
-    
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, int VEC_LEN, typename DATA_SET>
 void genericMFLOORTest()
 {
@@ -10098,7 +10099,7 @@ void genericMFLOORTest()
         CHECK_CONDITION((inRange && isUnmodified), "MFLOOR(function)");
     }
 }
-    
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, typename DATA_SET>
 void genericCEILTest()
 {
@@ -10932,7 +10933,7 @@ void genericFTOUTest_random()
 
     FLOAT_SCALAR_TYPE inputA[VEC_LEN];
     UINT_SCALAR_TYPE output[VEC_LEN];
-    
+
     for (int i = 0; i < VEC_LEN; i++) {
         inputA[i] = randomValue<FLOAT_SCALAR_TYPE>(gen);
         output[i] = UINT_SCALAR_TYPE(inputA[i]);
@@ -11032,7 +11033,7 @@ void genericDEGRADETest()
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE, typename SWIZZLE_TYPE, int VEC_LEN, typename DATA_SET>
 void genericBaseInterfaceTest()
-{   
+{
     genericSETCONSTRTest_random<VEC_TYPE, SCALAR_TYPE, VEC_LEN>();
 
     genericINSERTTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
@@ -11359,7 +11360,7 @@ void genericFloatInterfaceTest()
     genericISSUBTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
     genericISZEROTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
     genericISZEROSUBTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
-    
+
     genericSQRTest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
     genericMSQRTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
     genericSQRATest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
@@ -11368,7 +11369,7 @@ void genericFloatInterfaceTest()
     genericMSQRTTest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
     genericSQRTATest<VEC_TYPE, SCALAR_TYPE, VEC_LEN, DATA_SET>();
     genericMSQRTATest<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN, DATA_SET>();
-    
+
     genericEXPTest_random<VEC_TYPE, SCALAR_TYPE, VEC_LEN>();
     genericMEXPTest_random<VEC_TYPE, SCALAR_TYPE, MASK_TYPE, VEC_LEN>();
     genericLOGTest_random<VEC_TYPE, SCALAR_TYPE, VEC_LEN>();
@@ -11505,7 +11506,7 @@ void genericIntTest() {
 }
 
 template<
-        typename FLOAT_VEC_TYPE, 
+        typename FLOAT_VEC_TYPE,
         typename FLOAT_SCALAR_TYPE,
         typename UINT_VEC_TYPE,
         typename UINT_SCALAR_TYPE,

@@ -1,0 +1,36 @@
+set(FLAGS_SSE    "-xsse")
+set(FLAGS_SSE2   "-xsse2")
+set(FLAGS_SSE3   "-xsse3")
+set(FLAGS_SSSE3  "-xssse3")
+set(FLAGS_SSE41  "-xsse4.1")
+set(FLAGS_SSE42  "-xsse4.2")
+set(FLAGS_AVX    "-xAVX")
+set(FLAGS_AVX2   "-xCORE-AVX2")
+set(FLAGS_AVX512 "-xCORE-AVX512")
+set(FLAGS_NATIVE "-march=native")
+set(FLAGS_KNC    "-mmic")
+set(FLAGS_KNL    "-xMIC-AVX512")
+
+if("${CMAKE_VERSION}" VERSION_LESS "3.6")
+  # add flag by hand if CMake does not support ICC
+  if("${CMAKE_CXX_STANDARD}" MATCHES "11|14")
+    add_compile_options(-std=c++${CMAKE_CXX_STANDARD})
+  else()
+    message(FATAL_ERROR "Unsupported C++ standard requested")
+  endif()
+endif()
+
+if (SVML)
+  add_definitions(-DUME_USE_SVML)
+endif()
+
+if (NOT "${CMAKE_BUILD_TYPE}" MATCHES "Release")
+  add_compile_options(-fp-model=precise)
+endif()
+
+add_compile_options(-qopt-streaming-stores=never)
+
+if ("${TARGET_ISA}" MATCHES "knc|KNC")
+  list(APPEND CMAKE_EXE_LINKER_FLAGS -mmic)
+  list(APPEND CMAKE_SHARED_LINKER_FLAGS -static-intel)
+endif()

@@ -32,7 +32,7 @@
 #define MANDELBROT_UME_H_
 
 #include "mandelbrot.h"
-#include "../../UMESimd.h"
+#include <ume/simd>
 
 template<typename VEC_T>
 void mandel_umesimd(unsigned char *image, const struct spec *s)

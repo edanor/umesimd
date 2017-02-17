@@ -1,0 +1,10 @@
+#ifndef _UME_SIMD
+#define _UME_SIMD 1
+
+#define UMESIMD_VERSION_MAJOR 0
+#define UMESIMD_VERSION_MINOR 7
+#define UMESIMD_VERSION_PATCH 2
+
+#include "internal/simd/UMESimd.h"
+
+#endif

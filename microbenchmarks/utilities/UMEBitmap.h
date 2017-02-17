@@ -24,16 +24,16 @@
 //
 //
 //  This piece of code was developed as part of ICE-DIP project at CERN.
-//  "ICE-DIP is a European Industrial Doctorate project funded by the European Community's 
+//  "ICE-DIP is a European Industrial Doctorate project funded by the European Community's
 //  7th Framework programme Marie Curie Actions under grant PITN-GA-2012-316596".
 //
 
 #ifndef BITMAP_H_
 #define BITMAP_H_
 
+#include <cstdint>
 #include <string>
-#include "../../UMEBasicTypes.h"
-#include "../utilities/UMEConstants.h"
+#include "UMEConstants.h"
 
 namespace UME
 {
@@ -45,7 +45,7 @@ namespace UME
         uint32_t imageOffset;
         // Also store a raw copy of the header for debugging
 #define UME_BITMAP_HEADER_LENGTH 14
-        uint8_t  raw[UME_BITMAP_HEADER_LENGTH]; 
+        uint8_t  raw[UME_BITMAP_HEADER_LENGTH];
     }BitmapFileHeader;
 
     // Declar comparison operators for BitmapFileHeader
@@ -116,13 +116,13 @@ namespace UME
         void GetDIBHeader(BitmapDIBHeader *headerContainer);
         inline uint32_t GetBitmapSize() { return mHeader.fileSize - UME_BITMAP_DIB_HEADER_LENGTH - UME_BITMAP_HEADER_LENGTH; }
         inline uint32_t GetPixelsOffset() { return UME_BITMAP_DIB_HEADER_LENGTH + UME_BITMAP_HEADER_LENGTH; }
-  
+
         void ClearTarget(uint8_t r, uint8_t g, uint8_t b);
         void DrawLine(double r, double theta, Color color);
     private:
         // Parsed data
         BitmapFileHeader mHeader;
-        BitmapDIBHeader  mDIBHeader;	
+        BitmapDIBHeader  mDIBHeader;
 
         // Padded width is number of bytes (not pixels!) used to store single bitmap line. This value has to be 32b aligned.
         uint32_t mPaddedWidth;

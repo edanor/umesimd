@@ -38,7 +38,7 @@
 #include <string>
 
 //#define UME_SIMD_SHOW_EMULATION_WARNINGS 1
-#include "../../UMESimd.h"
+#include <ume/simd>
 #include "../utilities/TimingStatistics.h"
 
 const int INPUT_SIZE = 1000000; // Number of data samples

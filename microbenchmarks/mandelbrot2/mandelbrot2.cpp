@@ -32,7 +32,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-#include "../../UMESimd.h"
+#include <ume/simd>
 #include "../utilities/UMEBitmap.h"
 #include "../utilities/TimingStatistics.h"
 

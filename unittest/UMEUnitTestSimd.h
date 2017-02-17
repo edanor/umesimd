@@ -24,15 +24,16 @@
 //
 //
 //  This piece of code was developed as part of ICE-DIP project at CERN.
-//  "ICE-DIP is a European Industrial Doctorate project funded by the European Community's 
+//  "ICE-DIP is a European Industrial Doctorate project funded by the European Community's
 //  7th Framework programme Marie Curie Actions under grant PITN-GA-2012-316596".
 //
 
 #ifndef UME_UNIT_TEST_SIMD_H_
 #define UME_UNIT_TEST_SIMD_H_
 
+#include <ume/simd>
+
 #include "UMEUnitTestCommon.h"
-#include "../UMESimd.h"
 
 // masks
 #include "UMEUnitTestMasks.h"

@@ -40,7 +40,7 @@
 #include <stdlib.h>
 
 //#define UME_SIMD_SHOW_EMULATION_WARNINGS 1
-#include "../../UMESimd.h"
+#include <ume/simd>
 #include "../utilities/TimingStatistics.h"
 
 const int ARRAY_SIZE = 512*1024;
