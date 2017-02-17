@@ -67,8 +67,8 @@ namespace SIMD {
             mMask = p[0];
         }
 
-#include "../../../utilities/ignore_warnings_push.h"
-#include "../../../utilities/ignore_warnings_unused_parameter.h"
+#include "../../../../utilities/ignore_warnings_push.h"
+#include "../../../../utilities/ignore_warnings_unused_parameter.h"
 
         // EXTRACT
         UME_FORCE_INLINE bool extract(uint32_t index) const {
@@ -84,7 +84,7 @@ namespace SIMD {
             mMask = x;
         }
 
-#include "../../../utilities/ignore_warnings_pop.h"
+#include "../../../../utilities/ignore_warnings_pop.h"
 
         // LOAD
         UME_FORCE_INLINE SIMDVecMask & load(bool * p) {

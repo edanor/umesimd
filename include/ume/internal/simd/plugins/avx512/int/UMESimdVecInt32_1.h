@@ -79,8 +79,8 @@ namespace SIMD {
         // LOAD-CONSTR - Construct by loading from memory
         UME_FORCE_INLINE explicit SIMDVec_i(int32_t const *p) { this->load(p); };
 
-#include "../../../utilities/ignore_warnings_push.h"
-#include "../../../utilities/ignore_warnings_unused_parameter.h"
+#include "../../../../utilities/ignore_warnings_push.h"
+#include "../../../../utilities/ignore_warnings_unused_parameter.h"
 
         // EXTRACT
         UME_FORCE_INLINE int32_t extract(uint32_t index) const {
@@ -99,7 +99,7 @@ namespace SIMD {
             return IntermediateIndex<SIMDVec_i, int32_t>(index, static_cast<SIMDVec_i &>(*this));
         }
 
-#include "../../../utilities/ignore_warnings_pop.h"
+#include "../../../../utilities/ignore_warnings_pop.h"
 
         // Override Mask Access operators
 #if defined(USE_PARENTHESES_IN_MASK_ASSIGNMENT)
@@ -1278,8 +1278,8 @@ namespace SIMD {
             return t0;
         }
 
-#include "../../../utilities/ignore_warnings_push.h"
-#include "../../../utilities/ignore_warnings_unused_parameter.h"
+#include "../../../../utilities/ignore_warnings_push.h"
+#include "../../../../utilities/ignore_warnings_unused_parameter.h"
 
         // GATHERU
         UME_FORCE_INLINE SIMDVec_i & gatheru(int32_t const * baseAddr, uint32_t stride) {
@@ -1292,7 +1292,7 @@ namespace SIMD {
             return *this;
         }
 
-#include "../../../utilities/ignore_warnings_pop.h"
+#include "../../../../utilities/ignore_warnings_pop.h"
 
         // GATHERS
         UME_FORCE_INLINE SIMDVec_i & gather(int32_t const * baseAddr, uint32_t const * indices) {
@@ -1315,8 +1315,8 @@ namespace SIMD {
             return *this;
         }
 
-#include "../../../utilities/ignore_warnings_push.h"
-#include "../../../utilities/ignore_warnings_unused_parameter.h"
+#include "../../../../utilities/ignore_warnings_push.h"
+#include "../../../../utilities/ignore_warnings_unused_parameter.h"
 
         // SCATTERU
         UME_FORCE_INLINE int32_t* scatteru(int32_t* baseAddr, uint32_t stride) const {
@@ -1329,7 +1329,7 @@ namespace SIMD {
             return baseAddr;
         }
 
-#include "../../../utilities/ignore_warnings_pop.h"
+#include "../../../../utilities/ignore_warnings_pop.h"
 
         // SCATTER
         UME_FORCE_INLINE int32_t* scatter(int32_t* baseAddr, uint32_t* indices) const {

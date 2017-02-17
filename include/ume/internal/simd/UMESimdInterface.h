@@ -24,7 +24,7 @@
 //
 //
 //  This piece of code was developed as part of ICE-DIP project at CERN.
-//  "ICE-DIP is a European Industrial Doctorate project funded by the European Community's 
+//  "ICE-DIP is a European Industrial Doctorate project funded by the European Community's
 //  7th Framework programme Marie Curie Actions under grant PITN-GA-2012-316596".
 //
 
@@ -47,7 +47,7 @@ namespace SIMD
     // *  Declaration of IndexVectorInterface class
     // *
     // **********************************************************************
- 
+
     //// Checks if N is power of 2
     //template<unsigned int N>
     //struct isPow2
@@ -83,7 +83,7 @@ namespace SIMD
     //        value = P
     //    };
     //};
-    
+
     template<class DERIVED_SWIZZLE_TYPE, uint32_t SMASK_LEN>
     class SIMDSwizzleMaskBaseInterface
     {
@@ -116,7 +116,7 @@ namespace SIMD
     };
 
     // This class represents a vector of VEC_LEN scalars and is used for emulation.
-    template<typename SCALAR_TYPE, uint32_t VEC_LEN> 
+    template<typename SCALAR_TYPE, uint32_t VEC_LEN>
     class SIMDVecEmuRegister
     {
     private:
@@ -138,13 +138,13 @@ namespace SIMD
         }
 
         // Also define a non-modifying access operator
-        UME_FORCE_INLINE SCALAR_TYPE operator[] (uint32_t index) const { 
-            SCALAR_TYPE temp = reg[index];    
-            return temp; 
+        UME_FORCE_INLINE SCALAR_TYPE operator[] (uint32_t index) const {
+            SCALAR_TYPE temp = reg[index];
+            return temp;
         }
-            
+
         UME_FORCE_INLINE void insert(uint32_t index, SCALAR_TYPE value){
-            reg[index] = value; 
+            reg[index] = value;
         }
     };
 
@@ -152,28 +152,28 @@ namespace SIMD
     struct MaskAsInt{
         uint64_t m0;
     };
-    
+
     template<>
     struct MaskAsInt<128> {
         uint64_t m0;
         uint64_t m1;
     };
-    
+
     // **********************************************************************
     // *
-    // *  Declaration of SIMDMaskBaseInterface class 
+    // *  Declaration of SIMDMaskBaseInterface class
     // *
-    // *    This class should be used as a basic class for all masks. 
-    // *    All masks should implement interface contained in 
-    // *    SIMDMaskBaseInterface. If the derived class does not provide an 
-    // *    overload for given operation, this class will default 
+    // *    This class should be used as a basic class for all masks.
+    // *    All masks should implement interface contained in
+    // *    SIMDMaskBaseInterface. If the derived class does not provide an
+    // *    overload for given operation, this class will default
     // *    to scalar emulation, thus providing interface coherence over
     // *    different plugins.
     // *
     // **********************************************************************
 
-    template<class DERIVED_MASK_TYPE, 
-            typename MASK_BASE_TYPE, 
+    template<class DERIVED_MASK_TYPE,
+            typename MASK_BASE_TYPE,
             uint32_t MASK_LEN>
     class SIMDMaskBaseInterface {
         // Declarations only. These operators should be overriden in derived types.
@@ -393,7 +393,7 @@ namespace SIMD
             UME_EMULATION_WARNING();
             return SCALAR_EMULATION::logicalNot<DERIVED_MASK_TYPE>(static_cast<DERIVED_MASK_TYPE const &>(*this));
         }
-        
+
         UME_FORCE_INLINE DERIVED_MASK_TYPE operator!() const {
             return lnot();
         }
@@ -489,11 +489,11 @@ namespace SIMD
 
     // **********************************************************************
     // *
-    // *  Declaration of IntermediateMask class 
+    // *  Declaration of IntermediateMask class
     // *
     // *    This class is a helper class used in masked version of
     // *    operator[]. This object is not copyable and can only be created
-    // *    from its vector type (VEC_TYPE) for temporary use. 
+    // *    from its vector type (VEC_TYPE) for temporary use.
     // *
     // **********************************************************************
     template<class VEC_TYPE, class SCALAR_TYPE, class MASK_TYPE>
@@ -583,7 +583,7 @@ namespace SIMD
         // vector type using it.
         IntermediateMask();
         IntermediateMask(IntermediateMask const &);
-        IntermediateMask & operator= (IntermediateMask const &); 
+        IntermediateMask & operator= (IntermediateMask const &);
 
         explicit IntermediateMask(uint32_t);
     private:
@@ -597,7 +597,7 @@ namespace SIMD
 
     // **********************************************************************
     // *
-    // *  Declaration of IntermediateIndex class 
+    // *  Declaration of IntermediateIndex class
     // *
     // *    This class is a helper class used in assignment version of
     // *    operator[SCALAR]. This object is not copyable and can only be created
@@ -663,7 +663,7 @@ namespace SIMD
 
         UME_FORCE_INLINE operator SCALAR_TYPE() const { return mVecRef_RW.extract(mIndexRef); }
 
-        // Comparison operators accept any type of scalar to allow mixing 
+        // Comparison operators accept any type of scalar to allow mixing
         // scalar types.
         template<
             typename T,
@@ -781,12 +781,12 @@ namespace SIMD
 
     // **********************************************************************
     // *
-    // *  Declaration of SIMDVecBaseInterface class 
+    // *  Declaration of SIMDVecBaseInterface class
     // *
-    // *    This class should be used as a basic class for all integer and 
+    // *    This class should be used as a basic class for all integer and
     // *    floating point vector types. All vectors should implement interface
     // *    contained in SIMDVecBaseInterface. If the derived class does not
-    // *    provide an overload for given operation, this class will default 
+    // *    provide an overload for given operation, this class will default
     // *    to scalar emulation, thus providing interface coherence over
     // *    different plugins. This class should not be used directly in
     // *    plugins since it encapsulates only a common part of all vector
@@ -801,18 +801,18 @@ namespace SIMD
     // SCALAR_TYPE - basic type of scalar elements packed in DERIVED_VEC_TYPE
     // VEC_LEN - number of SIMD elements in vector
     // MASK_TYPE - exact type of the mask to be used with this vector
-    template<class DERIVED_VEC_TYPE, 
-             typename SCALAR_TYPE, 
+    template<class DERIVED_VEC_TYPE,
+             typename SCALAR_TYPE,
              uint32_t VEC_LEN,
              typename MASK_TYPE,
              typename SWIZZLE_MASK_TYPE>
     class SIMDVecBaseInterface
     {
         // Other vector types necessary for this class
-        typedef SIMDVecBaseInterface< 
-            DERIVED_VEC_TYPE, 
-            SCALAR_TYPE, 
-            VEC_LEN, 
+        typedef SIMDVecBaseInterface<
+            DERIVED_VEC_TYPE,
+            SCALAR_TYPE,
+            VEC_LEN,
             MASK_TYPE,
             SWIZZLE_MASK_TYPE> VEC_TYPE;
 
@@ -820,20 +820,20 @@ namespace SIMD
         // Making destructor protected prohibits this class from being instantiated. Effectively this class can only be used as a base class.
         ~SIMDVecBaseInterface() {};
     public:
-   
+
         // TODO: can be marked as constexpr?
         constexpr static uint32_t length() { return VEC_LEN; }
 
         constexpr static uint32_t alignment() { return VEC_LEN*sizeof(SCALAR_TYPE); }
-        
+
         // ZERO-VEC
         static DERIVED_VEC_TYPE zero() { return DERIVED_VEC_TYPE(SCALAR_TYPE(0)); }
 
         // ONE-VEC
         static DERIVED_VEC_TYPE one() { return DERIVED_VEC_TYPE(SCALAR_TYPE(1)); }
 
-#include "utilities/ignore_warnings_push.h"
-#include "utilities/ignore_warnings_unused_parameter.h"
+#include "../utilities/ignore_warnings_push.h"
+#include "../utilities/ignore_warnings_unused_parameter.h"
 
         // PREFETCH0
         static UME_FORCE_INLINE void prefetch0(SCALAR_TYPE const *p) {
@@ -850,7 +850,7 @@ namespace SIMD
             // DO NOTHING!
         }
 
-#include "utilities/ignore_warnings_pop.h"
+#include "../utilities/ignore_warnings_pop.h"
 
         // ASSIGNV
         UME_FORCE_INLINE DERIVED_VEC_TYPE & assign (DERIVED_VEC_TYPE const & src) {
@@ -1015,7 +1015,7 @@ namespace SIMD
         }
 
         template<
-            int i0, int i1, int i2, int i3, int i4, int i5, int i6, int i7, 
+            int i0, int i1, int i2, int i3, int i4, int i5, int i6, int i7,
             int i8, int i9, int i10, int i11, int i12, int i13, int i14, int i15>
         UME_FORCE_INLINE DERIVED_VEC_TYPE swizzle() const {
             UME_EMULATION_WARNING();
@@ -1025,7 +1025,7 @@ namespace SIMD
         }
 
         template<
-            int i0, int i1, int i2, int i3, int i4, int i5, int i6, int i7, 
+            int i0, int i1, int i2, int i3, int i4, int i5, int i6, int i7,
             int i8, int i9, int i10, int i11, int i12, int i13, int i14, int i15,
             int i16, int i17, int i18, int i19, int i20, int i21, int i22, int i23,
             int i24, int i25, int i26, int i27, int i28, int i29, int i30, int i31>
@@ -1039,7 +1039,7 @@ namespace SIMD
         }
 
         template<
-            int i0, int i1, int i2, int i3, int i4, int i5, int i6, int i7, 
+            int i0, int i1, int i2, int i3, int i4, int i5, int i6, int i7,
             int i8, int i9, int i10, int i11, int i12, int i13, int i14, int i15,
             int i16, int i17, int i18, int i19, int i20, int i21, int i22, int i23,
             int i24, int i25, int i26, int i27, int i28, int i29, int i30, int i31,
@@ -1059,7 +1059,7 @@ namespace SIMD
         }
 
         template<
-            int i0, int i1, int i2, int i3, int i4, int i5, int i6, int i7, 
+            int i0, int i1, int i2, int i3, int i4, int i5, int i6, int i7,
             int i8, int i9, int i10, int i11, int i12, int i13, int i14, int i15,
             int i16, int i17, int i18, int i19, int i20, int i21, int i22, int i23,
             int i24, int i25, int i26, int i27, int i28, int i29, int i30, int i31,
@@ -1129,7 +1129,7 @@ namespace SIMD
             UME_EMULATION_WARNING();
             return SCALAR_EMULATION::addScalar<DERIVED_VEC_TYPE, SCALAR_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
-        
+
         UME_FORCE_INLINE DERIVED_VEC_TYPE operator+ (SCALAR_TYPE b) const {
             return add(b);
         }
@@ -1176,7 +1176,7 @@ namespace SIMD
         UME_FORCE_INLINE DERIVED_VEC_TYPE sadd(DERIVED_VEC_TYPE const & b) const {
             UME_EMULATION_WARNING();
             return SCALAR_EMULATION::addSaturated<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this), b);
-        } 
+        }
 
         // MSADDV
         UME_FORCE_INLINE DERIVED_VEC_TYPE sadd(MASK_TYPE const & mask, DERIVED_VEC_TYPE b) const {
@@ -1424,7 +1424,7 @@ namespace SIMD
             UME_EMULATION_WARNING();
             return SCALAR_EMULATION::prefixDecrement<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this));
         }
-        
+
         UME_FORCE_INLINE DERIVED_VEC_TYPE & operator-- () {
             return prefdec();
         }
@@ -1836,7 +1836,7 @@ namespace SIMD
             UME_EMULATION_WARNING();
             return SCALAR_EMULATION::MATH::faddmul<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b, c);
         }
-        
+
         // FSUBMULV
         UME_FORCE_INLINE DERIVED_VEC_TYPE fsubmul(DERIVED_VEC_TYPE const & b, DERIVED_VEC_TYPE const & c) const {
             UME_EMULATION_WARNING();
@@ -2003,19 +2003,19 @@ namespace SIMD
     // *    Definition of Bitwise Interface. Bitwise operations can only be
     // *    performed on integer (signed and unsigned) data types in C++.
     // *    While making bitwise operations on floating points is sometimes
-    // *    necessary, it is not safe and not portable. 
+    // *    necessary, it is not safe and not portable.
     // *
     // ***************************************************************************
     template<typename DERIVED_VEC_TYPE,
              typename SCALAR_TYPE,
              typename MASK_TYPE>
     class SIMDVecBitwiseInterface {
-        
-        typedef SIMDVecBitwiseInterface< 
-            DERIVED_VEC_TYPE, 
+
+        typedef SIMDVecBitwiseInterface<
+            DERIVED_VEC_TYPE,
             SCALAR_TYPE,
             MASK_TYPE> VEC_TYPE;
- 
+
     public:
         // BANDV
         UME_FORCE_INLINE DERIVED_VEC_TYPE band (DERIVED_VEC_TYPE const & b) const {
@@ -2064,7 +2064,7 @@ namespace SIMD
             UME_EMULATION_WARNING();
             return SCALAR_EMULATION::binaryAndAssign<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
-        
+
         // BANDSA
         UME_FORCE_INLINE DERIVED_VEC_TYPE & banda (SCALAR_TYPE b) {
             UME_EMULATION_WARNING();
@@ -2154,7 +2154,7 @@ namespace SIMD
             UME_EMULATION_WARNING();
             return SCALAR_EMULATION::binaryXor<DERIVED_VEC_TYPE> ( static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         }
-        
+
         UME_FORCE_INLINE DERIVED_VEC_TYPE operator^ (DERIVED_VEC_TYPE const & b) const {
             return bxor(b);
         }
@@ -2186,7 +2186,7 @@ namespace SIMD
             UME_EMULATION_WARNING();
             return SCALAR_EMULATION::binaryXorAssign<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this), b);
         }
-        
+
         UME_FORCE_INLINE DERIVED_VEC_TYPE & operator^= (DERIVED_VEC_TYPE const & b) {
             return bxora(b);
         }
@@ -2218,7 +2218,7 @@ namespace SIMD
             UME_EMULATION_WARNING();
             return SCALAR_EMULATION::binaryNot<DERIVED_VEC_TYPE, SCALAR_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
-    
+
         UME_FORCE_INLINE DERIVED_VEC_TYPE operator~ () const {
             return bnot();
         }
@@ -2329,7 +2329,7 @@ namespace SIMD
             UME_EMULATION_WARNING();
             return SCALAR_EMULATION::reduceBinaryOrScalar<SCALAR_TYPE, DERIVED_VEC_TYPE, MASK_TYPE> (mask, a, static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
-        
+
         // HBXOR
         UME_FORCE_INLINE SCALAR_TYPE hbxor () const {
             UME_EMULATION_WARNING();
@@ -2361,23 +2361,23 @@ namespace SIMD
     // *    Definition of Integer Interface. Integer operations can only be
     // *    performed on integer (signed and unsigned) data types in C++.
     // *    While making certain operations (such as bitwise) on floating points is sometimes
-    // *    necessary, it is not safe and not portable. 
+    // *    necessary, it is not safe and not portable.
     // *
     // ***************************************************************************
     template<typename DERIVED_VEC_TYPE,
              typename SCALAR_TYPE,
              typename MASK_TYPE>
-    class SIMDVecIntegerInterface : 
+    class SIMDVecIntegerInterface :
         public SIMDVecBitwiseInterface<
             DERIVED_VEC_TYPE,
             SCALAR_TYPE,
             MASK_TYPE>
     {
         typedef SIMDVecIntegerInterface<
-            DERIVED_VEC_TYPE, 
+            DERIVED_VEC_TYPE,
             SCALAR_TYPE,
             MASK_TYPE> VEC_TYPE;
- 
+
     public:
         // REMV
         UME_FORCE_INLINE DERIVED_VEC_TYPE rem(DERIVED_VEC_TYPE const & b) const {
@@ -2515,13 +2515,13 @@ namespace SIMD
              typename MASK_TYPE>
     class SIMDVecGatherScatterInterface
     {
-        typedef SIMDVecGatherScatterInterface< 
-            DERIVED_VEC_TYPE, 
+        typedef SIMDVecGatherScatterInterface<
+            DERIVED_VEC_TYPE,
             DERIVED_UINT_VEC_TYPE,
             SCALAR_TYPE,
             SCALAR_UINT_TYPE,
             MASK_TYPE> VEC_TYPE;
- 
+
     public:
         // GATHERU
         UME_FORCE_INLINE DERIVED_VEC_TYPE & gatheru (SCALAR_TYPE const * baseAddr, uint32_t stride) {
@@ -2593,9 +2593,9 @@ namespace SIMD
         UME_FORCE_INLINE SCALAR_TYPE*  scatter (MASK_TYPE const & mask, SCALAR_TYPE* baseAddr, DERIVED_UINT_VEC_TYPE const & indices) {
             UME_EMULATION_WARNING();
             return SCALAR_EMULATION::scatter<DERIVED_VEC_TYPE, SCALAR_TYPE, DERIVED_UINT_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this), baseAddr, indices);
-        }       
+        }
     };
-    
+
     // ***************************************************************************
     // *
     // *    Definition of Shift/Rotate interface. This interface creates
@@ -2611,13 +2611,13 @@ namespace SIMD
              typename MASK_TYPE>
     class SIMDVecShiftRotateInterface
     {
-        typedef SIMDVecShiftRotateInterface< 
-            DERIVED_VEC_TYPE, 
+        typedef SIMDVecShiftRotateInterface<
+            DERIVED_VEC_TYPE,
             DERIVED_UINT_VEC_TYPE,
             SCALAR_TYPE,
             SCALAR_UINT_TYPE,
             MASK_TYPE> VEC_TYPE;
- 
+
     public:
         // LSHV
         UME_FORCE_INLINE DERIVED_VEC_TYPE lsh (DERIVED_UINT_VEC_TYPE const & b) const {
@@ -2838,7 +2838,7 @@ namespace SIMD
 
     // ***************************************************************************
     // *
-    // *    Definition of Packable Interface. Pack operations can only be 
+    // *    Definition of Packable Interface. Pack operations can only be
     // *    performed on SIMD vector with lengths higher than 1 and being
     // *    powers of 2. Vectors of such lengths have to derive from one of type
     // *    interfaces: signed, unsigned or float and from packable interface.
@@ -2921,13 +2921,13 @@ namespace SIMD
     // ***************************************************************************
     template<typename DERIVED_VEC_TYPE, typename SCALAR_TYPE, typename MASK_TYPE>
     class SIMDVecSignInterface
-    {        
+    {
         // Other vector types necessary for this class
-        typedef SIMDVecSignInterface< 
+        typedef SIMDVecSignInterface<
             DERIVED_VEC_TYPE,
             SCALAR_TYPE,
             MASK_TYPE> VEC_TYPE;
- 
+
     public:
 
         // NEG
@@ -2990,21 +2990,21 @@ namespace SIMD
             return SCALAR_EMULATION::MATH::copySign<DERIVED_VEC_TYPE, SCALAR_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this), sign);
         }
     };
-    
+
     // ***************************************************************************
     // *
     // *    Definition of interface for vectors using UNSIGNED INTEGER scalar types
     // *
     // ***************************************************************************
     template<typename DERIVED_UINT_VEC_TYPE,
-             typename SCALAR_UINT_TYPE, 
+             typename SCALAR_UINT_TYPE,
              uint32_t VEC_LEN,
              typename MASK_TYPE,
-             typename SWIZZLE_MASK_TYPE> 
-    class SIMDVecUnsignedInterface : 
-        public SIMDVecBaseInterface< 
+             typename SWIZZLE_MASK_TYPE>
+    class SIMDVecUnsignedInterface :
+        public SIMDVecBaseInterface<
             DERIVED_UINT_VEC_TYPE,
-            SCALAR_UINT_TYPE, 
+            SCALAR_UINT_TYPE,
             VEC_LEN,
             MASK_TYPE,
             SWIZZLE_MASK_TYPE>,
@@ -3026,21 +3026,21 @@ namespace SIMD
             MASK_TYPE>
     {
         // Other vector types necessary for this class
-        typedef SIMDVecUnsignedInterface< 
-            DERIVED_UINT_VEC_TYPE, 
+        typedef SIMDVecUnsignedInterface<
+            DERIVED_UINT_VEC_TYPE,
             SCALAR_UINT_TYPE,
-            VEC_LEN, 
+            VEC_LEN,
             MASK_TYPE,
             SWIZZLE_MASK_TYPE> VEC_TYPE;
     private:
 
         // Forbid assignment-initialization of vector using scalar values
- 
+
         //SCALAR_UINT_TYPE operator[] (SCALAR_UINT_TYPE index) const; // Declaration only! This operator has to be implemented in derived class.
         UME_FORCE_INLINE DERIVED_UINT_VEC_TYPE & insert(uint32_t index, SCALAR_UINT_TYPE value); // Declaration only! This operator has to be implemented in derived class.
 
     protected:
-            
+
         // Making destructor protected prohibits this class from being instantiated. Effectively this class can only be used as a base class.
         ~SIMDVecUnsignedInterface() {};
     public:
@@ -3061,15 +3061,15 @@ namespace SIMD
     // ***************************************************************************
     template<typename DERIVED_VEC_TYPE,
              typename DERIVED_VEC_UINT_TYPE,
-             typename SCALAR_TYPE, 
+             typename SCALAR_TYPE,
              uint32_t VEC_LEN,
              typename SCALAR_UINT_TYPE,
              typename MASK_TYPE,
              typename SWIZZLE_MASK_TYPE>
-    class SIMDVecSignedInterface : 
-        public SIMDVecBaseInterface< 
+    class SIMDVecSignedInterface :
+        public SIMDVecBaseInterface<
             DERIVED_VEC_TYPE,
-            SCALAR_TYPE, 
+            SCALAR_TYPE,
             VEC_LEN,
             MASK_TYPE,
             SWIZZLE_MASK_TYPE>,
@@ -3098,7 +3098,7 @@ namespace SIMD
         typedef SIMDVecSignedInterface< DERIVED_VEC_TYPE,
                              DERIVED_VEC_UINT_TYPE,
                              SCALAR_TYPE,
-                             VEC_LEN, 
+                             VEC_LEN,
                              SCALAR_UINT_TYPE,
                              MASK_TYPE,
                              SWIZZLE_MASK_TYPE> VEC_TYPE;
@@ -3106,7 +3106,7 @@ namespace SIMD
         SCALAR_TYPE operator[] (SCALAR_UINT_TYPE index) const; // Declaration only! This operator has to be implemented in derived class.
         UME_FORCE_INLINE DERIVED_VEC_TYPE & insert (uint32_t index, SCALAR_TYPE value); // Declaration only! This operator has to be implemented in derived class.
     protected:
-            
+
         // Making destructor protected prohibits this class from being instantiated. Effectively this class can only be used as a base class.
         ~SIMDVecSignedInterface() {};
     public:
@@ -3136,16 +3136,16 @@ namespace SIMD
     template<typename DERIVED_VEC_TYPE,
              typename DERIVED_VEC_UINT_TYPE,
              typename DERIVED_VEC_INT_TYPE, // corresponding integer type
-             typename SCALAR_FLOAT_TYPE, 
+             typename SCALAR_FLOAT_TYPE,
              uint32_t VEC_LEN,
              typename SCALAR_UINT_TYPE,
              typename SCALAR_INT_TYPE,
              typename MASK_TYPE,
              typename SWIZZLE_MASK_TYPE>
-    class SIMDVecFloatInterface :  
-        public SIMDVecBaseInterface< 
+    class SIMDVecFloatInterface :
+        public SIMDVecBaseInterface<
             DERIVED_VEC_TYPE,
-            SCALAR_FLOAT_TYPE, 
+            SCALAR_FLOAT_TYPE,
             VEC_LEN,
             MASK_TYPE,
             SWIZZLE_MASK_TYPE>,
@@ -3165,7 +3165,7 @@ namespace SIMD
                     DERIVED_VEC_UINT_TYPE,
                     DERIVED_VEC_INT_TYPE,
                     SCALAR_FLOAT_TYPE,
-                    VEC_LEN, 
+                    VEC_LEN,
                     SCALAR_UINT_TYPE,
                     SCALAR_INT_TYPE,
                     MASK_TYPE,
@@ -3174,7 +3174,7 @@ namespace SIMD
     protected:
         // Making destructor protected prohibits this class from being instantiated. Effectively this class can only be used as a base class.
         ~SIMDVecFloatInterface() {};
-        
+
         SCALAR_FLOAT_TYPE operator[] (SCALAR_UINT_TYPE index) const; // Declaration only! This operator has to be implemented in derived class.
         UME_FORCE_INLINE DERIVED_VEC_TYPE & insert(uint32_t index, SCALAR_FLOAT_TYPE value); // Declaration only! This operator has to be implemented in derived class.
     public:
@@ -3183,7 +3183,7 @@ namespace SIMD
         UME_FORCE_INLINE DERIVED_VEC_TYPE operator- (DERIVED_VEC_TYPE const & b) const {
             return this->sub(b);
         }
-        
+
         // SUBS
         UME_FORCE_INLINE DERIVED_VEC_TYPE operator- (SCALAR_FLOAT_TYPE b) const {
             return this->sub(b);
@@ -3227,19 +3227,19 @@ namespace SIMD
             UME_EMULATION_WARNING();
             return SCALAR_EMULATION::MATH::sqrt<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
-        
+
         // MSQRT
         UME_FORCE_INLINE DERIVED_VEC_TYPE sqrt (MASK_TYPE const & mask) const {
             UME_EMULATION_WARNING();
             return SCALAR_EMULATION::MATH::sqrt<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
-        
+
         // SQRTA
         UME_FORCE_INLINE DERIVED_VEC_TYPE & sqrta () {
             UME_EMULATION_WARNING();
             return SCALAR_EMULATION::MATH::sqrtAssign<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE &>(*this));
         }
-        
+
         // MSQRTA
         UME_FORCE_INLINE DERIVED_VEC_TYPE & sqrta (MASK_TYPE const & mask) {
             UME_EMULATION_WARNING();
@@ -3269,15 +3269,15 @@ namespace SIMD
             UME_EMULATION_WARNING();
             return SCALAR_EMULATION::MATH::rsqrtAssign<DERIVED_VEC_TYPE, SCALAR_FLOAT_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE &>(*this));
         }
-        
+
         // POWV
         // Disabled, see Issue #10
         //UME_FORCE_INLINE DERIVED_VEC_TYPE pow (DERIVED_VEC_TYPE const & b) const {
         //    return SCALAR_EMULATION::MATH::pow<DERIVED_VEC_TYPE> (static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         // }
 
-        // MPOWV    
-        // Disabled, see Issue #10    
+        // MPOWV
+        // Disabled, see Issue #10
         //UME_FORCE_INLINE DERIVED_VEC_TYPE pow (MASK_TYPE const & mask, DERIVED_VEC_TYPE const & b) const {
         //    return SCALAR_EMULATION::MATH::pow<DERIVED_VEC_TYPE, MASK_TYPE> (mask, static_cast<DERIVED_VEC_TYPE const &>(*this), b);
         //}
@@ -3299,13 +3299,13 @@ namespace SIMD
             UME_EMULATION_WARNING();
             return SCALAR_EMULATION::MATH::round<DERIVED_VEC_TYPE>(static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
-        
+
         // MROUND
         UME_FORCE_INLINE DERIVED_VEC_TYPE round (MASK_TYPE const & mask) const {
             UME_EMULATION_WARNING();
             return SCALAR_EMULATION::MATH::round<DERIVED_VEC_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
-        
+
         // TRUNC
         UME_FORCE_INLINE DERIVED_VEC_INT_TYPE trunc () const {
             UME_EMULATION_WARNING();

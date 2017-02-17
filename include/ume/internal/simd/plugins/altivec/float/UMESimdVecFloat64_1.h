@@ -82,8 +82,8 @@ namespace SIMD {
             mVec = p[0];
         }
 
-#include "../../../utilities/ignore_warnings_push.h"
-#include "../../../utilities/ignore_warnings_unused_parameter.h"
+#include "../../../../utilities/ignore_warnings_push.h"
+#include "../../../../utilities/ignore_warnings_unused_parameter.h"
 
         // EXTRACT
         UME_FORCE_INLINE double extract(uint32_t index) const {
@@ -101,7 +101,7 @@ namespace SIMD {
             return IntermediateIndex<SIMDVec_f, double>(index, static_cast<SIMDVec_f &>(*this));
         }
 
-#include "../../../utilities/ignore_warnings_pop.h"
+#include "../../../../utilities/ignore_warnings_pop.h"
 
 
         // Override Mask Access operators

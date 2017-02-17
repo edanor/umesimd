@@ -84,8 +84,8 @@ namespace SIMD {
             mVec = p[0];
         }
 
-#include "../../../utilities/ignore_warnings_push.h"
-#include "../../../utilities/ignore_warnings_unused_parameter.h"
+#include "../../../../utilities/ignore_warnings_push.h"
+#include "../../../../utilities/ignore_warnings_unused_parameter.h"
 
         // EXTRACT
         UME_FORCE_INLINE float extract(uint32_t index) const {
@@ -103,7 +103,7 @@ namespace SIMD {
             return IntermediateIndex<SIMDVec_f, float>(index, static_cast<SIMDVec_f &>(*this));
         }
 
-#include "../../../utilities/ignore_warnings_pop.h"
+#include "../../../../utilities/ignore_warnings_pop.h"
 
         // Override Mask Access operators
 #if defined(USE_PARENTHESES_IN_MASK_ASSIGNMENT)
@@ -941,8 +941,8 @@ namespace SIMD {
             return mask.mMask ? 0 : 0xFFFFFFFF;
         }
 
-#include "../../../utilities/ignore_warnings_push.h"
-#include "../../../utilities/ignore_warnings_unused_parameter.h"
+#include "../../../../utilities/ignore_warnings_push.h"
+#include "../../../../utilities/ignore_warnings_unused_parameter.h"
 
         // GATHERU
         UME_FORCE_INLINE SIMDVec_f & gatheru(float const * baseAddr, uint32_t stride) {
@@ -955,7 +955,7 @@ namespace SIMD {
             return *this;
         }
 
-#include "../../../utilities/ignore_warnings_pop.h"
+#include "../../../../utilities/ignore_warnings_pop.h"
 
         // GATHERS
         UME_FORCE_INLINE SIMDVec_f & gather(float const * baseAddr, uint32_t const * indices) {
@@ -978,8 +978,8 @@ namespace SIMD {
             return *this;
         }
 
-#include "../../../utilities/ignore_warnings_push.h"
-#include "../../../utilities/ignore_warnings_unused_parameter.h"
+#include "../../../../utilities/ignore_warnings_push.h"
+#include "../../../../utilities/ignore_warnings_unused_parameter.h"
 
         // SCATTERU
         UME_FORCE_INLINE float* scatteru(float* baseAddr, uint32_t stride) const {
@@ -992,7 +992,7 @@ namespace SIMD {
             return baseAddr;
         }
 
-#include "../../../utilities/ignore_warnings_pop.h"
+#include "../../../../utilities/ignore_warnings_pop.h"
 
         // SCATTERS
         UME_FORCE_INLINE float * scatter(float * baseAddr, uint32_t * indices) const {
