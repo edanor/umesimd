@@ -1,0 +1,18 @@
+set(FLAGS_SSE   "-msse")
+set(FLAGS_SSE2  "-msse2")
+set(FLAGS_SSE3  "-msse3")
+set(FLAGS_SSSE3 "-mssse3")
+set(FLAGS_SSE41 "-msse4.1")
+set(FLAGS_SSE42 "-msse4.2")
+set(FLAGS_AVX   "-mavx")
+set(FLAGS_AVX2  "-mavx2;-mfma;-mf16c;-mlzcnt;-mbmi;-mbmi2")
+set(FLAGS_AVX512 "-mavx512f;-mavx512pf;-mavx512er;-mavx512cd")
+set(FLAGS_NATIVE "-march=native")
+
+if (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 5)
+  set(FLAGS_KNL "-march=knl")
+endif()
+
+if (APPLE)
+  list(APPEND CMAKE_SHARED_LINKER_FLAGS -dynamiclib)
+endif()
