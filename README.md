@@ -13,11 +13,12 @@ UME::SIMD is an explicit vectorization library. The library defines homogeneous 
 
 Draft of the UME::SIMD specification: [UME::SIMD spec](https://gainperformance.files.wordpress.com/2016/11/ume_simd-interface_v0_5.pdf)
 
-This piece of code was developed as part of ICE-DIP project at CERN.
-
- "ICE-DIP is a European Industrial Doctorate project funded by the 
- European Community's 7th Framework programme Marie Curie Actions under grant
- PITN-GA-2012-316596".
+For quotations please refer to: [A high-performance portable abstract interface for explicit SIMD vectorization](http://dl.acm.org/citation.cfm?id=3026939)
+  
+This piece of code was developed as part of ICE-DIP project at CERN:  
+ >   "ICE-DIP is a European Industrial Doctorate project funded by the 
+ >   European Community's 7th Framework programme Marie Curie Actions under grant
+ >   PITN-GA-2012-316596".
 
  All questions should be submitted using the bug tracking system:
 
