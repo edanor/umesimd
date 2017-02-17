@@ -24,7 +24,7 @@
 //
 //
 //  This piece of code was developed as part of ICE-DIP project at CERN.
-//  "ICE-DIP is a European Industrial Doctorate project funded by the European Community's 
+//  "ICE-DIP is a European Industrial Doctorate project funded by the European Community's
 //  7th Framework programme Marie Curie Actions under grant PITN-GA-2012-316596".
 //
 
@@ -45,7 +45,7 @@
         // Visual studio until 2015 is not supporting standard 'alignas' keyword
         #ifdef alignas
             // This check can be removed when verified that for all other versions alignas works as requested
-            #error "UME error: alignas already defined" 
+            #error "UME error: alignas already defined"
         #else
             #define alignas(alignment) __declspec(align(alignment))
         #endif
@@ -56,7 +56,7 @@
 #elif defined (__ICC) || defined(__INTEL_COMPILER)
 #endif
 
-#if defined (_MSC_VER) 
+#if defined (_MSC_VER)
     #define UME_RESTRICT __restrict
 #else
     #define UME_RESTRICT __restrict__
@@ -79,16 +79,16 @@ namespace UME
 
         static inline void* AlignedMalloc(std::size_t size, std::size_t alignment)
         {
-            
+
 #if defined(_MSC_VER)
             void* ptr = _aligned_malloc(size, alignment);
             return ptr;
 #elif defined(__GNUC__) || (__ICC) || defined(__INTEL_COMPILER)
-            void* memptr;
+            void* memptr = nullptr;
             //std::cout << "AlignedMalloc: memptr(before):" << memptr;
 
             int retval = 0;
-            do 
+            do
             {
                 retval = posix_memalign( &memptr, alignment, size);
                 alignment*=2;
