@@ -12,3 +12,5 @@ set(FLAGS_NATIVE "-march=native")
 if (NOT CMAKE_CXX_COMPILER_VERSION VERSION_LESS 3.5)
   set(FLAGS_KNL "-march=knl")
 endif()
+
+add_compile_options(-Wshorten-64-to-32)

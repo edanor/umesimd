@@ -20,6 +20,16 @@ if("${CMAKE_VERSION}" VERSION_LESS "3.6")
   endif()
 endif()
 
+if (SVML)
+  add_definitions(-DUME_USE_SVML)
+endif()
+
+if (NOT "${CMAKE_BUILD_TYPE}" MATCHES "Release")
+  add_compile_options(-fp-model=precise)
+endif()
+
+add_compile_options(-qopt-streaming-stores=never)
+
 if ("${TARGET_ISA}" MATCHES "knc|KNC")
   list(APPEND CMAKE_EXE_LINKER_FLAGS -mmic)
   list(APPEND CMAKE_SHARED_LINKER_FLAGS -static-intel)
