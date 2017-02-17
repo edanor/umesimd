@@ -1,4 +1,4 @@
-#include "../UMESimd.h"
+#include <ume/simd>
 
 template<typename VEC_T>
 void printVector(VEC_T const & x) {

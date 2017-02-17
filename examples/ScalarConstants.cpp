@@ -1,4 +1,4 @@
-#include "../UMESimd.h"
+#include <ume/simd>
 
 // When developing a templated code, it is often easier to use 
 // scalar constants. The problem with scalar constants is, that there
