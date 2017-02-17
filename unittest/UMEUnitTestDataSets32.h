@@ -24,13 +24,13 @@
 //
 //
 // This piece of code was developed as part of ICE-DIP project at CERN.
-//  "ICE-DIP is a European Industrial Doctorate project funded by the European Community's 
+//  "ICE-DIP is a European Industrial Doctorate project funded by the European Community's
 //  7th Framework programme Marie Curie Actions under grant PITN-GA-2012-316596".
 //
 #ifndef UME_UNIT_TEST_DATA_SETS_32_H_
 #define UME_UNIT_TEST_DATA_SETS_32_H_
 
-#include "../UMEBasicTypes.h"
+#include <cstdint>
 
 struct DataSet_1_mask {
     struct inputs {
@@ -174,7 +174,7 @@ struct DataSet_1_32u {
         static const uint32_t LSHV[32];
         static const uint32_t MLSHV[32];
         static const uint32_t LSHS[32];
-        static const uint32_t MLSHS[32]; 
+        static const uint32_t MLSHS[32];
         static const uint32_t RSHV[32];
         static const uint32_t MRSHV[32];
         static const uint32_t RSHS[32];
@@ -311,7 +311,7 @@ struct DataSet_1_32i {
         static const uint32_t LSHV[32];
         static const uint32_t MLSHV[32];
         static const uint32_t LSHS[32];
-        static const uint32_t MLSHS[32];  
+        static const uint32_t MLSHS[32];
         static const uint32_t RSHV[32];
         static const uint32_t MRSHV[32];
         static const uint32_t RSHS[32];
@@ -389,7 +389,7 @@ struct DataSet_1_32f {
         static const bool  CMPLES[32];
         static const bool  CMPEV;
         static const bool  CMPES;
-        
+
         static const float HADD[32];
         static const float MHADD[32];
         static const float HMUL[32];

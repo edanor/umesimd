@@ -24,7 +24,7 @@
 //
 //
 //  This piece of code was developed as part of ICE-DIP project at CERN.
-//  "ICE-DIP is a European Industrial Doctorate project funded by the European Community's 
+//  "ICE-DIP is a European Industrial Doctorate project funded by the European Community's
 //  7th Framework programme Marie Curie Actions under grant PITN-GA-2012-3VEC_LEN596".
 //
 
@@ -65,7 +65,7 @@ bool valueInRange(float value, float expectedValue, float errMargin) {
     }
     else if(value > 0.0f)
     {
-        return ((expectedValue)*(1.0f + errMargin) >= value) 
+        return ((expectedValue)*(1.0f + errMargin) >= value)
              & ((expectedValue)*(1.0f - errMargin) <= value);
     }
     else
@@ -82,7 +82,7 @@ bool valueInRange(double value, double expectedValue, double errMargin) {
     }
     else if (value > 0.0f)
     {
-        return ((expectedValue)*(1.0f + errMargin) >= value) 
+        return ((expectedValue)*(1.0f + errMargin) >= value)
              & ((expectedValue)*(1.0f - errMargin) <= value);
     }
     else
@@ -92,14 +92,14 @@ bool valueInRange(double value, double expectedValue, double errMargin) {
     }
 }
 
-#include "../utilities/ignore_warnings_push.h"
-#include "../utilities/ignore_warnings_unused_parameter.h"
+#include <ume/internal/utilities/ignore_warnings_push.h>
+#include <ume/internal/utilities/ignore_warnings_unused_parameter.h>
 
 bool valueInRange(bool value, bool expectedValue, double errMargin) {
     return value == expectedValue;
 }
 
-#include "../utilities/ignore_warnings_pop.h"
+#include <ume/internal/utilities/ignore_warnings_pop.h>
 
 bool valueInRange(uint32_t value, uint32_t expectedValue, float errMargin) {
     return valueInRange((float)value, (float)expectedValue, errMargin);
@@ -169,7 +169,7 @@ bool valuesExact(int16_t const *values, int16_t const *expectedValues, unsigned 
     return retval;
 }
 
-bool valuesExact(int32_t const *values, int32_t const *expectedValues, unsigned int count) 
+bool valuesExact(int32_t const *values, int32_t const *expectedValues, unsigned int count)
 {
     bool retval = true;
     for(unsigned int i = 0; i < count; i++) {
@@ -182,7 +182,7 @@ bool valuesExact(int32_t const *values, int32_t const *expectedValues, unsigned 
     return retval;
 }
 
-bool valuesExact(uint32_t const *values, uint32_t const *expectedValues, unsigned int count) 
+bool valuesExact(uint32_t const *values, uint32_t const *expectedValues, unsigned int count)
 {
     bool retval = true;
     for(unsigned int i = 0; i < count; i++) {
@@ -260,10 +260,10 @@ bool valuesInRange(double const *values, double const *expectedValues, unsigned 
     return retval;
 }
 
-#include "../utilities/ignore_warnings_push.h"
-#include "../utilities/ignore_warnings_unused_parameter.h"
+#include <ume/internal/utilities/ignore_warnings_push.h>
+#include <ume/internal/utilities/ignore_warnings_unused_parameter.h>
 
-// This is a dirty hack to use the same testing function for both int and float types... 
+// This is a dirty hack to use the same testing function for both int and float typesume/internal.
 bool valuesInRange(bool const *values, bool const *expectedValues, unsigned int count, double errMargin)
 {
     return valuesExact(values, expectedValues, count);
@@ -309,7 +309,7 @@ bool valuesInRange(int64_t const *values, int64_t const *expectedValues, unsigne
     return valuesExact(values, expectedValues, count);
 }
 
-#include "../utilities/ignore_warnings_pop.h"
+#include <ume/internal/utilities/ignore_warnings_pop.h>
 
 template<>
 uint8_t randomValue<uint8_t>(std::mt19937 & generator) {
