@@ -24,17 +24,12 @@
 //
 //
 //  This piece of code was developed as part of ICE-DIP project at CERN.
-//  "ICE-DIP is a European Industrial Doctorate project funded by the European Community's 
+//  "ICE-DIP is a European Industrial Doctorate project funded by the European Community's
 //  7th Framework programme Marie Curie Actions under grant PITN-GA-2012-316596".
 //
 
 #ifndef UME_SIMD_H_
 #define UME_SIMD_H_
-
-// Version macros.
-#define UME_SIMD_VERSION_MAJOR 0
-#define UME_SIMD_VERSION_MINOR 6
-#define UME_SIMD_VERSION_PATCH 1
 
 #include <iostream>
 
@@ -47,13 +42,13 @@
 // Define static warning for emulation instantiation. This will be used to inform user which parts of vectorization code are emulated.
 
 // ************************************************************************************************
-// Uncomment this define for debug/inefficiences identification. 
+// Uncomment this define for debug/inefficiences identification.
 //  VS requires at least W3 warning level!!!
 
 //#define UME_SIMD_SHOW_EMULATION_WARNINGS 1
 
 //  Enabling emulation warnings allows tracing of following information:
-//    1. UME_EMULATION_WARNING informs which emulated functions are used. Emulated functions are 
+//    1. UME_EMULATION_WARNING informs which emulated functions are used. Emulated functions are
 //       created for compatibility reasons and thus are considered unoptimal. They should
 //       be used for functional testing and debugging, and should be avoided in production codes.
 //
@@ -62,8 +57,8 @@
 //    2. UME_PERFORMANCE_UNOPTIMAL_WARNING used in plugins to inform that certain operation
 //       does not have a counter part in instruction set or specific library. When this warning
 //       appears, user should re-consider use of designated function/operator and replace it with
-//       specialized code. 
-//         
+//       specialized code.
+//
 //         This type of warning is a STATIC warning emited at compile time
 //
 //    3. UME_ALIGNMENT_CHECK used to verify if data pointer is aligned correctly.
@@ -84,7 +79,7 @@ namespace SIMD
 #else
 #error Compiler not supported
 #endif
-    
+
     #define PP_CAT(x, y) x##y
     namespace emulation_warning
     {
@@ -108,7 +103,7 @@ namespace SIMD
     }
 
     #define UME_SIMD_DYNAMIC_WARN(cond, msg) if(cond) std::cerr << msg;
-    
+
 
     // Specific warnings
     #define UME_EMULATION_WARNING() UME_SIMD_STATIC_WARN(false, "Using emulation")
@@ -153,7 +148,7 @@ namespace SIMD
     #endif // INSTRUCTION SET
 #endif
 
-// Traits need to be defined after all SIMD vectors are defined. 
+// Traits need to be defined after all SIMD vectors are defined.
 #include "UMESimdTraits.h"
 #include "UMESimdScalarOperators.h"
 #include "UMESimdInterfaceFunctions.h"
