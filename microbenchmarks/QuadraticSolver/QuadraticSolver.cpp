@@ -31,7 +31,7 @@
 #include <time.h>
 #include <string>
 
-#include "../../UMESimd.h"
+#include <ume/simd>
 #include "../utilities/TimingStatistics.h"
 
 // This size effectively gives 200 MB of allocation for single precision, and 400 MB for double precision

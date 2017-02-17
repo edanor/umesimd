@@ -31,7 +31,7 @@
 #ifndef LATENCIES_H_
 #define LATENCIES_H_
 
-#include "../../UMESimd.h"
+#include <ume/simd>
 
 using namespace UME::SIMD;
 

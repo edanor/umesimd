@@ -24,7 +24,7 @@
 //
 //
 //  This piece of code was developed as part of ICE-DIP project at CERN.
-//  "ICE-DIP is a European Industrial Doctorate project funded by the European Community's 
+//  "ICE-DIP is a European Industrial Doctorate project funded by the European Community's
 //  7th Framework programme Marie Curie Actions under grant PITN-GA-2012-316596".
 //
 
@@ -68,13 +68,13 @@ UME_NEVER_INLINE TIMING_RES test_intel_FIR8_float()
     start = get_timestamp();
 
     alignas(64) uint32_t indices[8] = {0, 7, 6, 5, 4, 3, 2, 1};
-    
+
     __m256 coeff_vec = _mm256_load_ps(coeffs);
     __m256i index_vec = _mm256_load_si256((const __m256i*)indices);
     __m256 state_vec, vec;
-    
+
     __m256i permute_vec = _mm256_setr_epi32(7, 0, 1, 2, 3, 4, 5, 6);
-    
+
 #if defined ENABLE_DEBUG
         std::cout << "Coefficients: \n";
         for (uint32_t i = 0; i < FIR_ORDER; i++) {
@@ -100,7 +100,7 @@ UME_NEVER_INLINE TIMING_RES test_intel_FIR8_float()
         for(int j = 0; j < 8; j++) y[i] += raw[j];
         //index_vec = index_vec.template swizzle<15, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14>();
         index_vec = _mm256_permutevar8x32_epi32(permute_vec, index_vec);
-        
+
 #if defined ENABLE_DEBUG
         std::cout << "\nx: " << x[i];
         std::cout << "\nstate: \n";
@@ -123,7 +123,7 @@ UME_NEVER_INLINE TIMING_RES test_intel_FIR8_float()
     }
     // cast to void to avoid reduction
     (void)red;
-    
+
     UME::DynamicMemory::AlignedFree(x);
     UME::DynamicMemory::AlignedFree(y);
 
@@ -146,7 +146,7 @@ void benchmarkIntel_FIR8_float(std::string const & resultPrefix,
     std::cout << resultPrefix << (unsigned long long) stats.getAverage()
         << ", dev: " << (unsigned long long) stats.getStdDev()
         << " (speedup: " << stats.calculateSpeedup(reference) << "x)\n";
-        
+
 #else
     std::cout << resultPrefix << ": AVX2/AVX512 not detected, cannot run measurments.\n";
 #endif
@@ -187,13 +187,13 @@ UME_NEVER_INLINE TIMING_RES test_intel_FIR16_float()
     start = get_timestamp();
 
     alignas(64) uint32_t indices[16] = {0, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1};
-    
+
     __m512 coeff_vec = _mm512_load_ps(coeffs);
     __m512i index_vec = _mm512_load_si512(indices);
     __m512 state_vec, vec;
-    
+
     __m512i permute_vec = _mm512_setr_epi32(15, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14);
-    
+
 #if defined ENABLE_DEBUG
         std::cout << "Coefficients: \n";
         for (uint32_t i = 0; i < FIR_ORDER; i++) {
@@ -216,7 +216,7 @@ UME_NEVER_INLINE TIMING_RES test_intel_FIR16_float()
         y[i] = _mm512_reduce_add_ps(vec);
         //index_vec = index_vec.template swizzle<15, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14>();
         index_vec = _mm512_permutexvar_epi32(index_vec, permute_vec);
-        
+
 #if defined ENABLE_DEBUG
         std::cout << "\nx: " << x[i];
         std::cout << "\nstate: \n";
@@ -239,7 +239,7 @@ UME_NEVER_INLINE TIMING_RES test_intel_FIR16_float()
     }
     // cast to void to avoid reduction
     (void)red;
-    
+
     UME::DynamicMemory::AlignedFree(x);
     UME::DynamicMemory::AlignedFree(y);
 
@@ -262,8 +262,10 @@ void benchmarkIntel_FIR16_float(std::string const & resultPrefix,
     std::cout << resultPrefix << (unsigned long long) stats.getAverage()
         << ", dev: " << (unsigned long long) stats.getStdDev()
         << " (speedup: " << stats.calculateSpeedup(reference) << "x)\n";
-        
+
 #else
+    (void)reference;
+    (void)iterations; /* avoid warning */
     std::cout << resultPrefix << ": AVX512 not detected, cannot run measurments.\n";
 #endif
 }

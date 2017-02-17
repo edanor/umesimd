@@ -24,7 +24,7 @@
 //
 //
 //  This piece of code was developed as part of ICE-DIP project at CERN.
-//  "ICE-DIP is a European Industrial Doctorate project funded by the European Community's 
+//  "ICE-DIP is a European Industrial Doctorate project funded by the European Community's
 //  7th Framework programme Marie Curie Actions under grant PITN-GA-2012-316596".
 //
 
@@ -38,7 +38,7 @@ RESULTS<float> test_avx_32f()
     float *A, *B, *B_T, *C;
 
     // All arrays should be padded, so that rows start at optimal alignment.
-    // Making each row of A and column of B padded, also simplifies 
+    // Making each row of A and column of B padded, also simplifies
     int SIMD_STRIDE = 8;
     int PADDING = SIMD_STRIDE - (MAT_RANK % SIMD_STRIDE);
 
@@ -162,7 +162,7 @@ RESULTS<double> test_avx_64f()
     double *A, *B, *B_T, *C;
 
     // All arrays should be padded, so that rows start at optimal alignment.
-    // Making each row of A and column of B padded, also simplifies 
+    // Making each row of A and column of B padded, also simplifies
     int SIMD_STRIDE = 4;
     int PADDING = SIMD_STRIDE - (MAT_RANK % SIMD_STRIDE);
 
@@ -280,7 +280,7 @@ RESULTS<double> test_avx_64f()
 
 
 template<int MAT_RANK>
-void benchmark_avx_32f(char * resultPrefix,
+void benchmark_avx_32f(const char *const resultPrefix,
     int iterations,
     TimingStatistics & reference)
 {
@@ -301,7 +301,7 @@ void benchmark_avx_32f(char * resultPrefix,
 }
 
 template<int MAT_RANK>
-void benchmark_avx_64f(char * resultPrefix,
+void benchmark_avx_64f(const char *const resultPrefix,
     int iterations,
     TimingStatistics & reference)
 {

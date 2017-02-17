@@ -30,7 +30,7 @@
 
 #include <random>
 
-#include "../../UMESimd.h"
+#include <ume/simd>
 #include "../utilities/TimingStatistics.h"
 
 using namespace UME::SIMD;
