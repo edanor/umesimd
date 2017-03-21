@@ -42,18 +42,18 @@ Please refer to the wiki for introduction and additional information:
 **RELEASE NOTES for v0.8.1**  
 
 Interface:  
-    -
-Performance tuning:
-    -
+    -  
+Performance tuning:  
+    -  
 Benchmarks:  
-    - Add VS2015 solution for benchmarks.
+    - Add VS2015 solution for benchmarks.  
   
 Fixes:  
-    - remove unnecessary include in explog.
-    - fix explog to use more portable reinterpret-cast
+    - remove unnecessary include in explog.  
+    - fix explog to use more portable reinterpret-cast  
     
 Tests:  
-    -
+    -  
 
 Other:  
-    - Update Readme
+    - Update Readme  
