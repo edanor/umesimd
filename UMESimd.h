@@ -33,7 +33,7 @@
 
 // Version macros.
 #define UME_SIMD_VERSION_MAJOR 0
-#define UME_SIMD_VERSION_MINOR 6
+#define UME_SIMD_VERSION_MINOR 8
 #define UME_SIMD_VERSION_PATCH 1
 
 #include <iostream>
