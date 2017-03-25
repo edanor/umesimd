@@ -48,6 +48,32 @@ namespace UME
 {
 namespace SIMD
 {
+// Specialize DefaultVecLen
+#if defined(__clang__)
+// clang is good in auto-vectorization. Use SIMD-1 as default
+    template<> struct DefaultVecLen<uint8_t> { static const int value = 1; };
+    template<> struct DefaultVecLen<int8_t> { static const int value = 1; };
+    template<> struct DefaultVecLen<uint16_t> { static const int value = 1; };
+    template<> struct DefaultVecLen<int16_t> { static const int value = 1; };
+    template<> struct DefaultVecLen<uint32_t> { static const int value = 1; };
+    template<> struct DefaultVecLen<int32_t> { static const int value = 1; };
+    template<> struct DefaultVecLen<uint64_t> { static const int value = 1; };
+    template<> struct DefaultVecLen<int64_t> { static const int value = 1; };
+    template<> struct DefaultVecLen<float> { static const int value = 1; };
+    template<> struct DefaultVecLen<double> { static const int value = 1; };
+#else
+    template<> struct DefaultVecLen<uint8_t> { static const int value = 1; };
+    template<> struct DefaultVecLen<int8_t> { static const int value = 1; };
+    template<> struct DefaultVecLen<uint16_t> { static const int value = 1; };
+    template<> struct DefaultVecLen<int16_t> { static const int value = 1; };
+    template<> struct DefaultVecLen<uint32_t> { static const int value = 4; };
+    template<> struct DefaultVecLen<int32_t> { static const int value = 4; };
+    template<> struct DefaultVecLen<uint64_t> { static const int value = 1; };
+    template<> struct DefaultVecLen<int64_t> { static const int value = 1; };
+    template<> struct DefaultVecLen<float> { static const int value = 4; };
+    template<> struct DefaultVecLen<double> { static const int value = 2; };
+#endif
+
     // forward declarations of simd types classes;
     template<uint32_t VEC_LEN>                             class SIMDVecMask;
     template<uint32_t VEC_LEN>                             class SIMDSwizzle;

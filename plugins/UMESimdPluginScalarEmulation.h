@@ -39,6 +39,18 @@ namespace UME
 {
 namespace SIMD
 {
+    // Specialize SuggestedVecLen
+    template<> struct SuggestedVecLen<uint8_t> { static const int value = 1; };
+    template<> struct SuggestedVecLen<int8_t> { static const int value = 1; };
+    template<> struct SuggestedVecLen<uint16_t> { static const int value = 1; };
+    template<> struct SuggestedVecLen<int16_t> { static const int value = 1; };
+    template<> struct SuggestedVecLen<uint32_t> { static const int value = 1; };
+    template<> struct SuggestedVecLen<int32_t> { static const int value = 1; };
+    template<> struct SuggestedVecLen<uint64_t> { static const int value = 1; };
+    template<> struct SuggestedVecLen<int64_t> { static const int value = 1; };
+    template<> struct SuggestedVecLen<float> { static const int value = 1; };
+    template<> struct SuggestedVecLen<double> { static const int value = 1; };
+    
     // forward declarations of simd types classes;
     template<uint32_t VEC_LEN>                             class SIMDVecMask;
     template<uint32_t SMASK_LEN>                           class SIMDSwizzle;

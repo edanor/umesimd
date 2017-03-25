@@ -128,6 +128,18 @@ namespace SIMD
 
 #include "UMEInline.h"
 
+
+namespace UME {
+namespace SIMD {
+    // Eache plugin should define this with a 'value' field
+    // specialized depending on the architecture used.
+    // Sugested values are not guaranteed to give optimal results
+    // on any platform, but they could be used as a baseline for
+    // specific derived software.
+    template<typename SCALAR_T> struct SuggestedVecLen{/*const int value = ? */};
+}
+}
+
 #if defined FORCE_SCALAR
     #define USING_EMULATED_TYPES 1
     #include "plugins/UMESimdPluginScalarEmulation.h"

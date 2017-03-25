@@ -996,10 +996,44 @@ namespace SIMD {
         // MLOG2
         // LOG10
         // MLOG10
-        // SIN       - Sine
-        // MSIN      - Masked sine
-        // COS       - Cosine
-        // MCOS      - Masked cosine
+        // SIN
+        UME_FORCE_INLINE SIMDVec_f sin() const {
+#if defined(UME_USE_SVML)
+            __m256d t0 = _mm256_sin_pd(mVec);
+            return SIMDVec_f(t0);
+#else
+            return VECTOR_EMULATION::sind<SIMDVec_f, SIMDVec_u<uint64_t, 4>, SIMDVecMask<4>>(*this);
+#endif
+        }
+        // MSIN
+        UME_FORCE_INLINE SIMDVec_f sin(SIMDVecMask<4> const & mask) const {
+#if defined(UME_USE_SVML)
+            __m256d t0 = _mm256_sin_pd(mVec);
+            __m256d t1 = BLEND(mVec, t0, mask.mMask);
+            return SIMDVec_f(t1);
+#else
+            return VECTOR_EMULATION::sind<SIMDVec_f, SIMDVec_u<uint64_t, 4>, SIMDVecMask<4>>(mask, *this);
+#endif
+        }
+        // COS
+        UME_FORCE_INLINE SIMDVec_f cos() const {
+#if defined(UME_USE_SVML)
+            __m256d t0 = _mm256_cos_pd(mVec);
+            return SIMDVec_f(t0);
+#else
+            return VECTOR_EMULATION::cosd<SIMDVec_f, SIMDVec_u<uint64_t, 4>, SIMDVecMask<4>>(*this);
+#endif
+        }
+        // MCOS
+        UME_FORCE_INLINE SIMDVec_f cos(SIMDVecMask<4> const & mask) const {
+#if defined(UME_USE_SVML)
+            __m256d t0 = _mm256_cos_pd(mVec);
+            __m256d t1 = BLEND(mVec, t0, mask.mMask);
+            return SIMDVec_f(t1);
+#else
+            return VECTOR_EMULATION::cosd<SIMDVec_f, SIMDVec_u<uint64_t, 4>, SIMDVecMask<4>>(mask, *this);
+#endif
+        }
         // TAN       - Tangent
         // MTAN      - Masked tangent
         // CTAN      - Cotangent
