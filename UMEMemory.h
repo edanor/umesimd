@@ -154,6 +154,20 @@ namespace UME
         }
     };
     
+    // Specialize for bool
+    template<int SIMD_STRIDE>
+    struct AlignedAllocator<bool, SIMD_STRIDE> {
+        AlignedAllocator() {}
+        template <class U> AlignedAllocator(const AlignedAllocator<U, SIMD_STRIDE> & other) {}
+        bool* allocate(std::size_t n) {
+            int alignment = UME::SIMD::SIMDVecMask<SIMD_STRIDE>::alignment();
+            return (bool*)DynamicMemory::AlignedMalloc(n, alignment);
+        }
+        void deallocate(bool* p, std::size_t n) {
+            DynamicMemory::AlignedFree(p);
+        }
+    };
+    
     template <class T, class U, int SIMD_STRIDE1, int SIMD_STRIDE2>
     bool operator==(const AlignedAllocator<T, SIMD_STRIDE1>&, const AlignedAllocator<U, SIMD_STRIDE2>&) {
         return std::is_same<T, U>::value && (SIMD_STRIDE1 == SIMD_STRIDE2);
