@@ -132,6 +132,9 @@ namespace UME
         }
     };
 
+#include "utilities/ignore_warnings_push.h"
+#include "utilities/ignore_warnings_unused_parameter.h"
+
     template<typename T1, typename T2>
     UME_FORCE_INLINE T1 reinterpretCast(T2 from) {
         T1 to;
@@ -176,6 +179,7 @@ namespace UME
     bool operator!=(const AlignedAllocator<T, SIMD_STRIDE1>&, const AlignedAllocator<U, SIMD_STRIDE2>&) {
         return !(std::is_same<T, U>::value && (SIMD_STRIDE1 == SIMD_STRIDE2));
     }
+#include "utilities/ignore_warnings_pop.h"
     
     
 }
