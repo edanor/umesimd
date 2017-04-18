@@ -48,30 +48,30 @@ namespace UME
 {
 namespace SIMD
 {
-// Specialize DefaultVecLen
+// Specialize SuggestedVecLen
 #if defined(__clang__)
 // clang is good in auto-vectorization. Use SIMD-1 as default
-    template<> struct DefaultVecLen<uint8_t> { static const int value = 1; };
-    template<> struct DefaultVecLen<int8_t> { static const int value = 1; };
-    template<> struct DefaultVecLen<uint16_t> { static const int value = 1; };
-    template<> struct DefaultVecLen<int16_t> { static const int value = 1; };
-    template<> struct DefaultVecLen<uint32_t> { static const int value = 1; };
-    template<> struct DefaultVecLen<int32_t> { static const int value = 1; };
-    template<> struct DefaultVecLen<uint64_t> { static const int value = 1; };
-    template<> struct DefaultVecLen<int64_t> { static const int value = 1; };
-    template<> struct DefaultVecLen<float> { static const int value = 1; };
-    template<> struct DefaultVecLen<double> { static const int value = 1; };
+    template<> struct SuggestedVecLen<uint8_t> { static const int value = 1; };
+    template<> struct SuggestedVecLen<int8_t> { static const int value = 1; };
+    template<> struct SuggestedVecLen<uint16_t> { static const int value = 1; };
+    template<> struct SuggestedVecLen<int16_t> { static const int value = 1; };
+    template<> struct SuggestedVecLen<uint32_t> { static const int value = 1; };
+    template<> struct SuggestedVecLen<int32_t> { static const int value = 1; };
+    template<> struct SuggestedVecLen<uint64_t> { static const int value = 1; };
+    template<> struct SuggestedVecLen<int64_t> { static const int value = 1; };
+    template<> struct SuggestedVecLen<float> { static const int value = 1; };
+    template<> struct SuggestedVecLen<double> { static const int value = 1; };
 #else
-    template<> struct DefaultVecLen<uint8_t> { static const int value = 1; };
-    template<> struct DefaultVecLen<int8_t> { static const int value = 1; };
-    template<> struct DefaultVecLen<uint16_t> { static const int value = 1; };
-    template<> struct DefaultVecLen<int16_t> { static const int value = 1; };
-    template<> struct DefaultVecLen<uint32_t> { static const int value = 4; };
-    template<> struct DefaultVecLen<int32_t> { static const int value = 4; };
-    template<> struct DefaultVecLen<uint64_t> { static const int value = 1; };
-    template<> struct DefaultVecLen<int64_t> { static const int value = 1; };
-    template<> struct DefaultVecLen<float> { static const int value = 4; };
-    template<> struct DefaultVecLen<double> { static const int value = 2; };
+    template<> struct SuggestedVecLen<uint8_t> { static const int value = 1; };
+    template<> struct SuggestedVecLen<int8_t> { static const int value = 1; };
+    template<> struct SuggestedVecLen<uint16_t> { static const int value = 1; };
+    template<> struct SuggestedVecLen<int16_t> { static const int value = 1; };
+    template<> struct SuggestedVecLen<uint32_t> { static const int value = 4; };
+    template<> struct SuggestedVecLen<int32_t> { static const int value = 4; };
+    template<> struct SuggestedVecLen<uint64_t> { static const int value = 1; };
+    template<> struct SuggestedVecLen<int64_t> { static const int value = 1; };
+    template<> struct SuggestedVecLen<float> { static const int value = 4; };
+    template<> struct SuggestedVecLen<double> { static const int value = 2; };
 #endif
 
     // forward declarations of simd types classes;
@@ -92,8 +92,8 @@ namespace SIMD
 
 namespace UME
 {
-    namespace SIMD
-    {
+namespace SIMD
+{
     // Mask types
     typedef SIMDVecMask<1>      SIMDMask1;
     typedef SIMDVecMask<2>      SIMDMask2;

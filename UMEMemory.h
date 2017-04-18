@@ -37,6 +37,7 @@
 
 #include <iostream>
 
+#include "UMESimd.h"
 #include "UMEInline.h"
 
 #if defined (_MSC_VER)
@@ -139,6 +140,30 @@ namespace UME
         memcpy(toPtr, fromPtr, sizeof(T2));
         return to;
     }
+    
+    template<class T, int SIMD_STRIDE>
+    struct AlignedAllocator {
+        AlignedAllocator() {}
+        template <class U> AlignedAllocator(const AlignedAllocator<U, SIMD_STRIDE> & other) {}
+        T* allocate(std::size_t n) {
+            int alignment = UME::SIMD::SIMDVec<T, SIMD_STRIDE>::alignment();
+            return (T*)DynamicMemory::AlignedMalloc(n, alignment);
+        }
+        void deallocate(T* p, std::size_t n) {
+            DynamicMemory::AlignedFree(p);
+        }
+    };
+    
+    template <class T, class U, int SIMD_STRIDE1, int SIMD_STRIDE2>
+    bool operator==(const AlignedAllocator<T, SIMD_STRIDE1>&, const AlignedAllocator<U, SIMD_STRIDE2>&) {
+        return std::is_same<T, U>::value && (SIMD_STRIDE1 == SIMD_STRIDE2);
+    }
+    template <class T, class U, int SIMD_STRIDE1, int SIMD_STRIDE2>
+    bool operator!=(const AlignedAllocator<T, SIMD_STRIDE1>&, const AlignedAllocator<U, SIMD_STRIDE2>&) {
+        return !(std::is_same<T, U>::value && (SIMD_STRIDE1 == SIMD_STRIDE2));
+    }
+    
+    
 }
 
 

@@ -32,12 +32,19 @@
 //#define USE_PARENTHESES_IN_MASK_ASSIGNMENT
 
 #include "UMEUnitTestCommon.h"
+#include "UMEUnitTestMemory.h"
 #include "UMEUnitTestSimd.h"
 
 int main()
 {
-    test_UMESimd(false);
+    int total_tests = 0;
+    int total_failed = 0;
+    
+    total_failed += test_allocators(false);
+    total_tests +=g_totalTests;
+    total_failed += test_UMESimd(false);
+    total_tests +=g_totalTests;
     std::cout << std::endl;
-    std::cout << "Total tests failed: " << g_totalFailed << "/" << g_totalTests << std::endl;
+    std::cout << "Total tests failed: " << total_failed << "/" << total_tests << std::endl;
     return 0;
 }

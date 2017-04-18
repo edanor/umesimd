@@ -57,7 +57,8 @@
 namespace UME
 {
 namespace SIMD
-{// Specialize SuggestedVecLen
+{
+// Specialize SuggestedVecLen
 #if defined(__clang__)
 // clang is good in auto-vectorization. Use SIMD-1 as default
     template<> struct SuggestedVecLen<uint8_t> { static const int value = 1; };
@@ -84,7 +85,7 @@ namespace SIMD
 #endif
     // forward declarations of simd types classes;
     template<uint32_t VEC_LEN>                             class SIMDVecMask;
-    template<uint32_t VEC_LEN>                             class SIMDSwizzle;
+    template<uint32_t SMASK_LEN>                           class SIMDSwizzle;
     template<typename SCALAR_UINT_TYPE, uint32_t VEC_LEN>  class SIMDVec_u;
     template<typename SCALAR_INT_TYPE, uint32_t VEC_LEN>   class SIMDVec_i;
     template<typename SCALAR_FLOAT_TYPE, uint32_t VEC_LEN> class SIMDVec_f;

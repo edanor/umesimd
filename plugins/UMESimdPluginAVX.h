@@ -41,7 +41,8 @@
 namespace UME
 {
 namespace SIMD
-{// Specialize SuggestedVecLen
+{
+// Specialize SuggestedVecLen
 #if defined(__clang__)
 // clang is good in auto-vectorization. Use SIMD-1 as default
     template<> struct SuggestedVecLen<uint8_t> { static const int value = 1; };

@@ -50,7 +50,7 @@ namespace SIMD
     template<> struct SuggestedVecLen<int64_t> { static const int value = 1; };
     template<> struct SuggestedVecLen<float> { static const int value = 1; };
     template<> struct SuggestedVecLen<double> { static const int value = 1; };
-    
+
     // forward declarations of simd types classes;
     template<uint32_t VEC_LEN>                             class SIMDVecMask;
     template<uint32_t SMASK_LEN>                           class SIMDSwizzle;
@@ -111,8 +111,8 @@ namespace SIMD
 
 namespace UME
 {
-    namespace SIMD
-    {
+namespace SIMD
+{
     // Mask types
     typedef SIMDVecMask<1>      SIMDMask1;
     typedef SIMDVecMask<2>      SIMDMask2;

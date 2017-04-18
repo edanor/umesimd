@@ -39,7 +39,6 @@
 #include <iostream>
 
 #include "UMEBasicTypes.h"
-#include "UMEMemory.h"
 
 // Always include emulated vector types, so that plugins can use them to emulate unsupported types.
 // If an emulated mode is selected, this plugin defines all necessary vector types.
@@ -231,5 +230,6 @@ namespace UME {
     }
 }
 
+#include "UMEMemory.h"
 
 #endif
