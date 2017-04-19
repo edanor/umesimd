@@ -218,6 +218,18 @@ namespace SIMD
             return SCALAR_EMULATION::storeAligned<DERIVED_MASK_TYPE, bool>(static_cast<DERIVED_MASK_TYPE const &>(*this), addrAligned);
         }
 
+        // GATHERU
+        UME_FORCE_INLINE DERIVED_MASK_TYPE & gatheru (bool const * baseAddr, uint32_t stride) {
+            UME_EMULATION_WARNING();
+            return SCALAR_EMULATION::gatheru<DERIVED_MASK_TYPE, bool> (static_cast<DERIVED_MASK_TYPE &>(*this), baseAddr, stride);
+        }
+
+        // SCATTERU
+        UME_FORCE_INLINE bool* scatteru (bool * baseAddr, uint32_t stride) {
+            UME_EMULATION_WARNING();
+            return SCALAR_EMULATION::scatteru<DERIVED_MASK_TYPE, bool> (static_cast<DERIVED_MASK_TYPE &>(*this), baseAddr, stride);
+        }
+
         // ASSIGNV
         UME_FORCE_INLINE DERIVED_MASK_TYPE & assign(DERIVED_MASK_TYPE const & maskOp) {
             UME_EMULATION_WARNING();
