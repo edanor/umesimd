@@ -8,10 +8,10 @@
  > git clone https://edanor@bitbucket.org/edanor/umesimd.git  
  > git checkout tags/v0.8.1
 
-
 UME::SIMD is an explicit vectorization library. The library defines homogeneous interface for accessing functionality of SIMD registers of AVX, AVX2, AVX512 and IMCI (KNCNI, k1om) instruction set. 
 
-Draft of the UME::SIMD specification: [UME::SIMD spec](https://gainperformance.files.wordpress.com/2016/11/ume_simd-interface_v0_5.pdf)
+You can find the most recent documentation and tutorials here: [UME::SIMD tutorials](https://gain-performance.com/ume/).   
+Also a link to older wiki(deprecated): [wiki pages](https://bitbucket.org/edanor/umesimd/wiki/Home).
 
 For quotations please refer to: [A high-performance portable abstract interface for explicit SIMD vectorization](http://dl.acm.org/citation.cfm?id=3026939)
   
@@ -22,21 +22,12 @@ This piece of code was developed as part of ICE-DIP project at CERN:
 
  All questions should be submitted using the bug tracking system:
 
-
    >   [bug tracker](https://bitbucket.org/edanor/umesimd/issues)
 
 
 or by sending e-mail to:
 
-
    >   przemyslaw.karpinski@cern.ch
-
-
-Please refer to the wiki for introduction and additional information:
-
-
-   >   [wiki pages](https://bitbucket.org/edanor/umesimd/wiki/Home)
-
 
    
 **RELEASE NOTES for v0.8.1**  
