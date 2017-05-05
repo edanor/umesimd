@@ -51,8 +51,8 @@ namespace SIMD
     template<> struct SuggestedVecLen<int32_t> { static const int value = 1; };
     template<> struct SuggestedVecLen<uint64_t> { static const int value = 1; };
     template<> struct SuggestedVecLen<int64_t> { static const int value = 1; };
-    template<> struct SuggestedVecLen<float> { static const int value = 1; };
-    template<> struct SuggestedVecLen<double> { static const int value = 1; };
+    template<> struct SuggestedVecLen<float> { static const int value = 8; };
+    template<> struct SuggestedVecLen<double> { static const int value = 8; };
 #else
     template<> struct SuggestedVecLen<uint8_t> { static const int value = 1; };
     template<> struct SuggestedVecLen<int8_t> { static const int value = 1; };
@@ -72,6 +72,48 @@ namespace SIMD
     template<typename SCALAR_UINT_TYPE, uint32_t VEC_LEN>  class SIMDVec_u;
     template<typename SCALAR_INT_TYPE, uint32_t VEC_LEN>   class SIMDVec_i;
     template<typename SCALAR_FLOAT_TYPE, uint32_t VEC_LEN> class SIMDVec_f;
+    
+    // Forward declarations of template specializations.
+    // Only fully specialized classes should be listed here.
+    template<> class SIMDVec_u<uint32_t, 1>;
+    template<> class SIMDVec_u<uint32_t, 2>;
+    template<> class SIMDVec_u<uint32_t, 4>;
+    template<> class SIMDVec_u<uint32_t, 8>;
+    //template<> class SIMDVec_u<uint32_t, 16>;
+    //template<> class SIMDVec_u<uint32_t, 32>;
+    
+    template<> class SIMDVec_u<uint64_t, 1>;
+    template<> class SIMDVec_u<uint64_t, 2>;
+    //template<> class SIMDVec_u<uint64_t, 4>;
+    //template<> class SIMDVec_u<uint64_t, 8>;
+    //template<> class SIMDVec_u<uint64_t, 16>;
+    
+    template<> class SIMDVec_i<int32_t, 1>;
+    template<> class SIMDVec_i<int32_t, 2>;
+    template<> class SIMDVec_i<int32_t, 4>;
+    template<> class SIMDVec_i<int32_t, 8>;
+    //template<> class SIMDVec_i<int32_t, 16>;
+    //template<> class SIMDVec_i<int32_t, 32>;
+    
+    template<> class SIMDVec_i<int64_t, 1>;
+    template<> class SIMDVec_i<int64_t, 2>;
+    //template<> class SIMDVec_i<int64_t, 4>;
+    //template<> class SIMDVec_i<int64_t, 8>;
+    //template<> class SIMDVec_i<int64_t, 16>;
+    
+    template<> class SIMDVec_f<float, 1>;
+    template<> class SIMDVec_f<float, 2>;
+    template<> class SIMDVec_f<float, 4>;
+    template<> class SIMDVec_f<float, 8>;
+    //template<> class SIMDVec_f<float, 16>;
+    //template<> class SIMDVec_f<float, 32>;
+    
+    template<> class SIMDVec_f<double, 1>;
+    template<> class SIMDVec_f<double, 2>;
+    //template<> class SIMDVec_f<double, 4>;
+    //template<> class SIMDVec_f<double, 8>;
+    //template<> class SIMDVec_f<double, 16>;
+    
 }
 }
 
