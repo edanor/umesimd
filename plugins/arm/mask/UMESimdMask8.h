@@ -51,6 +51,8 @@ namespace SIMD {
         bool mMask[8];
 
     public:
+        constexpr static int alignment () { return 16; }
+        
         UME_FORCE_INLINE SIMDVecMask() {}
 
         // Regardless of the mask representation, the interface should only allow initialization using 

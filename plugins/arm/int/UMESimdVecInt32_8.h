@@ -53,7 +53,7 @@ namespace SIMD {
             SIMDVec_i<int32_t, 4>>
     {
     private:
-        alignas(32) int32_t mVec[8];
+        alignas(16) int32_t mVec[8];
 
         friend class SIMDVec_u<uint32_t, 8>;
         friend class SIMDVec_f<float, 8>;
@@ -62,7 +62,7 @@ namespace SIMD {
         friend class SIMDVec_i<int32_t, 16>;
     public:
         constexpr static uint32_t length() { return 8; }
-        constexpr static uint32_t alignment() { return 32; }
+        constexpr static uint32_t alignment() { return 16; }
 
         // ZERO-CONSTR
         UME_FORCE_INLINE SIMDVec_i() {}

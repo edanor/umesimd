@@ -55,7 +55,7 @@ namespace SIMD {
             SIMDVec_f<float, 4>>
     {
     private:
-        alignas(32) float mVec[8];
+        alignas(16) float mVec[8];
 
         typedef SIMDVec_u<uint32_t, 8>    VEC_UINT_TYPE;
         typedef SIMDVec_i<int32_t, 8>     VEC_INT_TYPE;
@@ -64,7 +64,7 @@ namespace SIMD {
         friend class SIMDVec_f<float, 16>;
     public:
         constexpr static uint32_t length() { return 8; }
-        constexpr static uint32_t alignment() { return 32; }
+        constexpr static uint32_t alignment() { return 16; }
 
         // ZERO-CONSTR
         UME_FORCE_INLINE SIMDVec_f() {}

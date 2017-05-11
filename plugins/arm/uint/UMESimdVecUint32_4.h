@@ -420,10 +420,10 @@ namespace SIMD {
         UME_FORCE_INLINE SIMDVec_u postinc(SIMDVecMask<4> const & mask) {
             UME_EMULATION_WARNING();
             uint32x4_t t0 = mVec;
-            if (mask.mMask[0] == true) mVec[0]++;
-            if (mask.mMask[1] == true) mVec[1]++;
-            if (mask.mMask[2] == true) mVec[2]++;
-            if (mask.mMask[3] == true) mVec[3]++;
+            if (mask.mMask[0] != 0) mVec[0]++;
+            if (mask.mMask[1] != 0) mVec[1]++;
+            if (mask.mMask[2] != 0) mVec[2]++;
+            if (mask.mMask[3] != 0) mVec[3]++;
             return SIMDVec_u(t0);
         }
         // PREFINC
@@ -438,10 +438,10 @@ namespace SIMD {
         // MPREFINC
         UME_FORCE_INLINE SIMDVec_u & prefinc(SIMDVecMask<4> const & mask) {
             UME_EMULATION_WARNING();
-            if (mask.mMask[0] == true) mVec[0]++;
-            if (mask.mMask[1] == true) mVec[1]++;
-            if (mask.mMask[2] == true) mVec[2]++;
-            if (mask.mMask[3] == true) mVec[3]++;
+            if (mask.mMask[0] != 0) mVec[0]++;
+            if (mask.mMask[1] != 0) mVec[1]++;
+            if (mask.mMask[2] != 0) mVec[2]++;
+            if (mask.mMask[3] != 0) mVec[3]++;
             return *this;
         }
         // SUBV
@@ -528,16 +528,16 @@ namespace SIMD {
         // MSSUBV
         UME_FORCE_INLINE SIMDVec_u ssub(SIMDVecMask<4> const & mask, SIMDVec_u const & b) const {
             uint32_t t0 = mVec[0], t1 = mVec[1], t2 = mVec[2], t3 = mVec[3];
-            if (mask.mMask[0] == true) {
+            if (mask.mMask[0] != 0) {
                 t0 = (mVec[0] < b.mVec[0]) ? 0 : mVec[0] - b.mVec[0];
             }
-            if (mask.mMask[1] == true) {
+            if (mask.mMask[1] != 0) {
                 t1 = (mVec[1] < b.mVec[1]) ? 0 : mVec[1] - b.mVec[1];
             }
-            if (mask.mMask[2] == true) {
+            if (mask.mMask[2] != 0) {
                 t2 = (mVec[2] < b.mVec[2]) ? 0 : mVec[2] - b.mVec[2];
             }
-            if (mask.mMask[3] == true) {
+            if (mask.mMask[3] != 0) {
                 t3 = (mVec[3] < b.mVec[3]) ? 0 : mVec[3] - b.mVec[3];
             }
             return SIMDVec_u(t0, t1, t2, t3);
@@ -553,16 +553,16 @@ namespace SIMD {
         // MSSUBS
         UME_FORCE_INLINE SIMDVec_u ssub(SIMDVecMask<4> const & mask, uint32_t b) const {
             uint32_t t0 = mVec[0], t1 = mVec[1], t2 = mVec[2], t3 = mVec[3];
-            if (mask.mMask[0] == true) {
+            if (mask.mMask[0] != 0) {
                 t0 = (mVec[0] < b) ? 0 : mVec[0] - b;
             }
-            if (mask.mMask[1] == true) {
+            if (mask.mMask[1] != 0) {
                 t1 = (mVec[1] < b) ? 0 : mVec[1] - b;
             }
-            if (mask.mMask[2] == true) {
+            if (mask.mMask[2] != 0) {
                 t2 = (mVec[2] < b) ? 0 : mVec[2] - b;
             }
-            if (mask.mMask[3] == true) {
+            if (mask.mMask[3] != 0) {
                 t3 = (mVec[3] < b) ? 0 : mVec[3] - b;
             }
             return SIMDVec_u(t0, t1, t2, t3);
@@ -577,16 +577,16 @@ namespace SIMD {
         }
         // MSSUBVA
         UME_FORCE_INLINE SIMDVec_u & ssuba(SIMDVecMask<4> const & mask, SIMDVec_u const & b) {
-            if (mask.mMask[0] == true) {
+            if (mask.mMask[0] != 0) {
                 mVec[0] = (mVec[0] < b.mVec[0]) ? 0 : mVec[0] - b.mVec[0];
             }
-            if (mask.mMask[1] == true) {
+            if (mask.mMask[1] != 0) {
                 mVec[1] = (mVec[1] < b.mVec[1]) ? 0 : mVec[1] - b.mVec[1];
             }
-            if (mask.mMask[2] == true) {
+            if (mask.mMask[2] != 0) {
                 mVec[2] = (mVec[2] < b.mVec[2]) ? 0 : mVec[2] - b.mVec[2];
             }
-            if (mask.mMask[3] == true) {
+            if (mask.mMask[3] != 0) {
                 mVec[3] = (mVec[3] < b.mVec[3]) ? 0 : mVec[3] - b.mVec[3];
             }
             return *this;
@@ -601,16 +601,16 @@ namespace SIMD {
         }
         // MSSUBSA
         UME_FORCE_INLINE SIMDVec_u & ssuba(SIMDVecMask<4> const & mask, uint32_t b)  {
-            if (mask.mMask[0] == true) {
+            if (mask.mMask[0] != 0) {
                 mVec[0] = (mVec[0] < b) ? 0 : mVec[0] - b;
             }
-            if (mask.mMask[1] == true) {
+            if (mask.mMask[1] != 0) {
                 mVec[1] = (mVec[1] < b) ? 0 : mVec[1] - b;
             }
-            if (mask.mMask[2] == true) {
+            if (mask.mMask[2] != 0) {
                 mVec[2] = (mVec[2] < b) ? 0 : mVec[2] - b;
             }
-            if (mask.mMask[3] == true) {
+            if (mask.mMask[3] != 0) {
                 mVec[3] = (mVec[3] < b) ? 0 : mVec[3] - b;
             }
             return *this;
@@ -694,10 +694,10 @@ namespace SIMD {
         // MPOSTDEC
         UME_FORCE_INLINE SIMDVec_u postdec(SIMDVecMask<4> const & mask) {
             uint32_t t0 = mVec[0], t1 = mVec[1], t2 = mVec[2], t3 = mVec[3];
-            if (mask.mMask[0] == true) mVec[0]--;
-            if (mask.mMask[1] == true) mVec[1]--;
-            if (mask.mMask[2] == true) mVec[2]--;
-            if (mask.mMask[3] == true) mVec[3]--;
+            if (mask.mMask[0] != 0) mVec[0]--;
+            if (mask.mMask[1] != 0) mVec[1]--;
+            if (mask.mMask[2] != 0) mVec[2]--;
+            if (mask.mMask[3] != 0) mVec[3]--;
             return SIMDVec_u(t0, t1, t2, t3);
         }
         // PREFDEC
@@ -713,10 +713,10 @@ namespace SIMD {
         }
         // MPREFDEC
         UME_FORCE_INLINE SIMDVec_u & prefdec(SIMDVecMask<4> const & mask) {
-            if (mask.mMask[0] == true) mVec[0]--;
-            if (mask.mMask[1] == true) mVec[1]--;
-            if (mask.mMask[2] == true) mVec[2]--;
-            if (mask.mMask[3] == true) mVec[3]--;
+            if (mask.mMask[0] != 0) mVec[0]--;
+            if (mask.mMask[1] != 0) mVec[1]--;
+            if (mask.mMask[2] != 0) mVec[2]--;
+            if (mask.mMask[3] != 0) mVec[3]--;
             return *this;
         }
         */
@@ -1154,16 +1154,16 @@ namespace SIMD {
         // MMAXV
         UME_FORCE_INLINE SIMDVec_u max(SIMDVecMask<4> const & mask, SIMDVec_u const & b) const {
             uint32_t t0 = mVec[0], t1  = mVec[1], t2 = mVec[2], t3 = mVec[3];
-            if (mask.mMask[0] == true) {
+            if (mask.mMask[0] != 0) {
                 t0 = mVec[0] > b.mVec[0] ? mVec[0] : b.mVec[0];
             }
-            if (mask.mMask[1] == true) {
+            if (mask.mMask[1] != 0) {
                 t1 = mVec[1] > b.mVec[1] ? mVec[1] : b.mVec[1];
             }
-            if (mask.mMask[2] == true) {
+            if (mask.mMask[2] != 0) {
                 t2 = mVec[2] > b.mVec[2] ? mVec[2] : b.mVec[2];
             }
-            if (mask.mMask[3] == true) {
+            if (mask.mMask[3] != 0) {
                 t3 = mVec[3] > b.mVec[3] ? mVec[3] : b.mVec[3];
             }
             return SIMDVec_u(t0, t1, t2, t3);
@@ -1179,16 +1179,16 @@ namespace SIMD {
         // MMAXS
         UME_FORCE_INLINE SIMDVec_u max(SIMDVecMask<4> const & mask, uint32_t b) const {
             uint32_t t0 = mVec[0], t1 = mVec[1], t2 = mVec[2], t3 = mVec[3];
-            if (mask.mMask[0] == true) {
+            if (mask.mMask[0] != 0) {
                 t0 = mVec[0] > b ? mVec[0] : b;
             }
-            if (mask.mMask[1] == true) {
+            if (mask.mMask[1] != 0) {
                 t1 = mVec[1] > b ? mVec[1] : b;
             }
-            if (mask.mMask[2] == true) {
+            if (mask.mMask[2] != 0) {
                 t2 = mVec[2] > b ? mVec[2] : b;
             }
-            if (mask.mMask[3] == true) {
+            if (mask.mMask[3] != 0) {
                 t3 = mVec[3] > b ? mVec[3] : b;
             }
             return SIMDVec_u(t0, t1, t2, t3);
@@ -1203,16 +1203,16 @@ namespace SIMD {
         }
         // MMAXVA
         UME_FORCE_INLINE SIMDVec_u & maxa(SIMDVecMask<4> const & mask, SIMDVec_u const & b) {
-            if (mask.mMask[0] == true && b.mVec[0] > mVec[0]) {
+            if (mask.mMask[0] != 0 && b.mVec[0] > mVec[0]) {
                 mVec[0] = b.mVec[0];
             }
-            if (mask.mMask[1] == true && b.mVec[1] > mVec[1]) {
+            if (mask.mMask[1] != 0 && b.mVec[1] > mVec[1]) {
                 mVec[1] = b.mVec[1];
             }
-            if (mask.mMask[2] == true && b.mVec[2] > mVec[2]) {
+            if (mask.mMask[2] != 0 && b.mVec[2] > mVec[2]) {
                 mVec[2] = b.mVec[2];
             }
-            if (mask.mMask[3] == true && b.mVec[3] > mVec[3]) {
+            if (mask.mMask[3] != 0 && b.mVec[3] > mVec[3]) {
                 mVec[3] = b.mVec[3];
             }
             return *this;
@@ -1227,16 +1227,16 @@ namespace SIMD {
         }
         // MMAXSA
         UME_FORCE_INLINE SIMDVec_u & maxa(SIMDVecMask<4> const & mask, uint32_t b) {
-            if (mask.mMask[0] == true && b > mVec[0]) {
+            if (mask.mMask[0] != 0 && b > mVec[0]) {
                 mVec[0] = b;
             }
-            if (mask.mMask[1] == true && b > mVec[1]) {
+            if (mask.mMask[1] != 0 && b > mVec[1]) {
                 mVec[1] = b;
             }
-            if (mask.mMask[2] == true && b > mVec[2]) {
+            if (mask.mMask[2] != 0 && b > mVec[2]) {
                 mVec[2] = b;
             }
-            if (mask.mMask[3] == true && b > mVec[3]) {
+            if (mask.mMask[3] != 0 && b > mVec[3]) {
                 mVec[3] = b;
             }
             return *this;
@@ -1252,16 +1252,16 @@ namespace SIMD {
         // MMINV
         UME_FORCE_INLINE SIMDVec_u min(SIMDVecMask<4> const & mask, SIMDVec_u const & b) const {
             uint32_t t0 = mVec[0], t1 = mVec[1], t2 = mVec[2], t3 = mVec[3];
-            if (mask.mMask[0] == true) {
+            if (mask.mMask[0] != 0) {
                 t0 = mVec[0] < b.mVec[0] ? mVec[0] : b.mVec[0];
             }
-            if (mask.mMask[1] == true) {
+            if (mask.mMask[1] != 0) {
                 t1 = mVec[1] < b.mVec[1] ? mVec[1] : b.mVec[1];
             }
-            if (mask.mMask[2] == true) {
+            if (mask.mMask[2] != 0) {
                 t2 = mVec[2] < b.mVec[2] ? mVec[2] : b.mVec[2];
             }
-            if (mask.mMask[3] == true) {
+            if (mask.mMask[3] != 0) {
                 t3 = mVec[3] < b.mVec[3] ? mVec[3] : b.mVec[3];
             }
             return SIMDVec_u(t0, t1, t2, t3);
@@ -1277,16 +1277,16 @@ namespace SIMD {
         // MMINS
         UME_FORCE_INLINE SIMDVec_u min(SIMDVecMask<4> const & mask, uint32_t b) const {
             uint32_t t0 = mVec[0], t1 = mVec[1], t2 = mVec[2], t3 = mVec[3];
-            if (mask.mMask[0] == true) {
+            if (mask.mMask[0] != 0) {
                 t0 = mVec[0] < b ? mVec[0] : b;
             }
-            if (mask.mMask[1] == true) {
+            if (mask.mMask[1] != 0) {
                 t1 = mVec[1] < b ? mVec[1] : b;
             }
-            if (mask.mMask[2] == true) {
+            if (mask.mMask[2] != 0) {
                 t2 = mVec[2] < b ? mVec[2] : b;
             }
-            if (mask.mMask[3] == true) {
+            if (mask.mMask[3] != 0) {
                 t3 = mVec[3] < b ? mVec[3] : b;
             }
             return SIMDVec_u(t0, t1, t2, t3);
@@ -1301,16 +1301,16 @@ namespace SIMD {
         }
         // MMINVA
         UME_FORCE_INLINE SIMDVec_u & mina(SIMDVecMask<4> const & mask, SIMDVec_u const & b) {
-            if (mask.mMask[0] == true && b.mVec[0] < mVec[0]) {
+            if (mask.mMask[0] != 0 && b.mVec[0] < mVec[0]) {
                 mVec[0] = b.mVec[0];
             }
-            if (mask.mMask[1] == true && b.mVec[1] < mVec[1]) {
+            if (mask.mMask[1] != 0 && b.mVec[1] < mVec[1]) {
                 mVec[1] = b.mVec[1];
             }
-            if (mask.mMask[2] == true && b.mVec[2] < mVec[2]) {
+            if (mask.mMask[2] != 0 && b.mVec[2] < mVec[2]) {
                 mVec[2] = b.mVec[2];
             }
-            if (mask.mMask[3] == true && b.mVec[3] < mVec[3]) {
+            if (mask.mMask[3] != 0 && b.mVec[3] < mVec[3]) {
                 mVec[3] = b.mVec[3];
             }
             return *this;
@@ -1325,16 +1325,16 @@ namespace SIMD {
         }
         // MMINSA
         UME_FORCE_INLINE SIMDVec_u & mina(SIMDVecMask<4> const & mask, uint32_t b) {
-            if (mask.mMask[0] == true && b < mVec[0]) {
+            if (mask.mMask[0] != 0 && b < mVec[0]) {
                 mVec[0] = b;
             }
-            if (mask.mMask[1] == true && b < mVec[1]) {
+            if (mask.mMask[1] != 0 && b < mVec[1]) {
                 mVec[1] = b;
             }
-            if (mask.mMask[2] == true && b < mVec[2]) {
+            if (mask.mMask[2] != 0 && b < mVec[2]) {
                 mVec[2] = b;
             }
-            if (mask.mMask[3] == true && b < mVec[3]) {
+            if (mask.mMask[3] != 0 && b < mVec[3]) {
                 mVec[3] = b;
             }
             return *this;
@@ -1363,19 +1363,19 @@ namespace SIMD {
         UME_FORCE_INLINE uint32_t imax(SIMDVecMask<4> const & mask) const {
             uint32_t i0 = 0xFFFFFFFF;
             uint32_t t0 = std::numeric_limits<uint32_t>::min();
-            if(mask.mMask[0] == true) {
+            if(mask.mMask[0] != 0) {
                 i0 = 0;
                 t0 = mVec[0];
             }
-            if(mask.mMask[1] == true && mVec[1] > t0) {
+            if(mask.mMask[1] != 0 && mVec[1] > t0) {
                 i0 = 1;
                 t0 = mVec[1];
             }
-            if (mask.mMask[2] == true && mVec[2] > t0) {
+            if (mask.mMask[2] != 0 && mVec[2] > t0) {
                 i0 = 2;
                 t0 = mVec[2];
             }
-            if (mask.mMask[3] == true && mVec[3] > t0) {
+            if (mask.mMask[3] != 0 && mVec[3] > t0) {
                 i0 = 3;
             }
             return i0;
@@ -1404,19 +1404,19 @@ namespace SIMD {
         UME_FORCE_INLINE uint32_t imin(SIMDVecMask<4> const & mask) const {
             uint32_t i0 = 0xFFFFFFFF;
             uint32_t t0 = std::numeric_limits<uint32_t>::max();
-            if (mask.mMask[0] == true) {
+            if (mask.mMask[0] != 0) {
                 i0 = 0;
                 t0 = mVec[0];
             }
-            if ((mask.mMask[1] == true) && mVec[1] < t0) {
+            if ((mask.mMask[1] != 0) && mVec[1] < t0) {
                 i0 = 1;
                 t0 = mVec[1];
             }
-            if ((mask.mMask[2] == true) && mVec[2] < t0) {
+            if ((mask.mMask[2] != 0) && mVec[2] < t0) {
                 i0 = 2;
                 t0 = mVec[2];
             }
-            if ((mask.mMask[3] == true) && mVec[3] < t0) {
+            if ((mask.mMask[3] != 0) && mVec[3] < t0) {
                 i0 = 3;
             }
             return i0;
@@ -1767,16 +1767,16 @@ namespace SIMD {
         // MGATHERS
         UME_FORCE_INLINE SIMDVec_u & gather(SIMDVecMask<4> const & mask, uint32_t const * baseAddr, uint32_t const * indices) {
             UME_EMULATION_WARNING();
-            if (mask.mMask[0] == true) mVec[0] = baseAddr[indices[0]];
-            if (mask.mMask[1] == true) mVec[1] = baseAddr[indices[1]];
-            if (mask.mMask[2] == true) mVec[2] = baseAddr[indices[2]];
-            if (mask.mMask[3] == true) mVec[3] = baseAddr[indices[3]];
+            if (mask.mMask[0] != 0) mVec[0] = baseAddr[indices[0]];
+            if (mask.mMask[1] != 0) mVec[1] = baseAddr[indices[1]];
+            if (mask.mMask[2] != 0) mVec[2] = baseAddr[indices[2]];
+            if (mask.mMask[3] != 0) mVec[3] = baseAddr[indices[3]];
             return *this;
         }
         // GATHERV
         UME_FORCE_INLINE SIMDVec_u & gather(uint32_t const * baseAddr, SIMDVec_u const & indices) {
-            alignas(32) uint32_t raw_indices[4];
-            alignas(32) uint32_t raw_data[4];
+            alignas(16) uint32_t raw_indices[4];
+            alignas(16) uint32_t raw_data[4];
             vst1q_u32(raw_indices, indices.mVec);
             raw_data[0] = baseAddr[raw_indices[0]];
             raw_data[1] = baseAddr[raw_indices[1]];
@@ -1788,10 +1788,10 @@ namespace SIMD {
         // MGATHERV
         UME_FORCE_INLINE SIMDVec_u & gather(SIMDVecMask<4> const & mask, uint32_t const * baseAddr, SIMDVec_u const & indices) {
             UME_EMULATION_WARNING();
-            if (mask.mMask[0] == true) mVec[0] = baseAddr[indices.mVec[0]];
-            if (mask.mMask[1] == true) mVec[1] = baseAddr[indices.mVec[1]];
-            if (mask.mMask[2] == true) mVec[2] = baseAddr[indices.mVec[2]];
-            if (mask.mMask[3] == true) mVec[3] = baseAddr[indices.mVec[3]];
+            if (mask.mMask[0] != 0) mVec[0] = baseAddr[indices.mVec[0]];
+            if (mask.mMask[1] != 0) mVec[1] = baseAddr[indices.mVec[1]];
+            if (mask.mMask[2] != 0) mVec[2] = baseAddr[indices.mVec[2]];
+            if (mask.mMask[3] != 0) mVec[3] = baseAddr[indices.mVec[3]];
             return *this;
         }
         // SCATTERS
@@ -1806,16 +1806,16 @@ namespace SIMD {
         // MSCATTERS
         UME_FORCE_INLINE uint32_t* scatter(SIMDVecMask<4> const & mask, uint32_t* baseAddr, uint32_t* indices) const {
             UME_EMULATION_WARNING();
-            if (mask.mMask[0] == true) baseAddr[indices[0]] = mVec[0];
-            if (mask.mMask[1] == true) baseAddr[indices[1]] = mVec[1];
-            if (mask.mMask[2] == true) baseAddr[indices[2]] = mVec[2];
-            if (mask.mMask[3] == true) baseAddr[indices[3]] = mVec[3];
+            if (mask.mMask[0] != 0) baseAddr[indices[0]] = mVec[0];
+            if (mask.mMask[1] != 0) baseAddr[indices[1]] = mVec[1];
+            if (mask.mMask[2] != 0) baseAddr[indices[2]] = mVec[2];
+            if (mask.mMask[3] != 0) baseAddr[indices[3]] = mVec[3];
             return baseAddr;
         }
         // SCATTERV
         UME_FORCE_INLINE uint32_t* scatter(uint32_t* baseAddr, SIMDVec_u const & indices) const {
-            alignas(32) uint32_t raw_indices[4];
-            alignas(32) uint32_t raw_data[4];
+            alignas(16) uint32_t raw_indices[4];
+            alignas(16) uint32_t raw_data[4];
             vst1q_u32(raw_indices, indices.mVec);
             vst1q_u32(raw_data, mVec);
             baseAddr[raw_indices[0]] = raw_data[0];
@@ -1827,10 +1827,10 @@ namespace SIMD {
         // MSCATTERV
         UME_FORCE_INLINE uint32_t* scatter(SIMDVecMask<4> const & mask, uint32_t* baseAddr, SIMDVec_u const & indices) const {
             UME_EMULATION_WARNING();
-            if (mask.mMask[0] == true) baseAddr[indices.mVec[0]] = mVec[0];
-            if (mask.mMask[1] == true) baseAddr[indices.mVec[1]] = mVec[1];
-            if (mask.mMask[2] == true) baseAddr[indices.mVec[2]] = mVec[2];
-            if (mask.mMask[3] == true) baseAddr[indices.mVec[3]] = mVec[3];
+            if (mask.mMask[0] != 0) baseAddr[indices.mVec[0]] = mVec[0];
+            if (mask.mMask[1] != 0) baseAddr[indices.mVec[1]] = mVec[1];
+            if (mask.mMask[2] != 0) baseAddr[indices.mVec[2]] = mVec[2];
+            if (mask.mMask[3] != 0) baseAddr[indices.mVec[3]] = mVec[3];
             return baseAddr;
         }/*
 
@@ -1986,12 +1986,12 @@ namespace SIMD {
         */
         UME_FORCE_INLINE void unpack(SIMDVec_u<uint32_t, 2> & a, SIMDVec_u<uint32_t, 2> & b) const {
             UME_EMULATION_WARNING()
-            alignas(32) uint32_t raw[4];
+            alignas(16) uint32_t raw[4];
             vst1q_u32(raw, mVec);
             a.mVec[0] = raw[0];
             a.mVec[1] = raw[1];
-            b.mVec[2] = raw[2];
-            b.mVec[3] = raw[3];
+            b.mVec[0] = raw[2];
+            b.mVec[1] = raw[3];
         }
         /*
         // UNPACKLO

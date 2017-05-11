@@ -60,6 +60,10 @@ namespace SIMD {
         bool mMask[VEC_LEN]; // each entry represents single mask element. For real SIMD vectors, mMask will be of mask intrinsic type.
 
     public:
+        constexpr static uint32_t alignment() {
+            return VEC_LEN*sizeof(bool) > 16 ? 16 : VEC_LEN*sizeof(bool);
+        }
+
         UME_FORCE_INLINE SIMDVecMask() {}
 
         // Regardless of the mask representation, the interface should only allow initialization using 

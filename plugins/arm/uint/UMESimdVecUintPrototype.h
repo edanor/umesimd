@@ -381,6 +381,10 @@ namespace SIMD {
         VEC_EMU_REG mVec;
 
     public:
+        constexpr static uint32_t alignment() {
+            return VEC_LEN*sizeof(SCALAR_UINT_TYPE) > 16 ? 16 : VEC_LEN*sizeof(SCALAR_UINT_TYPE);
+        }
+
         // ZERO-CONSTR
         UME_FORCE_INLINE SIMDVec_u() : mVec() {};
 
