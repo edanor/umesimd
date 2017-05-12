@@ -7,6 +7,9 @@
 
 CXXFLAGS=-std=c++11
 
+ifneq (,$(findstring armclang,$(CXX)))
+	CXXCOMPILER=armclang++
+else
 ifneq (,$(findstring clang,$(CXX)))
 	CXXCOMPILER=clang++
 else
@@ -15,6 +18,7 @@ ifneq (,$(findstring g++,$(CXX)))
 else
 ifneq (,$(findstring ic, $(CXX)))
 	CXXCOMPILER=icc
+endif
 endif
 endif
 endif
@@ -27,6 +31,10 @@ endif
 ifeq ($(CXXCOMPILER), clang++)
 	COMPILER_PREFIX=clang
 	CXXFLAGS+=-W -Wall -pedantic -fstrict-aliasing -Wstrict-aliasing -Wshorten-64-to-32 -Woverflow -Werror
+endif
+ifeq ($(CXXCOMPILER), armclang++)
+	COMPILER_PREFIX=armclang
+    CXXFLAGS+=-W -Wall -pedantic -fstrict-aliasing -Wstrict-aliasing -Wshorten-64-to-32 -Woverflow -Werror
 endif
 ifeq ($(CXXCOMPILER), icc)
 	COMPILER_PREFIX=icc
@@ -104,6 +112,9 @@ ifeq ($(ISA), imci)
 endif
 ifeq ($(ISA), arm)
 	ISA_PREFIX+=_arm
+    ifeq ($(CXXCOMPILER), g++)
+        CXXFLAGS+=-march=native
+    endif
 endif
 ifeq ($(ISA), altivec)
 	CXXFLAGS+=-maltivec
