@@ -190,7 +190,9 @@ namespace SIMD {
     }
 
     UME_FORCE_INLINE SIMDVec_u<uint32_t, 32>::operator SIMDVec_f<float, 32>() const {
-        return SCALAR_EMULATION::xtoy <SIMDVec_f<float, 32>, float, SIMDVec_u<uint32_t, 32>>(*this);
+        __m512 t0 = _mm512_cvtepu32_ps(mVec[0]);
+        __m512 t1 = _mm512_cvtepu32_ps(mVec[1]);
+        return SIMDVec_f<float, 32>(t0, t1);
     }
 
     UME_FORCE_INLINE SIMDVec_u<uint64_t, 1>::operator SIMDVec_f<double, 1>() const {

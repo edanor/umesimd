@@ -36,6 +36,62 @@
 
 #include <algorithm>
 #include <array>
+#define UME_SIMD_SHOW_EMULATION_WARNINGS
+#ifdef UME_SIMD_SHOW_EMULATION_WARNINGS
+namespace UME
+{
+    namespace SIMD
+    {
+#if defined(__GNUC__) || defined(__ICC__)
+#define DEPRECATE(ret_type, msg) ret_type __attribute__((deprecated(msg)))
+#elif defined(_MSC_VER)
+#define DEPRECATE(ret_type, msg) __declspec(deprecated(msg)) ret_type
+#else
+#error Compiler not supported
+#endif
+
+#define PP_CAT(x, y) x##y
+        namespace emulation_warning
+        {
+            struct true_type {};
+            struct false_type {};
+            template <int test> struct converter : public true_type {};
+            template <> struct converter<0> : public false_type {};
+        }
+        /*
+        #define UME_SIMD_STATIC_WARN(cond, msg) \
+        struct PP_CAT(static_warning, __LINE__ ) { \
+        DEPRECATE(void _(UME::SIMD::emulation_warning::false_type const & ), msg) {}; \
+        void _(UME::SIMD::emulation_warning::true_type const & ) {};\
+        PP_CAT(static_warning, __LINE__)() {_(UME::SIMD::emulation_warning::converter<(cond)>());} \
+        }*/
+#define UME_SIMD_STATIC_WARN(cond, msg) \
+    struct PP_CAT(static_warning, __LINE__ ) { \
+        DEPRECATE(void _(UME::SIMD::emulation_warning::false_type const & ), msg) {}; \
+        void _(UME::SIMD::emulation_warning::true_type const & ) {};\
+        PP_CAT(static_warning, __LINE__)() {_(UME::SIMD::emulation_warning::converter<(cond)>());} \
+    }
+
+#define UME_SIMD_DYNAMIC_WARN(cond, msg) if(!cond) std::cerr << msg << std::endl;
+
+
+        // Specific warnings
+#define UME_EMULATION_WARNING() UME_SIMD_DYNAMIC_WARN(false, std::string("Using emulation: ") + std::string(__FILE__) + std::string(" ") + std::to_string(__LINE__));
+        //UME_SIMD_STATIC_WARN(true, "Using emulation")
+#define UME_PERFORMANCE_UNOPTIMAL_WARNING() UME_SIMD_DYNAMIC_WARN(false, "This function is not optimized");
+#define UME_UNIMPLEMENTED_WARNING() UME_SIMD_DYNAMIC_WARN(false, "This function is not implemented!");
+
+#define UME_ALIGNMENT_CHECK(ptr, alignment) UME_SIMD_DYNAMIC_WARN(  (( ((uint64_t)ptr) % alignment) == 0), "Warning: unaligned memory used!\n")
+    }
+}
+#else
+#define UME_EMULATION_WARNING()
+#define UME_PERFORMANCE_UNOPTIMAL_WARNING()
+#define UME_UNIMPLEMENTED_WARNING()
+
+#define UME_ALIGNMENT_CHECK(ptr, alignment)
+#endif
+
 
 namespace UME
 {
@@ -2752,6 +2808,7 @@ namespace SCALAR_EMULATION
     // xTOy (UTOI, ITOU, UTOF, FTOU, PROMOTE, DEGRADE)
     template<typename VEC_Y_TYPE, typename SCALAR_Y_TYPE, typename VEC_X_TYPE>
     UME_FORCE_INLINE VEC_Y_TYPE xtoy(VEC_X_TYPE const & a) {
+        UME_EMULATION_WARNING();
         static_assert(VEC_X_TYPE::length() == VEC_Y_TYPE::length(),
             "Cannot cast between vectors of different lengths");
         VEC_Y_TYPE retval;

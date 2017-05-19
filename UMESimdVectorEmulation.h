@@ -48,7 +48,7 @@ namespace SIMD
     {
         // EXP - single precision version
         template<typename FLOAT_VEC_T, typename UINT_VEC_T>
-        UME_FORCE_INLINE FLOAT_VEC_T expf(FLOAT_VEC_T const & initial_x) {
+        inline FLOAT_VEC_T expf(FLOAT_VEC_T const & initial_x) {
             const float MAXLOGF = 88.72283905206835f;
             const float MINLOGF = -88.f;
 
@@ -100,7 +100,7 @@ namespace SIMD
         // EXP - double precision version
 
         template<typename FLOAT_VEC_T, typename UINT_VEC_T>
-        UME_FORCE_INLINE FLOAT_VEC_T expd(FLOAT_VEC_T const & initial_x) {
+        inline FLOAT_VEC_T expd(FLOAT_VEC_T const & initial_x) {
             const double EXP_LIMIT = 708;
 
             const double PX1exp = 1.26177193074810590878E-4;
@@ -174,7 +174,7 @@ namespace SIMD
         }
         // LOG - single precision
         template<typename FLOAT_VEC_T, typename UINT_VEC_T>
-        UME_FORCE_INLINE FLOAT_VEC_T logf(FLOAT_VEC_T const & initial_x) {
+        inline FLOAT_VEC_T logf(FLOAT_VEC_T const & initial_x) {
             const float MAXNUMF = 3.4028234663852885981170418348451692544e38f;
             const float LOGF_UPPER_LIMIT = MAXNUMF;
             const float LOGF_LOWER_LIMIT = 0;
@@ -249,7 +249,7 @@ namespace SIMD
         }
         // LOG - double precision
         template<typename FLOAT_VEC_T, typename UINT_VEC_T>
-        UME_FORCE_INLINE FLOAT_VEC_T logd(FLOAT_VEC_T const & initial_x) {
+        inline FLOAT_VEC_T logd(FLOAT_VEC_T const & initial_x) {
             const double LOG_UPPER_LIMIT = 1e307;
             const double LOG_LOWER_LIMIT = 0;
 
@@ -375,7 +375,7 @@ namespace SIMD
 
         // SIN - single precision version
         template<typename FLOAT_VEC_T, typename INT_VEC_T, typename MASK_T>
-        UME_FORCE_INLINE FLOAT_VEC_T sinf(FLOAT_VEC_T const & xx)
+        inline FLOAT_VEC_T sinf(FLOAT_VEC_T const & xx)
         {
             FLOAT_VEC_T s;
 
@@ -435,7 +435,7 @@ namespace SIMD
 
         // SIN - double precision version
         template<typename FLOAT_VEC_T, typename INT_VEC_T, typename MASK_T>
-        UME_FORCE_INLINE FLOAT_VEC_T sind(FLOAT_VEC_T const & xx)
+        inline FLOAT_VEC_T sind(FLOAT_VEC_T const & xx)
         {
             FLOAT_VEC_T s, c;
             const double ONEOPIO4 = 4.0 / (3.14159265358979323846);
@@ -537,7 +537,7 @@ namespace SIMD
 
         // COS - single precision version
         template<typename FLOAT_VEC_T, typename INT_VEC_T, typename MASK_T>
-        UME_FORCE_INLINE FLOAT_VEC_T cosf(FLOAT_VEC_T const & xx)
+        inline FLOAT_VEC_T cosf(FLOAT_VEC_T const & xx)
         {
             FLOAT_VEC_T c;
 
@@ -593,7 +593,7 @@ namespace SIMD
 
         // COS - double precision version
         template<typename FLOAT_VEC_T, typename INT_VEC_T, typename MASK_T>
-        UME_FORCE_INLINE FLOAT_VEC_T cosd(FLOAT_VEC_T const & xx)
+        inline FLOAT_VEC_T cosd(FLOAT_VEC_T const & xx)
         {
             FLOAT_VEC_T s, c;
 
@@ -692,7 +692,7 @@ namespace SIMD
 
         // SINCOS - single precision version
         template<typename FLOAT_VEC_T, typename INT_VEC_T, typename MASK_T>
-        UME_FORCE_INLINE void sincosf(FLOAT_VEC_T const & xx, FLOAT_VEC_T & s, FLOAT_VEC_T &c)
+        inline void sincosf(FLOAT_VEC_T const & xx, FLOAT_VEC_T & s, FLOAT_VEC_T &c)
         {
             const float ONEOPIO4F = 4.0f / (3.1415927f);
 
@@ -754,7 +754,7 @@ namespace SIMD
 
         // SINCOS - double precision version
         template<typename FLOAT_VEC_T, typename INT_VEC_T, typename MASK_T>
-        UME_FORCE_INLINE void sincosd(FLOAT_VEC_T const & xx, FLOAT_VEC_T & s, FLOAT_VEC_T & c) {
+        inline void sincosd(FLOAT_VEC_T const & xx, FLOAT_VEC_T & s, FLOAT_VEC_T & c) {
             const double ONEOPIO4 = 4.0 / (3.14159265358979323846);
 
             const double C1sin = 1.58962301576546568060E-10;

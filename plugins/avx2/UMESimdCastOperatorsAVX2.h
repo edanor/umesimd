@@ -317,7 +317,7 @@ namespace SIMD {
     }
 
     UME_FORCE_INLINE SIMDVec_i<int32_t, 8>::operator SIMDVec_u<uint32_t, 8>() const {
-        return SCALAR_EMULATION::xtoy < SIMDVec_u<uint32_t, 8>, uint32_t, SIMDVec_i<int32_t, 8>>(*this);
+        return SIMDVec_u<uint32_t, 8>(mVec);
     }
 
     UME_FORCE_INLINE SIMDVec_i<int32_t, 16>::operator SIMDVec_u<uint32_t, 16>() const {
