@@ -442,7 +442,8 @@ namespace SIMD {
     }
 
     inline SIMDVec_f<float, 8>::operator SIMDVec_u<uint32_t, 8>() const {
-        return SCALAR_EMULATION::xtoy < SIMDVec_u<uint32_t, 8>, uint32_t, SIMDVec_f<float, 8>>(*this);
+        __m256i t0 = _mm256_cvtps_epi32(mVec);
+        return SIMDVec_u<uint32_t, 8>(t0);
     }
 
     inline SIMDVec_f<float, 16>::operator SIMDVec_u<uint32_t, 16>() const {
