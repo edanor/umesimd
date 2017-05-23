@@ -1973,6 +1973,18 @@ namespace SIMD
             return SCALAR_EMULATION::MATH::reduceMax<SCALAR_TYPE, DERIVED_VEC_TYPE, MASK_TYPE>(mask, static_cast<DERIVED_VEC_TYPE const &>(*this));
         }
 
+        // HMAXS
+        UME_FORCE_INLINE SCALAR_TYPE hmax (SCALAR_TYPE a) const {
+            UME_EMULATION_WARNING();
+            return SCALAR_EMULATION::MATH::reduceMax<SCALAR_TYPE, DERIVED_VEC_TYPE>(a, static_cast<DERIVED_VEC_TYPE const &>(*this));
+        }
+
+        // MHMAXS
+        UME_FORCE_INLINE SCALAR_TYPE hmax (MASK_TYPE const & mask, SCALAR_TYPE a) const {
+            UME_EMULATION_WARNING();
+            return SCALAR_EMULATION::MATH::reduceMax<SCALAR_TYPE, DERIVED_VEC_TYPE, MASK_TYPE>(mask, a, static_cast<DERIVED_VEC_TYPE const &>(*this));
+        }
+
         // IMAX
         UME_FORCE_INLINE uint32_t imax() const {
             UME_EMULATION_WARNING();

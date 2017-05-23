@@ -36,7 +36,7 @@
 
 #include <algorithm>
 #include <array>
-#define UME_SIMD_SHOW_EMULATION_WARNINGS
+//#define UME_SIMD_SHOW_EMULATION_WARNINGS
 #ifdef UME_SIMD_SHOW_EMULATION_WARNINGS
 namespace UME
 {

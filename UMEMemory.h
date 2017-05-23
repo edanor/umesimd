@@ -146,13 +146,13 @@ namespace UME
     
     template<class T, int SIMD_STRIDE>
     struct AlignedAllocator {
-        AlignedAllocator() {}
-        template <class U> AlignedAllocator(const AlignedAllocator<U, SIMD_STRIDE> & other) {}
-        T* allocate(std::size_t n) {
+        UME_FORCE_INLINE AlignedAllocator() {}
+        template <class U> UME_FORCE_INLINE AlignedAllocator(const AlignedAllocator<U, SIMD_STRIDE> & other) {}
+        UME_FORCE_INLINE T* allocate(std::size_t n) {
             int alignment = UME::SIMD::SIMDVec<T, SIMD_STRIDE>::alignment();
             return (T*)DynamicMemory::AlignedMalloc(n, alignment);
         }
-        void deallocate(T* p, std::size_t n) {
+        UME_FORCE_INLINE void deallocate(T* p, std::size_t n) {
             DynamicMemory::AlignedFree(p);
         }
     };
@@ -160,23 +160,23 @@ namespace UME
     // Specialize for bool
     template<int SIMD_STRIDE>
     struct AlignedAllocator<bool, SIMD_STRIDE> {
-        AlignedAllocator() {}
-        template <class U> AlignedAllocator(const AlignedAllocator<U, SIMD_STRIDE> & other) {}
-        bool* allocate(std::size_t n) {
+        UME_FORCE_INLINE AlignedAllocator() {}
+        template <class U> UME_FORCE_INLINE AlignedAllocator(const AlignedAllocator<U, SIMD_STRIDE> & other) {}
+        UME_FORCE_INLINE bool* allocate(std::size_t n) {
             int alignment = UME::SIMD::SIMDVecMask<SIMD_STRIDE>::alignment();
             return (bool*)DynamicMemory::AlignedMalloc(n, alignment);
         }
-        void deallocate(bool* p, std::size_t n) {
+        UME_FORCE_INLINE void deallocate(bool* p, std::size_t n) {
             DynamicMemory::AlignedFree(p);
         }
     };
     
     template <class T, class U, int SIMD_STRIDE1, int SIMD_STRIDE2>
-    bool operator==(const AlignedAllocator<T, SIMD_STRIDE1>&, const AlignedAllocator<U, SIMD_STRIDE2>&) {
+    UME_FORCE_INLINE bool operator==(const AlignedAllocator<T, SIMD_STRIDE1>&, const AlignedAllocator<U, SIMD_STRIDE2>&) {
         return std::is_same<T, U>::value && (SIMD_STRIDE1 == SIMD_STRIDE2);
     }
     template <class T, class U, int SIMD_STRIDE1, int SIMD_STRIDE2>
-    bool operator!=(const AlignedAllocator<T, SIMD_STRIDE1>&, const AlignedAllocator<U, SIMD_STRIDE2>&) {
+    UME_FORCE_INLINE bool operator!=(const AlignedAllocator<T, SIMD_STRIDE1>&, const AlignedAllocator<U, SIMD_STRIDE2>&) {
         return !(std::is_same<T, U>::value && (SIMD_STRIDE1 == SIMD_STRIDE2));
     }
 #include "utilities/ignore_warnings_pop.h"
