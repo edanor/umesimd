@@ -65,9 +65,9 @@ namespace SIMD {
         constexpr static uint32_t alignment() { return 32; }
 
         // ZERO-CONSTR
-        UME_FORCE_INLINE SIMDVec_i() {}
+        UME_FUNC_ATTRIB SIMDVec_i() {}
         // SET-CONSTR
-        UME_FORCE_INLINE SIMDVec_i(int32_t i) {
+        UME_FUNC_ATTRIB SIMDVec_i(int32_t i) {
             mVec[0] = i;
             mVec[1] = i;
             mVec[2] = i;
@@ -81,14 +81,14 @@ namespace SIMD {
         // to be promoted to SCALAR_TYPE instead of SCALAR_TYPE*. This prevents
         // ambiguity between SET-CONSTR and LOAD-CONSTR.
         template<typename T>
-        UME_FORCE_INLINE SIMDVec_i(
+        UME_FUNC_ATTRIB SIMDVec_i(
             T i, 
             typename std::enable_if< std::is_fundamental<T>::value &&
                                     !std::is_same<T, int32_t>::value,
                                     void*>::type = nullptr)
         : SIMDVec_i(static_cast<int32_t>(i)) {}
         // LOAD-CONSTR
-        UME_FORCE_INLINE explicit SIMDVec_i(int32_t const *p) {
+        UME_FUNC_ATTRIB explicit SIMDVec_i(int32_t const *p) {
             mVec[0] = p[0];
             mVec[1] = p[1];
             mVec[2] = p[2];
@@ -99,7 +99,7 @@ namespace SIMD {
             mVec[7] = p[7];
         }
         // FULL-CONSTR
-        UME_FORCE_INLINE SIMDVec_i(int32_t i0, int32_t i1, int32_t i2, int32_t i3,
+        UME_FUNC_ATTRIB SIMDVec_i(int32_t i0, int32_t i1, int32_t i2, int32_t i3,
                          int32_t i4, int32_t i5, int32_t i6, int32_t i7) {
             mVec[0] = i0;
             mVec[1] = i1;
@@ -112,35 +112,35 @@ namespace SIMD {
         }
 
         // EXTRACT
-        UME_FORCE_INLINE int32_t extract(uint32_t index) const {
+        UME_FUNC_ATTRIB int32_t extract(uint32_t index) const {
             return mVec[index];
         }
-        UME_FORCE_INLINE int32_t operator[] (uint32_t index) const {
+        UME_FUNC_ATTRIB int32_t operator[] (uint32_t index) const {
             return extract(index);
         }
 
         // INSERT
-        UME_FORCE_INLINE SIMDVec_i & insert(uint32_t index, int32_t value) {
+        UME_FUNC_ATTRIB SIMDVec_i & insert(uint32_t index, int32_t value) {
             mVec[index] = value;
             return *this;
         }
-        UME_FORCE_INLINE IntermediateIndex<SIMDVec_i, int32_t> operator[] (uint32_t index) {
+        UME_FUNC_ATTRIB IntermediateIndex<SIMDVec_i, int32_t> operator[] (uint32_t index) {
             return IntermediateIndex<SIMDVec_i, int32_t>(index, static_cast<SIMDVec_i &>(*this));
         }
 
         // Override Mask Access operators
 #if defined(USE_PARENTHESES_IN_MASK_ASSIGNMENT)
-        UME_FORCE_INLINE IntermediateMask<SIMDVec_i, int32_t, SIMDVecMask<8>> operator() (SIMDVecMask<8> const & mask) {
+        UME_FUNC_ATTRIB IntermediateMask<SIMDVec_i, int32_t, SIMDVecMask<8>> operator() (SIMDVecMask<8> const & mask) {
             return IntermediateMask<SIMDVec_i, int32_t, SIMDVecMask<8>>(mask, static_cast<SIMDVec_i &>(*this));
         }
 #else
-        UME_FORCE_INLINE IntermediateMask<SIMDVec_i, int32_t, SIMDVecMask<8>> operator[] (SIMDVecMask<8> const & mask) {
+        UME_FUNC_ATTRIB IntermediateMask<SIMDVec_i, int32_t, SIMDVecMask<8>> operator[] (SIMDVecMask<8> const & mask) {
             return IntermediateMask<SIMDVec_i, int32_t, SIMDVecMask<8>>(mask, static_cast<SIMDVec_i &>(*this));
         }
 #endif
 
         // ASSIGNV
-        UME_FORCE_INLINE SIMDVec_i & assign(SIMDVec_i const & src) {
+        UME_FUNC_ATTRIB SIMDVec_i & assign(SIMDVec_i const & src) {
             mVec[0] = src.mVec[0];
             mVec[1] = src.mVec[1];
             mVec[2] = src.mVec[2];
@@ -151,11 +151,11 @@ namespace SIMD {
             mVec[7] = src.mVec[7];
             return *this;
         }
-        UME_FORCE_INLINE SIMDVec_i & operator= (SIMDVec_i const & b) {
+        UME_FUNC_ATTRIB SIMDVec_i & operator= (SIMDVec_i const & b) {
             return assign(b);
         }
         // MASSIGNV
-        UME_FORCE_INLINE SIMDVec_i & assign(SIMDVecMask<8> const & mask, SIMDVec_i const & src) {
+        UME_FUNC_ATTRIB SIMDVec_i & assign(SIMDVecMask<8> const & mask, SIMDVec_i const & src) {
             if (mask.mMask[0] == true) mVec[0] = src.mVec[0];
             if (mask.mMask[1] == true) mVec[1] = src.mVec[1];
             if (mask.mMask[2] == true) mVec[2] = src.mVec[2];
@@ -167,7 +167,7 @@ namespace SIMD {
             return *this;
         }
         // ASSIGNS
-        UME_FORCE_INLINE SIMDVec_i & assign(int32_t b) {
+        UME_FUNC_ATTRIB SIMDVec_i & assign(int32_t b) {
             mVec[0] = b;
             mVec[1] = b;
             mVec[2] = b;
@@ -178,11 +178,11 @@ namespace SIMD {
             mVec[7] = b;
             return *this;
         }
-        UME_FORCE_INLINE SIMDVec_i & operator= (int32_t b) {
+        UME_FUNC_ATTRIB SIMDVec_i & operator= (int32_t b) {
             return assign(b);
         }
         // MASSIGNS
-        UME_FORCE_INLINE SIMDVec_i & assign(SIMDVecMask<8> const & mask, int32_t b) {
+        UME_FUNC_ATTRIB SIMDVec_i & assign(SIMDVecMask<8> const & mask, int32_t b) {
             if (mask.mMask[0] == true) mVec[0] = b;
             if (mask.mMask[1] == true) mVec[1] = b;
             if (mask.mMask[2] == true) mVec[2] = b;
@@ -199,7 +199,7 @@ namespace SIMD {
         // PREFETCH2
 
         // LOAD
-        UME_FORCE_INLINE SIMDVec_i & load(int32_t const *p) {
+        UME_FUNC_ATTRIB SIMDVec_i & load(int32_t const *p) {
             mVec[0] = p[0];
             mVec[1] = p[1];
             mVec[2] = p[2];
@@ -211,7 +211,7 @@ namespace SIMD {
             return *this;
         }
         // MLOAD
-        UME_FORCE_INLINE SIMDVec_i & load(SIMDVecMask<8> const & mask, int32_t const *p) {
+        UME_FUNC_ATTRIB SIMDVec_i & load(SIMDVecMask<8> const & mask, int32_t const *p) {
             if (mask.mMask[0] == true) mVec[0] = p[0];
             if (mask.mMask[1] == true) mVec[1] = p[1];
             if (mask.mMask[2] == true) mVec[2] = p[2];
@@ -223,7 +223,7 @@ namespace SIMD {
             return *this;
         }
         // LOADA
-        UME_FORCE_INLINE SIMDVec_i & loada(int32_t const *p) {
+        UME_FUNC_ATTRIB SIMDVec_i & loada(int32_t const *p) {
             mVec[0] = p[0];
             mVec[1] = p[1];
             mVec[2] = p[2];
@@ -235,7 +235,7 @@ namespace SIMD {
             return *this;
         }
         // MLOADA
-        UME_FORCE_INLINE SIMDVec_i & loada(SIMDVecMask<8> const & mask, int32_t const *p) {
+        UME_FUNC_ATTRIB SIMDVec_i & loada(SIMDVecMask<8> const & mask, int32_t const *p) {
             if (mask.mMask[0] == true) mVec[0] = p[0];
             if (mask.mMask[1] == true) mVec[1] = p[1];
             if (mask.mMask[2] == true) mVec[2] = p[2];
@@ -247,7 +247,7 @@ namespace SIMD {
             return *this;
         }
         // STORE
-        UME_FORCE_INLINE int32_t* store(int32_t* p) const {
+        UME_FUNC_ATTRIB int32_t* store(int32_t* p) const {
             p[0] = mVec[0];
             p[1] = mVec[1];
             p[2] = mVec[2];
@@ -259,7 +259,7 @@ namespace SIMD {
             return p;
         }
         // MSTORE
-        UME_FORCE_INLINE int32_t* store(SIMDVecMask<8> const & mask, int32_t* p) const {
+        UME_FUNC_ATTRIB int32_t* store(SIMDVecMask<8> const & mask, int32_t* p) const {
             if (mask.mMask[0] == true) p[0] = mVec[0];
             if (mask.mMask[1] == true) p[1] = mVec[1];
             if (mask.mMask[2] == true) p[2] = mVec[2];
@@ -271,7 +271,7 @@ namespace SIMD {
             return p;
         }
         // STOREA
-        UME_FORCE_INLINE int32_t* storea(int32_t* p) const {
+        UME_FUNC_ATTRIB int32_t* storea(int32_t* p) const {
             p[0] = mVec[0];
             p[1] = mVec[1];
             p[2] = mVec[2];
@@ -283,7 +283,7 @@ namespace SIMD {
             return p;
         }
         // MSTOREA
-        UME_FORCE_INLINE int32_t* storea(SIMDVecMask<8> const & mask, int32_t* p) const {
+        UME_FUNC_ATTRIB int32_t* storea(SIMDVecMask<8> const & mask, int32_t* p) const {
             if (mask.mMask[0] == true) p[0] = mVec[0];
             if (mask.mMask[1] == true) p[1] = mVec[1];
             if (mask.mMask[2] == true) p[2] = mVec[2];
@@ -296,7 +296,7 @@ namespace SIMD {
         }
 
         // BLENDV
-        UME_FORCE_INLINE SIMDVec_i blend(SIMDVecMask<8> const & mask, SIMDVec_i const & b) const {
+        UME_FUNC_ATTRIB SIMDVec_i blend(SIMDVecMask<8> const & mask, SIMDVec_i const & b) const {
             int32_t t0 = mask.mMask[0] ? b.mVec[0] : mVec[0];
             int32_t t1 = mask.mMask[1] ? b.mVec[1] : mVec[1];
             int32_t t2 = mask.mMask[2] ? b.mVec[2] : mVec[2];
@@ -308,7 +308,7 @@ namespace SIMD {
             return SIMDVec_i(t0, t1, t2, t3, t4, t5, t6, t7);
         }
         // BLENDS
-        UME_FORCE_INLINE SIMDVec_i blend(SIMDVecMask<8> const & mask, int32_t b) const {
+        UME_FUNC_ATTRIB SIMDVec_i blend(SIMDVecMask<8> const & mask, int32_t b) const {
             int32_t t0 = mask.mMask[0] ? b : mVec[0];
             int32_t t1 = mask.mMask[1] ? b : mVec[1];
             int32_t t2 = mask.mMask[2] ? b : mVec[2];
@@ -323,7 +323,7 @@ namespace SIMD {
         // SWIZZLEA
 
         // ADDV
-        UME_FORCE_INLINE SIMDVec_i add(SIMDVec_i const & b) const {
+        UME_FUNC_ATTRIB SIMDVec_i add(SIMDVec_i const & b) const {
             int32_t t0 = mVec[0] + b.mVec[0];
             int32_t t1 = mVec[1] + b.mVec[1];
             int32_t t2 = mVec[2] + b.mVec[2];
@@ -334,11 +334,11 @@ namespace SIMD {
             int32_t t7 = mVec[7] + b.mVec[7];
             return SIMDVec_i(t0, t1, t2, t3, t4, t5, t6, t7);
         }
-        UME_FORCE_INLINE SIMDVec_i operator+ (SIMDVec_i const & b) const {
+        UME_FUNC_ATTRIB SIMDVec_i operator+ (SIMDVec_i const & b) const {
             return add(b);
         }
         // MADDV
-        UME_FORCE_INLINE SIMDVec_i add(SIMDVecMask<8> const & mask, SIMDVec_i const & b) const {
+        UME_FUNC_ATTRIB SIMDVec_i add(SIMDVecMask<8> const & mask, SIMDVec_i const & b) const {
             int32_t t0 = mask.mMask[0] ? mVec[0] + b.mVec[0] : mVec[0];
             int32_t t1 = mask.mMask[1] ? mVec[1] + b.mVec[1] : mVec[1];
             int32_t t2 = mask.mMask[2] ? mVec[2] + b.mVec[2] : mVec[2];
@@ -350,7 +350,7 @@ namespace SIMD {
             return SIMDVec_i(t0, t1, t2, t3, t4, t5, t6, t7);
         }
         // ADDS
-        UME_FORCE_INLINE SIMDVec_i add(int32_t b) const {
+        UME_FUNC_ATTRIB SIMDVec_i add(int32_t b) const {
             int32_t t0 = mVec[0] + b;
             int32_t t1 = mVec[1] + b;
             int32_t t2 = mVec[2] + b;
@@ -361,11 +361,11 @@ namespace SIMD {
             int32_t t7 = mVec[7] + b;
             return SIMDVec_i(t0, t1, t2, t3, t4, t5, t6, t7);
         }
-        UME_FORCE_INLINE SIMDVec_i operator+ (int32_t b) const {
+        UME_FUNC_ATTRIB SIMDVec_i operator+ (int32_t b) const {
             return add(b);
         }
         // MADDS
-        UME_FORCE_INLINE SIMDVec_i add(SIMDVecMask<8> const & mask, int32_t b) const {
+        UME_FUNC_ATTRIB SIMDVec_i add(SIMDVecMask<8> const & mask, int32_t b) const {
             int32_t t0 = mask.mMask[0] ? mVec[0] + b : mVec[0];
             int32_t t1 = mask.mMask[1] ? mVec[1] + b : mVec[1];
             int32_t t2 = mask.mMask[2] ? mVec[2] + b : mVec[2];
@@ -377,7 +377,7 @@ namespace SIMD {
             return SIMDVec_i(t0, t1, t2, t3, t4, t5, t6, t7);
         }
         // ADDVA
-        UME_FORCE_INLINE SIMDVec_i & adda(SIMDVec_i const & b) {
+        UME_FUNC_ATTRIB SIMDVec_i & adda(SIMDVec_i const & b) {
             mVec[0] += b.mVec[0];
             mVec[1] += b.mVec[1];
             mVec[2] += b.mVec[2];
@@ -388,11 +388,11 @@ namespace SIMD {
             mVec[7] += b.mVec[7];
             return *this;
         }
-        UME_FORCE_INLINE SIMDVec_i & operator+= (SIMDVec_i const & b) {
+        UME_FUNC_ATTRIB SIMDVec_i & operator+= (SIMDVec_i const & b) {
             return adda(b);
         }
         // MADDVA
-        UME_FORCE_INLINE SIMDVec_i & adda(SIMDVecMask<8> const & mask, SIMDVec_i const & b) {
+        UME_FUNC_ATTRIB SIMDVec_i & adda(SIMDVecMask<8> const & mask, SIMDVec_i const & b) {
             mVec[0] = mask.mMask[0] ? mVec[0] + b.mVec[0] : mVec[0];
             mVec[1] = mask.mMask[1] ? mVec[1] + b.mVec[1] : mVec[1];
             mVec[2] = mask.mMask[2] ? mVec[2] + b.mVec[2] : mVec[2];
@@ -404,7 +404,7 @@ namespace SIMD {
             return *this;
         }
         // ADDSA
-        UME_FORCE_INLINE SIMDVec_i & adda(int32_t b) {
+        UME_FUNC_ATTRIB SIMDVec_i & adda(int32_t b) {
             mVec[0] += b;
             mVec[1] += b;
             mVec[2] += b;
@@ -415,11 +415,11 @@ namespace SIMD {
             mVec[7] += b;
             return *this;
         }
-        UME_FORCE_INLINE SIMDVec_i & operator+= (int32_t b) {
+        UME_FUNC_ATTRIB SIMDVec_i & operator+= (int32_t b) {
             return adda(b);
         }
         // MADDSA
-        UME_FORCE_INLINE SIMDVec_i & adda(SIMDVecMask<8> const & mask, int32_t b) {
+        UME_FUNC_ATTRIB SIMDVec_i & adda(SIMDVecMask<8> const & mask, int32_t b) {
             mVec[0] = mask.mMask[0] ? mVec[0] + b : mVec[0];
             mVec[1] = mask.mMask[1] ? mVec[1] + b : mVec[1];
             mVec[2] = mask.mMask[2] ? mVec[2] + b : mVec[2];
@@ -431,7 +431,7 @@ namespace SIMD {
             return *this;
         }
         // SADDV
-        UME_FORCE_INLINE SIMDVec_i sadd(SIMDVec_i const & b) const {
+        UME_FUNC_ATTRIB SIMDVec_i sadd(SIMDVec_i const & b) const {
             const int32_t MAX_VAL = std::numeric_limits<int32_t>::max();
             const int32_t MIN_VAL = std::numeric_limits<int32_t>::min();
             int32_t t[8];
@@ -450,7 +450,7 @@ namespace SIMD {
             return SIMDVec_i(t);
         }
         // MSADDV
-        UME_FORCE_INLINE SIMDVec_i sadd(SIMDVecMask<8> const & mask, SIMDVec_i const & b) const {
+        UME_FUNC_ATTRIB SIMDVec_i sadd(SIMDVecMask<8> const & mask, SIMDVec_i const & b) const {
             const int32_t MAX_VAL = std::numeric_limits<int32_t>::max();
             const int32_t MIN_VAL = std::numeric_limits<int32_t>::min();
             int32_t t[8];
@@ -475,7 +475,7 @@ namespace SIMD {
             return SIMDVec_i(t);
         }
         // SADDS
-        UME_FORCE_INLINE SIMDVec_i sadd(int32_t b) const {
+        UME_FUNC_ATTRIB SIMDVec_i sadd(int32_t b) const {
             const int32_t MAX_VAL = std::numeric_limits<int32_t>::max();
             const int32_t MIN_VAL = std::numeric_limits<int32_t>::min();
             int32_t t[8];
@@ -494,7 +494,7 @@ namespace SIMD {
             return SIMDVec_i(t);
         }
         // MSADDS
-        UME_FORCE_INLINE SIMDVec_i sadd(SIMDVecMask<8> const & mask, int32_t b) const {
+        UME_FUNC_ATTRIB SIMDVec_i sadd(SIMDVecMask<8> const & mask, int32_t b) const {
             const int32_t MAX_VAL = std::numeric_limits<int32_t>::max();
             const int32_t MIN_VAL = std::numeric_limits<int32_t>::min();
             int32_t t[8];
@@ -519,7 +519,7 @@ namespace SIMD {
             return SIMDVec_i(t);
         }
         // SADDVA
-        UME_FORCE_INLINE SIMDVec_i & sadda(SIMDVec_i const & b) {
+        UME_FUNC_ATTRIB SIMDVec_i & sadda(SIMDVec_i const & b) {
             const int32_t MAX_VAL = std::numeric_limits<int32_t>::max();
             const int32_t MIN_VAL = std::numeric_limits<int32_t>::min();
 
@@ -537,7 +537,7 @@ namespace SIMD {
             return *this;
         }
         // MSADDVA
-        UME_FORCE_INLINE SIMDVec_i & sadda(SIMDVecMask<8> const & mask, SIMDVec_i const & b) {
+        UME_FUNC_ATTRIB SIMDVec_i & sadda(SIMDVecMask<8> const & mask, SIMDVec_i const & b) {
             const int32_t MAX_VAL = std::numeric_limits<int32_t>::max();
             const int32_t MIN_VAL = std::numeric_limits<int32_t>::min();
 
@@ -559,7 +559,7 @@ namespace SIMD {
             return *this;
         }
         // SADDSA
-        UME_FORCE_INLINE SIMDVec_i & sadda(int32_t b) {
+        UME_FUNC_ATTRIB SIMDVec_i & sadda(int32_t b) {
             const int32_t MAX_VAL = std::numeric_limits<int32_t>::max();
             const int32_t MIN_VAL = std::numeric_limits<int32_t>::min();
 
@@ -577,7 +577,7 @@ namespace SIMD {
             return *this;
         }
         // MSADDSA
-        UME_FORCE_INLINE SIMDVec_i & sadda(SIMDVecMask<8> const & mask, int32_t b) {
+        UME_FUNC_ATTRIB SIMDVec_i & sadda(SIMDVecMask<8> const & mask, int32_t b) {
             const int32_t MAX_VAL = std::numeric_limits<int32_t>::max();
             const int32_t MIN_VAL = std::numeric_limits<int32_t>::min();
 
@@ -598,7 +598,7 @@ namespace SIMD {
             return *this;
         }
         // POSTINC
-        UME_FORCE_INLINE SIMDVec_i postinc() {
+        UME_FUNC_ATTRIB SIMDVec_i postinc() {
             int32_t t0 = mVec[0];
             int32_t t1 = mVec[1];
             int32_t t2 = mVec[2];
@@ -617,11 +617,11 @@ namespace SIMD {
             mVec[7]++;
             return SIMDVec_i(t0, t1, t2, t3, t4, t5, t6, t7);
         }
-        UME_FORCE_INLINE SIMDVec_i operator++ (int) {
+        UME_FUNC_ATTRIB SIMDVec_i operator++ (int) {
             return postinc();
         }
         // MPOSTINC
-        UME_FORCE_INLINE SIMDVec_i postinc(SIMDVecMask<8> const & mask) {
+        UME_FUNC_ATTRIB SIMDVec_i postinc(SIMDVecMask<8> const & mask) {
             int32_t t0 = mVec[0];
             int32_t t1 = mVec[1];
             int32_t t2 = mVec[2];
@@ -641,7 +641,7 @@ namespace SIMD {
             return SIMDVec_i(t0, t1, t2, t3, t4, t5, t6, t7);
         }
         // PREFINC
-        UME_FORCE_INLINE SIMDVec_i & prefinc() {
+        UME_FUNC_ATTRIB SIMDVec_i & prefinc() {
             mVec[0]++;
             mVec[1]++;
             mVec[2]++;
@@ -652,11 +652,11 @@ namespace SIMD {
             mVec[7]++;
             return *this;
         }
-        UME_FORCE_INLINE SIMDVec_i & operator++ () {
+        UME_FUNC_ATTRIB SIMDVec_i & operator++ () {
             return prefinc();
         }
         // MPREFINC
-        UME_FORCE_INLINE SIMDVec_i & prefinc(SIMDVecMask<8> const & mask) {
+        UME_FUNC_ATTRIB SIMDVec_i & prefinc(SIMDVecMask<8> const & mask) {
             if (mask.mMask[0] == true) mVec[0]++;
             if (mask.mMask[1] == true) mVec[1]++;
             if (mask.mMask[2] == true) mVec[2]++;
@@ -668,7 +668,7 @@ namespace SIMD {
             return *this;
         }
         // SUBV
-        UME_FORCE_INLINE SIMDVec_i sub(SIMDVec_i const & b) const {
+        UME_FUNC_ATTRIB SIMDVec_i sub(SIMDVec_i const & b) const {
             int32_t t0 = mVec[0] - b.mVec[0];
             int32_t t1 = mVec[1] - b.mVec[1];
             int32_t t2 = mVec[2] - b.mVec[2];
@@ -679,11 +679,11 @@ namespace SIMD {
             int32_t t7 = mVec[7] - b.mVec[7];
             return SIMDVec_i(t0, t1, t2, t3, t4, t5, t6, t7);
         }
-        UME_FORCE_INLINE SIMDVec_i operator- (SIMDVec_i const & b) const {
+        UME_FUNC_ATTRIB SIMDVec_i operator- (SIMDVec_i const & b) const {
             return sub(b);
         }
         // MSUBV
-        UME_FORCE_INLINE SIMDVec_i sub(SIMDVecMask<8> const & mask, SIMDVec_i const & b) const {
+        UME_FUNC_ATTRIB SIMDVec_i sub(SIMDVecMask<8> const & mask, SIMDVec_i const & b) const {
             int32_t t0 = mask.mMask[0] ? mVec[0] - b.mVec[0] : mVec[0];
             int32_t t1 = mask.mMask[1] ? mVec[1] - b.mVec[1] : mVec[1];
             int32_t t2 = mask.mMask[2] ? mVec[2] - b.mVec[2] : mVec[2];
@@ -695,7 +695,7 @@ namespace SIMD {
             return SIMDVec_i(t0, t1, t2, t3, t4, t5, t6, t7);
         }
         // SUBS
-        UME_FORCE_INLINE SIMDVec_i sub(int32_t b) const {
+        UME_FUNC_ATTRIB SIMDVec_i sub(int32_t b) const {
             int32_t t0 = mVec[0] - b;
             int32_t t1 = mVec[1] - b;
             int32_t t2 = mVec[2] - b;
@@ -706,11 +706,11 @@ namespace SIMD {
             int32_t t7 = mVec[7] - b;
             return SIMDVec_i(t0, t1, t2, t3, t4, t5, t6, t7);
         }
-        UME_FORCE_INLINE SIMDVec_i operator- (int32_t b) const {
+        UME_FUNC_ATTRIB SIMDVec_i operator- (int32_t b) const {
             return sub(b);
         }
         // MSUBS
-        UME_FORCE_INLINE SIMDVec_i sub(SIMDVecMask<8> const & mask, int32_t b) const {
+        UME_FUNC_ATTRIB SIMDVec_i sub(SIMDVecMask<8> const & mask, int32_t b) const {
             int32_t t0 = mask.mMask[0] ? mVec[0] - b : mVec[0];
             int32_t t1 = mask.mMask[1] ? mVec[1] - b : mVec[1];
             int32_t t2 = mask.mMask[2] ? mVec[2] - b : mVec[2];
@@ -722,7 +722,7 @@ namespace SIMD {
             return SIMDVec_i(t0, t1, t2, t3, t4, t5, t6, t7);
         }
         // SUBVA
-        UME_FORCE_INLINE SIMDVec_i & suba(SIMDVec_i const & b) {
+        UME_FUNC_ATTRIB SIMDVec_i & suba(SIMDVec_i const & b) {
             mVec[0] -= b.mVec[0];
             mVec[1] -= b.mVec[1];
             mVec[2] -= b.mVec[2];
@@ -733,11 +733,11 @@ namespace SIMD {
             mVec[7] -= b.mVec[7];
             return *this;
         }
-        UME_FORCE_INLINE SIMDVec_i & operator-= (SIMDVec_i const & b) {
+        UME_FUNC_ATTRIB SIMDVec_i & operator-= (SIMDVec_i const & b) {
             return suba(b);
         }
         // MSUBVA
-        UME_FORCE_INLINE SIMDVec_i & suba(SIMDVecMask<8> const & mask, SIMDVec_i const & b) {
+        UME_FUNC_ATTRIB SIMDVec_i & suba(SIMDVecMask<8> const & mask, SIMDVec_i const & b) {
             mVec[0] = mask.mMask[0] ? mVec[0] - b.mVec[0] : mVec[0];
             mVec[1] = mask.mMask[1] ? mVec[1] - b.mVec[1] : mVec[1];
             mVec[2] = mask.mMask[2] ? mVec[2] - b.mVec[2] : mVec[2];
@@ -749,7 +749,7 @@ namespace SIMD {
             return *this;
         }
         // SUBSA
-        UME_FORCE_INLINE SIMDVec_i & suba(int32_t b) {
+        UME_FUNC_ATTRIB SIMDVec_i & suba(int32_t b) {
             mVec[0] -= b;
             mVec[1] -= b;
             mVec[2] -= b;
@@ -760,11 +760,11 @@ namespace SIMD {
             mVec[7] -= b;
             return *this;
         }
-        UME_FORCE_INLINE SIMDVec_i & operator-= (int32_t b) {
+        UME_FUNC_ATTRIB SIMDVec_i & operator-= (int32_t b) {
             return suba(b);
         }
         // MSUBSA
-        UME_FORCE_INLINE SIMDVec_i & suba(SIMDVecMask<8> const & mask, int32_t b) {
+        UME_FUNC_ATTRIB SIMDVec_i & suba(SIMDVecMask<8> const & mask, int32_t b) {
             mVec[0] = mask.mMask[0] ? mVec[0] - b : mVec[0];
             mVec[1] = mask.mMask[1] ? mVec[1] - b : mVec[1];
             mVec[2] = mask.mMask[2] ? mVec[2] - b : mVec[2];
@@ -776,7 +776,7 @@ namespace SIMD {
             return *this;
         }
         // SSUBV
-        UME_FORCE_INLINE SIMDVec_i ssub(SIMDVec_i const & b) const {
+        UME_FUNC_ATTRIB SIMDVec_i ssub(SIMDVec_i const & b) const {
             const int32_t t0 = std::numeric_limits<int32_t>::min();
             int32_t t1 = (mVec[0] < t0 + b.mVec[0]) ? t0 : mVec[0] - b.mVec[0];
             int32_t t2 = (mVec[1] < t0 + b.mVec[1]) ? t0 : mVec[1] - b.mVec[1];
@@ -789,7 +789,7 @@ namespace SIMD {
             return SIMDVec_i(t1, t2, t3, t4, t5, t6, t7, t8);
         }
         // MSSUBV
-        UME_FORCE_INLINE SIMDVec_i ssub(SIMDVecMask<8> const & mask, SIMDVec_i const & b) const {
+        UME_FUNC_ATTRIB SIMDVec_i ssub(SIMDVecMask<8> const & mask, SIMDVec_i const & b) const {
             const int32_t t0 = std::numeric_limits<int32_t>::min();
             int32_t t1 = mVec[0], t2 = mVec[1], t3 = mVec[2], t4 = mVec[3],
                     t5 = mVec[4], t6 = mVec[5], t7 = mVec[6], t8 = mVec[7];
@@ -820,7 +820,7 @@ namespace SIMD {
             return SIMDVec_i(t1, t2, t3, t4, t5, t6, t7, t8);
         }
         // SSUBS
-        UME_FORCE_INLINE SIMDVec_i ssub(int32_t b) const {
+        UME_FUNC_ATTRIB SIMDVec_i ssub(int32_t b) const {
             const int32_t t0 = std::numeric_limits<int32_t>::min();
             int32_t t1 = (mVec[0] < t0 + b) ? t0 : mVec[0] - b;
             int32_t t2 = (mVec[1] < t0 + b) ? t0 : mVec[1] - b;
@@ -833,7 +833,7 @@ namespace SIMD {
             return SIMDVec_i(t1, t2, t3, t4, t5, t6, t7, t8);
         }
         // MSSUBS
-        UME_FORCE_INLINE SIMDVec_i ssub(SIMDVecMask<8> const & mask, int32_t b) const {
+        UME_FUNC_ATTRIB SIMDVec_i ssub(SIMDVecMask<8> const & mask, int32_t b) const {
             const int32_t t0 = std::numeric_limits<int32_t>::min();
             int32_t t1 = mVec[0], t2 = mVec[1], t3 = mVec[2], t4 = mVec[3],
                     t5 = mVec[4], t6 = mVec[5], t7 = mVec[6], t8 = mVec[7];
@@ -864,7 +864,7 @@ namespace SIMD {
             return SIMDVec_i(t1, t2, t3, t4, t5, t6, t7, t8);
         }
         // SSUBVA
-        UME_FORCE_INLINE SIMDVec_i & ssuba(SIMDVec_i const & b) {
+        UME_FUNC_ATTRIB SIMDVec_i & ssuba(SIMDVec_i const & b) {
             const int32_t t0 = std::numeric_limits<int32_t>::min();
             mVec[0] = (mVec[0] < t0 + b.mVec[0]) ? t0 : mVec[0] - b.mVec[0];
             mVec[1] = (mVec[1] < t0 + b.mVec[1]) ? t0 : mVec[1] - b.mVec[1];
@@ -877,7 +877,7 @@ namespace SIMD {
             return *this;
         }
         // MSSUBVA
-        UME_FORCE_INLINE SIMDVec_i & ssuba(SIMDVecMask<8> const & mask, SIMDVec_i const & b) {
+        UME_FUNC_ATTRIB SIMDVec_i & ssuba(SIMDVecMask<8> const & mask, SIMDVec_i const & b) {
             const int32_t t0 = std::numeric_limits<int32_t>::min();
             if (mask.mMask[0] == true) {
                 mVec[0] = (mVec[0] < t0 + b.mVec[0]) ? t0 : mVec[0] - b.mVec[0];
@@ -906,7 +906,7 @@ namespace SIMD {
             return *this;
         }
         // SSUBSA
-        UME_FORCE_INLINE SIMDVec_i & ssuba(int32_t b) {
+        UME_FUNC_ATTRIB SIMDVec_i & ssuba(int32_t b) {
             const int32_t t0 = std::numeric_limits<int32_t>::min();
             mVec[0] = (mVec[0] < t0 + b) ? t0 : mVec[0] - b;
             mVec[1] = (mVec[1] < t0 + b) ? t0 : mVec[1] - b;
@@ -919,7 +919,7 @@ namespace SIMD {
             return *this;
         }
         // MSSUBSA
-        UME_FORCE_INLINE SIMDVec_i & ssuba(SIMDVecMask<8> const & mask, int32_t b)  {
+        UME_FUNC_ATTRIB SIMDVec_i & ssuba(SIMDVecMask<8> const & mask, int32_t b)  {
             const int32_t t0 = std::numeric_limits<int32_t>::min();
             if (mask.mMask[0] == true) {
                 mVec[0] = (mVec[0] < t0 + b) ? t0 : mVec[0] - b;
@@ -948,7 +948,7 @@ namespace SIMD {
             return *this;
         }
         // SUBFROMV
-        UME_FORCE_INLINE SIMDVec_i subfrom(SIMDVec_i const & b) const {
+        UME_FUNC_ATTRIB SIMDVec_i subfrom(SIMDVec_i const & b) const {
             int32_t t0 = b.mVec[0] - mVec[0];
             int32_t t1 = b.mVec[1] - mVec[1];
             int32_t t2 = b.mVec[2] - mVec[2];
@@ -960,7 +960,7 @@ namespace SIMD {
             return SIMDVec_i(t0, t1, t2, t3, t4, t5, t6, t7);
         }
         // MSUBFROMV
-        UME_FORCE_INLINE SIMDVec_i subfrom(SIMDVecMask<8> const & mask, SIMDVec_i const & b) const {
+        UME_FUNC_ATTRIB SIMDVec_i subfrom(SIMDVecMask<8> const & mask, SIMDVec_i const & b) const {
             int32_t t0 = mask.mMask[0] ? b.mVec[0] - mVec[0] : b.mVec[0];
             int32_t t1 = mask.mMask[1] ? b.mVec[1] - mVec[1] : b.mVec[1];
             int32_t t2 = mask.mMask[2] ? b.mVec[2] - mVec[2] : b.mVec[2];
@@ -972,7 +972,7 @@ namespace SIMD {
             return SIMDVec_i(t0, t1, t2, t3, t4, t5, t6, t7);
         }
         // SUBFROMS
-        UME_FORCE_INLINE SIMDVec_i subfrom(int32_t b) const {
+        UME_FUNC_ATTRIB SIMDVec_i subfrom(int32_t b) const {
             int32_t t0 = b - mVec[0];
             int32_t t1 = b - mVec[1];
             int32_t t2 = b - mVec[2];
@@ -984,7 +984,7 @@ namespace SIMD {
             return SIMDVec_i(t0, t1, t2, t3, t4, t5, t6, t7);
         }
         // MSUBFROMS
-        UME_FORCE_INLINE SIMDVec_i subfrom(SIMDVecMask<8> const & mask, int32_t b) const {
+        UME_FUNC_ATTRIB SIMDVec_i subfrom(SIMDVecMask<8> const & mask, int32_t b) const {
             int32_t t0 = mask.mMask[0] ? b - mVec[0] : b;
             int32_t t1 = mask.mMask[1] ? b - mVec[1] : b;
             int32_t t2 = mask.mMask[2] ? b - mVec[2] : b;
@@ -996,7 +996,7 @@ namespace SIMD {
             return SIMDVec_i(t0, t1, t2, t3, t4, t5, t6, t7);
         }
         // SUBFROMVA
-        UME_FORCE_INLINE SIMDVec_i & subfroma(SIMDVec_i const & b) {
+        UME_FUNC_ATTRIB SIMDVec_i & subfroma(SIMDVec_i const & b) {
             mVec[0] = b.mVec[0] - mVec[0];
             mVec[1] = b.mVec[1] - mVec[1];
             mVec[2] = b.mVec[2] - mVec[2];
@@ -1008,7 +1008,7 @@ namespace SIMD {
             return *this;
         }
         // MSUBFROMVA
-        UME_FORCE_INLINE SIMDVec_i & subfroma(SIMDVecMask<8> const & mask, SIMDVec_i const & b) {
+        UME_FUNC_ATTRIB SIMDVec_i & subfroma(SIMDVecMask<8> const & mask, SIMDVec_i const & b) {
             mVec[0] = mask.mMask[0] ? b.mVec[0] - mVec[0] : b.mVec[0];
             mVec[1] = mask.mMask[1] ? b.mVec[1] - mVec[1] : b.mVec[1];
             mVec[2] = mask.mMask[2] ? b.mVec[2] - mVec[2] : b.mVec[2];
@@ -1020,7 +1020,7 @@ namespace SIMD {
             return *this;
         }
         // SUBFROMSA
-        UME_FORCE_INLINE SIMDVec_i & subfroma(int32_t b) {
+        UME_FUNC_ATTRIB SIMDVec_i & subfroma(int32_t b) {
             mVec[0] = b - mVec[0];
             mVec[1] = b - mVec[1];
             mVec[2] = b - mVec[2];
@@ -1032,7 +1032,7 @@ namespace SIMD {
             return *this;
         }
         // MSUBFROMSA
-        UME_FORCE_INLINE SIMDVec_i & subfroma(SIMDVecMask<8> const & mask, int32_t b) {
+        UME_FUNC_ATTRIB SIMDVec_i & subfroma(SIMDVecMask<8> const & mask, int32_t b) {
             mVec[0] = mask.mMask[0] ? b - mVec[0] : b;
             mVec[1] = mask.mMask[1] ? b - mVec[1] : b;
             mVec[2] = mask.mMask[2] ? b - mVec[2] : b;
@@ -1044,7 +1044,7 @@ namespace SIMD {
             return *this;
         }
         // POSTDEC
-        UME_FORCE_INLINE SIMDVec_i postdec() {
+        UME_FUNC_ATTRIB SIMDVec_i postdec() {
             int32_t t0 = mVec[0], t1 = mVec[1], t2 = mVec[2], t3 = mVec[3],
                      t4 = mVec[4], t5 = mVec[5], t6 = mVec[6], t7 = mVec[7];
             mVec[0]--;
@@ -1057,11 +1057,11 @@ namespace SIMD {
             mVec[7]--;
             return SIMDVec_i(t0, t1, t2, t3, t4, t5, t6, t7);
         }
-        UME_FORCE_INLINE SIMDVec_i operator-- (int) {
+        UME_FUNC_ATTRIB SIMDVec_i operator-- (int) {
             return postdec();
         }
         // MPOSTDEC
-        UME_FORCE_INLINE SIMDVec_i postdec(SIMDVecMask<8> const & mask) {
+        UME_FUNC_ATTRIB SIMDVec_i postdec(SIMDVecMask<8> const & mask) {
             int32_t t0 = mVec[0], t1 = mVec[1], t2 = mVec[2], t3 = mVec[3],
                      t4 = mVec[4], t5 = mVec[5], t6 = mVec[6], t7 = mVec[7];
             if (mask.mMask[0] == true) mVec[0]--;
@@ -1075,7 +1075,7 @@ namespace SIMD {
             return SIMDVec_i(t0, t1, t2, t3, t4, t5, t6, t7);
         }
         // PREFDEC
-        UME_FORCE_INLINE SIMDVec_i & prefdec() {
+        UME_FUNC_ATTRIB SIMDVec_i & prefdec() {
             mVec[0]--;
             mVec[1]--;
             mVec[2]--;
@@ -1086,11 +1086,11 @@ namespace SIMD {
             mVec[7]--;
             return *this;
         }
-        UME_FORCE_INLINE SIMDVec_i & operator-- () {
+        UME_FUNC_ATTRIB SIMDVec_i & operator-- () {
             return prefdec();
         }
         // MPREFDEC
-        UME_FORCE_INLINE SIMDVec_i & prefdec(SIMDVecMask<8> const & mask) {
+        UME_FUNC_ATTRIB SIMDVec_i & prefdec(SIMDVecMask<8> const & mask) {
             if (mask.mMask[0] == true) mVec[0]--;
             if (mask.mMask[1] == true) mVec[1]--;
             if (mask.mMask[2] == true) mVec[2]--;
@@ -1102,7 +1102,7 @@ namespace SIMD {
             return *this;
         }
         // MULV
-        UME_FORCE_INLINE SIMDVec_i mul(SIMDVec_i const & b) const {
+        UME_FUNC_ATTRIB SIMDVec_i mul(SIMDVec_i const & b) const {
             int32_t t0 = mVec[0] * b.mVec[0];
             int32_t t1 = mVec[1] * b.mVec[1];
             int32_t t2 = mVec[2] * b.mVec[2];
@@ -1113,11 +1113,11 @@ namespace SIMD {
             int32_t t7 = mVec[7] * b.mVec[7];
             return SIMDVec_i(t0, t1, t2, t3, t4, t5, t6, t7);
         }
-        UME_FORCE_INLINE SIMDVec_i operator* (SIMDVec_i const & b) const {
+        UME_FUNC_ATTRIB SIMDVec_i operator* (SIMDVec_i const & b) const {
             return mul(b);
         }
         // MMULV
-        UME_FORCE_INLINE SIMDVec_i mul(SIMDVecMask<8> const & mask, SIMDVec_i const & b) const {
+        UME_FUNC_ATTRIB SIMDVec_i mul(SIMDVecMask<8> const & mask, SIMDVec_i const & b) const {
             int32_t t0 = mask.mMask[0] ? mVec[0] * b.mVec[0] : mVec[0];
             int32_t t1 = mask.mMask[1] ? mVec[1] * b.mVec[1] : mVec[1];
             int32_t t2 = mask.mMask[2] ? mVec[2] * b.mVec[2] : mVec[2];
@@ -1129,7 +1129,7 @@ namespace SIMD {
             return SIMDVec_i(t0, t1, t2, t3, t4, t5, t6, t7);
         }
         // MULS
-        UME_FORCE_INLINE SIMDVec_i mul(int32_t b) const {
+        UME_FUNC_ATTRIB SIMDVec_i mul(int32_t b) const {
             int32_t t0 = mVec[0] * b;
             int32_t t1 = mVec[1] * b;
             int32_t t2 = mVec[2] * b;
@@ -1140,11 +1140,11 @@ namespace SIMD {
             int32_t t7 = mVec[7] * b;
             return SIMDVec_i(t0, t1, t2, t3, t4, t5, t6, t7);
         }
-        UME_FORCE_INLINE SIMDVec_i operator* (int32_t b) const {
+        UME_FUNC_ATTRIB SIMDVec_i operator* (int32_t b) const {
             return mul(b);
         }
         // MMULS
-        UME_FORCE_INLINE SIMDVec_i mul(SIMDVecMask<8> const & mask, int32_t b) const {
+        UME_FUNC_ATTRIB SIMDVec_i mul(SIMDVecMask<8> const & mask, int32_t b) const {
             int32_t t0 = mask.mMask[0] ? mVec[0] * b : mVec[0];
             int32_t t1 = mask.mMask[1] ? mVec[1] * b : mVec[1];
             int32_t t2 = mask.mMask[2] ? mVec[2] * b : mVec[2];
@@ -1156,7 +1156,7 @@ namespace SIMD {
             return SIMDVec_i(t0, t1, t2, t3, t4, t5, t6, t7);
         }
         // MULVA
-        UME_FORCE_INLINE SIMDVec_i & mula(SIMDVec_i const & b) {
+        UME_FUNC_ATTRIB SIMDVec_i & mula(SIMDVec_i const & b) {
             mVec[0] *= b.mVec[0];
             mVec[1] *= b.mVec[1];
             mVec[2] *= b.mVec[2];
@@ -1167,11 +1167,11 @@ namespace SIMD {
             mVec[7] *= b.mVec[7];
             return *this;
         }
-        UME_FORCE_INLINE SIMDVec_i & operator*= (SIMDVec_i const & b) {
+        UME_FUNC_ATTRIB SIMDVec_i & operator*= (SIMDVec_i const & b) {
             return mula(b);
         }
         // MMULVA
-        UME_FORCE_INLINE SIMDVec_i & mula(SIMDVecMask<8> const & mask, SIMDVec_i const & b) {
+        UME_FUNC_ATTRIB SIMDVec_i & mula(SIMDVecMask<8> const & mask, SIMDVec_i const & b) {
             mVec[0] = mask.mMask[0] ? mVec[0] * b.mVec[0] : mVec[0];
             mVec[1] = mask.mMask[1] ? mVec[1] * b.mVec[1] : mVec[1];
             mVec[2] = mask.mMask[2] ? mVec[2] * b.mVec[2] : mVec[2];
@@ -1183,7 +1183,7 @@ namespace SIMD {
             return *this;
         }
         // MULSA
-        UME_FORCE_INLINE SIMDVec_i & mula(int32_t b) {
+        UME_FUNC_ATTRIB SIMDVec_i & mula(int32_t b) {
             mVec[0] *= b;
             mVec[1] *= b;
             mVec[2] *= b;
@@ -1194,11 +1194,11 @@ namespace SIMD {
             mVec[7] *= b;
             return *this;
         }
-        UME_FORCE_INLINE SIMDVec_i & operator*= (int32_t b) {
+        UME_FUNC_ATTRIB SIMDVec_i & operator*= (int32_t b) {
             return mula(b);
         }
         // MMULSA
-        UME_FORCE_INLINE SIMDVec_i & mula(SIMDVecMask<8> const & mask, int32_t b) {
+        UME_FUNC_ATTRIB SIMDVec_i & mula(SIMDVecMask<8> const & mask, int32_t b) {
             mVec[0] = mask.mMask[0] ? mVec[0] * b : mVec[0];
             mVec[1] = mask.mMask[1] ? mVec[1] * b : mVec[1];
             mVec[2] = mask.mMask[2] ? mVec[2] * b : mVec[2];
@@ -1210,7 +1210,7 @@ namespace SIMD {
             return *this;
         }
         // DIVV
-        UME_FORCE_INLINE SIMDVec_i div(SIMDVec_i const & b) const {
+        UME_FUNC_ATTRIB SIMDVec_i div(SIMDVec_i const & b) const {
             int32_t t0 = mVec[0] / b.mVec[0];
             int32_t t1 = mVec[1] / b.mVec[1];
             int32_t t2 = mVec[2] / b.mVec[2];
@@ -1221,11 +1221,11 @@ namespace SIMD {
             int32_t t7 = mVec[7] / b.mVec[7];
             return SIMDVec_i(t0, t1, t2, t3, t4, t5, t6, t7);
         }
-        UME_FORCE_INLINE SIMDVec_i operator/ (SIMDVec_i const & b) const {
+        UME_FUNC_ATTRIB SIMDVec_i operator/ (SIMDVec_i const & b) const {
             return div(b);
         }
         // MDIVV
-        UME_FORCE_INLINE SIMDVec_i div(SIMDVecMask<8> const & mask, SIMDVec_i const & b) const {
+        UME_FUNC_ATTRIB SIMDVec_i div(SIMDVecMask<8> const & mask, SIMDVec_i const & b) const {
             int32_t t0 = mask.mMask[0] ? mVec[0] / b.mVec[0] : mVec[0];
             int32_t t1 = mask.mMask[1] ? mVec[1] / b.mVec[1] : mVec[1];
             int32_t t2 = mask.mMask[2] ? mVec[2] / b.mVec[2] : mVec[2];
@@ -1237,7 +1237,7 @@ namespace SIMD {
             return SIMDVec_i(t0, t1, t2, t3, t4, t5, t6, t7);
         }
         // DIVS
-        UME_FORCE_INLINE SIMDVec_i div(int32_t b) const {
+        UME_FUNC_ATTRIB SIMDVec_i div(int32_t b) const {
             int32_t t0 = mVec[0] / b;
             int32_t t1 = mVec[1] / b;
             int32_t t2 = mVec[2] / b;
@@ -1248,11 +1248,11 @@ namespace SIMD {
             int32_t t7 = mVec[7] / b;
             return SIMDVec_i(t0, t1, t2, t3, t4, t5, t6, t7);
         }
-        UME_FORCE_INLINE SIMDVec_i operator/ (int32_t b) const {
+        UME_FUNC_ATTRIB SIMDVec_i operator/ (int32_t b) const {
             return div(b);
         }
         // MDIVS
-        UME_FORCE_INLINE SIMDVec_i div(SIMDVecMask<8> const & mask, int32_t b) const {
+        UME_FUNC_ATTRIB SIMDVec_i div(SIMDVecMask<8> const & mask, int32_t b) const {
             int32_t t0 = mask.mMask[0] ? mVec[0] / b : mVec[0];
             int32_t t1 = mask.mMask[1] ? mVec[1] / b : mVec[1];
             int32_t t2 = mask.mMask[2] ? mVec[2] / b : mVec[2];
@@ -1264,7 +1264,7 @@ namespace SIMD {
             return SIMDVec_i(t0, t1, t2, t3, t4, t5, t6, t7);
         }
         // DIVVA
-        UME_FORCE_INLINE SIMDVec_i & diva(SIMDVec_i const & b) {
+        UME_FUNC_ATTRIB SIMDVec_i & diva(SIMDVec_i const & b) {
             mVec[0] /= b.mVec[0];
             mVec[1] /= b.mVec[1];
             mVec[2] /= b.mVec[2];
@@ -1275,11 +1275,11 @@ namespace SIMD {
             mVec[7] /= b.mVec[7];
             return *this;
         }
-        UME_FORCE_INLINE SIMDVec_i & operator/= (SIMDVec_i const & b) {
+        UME_FUNC_ATTRIB SIMDVec_i & operator/= (SIMDVec_i const & b) {
             return diva(b);
         }
         // MDIVVA
-        UME_FORCE_INLINE SIMDVec_i & diva(SIMDVecMask<8> const & mask, SIMDVec_i const & b) {
+        UME_FUNC_ATTRIB SIMDVec_i & diva(SIMDVecMask<8> const & mask, SIMDVec_i const & b) {
             mVec[0] = mask.mMask[0] ? mVec[0] / b.mVec[0] : mVec[0];
             mVec[1] = mask.mMask[1] ? mVec[1] / b.mVec[1] : mVec[1];
             mVec[2] = mask.mMask[2] ? mVec[2] / b.mVec[2] : mVec[2];
@@ -1291,7 +1291,7 @@ namespace SIMD {
             return *this;
         }
         // DIVSA
-        UME_FORCE_INLINE SIMDVec_i & diva(int32_t b) {
+        UME_FUNC_ATTRIB SIMDVec_i & diva(int32_t b) {
             mVec[0] /= b;
             mVec[1] /= b;
             mVec[2] /= b;
@@ -1302,11 +1302,11 @@ namespace SIMD {
             mVec[7] /= b;
             return *this;
         }
-        UME_FORCE_INLINE SIMDVec_i & operator/= (int32_t b) {
+        UME_FUNC_ATTRIB SIMDVec_i & operator/= (int32_t b) {
             return diva(b);
         }
         // MDIVSA
-        UME_FORCE_INLINE SIMDVec_i & diva(SIMDVecMask<8> const & mask, int32_t b) {
+        UME_FUNC_ATTRIB SIMDVec_i & diva(SIMDVecMask<8> const & mask, int32_t b) {
             mVec[0] = mask.mMask[0] ? mVec[0] / b : mVec[0];
             mVec[1] = mask.mMask[1] ? mVec[1] / b : mVec[1];
             mVec[2] = mask.mMask[2] ? mVec[2] / b : mVec[2];
@@ -1326,7 +1326,7 @@ namespace SIMD {
         // RCPSA
         // MRCPSA
         // CMPEQV
-        UME_FORCE_INLINE SIMDVecMask<8> cmpeq(SIMDVec_i const & b) const {
+        UME_FUNC_ATTRIB SIMDVecMask<8> cmpeq(SIMDVec_i const & b) const {
             bool m0 = mVec[0] == b.mVec[0];
             bool m1 = mVec[1] == b.mVec[1];
             bool m2 = mVec[2] == b.mVec[2];
@@ -1337,11 +1337,11 @@ namespace SIMD {
             bool m7 = mVec[7] == b.mVec[7];
             return SIMDVecMask<8>(m0, m1, m2, m3, m4, m5, m6, m7);
         }
-        UME_FORCE_INLINE SIMDVecMask<8> operator== (SIMDVec_i const & b) const {
+        UME_FUNC_ATTRIB SIMDVecMask<8> operator== (SIMDVec_i const & b) const {
             return cmpeq(b);
         }
         // CMPEQS
-        UME_FORCE_INLINE SIMDVecMask<8> cmpeq(int32_t b) const {
+        UME_FUNC_ATTRIB SIMDVecMask<8> cmpeq(int32_t b) const {
             bool m0 = mVec[0] == b;
             bool m1 = mVec[1] == b;
             bool m2 = mVec[2] == b;
@@ -1352,11 +1352,11 @@ namespace SIMD {
             bool m7 = mVec[7] == b;
             return SIMDVecMask<8>(m0, m1, m2, m3, m4, m5, m6, m7);
         }
-        UME_FORCE_INLINE SIMDVecMask<8> operator== (int32_t b) const {
+        UME_FUNC_ATTRIB SIMDVecMask<8> operator== (int32_t b) const {
             return cmpeq(b);
         }
         // CMPNEV
-        UME_FORCE_INLINE SIMDVecMask<8> cmpne(SIMDVec_i const & b) const {
+        UME_FUNC_ATTRIB SIMDVecMask<8> cmpne(SIMDVec_i const & b) const {
             bool m0 = mVec[0] != b.mVec[0];
             bool m1 = mVec[1] != b.mVec[1];
             bool m2 = mVec[2] != b.mVec[2];
@@ -1367,11 +1367,11 @@ namespace SIMD {
             bool m7 = mVec[7] != b.mVec[7];
             return SIMDVecMask<8>(m0, m1, m2, m3, m4, m5, m6, m7);
         }
-        UME_FORCE_INLINE SIMDVecMask<8> operator!= (SIMDVec_i const & b) const {
+        UME_FUNC_ATTRIB SIMDVecMask<8> operator!= (SIMDVec_i const & b) const {
             return cmpne(b);
         }
         // CMPNES
-        UME_FORCE_INLINE SIMDVecMask<8> cmpne(int32_t b) const {
+        UME_FUNC_ATTRIB SIMDVecMask<8> cmpne(int32_t b) const {
             bool m0 = mVec[0] != b;
             bool m1 = mVec[1] != b;
             bool m2 = mVec[2] != b;
@@ -1382,11 +1382,11 @@ namespace SIMD {
             bool m7 = mVec[7] != b;
             return SIMDVecMask<8>(m0, m1, m2, m3, m4, m5, m6, m7);
         }
-        UME_FORCE_INLINE SIMDVecMask<8> operator!= (int32_t b) const {
+        UME_FUNC_ATTRIB SIMDVecMask<8> operator!= (int32_t b) const {
             return cmpne(b);
         }
         // CMPGTV
-        UME_FORCE_INLINE SIMDVecMask<8> cmpgt(SIMDVec_i const & b) const {
+        UME_FUNC_ATTRIB SIMDVecMask<8> cmpgt(SIMDVec_i const & b) const {
             bool m0 = mVec[0] > b.mVec[0];
             bool m1 = mVec[1] > b.mVec[1];
             bool m2 = mVec[2] > b.mVec[2];
@@ -1397,11 +1397,11 @@ namespace SIMD {
             bool m7 = mVec[7] > b.mVec[7];
             return SIMDVecMask<8>(m0, m1, m2, m3, m4, m5, m6, m7);
         }
-        UME_FORCE_INLINE SIMDVecMask<8> operator> (SIMDVec_i const & b) const {
+        UME_FUNC_ATTRIB SIMDVecMask<8> operator> (SIMDVec_i const & b) const {
             return cmpgt(b);
         }
         // CMPGTS
-        UME_FORCE_INLINE SIMDVecMask<8> cmpgt(int32_t b) const {
+        UME_FUNC_ATTRIB SIMDVecMask<8> cmpgt(int32_t b) const {
             bool m0 = mVec[0] > b;
             bool m1 = mVec[1] > b;
             bool m2 = mVec[2] > b;
@@ -1412,11 +1412,11 @@ namespace SIMD {
             bool m7 = mVec[7] > b;
             return SIMDVecMask<8>(m0, m1, m2, m3, m4, m5, m6, m7);
         }
-        UME_FORCE_INLINE SIMDVecMask<8> operator> (int32_t b) const {
+        UME_FUNC_ATTRIB SIMDVecMask<8> operator> (int32_t b) const {
             return cmpgt(b);
         }
         // CMPLTV
-        UME_FORCE_INLINE SIMDVecMask<8> cmplt(SIMDVec_i const & b) const {
+        UME_FUNC_ATTRIB SIMDVecMask<8> cmplt(SIMDVec_i const & b) const {
             bool m0 = mVec[0] < b.mVec[0];
             bool m1 = mVec[1] < b.mVec[1];
             bool m2 = mVec[2] < b.mVec[2];
@@ -1427,11 +1427,11 @@ namespace SIMD {
             bool m7 = mVec[7] < b.mVec[7];
             return SIMDVecMask<8>(m0, m1, m2, m3, m4, m5, m6, m7);
         }
-        UME_FORCE_INLINE SIMDVecMask<8> operator< (SIMDVec_i const & b) const {
+        UME_FUNC_ATTRIB SIMDVecMask<8> operator< (SIMDVec_i const & b) const {
             return cmplt(b);
         }
         // CMPLTS
-        UME_FORCE_INLINE SIMDVecMask<8> cmplt(int32_t b) const {
+        UME_FUNC_ATTRIB SIMDVecMask<8> cmplt(int32_t b) const {
             bool m0 = mVec[0] < b;
             bool m1 = mVec[1] < b;
             bool m2 = mVec[2] < b;
@@ -1442,11 +1442,11 @@ namespace SIMD {
             bool m7 = mVec[7] < b;
             return SIMDVecMask<8>(m0, m1, m2, m3, m4, m5, m6, m7);
         }
-        UME_FORCE_INLINE SIMDVecMask<8> operator< (int32_t b) const {
+        UME_FUNC_ATTRIB SIMDVecMask<8> operator< (int32_t b) const {
             return cmplt(b);
         }
         // CMPGEV
-        UME_FORCE_INLINE SIMDVecMask<8> cmpge(SIMDVec_i const & b) const {
+        UME_FUNC_ATTRIB SIMDVecMask<8> cmpge(SIMDVec_i const & b) const {
             bool m0 = mVec[0] >= b.mVec[0];
             bool m1 = mVec[1] >= b.mVec[1];
             bool m2 = mVec[2] >= b.mVec[2];
@@ -1457,11 +1457,11 @@ namespace SIMD {
             bool m7 = mVec[7] >= b.mVec[7];
             return SIMDVecMask<8>(m0, m1, m2, m3, m4, m5, m6, m7);
         }
-        UME_FORCE_INLINE SIMDVecMask<8> operator>= (SIMDVec_i const & b) const {
+        UME_FUNC_ATTRIB SIMDVecMask<8> operator>= (SIMDVec_i const & b) const {
             return cmpge(b);
         }
         // CMPGES
-        UME_FORCE_INLINE SIMDVecMask<8> cmpge(int32_t b) const {
+        UME_FUNC_ATTRIB SIMDVecMask<8> cmpge(int32_t b) const {
             bool m0 = mVec[0] >= b;
             bool m1 = mVec[1] >= b;
             bool m2 = mVec[2] >= b;
@@ -1472,11 +1472,11 @@ namespace SIMD {
             bool m7 = mVec[7] >= b;
             return SIMDVecMask<8>(m0, m1, m2, m3, m4, m5, m6, m7);
         }
-        UME_FORCE_INLINE SIMDVecMask<8> operator>= (int32_t b) const {
+        UME_FUNC_ATTRIB SIMDVecMask<8> operator>= (int32_t b) const {
             return cmpge(b);
         }
         // CMPLEV
-        UME_FORCE_INLINE SIMDVecMask<8> cmple(SIMDVec_i const & b) const {
+        UME_FUNC_ATTRIB SIMDVecMask<8> cmple(SIMDVec_i const & b) const {
             bool m0 = mVec[0] <= b.mVec[0];
             bool m1 = mVec[1] <= b.mVec[1];
             bool m2 = mVec[2] <= b.mVec[2];
@@ -1487,11 +1487,11 @@ namespace SIMD {
             bool m7 = mVec[7] <= b.mVec[7];
             return SIMDVecMask<8>(m0, m1, m2, m3, m4, m5, m6, m7);
         }
-        UME_FORCE_INLINE SIMDVecMask<8> operator<= (SIMDVec_i const & b) const {
+        UME_FUNC_ATTRIB SIMDVecMask<8> operator<= (SIMDVec_i const & b) const {
             return cmple(b);
         }
         // CMPLES
-        UME_FORCE_INLINE SIMDVecMask<8> cmple(int32_t b) const {
+        UME_FUNC_ATTRIB SIMDVecMask<8> cmple(int32_t b) const {
             bool m0 = mVec[0] <= b;
             bool m1 = mVec[1] <= b;
             bool m2 = mVec[2] <= b;
@@ -1502,11 +1502,11 @@ namespace SIMD {
             bool m7 = mVec[7] <= b;
             return SIMDVecMask<8>(m0, m1, m2, m3, m4, m5, m6, m7);
         }
-        UME_FORCE_INLINE SIMDVecMask<8> operator<= (int32_t b) const {
+        UME_FUNC_ATTRIB SIMDVecMask<8> operator<= (int32_t b) const {
             return cmple(b);
         }
         // CMPEV
-        UME_FORCE_INLINE bool cmpe(SIMDVec_i const & b) const {
+        UME_FUNC_ATTRIB bool cmpe(SIMDVec_i const & b) const {
             bool m0 = mVec[0] == b.mVec[0];
             bool m1 = mVec[1] == b.mVec[1];
             bool m2 = mVec[2] == b.mVec[2];
@@ -1518,7 +1518,7 @@ namespace SIMD {
             return m0 && m1 && m2 && m3 && m4 && m5 && m6 && m7;
         }
         // CMPES
-        UME_FORCE_INLINE bool cmpe(int32_t b) const {
+        UME_FUNC_ATTRIB bool cmpe(int32_t b) const {
             bool m0 = mVec[0] == b;
             bool m1 = mVec[1] == b;
             bool m2 = mVec[2] == b;
@@ -1530,7 +1530,7 @@ namespace SIMD {
             return m0 && m1 && m2 && m3 && m4 && m5 && m6 && m7;
         }
         // UNIQUE
-        UME_FORCE_INLINE bool unique() const {
+        UME_FUNC_ATTRIB bool unique() const {
             bool m0 = mVec[0] != mVec[1];
             bool m1 = mVec[0] != mVec[2];
             bool m2 = mVec[0] != mVec[3];
@@ -1564,11 +1564,11 @@ namespace SIMD {
                    m20 && m21 && m22 && m23 && m24 && m25 && m26 && m27;
         }
         // HADD
-        UME_FORCE_INLINE int32_t hadd() const {
+        UME_FUNC_ATTRIB int32_t hadd() const {
             return mVec[0] + mVec[1] + mVec[2] + mVec[3] + mVec[4] + mVec[5] + mVec[6] + mVec[7];
         }
         // MHADD
-        UME_FORCE_INLINE int32_t hadd(SIMDVecMask<8> const & mask) const {
+        UME_FUNC_ATTRIB int32_t hadd(SIMDVecMask<8> const & mask) const {
             int32_t t0 = mask.mMask[0] ? mVec[0] : 0;
             int32_t t1 = mask.mMask[1] ? mVec[1] : 0;
             int32_t t2 = mask.mMask[2] ? mVec[2] : 0;
@@ -1580,11 +1580,11 @@ namespace SIMD {
             return t0 + t1 + t2 + t3 + t4 + t5 + t6 + t7;
         }
         // HADDS
-        UME_FORCE_INLINE int32_t hadd(int32_t b) const {
+        UME_FUNC_ATTRIB int32_t hadd(int32_t b) const {
             return mVec[0] + mVec[1] + mVec[2] + mVec[3] + mVec[4] + mVec[5] + mVec[6] + mVec[7] +b;
         }
         // MHADDS
-        UME_FORCE_INLINE int32_t hadd(SIMDVecMask<8> const & mask, int32_t b) const {
+        UME_FUNC_ATTRIB int32_t hadd(SIMDVecMask<8> const & mask, int32_t b) const {
             int32_t t0 = mask.mMask[0] ? mVec[0] + b : b;
             int32_t t1 = mask.mMask[1] ? mVec[1] + t0 : t0;
             int32_t t2 = mask.mMask[2] ? mVec[2] + t1 : t1;
@@ -1596,11 +1596,11 @@ namespace SIMD {
             return t7;
         }
         // HMUL
-        UME_FORCE_INLINE int32_t hmul() const {
+        UME_FUNC_ATTRIB int32_t hmul() const {
             return mVec[0] * mVec[1] * mVec[2] * mVec[3] * mVec[4] * mVec[5] * mVec[6] * mVec[7];
         }
         // MHMUL
-        UME_FORCE_INLINE int32_t hmul(SIMDVecMask<8> const & mask) const {
+        UME_FUNC_ATTRIB int32_t hmul(SIMDVecMask<8> const & mask) const {
             int32_t t0 = mask.mMask[0] ? mVec[0] : 1;
             int32_t t1 = mask.mMask[1] ? mVec[1] * t0 : t0;
             int32_t t2 = mask.mMask[2] ? mVec[2] * t1 : t1;
@@ -1612,11 +1612,11 @@ namespace SIMD {
             return t7;
         }
         // HMULS
-        UME_FORCE_INLINE int32_t hmul(int32_t b) const {
+        UME_FUNC_ATTRIB int32_t hmul(int32_t b) const {
             return mVec[0] * mVec[1] * mVec[2] * mVec[3] * mVec[4] * mVec[5] * mVec[6] * mVec[7] * b;
         }
         // MHMULS
-        UME_FORCE_INLINE int32_t hmul(SIMDVecMask<8> const & mask, int32_t b) const {
+        UME_FUNC_ATTRIB int32_t hmul(SIMDVecMask<8> const & mask, int32_t b) const {
             int32_t t0 = mask.mMask[0] ? mVec[0] * b : b;
             int32_t t1 = mask.mMask[1] ? mVec[1] * t0 : t0;
             int32_t t2 = mask.mMask[2] ? mVec[2] * t1 : t1;
@@ -1629,7 +1629,7 @@ namespace SIMD {
         }
 
         // FMULADDV
-        UME_FORCE_INLINE SIMDVec_i fmuladd(SIMDVec_i const & b, SIMDVec_i const & c) const {
+        UME_FUNC_ATTRIB SIMDVec_i fmuladd(SIMDVec_i const & b, SIMDVec_i const & c) const {
             int32_t t0 = mVec[0] * b.mVec[0] + c.mVec[0];
             int32_t t1 = mVec[1] * b.mVec[1] + c.mVec[1];
             int32_t t2 = mVec[2] * b.mVec[2] + c.mVec[2];
@@ -1641,7 +1641,7 @@ namespace SIMD {
             return SIMDVec_i(t0, t1, t2, t3, t4, t5, t6, t7);
         }
         // MFMULADDV
-        UME_FORCE_INLINE SIMDVec_i fmuladd(SIMDVecMask<8> const & mask, SIMDVec_i const & b, SIMDVec_i const & c) const {
+        UME_FUNC_ATTRIB SIMDVec_i fmuladd(SIMDVecMask<8> const & mask, SIMDVec_i const & b, SIMDVec_i const & c) const {
             int32_t t0 = mask.mMask[0] ? (mVec[0] * b.mVec[0] + c.mVec[0]) : mVec[0];
             int32_t t1 = mask.mMask[1] ? (mVec[1] * b.mVec[1] + c.mVec[1]) : mVec[1];
             int32_t t2 = mask.mMask[2] ? (mVec[2] * b.mVec[2] + c.mVec[2]) : mVec[2];
@@ -1653,7 +1653,7 @@ namespace SIMD {
             return SIMDVec_i(t0, t1, t2, t3, t4, t5, t6, t7);
         }
         // FMULSUBV
-        UME_FORCE_INLINE SIMDVec_i fmulsub(SIMDVec_i const & b, SIMDVec_i const & c) const {
+        UME_FUNC_ATTRIB SIMDVec_i fmulsub(SIMDVec_i const & b, SIMDVec_i const & c) const {
             int32_t t0 = mVec[0] * b.mVec[0] - c.mVec[0];
             int32_t t1 = mVec[1] * b.mVec[1] - c.mVec[1];
             int32_t t2 = mVec[2] * b.mVec[2] - c.mVec[2];
@@ -1665,7 +1665,7 @@ namespace SIMD {
             return SIMDVec_i(t0, t1, t2, t3, t4, t5, t6, t7);
         }
         // MFMULSUBV
-        UME_FORCE_INLINE SIMDVec_i fmulsub(SIMDVecMask<8> const & mask, SIMDVec_i const & b, SIMDVec_i const & c) const {
+        UME_FUNC_ATTRIB SIMDVec_i fmulsub(SIMDVecMask<8> const & mask, SIMDVec_i const & b, SIMDVec_i const & c) const {
             int32_t t0 = mask.mMask[0] ? (mVec[0] * b.mVec[0] - c.mVec[0]) : mVec[0];
             int32_t t1 = mask.mMask[1] ? (mVec[1] * b.mVec[1] - c.mVec[1]) : mVec[1];
             int32_t t2 = mask.mMask[2] ? (mVec[2] * b.mVec[2] - c.mVec[2]) : mVec[2];
@@ -1677,7 +1677,7 @@ namespace SIMD {
             return SIMDVec_i(t0, t1, t2, t3, t4, t5, t6, t7);
         }
         // FADDMULV
-        UME_FORCE_INLINE SIMDVec_i faddmul(SIMDVec_i const & b, SIMDVec_i const & c) const {
+        UME_FUNC_ATTRIB SIMDVec_i faddmul(SIMDVec_i const & b, SIMDVec_i const & c) const {
             int32_t t0 = (mVec[0] + b.mVec[0]) * c.mVec[0];
             int32_t t1 = (mVec[1] + b.mVec[1]) * c.mVec[1];
             int32_t t2 = (mVec[2] + b.mVec[2]) * c.mVec[2];
@@ -1689,7 +1689,7 @@ namespace SIMD {
             return SIMDVec_i(t0, t1, t2, t3, t4, t5, t6, t7);
         }
         // MFADDMULV
-        UME_FORCE_INLINE SIMDVec_i faddmul(SIMDVecMask<8> const & mask, SIMDVec_i const & b, SIMDVec_i const & c) const {
+        UME_FUNC_ATTRIB SIMDVec_i faddmul(SIMDVecMask<8> const & mask, SIMDVec_i const & b, SIMDVec_i const & c) const {
             int32_t t0 = mask.mMask[0] ? ((mVec[0] + b.mVec[0]) * c.mVec[0]) : mVec[0];
             int32_t t1 = mask.mMask[1] ? ((mVec[1] + b.mVec[1]) * c.mVec[1]) : mVec[1];
             int32_t t2 = mask.mMask[2] ? ((mVec[2] + b.mVec[2]) * c.mVec[2]) : mVec[2];
@@ -1701,7 +1701,7 @@ namespace SIMD {
             return SIMDVec_i(t0, t1, t2, t3, t4, t5, t6, t7);
         }
         // FSUBMULV
-        UME_FORCE_INLINE SIMDVec_i fsubmul(SIMDVec_i const & b, SIMDVec_i const & c) const {
+        UME_FUNC_ATTRIB SIMDVec_i fsubmul(SIMDVec_i const & b, SIMDVec_i const & c) const {
             int32_t t0 = (mVec[0] - b.mVec[0]) * c.mVec[0];
             int32_t t1 = (mVec[1] - b.mVec[1]) * c.mVec[1];
             int32_t t2 = (mVec[2] - b.mVec[2]) * c.mVec[2];
@@ -1713,7 +1713,7 @@ namespace SIMD {
             return SIMDVec_i(t0, t1, t2, t3, t4, t5, t6, t7);
         }
         // MFSUBMULV
-        UME_FORCE_INLINE SIMDVec_i fsubmul(SIMDVecMask<8> const & mask, SIMDVec_i const & b, SIMDVec_i const & c) const {
+        UME_FUNC_ATTRIB SIMDVec_i fsubmul(SIMDVecMask<8> const & mask, SIMDVec_i const & b, SIMDVec_i const & c) const {
             int32_t t0 = mask.mMask[0] ? ((mVec[0] - b.mVec[0]) * c.mVec[0]) : mVec[0];
             int32_t t1 = mask.mMask[1] ? ((mVec[1] - b.mVec[1]) * c.mVec[1]) : mVec[1];
             int32_t t2 = mask.mMask[2] ? ((mVec[2] - b.mVec[2]) * c.mVec[2]) : mVec[2];
@@ -1726,7 +1726,7 @@ namespace SIMD {
         }
 
         // MAXV
-        UME_FORCE_INLINE SIMDVec_i max(SIMDVec_i const & b) const {
+        UME_FUNC_ATTRIB SIMDVec_i max(SIMDVec_i const & b) const {
             int32_t t0 = mVec[0] > b.mVec[0] ? mVec[0] : b.mVec[0];
             int32_t t1 = mVec[1] > b.mVec[1] ? mVec[1] : b.mVec[1];
             int32_t t2 = mVec[2] > b.mVec[2] ? mVec[2] : b.mVec[2];
@@ -1738,7 +1738,7 @@ namespace SIMD {
             return SIMDVec_i(t0, t1, t2, t3, t4, t5, t6, t7);
         }
         // MMAXV
-        UME_FORCE_INLINE SIMDVec_i max(SIMDVecMask<8> const & mask, SIMDVec_i const & b) const {
+        UME_FUNC_ATTRIB SIMDVec_i max(SIMDVecMask<8> const & mask, SIMDVec_i const & b) const {
             int32_t t0 = mVec[0], t1 = mVec[1], t2 = mVec[2], t3 = mVec[3],
                      t4 = mVec[4], t5 = mVec[5], t6 = mVec[6], t7 = mVec[7];
             if (mask.mMask[0] == true) {
@@ -1768,7 +1768,7 @@ namespace SIMD {
             return SIMDVec_i(t0, t1, t2, t3, t4, t5, t6, t7);
         }
         // MAXS
-        UME_FORCE_INLINE SIMDVec_i max(int32_t b) const {
+        UME_FUNC_ATTRIB SIMDVec_i max(int32_t b) const {
             int32_t t0 = mVec[0] > b ? mVec[0] : b;
             int32_t t1 = mVec[1] > b ? mVec[1] : b;
             int32_t t2 = mVec[2] > b ? mVec[2] : b;
@@ -1780,7 +1780,7 @@ namespace SIMD {
             return SIMDVec_i(t0, t1, t2, t3, t4, t5, t6, t7);
         }
         // MMAXS
-        UME_FORCE_INLINE SIMDVec_i max(SIMDVecMask<8> const & mask, int32_t b) const {
+        UME_FUNC_ATTRIB SIMDVec_i max(SIMDVecMask<8> const & mask, int32_t b) const {
             int32_t t0 = mVec[0], t1 = mVec[1], t2 = mVec[2], t3 = mVec[3],
                      t4 = mVec[4], t5 = mVec[5], t6 = mVec[6], t7 = mVec[7];
             if (mask.mMask[0] == true) {
@@ -1810,7 +1810,7 @@ namespace SIMD {
             return SIMDVec_i(t0, t1, t2, t3, t4, t5, t6, t7);
         }
         // MAXVA
-        UME_FORCE_INLINE SIMDVec_i & maxa(SIMDVec_i const & b) {
+        UME_FUNC_ATTRIB SIMDVec_i & maxa(SIMDVec_i const & b) {
             mVec[0] = mVec[0] > b.mVec[0] ? mVec[0] : b.mVec[0];
             mVec[1] = mVec[1] > b.mVec[1] ? mVec[1] : b.mVec[1];
             mVec[2] = mVec[2] > b.mVec[2] ? mVec[2] : b.mVec[2];
@@ -1822,7 +1822,7 @@ namespace SIMD {
             return *this;
         }
         // MMAXVA
-        UME_FORCE_INLINE SIMDVec_i & maxa(SIMDVecMask<8> const & mask, SIMDVec_i const & b) {
+        UME_FUNC_ATTRIB SIMDVec_i & maxa(SIMDVecMask<8> const & mask, SIMDVec_i const & b) {
             if (mask.mMask[0] == true && b.mVec[0] > mVec[0]) {
                 mVec[0] = b.mVec[0];
             }
@@ -1850,7 +1850,7 @@ namespace SIMD {
             return *this;
         }
         // MAXSA
-        UME_FORCE_INLINE SIMDVec_i & maxa(int32_t b) {
+        UME_FUNC_ATTRIB SIMDVec_i & maxa(int32_t b) {
             mVec[0] = mVec[0] > b ? mVec[0] : b;
             mVec[1] = mVec[1] > b ? mVec[1] : b;
             mVec[2] = mVec[2] > b ? mVec[2] : b;
@@ -1862,7 +1862,7 @@ namespace SIMD {
             return *this;
         }
         // MMAXSA
-        UME_FORCE_INLINE SIMDVec_i & maxa(SIMDVecMask<8> const & mask, int32_t b) {
+        UME_FUNC_ATTRIB SIMDVec_i & maxa(SIMDVecMask<8> const & mask, int32_t b) {
             if (mask.mMask[0] == true && b > mVec[0]) {
                 mVec[0] = b;
             }
@@ -1890,7 +1890,7 @@ namespace SIMD {
             return *this;
         }
         // MINV
-        UME_FORCE_INLINE SIMDVec_i min(SIMDVec_i const & b) const {
+        UME_FUNC_ATTRIB SIMDVec_i min(SIMDVec_i const & b) const {
             int32_t t0 = mVec[0] < b.mVec[0] ? mVec[0] : b.mVec[0];
             int32_t t1 = mVec[1] < b.mVec[1] ? mVec[1] : b.mVec[1];
             int32_t t2 = mVec[2] < b.mVec[2] ? mVec[2] : b.mVec[2];
@@ -1902,7 +1902,7 @@ namespace SIMD {
             return SIMDVec_i(t0, t1, t2, t3, t4, t5, t6, t7);
         }
         // MMINV
-        UME_FORCE_INLINE SIMDVec_i min(SIMDVecMask<8> const & mask, SIMDVec_i const & b) const {
+        UME_FUNC_ATTRIB SIMDVec_i min(SIMDVecMask<8> const & mask, SIMDVec_i const & b) const {
             int32_t t0 = mVec[0], t1 = mVec[1], t2 = mVec[2], t3 = mVec[3],
                      t4 = mVec[4], t5 = mVec[5], t6 = mVec[6], t7 = mVec[7];
             if (mask.mMask[0] == true) {
@@ -1932,7 +1932,7 @@ namespace SIMD {
             return SIMDVec_i(t0, t1, t2, t3, t4, t5, t6, t7);
         }
         // MINS
-        UME_FORCE_INLINE SIMDVec_i min(int32_t b) const {
+        UME_FUNC_ATTRIB SIMDVec_i min(int32_t b) const {
             int32_t t0 = mVec[0] < b ? mVec[0] : b;
             int32_t t1 = mVec[1] < b ? mVec[1] : b;
             int32_t t2 = mVec[2] < b ? mVec[2] : b;
@@ -1944,7 +1944,7 @@ namespace SIMD {
             return SIMDVec_i(t0, t1, t2, t3, t4, t5, t6, t7);
         }
         // MMINS
-        UME_FORCE_INLINE SIMDVec_i min(SIMDVecMask<8> const & mask, int32_t b) const {
+        UME_FUNC_ATTRIB SIMDVec_i min(SIMDVecMask<8> const & mask, int32_t b) const {
             int32_t t0 = mVec[0], t1 = mVec[1], t2 = mVec[2], t3 = mVec[3],
                      t4 = mVec[4], t5 = mVec[5], t6 = mVec[6], t7 = mVec[7];
             if (mask.mMask[0] == true) {
@@ -1974,7 +1974,7 @@ namespace SIMD {
             return SIMDVec_i(t0, t1, t2, t3, t4, t5, t6, t7);
         }
         // MINVA
-        UME_FORCE_INLINE SIMDVec_i & mina(SIMDVec_i const & b) {
+        UME_FUNC_ATTRIB SIMDVec_i & mina(SIMDVec_i const & b) {
             mVec[0] = mVec[0] < b.mVec[0] ? mVec[0] : b.mVec[0];
             mVec[1] = mVec[1] < b.mVec[1] ? mVec[1] : b.mVec[1];
             mVec[2] = mVec[2] < b.mVec[2] ? mVec[2] : b.mVec[2];
@@ -1986,7 +1986,7 @@ namespace SIMD {
             return *this;
         }
         // MMINVA
-        UME_FORCE_INLINE SIMDVec_i & mina(SIMDVecMask<8> const & mask, SIMDVec_i const & b) {
+        UME_FUNC_ATTRIB SIMDVec_i & mina(SIMDVecMask<8> const & mask, SIMDVec_i const & b) {
             if (mask.mMask[0] == true && b.mVec[0] < mVec[0]) {
                 mVec[0] = b.mVec[0];
             }
@@ -2014,7 +2014,7 @@ namespace SIMD {
             return *this;
         }
         // MINSA
-        UME_FORCE_INLINE SIMDVec_i & mina(int32_t b) {
+        UME_FUNC_ATTRIB SIMDVec_i & mina(int32_t b) {
             mVec[0] = mVec[0] < b ? mVec[0] : b;
             mVec[1] = mVec[1] < b ? mVec[1] : b;
             mVec[2] = mVec[2] < b ? mVec[2] : b;
@@ -2026,7 +2026,7 @@ namespace SIMD {
             return *this;
         }
         // MMINSA
-        UME_FORCE_INLINE SIMDVec_i & mina(SIMDVecMask<8> const & mask, int32_t b) {
+        UME_FUNC_ATTRIB SIMDVec_i & mina(SIMDVecMask<8> const & mask, int32_t b) {
             if (mask.mMask[0] == true && b < mVec[0]) {
                 mVec[0] = b;
             }
@@ -2054,7 +2054,7 @@ namespace SIMD {
             return *this;
         }
         // HMAX
-        UME_FORCE_INLINE int32_t hmax () const {
+        UME_FUNC_ATTRIB int32_t hmax () const {
             int32_t t0 = mVec[0] > mVec[1] ? mVec[0] : mVec[1];
             int32_t t1 = mVec[2] > mVec[3] ? mVec[2] : mVec[3];
             int32_t t2 = mVec[4] > mVec[5] ? mVec[4] : mVec[5];
@@ -2064,7 +2064,7 @@ namespace SIMD {
             return t4 > t5 ? t4 : t5;
         }
         // MHMAX
-        UME_FORCE_INLINE int32_t hmax(SIMDVecMask<8> const & mask) const {
+        UME_FUNC_ATTRIB int32_t hmax(SIMDVecMask<8> const & mask) const {
             int32_t t0 = mask.mMask[0] ? mVec[0] : std::numeric_limits<int32_t>::min();
             int32_t t1 = (mask.mMask[1] && mVec[1] > t0) ? mVec[1] : t0;
             int32_t t2 = (mask.mMask[2] && mVec[2] > t1) ? mVec[2] : t1;
@@ -2076,17 +2076,17 @@ namespace SIMD {
             return t7;
         }
         // IMAX
-        UME_FORCE_INLINE uint32_t imax() const {
-            uint32_t t0 = mVec[0] > mVec[1] ? 0 : 1;
-            uint32_t t1 = mVec[2] > mVec[3] ? 2 : 3;
-            uint32_t t2 = mVec[4] > mVec[5] ? 4 : 5;
-            uint32_t t3 = mVec[6] > mVec[7] ? 6 : 7;
+        UME_FUNC_ATTRIB uint32_t imax() const {
+            uint32_t t0 = mVec[0] > mVec[1] ? uint32_t(0) : uint32_t(1);
+            uint32_t t1 = mVec[2] > mVec[3] ? uint32_t(2) : uint32_t(3);
+            uint32_t t2 = mVec[4] > mVec[5] ? uint32_t(4) : uint32_t(5);
+            uint32_t t3 = mVec[6] > mVec[7] ? uint32_t(6) : uint32_t(7);
             uint32_t t4 = mVec[t0] > mVec[t1] ? t0 : t1;
             uint32_t t5 = mVec[t2] > mVec[t3] ? t2 : t3;
             return mVec[t4] > mVec[t5] ? t4 : t5;
         }
         // MIMAX
-        UME_FORCE_INLINE uint32_t imax(SIMDVecMask<8> const & mask) const {
+        UME_FUNC_ATTRIB uint32_t imax(SIMDVecMask<8> const & mask) const {
             uint32_t i0 = 0xFFFFFFFF;
             int32_t t0 = std::numeric_limits<int32_t>::min();
             if(mask.mMask[0] == true) {
@@ -2124,7 +2124,7 @@ namespace SIMD {
             return i0;
         }
         // HMIN
-        UME_FORCE_INLINE int32_t hmin() const {
+        UME_FUNC_ATTRIB int32_t hmin() const {
             int32_t t0 = mVec[0] < mVec[1] ? mVec[0] : mVec[1];
             int32_t t1 = mVec[2] < mVec[3] ? mVec[2] : mVec[3];
             int32_t t2 = mVec[4] < mVec[5] ? mVec[4] : mVec[5];
@@ -2134,7 +2134,7 @@ namespace SIMD {
             return t4 < t5 ? t4 : t5;
         }
         // MHMIN
-        UME_FORCE_INLINE int32_t hmin(SIMDVecMask<8> const & mask) const {
+        UME_FUNC_ATTRIB int32_t hmin(SIMDVecMask<8> const & mask) const {
             int32_t t0 = mask.mMask[0] ? mVec[0] : std::numeric_limits<int32_t>::max();
             int32_t t1 = (mask.mMask[1] && mVec[1] < t0) ? mVec[1] : t0;
             int32_t t2 = (mask.mMask[2] && mVec[2] < t1) ? mVec[2] : t1;
@@ -2146,17 +2146,17 @@ namespace SIMD {
             return t7;
         }
         // IMIN
-        UME_FORCE_INLINE uint32_t imin() const {
-            uint32_t t0 = mVec[0] < mVec[1] ? 0 : 1;
-            uint32_t t1 = mVec[2] < mVec[3] ? 2 : 3;
-            uint32_t t2 = mVec[4] < mVec[5] ? 4 : 5;
-            uint32_t t3 = mVec[6] < mVec[7] ? 6 : 7;
+        UME_FUNC_ATTRIB uint32_t imin() const {
+            uint32_t t0 = mVec[0] < mVec[1] ? uint32_t(0) : uint32_t(1);
+            uint32_t t1 = mVec[2] < mVec[3] ? uint32_t(2) : uint32_t(3);
+            uint32_t t2 = mVec[4] < mVec[5] ? uint32_t(4) : uint32_t(5);
+            uint32_t t3 = mVec[6] < mVec[7] ? uint32_t(6) : uint32_t(7);
             uint32_t t4 = mVec[t0] < mVec[t1] ? t0 : t1;
             uint32_t t5 = mVec[t2] < mVec[t3] ? t2 : t3;
             return mVec[t4] < mVec[t5] ? t4 : t5;
         }
         // MIMIN
-        UME_FORCE_INLINE uint32_t imin(SIMDVecMask<8> const & mask) const {
+        UME_FUNC_ATTRIB uint32_t imin(SIMDVecMask<8> const & mask) const {
             uint32_t i0 = 0xFFFFFFFF;
             int32_t t0 = std::numeric_limits<int32_t>::max();
             if (mask.mMask[0] == true) {
@@ -2195,7 +2195,7 @@ namespace SIMD {
         }
 
         // BANDV
-        UME_FORCE_INLINE SIMDVec_i band(SIMDVec_i const & b) const {
+        UME_FUNC_ATTRIB SIMDVec_i band(SIMDVec_i const & b) const {
             int32_t t0 = mVec[0] & b.mVec[0];
             int32_t t1 = mVec[1] & b.mVec[1];
             int32_t t2 = mVec[2] & b.mVec[2];
@@ -2206,11 +2206,11 @@ namespace SIMD {
             int32_t t7 = mVec[7] & b.mVec[7];
             return SIMDVec_i(t0, t1, t2, t3, t4, t5 ,t6, t7);
         }
-        UME_FORCE_INLINE SIMDVec_i operator& (SIMDVec_i const & b) const {
+        UME_FUNC_ATTRIB SIMDVec_i operator& (SIMDVec_i const & b) const {
             return band(b);
         }
         // MBANDV
-        UME_FORCE_INLINE SIMDVec_i band(SIMDVecMask<8> const & mask, SIMDVec_i const & b) const {
+        UME_FUNC_ATTRIB SIMDVec_i band(SIMDVecMask<8> const & mask, SIMDVec_i const & b) const {
             int32_t t0 = mask.mMask[0] ? mVec[0] & b.mVec[0] : mVec[0];
             int32_t t1 = mask.mMask[1] ? mVec[1] & b.mVec[1] : mVec[1];
             int32_t t2 = mask.mMask[2] ? mVec[2] & b.mVec[2] : mVec[2];
@@ -2222,7 +2222,7 @@ namespace SIMD {
             return SIMDVec_i(t0, t1, t2, t3, t4, t5, t6, t7);
         }
         // BANDS
-        UME_FORCE_INLINE SIMDVec_i band(int32_t b) const {
+        UME_FUNC_ATTRIB SIMDVec_i band(int32_t b) const {
             int32_t t0 = mVec[0] & b;
             int32_t t1 = mVec[1] & b;
             int32_t t2 = mVec[2] & b;
@@ -2233,11 +2233,11 @@ namespace SIMD {
             int32_t t7 = mVec[7] & b;
             return SIMDVec_i(t0, t1, t2, t3, t4, t5, t6, t7);
         }
-        UME_FORCE_INLINE SIMDVec_i operator& (int32_t b) const {
+        UME_FUNC_ATTRIB SIMDVec_i operator& (int32_t b) const {
             return band(b);
         }
         // MBANDS
-        UME_FORCE_INLINE SIMDVec_i band(SIMDVecMask<8> const & mask, int32_t b) const {
+        UME_FUNC_ATTRIB SIMDVec_i band(SIMDVecMask<8> const & mask, int32_t b) const {
             int32_t t0 = mask.mMask[0] ? mVec[0] & b : mVec[0];
             int32_t t1 = mask.mMask[1] ? mVec[1] & b : mVec[1];
             int32_t t2 = mask.mMask[2] ? mVec[2] & b : mVec[2];
@@ -2249,7 +2249,7 @@ namespace SIMD {
             return SIMDVec_i(t0, t1, t2, t3, t4, t5, t6, t7);
         }
         // BANDVA
-        UME_FORCE_INLINE SIMDVec_i & banda(SIMDVec_i const & b) {
+        UME_FUNC_ATTRIB SIMDVec_i & banda(SIMDVec_i const & b) {
             mVec[0] &= b.mVec[0];
             mVec[1] &= b.mVec[1];
             mVec[2] &= b.mVec[2];
@@ -2260,11 +2260,11 @@ namespace SIMD {
             mVec[7] &= b.mVec[7];
             return *this;
         }
-        UME_FORCE_INLINE SIMDVec_i & operator&= (SIMDVec_i const & b) {
+        UME_FUNC_ATTRIB SIMDVec_i & operator&= (SIMDVec_i const & b) {
             return banda(b);
         }
         // MBANDVA
-        UME_FORCE_INLINE SIMDVec_i & banda(SIMDVecMask<8> const & mask, SIMDVec_i const & b) {
+        UME_FUNC_ATTRIB SIMDVec_i & banda(SIMDVecMask<8> const & mask, SIMDVec_i const & b) {
             if (mask.mMask[0]) mVec[0] &= b.mVec[0];
             if (mask.mMask[1]) mVec[1] &= b.mVec[1];
             if (mask.mMask[2]) mVec[2] &= b.mVec[2];
@@ -2276,7 +2276,7 @@ namespace SIMD {
             return *this;
         }
         // BANDSA
-        UME_FORCE_INLINE SIMDVec_i & banda(int32_t b) {
+        UME_FUNC_ATTRIB SIMDVec_i & banda(int32_t b) {
             mVec[0] &= b;
             mVec[1] &= b;
             mVec[2] &= b;
@@ -2287,11 +2287,11 @@ namespace SIMD {
             mVec[7] &= b;
             return *this;
         }
-        UME_FORCE_INLINE SIMDVec_i & operator&= (bool b) {
+        UME_FUNC_ATTRIB SIMDVec_i & operator&= (bool b) {
             return banda(b);
         }
         // MBANDSA
-        UME_FORCE_INLINE SIMDVec_i & banda(SIMDVecMask<8> const & mask, int32_t b) {
+        UME_FUNC_ATTRIB SIMDVec_i & banda(SIMDVecMask<8> const & mask, int32_t b) {
             if(mask.mMask[0]) mVec[0] &= b;
             if(mask.mMask[1]) mVec[1] &= b;
             if(mask.mMask[2]) mVec[2] &= b;
@@ -2303,7 +2303,7 @@ namespace SIMD {
             return *this;
         }
         // BORV
-        UME_FORCE_INLINE SIMDVec_i bor(SIMDVec_i const & b) const {
+        UME_FUNC_ATTRIB SIMDVec_i bor(SIMDVec_i const & b) const {
             int32_t t0 = mVec[0] | b.mVec[0];
             int32_t t1 = mVec[1] | b.mVec[1];
             int32_t t2 = mVec[2] | b.mVec[2];
@@ -2314,11 +2314,11 @@ namespace SIMD {
             int32_t t7 = mVec[7] | b.mVec[7];
             return SIMDVec_i(t0, t1, t2, t3, t4, t5, t6, t7);
         }
-        UME_FORCE_INLINE SIMDVec_i operator| (SIMDVec_i const & b) const {
+        UME_FUNC_ATTRIB SIMDVec_i operator| (SIMDVec_i const & b) const {
             return bor(b);
         }
         // MBORV
-        UME_FORCE_INLINE SIMDVec_i bor(SIMDVecMask<8> const & mask, SIMDVec_i const & b) const {
+        UME_FUNC_ATTRIB SIMDVec_i bor(SIMDVecMask<8> const & mask, SIMDVec_i const & b) const {
             int32_t t0 = mask.mMask[0] ? mVec[0] | b.mVec[0] : mVec[0];
             int32_t t1 = mask.mMask[1] ? mVec[1] | b.mVec[1] : mVec[1];
             int32_t t2 = mask.mMask[2] ? mVec[2] | b.mVec[2] : mVec[2];
@@ -2330,7 +2330,7 @@ namespace SIMD {
             return SIMDVec_i(t0, t1, t2, t3, t4, t5, t6, t7);
         }
         // BORS
-        UME_FORCE_INLINE SIMDVec_i bor(int32_t b) const {
+        UME_FUNC_ATTRIB SIMDVec_i bor(int32_t b) const {
             int32_t t0 = mVec[0] | b;
             int32_t t1 = mVec[1] | b;
             int32_t t2 = mVec[2] | b;
@@ -2341,11 +2341,11 @@ namespace SIMD {
             int32_t t7 = mVec[7] | b;
             return SIMDVec_i(t0, t1, t2, t3, t4, t5, t6, t7);
         }
-        UME_FORCE_INLINE SIMDVec_i operator| (int32_t b) const {
+        UME_FUNC_ATTRIB SIMDVec_i operator| (int32_t b) const {
             return bor(b);
         }
         // MBORS
-        UME_FORCE_INLINE SIMDVec_i bor(SIMDVecMask<8> const & mask, int32_t b) const {
+        UME_FUNC_ATTRIB SIMDVec_i bor(SIMDVecMask<8> const & mask, int32_t b) const {
             int32_t t0 = mask.mMask[0] ? mVec[0] | b : mVec[0];
             int32_t t1 = mask.mMask[1] ? mVec[1] | b : mVec[1];
             int32_t t2 = mask.mMask[2] ? mVec[2] | b : mVec[2];
@@ -2357,7 +2357,7 @@ namespace SIMD {
             return SIMDVec_i(t0, t1, t2, t3, t4, t5, t6, t7);
         }
         // BORVA
-        UME_FORCE_INLINE SIMDVec_i & bora(SIMDVec_i const & b) {
+        UME_FUNC_ATTRIB SIMDVec_i & bora(SIMDVec_i const & b) {
             mVec[0] |= b.mVec[0];
             mVec[1] |= b.mVec[1];
             mVec[2] |= b.mVec[2];
@@ -2368,11 +2368,11 @@ namespace SIMD {
             mVec[7] |= b.mVec[7];
             return *this;
         }
-        UME_FORCE_INLINE SIMDVec_i & operator|= (SIMDVec_i const & b) {
+        UME_FUNC_ATTRIB SIMDVec_i & operator|= (SIMDVec_i const & b) {
             return bora(b);
         }
         // MBORVA
-        UME_FORCE_INLINE SIMDVec_i & bora(SIMDVecMask<8> const & mask, SIMDVec_i const & b) {
+        UME_FUNC_ATTRIB SIMDVec_i & bora(SIMDVecMask<8> const & mask, SIMDVec_i const & b) {
             if (mask.mMask[0]) mVec[0] |= b.mVec[0];
             if (mask.mMask[1]) mVec[1] |= b.mVec[1];
             if (mask.mMask[2]) mVec[2] |= b.mVec[2];
@@ -2384,7 +2384,7 @@ namespace SIMD {
             return *this;
         }
         // BORSA
-        UME_FORCE_INLINE SIMDVec_i & bora(int32_t b) {
+        UME_FUNC_ATTRIB SIMDVec_i & bora(int32_t b) {
             mVec[0] |= b;
             mVec[1] |= b;
             mVec[2] |= b;
@@ -2395,11 +2395,11 @@ namespace SIMD {
             mVec[7] |= b;
             return *this;
         }
-        UME_FORCE_INLINE SIMDVec_i & operator|= (int32_t b) {
+        UME_FUNC_ATTRIB SIMDVec_i & operator|= (int32_t b) {
             return bora(b);
         }
         // MBORSA
-        UME_FORCE_INLINE SIMDVec_i & bora(SIMDVecMask<8> const & mask, int32_t b) {
+        UME_FUNC_ATTRIB SIMDVec_i & bora(SIMDVecMask<8> const & mask, int32_t b) {
             if (mask.mMask[0]) mVec[0] |= b;
             if (mask.mMask[1]) mVec[1] |= b;
             if (mask.mMask[2]) mVec[2] |= b;
@@ -2411,7 +2411,7 @@ namespace SIMD {
             return *this;
         }
         // BXORV
-        UME_FORCE_INLINE SIMDVec_i bxor(SIMDVec_i const & b) const {
+        UME_FUNC_ATTRIB SIMDVec_i bxor(SIMDVec_i const & b) const {
             int32_t t0 = mVec[0] ^ b.mVec[0];
             int32_t t1 = mVec[1] ^ b.mVec[1];
             int32_t t2 = mVec[2] ^ b.mVec[2];
@@ -2422,11 +2422,11 @@ namespace SIMD {
             int32_t t7 = mVec[7] ^ b.mVec[7];
             return SIMDVec_i(t0, t1, t2, t3, t4, t5, t6, t7);
         }
-        UME_FORCE_INLINE SIMDVec_i operator^ (SIMDVec_i const & b) const {
+        UME_FUNC_ATTRIB SIMDVec_i operator^ (SIMDVec_i const & b) const {
             return bxor(b);
         }
         // MBXORV
-        UME_FORCE_INLINE SIMDVec_i bxor(SIMDVecMask<8> const & mask, SIMDVec_i const & b) const {
+        UME_FUNC_ATTRIB SIMDVec_i bxor(SIMDVecMask<8> const & mask, SIMDVec_i const & b) const {
             int32_t t0 = mask.mMask[0] ? mVec[0] ^ b.mVec[0] : mVec[0];
             int32_t t1 = mask.mMask[1] ? mVec[1] ^ b.mVec[1] : mVec[1];
             int32_t t2 = mask.mMask[2] ? mVec[2] ^ b.mVec[2] : mVec[2];
@@ -2438,7 +2438,7 @@ namespace SIMD {
             return SIMDVec_i(t0, t1, t2, t3, t4, t5, t6, t7);
         }
         // BXORS
-        UME_FORCE_INLINE SIMDVec_i bxor(int32_t b) const {
+        UME_FUNC_ATTRIB SIMDVec_i bxor(int32_t b) const {
             int32_t t0 = mVec[0] ^ b;
             int32_t t1 = mVec[1] ^ b;
             int32_t t2 = mVec[2] ^ b;
@@ -2449,11 +2449,11 @@ namespace SIMD {
             int32_t t7 = mVec[7] ^ b;
             return SIMDVec_i(t0, t1, t2, t3, t4, t5, t6, t7);
         }
-        UME_FORCE_INLINE SIMDVec_i operator^ (int32_t b) const {
+        UME_FUNC_ATTRIB SIMDVec_i operator^ (int32_t b) const {
             return bxor(b);
         }
         // MBXORS
-        UME_FORCE_INLINE SIMDVec_i bxor(SIMDVecMask<8> const & mask, int32_t b) const {
+        UME_FUNC_ATTRIB SIMDVec_i bxor(SIMDVecMask<8> const & mask, int32_t b) const {
             int32_t t0 = mask.mMask[0] ? mVec[0] ^ b : mVec[0];
             int32_t t1 = mask.mMask[1] ? mVec[1] ^ b : mVec[1];
             int32_t t2 = mask.mMask[2] ? mVec[2] ^ b : mVec[2];
@@ -2465,7 +2465,7 @@ namespace SIMD {
             return SIMDVec_i(t0, t1, t2, t3, t4, t5, t6, t7);
         }
         // BXORVA
-        UME_FORCE_INLINE SIMDVec_i & bxora(SIMDVec_i const & b) {
+        UME_FUNC_ATTRIB SIMDVec_i & bxora(SIMDVec_i const & b) {
             mVec[0] ^= b.mVec[0];
             mVec[1] ^= b.mVec[1];
             mVec[2] ^= b.mVec[2];
@@ -2476,11 +2476,11 @@ namespace SIMD {
             mVec[7] ^= b.mVec[7];
             return *this;
         }
-        UME_FORCE_INLINE SIMDVec_i & operator^= (SIMDVec_i const & b) {
+        UME_FUNC_ATTRIB SIMDVec_i & operator^= (SIMDVec_i const & b) {
             return bxora(b);
         }
         // MBXORVA
-        UME_FORCE_INLINE SIMDVec_i & bxora(SIMDVecMask<8> const & mask, SIMDVec_i const & b) {
+        UME_FUNC_ATTRIB SIMDVec_i & bxora(SIMDVecMask<8> const & mask, SIMDVec_i const & b) {
             if (mask.mMask[0]) mVec[0] ^= b.mVec[0];
             if (mask.mMask[1]) mVec[1] ^= b.mVec[1];
             if (mask.mMask[2]) mVec[2] ^= b.mVec[2];
@@ -2492,7 +2492,7 @@ namespace SIMD {
             return *this;
         }
         // BXORSA
-        UME_FORCE_INLINE SIMDVec_i & bxora(int32_t b) {
+        UME_FUNC_ATTRIB SIMDVec_i & bxora(int32_t b) {
             mVec[0] ^= b;
             mVec[1] ^= b;
             mVec[2] ^= b;
@@ -2503,11 +2503,11 @@ namespace SIMD {
             mVec[7] ^= b;
             return *this;
         }
-        UME_FORCE_INLINE SIMDVec_i & operator^= (int32_t b) {
+        UME_FUNC_ATTRIB SIMDVec_i & operator^= (int32_t b) {
             return bxora(b);
         }
         // MBXORSA
-        UME_FORCE_INLINE SIMDVec_i & bxora(SIMDVecMask<8> const & mask, int32_t b) {
+        UME_FUNC_ATTRIB SIMDVec_i & bxora(SIMDVecMask<8> const & mask, int32_t b) {
             if (mask.mMask[0]) mVec[0] ^= b;
             if (mask.mMask[1]) mVec[1] ^= b;
             if (mask.mMask[2]) mVec[2] ^= b;
@@ -2519,15 +2519,15 @@ namespace SIMD {
             return *this;
         }
         // BNOT
-        UME_FORCE_INLINE SIMDVec_i bnot() const {
+        UME_FUNC_ATTRIB SIMDVec_i bnot() const {
             return SIMDVec_i(~mVec[0], ~mVec[1], ~mVec[2], ~mVec[3],
                              ~mVec[4], ~mVec[5], ~mVec[6], ~mVec[7]);
         }
-        UME_FORCE_INLINE SIMDVec_i operator~ () const {
+        UME_FUNC_ATTRIB SIMDVec_i operator~ () const {
             return bnot();
         }
         // MBNOT
-        UME_FORCE_INLINE SIMDVec_i bnot(SIMDVecMask<8> const & mask) const {
+        UME_FUNC_ATTRIB SIMDVec_i bnot(SIMDVecMask<8> const & mask) const {
             int32_t t0 = mask.mMask[0] ? ~mVec[0] : mVec[0];
             int32_t t1 = mask.mMask[1] ? ~mVec[1] : mVec[1];
             int32_t t2 = mask.mMask[2] ? ~mVec[2] : mVec[2];
@@ -2539,7 +2539,7 @@ namespace SIMD {
             return SIMDVec_i(t0, t1, t2, t3, t4, t5, t6, t7);
         }
         // BNOTA
-        UME_FORCE_INLINE SIMDVec_i & bnota() {
+        UME_FUNC_ATTRIB SIMDVec_i & bnota() {
             mVec[0] = ~mVec[0];
             mVec[1] = ~mVec[1];
             mVec[2] = ~mVec[2];
@@ -2551,7 +2551,7 @@ namespace SIMD {
             return *this;
         }
         // MBNOTA
-        UME_FORCE_INLINE SIMDVec_i & bnota(SIMDVecMask<8> const & mask) {
+        UME_FUNC_ATTRIB SIMDVec_i & bnota(SIMDVecMask<8> const & mask) {
             if(mask.mMask[0]) mVec[0] = ~mVec[0];
             if(mask.mMask[1]) mVec[1] = ~mVec[1];
             if(mask.mMask[2]) mVec[2] = ~mVec[2];
@@ -2563,12 +2563,12 @@ namespace SIMD {
             return *this;
         }
         // HBAND
-        UME_FORCE_INLINE int32_t hband() const {
+        UME_FUNC_ATTRIB int32_t hband() const {
             return mVec[0] & mVec[1] & mVec[2] & mVec[3] & mVec[4] & mVec[5] & mVec[6] & mVec[7];
         }
         // MHBAND
-        UME_FORCE_INLINE int32_t hband(SIMDVecMask<8> const & mask) const {
-            int32_t t0 = mask.mMask[0] ? mVec[0] : 0xFFFFFFFF;
+        UME_FUNC_ATTRIB int32_t hband(SIMDVecMask<8> const & mask) const {
+            int32_t t0 = mask.mMask[0] ? mVec[0] : int32_t(0xFFFFFFFF);
             int32_t t1 = mask.mMask[1] ? mVec[1] & t0 : t0;
             int32_t t2 = mask.mMask[2] ? mVec[2] & t1 : t1;
             int32_t t3 = mask.mMask[3] ? mVec[3] & t2 : t2;
@@ -2579,11 +2579,11 @@ namespace SIMD {
             return t7;
         }
         // HBANDS
-        UME_FORCE_INLINE int32_t hband(int32_t b) const {
+        UME_FUNC_ATTRIB int32_t hband(int32_t b) const {
             return mVec[0] & mVec[1] & mVec[2] & mVec[3] & mVec[4] & mVec[5] & mVec[6] & mVec[7] & b;
         }
         // MHBANDS
-        UME_FORCE_INLINE int32_t hband(SIMDVecMask<8> const & mask, int32_t b) const {
+        UME_FUNC_ATTRIB int32_t hband(SIMDVecMask<8> const & mask, int32_t b) const {
             int32_t t0 = mask.mMask[0] ? mVec[0] & b: b;
             int32_t t1 = mask.mMask[1] ? mVec[1] & t0 : t0;
             int32_t t2 = mask.mMask[2] ? mVec[2] & t1 : t1;
@@ -2595,11 +2595,11 @@ namespace SIMD {
             return t7;
         }
         // HBOR
-        UME_FORCE_INLINE int32_t hbor() const {
+        UME_FUNC_ATTRIB int32_t hbor() const {
             return mVec[0] | mVec[1] | mVec[2] | mVec[3] | mVec[4] | mVec[5] | mVec[6] | mVec[7];
         }
         // MHBOR
-        UME_FORCE_INLINE int32_t hbor(SIMDVecMask<8> const & mask) const {
+        UME_FUNC_ATTRIB int32_t hbor(SIMDVecMask<8> const & mask) const {
             int32_t t0 = mask.mMask[0] ? mVec[0] : 0;
             int32_t t1 = mask.mMask[1] ? mVec[1] | t0 : t0;
             int32_t t2 = mask.mMask[2] ? mVec[2] | t1 : t1;
@@ -2611,11 +2611,11 @@ namespace SIMD {
             return t7;
         }
         // HBORS
-        UME_FORCE_INLINE int32_t hbor(int32_t b) const {
+        UME_FUNC_ATTRIB int32_t hbor(int32_t b) const {
             return mVec[0] | mVec[1] | mVec[2] | mVec[3] | mVec[4] | mVec[5] | mVec[6] | mVec[7] | b;
         }
         // MHBORS
-        UME_FORCE_INLINE int32_t hbor(SIMDVecMask<8> const & mask, int32_t b) const {
+        UME_FUNC_ATTRIB int32_t hbor(SIMDVecMask<8> const & mask, int32_t b) const {
             int32_t t0 = mask.mMask[0] ? mVec[0] | b : b;
             int32_t t1 = mask.mMask[1] ? mVec[1] | t0 : t0;
             int32_t t2 = mask.mMask[2] ? mVec[2] | t1 : t1;
@@ -2627,11 +2627,11 @@ namespace SIMD {
             return t7;
         }
         // HBXOR
-        UME_FORCE_INLINE int32_t hbxor() const {
+        UME_FUNC_ATTRIB int32_t hbxor() const {
             return mVec[0] ^ mVec[1] ^ mVec[2] ^ mVec[3] ^ mVec[4] ^ mVec[5] ^ mVec[6] ^ mVec[7];
         }
         // MHBXOR
-        UME_FORCE_INLINE int32_t hbxor(SIMDVecMask<8> const & mask) const {
+        UME_FUNC_ATTRIB int32_t hbxor(SIMDVecMask<8> const & mask) const {
             int32_t t0 = mask.mMask[0] ? mVec[0] : 0;
             int32_t t1 = mask.mMask[1] ? mVec[1] ^ t0 : t0;
             int32_t t2 = mask.mMask[2] ? mVec[2] ^ t1 : t1;
@@ -2643,11 +2643,11 @@ namespace SIMD {
             return t7;
         }
         // HBXORS
-        UME_FORCE_INLINE int32_t hbxor(int32_t b) const {
+        UME_FUNC_ATTRIB int32_t hbxor(int32_t b) const {
             return mVec[0] ^ mVec[1] ^ mVec[2] ^ mVec[3] ^ mVec[4] ^ mVec[5] ^ mVec[6] ^ mVec[7] ^ b;
         }
         // MHBXORS
-        UME_FORCE_INLINE int32_t hbxor(SIMDVecMask<8> const & mask, int32_t b) const {
+        UME_FUNC_ATTRIB int32_t hbxor(SIMDVecMask<8> const & mask, int32_t b) const {
             int32_t t0 = mask.mMask[0] ? mVec[0] ^ b : b;
             int32_t t1 = mask.mMask[1] ? mVec[1] ^ t0 : t0;
             int32_t t2 = mask.mMask[2] ? mVec[2] ^ t1 : t1;
@@ -2660,7 +2660,7 @@ namespace SIMD {
         }
 
         // GATHERS
-        UME_FORCE_INLINE SIMDVec_i & gather(int32_t const * baseAddr, uint32_t const * indices) {
+        UME_FUNC_ATTRIB SIMDVec_i & gather(int32_t const * baseAddr, uint32_t const * indices) {
             mVec[0] = baseAddr[indices[0]];
             mVec[1] = baseAddr[indices[1]];
             mVec[2] = baseAddr[indices[2]];
@@ -2672,7 +2672,7 @@ namespace SIMD {
             return *this;
         }
         // MGATHERS
-        UME_FORCE_INLINE SIMDVec_i & gather(SIMDVecMask<8> const & mask, int32_t const * baseAddr, uint32_t const * indices) {
+        UME_FUNC_ATTRIB SIMDVec_i & gather(SIMDVecMask<8> const & mask, int32_t const * baseAddr, uint32_t const * indices) {
             if (mask.mMask[0] == true) mVec[0] = baseAddr[indices[0]];
             if (mask.mMask[1] == true) mVec[1] = baseAddr[indices[1]];
             if (mask.mMask[2] == true) mVec[2] = baseAddr[indices[2]];
@@ -2684,7 +2684,7 @@ namespace SIMD {
             return *this;
         }
         // GATHERV
-        UME_FORCE_INLINE SIMDVec_i & gather(int32_t const * baseAddr, SIMDVec_u<uint32_t, 8> const & indices) {
+        UME_FUNC_ATTRIB SIMDVec_i & gather(int32_t const * baseAddr, SIMDVec_u<uint32_t, 8> const & indices) {
             mVec[0] = baseAddr[indices.mVec[0]];
             mVec[1] = baseAddr[indices.mVec[1]];
             mVec[2] = baseAddr[indices.mVec[2]];
@@ -2696,7 +2696,7 @@ namespace SIMD {
             return *this;
         }
         // MGATHERV
-        UME_FORCE_INLINE SIMDVec_i & gather(SIMDVecMask<8> const & mask, int32_t const * baseAddr, SIMDVec_u<uint32_t, 8> const & indices) {
+        UME_FUNC_ATTRIB SIMDVec_i & gather(SIMDVecMask<8> const & mask, int32_t const * baseAddr, SIMDVec_u<uint32_t, 8> const & indices) {
             if (mask.mMask[0] == true) mVec[0] = baseAddr[indices.mVec[0]];
             if (mask.mMask[1] == true) mVec[1] = baseAddr[indices.mVec[1]];
             if (mask.mMask[2] == true) mVec[2] = baseAddr[indices.mVec[2]];
@@ -2708,7 +2708,7 @@ namespace SIMD {
             return *this;
         }
         // SCATTERS
-        UME_FORCE_INLINE int32_t* scatter(int32_t* baseAddr, uint32_t* indices) const {
+        UME_FUNC_ATTRIB int32_t* scatter(int32_t* baseAddr, uint32_t* indices) const {
             baseAddr[indices[0]] = mVec[0];
             baseAddr[indices[1]] = mVec[1];
             baseAddr[indices[2]] = mVec[2];
@@ -2720,7 +2720,7 @@ namespace SIMD {
             return baseAddr;
         }
         // MSCATTERS
-        UME_FORCE_INLINE int32_t* scatter(SIMDVecMask<8> const & mask, int32_t* baseAddr, uint32_t* indices) const {
+        UME_FUNC_ATTRIB int32_t* scatter(SIMDVecMask<8> const & mask, int32_t* baseAddr, uint32_t* indices) const {
             if (mask.mMask[0] == true) baseAddr[indices[0]] = mVec[0];
             if (mask.mMask[1] == true) baseAddr[indices[1]] = mVec[1];
             if (mask.mMask[2] == true) baseAddr[indices[2]] = mVec[2];
@@ -2732,7 +2732,7 @@ namespace SIMD {
             return baseAddr;
         }
         // SCATTERV
-        UME_FORCE_INLINE int32_t* scatter(int32_t* baseAddr, SIMDVec_u<uint32_t, 8> const & indices) const {
+        UME_FUNC_ATTRIB int32_t* scatter(int32_t* baseAddr, SIMDVec_u<uint32_t, 8> const & indices) const {
             baseAddr[indices.mVec[0]] = mVec[0];
             baseAddr[indices.mVec[1]] = mVec[1];
             baseAddr[indices.mVec[2]] = mVec[2];
@@ -2744,7 +2744,7 @@ namespace SIMD {
             return baseAddr;
         }
         // MSCATTERV
-        UME_FORCE_INLINE int32_t* scatter(SIMDVecMask<8> const & mask, int32_t* baseAddr, SIMDVec_u<uint32_t, 8> const & indices) const {
+        UME_FUNC_ATTRIB int32_t* scatter(SIMDVecMask<8> const & mask, int32_t* baseAddr, SIMDVec_u<uint32_t, 8> const & indices) const {
             if (mask.mMask[0] == true) baseAddr[indices.mVec[0]] = mVec[0];
             if (mask.mMask[1] == true) baseAddr[indices.mVec[1]] = mVec[1];
             if (mask.mMask[2] == true) baseAddr[indices.mVec[2]] = mVec[2];
@@ -2757,7 +2757,7 @@ namespace SIMD {
         }
 
         // LSHV
-        UME_FORCE_INLINE SIMDVec_i lsh(SIMDVec_i const & b) const {
+        UME_FUNC_ATTRIB SIMDVec_i lsh(SIMDVec_i const & b) const {
             int32_t t0 = mVec[0] << b.mVec[0];
             int32_t t1 = mVec[1] << b.mVec[1];
             int32_t t2 = mVec[2] << b.mVec[2];
@@ -2769,7 +2769,7 @@ namespace SIMD {
             return SIMDVec_i(t0, t1, t2, t3, t4, t5, t6, t7);
         }
         // MLSHV
-        UME_FORCE_INLINE SIMDVec_i lsh(SIMDVecMask<8> const & mask, SIMDVec_i const & b) const {
+        UME_FUNC_ATTRIB SIMDVec_i lsh(SIMDVecMask<8> const & mask, SIMDVec_i const & b) const {
             int32_t t0 = mask.mMask[0] ? mVec[0] << b.mVec[0] : mVec[0];
             int32_t t1 = mask.mMask[1] ? mVec[1] << b.mVec[1] : mVec[1];
             int32_t t2 = mask.mMask[2] ? mVec[2] << b.mVec[2] : mVec[2];
@@ -2781,7 +2781,7 @@ namespace SIMD {
             return SIMDVec_i(t0, t1, t2, t3, t4, t5, t6, t7);
         }
         // LSHS
-        UME_FORCE_INLINE SIMDVec_i lsh(int32_t b) const {
+        UME_FUNC_ATTRIB SIMDVec_i lsh(int32_t b) const {
             int32_t t0 = mVec[0] << b;
             int32_t t1 = mVec[1] << b;
             int32_t t2 = mVec[2] << b;
@@ -2793,7 +2793,7 @@ namespace SIMD {
             return SIMDVec_i(t0, t1, t2, t3, t4, t5, t6, t7);
         }
         // MLSHS
-        UME_FORCE_INLINE SIMDVec_i lsh(SIMDVecMask<8> const & mask, int32_t b) const {
+        UME_FUNC_ATTRIB SIMDVec_i lsh(SIMDVecMask<8> const & mask, int32_t b) const {
             int32_t t0 = mask.mMask[0] ? mVec[0] << b : mVec[0];
             int32_t t1 = mask.mMask[1] ? mVec[1] << b : mVec[1];
             int32_t t2 = mask.mMask[2] ? mVec[2] << b : mVec[2];
@@ -2805,7 +2805,7 @@ namespace SIMD {
             return SIMDVec_i(t0, t1, t2, t3, t4, t5, t6, t7);
         }
         // LSHVA
-        UME_FORCE_INLINE SIMDVec_i & lsha(SIMDVec_i const & b) {
+        UME_FUNC_ATTRIB SIMDVec_i & lsha(SIMDVec_i const & b) {
             mVec[0] = mVec[0] << b.mVec[0];
             mVec[1] = mVec[1] << b.mVec[1];
             mVec[2] = mVec[2] << b.mVec[2];
@@ -2817,7 +2817,7 @@ namespace SIMD {
             return *this;
         }
         // MLSHVA
-        UME_FORCE_INLINE SIMDVec_i & lsha(SIMDVecMask<8> const & mask, SIMDVec_i const & b) {
+        UME_FUNC_ATTRIB SIMDVec_i & lsha(SIMDVecMask<8> const & mask, SIMDVec_i const & b) {
             if(mask.mMask[0]) mVec[0] = mVec[0] << b.mVec[0];
             if(mask.mMask[1]) mVec[1] = mVec[1] << b.mVec[1];
             if(mask.mMask[2]) mVec[2] = mVec[2] << b.mVec[2];
@@ -2829,7 +2829,7 @@ namespace SIMD {
             return *this;
         }
         // LSHSA
-        UME_FORCE_INLINE SIMDVec_i & lsha(int32_t b) {
+        UME_FUNC_ATTRIB SIMDVec_i & lsha(int32_t b) {
             mVec[0] = mVec[0] << b;
             mVec[1] = mVec[1] << b;
             mVec[2] = mVec[2] << b;
@@ -2841,7 +2841,7 @@ namespace SIMD {
             return *this;
         }
         // MLSHSA
-        UME_FORCE_INLINE SIMDVec_i & lsha(SIMDVecMask<8> const & mask, int32_t b) {
+        UME_FUNC_ATTRIB SIMDVec_i & lsha(SIMDVecMask<8> const & mask, int32_t b) {
             if(mask.mMask[0]) mVec[0] = mVec[0] << b;
             if(mask.mMask[1]) mVec[1] = mVec[1] << b;
             if(mask.mMask[2]) mVec[2] = mVec[2] << b;
@@ -2853,7 +2853,7 @@ namespace SIMD {
             return *this;
         }
         // RSHV
-        UME_FORCE_INLINE SIMDVec_i rsh(SIMDVec_i const & b) const {
+        UME_FUNC_ATTRIB SIMDVec_i rsh(SIMDVec_i const & b) const {
             int32_t t0 = mVec[0] >> b.mVec[0];
             int32_t t1 = mVec[1] >> b.mVec[1];
             int32_t t2 = mVec[2] >> b.mVec[2];
@@ -2865,7 +2865,7 @@ namespace SIMD {
             return SIMDVec_i(t0, t1, t2, t3, t4, t5, t6, t7);
         }
         // MRSHV
-        UME_FORCE_INLINE SIMDVec_i rsh(SIMDVecMask<8> const & mask, SIMDVec_i const & b) const {
+        UME_FUNC_ATTRIB SIMDVec_i rsh(SIMDVecMask<8> const & mask, SIMDVec_i const & b) const {
             int32_t t0 = mask.mMask[0] ? mVec[0] >> b.mVec[0] : mVec[0];
             int32_t t1 = mask.mMask[1] ? mVec[1] >> b.mVec[1] : mVec[1];
             int32_t t2 = mask.mMask[2] ? mVec[2] >> b.mVec[2] : mVec[2];
@@ -2877,7 +2877,7 @@ namespace SIMD {
             return SIMDVec_i(t0, t1, t2, t3, t4, t5, t6, t7);
         }
         // RSHS
-        UME_FORCE_INLINE SIMDVec_i rsh(int32_t b) const {
+        UME_FUNC_ATTRIB SIMDVec_i rsh(int32_t b) const {
             int32_t t0 = mVec[0] >> b;
             int32_t t1 = mVec[1] >> b;
             int32_t t2 = mVec[2] >> b;
@@ -2889,7 +2889,7 @@ namespace SIMD {
             return SIMDVec_i(t0, t1, t2, t3, t4, t5, t6, t7);
         }
         // MRSHS
-        UME_FORCE_INLINE SIMDVec_i rsh(SIMDVecMask<8> const & mask, int32_t b) const {
+        UME_FUNC_ATTRIB SIMDVec_i rsh(SIMDVecMask<8> const & mask, int32_t b) const {
             int32_t t0 = mask.mMask[0] ? mVec[0] >> b : mVec[0];
             int32_t t1 = mask.mMask[1] ? mVec[1] >> b : mVec[1];
             int32_t t2 = mask.mMask[2] ? mVec[2] >> b : mVec[2];
@@ -2901,7 +2901,7 @@ namespace SIMD {
             return SIMDVec_i(t0, t1, t2, t3, t4, t5, t6, t7);
         }
         // RSHVA
-        UME_FORCE_INLINE SIMDVec_i & rsha(SIMDVec_i const & b) {
+        UME_FUNC_ATTRIB SIMDVec_i & rsha(SIMDVec_i const & b) {
             mVec[0] = mVec[0] >> b.mVec[0];
             mVec[1] = mVec[1] >> b.mVec[1];
             mVec[2] = mVec[2] >> b.mVec[2];
@@ -2913,7 +2913,7 @@ namespace SIMD {
             return *this;
         }
         // MRSHVA
-        UME_FORCE_INLINE SIMDVec_i & rsha(SIMDVecMask<8> const & mask, SIMDVec_i const & b) {
+        UME_FUNC_ATTRIB SIMDVec_i & rsha(SIMDVecMask<8> const & mask, SIMDVec_i const & b) {
             if (mask.mMask[0]) mVec[0] = mVec[0] >> b.mVec[0];
             if (mask.mMask[1]) mVec[1] = mVec[1] >> b.mVec[1];
             if (mask.mMask[2]) mVec[2] = mVec[2] >> b.mVec[2];
@@ -2925,7 +2925,7 @@ namespace SIMD {
             return *this;
         }
         // RSHSA
-        UME_FORCE_INLINE SIMDVec_i & rsha(int32_t b) {
+        UME_FUNC_ATTRIB SIMDVec_i & rsha(int32_t b) {
             mVec[0] = mVec[0] >> b;
             mVec[1] = mVec[1] >> b;
             mVec[2] = mVec[2] >> b;
@@ -2937,7 +2937,7 @@ namespace SIMD {
             return *this;
         }
         // MRSHSA
-        UME_FORCE_INLINE SIMDVec_i & rsha(SIMDVecMask<8> const & mask, int32_t b) {
+        UME_FUNC_ATTRIB SIMDVec_i & rsha(SIMDVecMask<8> const & mask, int32_t b) {
             if (mask.mMask[0]) mVec[0] = mVec[0] >> b;
             if (mask.mMask[1]) mVec[1] = mVec[1] >> b;
             if (mask.mMask[2]) mVec[2] = mVec[2] >> b;
@@ -2966,15 +2966,15 @@ namespace SIMD {
         // MRORSA
 
         // NEG
-        UME_FORCE_INLINE SIMDVec_i neg() const {
+        UME_FUNC_ATTRIB SIMDVec_i neg() const {
             return SIMDVec_i(-mVec[0], -mVec[1], -mVec[2], -mVec[3],
                              -mVec[4], -mVec[5], -mVec[6], -mVec[7]);
         }
-        UME_FORCE_INLINE SIMDVec_i operator- () const {
+        UME_FUNC_ATTRIB SIMDVec_i operator- () const {
             return neg();
         }
         // MNEG
-        UME_FORCE_INLINE SIMDVec_i neg(SIMDVecMask<8> const & mask) const {
+        UME_FUNC_ATTRIB SIMDVec_i neg(SIMDVecMask<8> const & mask) const {
             int32_t t0 = (mask.mMask[0] == true) ? -mVec[0] : mVec[0];
             int32_t t1 = (mask.mMask[1] == true) ? -mVec[1] : mVec[1];
             int32_t t2 = (mask.mMask[2] == true) ? -mVec[2] : mVec[2];
@@ -2986,7 +2986,7 @@ namespace SIMD {
             return SIMDVec_i(t0, t1, t2, t3, t4, t5, t6, t7);
         }
         // NEGA
-        UME_FORCE_INLINE SIMDVec_i & nega() {
+        UME_FUNC_ATTRIB SIMDVec_i & nega() {
             mVec[0] = -mVec[0];
             mVec[1] = -mVec[1];
             mVec[2] = -mVec[2];
@@ -2998,7 +2998,7 @@ namespace SIMD {
             return *this;
         }
         // MNEGA
-        UME_FORCE_INLINE SIMDVec_i & nega(SIMDVecMask<8> const & mask) {
+        UME_FUNC_ATTRIB SIMDVec_i & nega(SIMDVecMask<8> const & mask) {
             if (mask.mMask[0] == true) mVec[0] = -mVec[0];
             if (mask.mMask[1] == true) mVec[1] = -mVec[1];
             if (mask.mMask[2] == true) mVec[2] = -mVec[2];
@@ -3010,7 +3010,7 @@ namespace SIMD {
             return *this;
         }
         // ABS
-        UME_FORCE_INLINE SIMDVec_i abs() const {
+        UME_FUNC_ATTRIB SIMDVec_i abs() const {
             int32_t t0 = (mVec[0] > 0) ? mVec[0] : -mVec[0];
             int32_t t1 = (mVec[1] > 0) ? mVec[1] : -mVec[1];
             int32_t t2 = (mVec[2] > 0) ? mVec[2] : -mVec[2];
@@ -3022,7 +3022,7 @@ namespace SIMD {
             return SIMDVec_i(t0, t1, t2, t3, t4, t5, t6, t7);
         }
         // MABS
-        UME_FORCE_INLINE SIMDVec_i abs(SIMDVecMask<8> const & mask) const {
+        UME_FUNC_ATTRIB SIMDVec_i abs(SIMDVecMask<8> const & mask) const {
             int32_t t0 = ((mask.mMask[0] == true) && (mVec[0] < 0)) ? -mVec[0] : mVec[0];
             int32_t t1 = ((mask.mMask[1] == true) && (mVec[1] < 0)) ? -mVec[1] : mVec[1];
             int32_t t2 = ((mask.mMask[2] == true) && (mVec[2] < 0)) ? -mVec[2] : mVec[2];
@@ -3034,7 +3034,7 @@ namespace SIMD {
             return SIMDVec_i(t0, t1, t2, t3, t4, t5, t6, t7);
         }
         // ABSA
-        UME_FORCE_INLINE SIMDVec_i & absa() {
+        UME_FUNC_ATTRIB SIMDVec_i & absa() {
             if (mVec[0] < 0.0f) mVec[0] = -mVec[0];
             if (mVec[1] < 0.0f) mVec[1] = -mVec[1];
             if (mVec[2] < 0.0f) mVec[2] = -mVec[2];
@@ -3046,7 +3046,7 @@ namespace SIMD {
             return *this;
         }
         // MABSA
-        UME_FORCE_INLINE SIMDVec_i & absa(SIMDVecMask<8> const & mask) {
+        UME_FUNC_ATTRIB SIMDVec_i & absa(SIMDVecMask<8> const & mask) {
             if ((mask.mMask[0] == true) && (mVec[0] < 0)) mVec[0] = -mVec[0];
             if ((mask.mMask[1] == true) && (mVec[1] < 0)) mVec[1] = -mVec[1];
             if ((mask.mMask[2] == true) && (mVec[2] < 0)) mVec[2] = -mVec[2];
@@ -3059,7 +3059,7 @@ namespace SIMD {
         }
 
         // PACK
-        UME_FORCE_INLINE SIMDVec_i & pack(SIMDVec_i<int32_t, 4> const & a, SIMDVec_i<int32_t, 4> const & b) {
+        UME_FUNC_ATTRIB SIMDVec_i & pack(SIMDVec_i<int32_t, 4> const & a, SIMDVec_i<int32_t, 4> const & b) {
             mVec[0] = a[0];
             mVec[1] = a[1];
             mVec[2] = a[2];
@@ -3071,7 +3071,7 @@ namespace SIMD {
             return *this;
         }
         // PACKLO
-        UME_FORCE_INLINE SIMDVec_i packlo(SIMDVec_i<int32_t, 4> const & a) {
+        UME_FUNC_ATTRIB SIMDVec_i packlo(SIMDVec_i<int32_t, 4> const & a) {
             mVec[0] = a[0];
             mVec[1] = a[1];
             mVec[2] = a[2];
@@ -3079,7 +3079,7 @@ namespace SIMD {
             return *this;
         }
         // PACKHI
-        UME_FORCE_INLINE SIMDVec_i packhi(SIMDVec_i<int32_t, 4> const & b) {
+        UME_FUNC_ATTRIB SIMDVec_i packhi(SIMDVec_i<int32_t, 4> const & b) {
             mVec[4] = b[0];
             mVec[5] = b[1];
             mVec[6] = b[2];
@@ -3087,7 +3087,7 @@ namespace SIMD {
             return *this;
         }
         // UNPACK
-        UME_FORCE_INLINE void unpack(SIMDVec_i<int32_t, 4> & a, SIMDVec_i<int32_t, 4> & b) const {
+        UME_FUNC_ATTRIB void unpack(SIMDVec_i<int32_t, 4> & a, SIMDVec_i<int32_t, 4> & b) const {
             a.insert(0, mVec[0]);
             a.insert(1, mVec[1]);
             a.insert(2, mVec[2]);
@@ -3098,23 +3098,23 @@ namespace SIMD {
             b.insert(3, mVec[7]);
         }
         // UNPACKLO
-        UME_FORCE_INLINE SIMDVec_i<int32_t, 4> unpacklo() const {
+        UME_FUNC_ATTRIB SIMDVec_i<int32_t, 4> unpacklo() const {
             return SIMDVec_i<int32_t, 4> (mVec[0], mVec[1], mVec[2], mVec[3]);
         }
         // UNPACKHI
-        UME_FORCE_INLINE SIMDVec_i<int32_t, 4> unpackhi() const {
+        UME_FUNC_ATTRIB SIMDVec_i<int32_t, 4> unpackhi() const {
             return SIMDVec_i<int32_t, 4> (mVec[4], mVec[5], mVec[6], mVec[7]);
         }
 
         // PROMOTE
-        UME_FORCE_INLINE operator SIMDVec_i<int64_t, 8>() const;
+        UME_FUNC_ATTRIB operator SIMDVec_i<int64_t, 8>() const;
         // DEGRADE
-        UME_FORCE_INLINE operator SIMDVec_i<int16_t, 8>() const;
+        UME_FUNC_ATTRIB operator SIMDVec_i<int16_t, 8>() const;
 
         // ITOU
-        UME_FORCE_INLINE operator SIMDVec_u<uint32_t, 8>() const;
+        UME_FUNC_ATTRIB operator SIMDVec_u<uint32_t, 8>() const;
         // ITOF
-        UME_FORCE_INLINE operator SIMDVec_f<float, 8>() const;
+        UME_FUNC_ATTRIB operator SIMDVec_f<float, 8>() const;
     };
 
 }

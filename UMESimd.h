@@ -74,6 +74,20 @@
 
 #include "UMEInline.h"
 
+// Define target specific attributes
+#ifdef __NVCC__
+#ifdef __CUDA_ARCH__
+// For CUDA we need to mark each function as device code.
+#define UME_ENV_FUNC_ATTRIB __device__
+#else
+#define UME_ENV_FUNC_ATTRIB __host__
+#endif
+#else
+#define UME_ENV_FUNC_ATTRIB
+#endif
+
+#define UME_FUNC_ATTRIB UME_FORCE_INLINE UME_ENV_FUNC_ATTRIB
+
 
 namespace UME {
 namespace SIMD {

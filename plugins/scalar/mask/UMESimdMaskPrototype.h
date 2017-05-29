@@ -60,11 +60,11 @@ namespace SIMD {
         bool mMask[VEC_LEN]; // each entry represents single mask element. For real SIMD vectors, mMask will be of mask intrinsic type.
 
     public:
-        UME_FORCE_INLINE SIMDVecMask() {}
+        UME_FUNC_ATTRIB SIMDVecMask() {}
 
         // Regardless of the mask representation, the interface should only allow initialization using 
         // standard bool or using equivalent mask
-        UME_FORCE_INLINE SIMDVecMask(bool m) {
+        UME_FUNC_ATTRIB SIMDVecMask(bool m) {
             for (unsigned int i = 0; i < VEC_LEN; i++)
             {
                 mMask[i] = m;
@@ -72,16 +72,16 @@ namespace SIMD {
         }
 
         // LOAD-CONSTR - Construct by loading from memory
-        UME_FORCE_INLINE explicit SIMDVecMask(bool const * p) { this->load(p); }
+        UME_FUNC_ATTRIB explicit SIMDVecMask(bool const * p) { this->load(p); }
 
         // TODO: this should be handled using variadic templates, but unfortunatelly Visual Studio does not support this feature...
-        UME_FORCE_INLINE SIMDVecMask(bool m0, bool m1)
+        UME_FUNC_ATTRIB SIMDVecMask(bool m0, bool m1)
         {
             mMask[0] = m0;
             mMask[1] = m1;
         }
 
-        UME_FORCE_INLINE SIMDVecMask(bool m0, bool m1, bool m2, bool m3)
+        UME_FUNC_ATTRIB SIMDVecMask(bool m0, bool m1, bool m2, bool m3)
         {
             mMask[0] = m0;
             mMask[1] = m1;
@@ -89,7 +89,7 @@ namespace SIMD {
             mMask[3] = m3;
         }
 
-        UME_FORCE_INLINE SIMDVecMask(bool m0, bool m1, bool m2, bool m3,
+        UME_FUNC_ATTRIB SIMDVecMask(bool m0, bool m1, bool m2, bool m3,
             bool m4, bool m5, bool m6, bool m7)
         {
             mMask[0] = m0; mMask[1] = m1;
@@ -98,7 +98,7 @@ namespace SIMD {
             mMask[6] = m6; mMask[7] = m7;
         }
 
-        UME_FORCE_INLINE SIMDVecMask(bool m0, bool m1, bool m2, bool m3,
+        UME_FUNC_ATTRIB SIMDVecMask(bool m0, bool m1, bool m2, bool m3,
             bool m4, bool m5, bool m6, bool m7,
             bool m8, bool m9, bool m10, bool m11,
             bool m12, bool m13, bool m14, bool m15)
@@ -113,7 +113,7 @@ namespace SIMD {
             mMask[14] = m14; mMask[15] = m15;
         }
 
-        UME_FORCE_INLINE SIMDVecMask(bool m0, bool m1, bool m2, bool m3,
+        UME_FUNC_ATTRIB SIMDVecMask(bool m0, bool m1, bool m2, bool m3,
             bool m4, bool m5, bool m6, bool m7,
             bool m8, bool m9, bool m10, bool m11,
             bool m12, bool m13, bool m14, bool m15,
@@ -140,7 +140,7 @@ namespace SIMD {
             mMask[30] = m30; mMask[31] = m31;
         }
 
-        UME_FORCE_INLINE SIMDVecMask(
+        UME_FUNC_ATTRIB SIMDVecMask(
             bool m0, bool m1, bool m2, bool m3,
             bool m4, bool m5, bool m6, bool m7,
             bool m8, bool m9, bool m10, bool m11,
@@ -192,7 +192,7 @@ namespace SIMD {
             mMask[62] = m62; mMask[63] = m63;
         }
 
-        UME_FORCE_INLINE SIMDVecMask(
+        UME_FUNC_ATTRIB SIMDVecMask(
             bool m0, bool m1, bool m2, bool m3,
             bool m4, bool m5, bool m6, bool m7,
             bool m8, bool m9, bool m10, bool m11,
@@ -292,19 +292,19 @@ namespace SIMD {
             mMask[126] = m126; mMask[127] = m127;
         }
         // A non-modifying element-wise access operator
-        UME_FORCE_INLINE bool operator[] (uint32_t index) const { return mMask[index]; }
+        UME_FUNC_ATTRIB bool operator[] (uint32_t index) const { return mMask[index]; }
 
-        UME_FORCE_INLINE bool extract(uint32_t index)
+        UME_FUNC_ATTRIB bool extract(uint32_t index)
         {
             return mMask[index];
         }
 
         // Element-wise modification operator
-        UME_FORCE_INLINE void insert(uint32_t index, bool x) {
+        UME_FUNC_ATTRIB void insert(uint32_t index, bool x) {
             mMask[index] = x;
         }
 
-        UME_FORCE_INLINE SIMDVecMask(SIMDVecMask const & mask) {
+        UME_FUNC_ATTRIB SIMDVecMask(SIMDVecMask const & mask) {
             for (unsigned int i = 0; i < VEC_LEN; i++)
             {
                 mMask[i] = mask.mMask[i];

@@ -1075,6 +1075,19 @@ namespace SIMD {
             uint32_t t1 = (mask.mMask[1] && mVec[1] > t0) ? mVec[1] : t0;
             return t1;
         }
+        // HMAXS
+        UME_FORCE_INLINE uint32_t hmax (uint32_t a) const {
+            uint32_t t0 = mVec[0] > mVec[1] ? mVec[0] : mVec[1];
+            uint32_t t1 = t0 > a ? t0 : a;
+            return t1;
+        }
+        // MHMAXS
+        UME_FORCE_INLINE uint32_t hmax(SIMDVecMask<2> const & mask, uint32_t a) const {
+            uint32_t t0 = mVec[0] > a ? mVec[0] : a;
+            uint32_t t1 = mask.mMask[0] ? t0 : a;
+            uint32_t t2 = (mask.mMask[1] && mVec[1] > t1) ? mVec[1] : t1;
+            return t2;
+        }
         // IMAX
         UME_FORCE_INLINE uint32_t imax() const {
             return mVec[0] > mVec[1] ? 0 : 1;

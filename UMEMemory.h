@@ -72,60 +72,64 @@ namespace UME
     class DynamicMemory
     {
     public:
-        static inline void* Malloc(std::size_t size)
+        static inline UME_ENV_FUNC_ATTRIB void* Malloc(std::size_t size)
         {
             // TODO: specialize it depending on the architecture and OS
             return std::malloc(size);
         }
 
-        static inline void* AlignedMalloc(std::size_t size, std::size_t alignment)
+        static inline UME_ENV_FUNC_ATTRIB void* AlignedMalloc(std::size_t size, std::size_t alignment)
         {
-            
-#if defined(_MSC_VER)
+
+#if defined(_MSC_VER) && !defined(__NVCC__)
             void* ptr = _aligned_malloc(size, alignment);
             return ptr;
-#elif defined(__GNUC__) || (__ICC) || defined(__INTEL_COMPILER)
+#elif defined(__GNUC__) || defined(__ICC) || defined(__INTEL_COMPILER)
             void* memptr;
             //std::cout << "AlignedMalloc: memptr(before):" << memptr;
 
             int retval = 0;
-            do 
+            do
             {
-                retval = posix_memalign( &memptr, alignment, size);
-                alignment*=2;
-            }while(retval != 0 && alignment < 2048);
+                retval = posix_memalign(&memptr, alignment, size);
+                alignment *= 2;
+            } while (retval != 0 && alignment < 2048);
 
-            if( retval != 0)
+            if (retval != 0)
             {
                 std::cout << "posix_memalign error: " << retval << std::endl;
                 std::cout << "sizeof(void*): " << sizeof(void*) << std::endl;
             }
             //std::cout << "AlignedMalloc: memptr(after):" << memptr;
             return memptr;
+#elif defined(__NVCC__)
+            // TODO: aligned alloc required here?
+            void* memptr = malloc(size);
+            return memptr;
 #endif
         }
 
-        static inline void Free(void *ptr)
+        static inline UME_ENV_FUNC_ATTRIB void Free(void *ptr)
         {
             // TODO: specialize it depending on the architecture and OS
             std::free(ptr);
         }
 
-        static inline void AlignedFree(void *ptr)
+        static inline UME_ENV_FUNC_ATTRIB void AlignedFree(void *ptr)
         {
-#if defined(_MSC_VER)
+#if defined(_MSC_VER) && !defined(__NVCC__)
             _aligned_free(ptr);
-#elif defined(__GNUC__) || (__ICC) || defined(__INTEL_COMPILER)
+#elif defined(__GNUC__) || defined(__ICC) || defined(__INTEL_COMPILER) || defined(__NVCC__)
             free(ptr);
 #endif
         }
 
-        static inline void* MemCopy(void *dst, void *src, size_t num)
+        static inline UME_ENV_FUNC_ATTRIB void* MemCopy(void *dst, void *src, size_t num)
         {
             // TODO: specialize it depending on the architecture and OS
             return std::memcpy(dst, src, num);
         }
-        static inline void MemSet(void *dst, int ch, std::size_t count)
+        static inline UME_ENV_FUNC_ATTRIB void MemSet(void *dst, int ch, std::size_t count)
         {
             // TODO: specialize it depending on the architecture and OS
             std::memset(dst, ch, count);
@@ -136,7 +140,7 @@ namespace UME
 #include "utilities/ignore_warnings_unused_parameter.h"
 
     template<typename T1, typename T2>
-    UME_FORCE_INLINE T1 reinterpretCast(T2 from) {
+    UME_FUNC_ATTRIB T1 reinterpretCast(T2 from) {
         T1 to;
         char* fromPtr = (char*)&from;
         char* toPtr = (char*)&to;
@@ -146,13 +150,14 @@ namespace UME
     
     template<class T, int SIMD_STRIDE>
     struct AlignedAllocator {
-        UME_FORCE_INLINE AlignedAllocator() {}
-        template <class U> UME_FORCE_INLINE AlignedAllocator(const AlignedAllocator<U, SIMD_STRIDE> & other) {}
-        UME_FORCE_INLINE T* allocate(std::size_t n) {
-            int alignment = UME::SIMD::SIMDVec<T, SIMD_STRIDE>::alignment();
-            return (T*)DynamicMemory::AlignedMalloc(n, alignment);
+        UME_FUNC_ATTRIB  AlignedAllocator() {}
+        UME_FUNC_ATTRIB  ~AlignedAllocator() {}
+        template <class U> UME_FUNC_ATTRIB  AlignedAllocator(const AlignedAllocator<U, SIMD_STRIDE> & other) {}
+        UME_FUNC_ATTRIB  T* allocate(std::size_t n) {
+            uint32_t alignment = UME::SIMD::SIMDVec<T, SIMD_STRIDE>::alignment();
+            return (T*)DynamicMemory::AlignedMalloc(n, std::size_t(alignment));
         }
-        UME_FORCE_INLINE void deallocate(T* p, std::size_t n) {
+        UME_FUNC_ATTRIB  void deallocate(T* p, std::size_t n) {
             DynamicMemory::AlignedFree(p);
         }
     };
@@ -160,23 +165,24 @@ namespace UME
     // Specialize for bool
     template<int SIMD_STRIDE>
     struct AlignedAllocator<bool, SIMD_STRIDE> {
-        UME_FORCE_INLINE AlignedAllocator() {}
-        template <class U> UME_FORCE_INLINE AlignedAllocator(const AlignedAllocator<U, SIMD_STRIDE> & other) {}
-        UME_FORCE_INLINE bool* allocate(std::size_t n) {
-            int alignment = UME::SIMD::SIMDVecMask<SIMD_STRIDE>::alignment();
-            return (bool*)DynamicMemory::AlignedMalloc(n, alignment);
+        UME_FUNC_ATTRIB  AlignedAllocator() {}
+        UME_FUNC_ATTRIB  ~AlignedAllocator() {}
+        template <class U> UME_FUNC_ATTRIB AlignedAllocator(const AlignedAllocator<U, SIMD_STRIDE> & other) {}
+        UME_FUNC_ATTRIB  bool* allocate(std::size_t n) {
+            uint32_t alignment = UME::SIMD::SIMDVecMask<SIMD_STRIDE>::alignment();
+            return (bool*)DynamicMemory::AlignedMalloc(n, std::size_t(alignment));
         }
-        UME_FORCE_INLINE void deallocate(bool* p, std::size_t n) {
+        UME_FUNC_ATTRIB  void deallocate(bool* p, std::size_t n) {
             DynamicMemory::AlignedFree(p);
         }
     };
     
     template <class T, class U, int SIMD_STRIDE1, int SIMD_STRIDE2>
-    UME_FORCE_INLINE bool operator==(const AlignedAllocator<T, SIMD_STRIDE1>&, const AlignedAllocator<U, SIMD_STRIDE2>&) {
+    UME_FUNC_ATTRIB bool operator==(const AlignedAllocator<T, SIMD_STRIDE1>&, const AlignedAllocator<U, SIMD_STRIDE2>&) {
         return std::is_same<T, U>::value && (SIMD_STRIDE1 == SIMD_STRIDE2);
     }
     template <class T, class U, int SIMD_STRIDE1, int SIMD_STRIDE2>
-    UME_FORCE_INLINE bool operator!=(const AlignedAllocator<T, SIMD_STRIDE1>&, const AlignedAllocator<U, SIMD_STRIDE2>&) {
+    UME_FUNC_ATTRIB bool operator!=(const AlignedAllocator<T, SIMD_STRIDE1>&, const AlignedAllocator<U, SIMD_STRIDE2>&) {
         return !(std::is_same<T, U>::value && (SIMD_STRIDE1 == SIMD_STRIDE2));
     }
 #include "utilities/ignore_warnings_pop.h"

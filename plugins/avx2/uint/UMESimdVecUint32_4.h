@@ -951,6 +951,28 @@ namespace SIMD {
             uint32_t t3 = (raw[2] > raw[3]) ? raw[2] : raw[3];
             return t2 > t3 ? t2 : t3;
         }
+        // HMAXS
+        UME_FORCE_INLINE uint32_t hmax(uint32_t a) const {
+            alignas(16) uint32_t raw[4];
+            _mm_store_si128((__m128i*)raw, mVec);
+            uint32_t t0 = (raw[0] > raw[1]) ? raw[0] : raw[1];
+            uint32_t t1 = (raw[2] > raw[3]) ? raw[2] : raw[3];
+            uint32_t t2 = t0 > t1 ? t0 : t1;
+            uint32_t t3 = t2 > a ? t2 : a;
+            return t3;
+        }
+        // MHMAXS
+        UME_FORCE_INLINE uint32_t hmax(SIMDVecMask<4> const & mask, uint32_t a) const {
+            alignas(16) uint32_t raw[4];
+            __m128i t0 = _mm_set1_epi32(0);
+            __m128i t1 = BLEND(mVec, t0, mask.mMask);
+            _mm_store_si128((__m128i*)raw, t1);
+            uint32_t t2 = (raw[0] > raw[1]) ? raw[0] : raw[1];
+            uint32_t t3 = (raw[2] > raw[3]) ? raw[2] : raw[3];
+            uint32_t t4 = t2 > t3 ? t2 : t3;
+            uint32_t t5 = t4 > a ? t4 : a;
+            return t5;
+        }
         // IMAX
         // MIMAX
         // HMIN

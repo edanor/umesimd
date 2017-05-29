@@ -53,53 +53,53 @@ namespace SIMD {
         bool mMask[2];
 
     public:
-        UME_FORCE_INLINE SIMDVecMask() {}
+        UME_FUNC_ATTRIB SIMDVecMask() {}
 
         // Regardless of the mask representation, the interface should only allow initialization using 
         // standard bool or using equivalent mask
-        UME_FORCE_INLINE SIMDVecMask(bool m) {
+        UME_FUNC_ATTRIB SIMDVecMask(bool m) {
             mMask[0] = m;
             mMask[1] = m;
         }
 
         // LOAD-CONSTR - Construct by loading from memory
-        UME_FORCE_INLINE explicit SIMDVecMask(bool const * p) {
+        UME_FUNC_ATTRIB explicit SIMDVecMask(bool const * p) {
             mMask[0] = p[0];
             mMask[1] = p[1];
         }
 
-        UME_FORCE_INLINE SIMDVecMask(bool m0, bool m1) {
+        UME_FUNC_ATTRIB SIMDVecMask(bool m0, bool m1) {
             mMask[0] = m0;
             mMask[1] = m1;
         }
 
-        UME_FORCE_INLINE SIMDVecMask(SIMDVecMask const & mask) {
+        UME_FUNC_ATTRIB SIMDVecMask(SIMDVecMask const & mask) {
             mMask[0] = mask.mMask[0];
             mMask[1] = mask.mMask[1];
         }
 
-        UME_FORCE_INLINE bool extract(uint32_t index) const {
+        UME_FUNC_ATTRIB bool extract(uint32_t index) const {
             return mMask[index & 1];
         }
 
         // A non-modifying element-wise access operator
-        UME_FORCE_INLINE bool operator[] (uint32_t index) const {
+        UME_FUNC_ATTRIB bool operator[] (uint32_t index) const {
             return mMask[index & 1];
         }
 
         // Element-wise modification operator
-        UME_FORCE_INLINE void insert(uint32_t index, bool x) {
+        UME_FUNC_ATTRIB void insert(uint32_t index, bool x) {
             mMask[index & 1] = x;
         }
 
-        UME_FORCE_INLINE SIMDVecMask & operator= (SIMDVecMask const & mask) {
+        UME_FUNC_ATTRIB SIMDVecMask & operator= (SIMDVecMask const & mask) {
             mMask[0] = mask.mMask[0];
             mMask[1] = mask.mMask[1];
             return *this;
         }
 
         // HLOR
-        UME_FORCE_INLINE bool hlor() const {
+        UME_FUNC_ATTRIB bool hlor() const {
             return mMask[0] || mMask[1];
         }
     };

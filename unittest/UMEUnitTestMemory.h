@@ -32,6 +32,7 @@
 
 #include "UMEUnitTestCommon.h"
 #include "../UMEMemory.h"
+#include <string>
 
 template<typename SCALAR_T, int SIMD_STRIDE>
 void generic_AlignedAllocatorTest(std::string const & scalar_type) {
