@@ -89,9 +89,30 @@ namespace SIMD {
         }
 
 #include "../../../utilities/ignore_warnings_pop.h"
+        // ASSIGNV
+        UME_FUNC_ATTRIB DERIVED_MASK_TYPE & assign(DERIVED_MASK_TYPE const & maskOp) {
+            mMask = mask.mMask;
+            return *this;
+        }
 
         UME_FORCE_INLINE SIMDVecMask & operator= (SIMDVecMask const & mask) {
-            mMask = mask.mMask;
+            return assign(mask);
+        }
+
+        // MASSIGNV
+        UME_FUNC_ATTRIB DERIVED_MASK_TYPE & assign(DERIVED_MASK_TYPE const & mask, DERIVED_MASK_TYPE const & maskOp) {
+            if(mask.mMask == true) mMask = maskOp.mMask;
+            return *this;
+        }
+
+        // ASSIGNS
+        UME_FUNC_ATTRIB DERIVED_MASK_TYPE & assign(bool scalarOp) {
+            mMask = scalarOp;
+            return *this;
+        }
+
+        UME_FUNC_ATTRIB DERIVED_MASK_TYPE & operator= (bool scalarOp) {
+            if(mask.mMask == true) mMask = scalarOp;
             return *this;
         }
 
