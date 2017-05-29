@@ -57,7 +57,7 @@ namespace SIMD {
 
         // Regardless of the mask representation, the interface should only allow initialization using 
         // standard bool or using equivalent mask
-        UME_FORCE_INLINE explicit SIMDVecMask(bool m) {
+        UME_FORCE_INLINE SIMDVecMask(bool m) {
             mMask = m;
         }
 
@@ -90,30 +90,37 @@ namespace SIMD {
 
 #include "../../../utilities/ignore_warnings_pop.h"
         // ASSIGNV
-        UME_FUNC_ATTRIB DERIVED_MASK_TYPE & assign(DERIVED_MASK_TYPE const & maskOp) {
-            mMask = mask.mMask;
+        UME_FORCE_INLINE SIMDVecMask & assign(SIMDVecMask const & maskOp) {
+            mMask = maskOp.mMask;
             return *this;
         }
 
-        UME_FORCE_INLINE SIMDVecMask & operator= (SIMDVecMask const & mask) {
-            return assign(mask);
+        UME_FORCE_INLINE SIMDVecMask & operator= (SIMDVecMask const & maskOp) {
+            return assign(maskOp);
         }
 
         // MASSIGNV
-        UME_FUNC_ATTRIB DERIVED_MASK_TYPE & assign(DERIVED_MASK_TYPE const & mask, DERIVED_MASK_TYPE const & maskOp) {
+        UME_FORCE_INLINE SIMDVecMask & assign(SIMDVecMask const & mask, SIMDVecMask const & maskOp) {
             if(mask.mMask == true) mMask = maskOp.mMask;
             return *this;
         }
 
         // ASSIGNS
-        UME_FUNC_ATTRIB DERIVED_MASK_TYPE & assign(bool scalarOp) {
+        UME_FORCE_INLINE SIMDVecMask & assign(bool scalarOp) {
             mMask = scalarOp;
             return *this;
         }
 
-        UME_FUNC_ATTRIB DERIVED_MASK_TYPE & operator= (bool scalarOp) {
-            if(mask.mMask == true) mMask = scalarOp;
+        UME_FORCE_INLINE SIMDVecMask & operator= (bool scalarOp) {
+            mMask = scalarOp;
             return *this;
+        }
+
+        // MASSIGNS
+        UME_FORCE_INLINE SIMDVecMask & assign(SIMDVecMask const & mask, bool scalarOp) {
+            if(mask.mMask) mMask = scalarOp;
+            return *this;
+        
         }
 
         // LANDV
