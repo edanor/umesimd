@@ -626,7 +626,7 @@ namespace SIMD
     template<class VEC_TYPE, class SCALAR_TYPE>
     class IntermediateIndex {
     public:
-        IntermediateIndex(IntermediateIndex const & x) : mIndexRef(x.mIndexRef), mVecRef_RW(x.mVecRef_RW) {}
+        IntermediateIndex(IntermediateIndex const & x) : mVecRef_RW(x.mVecRef_RW), mIndexRef(x.mIndexRef) {}
         IntermediateIndex & operator= (IntermediateIndex const & x) {
             mVecRef_RW.insert(mIndexRef, x.mVecRef_RW.extract(x.mIndexRef));
             return *this;
@@ -793,7 +793,7 @@ namespace SIMD
         IntermediateIndex() {}
 
 
-        UME_FUNC_ATTRIB explicit IntermediateIndex(uint32_t index, VEC_TYPE & vec) : mIndexRef(index), mVecRef_RW(vec) {}
+        UME_FUNC_ATTRIB explicit IntermediateIndex(uint32_t index, VEC_TYPE & vec) : mVecRef_RW(vec), mIndexRef(index) {}
 
         VEC_TYPE & mVecRef_RW;
         uint32_t mIndexRef;
