@@ -202,7 +202,7 @@ void genericSETCONSTRTest_random()
         {
             outputs[i] = (SCALAR_TYPE)0;
         }
-        VEC_TYPE t0 = 0;
+        VEC_TYPE t0 = SCALAR_TYPE(0);
         t0.store(values);
         bool inRange = valuesInRange(values, outputs, VEC_LEN, SCALAR_TYPE(0.01f));
         std::string msg("SET-CONSTR gen 0-initializer");
