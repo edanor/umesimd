@@ -1254,7 +1254,7 @@ namespace SIMD {
             __m128i t0 = _mm256_extractf128_si256(mVec, 0);
             __m128i t1 = _mm256_extractf128_si256(mVec, 1);
             __m128i t2 = _mm_max_epu32(t0, t1);
-            __m128i t3 = _mm_shuffle_epi32(t2, 0xE);
+            __m128i t3 = _mm_shuffle_epi32(t2, 0xB);
             __m128i t4 = _mm_max_epu32(t2, t3);
             __m128i t5 = _mm_shuffle_epi32(t4, 0x1);
             __m128i t6 = _mm_max_epu32(t4, t5);
@@ -1263,7 +1263,7 @@ namespace SIMD {
         }
         // MHMAX
         UME_FORCE_INLINE uint32_t hmax(SIMDVecMask<8> const & mask) const {
-            __m128i t0 = _mm_set1_epi32(std::numeric_limits<uint32_t>::min());
+            __m128i t0 = _mm_set1_epi32(std::numeric_limits<uint32_t>::lowest());
             __m128i t1 = _mm256_extractf128_si256(mVec, 0);
             __m128i t2 = _mm256_extractf128_si256(mVec, 1);
             __m128i t3 = _mm256_extractf128_si256(mask.mMask, 0);
@@ -1271,7 +1271,7 @@ namespace SIMD {
             __m128i t5 = _mm_blendv_epi8(t0, t1, t3);
             __m128i t6 = _mm_blendv_epi8(t0, t2, t4);
             __m128i t7 = _mm_max_epu32(t5, t6);
-            __m128i t8 = _mm_shuffle_epi32(t7, 0xE);
+            __m128i t8 = _mm_shuffle_epi32(t7, 0xB);
             __m128i t9 = _mm_max_epu32(t7, t8);
             __m128i t10 = _mm_shuffle_epi32(t9, 0x1);
             __m128i t11 = _mm_max_epu32(t9, t10);
@@ -1285,7 +1285,7 @@ namespace SIMD {
             __m128i t0 = _mm256_extractf128_si256(mVec, 0);
             __m128i t1 = _mm256_extractf128_si256(mVec, 1);
             __m128i t2 = _mm_min_epu32(t0, t1);
-            __m128i t3 = _mm_shuffle_epi32(t2, 0xE);
+            __m128i t3 = _mm_shuffle_epi32(t2, 0xB);
             __m128i t4 = _mm_min_epu32(t2, t3);
             __m128i t5 = _mm_shuffle_epi32(t4, 0x1);
             __m128i t6 = _mm_min_epu32(t4, t5);
@@ -1294,16 +1294,16 @@ namespace SIMD {
         }
         // MHMIN
         UME_FORCE_INLINE uint32_t hmin(SIMDVecMask<8> const & mask) const {
-            __m128i t0 = _mm_set1_epi32(std::numeric_limits<uint32_t>::min());
+            __m128i t0 = _mm_set1_epi32(std::numeric_limits<uint32_t>::max());
             __m128i t1 = _mm256_extractf128_si256(mVec, 0);
             __m128i t2 = _mm256_extractf128_si256(mVec, 1);
             __m128i t3 = _mm256_extractf128_si256(mask.mMask, 0);
             __m128i t4 = _mm256_extractf128_si256(mask.mMask, 1);
             __m128i t5 = _mm_blendv_epi8(t0, t1, t3);
             __m128i t6 = _mm_blendv_epi8(t0, t2, t4);
-            __m128i t7 = _mm_max_epu32(t5, t6);
-            __m128i t8 = _mm_shuffle_epi32(t7, 0xE);
-            __m128i t9 = _mm_max_epu32(t7, t8);
+            __m128i t7 = _mm_min_epu32(t5, t6);
+            __m128i t8 = _mm_shuffle_epi32(t7, 0xB);
+            __m128i t9 = _mm_min_epu32(t7, t8);
             __m128i t10 = _mm_shuffle_epi32(t9, 0x1);
             __m128i t11 = _mm_min_epu32(t9, t10);
             uint32_t retval = _mm_extract_epi32(t11, 0);

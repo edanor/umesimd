@@ -1268,7 +1268,7 @@ namespace SIMD {
         }
         // HMAX
         UME_FORCE_INLINE float hmax() const {
-            __m128 t0 = _mm_set1_ps(std::numeric_limits<float>::min());
+            __m128 t0 = _mm_set1_ps(std::numeric_limits<float>::lowest());
             __m128 t1 = _mm256_castps256_ps128(mVec[0]);
             __m128 t2 = _mm256_extractf128_ps(mVec[0], 1);
             __m128 t3 = _mm_max_ps(t1, t2);
@@ -1276,7 +1276,7 @@ namespace SIMD {
             __m128 t5 = _mm256_extractf128_ps(mVec[1], 1);
             __m128 t6 = _mm_max_ps(t4, t5);
             __m128 t7 = _mm_max_ps(t3, t6);
-            __m128 t8 = _mm_shuffle_ps(t7, t0, 0xE);
+            __m128 t8 = _mm_shuffle_ps(t7, t0, 0xB);
             __m128 t9 = _mm_max_ps(t7, t8);
             __m128 t10= _mm_shuffle_ps(t9, t0, 0x1);
             __m128 t11 = _mm_max_ps(t9, t10);
@@ -1285,20 +1285,20 @@ namespace SIMD {
         }
         // MHMAX
         UME_FORCE_INLINE float hmax(SIMDVecMask<16> const & mask) const {
-            __m128 t0 = _mm_set1_ps(std::numeric_limits<float>::min());
-            __m256 t1 = _mm256_set1_ps(std::numeric_limits<float>::min());
-            __m256 t2 = BLEND(mVec[0], t1, mask.mMask[0]);
+            __m128 t0 = _mm_set1_ps(std::numeric_limits<float>::lowest());
+            __m256 t1 = _mm256_set1_ps(std::numeric_limits<float>::lowest());
+            __m256 t2 = BLEND(t1, mVec[0],mask.mMask[0]);
             __m128 t3 = _mm256_castps256_ps128(t2);
             __m128 t4 = _mm256_extractf128_ps(t2, 1);
             __m128 t5 = _mm_max_ps(t3, t4);
 
-            __m256 t6 = BLEND(mVec[1], t1, mask.mMask[1]);
+            __m256 t6 = BLEND(t1, mVec[1], mask.mMask[1]);
             __m128 t7 = _mm256_castps256_ps128(t6);
             __m128 t8 = _mm256_extractf128_ps(t6, 1);
             __m128 t9 = _mm_max_ps(t7, t8);
 
             __m128 t10 = _mm_max_ps(t5, t9);
-            __m128 t11 = _mm_shuffle_ps(t10, t0, 0xE);
+            __m128 t11 = _mm_shuffle_ps(t10, t0, 0xB);
             __m128 t12 = _mm_max_ps(t10, t11);
             __m128 t13 = _mm_shuffle_ps(t12, t0, 0x1);
             __m128 t14 = _mm_max_ps(t12, t13);
@@ -1317,7 +1317,7 @@ namespace SIMD {
             __m128 t5 = _mm256_extractf128_ps(mVec[1], 1);
             __m128 t6 = _mm_min_ps(t4, t5);
             __m128 t7 = _mm_min_ps(t3, t6);
-            __m128 t8 = _mm_shuffle_ps(t7, t0, 0xE);
+            __m128 t8 = _mm_shuffle_ps(t7, t0, 0xB);
             __m128 t9 = _mm_min_ps(t7, t8);
             __m128 t10 = _mm_shuffle_ps(t9, t0, 0x1);
             __m128 t11 = _mm_min_ps(t9, t10);
@@ -1328,18 +1328,18 @@ namespace SIMD {
         UME_FORCE_INLINE float hmin(SIMDVecMask<16> const & mask) const {
             __m128 t0 = _mm_set1_ps(std::numeric_limits<float>::max());
             __m256 t1 = _mm256_set1_ps(std::numeric_limits<float>::max());
-            __m256 t2 = BLEND(mVec[0], t1, mask.mMask[0]);
+            __m256 t2 = BLEND(t1, mVec[0], mask.mMask[0]);
             __m128 t3 = _mm256_castps256_ps128(t2);
             __m128 t4 = _mm256_extractf128_ps(t2, 1);
             __m128 t5 = _mm_min_ps(t3, t4);
 
-            __m256 t6 = BLEND(mVec[1], t1, mask.mMask[1]);
+            __m256 t6 = BLEND(t1, mVec[1], mask.mMask[1]);
             __m128 t7 = _mm256_castps256_ps128(t6);
             __m128 t8 = _mm256_extractf128_ps(t6, 1);
             __m128 t9 = _mm_min_ps(t7, t8);
 
             __m128 t10 = _mm_min_ps(t5, t9);
-            __m128 t11 = _mm_shuffle_ps(t10, t0, 0xE);
+            __m128 t11 = _mm_shuffle_ps(t10, t0, 0xB);
             __m128 t12 = _mm_min_ps(t10, t11);
             __m128 t13 = _mm_shuffle_ps(t12, t0, 0x1);
             __m128 t14 = _mm_min_ps(t12, t13);

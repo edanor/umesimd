@@ -1171,7 +1171,7 @@ namespace SIMD {
         }
         // MHMAX
         UME_FORCE_INLINE int64_t hmax(SIMDVecMask<2> const & mask) const {
-            int64_t t0 = mask.mMask[0] ? mVec[0] : std::numeric_limits<int64_t>::min();
+            int64_t t0 = mask.mMask[0] ? mVec[0] : std::numeric_limits<int64_t>::lowest();
             int64_t t1 = (mask.mMask[1] && mVec[1] > t0) ? mVec[1] : t0;
             return t1;
         }

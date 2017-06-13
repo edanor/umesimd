@@ -1042,7 +1042,7 @@ namespace SIMD {
         // MHMIN
         UME_FORCE_INLINE float hmin(SIMDVecMask<2> const & mask) const {
             float t0 = mask.mMask[0] ? mVec[0] : std::numeric_limits<float>::max();
-            float t1 = (mask.mMask[1] && mVec[1] < t0) ? mVec[1] : t0;
+            float t1 = (mask.mMask[1] && (mVec[1] < t0)) ? mVec[1] : t0;
             return t1;
         }
         // IMIN

@@ -1122,7 +1122,7 @@ namespace SIMD {
         }
         // HMAX
         UME_FORCE_INLINE int32_t hmax() const {
-            __m256i t0 = _mm256_set1_epi32(std::numeric_limits<int32_t>::min());
+            __m256i t0 = _mm256_set1_epi32(std::numeric_limits<int32_t>::lowest());
             __m256i t1 = _mm256_max_epi32(mVec[0], mVec[1]);
             __m256i t2 = _mm256_permute2f128_si256(t1, t0, 1);
             __m256i t3 = _mm256_max_epi32(t1, t2);
@@ -1135,9 +1135,9 @@ namespace SIMD {
         }
         // MHMAX
         UME_FORCE_INLINE int32_t hmax(SIMDVecMask<16> const & mask) const {
-            __m256i t0 = _mm256_set1_epi32(std::numeric_limits<int32_t>::min());
-            __m256i t1 = _mm256_blendv_epi8(mVec[0], t0, mask.mMask[0]);
-            __m256i t2 = _mm256_blendv_epi8(mVec[1], t0, mask.mMask[1]);
+            __m256i t0 = _mm256_set1_epi32(std::numeric_limits<int32_t>::lowest());
+            __m256i t1 = _mm256_blendv_epi8(t0, mVec[0], mask.mMask[0]);
+            __m256i t2 = _mm256_blendv_epi8(t0, mVec[1], mask.mMask[1]);
             __m256i t3 = _mm256_max_epi32(t1, t2);
             __m256i t4 = _mm256_permute2f128_si256(t3, t0, 1);
             __m256i t5 = _mm256_max_epi32(t3, t4);
@@ -1166,8 +1166,8 @@ namespace SIMD {
         // MHMIN
         UME_FORCE_INLINE int32_t hmin(SIMDVecMask<16> const & mask) const {
             __m256i t0 = _mm256_set1_epi32(std::numeric_limits<int32_t>::max());
-            __m256i t1 = _mm256_blendv_epi8(mVec[0], t0, mask.mMask[0]);
-            __m256i t2 = _mm256_blendv_epi8(mVec[1], t0, mask.mMask[1]);
+            __m256i t1 = _mm256_blendv_epi8(t0, mVec[0], mask.mMask[0]);
+            __m256i t2 = _mm256_blendv_epi8(t0, mVec[1], mask.mMask[1]);
             __m256i t3 = _mm256_min_epi32(t1, t2);
             __m256i t4 = _mm256_permute2f128_si256(t3, t0, 1);
             __m256i t5 = _mm256_min_epi32(t3, t4);

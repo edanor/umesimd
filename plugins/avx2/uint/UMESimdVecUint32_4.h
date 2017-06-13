@@ -945,7 +945,7 @@ namespace SIMD {
         UME_FORCE_INLINE uint32_t hmax(SIMDVecMask<4> const & mask) const {
             alignas(16) uint32_t raw[4];
             __m128i t0 = _mm_set1_epi32(0);
-            __m128i t1 = BLEND(mVec, t0, mask.mMask);
+            __m128i t1 = BLEND(t0, mVec, mask.mMask);
             _mm_store_si128((__m128i*)raw, t1);
             uint32_t t2 = (raw[0] > raw[1]) ? raw[0] : raw[1];
             uint32_t t3 = (raw[2] > raw[3]) ? raw[2] : raw[3];
@@ -965,7 +965,7 @@ namespace SIMD {
         UME_FORCE_INLINE uint32_t hmax(SIMDVecMask<4> const & mask, uint32_t a) const {
             alignas(16) uint32_t raw[4];
             __m128i t0 = _mm_set1_epi32(0);
-            __m128i t1 = BLEND(mVec, t0, mask.mMask);
+            __m128i t1 = BLEND(t0, mVec, mask.mMask);
             _mm_store_si128((__m128i*)raw, t1);
             uint32_t t2 = (raw[0] > raw[1]) ? raw[0] : raw[1];
             uint32_t t3 = (raw[2] > raw[3]) ? raw[2] : raw[3];
@@ -987,7 +987,7 @@ namespace SIMD {
         UME_FORCE_INLINE uint32_t hmin(SIMDVecMask<4> const & mask) const {
             alignas(16) uint32_t raw[4];
             __m128i t0 = _mm_set1_epi32(0xFFFFFFFF);
-            __m128i t1 = BLEND(mVec, t0, mask.mMask);
+            __m128i t1 = BLEND(t0, mVec, mask.mMask);
             _mm_store_si128((__m128i*)raw, t1);
             uint32_t t2 = (raw[0] < raw[1]) ? raw[0] : raw[1];
             uint32_t t3 = (raw[2] < raw[3]) ? raw[2] : raw[3];

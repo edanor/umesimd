@@ -924,7 +924,7 @@ namespace SIMD {
         // MHMAX
         UME_FORCE_INLINE int32_t hmax(SIMDVecMask<4> const & mask) const {
             alignas(16) int32_t raw[4];
-            __m128i t0 = _mm_set1_epi32(0);
+            __m128i t0 = _mm_set1_epi32(std::numeric_limits<int32_t>::lowest());
             __m128i t1 = _mm_blendv_epi8(t0, mVec, mask.mMask);
             _mm_store_si128((__m128i*)raw, t1);
             int32_t t2 = (raw[0] > raw[1]) ? raw[0] : raw[1];
@@ -944,7 +944,7 @@ namespace SIMD {
         // MHMIN
         UME_FORCE_INLINE int32_t hmin(SIMDVecMask<4> const & mask) const {
             alignas(16) int32_t raw[4];
-            __m128i t0 = _mm_set1_epi32(0xFFFFFFFF);
+            __m128i t0 = _mm_set1_epi32(std::numeric_limits<int32_t>::max());
             __m128i t1 = _mm_blendv_epi8(t0, mVec, mask.mMask);
             _mm_store_si128((__m128i*)raw, t1);
             int32_t t2 = (raw[0] < raw[1]) ? raw[0] : raw[1];
