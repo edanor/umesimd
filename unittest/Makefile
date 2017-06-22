@@ -117,7 +117,7 @@ ifeq ($(ISA), arm)
     endif
 endif
 ifeq ($(ISA), altivec)
-	CXXFLAGS+=-maltivec
+	CXXFLAGS+=-maltivec -mtune=native -mcpu=native -mvsx -mabi=altivec
 	ISA_PREFIX+=_altivec
 endif
 
