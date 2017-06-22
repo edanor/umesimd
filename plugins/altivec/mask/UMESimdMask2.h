@@ -43,6 +43,13 @@ namespace SIMD {
         uint32_t,
         2>
     {
+        static uint32_t TRUE_VAL() { return 0xFFFFFFFF; };
+        static uint32_t FALSE_VAL() { return 0x00000000; };
+        static UME_FORCE_INLINE uint32_t toMaskBool(bool m) {if (m == true) return TRUE_VAL(); else return FALSE_VAL(); }
+
+        static uint64_t TRUE_VAL_LONG() { return 0xFFFFFFFFFFFFFFFF; };
+        static uint64_t FALSE_VAL_LONG() { return 0x0000000000000000; };
+
         friend class SIMDVec_u<uint32_t, 2>;
         friend class SIMDVec_u<uint64_t, 2>;
         friend class SIMDVec_i<int32_t, 2>;
@@ -51,6 +58,13 @@ namespace SIMD {
         friend class SIMDVec_f<double, 2>;
     private:
         bool mMask[2];
+
+        inline SIMDVecMask(__vector __bool long const & x) {
+            alignas(16) int64_t raw[2] = {f0, f1};
+            vec_st(x, 0, raw);
+            mMask[0] = (bool) raw[0];
+            mMask[1] = (bool) raw[1];
+        }
 
     public:
         UME_FORCE_INLINE SIMDVecMask() {}
