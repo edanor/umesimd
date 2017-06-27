@@ -113,7 +113,7 @@ endif
 ifeq ($(ISA), arm)
 	ISA_PREFIX+=_arm
     ifeq ($(CXXCOMPILER), g++)
-        CXXFLAGS+=-march=native
+        CXXFLAGS+=-march=armv8-a+simd -ftree-vectorize
     endif
 endif
 ifeq ($(ISA), altivec)
