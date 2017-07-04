@@ -45,8 +45,8 @@ namespace SIMD {
         uint32_t,
         2>
     {
-        static uint64_t TRUE_VAL() { return 0xFFFFFFFFFFFFFFFF; };
-        static uint64_t FALSE_VAL() { return 0x0000000000000000; };
+        static UME_FORCE_INLINE uint64_t TRUE_VAL() { return 0xFFFFFFFFFFFFFFFF; };
+        static UME_FORCE_INLINE uint64_t FALSE_VAL() { return 0x0000000000000000; };
 
         friend class SIMDVec_u<uint32_t, 2>;
         friend class SIMDVec_u<uint64_t, 2>;
