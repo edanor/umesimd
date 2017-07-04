@@ -44,12 +44,12 @@ namespace SIMD {
         uint32_t,
         2>
     {
-        static uint32_t TRUE_VAL() { return 0xFFFFFFFF; };
-        static uint32_t FALSE_VAL() { return 0x00000000; };
+        static UME_FORCE_INLINE uint32_t TRUE_VAL() { return 0xFFFFFFFF; };
+        static UME_FORCE_INLINE uint32_t FALSE_VAL() { return 0x00000000; };
         static UME_FORCE_INLINE uint32_t toMaskBool(bool m) {if (m == true) return TRUE_VAL(); else return FALSE_VAL(); }
 
-        static uint64_t TRUE_VAL_LONG() { return 0xFFFFFFFFFFFFFFFF; };
-        static uint64_t FALSE_VAL_LONG() { return 0x0000000000000000; };
+        static UME_FORCE_INLINE uint64_t TRUE_VAL_LONG() { return 0xFFFFFFFFFFFFFFFF; };
+        static UME_FORCE_INLINE uint64_t FALSE_VAL_LONG() { return 0x0000000000000000; };
 
         friend class SIMDVec_u<uint32_t, 2>;
         friend class SIMDVec_u<uint64_t, 2>;
@@ -60,7 +60,7 @@ namespace SIMD {
     private:
         uint32_t mMask[2];
 
-        inline SIMDVecMask(__vector __bool long const & x) {
+        UME_FORCE_INLINE SIMDVecMask(__vector __bool long const & x) {
             alignas(16) int32_t raw[4];
             // there is no store long
             vec_st((__vector int32_t) x, 0, raw);
