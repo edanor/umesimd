@@ -444,7 +444,7 @@ namespace SIMD {
         // MSUBVA
         UME_FORCE_INLINE SIMDVec_f & suba(SIMDVecMask<2> const & mask, SIMDVec_f const & b) {
             __vector double tmp = vec_sub(mVec, b.mVec);
-            __vector uint64_2 tmpmask;
+            __vector uint64_t tmpmask;
             MASK_TO_VEC(tmpmask, mask);
             mVec= vec_sel(mVec, tmp, tmpmask);
             return *this;
@@ -464,9 +464,9 @@ namespace SIMD {
             __vector double tmp;
             SET_F64(tmp, b);
             __vector double tmp2 = vec_sub(mVec, tmp);
-            __vector uint64_2 tmpmask;
+            __vector uint64_t tmpmask;
             MASK_TO_VEC(tmpmask, mask);
-            mVec= vec_sel(mVec, tmp, tmpmask);
+            mVec= vec_sel(mVec, tmp2, tmpmask);
             return *this;
         }
         // SSUBV
