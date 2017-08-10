@@ -35,10 +35,10 @@
 
 #include "../../../UMESimdInterface.h"
 
-#define SET_F64(x, a) { alignas(16) double setf64_array[2] = {a, a}; \
-                             x = vec_ld(0, a); }
+#define SET_F64(x, a) { alignas(16) const double setf64_array[2] = {a, a}; \
+                             x = (__vector double) vec_vsx_ld(0, setf64_array); }
 #define MASK_TO_VEC(x, mask) { alignas(16) uint64_t mask_to_vec_array[2] = { (mask.mMask[0] ? 0xFFFFFFFFFFFFFFFF : 0), (mask.mMask[1] ? 0xFFFFFFFFFFFFFFFF : 0)}; \
-                             x = vec_ld(mask_to_vec_array); }
+                             x = (__vector uint64_t) vec_vsx_ld(0, mask_to_vec_array); }
 
 namespace UME {
 namespace SIMD {
@@ -100,12 +100,12 @@ namespace SIMD {
             
             // The data needs to be re-aligned so that we don't loose bits.
             alignas(16) double raw[2] = {p[0], p[1]};
-            mVec = vec_ld(0, raw);
+            mVec = vec_vsx_ld(0, raw);
         }
         // FULL-CONSTR
         UME_FORCE_INLINE SIMDVec_f(double f0, double f1) {
             alignas(16) double raw[2] = {f0, f1};
-            mVec = vec_ld(0, raw);
+            mVec = vec_vsx_ld(0, raw);
         }
 
         // EXTRACT
@@ -182,7 +182,7 @@ namespace SIMD {
             
             // The data needs to be re-aligned so that we don't loose bits.
             alignas(16) double raw[2] = {p[0], p[1]};
-            mVec = vec_ld(0, raw);
+            mVec = vec_vsx_ld(0, raw);
             return *this;
         }
         // MLOAD
@@ -194,7 +194,7 @@ namespace SIMD {
             
             // The data needs to be re-aligned so that we don't loose bits.
             alignas(16) double raw[2] = {p[0], p[1]};
-            __vector double t0 = vec_ld(0, raw);
+            __vector double t0 = vec_vsx_ld(0, raw);
             __vector uint64_t t1;
             MASK_TO_VEC(t1, mask);
             mVec = vec_sel(mVec, t0, t1);
@@ -202,12 +202,12 @@ namespace SIMD {
         }
         // LOADA
         UME_FORCE_INLINE SIMDVec_f & loada(double const *p) {
-            mVec = vec_ld(0, p);
+            mVec = vec_vsx_ld(0, p);
             return *this;
         }
         // MLOADA
         UME_FORCE_INLINE SIMDVec_f & loada(SIMDVecMask<2> const & mask, double const *p) {
-            __vector double t0 = vec_ld(0, p);
+            __vector double t0 = vec_vsx_ld(0, p);
             __vector uint64_t t1;
             MASK_TO_VEC(t1, mask);
             mVec = vec_sel(mVec, t0, t1);
@@ -223,7 +223,7 @@ namespace SIMD {
             // The data needs to be re-aligned so that we don't loose bits.
 
             alignas(16) double raw[2];
-            raw = vec_st(mVec);
+            vec_vsx_st(mVec, 0, raw);
             p[0] = raw[0];
             p[1] = raw[1];
             return p;
@@ -237,20 +237,20 @@ namespace SIMD {
             
             // The data needs to be re-aligned so that we don't loose bits.
             alignas(16) double raw[2];
-            raw = vec_st(mVec);
+            vec_vsx_st(mVec, 0, raw);
             if(mask.mMask[0] != 0) p[0] = raw[0];
             if(mask.mMask[1] != 0) p[1] = raw[1];
             return p;
         }
         // STOREA
         UME_FORCE_INLINE double* storea(double* p) const {
-            p = vec_st(mVec);
+            vec_vsx_st(mVec, 0, p);
             return p;
         }
         // MSTOREA
         UME_FORCE_INLINE double* storea(SIMDVecMask<2> const & mask, double* p) const {
             alignas(16) double raw[2];
-            raw = vec_st(mVec);
+            vec_vsx_st(mVec, 0, raw);
             if(mask.mMask[0] != 0) p[0] = raw[0];
             if(mask.mMask[1] != 0) p[1] = raw[1];
             return p;

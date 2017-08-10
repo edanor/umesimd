@@ -5,7 +5,10 @@
 # {FORCE_OPENMP_PLUGIN=ON}
 # {FORCE_SCALAR_PLUGIN=ON}
 
-CXXFLAGS=-std=c++11
+CXXFLAGS=-std=c++14
+CXXCOMPILER=g++
+BUILD=release
+ISA=altivec
 
 ifneq (,$(findstring armclang,$(CXX)))
 	CXXCOMPILER=armclang++
@@ -117,7 +120,7 @@ ifeq ($(ISA), arm)
     endif
 endif
 ifeq ($(ISA), altivec)
-	CXXFLAGS+=-maltivec -mtune=native -mcpu=native -mvsx -mabi=altivec
+	CXXFLAGS+=-mfloat128 -mtune=native -mcpu=native -maltivec -mvsx -mabi=altivec
 	ISA_PREFIX+=_altivec
 endif
 
