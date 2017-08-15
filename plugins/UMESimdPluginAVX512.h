@@ -50,7 +50,7 @@
 
 
 // WA: missing intrinsics in GCC
-#if __GNUC__ < 6 || (__GNUC__ == 6 && (__GNUC_MINOR < 2))
+#if __GNUC__ < 6 || (__GNUC__ == 6 && (__GNUC_MINOR < 2)) || __GNUC__ >= 7
 #define WA_GCC_INTR_SUPPORT_6_2
 #endif
 
