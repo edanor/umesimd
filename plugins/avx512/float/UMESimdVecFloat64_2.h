@@ -1673,7 +1673,11 @@ namespace SIMD {
             __m128d t5 = _mm512_castpd512_pd128(t4);
             return SIMDVec_f(t5);
 #else
+#if defined (WA_GCC_INTR_SUPPORT_7)
+            __m512 t0 = _mm512_castpd_ps(_mm512_castpd128_pd512(mVec)); //wrong implementation in gcc7 
+#else
             __m512d t0 = _mm512_castpd128_pd512(mVec);
+#endif
             __m512d t1 = _mm512_abs_pd(t0);
             __m128d t2 = _mm512_castpd512_pd128(t1);
             return SIMDVec_f(t2);
@@ -1691,8 +1695,14 @@ namespace SIMD {
             __m128d t6 = _mm512_castpd512_pd128(t5);
             return SIMDVec_f(t6);
 #else
+#if defined (WA_GCC_INTR_SUPPORT_7)
+            __m512 t0 = _mm512_castpd_ps(_mm512_castpd128_pd512(mVec)); //wrong implementation in gcc7 
+            __m512d t2 = _mm512_mask_abs_pd(_mm512_castps_pd(t0), mask.mMask, t0);
+#else
             __m512d t0 = _mm512_castpd128_pd512(mVec);
             __m512d t2 = _mm512_mask_abs_pd(t0, mask.mMask, t0);
+#endif
+
             __m128d t3 = _mm512_castpd512_pd128(t2);
             return SIMDVec_f(t3);
 #endif
@@ -1708,7 +1718,11 @@ namespace SIMD {
             mVec = _mm512_castpd512_pd128(t4);
             return *this;
 #else
+#if defined (WA_GCC_INTR_SUPPORT_7)
+            __m512 t0 = _mm512_castpd_ps(_mm512_castpd128_pd512(mVec)); //wrong implementation in gcc7 
+#else
             __m512d t0 = _mm512_castpd128_pd512(mVec);
+#endif
             __m512d t1 = _mm512_abs_pd(t0);
             mVec = _mm512_castpd512_pd128(t1);
             return *this;
@@ -1726,8 +1740,13 @@ namespace SIMD {
             mVec = _mm512_castpd512_pd128(t5);
             return *this;
 #else
+#if defined (WA_GCC_INTR_SUPPORT_7)
+            __m512 t0 = _mm512_castpd_ps(_mm512_castpd128_pd512(mVec)); //wrong implementation in gcc7 
+            __m512d t2 = _mm512_mask_abs_pd(_mm512_castps_pd(t0), mask.mMask, t0);
+#else
             __m512d t0 = _mm512_castpd128_pd512(mVec);
             __m512d t2 = _mm512_mask_abs_pd(t0, mask.mMask, t0);
+#endif
             mVec = _mm512_castpd512_pd128(t2);
             return *this;
 #endif

@@ -1869,7 +1869,7 @@ namespace SIMD {
         }
         // GATHERV
         UME_FORCE_INLINE SIMDVec_u & gather(uint64_t const * baseAddr, SIMDVec_u const & indices) {
-#if defined(WA_GCC_INTR_SUPPORT_6_2)
+#if defined(WA_GCC_INTR_SUPPORT_6_2) || defined(WA_GCC_INTR_SUPPORT_7)
             // g++ has some interface issues.
             mVec = _mm256_i64gather_epi64((const long long int*)baseAddr, indices.mVec, 8);
 #else

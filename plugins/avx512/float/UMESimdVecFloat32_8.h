@@ -2316,7 +2316,11 @@ namespace SIMD {
             mVec = _mm256_load_ps(raw);
             return *this;
  #else
+ #if defined (WA_GCC_INTR_SUPPORT_7)
+	   mVec = _mm256_permute2f128_ps(_mm256_castps128_ps256(a.mVec), _mm256_castps128_ps256(b.mVec), 0x20); 
+ #else 
             mVec = _mm256_set_m128(b.mVec, a.mVec);
+ #endif
             return *this;
  #endif
         }

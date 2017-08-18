@@ -1252,7 +1252,11 @@ namespace SIMD {
             __m512d t3 = _mm512_castsi512_pd(t2);
             return SIMDVec_f(t3);
 #else
+#if defined (WA_GCC_INTR_SUPPORT_7)
+            __m512d t0 = _mm512_abs_pd(_mm512_castpd_ps(mVec));
+#else
             __m512d t0 = _mm512_abs_pd(mVec);
+#endif
             return SIMDVec_f(t0);
 #endif
         }
@@ -1266,7 +1270,11 @@ namespace SIMD {
             __m512d t4 = _mm512_mask_mov_pd(mVec, mask.mMask, t3);
             return SIMDVec_f(t4);
 #else
+#if defined (WA_GCC_INTR_SUPPORT_7)
+            __m512d t0 = _mm512_mask_abs_pd(mVec, mask.mMask, _mm512_castpd_ps(mVec));
+#else
             __m512d t0 = _mm512_mask_abs_pd(mVec, mask.mMask, mVec);
+#endif
             return SIMDVec_f(t0);
 #endif
         }
@@ -1279,7 +1287,11 @@ namespace SIMD {
             mVec = _mm512_castsi512_pd(t2);
             return *this;
 #else
+#if defined (WA_GCC_INTR_SUPPORT_7)
+            mVec = _mm512_abs_pd(_mm512_castpd_ps(mVec));
+#else
             mVec = _mm512_abs_pd(mVec);
+#endif
             return *this;
 #endif
         }
@@ -1293,7 +1305,11 @@ namespace SIMD {
             mVec = _mm512_mask_mov_pd(mVec, mask.mMask, t3);
             return *this;
 #else
+#if defined (WA_GCC_INTR_SUPPORT_7)
+            mVec = _mm512_mask_abs_pd(mVec, mask.mMask, _mm512_castpd_ps(mVec));
+#else
             mVec = _mm512_mask_abs_pd(mVec, mask.mMask, mVec);
+#endif
             return *this;
 #endif
         }
