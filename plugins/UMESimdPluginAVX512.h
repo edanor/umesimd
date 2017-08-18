@@ -50,8 +50,12 @@
 
 
 // WA: missing intrinsics in GCC
-#if __GNUC__ < 6 || (__GNUC__ == 6 && (__GNUC_MINOR < 2)) || __GNUC__ >= 7
+#if __GNUC__ < 6 || (__GNUC__ == 6 && (__GNUC_MINOR < 2))
 #define WA_GCC_INTR_SUPPORT_6_2
+#endif
+
+#if __GNUC__ >= 7
+#define WA_GCC_INTR_SUPPORT_7
 #endif
 
 namespace UME
