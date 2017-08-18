@@ -1713,7 +1713,7 @@ namespace SIMD {
         // GATHERU
         UME_FORCE_INLINE SIMDVec_u & gatheru(uint64_t const * baseAddr, uint64_t stride) {
             __m128i t0 = _mm_set_epi64x(stride, 0);
-#if defined(WA_GCC_INTR_SUPPORT_6_2)
+#if defined(WA_GCC_INTR_SUPPORT_6_2) || defined(WA_GCC_INTR_SUPPORT_7)
             // g++ has some interface issues.
             mVec = _mm_i64gather_epi64((const long long int*)baseAddr, t0, 8);
 #else
