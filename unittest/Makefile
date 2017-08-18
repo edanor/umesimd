@@ -5,7 +5,10 @@
 # {FORCE_OPENMP_PLUGIN=ON}
 # {FORCE_SCALAR_PLUGIN=ON}
 
-CXXFLAGS=-std=c++11
+CXXFLAGS=-std=c++14
+CXX=g++
+ISA=mic_avx512
+BUILD=release
 
 ifneq (,$(findstring armclang,$(CXX)))
 	CXXCOMPILER=armclang++
@@ -26,7 +29,8 @@ endif
 #some predefined rules
 ifeq ($(CXXCOMPILER), g++)
 	COMPILER_PREFIX=gcc
-	CXXFLAGS+=-W -Wall -pedantic -fstrict-aliasing -Wstrict-aliasing -Woverflow -Werror
+#-W -Wall
+	CXXFLAGS+= -pedantic -fstrict-aliasing -Wstrict-aliasing -Woverflow -Werror
 endif
 ifeq ($(CXXCOMPILER), clang++)
 	COMPILER_PREFIX=clang
