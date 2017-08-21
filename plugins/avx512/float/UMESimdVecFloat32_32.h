@@ -1203,7 +1203,7 @@ namespace SIMD {
             __mmask16 m0 = mask.mMask & 0x0000FFFF;
             __mmask16 m1 = (mask.mMask & 0xFFFF0000) >> 16;
             float t0 = _mm512_mask_reduce_mul_ps(m0, mVec[0]);
-            t0 *= _mm512_mask_reduce_mul_ps(m0, mVec[1]);
+            t0 *= _mm512_mask_reduce_mul_ps(m1, mVec[1]);
             return t0;
 #endif
         }
