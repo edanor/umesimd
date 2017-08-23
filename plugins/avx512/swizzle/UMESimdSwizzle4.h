@@ -67,8 +67,8 @@ namespace SIMD {
             mVec = _mm_loadu_si128((__m128i*)p);
         }
         UME_FORCE_INLINE explicit SIMDSwizzle(uint64_t const * p) {
-            uint32_t raw[4] = {(uint32_t)p[0], (uint32_t)p[1], (uint32_t)p[2], (uint32_t)p[3]};
-            mVec = _mm_loadu_si128((__m128i*)raw);
+            alignas(16) uint32_t raw[4] = {(uint32_t)p[0], (uint32_t)p[1], (uint32_t)p[2], (uint32_t)p[3]};
+            mVec = _mm_load_si128((__m128i*)raw);
         }
 
         UME_FORCE_INLINE SIMDSwizzle(uint32_t m0, uint32_t m1, uint32_t m2, uint32_t m3)

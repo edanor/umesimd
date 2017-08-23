@@ -67,8 +67,11 @@ namespace SIMD {
             mVec = _mm512_loadu_si512((__m512i*)p);
         }
         UME_FORCE_INLINE explicit SIMDSwizzle(uint64_t const * p) {
-            uint32_t raw[4] = {(uint32_t)p[0], (uint32_t)p[1], (uint32_t)p[2], (uint32_t)p[3]};
-            mVec = _mm512_loadu_si512((__m512i*)raw);
+            alignas(64) uint32_t raw[16] = {(uint32_t)p[0], (uint32_t)p[1], (uint32_t)p[2], (uint32_t)p[3],
+                               (uint32_t)p[4], (uint32_t)p[5], (uint32_t)p[6], (uint32_t)p[7],
+                               (uint32_t)p[8], (uint32_t)p[9], (uint32_t)p[10], (uint32_t)p[11],
+                               (uint32_t)p[12], (uint32_t)p[13], (uint32_t)p[14], (uint32_t)p[15]};
+            mVec = _mm512_load_si512((__m512i*)raw);
         }
 
         UME_FORCE_INLINE SIMDSwizzle(
@@ -85,7 +88,7 @@ namespace SIMD {
         // A non-modifying element-wise access operator
         UME_FORCE_INLINE uint32_t extract(uint32_t index) const
         {
-            alignas(16) uint32_t raw[16];
+            alignas(64) uint32_t raw[16];
             _mm512_store_si512((__m512i*) raw, mVec);
             return raw[index];
         }
@@ -94,7 +97,7 @@ namespace SIMD {
 
         // Element-wise modification operator
         UME_FORCE_INLINE SIMDSwizzle & insert(uint32_t index, uint32_t value) {
-            alignas(16) uint32_t raw[16];
+            alignas(64) uint32_t raw[16];
             _mm512_store_si512((__m512i*)raw, mVec);
             raw[index] = value;
             mVec = _mm512_load_si512((__m512i*)raw);

@@ -67,8 +67,9 @@ namespace SIMD {
             mVec = _mm256_loadu_si256((__m256i*)p);
         }
         UME_FORCE_INLINE explicit SIMDSwizzle(uint64_t const * p) {
-            uint32_t raw[4] = {(uint32_t)p[0], (uint32_t)p[1], (uint32_t)p[2], (uint32_t)p[3]};
-            mVec = _mm256_loadu_si256((__m256i*)raw);
+            alignas(32) uint32_t raw[8] = {(uint32_t)p[0], (uint32_t)p[1], (uint32_t)p[2], (uint32_t)p[3],
+                               (uint32_t)p[4], (uint32_t)p[5], (uint32_t)p[6], (uint32_t)p[7]};
+            mVec = _mm256_load_si256((__m256i*)raw);
         }
 
         UME_FORCE_INLINE SIMDSwizzle(
@@ -81,7 +82,7 @@ namespace SIMD {
         // A non-modifying element-wise access operator
         UME_FORCE_INLINE uint32_t extract(uint32_t index) const
         {
-            alignas(16) uint32_t raw[8];
+            alignas(32) uint32_t raw[8];
             _mm256_store_si256((__m256i*) raw, mVec);
             return raw[index];
         }
@@ -90,7 +91,7 @@ namespace SIMD {
 
         // Element-wise modification operator
         UME_FORCE_INLINE SIMDSwizzle & insert(uint32_t index, uint32_t value) {
-            alignas(16) uint32_t raw[8];
+            alignas(32) uint32_t raw[8];
             _mm256_store_si256((__m256i*)raw, mVec);
             raw[index] = value;
             mVec = _mm256_load_si256((__m256i*)raw);
