@@ -1519,7 +1519,9 @@ namespace SIMD {
             return t0 > t1 ? t0 : t1;
 #else
             __m512 t0 = _mm512_castps128_ps512(mVec);
-            float retval = _mm512_reduce_max_ps(t0);
+            // Top 384 bits are undefined. Need to mask the result out.
+            __mmask16 mask = 0xF;
+            float retval = _mm512_mask_reduce_max_ps(mask, t0);
             return retval;
 #endif
         }
@@ -1552,7 +1554,9 @@ namespace SIMD {
             return t0 < t1 ? t0 : t1;
 #else
             __m512 t0 = _mm512_castps128_ps512(mVec);
-            float retval = _mm512_reduce_min_ps(t0);
+            // Top 384 bits are undefined. Need to mask the result out.
+            __mmask16 mask = 0xF;
+            float retval = _mm512_mask_reduce_min_ps(mask, t0);
             return retval;
 #endif
         }

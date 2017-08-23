@@ -1299,17 +1299,17 @@ namespace SIMD {
         }
         // MIMAX
         UME_FORCE_INLINE uint32_t imax(SIMDVecMask<8> const & mask) const {
-            uint64_t t0 = hmax();
+            uint64_t t0 = hmax(mask);
             __m512i t1 = _mm512_set1_epi64(t0);
             __mmask8 t2 = _mm512_cmp_epu64_mask(mVec, t1, _MM_CMPINT_EQ);
             // De Brujin number is: 00011101
             const uint8_t deBrujinConst = 0x1D;
             const uint8_t deBrujinMap[8] = { 0, 1, 6, 2, 7, 5, 4, 3 };
-            uint8_t t4 = t2 & (-t2);
-            uint8_t t5 = t4 * deBrujinConst;
-            uint8_t t6 = t5 >> 5;
-            uint8_t t7 = (mask.mMask != 0) ? deBrujinMap[t6] : 0xFF;
-            return t7;
+            uint8_t t3 = t2 & (-t2);
+            uint8_t t4 = t3 * deBrujinConst;
+            uint8_t t5 = t4 >> 5;
+            uint8_t t6 = deBrujinMap[t5];
+            return t6;
         }
         // HMIN
         UME_FORCE_INLINE uint64_t hmin() const {
@@ -1365,7 +1365,7 @@ namespace SIMD {
         }
         // MIMIN
         UME_FORCE_INLINE uint32_t imin(SIMDVecMask<8> const & mask) const {
-            uint64_t t0 = hmin();
+            uint64_t t0 = hmin(mask);
             __m512i t1 = _mm512_set1_epi64(t0);
             __mmask8 t2 = _mm512_cmp_epu64_mask(mVec, t1, _MM_CMPINT_EQ);
             // De Brujin number is: 00011101

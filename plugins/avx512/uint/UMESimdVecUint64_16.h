@@ -1114,6 +1114,7 @@ namespace SIMD {
             return b + raw[0] + raw[1] + raw[2]  + raw[3];
 #else
             uint64_t retval = _mm512_reduce_add_epi64(mVec[0]);
+            retval += _mm512_reduce_add_epi64(mVec[1]);
             return retval + b;
 #endif
         }
@@ -1142,7 +1143,8 @@ namespace SIMD {
             if (mask.mMask & 0x8000) t0 += raw[15];
             return t0;
 #else
-            uint64_t retval = _mm512_mask_reduce_add_epi64(mask.mMask, mVec[0]);
+            uint64_t retval = _mm512_mask_reduce_add_epi64(mask.mMask & 0x00FF, mVec[0]);
+            retval += _mm512_mask_reduce_add_epi64((mask.mMask & 0xFF00) >> 8, mVec[1]);
             return retval + b;
 #endif
         }
