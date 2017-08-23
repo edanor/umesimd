@@ -5,7 +5,7 @@
 # {FORCE_OPENMP_PLUGIN=ON}
 # {FORCE_SCALAR_PLUGIN=ON}
 
-CXXFLAGS=-std=c++14
+CXXFLAGS=-std=c++11
 CXX=g++
 ISA=mic_avx512
 BUILD=release
@@ -30,7 +30,7 @@ endif
 ifeq ($(CXXCOMPILER), g++)
 	COMPILER_PREFIX=gcc
 #-W -Wall
-	CXXFLAGS+= -pedantic -fstrict-aliasing -Wstrict-aliasing -Woverflow -Werror
+	CXXFLAGS+=-W -Wall -pedantic -fstrict-aliasing -Wstrict-aliasing -Woverflow
 endif
 ifeq ($(CXXCOMPILER), clang++)
 	COMPILER_PREFIX=clang

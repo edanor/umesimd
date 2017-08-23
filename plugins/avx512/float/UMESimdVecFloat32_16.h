@@ -1727,7 +1727,7 @@ namespace SIMD {
         // MCTAN
         // PACK
         UME_FORCE_INLINE SIMDVec_f & pack(SIMDVec_f<float, 8> const & a, SIMDVec_f<float, 8> const & b) {
-#if defined(__AVX512VL__)
+#if defined(__AVX512DQ__)
             mVec = _mm512_insertf32x8(mVec, a.mVec, 0);
             mVec = _mm512_insertf32x8(mVec, b.mVec, 1);
 #else
@@ -1740,7 +1740,7 @@ namespace SIMD {
         }
         // PACKLO
         UME_FORCE_INLINE SIMDVec_f & packlo(SIMDVec_f<float, 8> const & a) {
-#if defined(__AVX512VL__)
+#if defined(__AVX512DQ__)
             mVec = _mm512_insertf32x8(mVec, a.mVec, 0);
 #else
             alignas(64) float raw[16];

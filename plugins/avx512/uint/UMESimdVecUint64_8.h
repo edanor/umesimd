@@ -36,28 +36,6 @@
 
 #include "../../../UMESimdInterface.h"
 
-#define EXPAND_CALL_BINARY(a_512i, b_512i, binary_op) \
-            _mm512_castsi512_si512( \
-                binary_op( \
-                    _mm512_castsi512_si512(a_512i), \
-                    _mm512_castsi512_si512(b_512i)))
-
-#define EXPAND_CALL_BINARY_MASK(a_512i, b_512i, mask8, binary_op) \
-            _mm512_castsi512_si512( \
-                binary_op( \
-                    _mm512_castsi512_si512(a_512i), \
-                    mask8, \
-                    _mm512_castsi512_si512(a_512i), \
-                    _mm512_castsi512_si512(b_512i)))
-
-#define EXPAND_CALL_BINARY_SCALAR_MASK(a_512i, b_64u, mask8, binary_op) \
-            _mm512_castsi512_si512( \
-                binary_op( \
-                    _mm512_castsi512_si512(a_512i), \
-                    mask8, \
-                    _mm512_castsi512_si512(a_512i), \
-                    _mm512__mm512_set1_epi64(b_64u)))
-
 namespace UME {
 namespace SIMD {
 
@@ -2043,11 +2021,6 @@ namespace SIMD {
         // UTOF
         UME_FORCE_INLINE operator SIMDVec_f<double, 8>() const;
     };
-
-#undef _mm512_set1_epi64
-#undef EXPAND_CALL_BINARY
-#undef EXPAND_CALL_BINARY_MASK
-#undef EXPAND_CALL_BINARY_SCALAR_MASK
 
 }
 }

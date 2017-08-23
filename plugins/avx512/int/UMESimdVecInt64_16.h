@@ -36,40 +36,6 @@
 
 #include "../../../UMESimdInterface.h"
 
-#define EXPAND_CALL_UNARY(a_256i, unary_op) \
-            _mm512_castsi512_si256( \
-                unary_op( \
-                    _mm512_castsi256_si512(a_256i)))
-
-#define EXPAND_CALL_UNARY_MASK(a_256i, mask8, unary_op) \
-            _mm512_castsi512_si256( \
-                unary_op( \
-                    _mm512_castsi256_si512(a_256i), \
-                    mask8, \
-                    _mm512_castsi256_si512(a_256i)))
-
-#define EXPAND_CALL_BINARY(a_256i, b_256i, binary_op) \
-            _mm512_castsi512_si256( \
-                binary_op( \
-                    _mm512_castsi256_si512(a_256i), \
-                    _mm512_castsi256_si512(b_256i)))
-
-#define EXPAND_CALL_BINARY_MASK(a_256i, b_256i, mask8, binary_op) \
-            _mm512_castsi512_si256( \
-                binary_op( \
-                    _mm512_castsi256_si512(a_256i), \
-                    mask8, \
-                    _mm512_castsi256_si512(a_256i), \
-                    _mm512_castsi256_si512(b_256i)))
-
-#define EXPAND_CALL_BINARY_SCALAR_MASK(a_256i, b_64u, mask8, binary_op) \
-            _mm512_castsi512_si256( \
-                binary_op( \
-                    _mm512_castsi256_si512(a_256i), \
-                    mask8, \
-                    _mm512_castsi256_si512(a_256i), \
-                    _mm512_set1_epi64(b_64u)))
-
 namespace UME {
 namespace SIMD {
 
@@ -2753,13 +2719,6 @@ namespace SIMD {
         // ITOF
         UME_FORCE_INLINE operator SIMDVec_f<double, 16>() const;
     };
-
-#undef SET1_EPI64
-#undef EXPAND_CALL_UNARY
-#undef EXPAND_CALL_UNARY_MASK
-#undef EXPAND_CALL_BINARY
-#undef EXPAND_CALL_BINARY_MASK
-#undef EXPAND_CALL_BINARY_SCALAR_MASK
 
 }
 }
