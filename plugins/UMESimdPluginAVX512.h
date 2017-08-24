@@ -54,7 +54,7 @@
 #define WA_GCC_INTR_SUPPORT_6_2
 #endif
 
-#if __GNUC__ >= 7
+#if __GNUC__ >= 7 && ! defined(__INTEL_COMPILER)
 #define WA_GCC_INTR_SUPPORT_7
 #endif
 

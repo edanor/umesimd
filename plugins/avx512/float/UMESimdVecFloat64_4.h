@@ -1497,7 +1497,7 @@ namespace SIMD {
 #if defined (WA_GCC_INTR_SUPPORT_6_2)
             alignas(32) double raw[4];
             _mm256_store_pd(raw, mVec);
-            double t0 = (mask.mMask & 0x1) ? raw[0] : std::numeric_limits<double>::lowest();
+            double t0 = (mask.mMask & 0x1) ? raw[0] : std::numeric_limits<double>::max();
             double t1 = ((mask.mMask & 0x2) && raw[1] < t0) ? raw[1] : t0;
             double t2 = ((mask.mMask & 0x4) && raw[2] < t1) ? raw[2] : t1;
             double t3 = ((mask.mMask & 0x8) && raw[3] < t2) ? raw[3] : t2;

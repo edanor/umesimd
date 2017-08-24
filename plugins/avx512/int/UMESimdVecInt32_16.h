@@ -698,7 +698,7 @@ namespace SIMD {
             alignas(64) int32_t raw[16];
             _mm512_store_si512((__m512i*)raw, mVec);
             return b + raw[0] + raw[1] + raw[2]  + raw[3]  + raw[4]  + raw[5]  + raw[6]  + raw[7] +
-                   raw[9] + raw[9] + raw[10] + raw[11] + raw[12] + raw[13] + raw[14] + raw[15];
+                   raw[8] + raw[9] + raw[10] + raw[11] + raw[12] + raw[13] + raw[14] + raw[15];
 #else
             int32_t retval = _mm512_reduce_add_epi32(mVec);
             return retval + b;
@@ -738,7 +738,7 @@ namespace SIMD {
             alignas(64) int32_t raw[16];
             _mm512_store_si512((__m512i*)raw, mVec);
             return raw[0] * raw[1] * raw[2]  * raw[3]  * raw[4]  * raw[5]  * raw[6]  * raw[7] *
-                   raw[9] * raw[9] * raw[10] * raw[11] * raw[12] * raw[13] * raw[14] * raw[15];
+                   raw[8] * raw[9] * raw[10] * raw[11] * raw[12] * raw[13] * raw[14] * raw[15];
 #else
             int32_t retval = _mm512_reduce_mul_epi32(mVec);
             return retval;
@@ -778,7 +778,7 @@ namespace SIMD {
             alignas(64) int32_t raw[16];
             _mm512_store_si512((__m512i*)raw, mVec);
             return b * raw[0] * raw[1] * raw[2]  * raw[3]  * raw[4]  * raw[5]  * raw[6]  * raw[7] *
-                   raw[9] * raw[9] * raw[10] * raw[11] * raw[12] * raw[13] * raw[14] * raw[15];
+                   raw[8] * raw[9] * raw[10] * raw[11] * raw[12] * raw[13] * raw[14] * raw[15];
 #else
             int32_t retval = b;
             retval *= _mm512_reduce_mul_epi32(mVec);

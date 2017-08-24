@@ -1554,7 +1554,7 @@ namespace SIMD {
             float t12 = t7 < t8 ? t7 : t8;
 
             float t13 = t9 < t10 ? t9 : t10;
-            float t14 = t10 < t12 ? t11 : t12;
+            float t14 = t11 < t12 ? t11 : t12;
 
             return t13 < t14 ? t13 : t14;
 #else

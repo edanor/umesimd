@@ -1502,7 +1502,7 @@ namespace SIMD {
             alignas(64) int64_t raw[8];
             __m512i t0 = _mm512_add_epi64(mVec[0], mVec[1]);
             _mm512_store_si512((__m512i *)raw, t0);
-            return b + raw[0] + raw[1] + raw[2]  + raw[3];
+            return b + raw[0] + raw[1] + raw[2]  + raw[3] + raw[4] + raw[5] + raw[6] + raw[7];
 #else
             int64_t retval = _mm512_reduce_add_epi64(mVec[0]);
             retval += _mm512_reduce_add_epi64(mVec[1]);
@@ -1546,7 +1546,7 @@ namespace SIMD {
             _mm512_store_si512((__m512i *)raw, mVec[0]);
             _mm512_store_si512((__m512i *)(raw + 8), mVec[1]);
             return raw[0] * raw[1] * raw[2]  * raw[3]  * raw[4]  * raw[5]  * raw[6]  * raw[7] *
-                   raw[9] * raw[9] * raw[10] * raw[11] * raw[12] * raw[13] * raw[14] * raw[15];
+                   raw[8] * raw[9] * raw[10] * raw[11] * raw[12] * raw[13] * raw[14] * raw[15];
 #else
             int64_t retval = _mm512_reduce_mul_epi64(mVec[0]);
             retval *= _mm512_reduce_mul_epi64(mVec[1]);
@@ -1590,7 +1590,7 @@ namespace SIMD {
             _mm512_store_si512((__m512i *)raw, mVec[0]);
             _mm512_store_si512((__m512i *)(raw + 8), mVec[1]);
             return b * raw[0] * raw[1] * raw[2]  * raw[3]  * raw[4]  * raw[5]  * raw[6]  * raw[7] *
-                   raw[9] * raw[9] * raw[10] * raw[11] * raw[12] * raw[13] * raw[14] * raw[15];
+                   raw[8] * raw[9] * raw[10] * raw[11] * raw[12] * raw[13] * raw[14] * raw[15];
 #else
             int64_t retval = _mm512_reduce_mul_epi64(mVec[0]);
             retval *= _mm512_reduce_mul_epi64(mVec[1]);
@@ -1829,7 +1829,7 @@ namespace SIMD {
         UME_FORCE_INLINE int64_t hmin() const {
 #if defined (WA_GCC_INTR_SUPPORT_6_2)
             alignas(64) int64_t raw[8];
-            __m512i t0 = _mm512_min_epu64(mVec[0], mVec[1]);
+            __m512i t0 = _mm512_min_epi64(mVec[0], mVec[1]);
             _mm512_store_si512((__m512i *)raw, t0);
             int64_t t1 = raw[0] < raw[1] ? raw[0] : raw[1];
             int64_t t2 = raw[2] < raw[3] ? raw[2] : raw[3];

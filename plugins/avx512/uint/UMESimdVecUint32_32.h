@@ -1040,8 +1040,8 @@ namespace SIMD {
 #else
             __mmask16 m0 = mask.mMask & 0x0000FFFF;
             __mmask16 m1 = (mask.mMask & 0xFFFF0000) >> 16;
-            uint32_t t0 = _mm512_mask_reduce_add_epi32(m0, mVec[0]);
-            uint32_t t1 = _mm512_mask_reduce_add_epi32(m1, mVec[1]);
+            uint32_t t0 = _mm512_mask_reduce_mul_epi32(m0, mVec[0]);
+            uint32_t t1 = _mm512_mask_reduce_mul_epi32(m1, mVec[1]);
             return t0 * t1;
 #endif
         }
@@ -1102,8 +1102,8 @@ namespace SIMD {
 #else
             __mmask16 m0 = mask.mMask & 0x0000FFFF;
             __mmask16 m1 = (mask.mMask & 0xFFFF0000) >> 16;
-            uint32_t t0 = _mm512_mask_reduce_add_epi32(m0, mVec[0]);
-            uint32_t t1 = _mm512_mask_reduce_add_epi32(m1, mVec[1]);
+            uint32_t t0 = _mm512_mask_reduce_mul_epi32(m0, mVec[0]);
+            uint32_t t1 = _mm512_mask_reduce_mul_epi32(m1, mVec[1]);
             return b * t0 * t1;
 #endif
         }
@@ -1399,7 +1399,7 @@ namespace SIMD {
             uint32_t t12 = t7 < t8 ? t7 : t8;
 
             uint32_t t13 = t9 < t10 ? t9 : t10;
-            uint32_t t14 = t10 < t12 ? t11 : t12;
+            uint32_t t14 = t11 < t12 ? t11 : t12;
 
             return t13 < t14 ? t13 : t14;
 #else

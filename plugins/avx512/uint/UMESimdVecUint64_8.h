@@ -1277,7 +1277,7 @@ namespace SIMD {
         }
         // MIMAX
         UME_FORCE_INLINE uint32_t imax(SIMDVecMask<8> const & mask) const {
-            uint64_t t0 = hmax();
+            uint64_t t0 = hmax(mask);
             __m512i t1 = _mm512_set1_epi64(t0);
             __mmask8 t2 = _mm512_cmp_epu64_mask(mVec, t1, _MM_CMPINT_EQ);
             // De Brujin number is: 00011101
@@ -1343,7 +1343,7 @@ namespace SIMD {
         }
         // MIMIN
         UME_FORCE_INLINE uint32_t imin(SIMDVecMask<8> const & mask) const {
-            uint64_t t0 = hmin();
+            uint64_t t0 = hmin(mask);
             __m512i t1 = _mm512_set1_epi64(t0);
             __mmask8 t2 = _mm512_cmp_epu64_mask(mVec, t1, _MM_CMPINT_EQ);
             // De Brujin number is: 00011101

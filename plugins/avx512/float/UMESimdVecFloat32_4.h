@@ -1551,8 +1551,10 @@ namespace SIMD {
             float t1 = (raw[2] < raw[3]) ? raw[2] : raw[3];
             return t0 < t1 ? t0 : t1;
 #else
+	    __m512 max = _mm512_set1_ps(std::numeric_limits<float>::max()); 
             __m512 t0 = _mm512_castps128_ps512(mVec);
-            float retval = _mm512_reduce_min_ps(t0);
+	    __m512 t1 = _mm512_mask_blend_ps(0xF, max, t0);
+            float retval = _mm512_reduce_min_ps(t1);
             return retval;
 #endif
         }
