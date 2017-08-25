@@ -6,9 +6,6 @@
 # {FORCE_SCALAR_PLUGIN=ON}
 
 CXXFLAGS=-std=c++14
-CXXCOMPILER=g++
-BUILD=release
-ISA=altivec
 
 ifneq (,$(findstring armclang,$(CXX)))
 	CXXCOMPILER=armclang++
@@ -29,7 +26,8 @@ endif
 #some predefined rules
 ifeq ($(CXXCOMPILER), g++)
 	COMPILER_PREFIX=gcc
-	CXXFLAGS+=-W -Wall -pedantic -fstrict-aliasing -Wstrict-aliasing -Woverflow -Werror
+# -Werror
+	CXXFLAGS+=-W -Wall -pedantic -fstrict-aliasing -Wstrict-aliasing -Woverflow
 endif
 ifeq ($(CXXCOMPILER), clang++)
 	COMPILER_PREFIX=clang
