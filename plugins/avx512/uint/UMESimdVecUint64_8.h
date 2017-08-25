@@ -1012,7 +1012,7 @@ namespace SIMD {
         // UNIQUE
         // HADD
         UME_FORCE_INLINE uint64_t hadd() const {
-#if defined(WA_GCC_INTR_SUPPORT_6_2)
+#if defined(WA_GCC_INTR_SUPPORT_6_4)
             alignas(64) uint64_t raw[8];
             _mm512_store_si512(raw, mVec);
             return raw[0] + raw[1] + raw[2] + raw[3] + raw[4] + raw[5] + raw[6] + raw[7];
@@ -1023,7 +1023,7 @@ namespace SIMD {
         }
         // MHADD
         UME_FORCE_INLINE uint64_t hadd(SIMDVecMask<8> const & mask) const {
-#if defined(WA_GCC_INTR_SUPPORT_6_2)
+#if defined(WA_GCC_INTR_SUPPORT_6_4)
             alignas(64) uint64_t raw[8];
             _mm512_store_si512(raw, mVec);
             uint64_t t0 = ((mask.mMask & 0x01) != 0) ? raw[0] : 0;
@@ -1042,7 +1042,7 @@ namespace SIMD {
         }
         // HADDS
         UME_FORCE_INLINE uint64_t hadd(uint64_t b) const {
-#if defined(WA_GCC_INTR_SUPPORT_6_2)
+#if defined(WA_GCC_INTR_SUPPORT_6_4)
             alignas(64) uint64_t raw[8];
             _mm512_store_si512(raw, mVec);
             return b + raw[0] + raw[1] + raw[2] + raw[3] + raw[4] + raw[5] + raw[6] + raw[7];
@@ -1053,7 +1053,7 @@ namespace SIMD {
         }
         // MHADDS
         UME_FORCE_INLINE uint64_t hadd(SIMDVecMask<8> const & mask, uint64_t b) const {
-#if defined(WA_GCC_INTR_SUPPORT_6_2)
+#if defined(WA_GCC_INTR_SUPPORT_6_4)
             alignas(64) uint64_t raw[8];
             _mm512_store_si512(raw, mVec);
             uint64_t t0 = ((mask.mMask & 0x01) != 0) ? raw[0] : 0;
@@ -1072,7 +1072,7 @@ namespace SIMD {
         }
         // HMUL
         UME_FORCE_INLINE uint64_t hmul() const {
-#if defined(WA_GCC_INTR_SUPPORT_6_2)
+#if defined(WA_GCC_INTR_SUPPORT_6_4)
             alignas(64) uint64_t raw[8];
             _mm512_store_si512(raw, mVec);
             return raw[0] * raw[1] * raw[2] * raw[3] * raw[4] * raw[5] * raw[6] * raw[7];
@@ -1083,7 +1083,7 @@ namespace SIMD {
         }
         // MHMUL
         UME_FORCE_INLINE uint64_t hmul(SIMDVecMask<8> const & mask) const {
-#if defined(WA_GCC_INTR_SUPPORT_6_2)
+#if defined(WA_GCC_INTR_SUPPORT_6_4)
             alignas(64) uint64_t raw[8];
             _mm512_store_si512(raw, mVec);
             uint64_t t0 = ((mask.mMask & 0x01) != 0) ? raw[0] : 1;
@@ -1102,7 +1102,7 @@ namespace SIMD {
         }
         // HMULS
         UME_FORCE_INLINE uint64_t hmul(uint64_t b) const {
-#if defined(WA_GCC_INTR_SUPPORT_6_2)
+#if defined(WA_GCC_INTR_SUPPORT_6_4)
             alignas(64) uint64_t raw[8];
             _mm512_store_si512(raw, mVec);
             return b * raw[0] * raw[1] * raw[2] * raw[3] * raw[4] * raw[5] * raw[6] * raw[7];
@@ -1113,7 +1113,7 @@ namespace SIMD {
         }
         // MHMULS
         UME_FORCE_INLINE uint64_t hmul(SIMDVecMask<8> const & mask, uint64_t b) const {
-#if defined(WA_GCC_INTR_SUPPORT_6_2)
+#if defined(WA_GCC_INTR_SUPPORT_6_4)
             alignas(64) uint64_t raw[8];
             _mm512_store_si512(raw, mVec);
             uint64_t t0 = ((mask.mMask & 0x01) != 0) ? raw[0] : 1;
@@ -1247,7 +1247,7 @@ namespace SIMD {
 
         // HMAX
         UME_FORCE_INLINE uint64_t hmax() const {
-#if defined(WA_GCC_INTR_SUPPORT_6_2)
+#if defined(WA_GCC_INTR_SUPPORT_6_4)
             alignas(64) uint64_t raw[8];
             _mm512_store_si512(raw, mVec);
             uint64_t t0 = raw[0] > raw[1] ? raw[0] : raw[1];
@@ -1264,7 +1264,7 @@ namespace SIMD {
         }
         // MHMAX
         UME_FORCE_INLINE uint64_t hmax(SIMDVecMask<8> const & mask) const {
-#if defined (WA_GCC_INTR_SUPPORT_6_2)
+#if defined (WA_GCC_INTR_SUPPORT_6_4)
             alignas(64) uint64_t raw[8];
             _mm512_store_si512(raw, mVec);
             uint64_t t0 = ((mask.mMask & 0x01) != 0) ? raw[0] : std::numeric_limits<uint64_t>::min();
@@ -1299,21 +1299,21 @@ namespace SIMD {
         }
         // MIMAX
         UME_FORCE_INLINE uint32_t imax(SIMDVecMask<8> const & mask) const {
-            uint64_t t0 = hmax();
+            uint64_t t0 = hmax(mask);
             __m512i t1 = _mm512_set1_epi64(t0);
             __mmask8 t2 = _mm512_cmp_epu64_mask(mVec, t1, _MM_CMPINT_EQ);
             // De Brujin number is: 00011101
             const uint8_t deBrujinConst = 0x1D;
             const uint8_t deBrujinMap[8] = { 0, 1, 6, 2, 7, 5, 4, 3 };
-            uint8_t t4 = t2 & (-t2);
-            uint8_t t5 = t4 * deBrujinConst;
-            uint8_t t6 = t5 >> 5;
-            uint8_t t7 = (mask.mMask != 0) ? deBrujinMap[t6] : 0xFF;
-            return t7;
+            uint8_t t3 = t2 & (-t2);
+            uint8_t t4 = t3 * deBrujinConst;
+            uint8_t t5 = t4 >> 5;
+            uint8_t t6 = deBrujinMap[t5];
+            return t6;
         }
         // HMIN
         UME_FORCE_INLINE uint64_t hmin() const {
-#if defined(WA_GCC_INTR_SUPPORT_6_2)
+#if defined(WA_GCC_INTR_SUPPORT_6_4)
             alignas(64) uint64_t raw[8];
             _mm512_store_si512(raw, mVec);
             uint64_t t0 = raw[0] < raw[1] ? raw[0] : raw[1];
@@ -1330,7 +1330,7 @@ namespace SIMD {
         }
         // MHMIN
         UME_FORCE_INLINE uint64_t hmin(SIMDVecMask<8> const & mask) const {
-#if defined (WA_GCC_INTR_SUPPORT_6_2)
+#if defined (WA_GCC_INTR_SUPPORT_6_4)
             alignas(64) uint64_t raw[8];
             _mm512_store_si512(raw, mVec);
             uint64_t t0 = ((mask.mMask & 0x01) != 0) ? raw[0] : std::numeric_limits<uint64_t>::max();
@@ -1365,7 +1365,7 @@ namespace SIMD {
         }
         // MIMIN
         UME_FORCE_INLINE uint32_t imin(SIMDVecMask<8> const & mask) const {
-            uint64_t t0 = hmin();
+            uint64_t t0 = hmin(mask);
             __m512i t1 = _mm512_set1_epi64(t0);
             __mmask8 t2 = _mm512_cmp_epu64_mask(mVec, t1, _MM_CMPINT_EQ);
             // De Brujin number is: 00011101
@@ -1561,7 +1561,7 @@ namespace SIMD {
         }
         // HBAND
         UME_FORCE_INLINE uint64_t hband() const {
-#if defined (WA_GCC_INTR_SUPPORT_6_2)
+#if defined (WA_GCC_INTR_SUPPORT_6_4)
             alignas(64) uint64_t raw[8];
             _mm512_store_si512(raw, mVec);
             return raw[0] & raw[1] & raw[2] & raw[3] &
@@ -1573,7 +1573,7 @@ namespace SIMD {
         }
         // MHBAND
         UME_FORCE_INLINE uint64_t hband(SIMDVecMask<8> const & mask) const {
-#if defined (WA_GCC_INTR_SUPPORT_6_2)
+#if defined (WA_GCC_INTR_SUPPORT_6_4)
             alignas(64) uint64_t raw[8];
             _mm512_store_si512(raw, mVec);
             uint64_t t0 = 0xFFFFFFFFFFFFFFFF;
@@ -1595,7 +1595,7 @@ namespace SIMD {
         }
         // HBANDS
         UME_FORCE_INLINE uint64_t hband(uint64_t b) const {
-#if defined (WA_GCC_INTR_SUPPORT_6_2)
+#if defined (WA_GCC_INTR_SUPPORT_6_4)
             alignas(64) uint64_t raw[8];
             _mm512_store_si512(raw, mVec);
             return b & raw[0] & raw[1] & raw[2] & raw[3] &
@@ -1607,7 +1607,7 @@ namespace SIMD {
         }
         // MHBANDS
         UME_FORCE_INLINE uint64_t hband(SIMDVecMask<8> const & mask, uint64_t b) const {
-#if defined (WA_GCC_INTR_SUPPORT_6_2)
+#if defined (WA_GCC_INTR_SUPPORT_6_4)
             alignas(64) uint64_t raw[8];
             _mm512_store_si512(raw, mVec);
             uint64_t t0 = b;
@@ -1629,7 +1629,7 @@ namespace SIMD {
         }
         // HBOR
         UME_FORCE_INLINE uint64_t hbor() const {
-#if defined (WA_GCC_INTR_SUPPORT_6_2)
+#if defined (WA_GCC_INTR_SUPPORT_6_4)
             alignas(64) uint64_t raw[8];
             _mm512_store_si512(raw, mVec);
             return raw[0] | raw[1] | raw[2] | raw[3] |
@@ -1641,7 +1641,7 @@ namespace SIMD {
         }
         // MHBOR
         UME_FORCE_INLINE uint64_t hbor(SIMDVecMask<8> const & mask) const {
-#if defined (WA_GCC_INTR_SUPPORT_6_2)
+#if defined (WA_GCC_INTR_SUPPORT_6_4)
             alignas(64) uint64_t raw[8];
             _mm512_store_si512(raw, mVec);
             uint64_t t0 = 0;
@@ -1663,7 +1663,7 @@ namespace SIMD {
         }
         // HBORS
         UME_FORCE_INLINE uint64_t hbor(uint64_t b) const {
-#if defined (WA_GCC_INTR_SUPPORT_6_2)
+#if defined (WA_GCC_INTR_SUPPORT_6_4)
             alignas(64) uint64_t raw[8];
             _mm512_store_si512(raw, mVec);
             return b | raw[0] | raw[1] | raw[2] | raw[3] |
@@ -1675,7 +1675,7 @@ namespace SIMD {
         }
         // MHBORS
         UME_FORCE_INLINE uint64_t hbor(SIMDVecMask<8> const & mask, uint64_t b) const {
-#if defined (WA_GCC_INTR_SUPPORT_6_2)
+#if defined (WA_GCC_INTR_SUPPORT_6_4)
             alignas(64) uint64_t raw[8];
             _mm512_store_si512(raw, mVec);
             uint64_t t0 = b;
@@ -1733,7 +1733,7 @@ namespace SIMD {
 #else
             __m512i t2 = _mm512_setr_epi64(0, stride, 2*stride, 3*stride, 4*stride, 5*stride, 6*stride, 7*stride);
 #endif
-#if defined(WA_GCC_INTR_SUPPORT_6_2)
+#if defined(WA_GCC_INTR_SUPPORT_6_4)
             // g++ has some interface issues.
             mVec = _mm512_i64gather_epi64(t2, (const long long int*)baseAddr, 8);
 #else
@@ -1750,7 +1750,7 @@ namespace SIMD {
 #else
             __m512i t2 = _mm512_setr_epi64(0, stride, 2*stride, 3*stride, 4*stride, 5*stride, 6*stride, 7*stride);
 #endif
-#if defined(WA_GCC_INTR_SUPPORT_6_2)
+#if defined(WA_GCC_INTR_SUPPORT_6_4)
             // g++ has some interface issues.
             __m512i t3 = _mm512_i64gather_epi64(t2, (const long long int*)baseAddr, 8);
 #else
@@ -1762,7 +1762,7 @@ namespace SIMD {
         // GATHERS
         UME_FORCE_INLINE SIMDVec_u & gather(uint64_t const * baseAddr, uint64_t const * indices) {
             __m512i t0 =_mm512_loadu_si512((__m512i *)indices);
-#if defined(WA_GCC_INTR_SUPPORT_6_2)
+#if defined(WA_GCC_INTR_SUPPORT_6_4)
             // g++ has some interface issues.
             mVec = _mm512_i64gather_epi64(t0, (const long long int*)baseAddr, 8);
 #else
@@ -1773,7 +1773,7 @@ namespace SIMD {
         // MGATHERS
         UME_FORCE_INLINE SIMDVec_u & gather(SIMDVecMask<8> const & mask, uint64_t const * baseAddr, uint64_t const * indices) {
             __m512i t0 = _mm512_loadu_si512((__m512i *)indices);
-#if defined(WA_GCC_INTR_SUPPORT_6_2)
+#if defined(WA_GCC_INTR_SUPPORT_6_4)
             // g++ has some interface issues.
             __m512i t1 = _mm512_i64gather_epi64(t0, (const long long int*)baseAddr, 8);
 #else
@@ -1784,7 +1784,7 @@ namespace SIMD {
         }
         // GATHERV
         UME_FORCE_INLINE SIMDVec_u & gather(uint64_t const * baseAddr, SIMDVec_u const & indices) {
-#if defined(WA_GCC_INTR_SUPPORT_6_2)
+#if defined(WA_GCC_INTR_SUPPORT_6_4)
             // g++ has some interface issues.
             mVec = _mm512_i64gather_epi64(indices.mVec, (const long long int*)baseAddr, 8);
 #else
@@ -1794,7 +1794,7 @@ namespace SIMD {
         }
         // MGATHERV
         UME_FORCE_INLINE SIMDVec_u & gather(SIMDVecMask<8> const & mask, uint64_t const * baseAddr, SIMDVec_u const & indices) {
-#if defined(WA_GCC_INTR_SUPPORT_6_2)
+#if defined(WA_GCC_INTR_SUPPORT_6_4)
             // g++ has some interface issues.
             __m512i t0 = _mm512_i64gather_epi64(indices.mVec, (const long long int*)baseAddr, 8);
 #else
@@ -1812,7 +1812,7 @@ namespace SIMD {
 #else
             __m512i t2 = _mm512_setr_epi64(0, stride, 2*stride, 3*stride, 4*stride, 5*stride, 6*stride, 7*stride);
 #endif
-#if defined(WA_GCC_INTR_SUPPORT_6_2)
+#if defined(WA_GCC_INTR_SUPPORT_6_4)
             // g++ has some interface issues.
             _mm512_i64scatter_epi64((long long int*)baseAddr, t2, mVec, 8);
 #else
@@ -1829,7 +1829,7 @@ namespace SIMD {
 #else
             __m512i t2 = _mm512_setr_epi64(0, stride, 2*stride, 3*stride, 4*stride, 5*stride, 6*stride, 7*stride);
 #endif
-#if defined(WA_GCC_INTR_SUPPORT_6_2)
+#if defined(WA_GCC_INTR_SUPPORT_6_4)
             // g++ has some interface issues.
             _mm512_mask_i64scatter_epi64((long long int*)baseAddr, mask.mMask, t2, mVec, 8);
 #else
@@ -1840,7 +1840,7 @@ namespace SIMD {
         // SCATTERS
         UME_FORCE_INLINE uint64_t* scatter(uint64_t* baseAddr, uint64_t* indices) const {
             __m512i t0 = _mm512_loadu_si512((__m512i *)indices);
-#if defined(WA_GCC_INTR_SUPPORT_6_2)
+#if defined(WA_GCC_INTR_SUPPORT_6_4)
             // g++ has some interface issues.
             _mm512_i64scatter_epi64((long long int*)baseAddr, t0, mVec, 8);
 #else
@@ -1851,7 +1851,7 @@ namespace SIMD {
         // MSCATTERS
         UME_FORCE_INLINE uint64_t* scatter(SIMDVecMask<8> const & mask, uint64_t* baseAddr, uint64_t* indices) const {
             __m512i t0 = _mm512_loadu_si512((__m512i *)indices);
-#if defined(WA_GCC_INTR_SUPPORT_6_2)
+#if defined(WA_GCC_INTR_SUPPORT_6_4)
             // g++ has some interface issues.
             _mm512_mask_i64scatter_epi64((long long int*)baseAddr, mask.mMask, t0, mVec, 8);
 #else
@@ -1861,7 +1861,7 @@ namespace SIMD {
         }
         // SCATTERV
         UME_FORCE_INLINE uint64_t* scatter(uint64_t* baseAddr, SIMDVec_u const & indices) const {
-#if defined(WA_GCC_INTR_SUPPORT_6_2)
+#if defined(WA_GCC_INTR_SUPPORT_6_4)
             // g++ has some interface issues.
             _mm512_i64scatter_epi64((long long int*)baseAddr, indices.mVec, mVec, 8);
 #else
@@ -1871,7 +1871,7 @@ namespace SIMD {
         }
         // MSCATTERV
         UME_FORCE_INLINE uint64_t* scatter(SIMDVecMask<8> const & mask, uint64_t* baseAddr, SIMDVec_u const & indices) const {
-#if defined(WA_GCC_INTR_SUPPORT_6_2)
+#if defined(WA_GCC_INTR_SUPPORT_6_4)
             // g++ has some interface issues.
             _mm512_mask_i64scatter_epi64((long long int*)baseAddr, mask.mMask, indices.mVec, mVec, 8);
 #else

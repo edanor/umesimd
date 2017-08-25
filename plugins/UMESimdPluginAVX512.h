@@ -50,10 +50,13 @@
 
 
 // WA: missing intrinsics in GCC
-#if __GNUC__ < 6 || (__GNUC__ == 6 && (__GNUC_MINOR < 2))
-#define WA_GCC_INTR_SUPPORT_6_2
+#if __GNUC__ < 6 || (__GNUC__ == 6 && (__GNUC_MINOR <= 4))
+#define WA_GCC_INTR_SUPPORT_6_4
 #endif
 
+#if __GNUC__ < 7 || (__GNUC__ == 7 && (__GNUC_MINOR <= 1))
+#define WA_GCC_INTR_SUPPORT_7_1
+#endif
 namespace UME
 {
 namespace SIMD

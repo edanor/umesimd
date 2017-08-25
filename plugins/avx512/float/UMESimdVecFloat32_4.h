@@ -1152,7 +1152,7 @@ namespace SIMD {
 
         // HADD
         UME_FORCE_INLINE float hadd() const {
-#if defined (WA_GCC_INTR_SUPPORT_6_2)
+#if defined (WA_GCC_INTR_SUPPORT_6_4)
             alignas(16) float raw[4];
             _mm_store_ps(raw, mVec);
             return raw[0] + raw[1] + raw[2] + raw[3];
@@ -1164,7 +1164,7 @@ namespace SIMD {
         }
         // MHADD
         UME_FORCE_INLINE float hadd(SIMDVecMask<4> const & mask) const {
-#if defined (WA_GCC_INTR_SUPPORT_6_2)
+#if defined (WA_GCC_INTR_SUPPORT_6_4)
             alignas(16) float raw[4];
             _mm_store_ps(raw, mVec);
             float t0 = 0;
@@ -1182,7 +1182,7 @@ namespace SIMD {
         }
         // HADDS
         UME_FORCE_INLINE float hadd(float b) const {
-#if defined (WA_GCC_INTR_SUPPORT_6_2)
+#if defined (WA_GCC_INTR_SUPPORT_6_4)
             alignas(16) float raw[4];
             _mm_store_ps(raw, mVec);
             return b + raw[0] + raw[1] + raw[2] + raw[3];
@@ -1194,7 +1194,7 @@ namespace SIMD {
         }
         // MHADDS
         UME_FORCE_INLINE float hadd(SIMDVecMask<4> const & mask, float b) const {
-#if defined (WA_GCC_INTR_SUPPORT_6_2)
+#if defined (WA_GCC_INTR_SUPPORT_6_4)
             alignas(16) float raw[4];
             _mm_store_ps(raw, mVec);
             float t0 = b;
@@ -1212,7 +1212,7 @@ namespace SIMD {
         }
         // HMUL
         UME_FORCE_INLINE float hmul() const {
-#if defined (WA_GCC_INTR_SUPPORT_6_2)
+#if defined (WA_GCC_INTR_SUPPORT_6_4)
             alignas(16) float raw[4];
             _mm_store_ps(raw, mVec);
             return raw[0] * raw[1] * raw[2] * raw[3];
@@ -1224,7 +1224,7 @@ namespace SIMD {
         }
         // MHMUL
         UME_FORCE_INLINE float hmul(SIMDVecMask<4> const & mask) const {
-#if defined (WA_GCC_INTR_SUPPORT_6_2)
+#if defined (WA_GCC_INTR_SUPPORT_6_4)
             alignas(16) float raw[4];
             _mm_store_ps(raw, mVec);
             float t0 = 1;
@@ -1242,7 +1242,7 @@ namespace SIMD {
         }
         // HMULS
         UME_FORCE_INLINE float hmul(float b) const {
-#if defined (WA_GCC_INTR_SUPPORT_6_2)
+#if defined (WA_GCC_INTR_SUPPORT_6_4)
             alignas(16) float raw[4];
             _mm_store_ps(raw, mVec);
             return b + raw[0] + raw[1] + raw[2] + raw[3];
@@ -1255,7 +1255,7 @@ namespace SIMD {
         }
         // MHMULS
         UME_FORCE_INLINE float hmul(SIMDVecMask<4> const & mask, float b) const {
-#if defined (WA_GCC_INTR_SUPPORT_6_2)
+#if defined (WA_GCC_INTR_SUPPORT_6_4)
             alignas(16) float raw[4];
             _mm_store_ps(raw, mVec);
             float t0 = b;
@@ -1511,7 +1511,7 @@ namespace SIMD {
         }
         // HMAX
         UME_FORCE_INLINE float hmax() const {
-#if defined (WA_GCC_INTR_SUPPORT_6_2)
+#if defined (WA_GCC_INTR_SUPPORT_6_4)
             alignas(16) float raw[4];
             _mm_store_ps(raw, mVec);
             float t0 = (raw[0] > raw[1]) ? raw[0] : raw[1];
@@ -1519,13 +1519,15 @@ namespace SIMD {
             return t0 > t1 ? t0 : t1;
 #else
             __m512 t0 = _mm512_castps128_ps512(mVec);
-            float retval = _mm512_reduce_max_ps(t0);
+            // Top 384 bits are undefined. Need to mask the result out.
+            __mmask16 mask = 0xF;
+            float retval = _mm512_mask_reduce_max_ps(mask, t0);
             return retval;
 #endif
         }
         // MHMAX
         UME_FORCE_INLINE float hmax(SIMDVecMask<4> const & mask) const {
-#if defined (WA_GCC_INTR_SUPPORT_6_2)
+#if defined (WA_GCC_INTR_SUPPORT_6_4)
             alignas(16) float raw[4];
             _mm_store_ps(raw, mVec);
             float t0 = std::numeric_limits<float>::lowest();
@@ -1544,7 +1546,7 @@ namespace SIMD {
         // MIMAX
         // HMIN
         UME_FORCE_INLINE float hmin() const {
-#if defined (WA_GCC_INTR_SUPPORT_6_2)
+#if defined (WA_GCC_INTR_SUPPORT_6_4)
             alignas(16) float raw[4];
             _mm_store_ps(raw, mVec);
             float t0 = (raw[0] < raw[1]) ? raw[0] : raw[1];
@@ -1552,13 +1554,15 @@ namespace SIMD {
             return t0 < t1 ? t0 : t1;
 #else
             __m512 t0 = _mm512_castps128_ps512(mVec);
-            float retval = _mm512_reduce_min_ps(t0);
+            // Top 384 bits are undefined. Need to mask the result out.
+            __mmask16 mask = 0xF;
+            float retval = _mm512_mask_reduce_min_ps(mask, t0);
             return retval;
 #endif
         }
         // MHMIN
         UME_FORCE_INLINE float hmin(SIMDVecMask<4> const & mask) const {
-#if defined (WA_GCC_INTR_SUPPORT_6_2)
+#if defined (WA_GCC_INTR_SUPPORT_6_4)
             alignas(16) float raw[4];
             _mm_store_ps(raw, mVec);
             float t0 = std::numeric_limits<float>::max();
@@ -1751,7 +1755,7 @@ namespace SIMD {
         }
         // ABS
         UME_FORCE_INLINE SIMDVec_f abs() const {
-#if defined (WA_GCC_INTR_SUPPORT_6_2)
+#if defined (WA_GCC_INTR_SUPPORT_6_4)
             __m512 t0 = _mm512_castps128_ps512(mVec);
             __m512i t1 = _mm512_castps_si512(t0);
             __m512i t2 = _mm512_set1_epi32(0x7FFFFFFF);
@@ -1768,7 +1772,7 @@ namespace SIMD {
         }
         // MABS
         UME_FORCE_INLINE SIMDVec_f abs(SIMDVecMask<4> const & mask) const {
-#if defined (WA_GCC_INTR_SUPPORT_6_2)
+#if defined (WA_GCC_INTR_SUPPORT_6_4)
             __m512 t0 = _mm512_castps128_ps512(mVec);
             __m512i t1 = _mm512_castps_si512(t0);
             __m512i t2 = _mm512_set1_epi32(0x7FFFFFFF);
@@ -1787,7 +1791,7 @@ namespace SIMD {
         }
         // ABSA
         UME_FORCE_INLINE SIMDVec_f & absa() {
-#if defined (WA_GCC_INTR_SUPPORT_6_2)
+#if defined (WA_GCC_INTR_SUPPORT_6_4)
             __m512 t0 = _mm512_castps128_ps512(mVec);
             __m512i t1 = _mm512_castps_si512(t0);
             __m512i t2 = _mm512_set1_epi32(0x7FFFFFFF);
@@ -1804,7 +1808,7 @@ namespace SIMD {
         }
         // MABSA
         UME_FORCE_INLINE SIMDVec_f & absa(SIMDVecMask<4> const & mask) {
-#if defined (WA_GCC_INTR_SUPPORT_6_2)
+#if defined (WA_GCC_INTR_SUPPORT_6_4)
             __m512 t0 = _mm512_castps128_ps512(mVec);
             __m512i t1 = _mm512_castps_si512(t0);
             __m512i t2 = _mm512_set1_epi32(0x7FFFFFFF);

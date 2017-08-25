@@ -894,7 +894,7 @@ namespace SIMD {
         // UNIQUE
         // HADD
         UME_FORCE_INLINE double hadd() const {
-#if defined (WA_GCC_INTR_SUPPORT_6_2)
+#if defined (WA_GCC_INTR_SUPPORT_6_4)
             alignas(64) double raw[8];
             __m512d t0 = _mm512_add_pd(mVec[0], mVec[1]);
             _mm512_store_pd(raw, t0);
@@ -907,7 +907,7 @@ namespace SIMD {
         }
         // MHADD
         UME_FORCE_INLINE double hadd(SIMDVecMask<16> const & mask) const {
-#if defined (WA_GCC_INTR_SUPPORT_6_2)
+#if defined (WA_GCC_INTR_SUPPORT_6_4)
             alignas(64) double raw[16];
             _mm512_store_pd(raw, mVec[0]);
             _mm512_store_pd((raw + 8), mVec[1]);
@@ -937,7 +937,7 @@ namespace SIMD {
         }
         // HADDS
         UME_FORCE_INLINE double hadd(double b) const {
-#if defined (WA_GCC_INTR_SUPPORT_6_2)
+#if defined (WA_GCC_INTR_SUPPORT_6_4)
             alignas(64) double raw[8];
             __m512d t0 = _mm512_add_pd(mVec[0], mVec[1]);
             _mm512_store_pd(raw, t0);
@@ -950,7 +950,7 @@ namespace SIMD {
         }
         // MHADDS
         UME_FORCE_INLINE double hadd(SIMDVecMask<16> const & mask, double b) const {
-#if defined (WA_GCC_INTR_SUPPORT_6_2)
+#if defined (WA_GCC_INTR_SUPPORT_6_4)
             alignas(64) double raw[16];
             _mm512_store_pd(raw, mVec[0]);
             _mm512_store_pd((raw + 8), mVec[1]);
@@ -980,7 +980,7 @@ namespace SIMD {
         }
         // HMUL
         UME_FORCE_INLINE double hmul() const {
-#if defined (WA_GCC_INTR_SUPPORT_6_2)
+#if defined (WA_GCC_INTR_SUPPORT_6_4)
             alignas(64) double raw[8];
             __m512d t0 = _mm512_add_pd(mVec[0], mVec[1]);
             _mm512_store_pd(raw, t0);
@@ -993,7 +993,7 @@ namespace SIMD {
         }
         // MHMUL
         UME_FORCE_INLINE double hmul(SIMDVecMask<16> const & mask) const {
-#if defined (WA_GCC_INTR_SUPPORT_6_2)
+#if defined (WA_GCC_INTR_SUPPORT_6_4)
             alignas(64) double raw[16];
             _mm512_store_pd(raw, mVec[0]);
             _mm512_store_pd((raw + 8), mVec[1]);
@@ -1023,7 +1023,7 @@ namespace SIMD {
         }
         // HMULS
         UME_FORCE_INLINE double hmul(double b) const {
-#if defined (WA_GCC_INTR_SUPPORT_6_2)
+#if defined (WA_GCC_INTR_SUPPORT_6_4)
             alignas(64) double raw[8];
             __m512d t0 = _mm512_add_pd(mVec[0], mVec[1]);
             _mm512_store_pd(raw, t0);
@@ -1036,7 +1036,7 @@ namespace SIMD {
         }
         // MHMULS
         UME_FORCE_INLINE double hmul(SIMDVecMask<16> const & mask, double b) const {
-#if defined (WA_GCC_INTR_SUPPORT_6_2)
+#if defined (WA_GCC_INTR_SUPPORT_6_4)
             alignas(64) double raw[16];
             _mm512_store_pd(raw, mVec[0]);
             _mm512_store_pd((raw + 8), mVec[1]);
@@ -1228,7 +1228,7 @@ namespace SIMD {
         }
         // HMAX
         UME_FORCE_INLINE double hmax() const {
-#if defined (WA_GCC_INTR_SUPPORT_6_2)
+#if defined (WA_GCC_INTR_SUPPORT_6_4)
             alignas(64) double raw[8];
             __m512d t0 = _mm512_max_pd(mVec[0], mVec[1]);
             _mm512_store_pd(raw, t0);
@@ -1247,7 +1247,7 @@ namespace SIMD {
         }
         // MHMAX
         UME_FORCE_INLINE double hmax(SIMDVecMask<16> const & mask) const {
-#if defined (WA_GCC_INTR_SUPPORT_6_2)
+#if defined (WA_GCC_INTR_SUPPORT_6_4)
             alignas(64) double raw[16];
             _mm512_store_pd(raw, mVec[0]);
             _mm512_store_pd((raw + 8), mVec[1]);
@@ -1278,7 +1278,7 @@ namespace SIMD {
         // MIMAX
         // HMIN
         UME_FORCE_INLINE double hmin() const {
-#if defined (WA_GCC_INTR_SUPPORT_6_2)
+#if defined (WA_GCC_INTR_SUPPORT_6_4)
             alignas(64) double raw[8];
             __m512d t0 = _mm512_min_pd(mVec[0], mVec[1]);
             _mm512_store_pd(raw, t0);
@@ -1297,7 +1297,7 @@ namespace SIMD {
         }
         // MHMIN
         UME_FORCE_INLINE double hmin(SIMDVecMask<16> const & mask) const {
-#if defined (WA_GCC_INTR_SUPPORT_6_2)
+#if defined (WA_GCC_INTR_SUPPORT_6_4)
             alignas(64) double raw[16];
             _mm512_store_pd(raw, mVec[0]);
             _mm512_store_pd((raw + 8), mVec[1]);
@@ -1491,7 +1491,7 @@ namespace SIMD {
         }
         // ABS
         UME_FORCE_INLINE SIMDVec_f abs() const {
-#if defined (WA_GCC_INTR_SUPPORT_6_2)
+#if defined (WA_GCC_INTR_SUPPORT_7_1)
             __m512i t0 = _mm512_castpd_si512(mVec[0]);
             __m512i t1 = _mm512_castpd_si512(mVec[1]);
             __m512i t2 = _mm512_set1_epi64(0x7FFFFFFFFFFFFFFF);
@@ -1508,7 +1508,7 @@ namespace SIMD {
         }
         // MABS
         UME_FORCE_INLINE SIMDVec_f abs(SIMDVecMask<16> const & mask) const {
-#if defined (WA_GCC_INTR_SUPPORT_6_2)
+#if defined (WA_GCC_INTR_SUPPORT_7_1)
             __m512i t0 = _mm512_castpd_si512(mVec[0]);
             __m512i t1 = _mm512_castpd_si512(mVec[1]);
             __m512i t2 = _mm512_set1_epi64(0x7FFFFFFFFFFFFFFF);
@@ -1527,7 +1527,7 @@ namespace SIMD {
         }
         // ABSA
         UME_FORCE_INLINE SIMDVec_f & absa() {
-#if defined (WA_GCC_INTR_SUPPORT_6_2)
+#if defined (WA_GCC_INTR_SUPPORT_7_1)
             __m512i t0 = _mm512_castpd_si512(mVec[0]);
             __m512i t1 = _mm512_castpd_si512(mVec[1]);
             __m512i t2 = _mm512_set1_epi64(0x7FFFFFFFFFFFFFFF);
@@ -1544,7 +1544,7 @@ namespace SIMD {
         }
         // MABSA
         UME_FORCE_INLINE SIMDVec_f & absa(SIMDVecMask<16> const & mask) {
-#if defined (WA_GCC_INTR_SUPPORT_6_2)
+#if defined (WA_GCC_INTR_SUPPORT_7_1)
             __m512i t0 = _mm512_castpd_si512(mVec[0]);
             __m512i t1 = _mm512_castpd_si512(mVec[1]);
             __m512i t2 = _mm512_set1_epi64(0x7FFFFFFFFFFFFFFF);
