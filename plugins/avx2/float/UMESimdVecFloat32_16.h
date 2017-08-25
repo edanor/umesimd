@@ -936,7 +936,7 @@ namespace SIMD {
             _mm256_store_si256((__m256i*)raw, m1);
             __m256 m2 = _mm256_cmp_ps(mVec[1], t0, _CMP_EQ_OS);
             __m256i m3 = _mm256_castps_si256(m2);
-            _mm256_store_si256((__m256i*)raw, m3);
+            _mm256_store_si256((__m256i*)(raw + 8), m3);
             return (raw[0] != 0) && (raw[1] != 0) && (raw[2] != 0) && (raw[3] !=0) &&
                    (raw[4] != 0) && (raw[5] != 0) && (raw[6] != 0) && (raw[7] !=0) &&
                    (raw[8] != 0) && (raw[9] != 0) && (raw[10] != 0) && (raw[11] != 0) &&
