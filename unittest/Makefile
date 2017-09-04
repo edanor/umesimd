@@ -5,7 +5,7 @@
 # {FORCE_OPENMP_PLUGIN=ON}
 # {FORCE_SCALAR_PLUGIN=ON}
 
-CXXFLAGS=-std=c++11
+CXXFLAGS=-std=c++14
 
 ifneq (,$(findstring armclang,$(CXX)))
 	CXXCOMPILER=armclang++
@@ -26,7 +26,8 @@ endif
 #some predefined rules
 ifeq ($(CXXCOMPILER), g++)
 	COMPILER_PREFIX=gcc
-	CXXFLAGS+=-W -Wall -pedantic -fstrict-aliasing -Wstrict-aliasing -Woverflow -Werror
+# -Werror
+	CXXFLAGS+=-W -Wall -pedantic -fstrict-aliasing -Wstrict-aliasing -Woverflow
 endif
 ifeq ($(CXXCOMPILER), clang++)
 	COMPILER_PREFIX=clang
@@ -113,11 +114,11 @@ endif
 ifeq ($(ISA), arm)
 	ISA_PREFIX+=_arm
     ifeq ($(CXXCOMPILER), g++)
-        CXXFLAGS+=-march=native
+        CXXFLAGS+=-march=armv8-a+simd -ftree-vectorize
     endif
 endif
 ifeq ($(ISA), altivec)
-	CXXFLAGS+=-maltivec -mtune=native -mcpu=native -mvsx -mabi=altivec
+	CXXFLAGS+=-mfloat128 -mtune=native -mcpu=native -maltivec -mvsx -mabi=altivec
 	ISA_PREFIX+=_altivec
 endif
 

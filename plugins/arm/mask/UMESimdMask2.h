@@ -33,6 +33,8 @@
 
 #include "UMESimdMaskPrototype.h"
 
+#define GET_CONST_INT(x) x == 0 ? 0 : x == 1
+
 namespace UME {
 namespace SIMD {
 
@@ -43,6 +45,9 @@ namespace SIMD {
         uint32_t,
         2>
     {
+        static UME_FORCE_INLINE uint64_t TRUE_VAL() { return 0xFFFFFFFFFFFFFFFF; };
+        static UME_FORCE_INLINE uint64_t FALSE_VAL() { return 0x0000000000000000; };
+
         friend class SIMDVec_u<uint32_t, 2>;
         friend class SIMDVec_u<uint64_t, 2>;
         friend class SIMDVec_i<int32_t, 2>;
@@ -50,7 +55,12 @@ namespace SIMD {
         friend class SIMDVec_f<float, 2>;
         friend class SIMDVec_f<double, 2>;
     private:
-        bool mMask[2];
+        uint64x2_t mMask;
+
+        UME_FORCE_INLINE explicit SIMDVecMask(uint64x2_t m) {
+            mMask = m;
+        }
+
 
     public:
         UME_FORCE_INLINE SIMDVecMask() {}
@@ -58,53 +68,64 @@ namespace SIMD {
         // Regardless of the mask representation, the interface should only allow initialization using 
         // standard bool or using equivalent mask
         UME_FORCE_INLINE SIMDVecMask(bool m) {
-            mMask[0] = m;
-            mMask[1] = m;
+            mMask = vdupq_n_u64(m ? TRUE_VAL() : FALSE_VAL());
         }
 
         // LOAD-CONSTR - Construct by loading from memory
         UME_FORCE_INLINE explicit SIMDVecMask(bool const * p) {
-            mMask[0] = p[0];
-            mMask[1] = p[1];
+            alignas(16) uint64_t raw[2] = {p[0] ? TRUE_VAL() : FALSE_VAL(),
+                                           p[1] ? TRUE_VAL() : FALSE_VAL()};
+
+            mMask = vld1q_u64(raw);
         }
 
         UME_FORCE_INLINE SIMDVecMask(bool m0, bool m1) {
-            mMask[0] = m0;
-            mMask[1] = m1;
+            alignas(16) uint64_t raw[2] = {m0 ? TRUE_VAL() : FALSE_VAL(),
+                                           m1 ? TRUE_VAL() : FALSE_VAL()};
+
+            mMask = vld1q_u64(raw);
         }
 
         UME_FORCE_INLINE SIMDVecMask(SIMDVecMask const & mask) {
-            mMask[0] = mask.mMask[0];
-            mMask[1] = mask.mMask[1];
+            mMask = mask.mMask;
         }
 
         UME_FORCE_INLINE bool extract(uint32_t index) const {
-            return mMask[index & 1];
+            if ((index & 1) == 0) {
+                return vgetq_lane_u64(mMask, 0) == TRUE_VAL();
+            }
+            return vgetq_lane_u64(mMask, 1) == TRUE_VAL();
         }
 
         // A non-modifying element-wise access operator
         UME_FORCE_INLINE bool operator[] (uint32_t index) const {
-            return mMask[index & 1];
+            return extract(index);
         }
 
         // Element-wise modification operator
         UME_FORCE_INLINE void insert(uint32_t index, bool x) {
-            mMask[index & 1] = x;
+            if ((index & 1) == 0) {
+                mMask = vsetq_lane_u64(x ? TRUE_VAL() : FALSE_VAL(), mMask, 0);
+            } else {
+                mMask = vsetq_lane_u64(x ? TRUE_VAL() : FALSE_VAL(), mMask, 1);
+            }
         }
 
         UME_FORCE_INLINE SIMDVecMask & operator= (SIMDVecMask const & mask) {
-            mMask[0] = mask.mMask[0];
-            mMask[1] = mask.mMask[1];
+            mMask = mask.mMask;
             return *this;
         }
 
         // HLOR
         UME_FORCE_INLINE bool hlor() const {
-            return mMask[0] || mMask[1];
+            //return vminvq_u32(vreinterpretq_u32_u64(mMask)) != 0;
+            return extract(0) || extract(1);
         }
     };
 
 }
 }
+
+#undef GET_CONST_INT
 
 #endif
