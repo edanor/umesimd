@@ -2309,6 +2309,7 @@ namespace SIMD {
         // MCTAN
         // PACK
         UME_FORCE_INLINE SIMDVec_f & pack(SIMDVec_f<float, 4> const & a, SIMDVec_f<float, 4> const & b) {
+/*
  #if defined (WA_GCC_INTR_SUPPORT_7_1)
             alignas(32) float raw[8];
             _mm_store_ps(raw, a.mVec);
@@ -2316,13 +2317,14 @@ namespace SIMD {
             mVec = _mm256_load_ps(raw);
             return *this;
  #else
- #if defined (WA_GCC_INTR_SUPPORT_7_1)
+*/
+// #if defined (WA_GCC_INTR_SUPPORT_7_1)
 	   mVec = _mm256_permute2f128_ps(_mm256_castps128_ps256(a.mVec), _mm256_castps128_ps256(b.mVec), 0x20); 
- #else 
-            mVec = _mm256_set_m128(b.mVec, a.mVec);
- #endif
+// #else
+//            mVec = _mm256_set_m128(b.mVec, a.mVec);
+// #endif
             return *this;
- #endif
+// #endif
         }
         // PACKLO
         UME_FORCE_INLINE SIMDVec_f & packlo(SIMDVec_f<float, 4> const & a) {

@@ -1680,7 +1680,7 @@ namespace SIMD {
 #else
             __m512i t2 = _mm512_setr_epi64(0, stride, 2*stride, 3*stride, 4*stride, 5*stride, 6*stride, 7*stride);
 #endif
-#if defined(WA_GCC_INTR_SUPPORT_6_4) || defined(WA_GCC_INTR_SUPPORT_7_1)
+#if defined(WA_GCC_INTR_SUPPORT_7_1)
             // g++ has some interface issues.
             mVec = _mm512_i64gather_epi64(t2, (const long long int*)baseAddr, 8);
 #else
@@ -1697,7 +1697,7 @@ namespace SIMD {
 #else
             __m512i t2 = _mm512_setr_epi64(0, stride, 2*stride, 3*stride, 4*stride, 5*stride, 6*stride, 7*stride);
 #endif
-#if defined(WA_GCC_INTR_SUPPORT_6_4) || defined(WA_GCC_INTR_SUPPORT_7_1)
+#if defined(WA_GCC_INTR_SUPPORT_7_1)
             // g++ has some interface issues.
             __m512i t3 = _mm512_i64gather_epi64(t2, (const long long int*)baseAddr, 8);
 #else
@@ -1709,7 +1709,7 @@ namespace SIMD {
         // GATHERS
         UME_FORCE_INLINE SIMDVec_i & gather(int64_t const * baseAddr, uint64_t const * indices) {
             __m512i t0 =_mm512_loadu_si512((__m512i *)indices);
-#if defined(WA_GCC_INTR_SUPPORT_6_4) || defined(WA_GCC_INTR_SUPPORT_7_1)
+#if defined(WA_GCC_INTR_SUPPORT_7_1)
             // g++ has some interface issues.
             mVec = _mm512_i64gather_epi64(t0, (const long long int*)baseAddr, 8);
 #else
@@ -1720,7 +1720,7 @@ namespace SIMD {
         // MGATHERS
         UME_FORCE_INLINE SIMDVec_i & gather(SIMDVecMask<8> const & mask, int64_t const * baseAddr, uint64_t const * indices) {
             __m512i t0 = _mm512_loadu_si512((__m512i *)indices);
-#if defined(WA_GCC_INTR_SUPPORT_6_4) || defined(WA_GCC_INTR_SUPPORT_7_1)
+#if defined(WA_GCC_INTR_SUPPORT_7_1)
             // g++ has some interface issues.
             __m512i t1 = _mm512_i64gather_epi64(t0, (const long long int*)baseAddr, 8);
 #else
@@ -1731,7 +1731,7 @@ namespace SIMD {
         }
         // GATHERV
         UME_FORCE_INLINE SIMDVec_i & gather(int64_t const * baseAddr, SIMDVec_u<uint64_t, 8> const & indices) {
-#if defined(WA_GCC_INTR_SUPPORT_6_4) || defined(WA_GCC_INTR_SUPPORT_7_1)
+#if defined(WA_GCC_INTR_SUPPORT_7_1)
             // g++ has some interface issues.
             mVec = _mm512_i64gather_epi64(indices.mVec, (const long long int*)baseAddr, 8);
 #else
@@ -1741,7 +1741,7 @@ namespace SIMD {
         }
         // MGATHERV
         UME_FORCE_INLINE SIMDVec_i & gather(SIMDVecMask<8> const & mask, int64_t const * baseAddr, SIMDVec_u<uint64_t, 8> const & indices) {
-#if defined(WA_GCC_INTR_SUPPORT_6_4) || defined(WA_GCC_INTR_SUPPORT_7_1)
+#if defined(WA_GCC_INTR_SUPPORT_7_1)
             // g++ has some interface issues.
             __m512i t0 = _mm512_i64gather_epi64(indices.mVec, (const long long int*)baseAddr, 8);
 #else
@@ -1759,7 +1759,7 @@ namespace SIMD {
 #else
             __m512i t2 = _mm512_setr_epi64(0, stride, 2*stride, 3*stride, 4*stride, 5*stride, 6*stride, 7*stride);
 #endif
-#if defined(WA_GCC_INTR_SUPPORT_6_4) || defined(WA_GCC_INTR_SUPPORT_7_1)
+#if defined(WA_GCC_INTR_SUPPORT_7_1)
             // g++ has some interface issues.
             _mm512_i64scatter_epi64((long long int*)baseAddr, t2, mVec, 8);
 #else
@@ -1776,7 +1776,7 @@ namespace SIMD {
 #else
             __m512i t2 = _mm512_setr_epi64(0, stride, 2*stride, 3*stride, 4*stride, 5*stride, 6*stride, 7*stride);
 #endif
-#if defined(WA_GCC_INTR_SUPPORT_6_4) || defined(WA_GCC_INTR_SUPPORT_7_1)
+#if defined(WA_GCC_INTR_SUPPORT_7_1)
             // g++ has some interface issues.
             _mm512_mask_i64scatter_epi64((long long int*)baseAddr, mask.mMask, t2, mVec, 8);
 #else
@@ -1787,7 +1787,7 @@ namespace SIMD {
         // SCATTERS
         UME_FORCE_INLINE int64_t* scatter(int64_t* baseAddr, uint64_t* indices) const {
             __m512i t0 = _mm512_loadu_si512((__m512i *)indices);
-#if defined(WA_GCC_INTR_SUPPORT_6_4) || defined(WA_GCC_INTR_SUPPORT_7_1)
+#if defined(WA_GCC_INTR_SUPPORT_7_1)
             // g++ has some interface issues.
             _mm512_i64scatter_epi64((long long int*)baseAddr, t0, mVec, 8);
 #else
@@ -1798,7 +1798,7 @@ namespace SIMD {
         // MSCATTERS
         UME_FORCE_INLINE int64_t* scatter(SIMDVecMask<8> const & mask, int64_t* baseAddr, uint64_t* indices) const {
             __m512i t0 = _mm512_loadu_si512((__m512i *)indices);
-#if defined(WA_GCC_INTR_SUPPORT_6_4) || defined(WA_GCC_INTR_SUPPORT_7_1)
+#if defined(WA_GCC_INTR_SUPPORT_7_1)
             // g++ has some interface issues.
             _mm512_mask_i64scatter_epi64((long long int*)baseAddr, mask.mMask, t0, mVec, 8);
 #else
@@ -1808,7 +1808,7 @@ namespace SIMD {
         }
         // SCATTERV
         UME_FORCE_INLINE int64_t* scatter(int64_t* baseAddr, SIMDVec_u<uint64_t, 8> const & indices) const {
-#if defined(WA_GCC_INTR_SUPPORT_6_4) || defined(WA_GCC_INTR_SUPPORT_7_1)
+#if defined(WA_GCC_INTR_SUPPORT_7_1)
             // g++ has some interface issues.
             _mm512_i64scatter_epi64((long long int*)baseAddr, indices.mVec, mVec, 8);
 #else
@@ -1818,7 +1818,7 @@ namespace SIMD {
         }
         // MSCATTERV
         UME_FORCE_INLINE int64_t* scatter(SIMDVecMask<8> const & mask, int64_t* baseAddr, SIMDVec_u<uint64_t, 8> const & indices) const {
-#if defined(WA_GCC_INTR_SUPPORT_6_4) || defined(WA_GCC_INTR_SUPPORT_7_1)
+#if defined(WA_GCC_INTR_SUPPORT_7_1)
             // g++ has some interface issues.
             _mm512_mask_i64scatter_epi64((long long int*)baseAddr, mask.mMask, indices.mVec, mVec, 8);
 #else

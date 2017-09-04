@@ -8652,7 +8652,7 @@ void genericRSHVTest_random()
             inputB[i] = randomValue<SCALAR_UINT_TYPE>(gen) % MAX_BIT_COUNT;
             uint64_t inputA_range = 1 << MAX_BIT_COUNT;
             inputA[i] = randomValue<SCALAR_TYPE>(gen);
-	    inputA[i] = inputA_range == 0 ? inputA[i] : inputA[i] % inputA_range;
+            inputA[i] = inputA_range == 0 ? inputA[i] : inputA[i] % inputA_range;
             output[i] = inputA[i] >> inputB[i];
         }
 
