@@ -168,6 +168,7 @@ void genericSETCONSTRTest_random_helper(std::string const & type_name)
         std::string msg("SET-CONSTR gen initializer");
         msg.append(type_name);
         check_condition(inRange, msg.c_str());
+
     }
 }
 
@@ -8649,7 +8650,7 @@ void genericRSHVTest_random()
 
         for (int i = 0; i < VEC_LEN; i++) {
             inputB[i] = randomValue<SCALAR_UINT_TYPE>(gen) % MAX_BIT_COUNT;
-            SCALAR_UINT_TYPE inputA_range = 1 << MAX_BIT_COUNT;
+            uint64_t inputA_range = uint64_t(1) << uint64_t(MAX_BIT_COUNT);
             inputA[i] = randomValue<SCALAR_TYPE>(gen) % inputA_range;
             output[i] = inputA[i] >> inputB[i];
         }
@@ -8660,6 +8661,7 @@ void genericRSHVTest_random()
         vec2.store(values);
         bool inRange = valuesInRange(values, output, VEC_LEN, SCALAR_TYPE(0.01f));
         vec0.store(values);
+
         bool isUnmodified = valuesInRange(values, inputA, VEC_LEN, SCALAR_TYPE(0.01f));
         CHECK_CONDITION((inRange && isUnmodified), "RSHV gen");
     }
@@ -8671,7 +8673,7 @@ void genericRSHVTest_random()
 
         for (int i = 0; i < VEC_LEN; i++) {
             inputB[i] = randomValue<SCALAR_UINT_TYPE>(gen) % MAX_BIT_COUNT;
-            SCALAR_UINT_TYPE inputA_range = 1 << MAX_BIT_COUNT;
+            uint64_t inputA_range = uint64_t(1) << uint64_t(MAX_BIT_COUNT);
             inputA[i] = randomValue<SCALAR_TYPE>(gen) % inputA_range;
             output[i] = inputA[i] >> inputB[i];
         }
@@ -8693,7 +8695,7 @@ void genericRSHVTest_random()
 
         for (int i = 0; i < VEC_LEN; i++) {
             inputB[i] = randomValue<SCALAR_UINT_TYPE>(gen) % MAX_BIT_COUNT;
-            SCALAR_UINT_TYPE inputA_range = 1 << MAX_BIT_COUNT;
+            uint64_t inputA_range = uint64_t(1) << uint64_t(MAX_BIT_COUNT);
             inputA[i] = randomValue<SCALAR_TYPE>(gen) % inputA_range;
             output[i] = inputA[i] >> inputB[i];
         }
@@ -8740,7 +8742,7 @@ void genericMRSHVTest_random()
         for (int i = 0; i < VEC_LEN; i++) {
             inputMask[i] = randomValue<bool>(gen);
             inputB[i] = randomValue<SCALAR_UINT_TYPE>(gen) % MAX_BIT_COUNT;
-            uint32_t inputA_range = 1 << MAX_BIT_COUNT;
+            uint64_t inputA_range = uint64_t(1) << uint64_t(MAX_BIT_COUNT);
             inputA[i] = randomValue<SCALAR_TYPE>(gen) % inputA_range;
             if (inputMask[i] == true) output[i] = inputA[i] >> inputB[i];
             else output[i] = inputA[i];
@@ -8766,7 +8768,7 @@ void genericMRSHVTest_random()
         for (int i = 0; i < VEC_LEN; i++) {
             inputMask[i] = randomValue<bool>(gen);
             inputB[i] = randomValue<SCALAR_UINT_TYPE>(gen) % MAX_BIT_COUNT;
-            uint32_t inputA_range = 1 << MAX_BIT_COUNT;
+            uint64_t inputA_range = uint64_t(1) << uint64_t(MAX_BIT_COUNT);
             inputA[i] = randomValue<SCALAR_TYPE>(gen) % inputA_range;
             if (inputMask[i] == true) output[i] = inputA[i] >> inputB[i];
             else output[i] = inputA[i];
@@ -8813,7 +8815,7 @@ void genericRSHSTest_random()
 
         inputB = randomValue<SCALAR_UINT_TYPE>(gen) % MAX_BIT_COUNT;
         for (int i = 0; i < VEC_LEN; i++) {
-            uint32_t inputA_range = 1 << MAX_BIT_COUNT;
+            uint64_t inputA_range = uint64_t(1) << uint64_t(MAX_BIT_COUNT);
             inputA[i] = randomValue<SCALAR_TYPE>(gen) % inputA_range;
             output[i] = inputA[i] >> inputB;
         }
@@ -8834,7 +8836,7 @@ void genericRSHSTest_random()
 
         inputB = randomValue<SCALAR_UINT_TYPE>(gen) % MAX_BIT_COUNT;
         for (int i = 0; i < VEC_LEN; i++) {
-            uint32_t inputA_range = 1 << MAX_BIT_COUNT;
+            uint64_t inputA_range = uint64_t(1) << uint64_t(MAX_BIT_COUNT);
             inputA[i] = randomValue<SCALAR_TYPE>(gen) % inputA_range;
             output[i] = inputA[i] >> inputB;
         }
@@ -8855,7 +8857,7 @@ void genericRSHSTest_random()
 
         inputB = randomValue<SCALAR_UINT_TYPE>(gen) % MAX_BIT_COUNT;
         for (int i = 0; i < VEC_LEN; i++) {
-            uint32_t inputA_range = 1 << MAX_BIT_COUNT;
+            uint64_t inputA_range = uint64_t(1) << uint64_t(MAX_BIT_COUNT);
             inputA[i] = randomValue<SCALAR_TYPE>(gen) % inputA_range;
             output[i] = inputA[i] >> inputB;
         }
@@ -8901,7 +8903,7 @@ void genericMRSHSTest_random()
         inputB = randomValue<SCALAR_UINT_TYPE>(gen) % MAX_BIT_COUNT;
         for (int i = 0; i < VEC_LEN; i++) {
             inputMask[i] = randomValue<bool>(gen);
-            uint32_t inputA_range = 1 << MAX_BIT_COUNT;
+            uint64_t inputA_range = uint64_t(1) << uint64_t(MAX_BIT_COUNT);
             inputA[i] = randomValue<SCALAR_TYPE>(gen) % inputA_range;
             if (inputMask[i] == true) output[i] = inputA[i] >> inputB;
             else output[i] = inputA[i];
@@ -8926,7 +8928,7 @@ void genericMRSHSTest_random()
         inputB = randomValue<SCALAR_UINT_TYPE>(gen) % MAX_BIT_COUNT;
         for (int i = 0; i < VEC_LEN; i++) {
             inputMask[i] = randomValue<bool>(gen);
-            uint32_t inputA_range = 1 << MAX_BIT_COUNT;
+            uint64_t inputA_range = uint64_t(1) << uint64_t(MAX_BIT_COUNT);
             inputA[i] = randomValue<SCALAR_TYPE>(gen) % inputA_range;
             if (inputMask[i] == true) output[i] = inputA[i] >> inputB;
             else output[i] = inputA[i];
@@ -8972,7 +8974,7 @@ void genericRSHVATest_random()
 
         for (int i = 0; i < VEC_LEN; i++) {
             inputB[i] = randomValue<SCALAR_UINT_TYPE>(gen) % MAX_BIT_COUNT;
-            uint32_t inputA_range = 1 << MAX_BIT_COUNT;
+            uint64_t inputA_range = uint64_t(1) << uint64_t(MAX_BIT_COUNT);
             inputA[i] = randomValue<SCALAR_TYPE>(gen) % inputA_range;
             output[i] = inputA[i] >> inputB[i];
         }
@@ -8992,7 +8994,7 @@ void genericRSHVATest_random()
 
         for (int i = 0; i < VEC_LEN; i++) {
             inputB[i] = randomValue<SCALAR_UINT_TYPE>(gen) % MAX_BIT_COUNT;
-            uint32_t inputA_range = 1 << MAX_BIT_COUNT;
+            uint64_t inputA_range = uint64_t(1) << uint64_t(MAX_BIT_COUNT);
             inputA[i] = randomValue<SCALAR_TYPE>(gen) % inputA_range;
             output[i] = inputA[i] >> inputB[i];
         }
@@ -9037,7 +9039,7 @@ void genericMRSHVATest_random()
         for (int i = 0; i < VEC_LEN; i++) {
             inputMask[i] = randomValue<bool>(gen);
             inputB[i] = randomValue<SCALAR_UINT_TYPE>(gen) % MAX_BIT_COUNT;
-            uint32_t inputA_range = 1 << MAX_BIT_COUNT;
+            uint64_t inputA_range = uint64_t(1) << uint64_t(MAX_BIT_COUNT);
             inputA[i] = randomValue<SCALAR_TYPE>(gen) % inputA_range;
             if (inputMask[i] == true) output[i] = inputA[i] >> inputB[i];
             else output[i] = inputA[i];
@@ -9082,7 +9084,7 @@ void genericRSHSATest_random()
 
         inputB = randomValue<SCALAR_UINT_TYPE>(gen) % MAX_BIT_COUNT;
         for (int i = 0; i < VEC_LEN; i++) {
-            uint32_t inputA_range = 1 << MAX_BIT_COUNT;
+            uint64_t inputA_range = uint64_t(1) << uint64_t(MAX_BIT_COUNT);
             inputA[i] = randomValue<SCALAR_TYPE>(gen) % inputA_range;
             output[i] = inputA[i] >> inputB;
         }
@@ -9101,7 +9103,7 @@ void genericRSHSATest_random()
 
         inputB = randomValue<SCALAR_UINT_TYPE>(gen) % MAX_BIT_COUNT;
         for (int i = 0; i < VEC_LEN; i++) {
-            uint32_t inputA_range = 1 << MAX_BIT_COUNT;
+            uint64_t inputA_range = uint64_t(1) << uint64_t(MAX_BIT_COUNT);
             inputA[i] = randomValue<SCALAR_TYPE>(gen) % inputA_range;
             output[i] = inputA[i] >> inputB;
         }
@@ -9145,7 +9147,7 @@ void genericMRSHSATest_random()
         inputB = randomValue<SCALAR_UINT_TYPE>(gen) % MAX_BIT_COUNT;
         for (int i = 0; i < VEC_LEN; i++) {
             inputMask[i] = randomValue<bool>(gen);
-            uint32_t inputA_range = 1 << MAX_BIT_COUNT;
+            uint64_t inputA_range = uint64_t(1) << uint64_t(MAX_BIT_COUNT);
             inputA[i] = randomValue<SCALAR_TYPE>(gen) % inputA_range;
             if (inputMask[i] == true) output[i] = inputA[i] >> inputB;
             else output[i] = inputA[i];

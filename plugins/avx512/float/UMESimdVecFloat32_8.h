@@ -1182,7 +1182,7 @@ namespace SIMD {
             return t0 + t1 + t2 + t3 + t4 + t5 + t6 + t7;
 #else
             __m512 t0 = _mm512_castps256_ps512(mVec);
-            __mmask16 t1 = (__mmask16)mask.mMask & 0xFF;
+            __mmask16 t1 = ((__mmask16)mask.mMask) & 0xFFFF;
             float retval = _mm512_mask_reduce_add_ps(t1, t0);
             return retval;
 #endif
@@ -1204,18 +1204,18 @@ namespace SIMD {
 #if defined(WA_GCC_INTR_SUPPORT_6_4)
             alignas(32) float raw[8];
             _mm256_store_ps(raw, mVec);
-            uint32_t t0 = ((mask.mMask & 0x01) != 0) ? raw[0] : 0.0f;
-            uint32_t t1 = ((mask.mMask & 0x02) != 0) ? raw[1] : 0.0f;
-            uint32_t t2 = ((mask.mMask & 0x04) != 0) ? raw[2] : 0.0f;
-            uint32_t t3 = ((mask.mMask & 0x08) != 0) ? raw[3] : 0.0f;
-            uint32_t t4 = ((mask.mMask & 0x10) != 0) ? raw[4] : 0.0f;
-            uint32_t t5 = ((mask.mMask & 0x20) != 0) ? raw[5] : 0.0f;
-            uint32_t t6 = ((mask.mMask & 0x40) != 0) ? raw[6] : 0.0f;
-            uint32_t t7 = ((mask.mMask & 0x80) != 0) ? raw[7] : 0.0f;
+            float t0 = ((mask.mMask & 0x01) != 0) ? raw[0] : 0.0f;
+            float t1 = ((mask.mMask & 0x02) != 0) ? raw[1] : 0.0f;
+            float t2 = ((mask.mMask & 0x04) != 0) ? raw[2] : 0.0f;
+            float t3 = ((mask.mMask & 0x08) != 0) ? raw[3] : 0.0f;
+            float t4 = ((mask.mMask & 0x10) != 0) ? raw[4] : 0.0f;
+            float t5 = ((mask.mMask & 0x20) != 0) ? raw[5] : 0.0f;
+            float t6 = ((mask.mMask & 0x40) != 0) ? raw[6] : 0.0f;
+            float t7 = ((mask.mMask & 0x80) != 0) ? raw[7] : 0.0f;
             return b + t0 + t1 + t2 + t3 + t4 + t5 + t6 + t7;
 #else
             __m512 t0 = _mm512_castps256_ps512(mVec);
-            __mmask16 t1 = (__mmask16)mask.mMask & 0xFF;
+            __mmask16 t1 = ((__mmask16)mask.mMask) & 0xFFFF;
             float retval = _mm512_mask_reduce_add_ps(t1, t0);
             return retval + b;
 #endif
@@ -2309,6 +2309,7 @@ namespace SIMD {
         // MCTAN
         // PACK
         UME_FORCE_INLINE SIMDVec_f & pack(SIMDVec_f<float, 4> const & a, SIMDVec_f<float, 4> const & b) {
+/*
  #if defined (WA_GCC_INTR_SUPPORT_7_1)
             alignas(32) float raw[8];
             _mm_store_ps(raw, a.mVec);
@@ -2316,9 +2317,14 @@ namespace SIMD {
             mVec = _mm256_load_ps(raw);
             return *this;
  #else
-            mVec = _mm256_set_m128(b.mVec, a.mVec);
+*/
+// #if defined (WA_GCC_INTR_SUPPORT_7_1)
+	   mVec = _mm256_permute2f128_ps(_mm256_castps128_ps256(a.mVec), _mm256_castps128_ps256(b.mVec), 0x20); 
+// #else
+//            mVec = _mm256_set_m128(b.mVec, a.mVec);
+// #endif
             return *this;
- #endif
+// #endif
         }
         // PACKLO
         UME_FORCE_INLINE SIMDVec_f & packlo(SIMDVec_f<float, 4> const & a) {

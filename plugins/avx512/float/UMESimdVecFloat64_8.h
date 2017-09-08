@@ -1102,7 +1102,7 @@ namespace SIMD {
 #if defined (WA_GCC_INTR_SUPPORT_6_4)
             alignas(64) double raw[8];
             _mm512_store_pd(raw, mVec);
-            double t0 = ((mask.mMask & 0x01) != 0) ? raw[0] : std::numeric_limits<double>::lowest();
+            double t0 = ((mask.mMask & 0x01) != 0) ? raw[0] : std::numeric_limits<double>::max();
             double t1 = (((mask.mMask & 0x02) != 0) && raw[1] < t0) ? raw[1] : t0;
             double t2 = (((mask.mMask & 0x04) != 0) && raw[2] < t1) ? raw[2] : t1;
             double t3 = (((mask.mMask & 0x08) != 0) && raw[3] < t2) ? raw[3] : t2;
@@ -1245,20 +1245,24 @@ namespace SIMD {
         }
         // ABS
         UME_FORCE_INLINE SIMDVec_f abs() const {
-#if defined (WA_GCC_INTR_SUPPORT_7_1)
+#if defined (WA_GCC_INTR_SUPPORT_6_4)
             __m512i t0 = _mm512_castpd_si512(mVec);
             __m512i t1 = _mm512_set1_epi64(0x7FFFFFFFFFFFFFFF);
             __m512i t2 = _mm512_and_epi64(t0, t1);
             __m512d t3 = _mm512_castsi512_pd(t2);
             return SIMDVec_f(t3);
 #else
+#if defined (WA_GCC_INTR_SUPPORT_7_1)
+            __m512d t0 = _mm512_abs_pd(_mm512_castpd_ps(mVec));
+#else
             __m512d t0 = _mm512_abs_pd(mVec);
+#endif
             return SIMDVec_f(t0);
 #endif
         }
         // MABS
         UME_FORCE_INLINE SIMDVec_f abs(SIMDVecMask<8> const & mask) const {
-#if defined (WA_GCC_INTR_SUPPORT_7_1)
+#if defined (WA_GCC_INTR_SUPPORT_6_4)
             __m512i t0 = _mm512_castpd_si512(mVec);
             __m512i t1 = _mm512_set1_epi64(0x7FFFFFFFFFFFFFFF);
             __m512i t2 = _mm512_and_epi64(t0, t1);
@@ -1266,26 +1270,34 @@ namespace SIMD {
             __m512d t4 = _mm512_mask_mov_pd(mVec, mask.mMask, t3);
             return SIMDVec_f(t4);
 #else
+#if defined (WA_GCC_INTR_SUPPORT_7_1)
+            __m512d t0 = _mm512_mask_abs_pd(mVec, mask.mMask, _mm512_castpd_ps(mVec));
+#else
             __m512d t0 = _mm512_mask_abs_pd(mVec, mask.mMask, mVec);
+#endif
             return SIMDVec_f(t0);
 #endif
         }
         // ABSA
         UME_FORCE_INLINE SIMDVec_f & absa() {
-#if defined (WA_GCC_INTR_SUPPORT_7_1)
+#if defined (WA_GCC_INTR_SUPPORT_6_4)
             __m512i t0 = _mm512_castpd_si512(mVec);
             __m512i t1 = _mm512_set1_epi64(0x7FFFFFFFFFFFFFFF);
             __m512i t2 = _mm512_and_epi64(t0, t1);
             mVec = _mm512_castsi512_pd(t2);
             return *this;
 #else
+#if defined (WA_GCC_INTR_SUPPORT_7_1)
+            mVec = _mm512_abs_pd(_mm512_castpd_ps(mVec));
+#else
             mVec = _mm512_abs_pd(mVec);
+#endif
             return *this;
 #endif
         }
         // MABSA
         UME_FORCE_INLINE SIMDVec_f & absa(SIMDVecMask<8> const & mask) {
-#if defined (WA_GCC_INTR_SUPPORT_7_1)
+#if defined (WA_GCC_INTR_SUPPORT_6_4)
             __m512i t0 = _mm512_castpd_si512(mVec);
             __m512i t1 = _mm512_set1_epi64(0x7FFFFFFFFFFFFFFF);
             __m512i t2 = _mm512_and_epi64(t0, t1);
@@ -1293,7 +1305,11 @@ namespace SIMD {
             mVec = _mm512_mask_mov_pd(mVec, mask.mMask, t3);
             return *this;
 #else
+#if defined (WA_GCC_INTR_SUPPORT_7_1)
+            mVec = _mm512_mask_abs_pd(mVec, mask.mMask, _mm512_castpd_ps(mVec));
+#else
             mVec = _mm512_mask_abs_pd(mVec, mask.mMask, mVec);
+#endif
             return *this;
 #endif
         }

@@ -1289,7 +1289,7 @@ namespace SIMD {
         UME_FORCE_INLINE int32_t hmax() const {
 #if defined (WA_GCC_INTR_SUPPORT_6_4)
             alignas(64) int32_t raw[16];
-            __m512i t0 = _mm512_max_epu32(mVec[0], mVec[1]);
+            __m512i t0 = _mm512_max_epi32(mVec[0], mVec[1]);
             _mm512_store_si512((__m512i*)raw, t0);
             int32_t t1 = raw[0] > raw[1] ? raw[0] : raw[1];
             int32_t t2 = raw[2] > raw[3] ? raw[2] : raw[3];
@@ -1368,7 +1368,7 @@ namespace SIMD {
         UME_FORCE_INLINE int32_t hmin() const {
 #if defined (WA_GCC_INTR_SUPPORT_6_4)
             alignas(64) int32_t raw[16];
-            __m512i t0 = _mm512_min_epu32(mVec[0], mVec[1]);
+            __m512i t0 = _mm512_min_epi32(mVec[0], mVec[1]);
             _mm512_store_si512((__m512i*)raw, t0);
             int32_t t1 = raw[0] < raw[1] ? raw[0] : raw[1];
             int32_t t2 = raw[2] < raw[3] ? raw[2] : raw[3];
@@ -1385,7 +1385,7 @@ namespace SIMD {
             int32_t t12 = t7 < t8 ? t7 : t8;
 
             int32_t t13 = t9 < t10 ? t9 : t10;
-            int32_t t14 = t10 < t12 ? t11 : t12;
+            int32_t t14 = t11 < t12 ? t11 : t12;
 
             return t13 < t14 ? t13 : t14;
 #else

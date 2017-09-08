@@ -1399,7 +1399,7 @@ namespace SIMD {
             uint32_t t12 = t7 < t8 ? t7 : t8;
 
             uint32_t t13 = t9 < t10 ? t9 : t10;
-            uint32_t t14 = t10 < t12 ? t11 : t12;
+            uint32_t t14 = t11 < t12 ? t11 : t12;
 
             return t13 < t14 ? t13 : t14;
 #else

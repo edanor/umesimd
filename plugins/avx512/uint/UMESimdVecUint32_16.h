@@ -808,7 +808,7 @@ namespace SIMD {
             alignas(64) uint32_t raw[16];
             _mm512_store_si512((__m512i*)raw, mVec);
             return b + raw[0] + raw[1] + raw[2]  + raw[3]  + raw[4]  + raw[5]  + raw[6]  + raw[7] +
-                   raw[9] + raw[9] + raw[10] + raw[11] + raw[12] + raw[13] + raw[14] + raw[15];
+                   raw[8] + raw[9] + raw[10] + raw[11] + raw[12] + raw[13] + raw[14] + raw[15];
 #else
             uint32_t retval = _mm512_reduce_add_epi32(mVec);
             return retval + b;
@@ -838,7 +838,7 @@ namespace SIMD {
             if (mask.mMask & 0x8000) t0 += raw[15];
             return t0;
 #else
-            uint32_t retval = _mm512_mask_reduce_add_epi32(mask.mMask, mVec);
+            uint32_t retval = (uint32_t) _mm512_mask_reduce_add_epi32(mask.mMask, mVec);
             return retval + b;
 #endif
         }
@@ -848,9 +848,9 @@ namespace SIMD {
             alignas(64) uint32_t raw[16];
             _mm512_store_si512((__m512i*)raw, mVec);
             return raw[0] * raw[1] * raw[2]  * raw[3]  * raw[4]  * raw[5]  * raw[6]  * raw[7] *
-                   raw[9] * raw[9] * raw[10] * raw[11] * raw[12] * raw[13] * raw[14] * raw[15];
+                   raw[8] * raw[9] * raw[10] * raw[11] * raw[12] * raw[13] * raw[14] * raw[15];
 #else
-            uint32_t retval = _mm512_reduce_mul_epi32(mVec);
+            uint32_t retval = (uint32_t) _mm512_reduce_mul_epi32(mVec);
             return retval;
 #endif
         }
@@ -888,10 +888,10 @@ namespace SIMD {
             alignas(64) uint32_t raw[16];
             _mm512_store_si512((__m512i*)raw, mVec);
             return b * raw[0] * raw[1] * raw[2]  * raw[3]  * raw[4]  * raw[5]  * raw[6]  * raw[7] *
-                   raw[9] * raw[9] * raw[10] * raw[11] * raw[12] * raw[13] * raw[14] * raw[15];
+                   raw[8] * raw[9] * raw[10] * raw[11] * raw[12] * raw[13] * raw[14] * raw[15];
 #else
             uint32_t retval = b;
-            retval *= _mm512_reduce_mul_epi32(mVec);
+            retval *= (uint32_t) _mm512_reduce_mul_epi32(mVec);
             return retval;
 #endif
         }
