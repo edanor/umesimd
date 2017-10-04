@@ -2,6 +2,7 @@
 **NOTE**: UME::Vector library has been moved to github! Please see: [https://github.com/edanor/umevector](https://github.com/edanor/umevector)
 
 [![Build Status](https://travis-ci.org/edanor/umesimd.svg?style=flat-square)](https://travis-ci.org/edanor/umesimd)
+[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=FR5JS6UV3PPLC)
 
 **Current stable release is: v0.8.1**  
 **To checkout stable release use:**  
@@ -48,3 +49,8 @@ Tests:
 
 Other:  
     - Update Readme  
+
+### Donations
+I am not getting paid for developing this software, so any type of help would be appreciated. If you like this project and you would like to support it, please feel free to make a volontary donation. This software will remain free regardless of any donations, but money can help keeping it up to date and bug-free.
+
+[![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=FR5JS6UV3PPLC)
