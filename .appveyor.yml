@@ -1,0 +1,22 @@
+# AppVeyor build configuration
+# https://www.appveyor.com/docs/build-configuration
+# https://www.appveyor.com/docs/appveyor-yml/
+#---------------------------------#
+#      general configuration      #
+#---------------------------------#
+# version format
+version: 1.0.{build}-{branch}
+image: Visual Studio 2017
+# add platforms to build matrix:
+platform:
+- x64
+# add configurations to build matrix:
+configuration:
+- Release
+- Debug
+# use custom build_script
+build_script:
+- ECHO BUILD %CONFIGURATION% %PLATFORM%
+- msbuild /m microbenchmarks/vs2015_sln/microbenchmarks.sln /p:Configuration=%CONFIGURATION% /p:Platform=%PLATFORM% /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
+- msbuild /m unittest/build_vs2015/build_vs2015.sln /p:Configuration=%CONFIGURATION% /p:Platform=%PLATFORM% /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
+
