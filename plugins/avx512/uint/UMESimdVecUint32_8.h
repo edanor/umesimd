@@ -284,7 +284,7 @@ namespace SIMD {
             __m256i t0  = _mm256_permutevar8x32_epi32(mVec, sMask.mVec);
             return SIMDVec_u(t0);
 #else
-  #if defined(__AVX512VL__)
+  #if defined(__AVX512VL__) && !defined(WA_GCC_INTR_SUPPORT_7_1)
             __m256i t0 = _mm256_permutexvar_epi32(mVec, sMask.mVec);
             return SIMDVec_u(t0);
   #else
@@ -304,7 +304,7 @@ namespace SIMD {
             __m256i t1  = _mm256_permutevar8x32_epi32(mVec, t0);
             return SIMDVec_u(t1);
 #else
-  #if defined(__AVX512VL__)
+  #if defined(__AVX512VL__) && !defined(WA_GCC_INTR_SUPPORT_7_1)
             __m256i t0 = _mm256_setr_epi32(i0, i1, i2, i3, i4, i5, i6, i7);
             __m256i t1 = _mm256_permutexvar_epi32(mVec, t0);
             return SIMDVec_u(t1);
@@ -326,7 +326,7 @@ namespace SIMD {
             mVec  = _mm256_permutevar8x32_epi32(mVec, sMask.mVec);
             return *this;
 #else
-  #if defined(__AVX512VL__)
+  #if defined(__AVX512VL__) && !defined(WA_GCC_INTR_SUPPORT_7_1)
             mVec = _mm256_permutexvar_epi32(mVec, sMask.mVec);
             return *this;
   #else
