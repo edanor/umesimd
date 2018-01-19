@@ -54,7 +54,8 @@
 #define WA_GCC_INTR_SUPPORT_6_4
 #endif
 
-#if __GNUC__ < 7 || (__GNUC__ == 7 && (__GNUC_MINOR <= 1)) && ! defined(__INTEL_COMPILER)
+// WA: missing intrinsics in GCC 7.x (It is unlikely that gcc 7.x will fix those issues)
+#if __GNUC__ < 7 || (__GNUC__ == 7 && (__GNUC_MINOR <= 9)) && ! defined(__INTEL_COMPILER)
 #define WA_GCC_INTR_SUPPORT_7_1
 #endif
 
